@@ -18,6 +18,24 @@ npm run build
 npm run preview
 ```
 
+## Быстрый деплой на сервер
+
+Если нужно доставлять правки быстрее, чем через цикл commit -> GitHub Actions,
+используйте локальный прямой деплой:
+
+```powershell
+npm run deploy:quick
+```
+
+Команда соберет `dist`, загрузит файлы на `72.56.240.222:/opt/repeto/deploy/shoditsa`
+и выставит права чтения.
+
+Если `dist` уже собран и нужно только залить изменения:
+
+```powershell
+npm run deploy:quick:skip-build
+```
+
 ## Что работает
 
 - режимы «Фильм дня» и «Сериал дня»;

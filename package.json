@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "deploy:quick": "powershell -ExecutionPolicy Bypass -File scripts/deploy-timeweb.ps1",
+    "deploy:quick:skip-build": "powershell -ExecutionPolicy Bypass -File scripts/deploy-timeweb.ps1 -SkipBuild",
     "data:build": "tsx scripts/import-kinopoisk.ts",
     "data:refill": "node scripts/refill-missing-movies.mjs",
     "data:hints": "node scripts/enrich-movie-hints.mjs"
