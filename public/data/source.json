@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-06T06:54:55.182Z",
+  "requestedSource": "https://www.kinopoisk.ru/lists/movies/top500/",
+  "currentMovieSubset": "Top-500 full list by fixed Kinopoisk IDs + details from API",
+  "api": "https://kinopoiskapiunofficial.tech/documentation/api/",
+  "sourceListIdCount": 500,
+  "movieCount": 500,
+  "seriesCount": 40,
+  "placeholderMovieTitles": 0,
+  "note": "Hint enrichment is available: plot/slogan/cast/facts/awards data is being filled incrementally by batch",
+  "hintEnrichment": {
+    "processed": 25,
+    "updated": 25,
+    "failed": 0,
+    "requestCount": 26,
+    "quotaHit": false,
+    "batchSize": 60,
+    "coverage": {
+      "withPlotHint": 500,
+      "withSlogan": 366,
+      "withMainCast": 500,
+      "withSupportingCast": 498,
+      "withFacts": 476,
+      "withAwards": 500
+    }
+  }
+}

@@ -1,0 +1,4527 @@
+[
+  {
+    "id": "kp_464963",
+    "mode": "series",
+    "titleRu": "Игра престолов",
+    "titleOriginal": "Game of Thrones",
+    "alternativeTitles": [
+      "Game of Thrones"
+    ],
+    "year": 2011,
+    "endYear": 2019,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "мелодрама",
+      "приключения",
+      "боевик",
+      "фэнтези"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Дэвид Наттер",
+        "nameOriginal": "David Nutter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_64671.jpg"
+      },
+      {
+        "nameRu": "Алан Тейлор",
+        "nameOriginal": "Alan Taylor",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2436.jpg"
+      },
+      {
+        "nameRu": "Алекс Грейвз",
+        "nameOriginal": "Alex Graves",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_80901.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дэвид Бениофф",
+        "nameOriginal": "David Benioff",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_40292.jpg"
+      },
+      {
+        "nameRu": "Джордж Р.Р. Мартин",
+        "nameOriginal": "George R.R. Martin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_148468.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дэвид Бениофф",
+        "nameOriginal": "David Benioff",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_40292.jpg"
+      },
+      {
+        "nameRu": "Джордж Р.Р. Мартин",
+        "nameOriginal": "George R.R. Martin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_148468.jpg"
+      },
+      {
+        "nameRu": "Д.Б. Уайсс",
+        "nameOriginal": "D.B. Weiss",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_729951.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Питер Динклэйдж",
+        "nameOriginal": "Peter Dinklage",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1906.jpg"
+      },
+      {
+        "nameRu": "Лина Хиди",
+        "nameOriginal": "Lena Headey",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6578.jpg"
+      },
+      {
+        "nameRu": "Эмилия Кларк",
+        "nameOriginal": "Emilia Clarke",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1830611.jpg"
+      },
+      {
+        "nameRu": "Кит Харингтон",
+        "nameOriginal": "Kit Harington",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1739589.jpg"
+      },
+      {
+        "nameRu": "Софи Тёрнер",
+        "nameOriginal": "Sophie Turner",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1980525.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 464963,
+    "imdbId": "tt0944947",
+    "ratings": {
+      "kinopoisk": 9,
+      "imdb": 9.2
+    },
+    "votes": {
+      "kinopoisk": 1547141,
+      "imdb": 2600000
+    },
+    "popularityScore": 100,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/464963.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/200035/2a0000017d5bad9aee6287b862b1414eb223/orig",
+    "description": "Рыцари, мертвецы и драконы в эпической битве за судьбы мира. Фэнтези HBO, которое навсегда изменило телевидение",
+    "topRank": 1,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_404900",
+    "mode": "series",
+    "titleRu": "Во все тяжкие",
+    "titleOriginal": "Breaking Bad",
+    "alternativeTitles": [
+      "Breaking Bad"
+    ],
+    "year": 2008,
+    "endYear": 2013,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Мишель Макларен",
+        "nameOriginal": "Michelle MacLaren",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540679.jpg"
+      },
+      {
+        "nameRu": "Адам Бернштейн",
+        "nameOriginal": "Adam Bernstein",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_40742.jpg"
+      },
+      {
+        "nameRu": "Винс Гиллиган",
+        "nameOriginal": "Vince Gilligan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_66539.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Винс Гиллиган",
+        "nameOriginal": "Vince Gilligan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_66539.jpg"
+      },
+      {
+        "nameRu": "Питер Гулд",
+        "nameOriginal": "Peter Gould",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_104685.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Винс Гиллиган",
+        "nameOriginal": "Vince Gilligan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_66539.jpg"
+      },
+      {
+        "nameRu": "Питер Гулд",
+        "nameOriginal": "Peter Gould",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_104685.jpg"
+      },
+      {
+        "nameRu": "Джордж Мастрас",
+        "nameOriginal": "George Mastras",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1265765.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Брайан Крэнстон",
+        "nameOriginal": "Bryan Cranston",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_57575.jpg"
+      },
+      {
+        "nameRu": "Анна Ганн",
+        "nameOriginal": "Anna Gunn",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_9339.jpg"
+      },
+      {
+        "nameRu": "Аарон Пол",
+        "nameOriginal": "Aaron Paul",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_39585.jpg"
+      },
+      {
+        "nameRu": "Дин Норрис",
+        "nameOriginal": "Dean Norris",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1522.jpg"
+      },
+      {
+        "nameRu": "Бетси Брандт",
+        "nameOriginal": "Betsy Brandt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_430178.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 404900,
+    "imdbId": "tt0903747",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 9.5
+    },
+    "votes": {
+      "kinopoisk": 820614,
+      "imdb": 2600000
+    },
+    "popularityScore": 99,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/404900.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c07954f2e92e530a0947de62952/orig",
+    "description": "Умирающий учитель химии начинает варить мет ради благополучия семьи. Выдающийся драматический сериал 2010-х",
+    "topRank": 2,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_79848",
+    "mode": "series",
+    "titleRu": "Сопрано",
+    "titleOriginal": "The Sopranos",
+    "alternativeTitles": [
+      "The Sopranos"
+    ],
+    "year": 1999,
+    "endYear": 2007,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Тимоти Ван Паттен",
+        "nameOriginal": "Timothy Van Patten",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_140035.jpg"
+      },
+      {
+        "nameRu": "Джон Паттерсон",
+        "nameOriginal": "John Patterson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_328956.jpg"
+      },
+      {
+        "nameRu": "Аллен Култер",
+        "nameOriginal": "Allen Coulter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_539472.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дэвид Чейз",
+        "nameOriginal": "David Chase",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_332716.jpg"
+      },
+      {
+        "nameRu": "Теренс Уинтер",
+        "nameOriginal": "Terence Winter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_226920.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дэвид Чейз",
+        "nameOriginal": "David Chase",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_332716.jpg"
+      },
+      {
+        "nameRu": "Теренс Уинтер",
+        "nameOriginal": "Terence Winter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_226920.jpg"
+      },
+      {
+        "nameRu": "Митчелл Бёрджесс",
+        "nameOriginal": "Mitchell Burgess",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553746.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Джеймс Гандольфини",
+        "nameOriginal": "James Gandolfini",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_48857.jpg"
+      },
+      {
+        "nameRu": "Иди Фалько",
+        "nameOriginal": "Edie Falco",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12194.jpg"
+      },
+      {
+        "nameRu": "Лоррейн Бракко",
+        "nameOriginal": "Lorraine Bracco",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2721.jpg"
+      },
+      {
+        "nameRu": "Майкл Империоли",
+        "nameOriginal": "Michael Imperioli",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_27452.jpg"
+      },
+      {
+        "nameRu": "Стив Ван Зандт",
+        "nameOriginal": "Steve Van Zandt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_303314.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 79848,
+    "imdbId": "tt0141842",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 9.2
+    },
+    "votes": {
+      "kinopoisk": 301823,
+      "imdb": 572000
+    },
+    "popularityScore": 97,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/79848.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c0794961cfb170d9ead352a11b3/orig",
+    "description": "Гангстер идет на терапию, чтобы разобраться в себе. Сериал HBO, с которого началась золотая эра телевидения",
+    "topRank": 3,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1009510",
+    "mode": "series",
+    "titleRu": "Энн",
+    "titleOriginal": "Anne with an E",
+    "alternativeTitles": [
+      "Anne with an E"
+    ],
+    "year": 2017,
+    "endYear": 2019,
+    "countries": [
+      "Канада"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "семейный"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Пол Фокс",
+        "nameOriginal": "Paul Fox",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_462205.jpg"
+      },
+      {
+        "nameRu": "Аманда Таппинг",
+        "nameOriginal": "Amanda Tapping",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_14131.jpg"
+      },
+      {
+        "nameRu": "Энн Вилер",
+        "nameOriginal": "Anne Wheeler",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_60404.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Люси Мод Монтгомери",
+        "nameOriginal": "Lucy Maud Montgomery",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_545650.jpg"
+      },
+      {
+        "nameRu": "Мойра Уолли",
+        "nameOriginal": "Moira Walley-Beckett",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_159161.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Люси Мод Монтгомери",
+        "nameOriginal": "Lucy Maud Montgomery",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_545650.jpg"
+      },
+      {
+        "nameRu": "Мойра Уолли",
+        "nameOriginal": "Moira Walley-Beckett",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_159161.jpg"
+      },
+      {
+        "nameRu": "Kathryn Borel",
+        "nameOriginal": "Kathryn Borel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3730127.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Эмибет Макналти",
+        "nameOriginal": "Amybeth McNulty",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3833259.jpg"
+      },
+      {
+        "nameRu": "Джеральдин Джеймс",
+        "nameOriginal": "Geraldine James",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12558.jpg"
+      },
+      {
+        "nameRu": "Р.Х. Томсон",
+        "nameOriginal": "R.H. Thomson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_17969.jpg"
+      },
+      {
+        "nameRu": "Андреа Аррути",
+        "nameOriginal": "Andrea Arruti",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10159889.jpg"
+      },
+      {
+        "nameRu": "Дэлайла Бела",
+        "nameOriginal": "Dalila Bela",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1866905.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1009510,
+    "imdbId": "tt5421602",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 8.6
+    },
+    "votes": {
+      "kinopoisk": 333817,
+      "imdb": 80000
+    },
+    "popularityScore": 96,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1009510.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1648503/2a000001970c30b94816e458d441fd552c5b/orig",
+    "description": "Фермеры забирают из приюта озорную девчушку. Светлая и духоподъёмная семейная драма о дружбе, мечтах и свободе",
+    "topRank": 4,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1040419",
+    "mode": "series",
+    "titleRu": "Детство Шелдона",
+    "titleOriginal": "Young Sheldon",
+    "alternativeTitles": [
+      "Young Sheldon"
+    ],
+    "year": 2017,
+    "endYear": 2024,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Алекс Рейд",
+        "nameOriginal": "Alex Reid",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1108302.jpg"
+      },
+      {
+        "nameRu": "Джаффар Махмуд",
+        "nameOriginal": "Jaffar Mahmood",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1031439.jpg"
+      },
+      {
+        "nameRu": "Майкл Джудд",
+        "nameOriginal": "Michael Judd",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_464185.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дженна Яйтанс",
+        "nameOriginal": "Genna Ryan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1203960.jpg"
+      },
+      {
+        "nameRu": "Чак Лорри",
+        "nameOriginal": "Chuck Lorre",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1057385.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дженна Яйтанс",
+        "nameOriginal": "Genna Ryan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1203960.jpg"
+      },
+      {
+        "nameRu": "Чак Лорри",
+        "nameOriginal": "Chuck Lorre",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1057385.jpg"
+      },
+      {
+        "nameRu": "Стивен Моларо",
+        "nameOriginal": "Steven Molaro",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1087179.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Иэн Армитедж",
+        "nameOriginal": "Iain Armitage",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4381115.jpg"
+      },
+      {
+        "nameRu": "Зои Перри",
+        "nameOriginal": "Zoe Perry",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1174529.jpg"
+      },
+      {
+        "nameRu": "Монтана Джордан",
+        "nameOriginal": "Montana Jordan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4232515.jpg"
+      },
+      {
+        "nameRu": "Реган Реворд",
+        "nameOriginal": "Raegan Revord",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3726501.jpg"
+      },
+      {
+        "nameRu": "Джим Парсонс",
+        "nameOriginal": "Jim Parsons",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_223588.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1040419,
+    "imdbId": "tt6226232",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 7.7
+    },
+    "votes": {
+      "kinopoisk": 540379,
+      "imdb": 145000
+    },
+    "popularityScore": 95,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1040419.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2385704/2a000001940c6cdbebfed6708f318013252d/orig",
+    "description": "Юный вундеркинд поступает в среднюю школу. Спин-офф «Теории большого взрыва» о ранних годах Шелдона Купера",
+    "topRank": 5,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_6589776",
+    "mode": "series",
+    "titleRu": "Питт",
+    "titleOriginal": "The Pitt",
+    "alternativeTitles": [
+      "The Pitt"
+    ],
+    "year": 2025,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Дэмиэн Маркано",
+        "nameOriginal": "Damian Marcano",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3301307.jpg"
+      },
+      {
+        "nameRu": "Аманда Марсалис",
+        "nameOriginal": "Amanda Marsalis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3421317.jpg"
+      },
+      {
+        "nameRu": "Джон Камерон",
+        "nameOriginal": "John Cameron",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_33151.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Р. Скотт Геммилл",
+        "nameOriginal": "R. Scott Gemmill",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553110.jpg"
+      },
+      {
+        "nameRu": "Валери Чу",
+        "nameOriginal": "Valerie Chu",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5019048.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Р. Скотт Геммилл",
+        "nameOriginal": "R. Scott Gemmill",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553110.jpg"
+      },
+      {
+        "nameRu": "Валери Чу",
+        "nameOriginal": "Valerie Chu",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5019048.jpg"
+      },
+      {
+        "nameRu": "Элисса Гершман",
+        "nameOriginal": "Elyssa Gershman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3905553.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Ноа Уайли",
+        "nameOriginal": "Noah Wyle",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_37365.jpg"
+      },
+      {
+        "nameRu": "Патрик Болл",
+        "nameOriginal": "Patrick Ball",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7097224.jpg"
+      },
+      {
+        "nameRu": "Кэтрин ЛаНаса",
+        "nameOriginal": "Katherine LaNasa",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_88200.jpg"
+      },
+      {
+        "nameRu": "Суприя Ганеш",
+        "nameOriginal": "Supriya Ganesh",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5377436.jpg"
+      },
+      {
+        "nameRu": "Фиона Дуриф",
+        "nameOriginal": "Fiona Dourif",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1081335.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 6589776,
+    "imdbId": "tt31938062",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.9
+    },
+    "votes": {
+      "kinopoisk": 54606,
+      "imdb": 124000
+    },
+    "popularityScore": 94,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/6589776.jpg",
+    "backdropUrl": null,
+    "description": "Ещё одна смена в неотложке — в режиме реального времени. «Золотой глобус»-2026 за лучший драматический сериал",
+    "topRank": 6,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_77044",
+    "mode": "series",
+    "titleRu": "Друзья",
+    "titleOriginal": "Friends",
+    "alternativeTitles": [
+      "Friends"
+    ],
+    "year": 1994,
+    "endYear": 2004,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "мелодрама",
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Гари Хэлворсон",
+        "nameOriginal": "Gary Halvorson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_26471.jpg"
+      },
+      {
+        "nameRu": "Кевин Брайт",
+        "nameOriginal": "Kevin Bright",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540613.jpg"
+      },
+      {
+        "nameRu": "Майкл Лембек",
+        "nameOriginal": "Michael Lembeck",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_37335.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дэвид Крэйн",
+        "nameOriginal": "David Crane",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_424825.jpg"
+      },
+      {
+        "nameRu": "Марта Кауффман",
+        "nameOriginal": "Marta Kauffman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540639.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дэвид Крэйн",
+        "nameOriginal": "David Crane",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_424825.jpg"
+      },
+      {
+        "nameRu": "Марта Кауффман",
+        "nameOriginal": "Marta Kauffman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540639.jpg"
+      },
+      {
+        "nameRu": "Скотт Силвери",
+        "nameOriginal": "Scott Silveri",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540657.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Дженнифер Энистон",
+        "nameOriginal": "Jennifer Aniston",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_21444.jpg"
+      },
+      {
+        "nameRu": "Кортни Кокс",
+        "nameOriginal": "Courteney Cox",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8446.jpg"
+      },
+      {
+        "nameRu": "Лиза Кудроу",
+        "nameOriginal": "Lisa Kudrow",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3842.jpg"
+      },
+      {
+        "nameRu": "Мэтт ЛеБлан",
+        "nameOriginal": "Matt LeBlanc",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32687.jpg"
+      },
+      {
+        "nameRu": "Мэттью Перри",
+        "nameOriginal": "Matthew Perry",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7081.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 77044,
+    "imdbId": "tt0108778",
+    "ratings": {
+      "kinopoisk": 9.2,
+      "imdb": 8.8
+    },
+    "votes": {
+      "kinopoisk": 560482,
+      "imdb": 1200000
+    },
+    "popularityScore": 92,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/77044.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2439731/2a0000019ac1e3255fb4e23b21622f60343e/orig",
+    "description": "Шестеро друзей, две квартиры и много юмора. Ситком, который вошел в культурный код не одного поколения",
+    "topRank": 7,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_591929",
+    "mode": "series",
+    "titleRu": "Гравити Фолз",
+    "titleOriginal": "Gravity Falls",
+    "alternativeTitles": [
+      "Gravity Falls"
+    ],
+    "year": 2012,
+    "endYear": 2016,
+    "countries": [
+      "США",
+      "Корея Южная"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "детектив",
+      "фантастика",
+      "приключения",
+      "комедия",
+      "мультфильм"
+    ],
+    "ageRating": "12+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Джо Питт",
+        "nameOriginal": "Joe Pitt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2878175.jpg"
+      },
+      {
+        "nameRu": "Джон Аосима",
+        "nameOriginal": "John Aoshima",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1171408.jpg"
+      },
+      {
+        "nameRu": "Мэтт Брэли",
+        "nameOriginal": "Matt Braly",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3704730.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Алекс Хирш",
+        "nameOriginal": "Alex Hirsch",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1801244.jpg"
+      },
+      {
+        "nameRu": "Марк Риззо",
+        "nameOriginal": "Mark Rizzo",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1304189.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Алекс Хирш",
+        "nameOriginal": "Alex Hirsch",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1801244.jpg"
+      },
+      {
+        "nameRu": "Марк Риззо",
+        "nameOriginal": "Mark Rizzo",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1304189.jpg"
+      },
+      {
+        "nameRu": "Мэтт Чэпман",
+        "nameOriginal": "Matt Chapman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_476458.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Джейсон Риттер",
+        "nameOriginal": "Jason Ritter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_26541.jpg"
+      },
+      {
+        "nameRu": "Алекс Хирш",
+        "nameOriginal": "Alex Hirsch",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1801244.jpg"
+      },
+      {
+        "nameRu": "Кристен Шаал",
+        "nameOriginal": "Kristen Schaal",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50694.jpg"
+      },
+      {
+        "nameRu": "Линда Карделлини",
+        "nameOriginal": "Linda Cardellini",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_27320.jpg"
+      },
+      {
+        "nameRu": "Кевин Майкл Ричардсон",
+        "nameOriginal": "Kevin Michael Richardson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8844.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 591929,
+    "imdbId": "tt1865718",
+    "ratings": {
+      "kinopoisk": 9,
+      "imdb": 8.9
+    },
+    "votes": {
+      "kinopoisk": 716117,
+      "imdb": 176000
+    },
+    "popularityScore": 91,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/591929.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/224348/2a0000017c076b69b9a4ae9c47e6a5b295db/orig",
+    "description": "Близнецы проводят каникулы у странного прадядюшки. Тайны и аномалии в захватывающем мультсериале Алекса Хирша",
+    "topRank": 8,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_796660",
+    "mode": "series",
+    "titleRu": "Лучше звоните Солу",
+    "titleOriginal": "Better Call Saul",
+    "alternativeTitles": [
+      "Better Call Saul"
+    ],
+    "year": 2015,
+    "endYear": 2022,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Винс Гиллиган",
+        "nameOriginal": "Vince Gilligan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_66539.jpg"
+      },
+      {
+        "nameRu": "Томас Шнауц",
+        "nameOriginal": "Thomas Schnauz",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540704.jpg"
+      },
+      {
+        "nameRu": "Питер Гулд",
+        "nameOriginal": "Peter Gould",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_104685.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Винс Гиллиган",
+        "nameOriginal": "Vince Gilligan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_66539.jpg"
+      },
+      {
+        "nameRu": "Питер Гулд",
+        "nameOriginal": "Peter Gould",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_104685.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Винс Гиллиган",
+        "nameOriginal": "Vince Gilligan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_66539.jpg"
+      },
+      {
+        "nameRu": "Питер Гулд",
+        "nameOriginal": "Peter Gould",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_104685.jpg"
+      },
+      {
+        "nameRu": "Гордон Смит",
+        "nameOriginal": "Gordon Smith",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3188313.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Боб Оденкёрк",
+        "nameOriginal": "Bob Odenkirk",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_11846.jpg"
+      },
+      {
+        "nameRu": "Джонатан Бэнкс",
+        "nameOriginal": "Jonathan Banks",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3250.jpg"
+      },
+      {
+        "nameRu": "Рэй Сихорн",
+        "nameOriginal": "Rhea Seehorn",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_247597.jpg"
+      },
+      {
+        "nameRu": "Патрик Фабиан",
+        "nameOriginal": "Patrick Fabian",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_70548.jpg"
+      },
+      {
+        "nameRu": "Майкл Мэндо",
+        "nameOriginal": "Michael Mando",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1706921.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 796660,
+    "imdbId": "tt3032476",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 226012,
+      "imdb": 822000
+    },
+    "popularityScore": 90,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/796660.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/224348/2a0000017c079fa1c914dd8ece10dfe1a1b5/orig",
+    "description": "Честный адвокат превращается в ушлого решалу. Спин-офф «Во все тяжкие», который оказался не хуже оригинала",
+    "topRank": 9,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1227803",
+    "mode": "series",
+    "titleRu": "Чернобыль",
+    "titleOriginal": "Chernobyl",
+    "alternativeTitles": [
+      "Chernobyl"
+    ],
+    "year": 2019,
+    "endYear": 2019,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "история"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Йохан Ренк",
+        "nameOriginal": "Johan Renck",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_573739.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Крэйг Мэйзин",
+        "nameOriginal": "Craig Mazin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12838.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Крэйг Мэйзин",
+        "nameOriginal": "Craig Mazin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12838.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Джаред Харрис",
+        "nameOriginal": "Jared Harris",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1402.jpg"
+      },
+      {
+        "nameRu": "Стеллан Скарсгард",
+        "nameOriginal": "Stellan Skarsgård",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_11661.jpg"
+      },
+      {
+        "nameRu": "Эмили Уотсон",
+        "nameOriginal": "Emily Watson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12557.jpg"
+      },
+      {
+        "nameRu": "Джесси Бакли",
+        "nameOriginal": "Jessie Buckley",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4300676.jpg"
+      },
+      {
+        "nameRu": "Адам Нагаитис",
+        "nameOriginal": "Adam Nagaitis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1431493.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1227803,
+    "imdbId": "tt7366338",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 9.3
+    },
+    "votes": {
+      "kinopoisk": 811510,
+      "imdb": 1000000
+    },
+    "popularityScore": 89,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1227803.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c2d2cf4532a65340ff78b24de8c/orig",
+    "description": "40 лет одной из самых страшных техногенных катастроф в истории. Блестящий мини-сериал HBO о событиях тех дней",
+    "topRank": 10,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_89540",
+    "mode": "series",
+    "titleRu": "Семнадцать мгновений весны",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 1973,
+    "endYear": 1973,
+    "countries": [
+      "СССР"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма",
+      "приключения",
+      "военный",
+      "история"
+    ],
+    "ageRating": "12+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Татьяна Лиознова",
+        "nameOriginal": "Татьяна Лиознова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_318031.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Юлиан Семенов",
+        "nameOriginal": "Юлиан Семенов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_185628.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Юлиан Семенов",
+        "nameOriginal": "Юлиан Семенов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_185628.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Вячеслав Тихонов",
+        "nameOriginal": "Вячеслав Тихонов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_101751.jpg"
+      },
+      {
+        "nameRu": "Леонид Броневой",
+        "nameOriginal": "Леонид Броневой",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_261544.jpg"
+      },
+      {
+        "nameRu": "Екатерина Градова",
+        "nameOriginal": "Екатерина Градова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_542446.jpg"
+      },
+      {
+        "nameRu": "Ростислав Плятт",
+        "nameOriginal": "Ростислав Плятт",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_313381.jpg"
+      },
+      {
+        "nameRu": "Олег Табаков",
+        "nameOriginal": "Олег Табаков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_122798.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 89540,
+    "imdbId": "tt0069628",
+    "ratings": {
+      "kinopoisk": 9,
+      "imdb": 8.7
+    },
+    "votes": {
+      "kinopoisk": 224039,
+      "imdb": 5400
+    },
+    "popularityScore": 87,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/89540.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1534341/2a0000017c077eaf85726e4c2ed1af702725/orig",
+    "description": "Советский разведчик — в высших эшелонах рейха. Великая шпионская сага, разобранная на мемы и цитаты",
+    "topRank": 11,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_160958",
+    "mode": "series",
+    "titleRu": "Отчаянные домохозяйки",
+    "titleOriginal": "Desperate Housewives",
+    "alternativeTitles": [
+      "Desperate Housewives"
+    ],
+    "year": 2004,
+    "endYear": 2012,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "мелодрама",
+      "детектив",
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Дэвид Гроссман",
+        "nameOriginal": "David Grossman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_457874.jpg"
+      },
+      {
+        "nameRu": "Ларри Шоу",
+        "nameOriginal": "Larry Shaw",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_268110.jpg"
+      },
+      {
+        "nameRu": "Дэвид Уоррен",
+        "nameOriginal": "David Warren",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1232930.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Марк Черри",
+        "nameOriginal": "Marc Cherry",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_905557.jpg"
+      },
+      {
+        "nameRu": "Джейсон Ганзел",
+        "nameOriginal": "Jason Ganzel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1740127.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Марк Черри",
+        "nameOriginal": "Marc Cherry",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_905557.jpg"
+      },
+      {
+        "nameRu": "Джейсон Ганзел",
+        "nameOriginal": "Jason Ganzel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1740127.jpg"
+      },
+      {
+        "nameRu": "Дженна Бэнс",
+        "nameOriginal": "Jenna Bans",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_905559.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Тери Хэтчер",
+        "nameOriginal": "Teri Hatcher",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_51364.jpg"
+      },
+      {
+        "nameRu": "Фелисити Хаффман",
+        "nameOriginal": "Felicity Huffman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23394.jpg"
+      },
+      {
+        "nameRu": "Марсия Кросс",
+        "nameOriginal": "Marcia Cross",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_15139.jpg"
+      },
+      {
+        "nameRu": "Ева Лонгория",
+        "nameOriginal": "Eva Longoria",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224069.jpg"
+      },
+      {
+        "nameRu": "Николетт Шеридан",
+        "nameOriginal": "Nicollette Sheridan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_54046.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 160958,
+    "imdbId": "tt0410975",
+    "ratings": {
+      "kinopoisk": 8.3,
+      "imdb": 7.6
+    },
+    "votes": {
+      "kinopoisk": 412575,
+      "imdb": 153000
+    },
+    "popularityScore": 86,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/160958.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/239697/2a0000017c28354a4a302abefbbd0a3c872e/orig",
+    "description": "Жительницы одноэтажной Америки на грани нервного срыва. Выдающийся драматический сериал Марка Черри",
+    "topRank": 12,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_253245",
+    "mode": "series",
+    "titleRu": "Офис",
+    "titleOriginal": "The Office",
+    "alternativeTitles": [
+      "The Office"
+    ],
+    "year": 2005,
+    "endYear": 2013,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Пол Фиг",
+        "nameOriginal": "Paul Feig",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_991624.jpg"
+      },
+      {
+        "nameRu": "Рэндолл Айнхорн",
+        "nameOriginal": "Randall Einhorn",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1046772.jpg"
+      },
+      {
+        "nameRu": "Кен Куопис",
+        "nameOriginal": "Ken Kwapis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_81089.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Грег Дэниелс",
+        "nameOriginal": "Greg Daniels",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_542555.jpg"
+      },
+      {
+        "nameRu": "Рики Джервэйс",
+        "nameOriginal": "Ricky Gervais",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5306.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Грег Дэниелс",
+        "nameOriginal": "Greg Daniels",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_542555.jpg"
+      },
+      {
+        "nameRu": "Рики Джервэйс",
+        "nameOriginal": "Ricky Gervais",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5306.jpg"
+      },
+      {
+        "nameRu": "Стивен Мерчант",
+        "nameOriginal": "Stephen Merchant",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1081481.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Стив Карелл",
+        "nameOriginal": "Steve Carell",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32312.jpg"
+      },
+      {
+        "nameRu": "Рэйн Уилсон",
+        "nameOriginal": "Rainn Wilson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7243.jpg"
+      },
+      {
+        "nameRu": "Джон Красински",
+        "nameOriginal": "John Krasinski",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_394931.jpg"
+      },
+      {
+        "nameRu": "Дженна Фишер",
+        "nameOriginal": "Jenna Fischer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12869.jpg"
+      },
+      {
+        "nameRu": "Эд Хелмс",
+        "nameOriginal": "Ed Helms",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_466032.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 253245,
+    "imdbId": "tt0386676",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 247608,
+      "imdb": 825000
+    },
+    "popularityScore": 85,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/253245.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2439731/2a0000017c28389a2c951ea47e67cfd687ad/orig",
+    "description": "Скучающие от безделья клерки пытаются ужиться с безумным боссом. Виртуозный ситком про рабочие будни",
+    "topRank": 13,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_306084",
+    "mode": "series",
+    "titleRu": "Теория большого взрыва",
+    "titleOriginal": "The Big Bang Theory",
+    "alternativeTitles": [
+      "The Big Bang Theory"
+    ],
+    "year": 2007,
+    "endYear": 2019,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "мелодрама",
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Марк Сендроуски",
+        "nameOriginal": "Mark Cendrowski",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_604242.jpg"
+      },
+      {
+        "nameRu": "Энтони Рич",
+        "nameOriginal": "Anthony Rich",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1179690.jpg"
+      },
+      {
+        "nameRu": "Питер Чакос",
+        "nameOriginal": "Peter Chakos",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1114790.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Чак Лорри",
+        "nameOriginal": "Chuck Lorre",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1057385.jpg"
+      },
+      {
+        "nameRu": "Дженнифер Гликман",
+        "nameOriginal": "Jennifer Glickman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_927861.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Чак Лорри",
+        "nameOriginal": "Chuck Lorre",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1057385.jpg"
+      },
+      {
+        "nameRu": "Дженнифер Гликман",
+        "nameOriginal": "Jennifer Glickman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_927861.jpg"
+      },
+      {
+        "nameRu": "Билл Прэди",
+        "nameOriginal": "Bill Prady",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_285330.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Джонни Галэки",
+        "nameOriginal": "Johnny Galecki",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_13258.jpg"
+      },
+      {
+        "nameRu": "Джим Парсонс",
+        "nameOriginal": "Jim Parsons",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_223588.jpg"
+      },
+      {
+        "nameRu": "Кейли Куоко",
+        "nameOriginal": "Kaley Cuoco",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_61567.jpg"
+      },
+      {
+        "nameRu": "Саймон Хелберг",
+        "nameOriginal": "Simon Helberg",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_26550.jpg"
+      },
+      {
+        "nameRu": "Кунал Найяр",
+        "nameOriginal": "Kunal Nayyar",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1231378.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 306084,
+    "imdbId": "tt0898266",
+    "ratings": {
+      "kinopoisk": 8.6,
+      "imdb": 8.1
+    },
+    "votes": {
+      "kinopoisk": 509757,
+      "imdb": 933000
+    },
+    "popularityScore": 84,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/306084.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2419418/2a0000017c07a22ba8109ab7ccd2b11064e9/orig",
+    "description": "Физики превращаются в лириков. Ситком про гениальных ученых-гиков, которые ищут любовь",
+    "topRank": 14,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_6058297",
+    "mode": "series",
+    "titleRu": "Декстер: Воскрешение",
+    "titleOriginal": "Dexter: Resurrection",
+    "alternativeTitles": [
+      "Dexter: Resurrection"
+    ],
+    "year": 2025,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Маркос Сига",
+        "nameOriginal": "Marcos Siega",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_466324.jpg"
+      },
+      {
+        "nameRu": "Моника Реймунд",
+        "nameOriginal": "Monica Raymund",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1512225.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Джефф Линдсэй",
+        "nameOriginal": "Jeff Lindsay",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1195157.jpg"
+      },
+      {
+        "nameRu": "Джеймс Манос мл.",
+        "nameOriginal": "James Manos Jr.",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553751.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Джефф Линдсэй",
+        "nameOriginal": "Jeff Lindsay",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1195157.jpg"
+      },
+      {
+        "nameRu": "Джеймс Манос мл.",
+        "nameOriginal": "James Manos Jr.",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553751.jpg"
+      },
+      {
+        "nameRu": "Клайд Филлипс",
+        "nameOriginal": "Clyde Phillips",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1195128.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Майкл С. Холл",
+        "nameOriginal": "Michael C. Hall",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224374.jpg"
+      },
+      {
+        "nameRu": "Ума Турман",
+        "nameOriginal": "Uma Thurman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29595.jpg"
+      },
+      {
+        "nameRu": "Джек Элкотт",
+        "nameOriginal": "Jack Alcott",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4044688.jpg"
+      },
+      {
+        "nameRu": "Дэвид Зайас",
+        "nameOriginal": "David Zayas",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3106.jpg"
+      },
+      {
+        "nameRu": "Нтаре Мвине",
+        "nameOriginal": "Ntare Mwine",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_70324.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 6058297,
+    "imdbId": "tt33043892",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 33003,
+      "imdb": 136000
+    },
+    "popularityScore": 82,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/6058297.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1534341/2a00000197eabf1fc864ef5ee345cd6d741e/orig",
+    "description": "Декстер восстает из мертвых — и вступает в схватку с маньяком-психопатом. Возвращение культового антигероя",
+    "topRank": 15,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_378244",
+    "mode": "series",
+    "titleRu": "Ликвидация",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2007,
+    "endYear": 2007,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал",
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Сергей Урсуляк",
+        "nameOriginal": "Сергей Урсуляк",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256827.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Алексей Поярков",
+        "nameOriginal": "Алексей Поярков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_582994.jpg"
+      },
+      {
+        "nameRu": "Зоя Дзюбло",
+        "nameOriginal": "Зоя Дзюбло",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_566648.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Алексей Поярков",
+        "nameOriginal": "Алексей Поярков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_582994.jpg"
+      },
+      {
+        "nameRu": "Зоя Дзюбло",
+        "nameOriginal": "Зоя Дзюбло",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_566648.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Владимир Машков",
+        "nameOriginal": "Владимир Машков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_733.jpg"
+      },
+      {
+        "nameRu": "Михаил Пореченков",
+        "nameOriginal": "Михаил Пореченков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_238532.jpg"
+      },
+      {
+        "nameRu": "Владимир Меньшов",
+        "nameOriginal": "Владимир Меньшов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_174283.jpg"
+      },
+      {
+        "nameRu": "Сергей Маковецкий",
+        "nameOriginal": "Сергей Маковецкий",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_64250.jpg"
+      },
+      {
+        "nameRu": "Константин Лавроненко",
+        "nameOriginal": "Константин Лавроненко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_281405.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 378244,
+    "imdbId": "tt1048097",
+    "ratings": {
+      "kinopoisk": 8.6,
+      "imdb": 8.1
+    },
+    "votes": {
+      "kinopoisk": 355919,
+      "imdb": 2800
+    },
+    "popularityScore": 81,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/378244.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/212840/2a0000017ec0a016ddf9eb5146df65574e0a/orig",
+    "description": "Начальник одесского угрозыска наводит порядок в послевоенном городе. Детективный сериал с Владимиром Машковым",
+    "topRank": 16,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_502838",
+    "mode": "series",
+    "titleRu": "Шерлок",
+    "titleOriginal": "Sherlock",
+    "alternativeTitles": [
+      "Sherlock"
+    ],
+    "year": 2010,
+    "endYear": 2017,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал",
+      "детектив"
+    ],
+    "ageRating": "12+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Пол Макгиган",
+        "nameOriginal": "Paul McGuigan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_14359.jpg"
+      },
+      {
+        "nameRu": "Джереми Лавринг",
+        "nameOriginal": "Jeremy Lovering",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1281333.jpg"
+      },
+      {
+        "nameRu": "Ник Харран",
+        "nameOriginal": "Nick Hurran",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_61316.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Марк Гэтисс",
+        "nameOriginal": "Mark Gatiss",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50871.jpg"
+      },
+      {
+        "nameRu": "Стивен Моффат",
+        "nameOriginal": "Steven Moffat",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1070406.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Марк Гэтисс",
+        "nameOriginal": "Mark Gatiss",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50871.jpg"
+      },
+      {
+        "nameRu": "Стивен Моффат",
+        "nameOriginal": "Steven Moffat",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1070406.jpg"
+      },
+      {
+        "nameRu": "Артур Конан Дойл",
+        "nameOriginal": "Arthur Conan Doyle",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_70084.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Бенедикт Камбербэтч",
+        "nameOriginal": "Benedict Cumberbatch",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_34549.jpg"
+      },
+      {
+        "nameRu": "Мартин Фриман",
+        "nameOriginal": "Martin Freeman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_33496.jpg"
+      },
+      {
+        "nameRu": "Уна Стаббс",
+        "nameOriginal": "Una Stubbs",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_175997.jpg"
+      },
+      {
+        "nameRu": "Руперт Грейвз",
+        "nameOriginal": "Rupert Graves",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_44208.jpg"
+      },
+      {
+        "nameRu": "Луиза Брили",
+        "nameOriginal": "Louise Brealey",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_905716.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 502838,
+    "imdbId": "tt1475582",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 711992,
+      "imdb": 1100000
+    },
+    "popularityScore": 80,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/502838.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c079d3763e2847dc80479329734/orig",
+    "description": "Гений-социопат знакомит соседа с миром частного сыска. Бенедикт Камбербэтч в одном из лучших шоу XXI века",
+    "topRank": 17,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1189814",
+    "mode": "series",
+    "titleRu": "Казанова",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2020,
+    "endYear": null,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Кирилл Белевич",
+        "nameOriginal": "Кирилл Белевич",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_287160.jpg"
+      },
+      {
+        "nameRu": "Сергей Комаров",
+        "nameOriginal": "Сергей Комаров",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1657878.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дмитрий Новоселов",
+        "nameOriginal": "Дмитрий Новоселов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2338238.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дмитрий Новоселов",
+        "nameOriginal": "Дмитрий Новоселов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2338238.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Антон Хабаров",
+        "nameOriginal": "Антон Хабаров",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1557429.jpg"
+      },
+      {
+        "nameRu": "Светлана Ходченкова",
+        "nameOriginal": "Светлана Ходченкова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224384.jpg"
+      },
+      {
+        "nameRu": "Сергей Угрюмов",
+        "nameOriginal": "Сергей Угрюмов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_584125.jpg"
+      },
+      {
+        "nameRu": "Катерина Шпица",
+        "nameOriginal": "Катерина Шпица",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1555520.jpg"
+      },
+      {
+        "nameRu": "Олеся Железняк",
+        "nameOriginal": "Олеся Железняк",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_245734.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1189814,
+    "imdbId": "tt13496050",
+    "ratings": {
+      "kinopoisk": 8.4,
+      "imdb": null
+    },
+    "votes": {
+      "kinopoisk": 817240,
+      "imdb": 0
+    },
+    "popularityScore": 79,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1189814.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/17702706/2a0000019cd42ec696c2810f38ba3a4b1eec/orig",
+    "description": "Харизматичный аферист встречает достойную соперницу. Продолжение авантюрного детектива с Антоном Хабаровым",
+    "topRank": 18,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_77202",
+    "mode": "series",
+    "titleRu": "Место встречи изменить нельзя",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 1979,
+    "endYear": 1979,
+    "countries": [
+      "СССР"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма",
+      "криминал",
+      "детектив",
+      "боевик"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Станислав Говорухин",
+        "nameOriginal": "Станислав Говорухин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_185642.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Аркадий Вайнер",
+        "nameOriginal": "Аркадий Вайнер",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_304125.jpg"
+      },
+      {
+        "nameRu": "Георгий Вайнер",
+        "nameOriginal": "Георгий Вайнер",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_281158.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Аркадий Вайнер",
+        "nameOriginal": "Аркадий Вайнер",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_304125.jpg"
+      },
+      {
+        "nameRu": "Георгий Вайнер",
+        "nameOriginal": "Георгий Вайнер",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_281158.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Владимир Высоцкий",
+        "nameOriginal": "Владимир Высоцкий",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_295039.jpg"
+      },
+      {
+        "nameRu": "Владимир Конкин",
+        "nameOriginal": "Владимир Конкин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_273549.jpg"
+      },
+      {
+        "nameRu": "Сергей Юрский",
+        "nameOriginal": "Сергей Юрский",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_133612.jpg"
+      },
+      {
+        "nameRu": "Виктор Павлов",
+        "nameOriginal": "Виктор Павлов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_245771.jpg"
+      },
+      {
+        "nameRu": "Наталья Фатеева",
+        "nameOriginal": "Наталья Фатеева",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_277234.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 77202,
+    "imdbId": "tt0078655",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 8.7
+    },
+    "votes": {
+      "kinopoisk": 481129,
+      "imdb": 5500
+    },
+    "popularityScore": 77,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/77202.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/17702706/2a0000019b35a726738fe8f70ba40eb8b3f2/orig",
+    "description": "Вор должен сидеть в тюрьме. Сериал-шедевр с Владимиром Высоцким, разошедшийся на цитаты",
+    "topRank": 19,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_277537",
+    "mode": "series",
+    "titleRu": "Декстер",
+    "titleOriginal": "Dexter",
+    "alternativeTitles": [
+      "Dexter"
+    ],
+    "year": 2006,
+    "endYear": 2013,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал",
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Джон Дал",
+        "nameOriginal": "John Dahl",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_51723.jpg"
+      },
+      {
+        "nameRu": "Стив Шилл",
+        "nameOriginal": "Steve Shill",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_110635.jpg"
+      },
+      {
+        "nameRu": "Кит Гордон",
+        "nameOriginal": "Keith Gordon",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_30746.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Джефф Линдсэй",
+        "nameOriginal": "Jeff Lindsay",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1195157.jpg"
+      },
+      {
+        "nameRu": "Джеймс Манос мл.",
+        "nameOriginal": "James Manos Jr.",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553751.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Джефф Линдсэй",
+        "nameOriginal": "Jeff Lindsay",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1195157.jpg"
+      },
+      {
+        "nameRu": "Джеймс Манос мл.",
+        "nameOriginal": "James Manos Jr.",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_553751.jpg"
+      },
+      {
+        "nameRu": "Лорен Джуссис",
+        "nameOriginal": "Lauren Gussis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1266092.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Майкл С. Холл",
+        "nameOriginal": "Michael C. Hall",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224374.jpg"
+      },
+      {
+        "nameRu": "Дженнифер Карпентер",
+        "nameOriginal": "Jennifer Carpenter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_226779.jpg"
+      },
+      {
+        "nameRu": "Дэвид Зайас",
+        "nameOriginal": "David Zayas",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3106.jpg"
+      },
+      {
+        "nameRu": "Джеймс Римар",
+        "nameOriginal": "James Remar",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23296.jpg"
+      },
+      {
+        "nameRu": "К.С. Ли",
+        "nameOriginal": "C.S. Lee",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_22554.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 277537,
+    "imdbId": "tt0773262",
+    "ratings": {
+      "kinopoisk": 8.3,
+      "imdb": 8.6
+    },
+    "votes": {
+      "kinopoisk": 394514,
+      "imdb": 924000
+    },
+    "popularityScore": 76,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/277537.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/212840/2a0000017c17cd6b8c754bcb8cbd5ff6e6b0/orig",
+    "description": "Судмедэксперт в свободное время убивает преступников. Детектив, который заставляет сопереживать маньяку",
+    "topRank": 20,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_2040161",
+    "mode": "series",
+    "titleRu": "Человек-бензопила",
+    "titleOriginal": "Chainsaw Man",
+    "alternativeTitles": [
+      "Chainsaw Man"
+    ],
+    "year": 2022,
+    "endYear": 2022,
+    "countries": [
+      "Япония"
+    ],
+    "originalLanguage": "ja",
+    "genres": [
+      "боевик",
+      "фэнтези",
+      "ужасы",
+      "мультфильм",
+      "аниме"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Рю Накаяма",
+        "nameOriginal": "Ryu Nakayama",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6112994.jpg"
+      },
+      {
+        "nameRu": "Масато Накадзоно",
+        "nameOriginal": "Masato Nakazono",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6470569.jpg"
+      },
+      {
+        "nameRu": "Тацуя Ёсихара",
+        "nameOriginal": "Tatsuya Yoshihara",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2979483.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Тацуки Фудзимото",
+        "nameOriginal": "Tatsuki Fujimoto",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6470570.jpg"
+      },
+      {
+        "nameRu": "Хироси Сэко",
+        "nameOriginal": "Hiroshi Seko",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3724191.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Тацуки Фудзимото",
+        "nameOriginal": "Tatsuki Fujimoto",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6470570.jpg"
+      },
+      {
+        "nameRu": "Хироси Сэко",
+        "nameOriginal": "Hiroshi Seko",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3724191.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Кикуносукэ Тоя",
+        "nameOriginal": "Kikunosuke Toya",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6918882.jpg"
+      },
+      {
+        "nameRu": "Томори Кусуноки",
+        "nameOriginal": "Tomori Kusunoki",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5037219.jpg"
+      },
+      {
+        "nameRu": "Аи Файруз",
+        "nameOriginal": "Ai Fairouz",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5644247.jpg"
+      },
+      {
+        "nameRu": "Сёго Саката",
+        "nameOriginal": "Shogo Sakata",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5274558.jpg"
+      },
+      {
+        "nameRu": "Таку Ясиро",
+        "nameOriginal": "Taku Yashiro",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4175389.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 2040161,
+    "imdbId": "tt13616990",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 8.3
+    },
+    "votes": {
+      "kinopoisk": 280901,
+      "imdb": 99000
+    },
+    "popularityScore": 75,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/2040161.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/224348/2a0000019836a23dd0127dd746b3e1668029/orig",
+    "description": "Сирота в долгах становится отчаянным борцом с демонами. Кровавое аниме по одной из самых популярных манг",
+    "topRank": 21,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_251568",
+    "mode": "series",
+    "titleRu": "Клиника",
+    "titleOriginal": "Scrubs",
+    "alternativeTitles": [
+      "Scrubs"
+    ],
+    "year": 2001,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Майкл Спиллер",
+        "nameOriginal": "Michael Spiller",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_459034.jpg"
+      },
+      {
+        "nameRu": "Билл Лоуренс",
+        "nameOriginal": "Bill Lawrence",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540645.jpg"
+      },
+      {
+        "nameRu": "Адам Бернштейн",
+        "nameOriginal": "Adam Bernstein",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_40742.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Билл Лоуренс",
+        "nameOriginal": "Bill Lawrence",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540645.jpg"
+      },
+      {
+        "nameRu": "Дэб Фордхэм",
+        "nameOriginal": "Deb Fordham",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1101387.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Билл Лоуренс",
+        "nameOriginal": "Bill Lawrence",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540645.jpg"
+      },
+      {
+        "nameRu": "Дэб Фордхэм",
+        "nameOriginal": "Deb Fordham",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1101387.jpg"
+      },
+      {
+        "nameRu": "Дженей Баккен",
+        "nameOriginal": "Janae Bakken",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1073922.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Зак Брафф",
+        "nameOriginal": "Zach Braff",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8741.jpg"
+      },
+      {
+        "nameRu": "Дональд Фэйсон",
+        "nameOriginal": "Donald Faison",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10137.jpg"
+      },
+      {
+        "nameRu": "Сара Чок",
+        "nameOriginal": "Sarah Chalke",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_53538.jpg"
+      },
+      {
+        "nameRu": "Джон К. Макгинли",
+        "nameOriginal": "John C. McGinley",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_22596.jpg"
+      },
+      {
+        "nameRu": "Нил Флинн",
+        "nameOriginal": "Neil Flynn",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7136.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 251568,
+    "imdbId": "tt0285403",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.4
+    },
+    "votes": {
+      "kinopoisk": 307528,
+      "imdb": 284000
+    },
+    "popularityScore": 74,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/251568.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/374297/2a0000017c98a9e2e2599ee02df6da74dbdf/orig",
+    "description": "Хаотичная жизнь больницы глазами интерна-фантазера. Главный медицинский ситком нулевых",
+    "topRank": 22,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_5458831",
+    "mode": "series",
+    "titleRu": "Дандадан",
+    "titleOriginal": "Dandadan",
+    "alternativeTitles": [
+      "Dandadan"
+    ],
+    "year": 2024,
+    "endYear": null,
+    "countries": [
+      "Япония"
+    ],
+    "originalLanguage": "ja",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "фэнтези",
+      "комедия",
+      "мультфильм"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Фуга Ямасиро",
+        "nameOriginal": "Fûga Yamashiro",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6729927.jpg"
+      },
+      {
+        "nameRu": "Абель Гонгора",
+        "nameOriginal": "Abel Gongora",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4371448.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Хироси Сэко",
+        "nameOriginal": "Hiroshi Seko",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3724191.jpg"
+      },
+      {
+        "nameRu": "Юкинобу Тацу",
+        "nameOriginal": "Yukinobu Tatsu",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10166218.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Хироси Сэко",
+        "nameOriginal": "Hiroshi Seko",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3724191.jpg"
+      },
+      {
+        "nameRu": "Юкинобу Тацу",
+        "nameOriginal": "Yukinobu Tatsu",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10166218.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Сион Вакаяма",
+        "nameOriginal": "Shion Wakayama",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6077792.jpg"
+      },
+      {
+        "nameRu": "Нацуки Ханаэ",
+        "nameOriginal": "Natsuki Hanae",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2924154.jpg"
+      },
+      {
+        "nameRu": "Маюми Танака",
+        "nameOriginal": "Mayumi Tanaka",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_149742.jpg"
+      },
+      {
+        "nameRu": "Эбби Тротт",
+        "nameOriginal": "Abby Trott",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4510173.jpg"
+      },
+      {
+        "nameRu": "Нана Мидзуки",
+        "nameOriginal": "Nana Mizuki",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1079429.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 5458831,
+    "imdbId": "tt30217403",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.3
+    },
+    "votes": {
+      "kinopoisk": 140232,
+      "imdb": 52000
+    },
+    "popularityScore": 72,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/5458831.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/12808873/2a00000198367c21bdd17705a000d44fe8d8/orig",
+    "description": "Внучка медиума и юный уфолог внезапно встречают призраков и пришельцев. Хитовое аниме — безумное и смешное",
+    "topRank": 23,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_178710",
+    "mode": "series",
+    "titleRu": "Доктор Хаус",
+    "titleOriginal": "House, M.D.",
+    "alternativeTitles": [
+      "House, M.D."
+    ],
+    "year": 2004,
+    "endYear": 2012,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Грег Яйтанс",
+        "nameOriginal": "Greg Yaitanes",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_239333.jpg"
+      },
+      {
+        "nameRu": "Деран Сарафян",
+        "nameOriginal": "Deran Sarafian",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_101979.jpg"
+      },
+      {
+        "nameRu": "Дэвид Стрейтон",
+        "nameOriginal": "David Straiton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_539686.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дэвид Шор",
+        "nameOriginal": "David Shore",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_630520.jpg"
+      },
+      {
+        "nameRu": "Сара Хесс",
+        "nameOriginal": "Sara Hess",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1109894.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дэвид Шор",
+        "nameOriginal": "David Shore",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_630520.jpg"
+      },
+      {
+        "nameRu": "Сара Хесс",
+        "nameOriginal": "Sara Hess",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1109894.jpg"
+      },
+      {
+        "nameRu": "Дэвид Фостер",
+        "nameOriginal": "David Foster",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_968607.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Хью Лори",
+        "nameOriginal": "Hugh Laurie",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_15522.jpg"
+      },
+      {
+        "nameRu": "Роберт Шон Леонард",
+        "nameOriginal": "Robert Sean Leonard",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_47984.jpg"
+      },
+      {
+        "nameRu": "Лиза Эдельштейн",
+        "nameOriginal": "Lisa Edelstein",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32126.jpg"
+      },
+      {
+        "nameRu": "Омар Эппс",
+        "nameOriginal": "Omar Epps",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1391.jpg"
+      },
+      {
+        "nameRu": "Джесси Спенсер",
+        "nameOriginal": "Jesse Spencer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32176.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 178710,
+    "imdbId": "tt0412142",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 8.7
+    },
+    "votes": {
+      "kinopoisk": 549985,
+      "imdb": 589000
+    },
+    "popularityScore": 71,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/178710.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/236744/2a0000017c078b96c10314c70fbaf927a30c/orig",
+    "description": "Все люди врут, но этого не проведешь. Выдающийся медицинский детектив о докторе-гении",
+    "topRank": 24,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_6056265",
+    "mode": "series",
+    "titleRu": "Князь Андрей",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2026,
+    "endYear": 2026,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма",
+      "биография",
+      "история"
+    ],
+    "ageRating": "16+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Давид Ткебучава",
+        "nameOriginal": "Давид Ткебучава",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1557435.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Тимур Эзугбая",
+        "nameOriginal": "Тимур Эзугбая",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3649397.jpg"
+      },
+      {
+        "nameRu": "Али Узденов",
+        "nameOriginal": "Али Узденов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4236024.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Тимур Эзугбая",
+        "nameOriginal": "Тимур Эзугбая",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3649397.jpg"
+      },
+      {
+        "nameRu": "Али Узденов",
+        "nameOriginal": "Али Узденов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4236024.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Александр Голубев",
+        "nameOriginal": "Александр Голубев",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_883781.jpg"
+      },
+      {
+        "nameRu": "Александр Балуев",
+        "nameOriginal": "Александр Балуев",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_56447.jpg"
+      },
+      {
+        "nameRu": "Сергей Безруков",
+        "nameOriginal": "Сергей Безруков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224620.jpg"
+      },
+      {
+        "nameRu": "Александр Устюгов",
+        "nameOriginal": "Александр Устюгов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1055853.jpg"
+      },
+      {
+        "nameRu": "Аглая Шиловская",
+        "nameOriginal": "Аглая Шиловская",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1868367.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 6056265,
+    "imdbId": null,
+    "ratings": {
+      "kinopoisk": 8.6,
+      "imdb": 6.2
+    },
+    "votes": {
+      "kinopoisk": 484403,
+      "imdb": 72
+    },
+    "popularityScore": 70,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/6056265.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/13051577/2a0000019cc2db46bd2c9885d36e7e40e124/orig",
+    "description": "Он стал самым влиятельным человеком на Руси — и нажил могущественных врагов. Эпичная историческая сага",
+    "topRank": 25,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_4909559",
+    "mode": "series",
+    "titleRu": "Лэндмен",
+    "titleOriginal": "Landman",
+    "alternativeTitles": [
+      "Landman"
+    ],
+    "year": 2024,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Стефен Т. Кэй",
+        "nameOriginal": "Stephen T. Kay",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_51530.jpg"
+      },
+      {
+        "nameRu": "Майкл Фридман",
+        "nameOriginal": "Michael Friedman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2024560.jpg"
+      },
+      {
+        "nameRu": "Тейлор Шеридан",
+        "nameOriginal": "Taylor Sheridan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_226894.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Тейлор Шеридан",
+        "nameOriginal": "Taylor Sheridan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_226894.jpg"
+      },
+      {
+        "nameRu": "Christian Wallace",
+        "nameOriginal": "Christian Wallace",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7149087.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Тейлор Шеридан",
+        "nameOriginal": "Taylor Sheridan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_226894.jpg"
+      },
+      {
+        "nameRu": "Christian Wallace",
+        "nameOriginal": "Christian Wallace",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7149087.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Билли Боб Торнтон",
+        "nameOriginal": "Billy Bob Thornton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_111.jpg"
+      },
+      {
+        "nameRu": "Эли Лартер",
+        "nameOriginal": "Ali Larter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_375.jpg"
+      },
+      {
+        "nameRu": "Candice Faith Knight",
+        "nameOriginal": "Candice Faith Knight",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6548201.jpg"
+      },
+      {
+        "nameRu": "Джейкоб Лофленд",
+        "nameOriginal": "Jacob Lofland",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3022625.jpg"
+      },
+      {
+        "nameRu": "Мишель Рэндольф",
+        "nameOriginal": "Michelle Randolph",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4859784.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 4909559,
+    "imdbId": "tt14186672",
+    "ratings": {
+      "kinopoisk": 8.3,
+      "imdb": 8.2
+    },
+    "votes": {
+      "kinopoisk": 58022,
+      "imdb": 102000
+    },
+    "popularityScore": 69,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/4909559.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1534341/2a0000019a902874c3f5ce5447f7bd90885c/orig",
+    "description": "Как выжить в циничном нефтяном бизнесе? Новый хит режиссера «Йеллоустоуна»",
+    "topRank": 26,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_94103",
+    "mode": "series",
+    "titleRu": "Бандитский Петербург 2: Адвокат",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2000,
+    "endYear": 2000,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма",
+      "криминал",
+      "мелодрама"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Владимир Бортко",
+        "nameOriginal": "Владимир Бортко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256810.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Владимир Бортко",
+        "nameOriginal": "Владимир Бортко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256810.jpg"
+      },
+      {
+        "nameRu": "Андрей Константинов",
+        "nameOriginal": "Андрей Константинов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_277204.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Владимир Бортко",
+        "nameOriginal": "Владимир Бортко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256810.jpg"
+      },
+      {
+        "nameRu": "Андрей Константинов",
+        "nameOriginal": "Андрей Константинов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_277204.jpg"
+      },
+      {
+        "nameRu": "Вадим Михайлов",
+        "nameOriginal": "Вадим Михайлов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_273414.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Дмитрий Певцов",
+        "nameOriginal": "Дмитрий Певцов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_251182.jpg"
+      },
+      {
+        "nameRu": "Ольга Дроздова",
+        "nameOriginal": "Ольга Дроздова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256975.jpg"
+      },
+      {
+        "nameRu": "Алексей Серебряков",
+        "nameOriginal": "Алексей Серебряков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_251184.jpg"
+      },
+      {
+        "nameRu": "Лев Борисов",
+        "nameOriginal": "Лев Борисов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_200868.jpg"
+      },
+      {
+        "nameRu": "Армен Джигарханян",
+        "nameOriginal": "Армен Джигарханян",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_127995.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 94103,
+    "imdbId": null,
+    "ratings": {
+      "kinopoisk": 8.4,
+      "imdb": 7.9
+    },
+    "votes": {
+      "kinopoisk": 264831,
+      "imdb": 1200
+    },
+    "popularityScore": 67,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/94103.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/223007/2a0000017c0779572c77724851c4dfb5e9fe/orig",
+    "description": "Друзья детства — адвокат и бандит — противостоят опасному вору в законе. Сиквел эпохального сериала о 1990-х",
+    "topRank": 27,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1118176",
+    "mode": "series",
+    "titleRu": "Годунов",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2018,
+    "endYear": 2018,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма",
+      "история"
+    ],
+    "ageRating": "16+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Алексей Андрианов",
+        "nameOriginal": "Алексей Андрианов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1083022.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Илья Тилькин",
+        "nameOriginal": "Илья Тилькин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1629112.jpg"
+      },
+      {
+        "nameRu": "Николай Борисов",
+        "nameOriginal": "Николай Борисов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5625044.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Илья Тилькин",
+        "nameOriginal": "Илья Тилькин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1629112.jpg"
+      },
+      {
+        "nameRu": "Николай Борисов",
+        "nameOriginal": "Николай Борисов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5625044.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Сергей Безруков",
+        "nameOriginal": "Сергей Безруков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224620.jpg"
+      },
+      {
+        "nameRu": "Сергей Маковецкий",
+        "nameOriginal": "Сергей Маковецкий",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_64250.jpg"
+      },
+      {
+        "nameRu": "Анна Михалкова",
+        "nameOriginal": "Анна Михалкова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_110814.jpg"
+      },
+      {
+        "nameRu": "Светлана Ходченкова",
+        "nameOriginal": "Светлана Ходченкова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_224384.jpg"
+      },
+      {
+        "nameRu": "Виктор Сухоруков",
+        "nameOriginal": "Виктор Сухоруков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_64253.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1118176,
+    "imdbId": "tt9401912",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 7.1
+    },
+    "votes": {
+      "kinopoisk": 120059,
+      "imdb": 338
+    },
+    "popularityScore": 66,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1118176.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2419418/2a0000019b083e708b2ae836661396603d37/orig",
+    "description": "Кончина царя, интриги и борьба за престол. Историческая драма с Сергеем Безруковым о Смутном времени",
+    "topRank": 28,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_5088599",
+    "mode": "series",
+    "titleRu": "Комитет",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2022,
+    "endYear": 2022,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Михаил Вассербаум",
+        "nameOriginal": "Михаил Вассербаум",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_231267.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Андрей Тумаркин",
+        "nameOriginal": "Андрей Тумаркин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1825433.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Андрей Тумаркин",
+        "nameOriginal": "Андрей Тумаркин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1825433.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Александр Константинов",
+        "nameOriginal": "Александр Константинов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1560937.jpg"
+      },
+      {
+        "nameRu": "Максим Митяшин",
+        "nameOriginal": "Максим Митяшин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2806856.jpg"
+      },
+      {
+        "nameRu": "Дмитрий Пчела",
+        "nameOriginal": "Дмитрий Пчела",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2615501.jpg"
+      },
+      {
+        "nameRu": "Владимир Стержаков",
+        "nameOriginal": "Владимир Стержаков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_127908.jpg"
+      },
+      {
+        "nameRu": "Андрей Папанин",
+        "nameOriginal": "Андрей Папанин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2518951.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 5088599,
+    "imdbId": null,
+    "ratings": {
+      "kinopoisk": 8.6,
+      "imdb": null
+    },
+    "votes": {
+      "kinopoisk": 525617,
+      "imdb": 0
+    },
+    "popularityScore": 65,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/5088599.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1672343/2a00000192e20694a25cd97c7cda5a32847a/orig",
+    "description": "30 лет истории страны — глазами трех сотрудников КГБ. Новый сериал от создателей «Невского»",
+    "topRank": 29,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_257386",
+    "mode": "series",
+    "titleRu": "Рим",
+    "titleOriginal": "Rome",
+    "alternativeTitles": [
+      "Rome"
+    ],
+    "year": 2005,
+    "endYear": 2007,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "мелодрама",
+      "боевик",
+      "военный",
+      "история"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Майкл Аптед",
+        "nameOriginal": "Michael Apted",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24212.jpg"
+      },
+      {
+        "nameRu": "Микаэл Саломон",
+        "nameOriginal": "Mikael Salomon",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_64974.jpg"
+      },
+      {
+        "nameRu": "Аллен Култер",
+        "nameOriginal": "Allen Coulter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_539472.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Бруно Хеллер",
+        "nameOriginal": "Bruno Heller",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_274090.jpg"
+      },
+      {
+        "nameRu": "Уильям Дж. МакДональд",
+        "nameOriginal": "William J. MacDonald",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29334.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Бруно Хеллер",
+        "nameOriginal": "Bruno Heller",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_274090.jpg"
+      },
+      {
+        "nameRu": "Уильям Дж. МакДональд",
+        "nameOriginal": "William J. MacDonald",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29334.jpg"
+      },
+      {
+        "nameRu": "Джон Милиус",
+        "nameOriginal": "John Milius",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_102106.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Кевин МакКидд",
+        "nameOriginal": "Kevin McKidd",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_38714.jpg"
+      },
+      {
+        "nameRu": "Рэй Стивенсон",
+        "nameOriginal": "Ray Stevenson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_61717.jpg"
+      },
+      {
+        "nameRu": "Полли Уокер",
+        "nameOriginal": "Polly Walker",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25109.jpg"
+      },
+      {
+        "nameRu": "Керри Кондон",
+        "nameOriginal": "Kerry Condon",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5006.jpg"
+      },
+      {
+        "nameRu": "Джеймс Пьюрфой",
+        "nameOriginal": "James Purefoy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4724.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 257386,
+    "imdbId": "tt0384766",
+    "ratings": {
+      "kinopoisk": 8.4,
+      "imdb": 8.7
+    },
+    "votes": {
+      "kinopoisk": 167319,
+      "imdb": 203000
+    },
+    "popularityScore": 64,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/257386.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1672343/2a00000187b455be9964c1a5de6e88cc325d/orig",
+    "description": "Придворные интриги, реки крови и гладиаторы. Монументальный сериал о правлении Цезаря — и о том, что было после",
+    "topRank": 30,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1048576",
+    "mode": "series",
+    "titleRu": "Крепость Бадабер",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2018,
+    "endYear": 2018,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма",
+      "военный"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Кирилл Белевич",
+        "nameOriginal": "Кирилл Белевич",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_287160.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Дмитрий Алейников",
+        "nameOriginal": "Дмитрий Алейников",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1579539.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Дмитрий Алейников",
+        "nameOriginal": "Дмитрий Алейников",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1579539.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Сергей Марин",
+        "nameOriginal": "Сергей Марин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2612910.jpg"
+      },
+      {
+        "nameRu": "Светлана Иванова",
+        "nameOriginal": "Светлана Иванова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1202459.jpg"
+      },
+      {
+        "nameRu": "Сергей Колесников",
+        "nameOriginal": "Сергей Колесников",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4089012.jpg"
+      },
+      {
+        "nameRu": "Микаел Джанибекян",
+        "nameOriginal": "Микаел Джанибекян",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_294769.jpg"
+      },
+      {
+        "nameRu": "Рамиль Сабитов",
+        "nameOriginal": "Рамиль Сабитов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_464130.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1048576,
+    "imdbId": "tt7981196",
+    "ratings": {
+      "kinopoisk": 8.6,
+      "imdb": 7.4
+    },
+    "votes": {
+      "kinopoisk": 299752,
+      "imdb": 135
+    },
+    "popularityScore": 62,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1048576.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a00000195d8709a5dfd6ca6a24a99c2a88d/orig",
+    "description": "Разведчик ГРУ пытается спасти пленных из лагеря моджахедов. Драма о малоизвестной странице Афганской войны",
+    "topRank": 31,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_5258557",
+    "mode": "series",
+    "titleRu": "Монолог фармацевта",
+    "titleOriginal": "Kusuriya no Hitorigoto",
+    "alternativeTitles": [
+      "Kusuriya no Hitorigoto"
+    ],
+    "year": 2023,
+    "endYear": null,
+    "countries": [
+      "Япония"
+    ],
+    "originalLanguage": "ja",
+    "genres": [
+      "драма",
+      "детектив",
+      "мультфильм",
+      "аниме"
+    ],
+    "ageRating": null,
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Норихиро Наганума",
+        "nameOriginal": "Norihiro Naganuma",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2728380.jpg"
+      },
+      {
+        "nameRu": "Акинори Фудэсака",
+        "nameOriginal": "Akinori Fudesaka",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5622606.jpg"
+      },
+      {
+        "nameRu": "Ватару Накагава",
+        "nameOriginal": "Wataru Nakagawa",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10144330.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Нацу Хюга",
+        "nameOriginal": "Natsu Hyuga",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7107324.jpg"
+      },
+      {
+        "nameRu": "Норихиро Наганума",
+        "nameOriginal": "Norihiro Naganuma",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2728380.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Нацу Хюга",
+        "nameOriginal": "Natsu Hyuga",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7107324.jpg"
+      },
+      {
+        "nameRu": "Норихиро Наганума",
+        "nameOriginal": "Norihiro Naganuma",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2728380.jpg"
+      },
+      {
+        "nameRu": "Мисудзу Тиба",
+        "nameOriginal": "Misuzu Chiba",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5775296.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Giovannie Cruz",
+        "nameOriginal": "Giovannie Cruz",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10124320.jpg"
+      },
+      {
+        "nameRu": "Аои Юки",
+        "nameOriginal": "Aoi Yuki",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1677659.jpg"
+      },
+      {
+        "nameRu": "Naya Moreno",
+        "nameOriginal": "Naya Moreno",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10124321.jpg"
+      },
+      {
+        "nameRu": "Такэо Оцука",
+        "nameOriginal": "Takeo Otsuka",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5046639.jpg"
+      },
+      {
+        "nameRu": "Кацуюки Конъиси",
+        "nameOriginal": "Katsuyuki Konishi",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_409369.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 5258557,
+    "imdbId": "tt26743760",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 8.6
+    },
+    "votes": {
+      "kinopoisk": 85746,
+      "imdb": 23000
+    },
+    "popularityScore": 61,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/5258557.jpg",
+    "backdropUrl": null,
+    "description": "Находчивая служанка решает вылечить детей императора. Комедийный детектив из топа Кинопоиска",
+    "topRank": 32,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_4445150",
+    "mode": "series",
+    "titleRu": "Аркейн",
+    "titleOriginal": "Arcane: League of Legends",
+    "alternativeTitles": [
+      "Arcane: League of Legends"
+    ],
+    "year": 2021,
+    "endYear": 2024,
+    "countries": [
+      "США",
+      "Франция"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "фантастика",
+      "боевик",
+      "фэнтези",
+      "мультфильм"
+    ],
+    "ageRating": "16+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Паскаль Шаррю",
+        "nameOriginal": "Pascal Charrue",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6594538.jpg"
+      },
+      {
+        "nameRu": "Арно Делорд",
+        "nameOriginal": "Arnaud Delord",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4689812.jpg"
+      },
+      {
+        "nameRu": "Жером Комбе",
+        "nameOriginal": "Jérôme Combe",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6594539.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Терри Россио",
+        "nameOriginal": "Terry Rossio",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_30872.jpg"
+      },
+      {
+        "nameRu": "Молли Бикли Ст. Джон",
+        "nameOriginal": "Mollie Bickley St. John",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3400663.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Терри Россио",
+        "nameOriginal": "Terry Rossio",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_30872.jpg"
+      },
+      {
+        "nameRu": "Молли Бикли Ст. Джон",
+        "nameOriginal": "Mollie Bickley St. John",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3400663.jpg"
+      },
+      {
+        "nameRu": "Эш Брэннон",
+        "nameOriginal": "Ash Brannon",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23947.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Хейли Стайнфелд",
+        "nameOriginal": "Hailee Steinfeld",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1478559.jpg"
+      },
+      {
+        "nameRu": "Кевин Алехандро",
+        "nameOriginal": "Kevin Alejandro",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_232054.jpg"
+      },
+      {
+        "nameRu": "Джейсон Спайсэк",
+        "nameOriginal": "Jason Spisak",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_908937.jpg"
+      },
+      {
+        "nameRu": "Токс Олагундойе",
+        "nameOriginal": "Toks Olagundoye",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_40127.jpg"
+      },
+      {
+        "nameRu": "Джейби Бланк",
+        "nameOriginal": "JB Blanc",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10845.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 4445150,
+    "imdbId": "tt11126994",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 237940,
+      "imdb": 438000
+    },
+    "popularityScore": 60,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/4445150.jpg",
+    "backdropUrl": null,
+    "description": "Военный конфликт двух городов разлучает родных сестёр. Анимационный хит по вселенной игры League of Legends",
+    "topRank": 33,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_961719",
+    "mode": "series",
+    "titleRu": "Отчий берег",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2017,
+    "endYear": 2017,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Милена Фадеева",
+        "nameOriginal": "Милена Фадеева",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1646474.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Милена Фадеева",
+        "nameOriginal": "Милена Фадеева",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1646474.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Милена Фадеева",
+        "nameOriginal": "Милена Фадеева",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1646474.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Юра Борисов",
+        "nameOriginal": "Юра Борисов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2286839.jpg"
+      },
+      {
+        "nameRu": "Арина Жаркова",
+        "nameOriginal": "Арина Жаркова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4320640.jpg"
+      },
+      {
+        "nameRu": "Максим Керин",
+        "nameOriginal": "Максим Керин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3503883.jpg"
+      },
+      {
+        "nameRu": "Алина Ланина",
+        "nameOriginal": "Алина Ланина",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2510834.jpg"
+      },
+      {
+        "nameRu": "Алексей Кравченко",
+        "nameOriginal": "Алексей Кравченко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_231400.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 961719,
+    "imdbId": "tt9196684",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 7.4
+    },
+    "votes": {
+      "kinopoisk": 445126,
+      "imdb": 184
+    },
+    "popularityScore": 59,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/961719.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/200035/2a00000187a2e8697ceee13d103723a65cee/orig",
+    "description": "Семейные тайны, предательства и роковая любовь — на фоне трагедии целой страны. Мощная сага с Юрой Борисовым",
+    "topRank": 34,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1309707",
+    "mode": "series",
+    "titleRu": "Тед Лассо",
+    "titleOriginal": "Ted Lasso",
+    "alternativeTitles": [
+      "Ted Lasso"
+    ],
+    "year": 2020,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "комедия",
+      "спорт"
+    ],
+    "ageRating": null,
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Деклан Лауни",
+        "nameOriginal": "Declan Lowney",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12037.jpg"
+      },
+      {
+        "nameRu": "М.Дж. Делани",
+        "nameOriginal": "M.J. Delaney",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2806538.jpg"
+      },
+      {
+        "nameRu": "Эрика Дантон",
+        "nameOriginal": "Erica Dunton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_722992.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Брендан Хант",
+        "nameOriginal": "Brendan Hunt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_232185.jpg"
+      },
+      {
+        "nameRu": "Джо Келли",
+        "nameOriginal": "Joe Kelly",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_911490.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Брендан Хант",
+        "nameOriginal": "Brendan Hunt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_232185.jpg"
+      },
+      {
+        "nameRu": "Джо Келли",
+        "nameOriginal": "Joe Kelly",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_911490.jpg"
+      },
+      {
+        "nameRu": "Билл Лоуренс",
+        "nameOriginal": "Bill Lawrence",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_540645.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Джейсон Судейкис",
+        "nameOriginal": "Jason Sudeikis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1096253.jpg"
+      },
+      {
+        "nameRu": "Бретт Голдстин",
+        "nameOriginal": "Brett Goldstein",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1054456.jpg"
+      },
+      {
+        "nameRu": "Ханна Уоддингэм",
+        "nameOriginal": "Hannah Waddingham",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1231895.jpg"
+      },
+      {
+        "nameRu": "Джереми Свифт",
+        "nameOriginal": "Jeremy Swift",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_34536.jpg"
+      },
+      {
+        "nameRu": "Фил Данстер",
+        "nameOriginal": "Phil Dunster",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2577769.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1309707,
+    "imdbId": "tt10986410",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 8.7
+    },
+    "votes": {
+      "kinopoisk": 139481,
+      "imdb": 437000
+    },
+    "popularityScore": 57,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1309707.jpg",
+    "backdropUrl": null,
+    "description": "Тренер сборной колледжа Канзаса по американскому футболу Тед Лассо — неисправимый оптимист, всеобщий любимец и звезда YouTube. Новая владелица одного заштатного английского футбольного клуба решает использовать его в своих хитрых планах и предлагает Теду должность главного тренера, рассчитывая, что тот развалит клуб. Ничего не смысля в этом виде спорта, Тед приступает к своим новым обязанностям со всем присущим ему энтузиазмом.",
+    "topRank": 35,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_915196",
+    "mode": "series",
+    "titleRu": "Очень странные дела",
+    "titleOriginal": "Stranger Things",
+    "alternativeTitles": [
+      "Stranger Things"
+    ],
+    "year": 2016,
+    "endYear": 2025,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "детектив",
+      "фантастика",
+      "фэнтези"
+    ],
+    "ageRating": "16+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Мэтт Даффер",
+        "nameOriginal": "Matt Duffer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677511.jpg"
+      },
+      {
+        "nameRu": "Росс Даффер",
+        "nameOriginal": "Ross Duffer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677512.jpg"
+      },
+      {
+        "nameRu": "Шон Леви",
+        "nameOriginal": "Shawn Levy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_31245.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Мэтт Даффер",
+        "nameOriginal": "Matt Duffer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677511.jpg"
+      },
+      {
+        "nameRu": "Росс Даффер",
+        "nameOriginal": "Ross Duffer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677512.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Мэтт Даффер",
+        "nameOriginal": "Matt Duffer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677511.jpg"
+      },
+      {
+        "nameRu": "Росс Даффер",
+        "nameOriginal": "Ross Duffer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677512.jpg"
+      },
+      {
+        "nameRu": "Пол Дихтер",
+        "nameOriginal": "Paul Dichter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1091567.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Вайнона Райдер",
+        "nameOriginal": "Winona Ryder",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_9329.jpg"
+      },
+      {
+        "nameRu": "Дэвид Харбор",
+        "nameOriginal": "David Harbour",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_544909.jpg"
+      },
+      {
+        "nameRu": "Финн Вулфхард",
+        "nameOriginal": "Finn Wolfhard",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3423339.jpg"
+      },
+      {
+        "nameRu": "Милли Бобби Браун",
+        "nameOriginal": "Millie Bobby Brown",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3418485.jpg"
+      },
+      {
+        "nameRu": "Гейтен Матараццо",
+        "nameOriginal": "Gaten Matarazzo",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3920951.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 915196,
+    "imdbId": "tt4574334",
+    "ratings": {
+      "kinopoisk": 8.4,
+      "imdb": 8.6
+    },
+    "votes": {
+      "kinopoisk": 840665,
+      "imdb": 1700000
+    },
+    "popularityScore": 56,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/915196.jpg",
+    "backdropUrl": null,
+    "description": "Тинейджеры против монстров из параллельного мира. Ностальгический сай-фай-хоррор, ставший флагманом Netflix",
+    "topRank": 36,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1356670",
+    "mode": "series",
+    "titleRu": "Напарницы: Астрид и Рафаэлла",
+    "titleOriginal": "Astrid et Raphaëlle",
+    "alternativeTitles": [
+      "Astrid et Raphaëlle"
+    ],
+    "year": 2019,
+    "endYear": null,
+    "countries": [
+      "Швейцария",
+      "Франция",
+      "Бельгия"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "криминал",
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Фредерик Берт",
+        "nameOriginal": "Frédéric Berthe",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_546431.jpg"
+      },
+      {
+        "nameRu": "Жюльен Сери",
+        "nameOriginal": "Julien Seri",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_240057.jpg"
+      },
+      {
+        "nameRu": "Эльза Беннетт",
+        "nameOriginal": "Elsa Bennett",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4773942.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Лорен Буртин",
+        "nameOriginal": "Laurent Burtin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1068956.jpg"
+      },
+      {
+        "nameRu": "Alexandre de Seguins",
+        "nameOriginal": "Alexandre de Seguins",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3408795.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Лорен Буртин",
+        "nameOriginal": "Laurent Burtin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1068956.jpg"
+      },
+      {
+        "nameRu": "Alexandre de Seguins",
+        "nameOriginal": "Alexandre de Seguins",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3408795.jpg"
+      },
+      {
+        "nameRu": "Hélène Hassoun",
+        "nameOriginal": "Hélène Hassoun",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5528603.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Сара Мортенсен",
+        "nameOriginal": "Sara Mortensen",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1566030.jpg"
+      },
+      {
+        "nameRu": "Лола Девэр",
+        "nameOriginal": "Lola Dewaere",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1200028.jpg"
+      },
+      {
+        "nameRu": "Бенуа Мишель",
+        "nameOriginal": "Benoît Michel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2650970.jpg"
+      },
+      {
+        "nameRu": "Жан-Луи Гарсон",
+        "nameOriginal": "Jean-Louis Garçon",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3768495.jpg"
+      },
+      {
+        "nameRu": "Хаски Кихаль",
+        "nameOriginal": "Husky Kihal",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_13884.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1356670,
+    "imdbId": "tt11950864",
+    "ratings": {
+      "kinopoisk": 8.5,
+      "imdb": 8.2
+    },
+    "votes": {
+      "kinopoisk": 97414,
+      "imdb": 5100
+    },
+    "popularityScore": 55,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1356670.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/17735790/2a0000019caf752b367013d74a15e98d0c0a/orig",
+    "description": "Полицейская и сотрудница архива раскрывают самые сложные дела. Главный французский детектив современности",
+    "topRank": 37,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_79429",
+    "mode": "series",
+    "titleRu": "Мастер и Маргарита",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 2005,
+    "endYear": 2005,
+    "countries": [
+      "Россия"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "триллер",
+      "драма",
+      "мелодрама",
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Владимир Бортко",
+        "nameOriginal": "Владимир Бортко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256810.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Михаил Булгаков",
+        "nameOriginal": "Mikhail A. Bulgakov",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_266079.jpg"
+      },
+      {
+        "nameRu": "Владимир Бортко",
+        "nameOriginal": "Владимир Бортко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256810.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Михаил Булгаков",
+        "nameOriginal": "Mikhail A. Bulgakov",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_266079.jpg"
+      },
+      {
+        "nameRu": "Владимир Бортко",
+        "nameOriginal": "Владимир Бортко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_256810.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Анна Ковальчук",
+        "nameOriginal": "Анна Ковальчук",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_251229.jpg"
+      },
+      {
+        "nameRu": "Александр Галибин",
+        "nameOriginal": "Александр Галибин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_294521.jpg"
+      },
+      {
+        "nameRu": "Олег Басилашвили",
+        "nameOriginal": "Олег Басилашвили",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_174229.jpg"
+      },
+      {
+        "nameRu": "Владислав Галкин",
+        "nameOriginal": "Владислав Галкин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_238713.jpg"
+      },
+      {
+        "nameRu": "Кирилл Лавров",
+        "nameOriginal": "Кирилл Лавров",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_176276.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 79429,
+    "imdbId": "tt0403783",
+    "ratings": {
+      "kinopoisk": 8.2,
+      "imdb": 7.5
+    },
+    "votes": {
+      "kinopoisk": 416566,
+      "imdb": 5300
+    },
+    "popularityScore": 54,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/79429.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1534341/2a0000017c2811bb2e0de6f135ae4d006cce/orig",
+    "description": "Нечистая сила в Москве середины 1930-х. Режиссер «Собачьего сердца» бережно экранизирует роман Булгакова",
+    "topRank": 38,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_5281617",
+    "mode": "series",
+    "titleRu": "Рыцарь Семи Королевств",
+    "titleOriginal": "A Knight of the Seven Kingdoms",
+    "alternativeTitles": [
+      "A Knight of the Seven Kingdoms"
+    ],
+    "year": 2026,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "приключения",
+      "боевик",
+      "фэнтези"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Оуэн Харрис",
+        "nameOriginal": "Owen Harris",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1832417.jpg"
+      },
+      {
+        "nameRu": "Сара Адина",
+        "nameOriginal": "Sarah Adina",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1117509.jpg"
+      },
+      {
+        "nameRu": "Андреа Харкин",
+        "nameOriginal": "Andrea Harkin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1755934.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Martin Parker",
+        "nameOriginal": "Martin Parker",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10160993.jpg"
+      },
+      {
+        "nameRu": "Джордж Р.Р. Мартин",
+        "nameOriginal": "George R.R. Martin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_148468.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Martin Parker",
+        "nameOriginal": "Martin Parker",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10160993.jpg"
+      },
+      {
+        "nameRu": "Джордж Р.Р. Мартин",
+        "nameOriginal": "George R.R. Martin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_148468.jpg"
+      },
+      {
+        "nameRu": "Айра Паркер",
+        "nameOriginal": "Ira Parker",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3627269.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Питер Клэффи",
+        "nameOriginal": "Peter Claffey",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6515126.jpg"
+      },
+      {
+        "nameRu": "Декстер Сол Анселл",
+        "nameOriginal": "Dexter Sol Ansell",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6543528.jpg"
+      },
+      {
+        "nameRu": "Дэниэл Ингс",
+        "nameOriginal": "Daniel Ings",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2306792.jpg"
+      },
+      {
+        "nameRu": "Шон Томас",
+        "nameOriginal": "Shaun Thomas",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3214098.jpg"
+      },
+      {
+        "nameRu": "Тэнзин Кроуфорд",
+        "nameOriginal": "Tanzyn Crawford",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5647744.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 5281617,
+    "imdbId": "tt27497448",
+    "ratings": {
+      "kinopoisk": 8.1,
+      "imdb": 8.8
+    },
+    "votes": {
+      "kinopoisk": 110982,
+      "imdb": 211000
+    },
+    "popularityScore": 52,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/5281617.jpg",
+    "backdropUrl": null,
+    "description": "По пути на турнир рыцарь знакомится с таинственным подростком. Новая история во вселенной «Игры престолов»",
+    "topRank": 39,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_5512084",
+    "mode": "series",
+    "titleRu": "Гангстерленд",
+    "titleOriginal": "MobLand",
+    "alternativeTitles": [
+      "MobLand"
+    ],
+    "year": 2025,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал",
+      "боевик"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": null,
+    "directors": [
+      {
+        "nameRu": "Энтони Бирн",
+        "nameOriginal": "Anthony Byrne",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_546218.jpg"
+      },
+      {
+        "nameRu": "Лоуренс Гоф",
+        "nameOriginal": "Lawrence Gough",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1146398.jpg"
+      },
+      {
+        "nameRu": "Гай Ричи",
+        "nameOriginal": "Guy Ritchie",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_45159.jpg"
+      }
+    ],
+    "showrunners": [
+      {
+        "nameRu": "Ронан Беннетт",
+        "nameOriginal": "Ronan Bennett",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_48914.jpg"
+      },
+      {
+        "nameRu": "Джез Баттеруорт",
+        "nameOriginal": "Jez Butterworth",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50867.jpg"
+      }
+    ],
+    "writers": [
+      {
+        "nameRu": "Ронан Беннетт",
+        "nameOriginal": "Ronan Bennett",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_48914.jpg"
+      },
+      {
+        "nameRu": "Джез Баттеруорт",
+        "nameOriginal": "Jez Butterworth",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50867.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Том Харди",
+        "nameOriginal": "Tom Hardy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_39984.jpg"
+      },
+      {
+        "nameRu": "Пирс Броснан",
+        "nameOriginal": "Pierce Brosnan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_9931.jpg"
+      },
+      {
+        "nameRu": "Пэдди Консидайн",
+        "nameOriginal": "Paddy Considine",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4070.jpg"
+      },
+      {
+        "nameRu": "Хелен Миррен",
+        "nameOriginal": "Helen Mirren",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3715.jpg"
+      },
+      {
+        "nameRu": "Джефф Белл",
+        "nameOriginal": "Geoff Bell",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50527.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 5512084,
+    "imdbId": "tt31510819",
+    "ratings": {
+      "kinopoisk": 8.2,
+      "imdb": 8.3
+    },
+    "votes": {
+      "kinopoisk": 161109,
+      "imdb": 110000
+    },
+    "popularityScore": 51,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/5512084.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/374297/2a000001963f3bca99266345d4295a4496da/orig",
+    "description": "Решала оказывается в центре войны двух гангстерских кланов. Захватывающий экшен-сериал Гая Ричи",
+    "topRank": 40,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  }
+]

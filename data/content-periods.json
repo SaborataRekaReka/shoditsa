@@ -1,0 +1,9 @@
+[
+  { "key": "all", "label": "Все годы", "fromYear": null },
+  { "key": "from_1960", "label": "С 1960", "fromYear": 1960 },
+  { "key": "from_1980", "label": "С 1980", "fromYear": 1980 },
+  { "key": "from_1990", "label": "С 1990", "fromYear": 1990 },
+  { "key": "from_2000", "label": "С 2000", "fromYear": 2000 },
+  { "key": "from_2010", "label": "С 2010", "fromYear": 2010 },
+  { "key": "from_2020", "label": "С 2020", "fromYear": 2020 }
+]

@@ -1,0 +1,50 @@
+name: Deploy To Timeweb
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.TIMEWEB_HOST }}
+          username: ${{ secrets.TIMEWEB_USER }}
+          key: ${{ secrets.TIMEWEB_SSH_KEY }}
+          port: ${{ secrets.TIMEWEB_PORT || 22 }}
+          source: "dist/*"
+          target: "/opt/repeto/deploy/shoditsa"
+          strip_components: 1
+          overwrite: true
+
+      - name: Set permissions and list deployed files
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.TIMEWEB_HOST }}
+          username: ${{ secrets.TIMEWEB_USER }}
+          key: ${{ secrets.TIMEWEB_SSH_KEY }}
+          port: ${{ secrets.TIMEWEB_PORT || 22 }}
+          script: |
+            set -e
+            chmod -R a+rX /opt/repeto/deploy/shoditsa
+            ls -la /opt/repeto/deploy/shoditsa | head -n 20
