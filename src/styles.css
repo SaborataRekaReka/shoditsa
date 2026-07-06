@@ -276,7 +276,6 @@ button:active { transform: translateY(1px); }
   background: var(--color-paper);
   border: 1px solid var(--color-paper-line);
   border-radius: var(--radius-md);
-  overflow: hidden;
   display: grid;
   grid-template-columns: 86px 1fr;
   box-shadow: var(--shadow-paper);
@@ -288,15 +287,25 @@ button:active { transform: translateY(1px); }
   content: '';
   position: absolute;
   left: 75px;
-  width: 22px;
-  height: 22px;
-  border: 1px solid var(--color-paper-line);
-  border-radius: 50%;
+  width: 20px;
+  height: 10px;
   background: var(--color-bg);
   pointer-events: none;
+  z-index: 2;
 }
-.admit-ticket::before { top: -11px; }
-.admit-ticket::after { bottom: -11px; }
+.admit-ticket::before {
+  top: -1px;
+  border: 1px solid var(--color-paper-line);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+}
+.admit-ticket::after {
+  bottom: -1px;
+  border: 1px solid var(--color-paper-line);
+  border-bottom: 0;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 4px 0 var(--color-bg);
+}
 .admit-ticket__stub { padding: 15px 10px; border-right: 1px dashed var(--color-paper-line); display: flex; flex-direction: column; align-items: center; text-align: center; }
 .admit-ticket__stub span { font-size: 7px; letter-spacing: .12em; }
 .admit-ticket__stub strong { font: 500 22px Oswald, sans-serif; }
