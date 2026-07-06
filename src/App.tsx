@@ -261,11 +261,16 @@ function RewatchScreen({ mode, setMode, period, setPeriod, dates, games, onOpen,
   setPeriod: (period: PeriodKey) => void
   dates: string[]
   games: SavedGame[]
-  onOpen: (date: string) => void
+  onOpen: (date: string, game: SavedGame | null) => void
   onHome: () => void
   onStats: () => void
   onRules: () => void
 }) {
+  const latestByUpdatedAt = (items: SavedGame[]): SavedGame | null => {
+    if (!items.length) return null
+    return items.reduce((best, current) => current.updatedAt > best.updatedAt ? current : best)
+  }
+
   return <>
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} />
     <main className="rewatch-screen">
@@ -275,11 +280,13 @@ function RewatchScreen({ mode, setMode, period, setPeriod, dates, games, onOpen,
         <PeriodControl value={period} onChange={setPeriod} />
       </div>
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
-        const played = games.find((game) => game.date === itemDate && game.mode === mode && game.period === period)
-        return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate)}>
+        const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
+        const playedInCurrentPeriod = dayGames.find((game) => game.period === period)
+        const played = playedInCurrentPeriod ?? latestByUpdatedAt(dayGames)
+        return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)}>
           <div className="rewatch-poster"><span>#{dayNumber(itemDate)}</span><i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : ''}</i></div>
           <strong>{index === 0 ? 'Вчера' : prettyDate(itemDate)}</strong>
-          <small>{played ? played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе' : 'Не сыгран'}</small>
+          <small>{played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'} · ${PERIODS[played.period].short}` : 'Не сыгран'}</small>
         </button>
       })}</section>
       <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>К выбору игры</ActionButton>
@@ -758,9 +765,13 @@ export default function App() {
       transitionTimerRef.current = null
     }, 460)
   }
-  const openArchive = (archiveDate: string) => {
+  const openArchive = (archiveDate: string, savedGame: SavedGame | null) => {
     clearTransitionTimer()
     setTransition('idle')
+    if (savedGame) {
+      setMode(savedGame.mode)
+      setPeriod(savedGame.period)
+    }
     setDate(archiveDate)
     setScreen('game')
     setModal(null)
