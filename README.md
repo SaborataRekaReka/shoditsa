@@ -96,6 +96,36 @@ npm run data:hints
 
 Скрипт `data:hints` обновляет только недостающие hint-поля и сохраняет прогресс в `public/data/source.json`.
 
+### Сбор ID из длинного списка Navigator
+
+Если нужно собрать несколько тысяч ID из страниц Navigator, используйте Playwright-скрипт
+с автопереходом и возобновлением после остановки:
+
+```powershell
+npm install -D playwright
+npx playwright install chromium
+npm run data:collect-ids -- --url "https://www.kinopoisk.ru/top/navigator/.../#results" --manual
+```
+
+Что делает скрипт:
+
+- открывает Chromium с постоянным профилем (`.tmp/kinopoisk-playwright-profile`);
+- проходит страницы и собирает все `film/<id>` ссылки;
+- пишет прогресс в `data/kinopoisk-navigator-state.json`;
+- пишет итоговый список в `data/kinopoisk-navigator-ids.json`.
+
+Продолжить после остановки:
+
+```powershell
+npm run data:collect-ids
+```
+
+Начать заново:
+
+```powershell
+npm run data:collect-ids -- --url "https://www.kinopoisk.ru/top/navigator/.../#results" --fresh
+```
+
 Если после сборки часть фильмов осталась с неполными полями (например, из-за лимита старого ключа), можно дозаполнить только пробелы без полного реимпорта:
 
 ```powershell

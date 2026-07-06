@@ -341,7 +341,7 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
         <span className="attempt-label">Попытка {index + 1}</span>
         <h2>{item.titleRu}</h2>
         <p>{item.titleOriginal || 'Оригинальное название не указано'} · {item.year}</p>
-        <div className="genre-pills">{item.genres.slice(0, 3).map((genre) => {
+        <div className="genre-pills">{item.genres.map((genre) => {
           const normalizedGenre = genre.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
           const pillStatus = genresHint?.status === 'unknown'
             ? 'unknown'
@@ -569,7 +569,7 @@ function Game({
           <span>{status === 'won' ? 'Сеанс угадан' : 'Сеанс завершён'}</span>
           <h2>{answer.titleRu}</h2>
           <p>{answer.titleOriginal} · {answer.year}</p>
-          <div className="result-tags">{answer.genres.slice(0, 3).map((genre) => <i key={genre}>{genre}</i>)}</div>
+          <div className="result-tags">{answer.genres.map((genre) => <i key={genre}>{genre}</i>)}</div>
           <strong>{status === 'won' ? `${attempts.length}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
         </div>
         <div className="result-actions">

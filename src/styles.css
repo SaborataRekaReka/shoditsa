@@ -154,7 +154,7 @@ button:active { transform: translateY(1px); }
   text-transform: uppercase;
   letter-spacing: .1em;
   line-height: 1;
-  padding-left: 2px;
+  padding-left: 6px;
 }
 .period-control select {
   width: 100%;

@@ -1,27 +1,58 @@
 {
-  "generatedAt": "2026-07-06T06:54:55.182Z",
-  "requestedSource": "https://www.kinopoisk.ru/lists/movies/top500/",
-  "currentMovieSubset": "Top-500 full list by fixed Kinopoisk IDs + details from API",
+  "generatedAt": "2026-07-06T13:32:06.980Z",
+  "requestedSource": "https://www.kinopoisk.ru/top/navigator/",
+  "currentMovieSubset": "Merged: previous dataset + navigator complete titles",
   "api": "https://kinopoiskapiunofficial.tech/documentation/api/",
-  "sourceListIdCount": 500,
-  "movieCount": 500,
+  "includeSeries": false,
+  "includeStaff": true,
+  "includeFacts": false,
+  "includeAwards": false,
+  "sourceListIdCount": 3235,
+  "movieCount": 816,
+  "skippedCount": 2832,
   "seriesCount": 40,
-  "placeholderMovieTitles": 0,
-  "note": "Hint enrichment is available: plot/slogan/cast/facts/awards data is being filled incrementally by batch",
-  "hintEnrichment": {
-    "processed": 25,
-    "updated": 25,
-    "failed": 0,
-    "requestCount": 26,
-    "quotaHit": false,
-    "batchSize": 60,
-    "coverage": {
-      "withPlotHint": 500,
-      "withSlogan": 366,
-      "withMainCast": 500,
-      "withSupportingCast": 498,
-      "withFacts": 476,
-      "withAwards": 500
+  "keyUsage": [
+    {
+      "index": 1,
+      "used": 146,
+      "exhausted": true
+    },
+    {
+      "index": 2,
+      "used": 146,
+      "exhausted": true
+    },
+    {
+      "index": 3,
+      "used": 146,
+      "exhausted": true
+    }
+  ],
+  "merge": {
+    "previousCount": 500,
+    "navigatorRunCount": 219,
+    "addedNew": 148,
+    "replacedByQuality": 15,
+    "batchMerge": {
+      "batchCount": 184,
+      "beforeCount": 648,
+      "afterCount": 816,
+      "addedNew": 168,
+      "replacedByQuality": 6,
+      "keptExisting": 10
+    },
+    "latestBatchRun": {
+      "sourceListIdCount": 3016,
+      "movieCount": 184,
+      "skippedCount": 2832,
+      "seriesCount": 40,
+      "keyUsage": [
+        {
+          "index": 1,
+          "used": 369,
+          "exhausted": true
+        }
+      ]
     }
   }
 }
