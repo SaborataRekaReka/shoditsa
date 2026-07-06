@@ -1,0 +1,172 @@
+{
+  "format": "array of diagnosis records",
+  "designedAs": "domain analogue of movies.generated.json",
+  "requiredFields": [
+    "id",
+    "mode",
+    "titleRu",
+    "titleOriginal",
+    "alternativeTitles",
+    "icd10",
+    "icdGroup",
+    "bodySystems",
+    "diseaseTypes",
+    "course",
+    "contagiousness",
+    "typicalAgeGroups",
+    "sex",
+    "localization",
+    "keySymptoms",
+    "diagnostics",
+    "riskFactors",
+    "severityTypical",
+    "urgencyTypical",
+    "ratings",
+    "votes",
+    "popularityScore",
+    "posterUrl",
+    "backdropUrl",
+    "description",
+    "topRank",
+    "dataQuality",
+    "plotHint",
+    "safetyDisclaimer",
+    "sourceRefs",
+    "sourceSearchQueries",
+    "facts",
+    "comparisonHints"
+  ],
+  "sampleRecord": {
+    "id": "dx_orvi",
+    "mode": "diagnosis",
+    "titleRu": "ОРВИ",
+    "titleOriginal": "Acute upper respiratory infection",
+    "alternativeTitles": [
+      "острая респираторная вирусная инфекция",
+      "простуда"
+    ],
+    "icd10": [
+      "J06.9"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "заразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "верхние дыхательные пути",
+      "носоглотка"
+    ],
+    "keySymptoms": [
+      "насморк",
+      "боль в горле",
+      "кашель",
+      "лихорадка",
+      "слабость",
+      "головная боль"
+    ],
+    "diagnostics": [
+      "осмотр врача",
+      "клиническая картина"
+    ],
+    "riskFactors": [
+      "контакт с заболевшим",
+      "сезонность",
+      "ослабленный иммунитет"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 100,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое инфекционное заболевание верхних дыхательных путей, которое часто проявляется насморком, болью в горле, кашлем и слабостью.",
+    "topRank": 1,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Частая «простуда»: острое заразное состояние с насморком, кашлем и болью в горле.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "ОРВИ клинические рекомендации Минздрав",
+      "ОРВИ МКБ-10",
+      "ОРВИ MSD Manual русский"
+    ],
+    "facts": [
+      "В быту ОРВИ часто называют простудой, хотя оно связано с вирусной инфекцией.",
+      "Для игры ОРВИ близко к гриппу и COVID-19 по системе и заразности, но обычно легче по типичной тяжести."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  }
+}

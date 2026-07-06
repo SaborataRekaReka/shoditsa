@@ -1,0 +1,4021 @@
+[
+  {
+    "id": "dx_orvi",
+    "mode": "diagnosis",
+    "titleRu": "ОРВИ",
+    "titleOriginal": "Acute upper respiratory infection",
+    "alternativeTitles": [
+      "острая респираторная вирусная инфекция",
+      "простуда"
+    ],
+    "icd10": [
+      "J06.9"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "заразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "верхние дыхательные пути",
+      "носоглотка"
+    ],
+    "keySymptoms": [
+      "насморк",
+      "боль в горле",
+      "кашель",
+      "лихорадка",
+      "слабость",
+      "головная боль"
+    ],
+    "diagnostics": [
+      "осмотр врача",
+      "клиническая картина"
+    ],
+    "riskFactors": [
+      "контакт с заболевшим",
+      "сезонность",
+      "ослабленный иммунитет"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 100,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое инфекционное заболевание верхних дыхательных путей, которое часто проявляется насморком, болью в горле, кашлем и слабостью.",
+    "topRank": 1,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Частая «простуда»: острое заразное состояние с насморком, кашлем и болью в горле.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "ОРВИ клинические рекомендации Минздрав",
+      "ОРВИ МКБ-10",
+      "ОРВИ MSD Manual русский"
+    ],
+    "facts": [
+      "В быту ОРВИ часто называют простудой, хотя оно связано с вирусной инфекцией.",
+      "Для игры ОРВИ близко к гриппу и COVID-19 по системе и заразности, но обычно легче по типичной тяжести."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_influenza",
+    "mode": "diagnosis",
+    "titleRu": "Грипп",
+    "titleOriginal": "Influenza",
+    "alternativeTitles": [
+      "инфлюэнца",
+      "influenza"
+    ],
+    "icd10": [
+      "J10",
+      "J11"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "заразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "дыхательные пути"
+    ],
+    "keySymptoms": [
+      "лихорадка",
+      "кашель",
+      "головная боль",
+      "ломота в теле",
+      "слабость",
+      "боль в горле"
+    ],
+    "diagnostics": [
+      "клиническая картина",
+      "ПЦР",
+      "экспресс-тест"
+    ],
+    "riskFactors": [
+      "контакт с заболевшим",
+      "сезонность",
+      "ослабленный иммунитет",
+      "пожилой возраст"
+    ],
+    "severityTypical": "средняя",
+    "urgencyTypical": "обычно амбулаторно, при осложнениях срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 98,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое вирусное заболевание дыхательных путей, часто с высокой температурой, слабостью, кашлем, головной болью и ломотой в теле.",
+    "topRank": 2,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Острый вирус с температурой, кашлем и выраженной ломотой; сезонный и заразный.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Грипп клинические рекомендации Минздрав",
+      "Грипп МКБ-10",
+      "Грипп MSD Manual русский"
+    ],
+    "facts": [
+      "В игровой логике грипп хорошо пересекается с ОРВИ и COVID-19 по системе, типу и заразности."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_covid_19",
+    "mode": "diagnosis",
+    "titleRu": "COVID-19",
+    "titleOriginal": "COVID-19",
+    "alternativeTitles": [
+      "коронавирусная инфекция",
+      "новая коронавирусная инфекция",
+      "ковид"
+    ],
+    "icd10": [
+      "U07.1",
+      "U07.2"
+    ],
+    "icdGroup": "U00-U49",
+    "bodySystems": [
+      "дыхательная система",
+      "кровь и иммунная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "заразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "дыхательные пути",
+      "лёгкие"
+    ],
+    "keySymptoms": [
+      "лихорадка",
+      "кашель",
+      "одышка",
+      "слабость",
+      "потеря обоняния",
+      "боль в горле"
+    ],
+    "diagnostics": [
+      "ПЦР",
+      "экспресс-тест",
+      "КТ",
+      "пульсоксиметрия"
+    ],
+    "riskFactors": [
+      "контакт с заболевшим",
+      "пожилой возраст",
+      "хронические заболевания",
+      "ослабленный иммунитет"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "зависит от тяжести и дыхательных симптомов",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 96,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Инфекционное заболевание, которое может протекать от лёгкой респираторной инфекции до тяжёлого поражения лёгких.",
+    "topRank": 3,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Пандемическая инфекция с дыхательными симптомами, ПЦР-тестами и возможной потерей обоняния.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "COVID-19 клинические рекомендации Минздрав",
+      "COVID-19 МКБ-10",
+      "COVID-19 MSD Manual русский"
+    ],
+    "facts": [
+      "В игре COVID-19 может быть близок к гриппу, но отличается кодовой группой МКБ и диагностическими подсказками."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_acute_tonsillitis",
+    "mode": "diagnosis",
+    "titleRu": "Острый тонзиллит",
+    "titleOriginal": "Acute tonsillitis",
+    "alternativeTitles": [
+      "ангина",
+      "острая ангина"
+    ],
+    "icd10": [
+      "J03"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное",
+      "воспалительное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "частично",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "миндалины",
+      "горло"
+    ],
+    "keySymptoms": [
+      "боль в горле",
+      "лихорадка",
+      "увеличение лимфоузлов",
+      "слабость",
+      "затруднение глотания"
+    ],
+    "diagnostics": [
+      "осмотр врача",
+      "мазок из зева",
+      "экспресс-тест",
+      "анализ крови"
+    ],
+    "riskFactors": [
+      "контакт с заболевшим",
+      "переохлаждение",
+      "ослабленный иммунитет"
+    ],
+    "severityTypical": "средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 94,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое воспаление миндалин, которое часто проявляется болью в горле, температурой и затруднением глотания.",
+    "topRank": 4,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Боль в горле выходит на первый план: острое воспаление миндалин, которое часто называют ангиной.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Острый тонзиллит клинические рекомендации Минздрав",
+      "Острый тонзиллит МКБ-10",
+      "Острый тонзиллит MSD Manual русский"
+    ],
+    "facts": [
+      "В игровой модели частично пересекается с ОРВИ по горлу и температуре, но локализация уже."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_acute_bronchitis",
+    "mode": "diagnosis",
+    "titleRu": "Острый бронхит",
+    "titleOriginal": "Acute bronchitis",
+    "alternativeTitles": [
+      "бронхит"
+    ],
+    "icd10": [
+      "J20"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "воспалительное",
+      "инфекционное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "частично",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "бронхи",
+      "дыхательные пути"
+    ],
+    "keySymptoms": [
+      "кашель",
+      "мокрота",
+      "слабость",
+      "лихорадка",
+      "боль в груди"
+    ],
+    "diagnostics": [
+      "осмотр врача",
+      "аускультация",
+      "рентгенография"
+    ],
+    "riskFactors": [
+      "ОРВИ",
+      "курение",
+      "переохлаждение",
+      "контакт с раздражителями"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 92,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое воспаление бронхов, при котором главным симптомом обычно становится кашель.",
+    "topRank": 5,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Кашель, бронхи и дыхательные пути: часто появляется после респираторной инфекции.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Острый бронхит клинические рекомендации Минздрав",
+      "Острый бронхит МКБ-10",
+      "Острый бронхит MSD Manual русский"
+    ],
+    "facts": [
+      "Близок к пневмонии по системе и кашлю, но в игре отличается локализацией и типичной тяжестью."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_pneumonia",
+    "mode": "diagnosis",
+    "titleRu": "Пневмония",
+    "titleOriginal": "Pneumonia",
+    "alternativeTitles": [
+      "воспаление лёгких"
+    ],
+    "icd10": [
+      "J12",
+      "J13",
+      "J14",
+      "J15",
+      "J16",
+      "J18"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное",
+      "воспалительное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "частично",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "лёгкие"
+    ],
+    "keySymptoms": [
+      "кашель",
+      "лихорадка",
+      "одышка",
+      "боль в груди",
+      "слабость",
+      "мокрота"
+    ],
+    "diagnostics": [
+      "рентгенография",
+      "КТ",
+      "анализ крови",
+      "аускультация",
+      "пульсоксиметрия"
+    ],
+    "riskFactors": [
+      "пожилой возраст",
+      "курение",
+      "хронические заболевания",
+      "ослабленный иммунитет"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "может требовать срочной оценки",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 90,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Воспалительное поражение лёгких, часто сопровождающееся кашлем, температурой, слабостью и одышкой.",
+    "topRank": 6,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Дыхательная система, лёгкие, кашель и одышка; диагностика часто связана с рентгеном или КТ.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Пневмония клинические рекомендации Минздрав",
+      "Пневмония МКБ-10",
+      "Пневмония MSD Manual русский"
+    ],
+    "facts": [
+      "В игре хорошо отличима от бронхита по локализации «лёгкие» и инструментальной диагностике."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_bronchial_asthma",
+    "mode": "diagnosis",
+    "titleRu": "Бронхиальная астма",
+    "titleOriginal": "Bronchial asthma",
+    "alternativeTitles": [
+      "астма"
+    ],
+    "icd10": [
+      "J45"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система"
+    ],
+    "diseaseTypes": [
+      "аллергическое",
+      "воспалительное"
+    ],
+    "course": [
+      "хроническое",
+      "приступообразное"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "бронхи",
+      "дыхательные пути"
+    ],
+    "keySymptoms": [
+      "одышка",
+      "кашель",
+      "свистящее дыхание",
+      "заложенность в груди"
+    ],
+    "diagnostics": [
+      "спирометрия",
+      "осмотр врача",
+      "аллергологическое обследование",
+      "пикфлоуметрия"
+    ],
+    "riskFactors": [
+      "аллергия",
+      "наследственность",
+      "контакт с аллергенами",
+      "табачный дым"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "планово, при приступе срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 88,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое заболевание бронхов с приступами одышки, кашля и свистящего дыхания.",
+    "topRank": 7,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Незаразное хроническое заболевание бронхов с приступами одышки и свистящим дыханием.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Бронхиальная астма клинические рекомендации Минздрав",
+      "Бронхиальная астма МКБ-10",
+      "Бронхиальная астма MSD Manual русский"
+    ],
+    "facts": [
+      "В игре астма близка к аллергическому риниту по аллергическому типу, но отличается локализацией и симптомами."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_allergic_rhinitis",
+    "mode": "diagnosis",
+    "titleRu": "Аллергический ринит",
+    "titleOriginal": "Allergic rhinitis",
+    "alternativeTitles": [
+      "поллиноз",
+      "сенная лихорадка"
+    ],
+    "icd10": [
+      "J30"
+    ],
+    "icdGroup": "J00-J99",
+    "bodySystems": [
+      "дыхательная система",
+      "кровь и иммунная система"
+    ],
+    "diseaseTypes": [
+      "аллергическое",
+      "воспалительное"
+    ],
+    "course": [
+      "хроническое",
+      "сезонное",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "нос",
+      "носоглотка"
+    ],
+    "keySymptoms": [
+      "насморк",
+      "чихание",
+      "зуд",
+      "заложенность носа",
+      "слезотечение"
+    ],
+    "diagnostics": [
+      "осмотр врача",
+      "аллергологическое обследование",
+      "кожные аллергопробы"
+    ],
+    "riskFactors": [
+      "аллергия",
+      "наследственность",
+      "контакт с аллергенами",
+      "сезонность"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 86,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Аллергическое воспаление слизистой носа, часто с чиханием, насморком, зудом и заложенностью.",
+    "topRank": 8,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Незаразный насморк, который часто зависит от аллергенов и сезона.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Аллергический ринит клинические рекомендации Минздрав",
+      "Аллергический ринит МКБ-10",
+      "Аллергический ринит MSD Manual русский"
+    ],
+    "facts": [
+      "Игровая близость: астма по аллергическому типу, ОРВИ по носовым симптомам, но разная заразность."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_gastritis",
+    "mode": "diagnosis",
+    "titleRu": "Гастрит",
+    "titleOriginal": "Gastritis",
+    "alternativeTitles": [
+      "воспаление желудка"
+    ],
+    "icd10": [
+      "K29"
+    ],
+    "icdGroup": "K00-K93",
+    "bodySystems": [
+      "пищеварительная система"
+    ],
+    "diseaseTypes": [
+      "воспалительное"
+    ],
+    "course": [
+      "острое",
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "желудок"
+    ],
+    "keySymptoms": [
+      "боль в животе",
+      "тошнота",
+      "рвота",
+      "изжога",
+      "снижение аппетита"
+    ],
+    "diagnostics": [
+      "гастроскопия",
+      "осмотр врача",
+      "анализ на Helicobacter pylori"
+    ],
+    "riskFactors": [
+      "Helicobacter pylori",
+      "НПВП",
+      "алкоголь",
+      "стресс",
+      "нарушение питания"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 84,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Воспаление слизистой желудка, которое может проявляться болью или дискомфортом в верхней части живота, тошнотой и изжогой.",
+    "topRank": 9,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Пищеварительная система, желудок, изжога и гастроскопия.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Гастрит клинические рекомендации Минздрав",
+      "Гастрит МКБ-10",
+      "Гастрит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре близок к язвенной болезни по локализации, симптомам и диагностике."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_peptic_ulcer",
+    "mode": "diagnosis",
+    "titleRu": "Язвенная болезнь",
+    "titleOriginal": "Peptic ulcer disease",
+    "alternativeTitles": [
+      "язва желудка",
+      "язва двенадцатиперстной кишки"
+    ],
+    "icd10": [
+      "K25",
+      "K26"
+    ],
+    "icdGroup": "K00-K93",
+    "bodySystems": [
+      "пищеварительная система"
+    ],
+    "diseaseTypes": [
+      "воспалительное",
+      "язвенное"
+    ],
+    "course": [
+      "хроническое",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "желудок",
+      "двенадцатиперстная кишка"
+    ],
+    "keySymptoms": [
+      "боль в животе",
+      "изжога",
+      "тошнота",
+      "рвота",
+      "снижение аппетита"
+    ],
+    "diagnostics": [
+      "гастроскопия",
+      "анализ на Helicobacter pylori",
+      "анализ крови"
+    ],
+    "riskFactors": [
+      "Helicobacter pylori",
+      "НПВП",
+      "курение",
+      "алкоголь"
+    ],
+    "severityTypical": "средняя",
+    "urgencyTypical": "планово, при кровотечении срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 82,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое заболевание с язвенным дефектом в желудке или двенадцатиперстной кишке.",
+    "topRank": 10,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Похоже на гастрит, но подсказки ведут к язвенному дефекту и риску осложнений.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Язвенная болезнь клинические рекомендации Минздрав",
+      "Язвенная болезнь МКБ-10",
+      "Язвенная болезнь MSD Manual русский"
+    ],
+    "facts": [
+      "В игровой логике отличается от гастрита типом «язвенное» и риском срочности при кровотечении."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_acute_appendicitis",
+    "mode": "diagnosis",
+    "titleRu": "Острый аппендицит",
+    "titleOriginal": "Acute appendicitis",
+    "alternativeTitles": [
+      "аппендицит"
+    ],
+    "icd10": [
+      "K35"
+    ],
+    "icdGroup": "K00-K93",
+    "bodySystems": [
+      "пищеварительная система"
+    ],
+    "diseaseTypes": [
+      "воспалительное",
+      "хирургическое"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "аппендикс",
+      "правая нижняя часть живота"
+    ],
+    "keySymptoms": [
+      "боль в животе",
+      "тошнота",
+      "рвота",
+      "лихорадка",
+      "снижение аппетита"
+    ],
+    "diagnostics": [
+      "осмотр врача",
+      "анализ крови",
+      "УЗИ",
+      "КТ"
+    ],
+    "riskFactors": [
+      "возраст",
+      "закупорка просвета аппендикса"
+    ],
+    "severityTypical": "средняя или тяжёлая",
+    "urgencyTypical": "срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 80,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое воспаление аппендикса, обычно требующее срочной медицинской оценки.",
+    "topRank": 11,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Острая боль в животе, хирургический тип и срочность; классическая подсказка — правая нижняя часть живота.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Острый аппендицит клинические рекомендации Минздрав",
+      "Острый аппендицит МКБ-10",
+      "Острый аппендицит MSD Manual русский"
+    ],
+    "facts": [
+      "В игровой модели резко отличается от хронических болезней ЖКТ по течению и срочности."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_acute_pancreatitis",
+    "mode": "diagnosis",
+    "titleRu": "Острый панкреатит",
+    "titleOriginal": "Acute pancreatitis",
+    "alternativeTitles": [
+      "панкреатит"
+    ],
+    "icd10": [
+      "K85"
+    ],
+    "icdGroup": "K00-K93",
+    "bodySystems": [
+      "пищеварительная система",
+      "эндокринная система"
+    ],
+    "diseaseTypes": [
+      "воспалительное"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "поджелудочная железа",
+      "верхняя часть живота"
+    ],
+    "keySymptoms": [
+      "боль в животе",
+      "тошнота",
+      "рвота",
+      "лихорадка",
+      "слабость"
+    ],
+    "diagnostics": [
+      "анализ крови",
+      "УЗИ",
+      "КТ",
+      "биохимический анализ крови"
+    ],
+    "riskFactors": [
+      "алкоголь",
+      "желчнокаменная болезнь",
+      "ожирение",
+      "нарушение питания"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 78,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое воспаление поджелудочной железы, часто с выраженной болью в верхней части живота, тошнотой и рвотой.",
+    "topRank": 12,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Поджелудочная железа, верх живота, биохимия крови и срочная оценка.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Острый панкреатит клинические рекомендации Минздрав",
+      "Острый панкреатит МКБ-10",
+      "Острый панкреатит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре может пересекаться с желчнокаменной болезнью по факторам риска и боли в животе."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_cholelithiasis",
+    "mode": "diagnosis",
+    "titleRu": "Желчнокаменная болезнь",
+    "titleOriginal": "Cholelithiasis",
+    "alternativeTitles": [
+      "камни в желчном пузыре",
+      "холелитиаз"
+    ],
+    "icd10": [
+      "K80"
+    ],
+    "icdGroup": "K00-K93",
+    "bodySystems": [
+      "пищеварительная система"
+    ],
+    "diseaseTypes": [
+      "метаболическое",
+      "хирургическое"
+    ],
+    "course": [
+      "хроническое",
+      "приступообразное"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "чаще женщины",
+    "localization": [
+      "желчный пузырь",
+      "желчные протоки",
+      "правая верхняя часть живота"
+    ],
+    "keySymptoms": [
+      "боль в животе",
+      "тошнота",
+      "рвота",
+      "желтуха",
+      "горечь во рту"
+    ],
+    "diagnostics": [
+      "УЗИ",
+      "анализ крови",
+      "биохимический анализ крови"
+    ],
+    "riskFactors": [
+      "ожирение",
+      "женский пол",
+      "возраст",
+      "нарушение обмена веществ"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "планово, при осложнениях срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 76,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Заболевание, связанное с образованием камней в желчном пузыре или желчных протоках.",
+    "topRank": 13,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Приступы боли справа сверху, УЗИ и желчный пузырь.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Желчнокаменная болезнь клинические рекомендации Минздрав",
+      "Желчнокаменная болезнь МКБ-10",
+      "Желчнокаменная болезнь MSD Manual русский"
+    ],
+    "facts": [
+      "В игровой логике хорошо отличима от гастрита по локализации и метаболическому типу."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_cystitis",
+    "mode": "diagnosis",
+    "titleRu": "Цистит",
+    "titleOriginal": "Cystitis",
+    "alternativeTitles": [
+      "воспаление мочевого пузыря"
+    ],
+    "icd10": [
+      "N30"
+    ],
+    "icdGroup": "N00-N99",
+    "bodySystems": [
+      "мочевыделительная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное",
+      "воспалительное"
+    ],
+    "course": [
+      "острое",
+      "хроническое",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "чаще женщины",
+    "localization": [
+      "мочевой пузырь"
+    ],
+    "keySymptoms": [
+      "частое мочеиспускание",
+      "боль при мочеиспускании",
+      "боль внизу живота",
+      "жжение",
+      "кровь в моче"
+    ],
+    "diagnostics": [
+      "общий анализ мочи",
+      "посев мочи",
+      "осмотр врача"
+    ],
+    "riskFactors": [
+      "женский пол",
+      "переохлаждение",
+      "инфекция мочевых путей",
+      "беременность"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 74,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Воспаление мочевого пузыря, часто с частыми и болезненными мочеиспусканиями.",
+    "topRank": 14,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Мочевой пузырь, частые позывы и общий анализ мочи.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Цистит клинические рекомендации Минздрав",
+      "Цистит МКБ-10",
+      "Цистит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре близок к пиелонефриту по системе, но отличается локализацией и типичной тяжестью."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_pyelonephritis",
+    "mode": "diagnosis",
+    "titleRu": "Пиелонефрит",
+    "titleOriginal": "Pyelonephritis",
+    "alternativeTitles": [
+      "воспаление почек"
+    ],
+    "icd10": [
+      "N10",
+      "N11"
+    ],
+    "icdGroup": "N00-N99",
+    "bodySystems": [
+      "мочевыделительная система"
+    ],
+    "diseaseTypes": [
+      "инфекционное",
+      "воспалительное"
+    ],
+    "course": [
+      "острое",
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "почки",
+      "мочевые пути"
+    ],
+    "keySymptoms": [
+      "лихорадка",
+      "боль в пояснице",
+      "частое мочеиспускание",
+      "слабость",
+      "тошнота"
+    ],
+    "diagnostics": [
+      "общий анализ мочи",
+      "посев мочи",
+      "анализ крови",
+      "УЗИ"
+    ],
+    "riskFactors": [
+      "инфекция мочевых путей",
+      "беременность",
+      "мочекаменная болезнь",
+      "анатомические особенности"
+    ],
+    "severityTypical": "средняя",
+    "urgencyTypical": "может требовать срочной оценки",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 72,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Инфекционное воспаление почек, которое может сопровождаться лихорадкой, болью в пояснице и изменениями в анализах мочи.",
+    "topRank": 15,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Мочевыделительная система, но выше мочевого пузыря: почки, лихорадка и боль в пояснице.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Пиелонефрит клинические рекомендации Минздрав",
+      "Пиелонефрит МКБ-10",
+      "Пиелонефрит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре даёт частичное совпадение с циститом по анализам мочи и системе."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_migraine",
+    "mode": "diagnosis",
+    "titleRu": "Мигрень",
+    "titleOriginal": "Migraine",
+    "alternativeTitles": [
+      "мигренозная головная боль"
+    ],
+    "icd10": [
+      "G43"
+    ],
+    "icdGroup": "G00-G99",
+    "bodySystems": [
+      "нервная система"
+    ],
+    "diseaseTypes": [
+      "неврологическое"
+    ],
+    "course": [
+      "приступообразное",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые"
+    ],
+    "sex": "чаще женщины",
+    "localization": [
+      "голова"
+    ],
+    "keySymptoms": [
+      "головная боль",
+      "тошнота",
+      "рвота",
+      "светобоязнь",
+      "звукофобия",
+      "аура"
+    ],
+    "diagnostics": [
+      "клиническая картина",
+      "осмотр невролога"
+    ],
+    "riskFactors": [
+      "наследственность",
+      "стресс",
+      "недосып",
+      "гормональные факторы"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 70,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Неврологическое состояние с повторяющимися приступами головной боли, часто с тошнотой и чувствительностью к свету или звуку.",
+    "topRank": 16,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Приступы головной боли, светобоязнь и неврологическая система.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Мигрень клинические рекомендации Минздрав",
+      "Мигрень МКБ-10",
+      "Мигрень MSD Manual русский"
+    ],
+    "facts": [
+      "В игре отличается от инсульта тем, что типично приступообразна и обычно не является острым сосудистым событием."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_epilepsy",
+    "mode": "diagnosis",
+    "titleRu": "Эпилепсия",
+    "titleOriginal": "Epilepsy",
+    "alternativeTitles": [
+      "эпилептическое расстройство"
+    ],
+    "icd10": [
+      "G40"
+    ],
+    "icdGroup": "G00-G99",
+    "bodySystems": [
+      "нервная система"
+    ],
+    "diseaseTypes": [
+      "неврологическое"
+    ],
+    "course": [
+      "хроническое",
+      "приступообразное"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "головной мозг"
+    ],
+    "keySymptoms": [
+      "судороги",
+      "потеря сознания",
+      "аура",
+      "спутанность сознания"
+    ],
+    "diagnostics": [
+      "ЭЭГ",
+      "МРТ",
+      "осмотр невролога",
+      "анамнез"
+    ],
+    "riskFactors": [
+      "травма головы",
+      "наследственность",
+      "опухоль головного мозга",
+      "инсульт"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "планово, при длительном приступе срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 68,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Неврологическое заболевание с повторяющимися эпилептическими приступами.",
+    "topRank": 17,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Приступы, судороги, ЭЭГ и головной мозг.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Эпилепсия клинические рекомендации Минздрав",
+      "Эпилепсия МКБ-10",
+      "Эпилепсия MSD Manual русский"
+    ],
+    "facts": [
+      "В игровой логике близка к мигрени по неврологической системе и приступообразности, но симптомы другие."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_ischemic_stroke",
+    "mode": "diagnosis",
+    "titleRu": "Ишемический инсульт",
+    "titleOriginal": "Ischemic stroke",
+    "alternativeTitles": [
+      "инсульт",
+      "инфаркт мозга"
+    ],
+    "icd10": [
+      "I63"
+    ],
+    "icdGroup": "I00-I99",
+    "bodySystems": [
+      "нервная система",
+      "сердечно-сосудистая система"
+    ],
+    "diseaseTypes": [
+      "сосудистое",
+      "неврологическое"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "головной мозг"
+    ],
+    "keySymptoms": [
+      "слабость в конечностях",
+      "нарушение речи",
+      "асимметрия лица",
+      "головокружение",
+      "нарушение зрения"
+    ],
+    "diagnostics": [
+      "КТ",
+      "МРТ",
+      "осмотр невролога",
+      "анализ крови"
+    ],
+    "riskFactors": [
+      "артериальная гипертензия",
+      "атеросклероз",
+      "сахарный диабет",
+      "курение",
+      "пожилой возраст"
+    ],
+    "severityTypical": "тяжёлая",
+    "urgencyTypical": "срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 66,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое нарушение кровоснабжения головного мозга, которое может вызывать внезапные неврологические симптомы.",
+    "topRank": 18,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Срочное сосудистое событие в мозге: речь, лицо, конечности и КТ/МРТ.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Ишемический инсульт клинические рекомендации Минздрав",
+      "Ишемический инсульт МКБ-10",
+      "Ишемический инсульт MSD Manual русский"
+    ],
+    "facts": [
+      "В игре частично совпадает с инфарктом по сосудистому типу и срочности, но отличается системой и симптомами."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_myocardial_infarction",
+    "mode": "diagnosis",
+    "titleRu": "Инфаркт миокарда",
+    "titleOriginal": "Myocardial infarction",
+    "alternativeTitles": [
+      "сердечный приступ"
+    ],
+    "icd10": [
+      "I21"
+    ],
+    "icdGroup": "I00-I99",
+    "bodySystems": [
+      "сердечно-сосудистая система"
+    ],
+    "diseaseTypes": [
+      "сосудистое",
+      "кардиологическое"
+    ],
+    "course": [
+      "острое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "сердце",
+      "миокард"
+    ],
+    "keySymptoms": [
+      "боль в груди",
+      "одышка",
+      "слабость",
+      "потливость",
+      "тошнота",
+      "страх"
+    ],
+    "diagnostics": [
+      "ЭКГ",
+      "тропонин",
+      "анализ крови",
+      "коронарография"
+    ],
+    "riskFactors": [
+      "атеросклероз",
+      "курение",
+      "артериальная гипертензия",
+      "сахарный диабет",
+      "пожилой возраст"
+    ],
+    "severityTypical": "тяжёлая",
+    "urgencyTypical": "срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 64,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Острое поражение сердечной мышцы, часто связанное с нарушением кровотока по коронарным артериям.",
+    "topRank": 19,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Срочная кардиология: боль в груди, ЭКГ и тропонин.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Инфаркт миокарда клинические рекомендации Минздрав",
+      "Инфаркт миокарда МКБ-10",
+      "Инфаркт миокарда MSD Manual русский"
+    ],
+    "facts": [
+      "В игре хорошо пересекается с инсультом по сосудистым факторам риска и срочности."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_hypertension",
+    "mode": "diagnosis",
+    "titleRu": "Артериальная гипертензия",
+    "titleOriginal": "Arterial hypertension",
+    "alternativeTitles": [
+      "гипертония",
+      "повышенное давление"
+    ],
+    "icd10": [
+      "I10"
+    ],
+    "icdGroup": "I00-I99",
+    "bodySystems": [
+      "сердечно-сосудистая система"
+    ],
+    "diseaseTypes": [
+      "сосудистое",
+      "кардиологическое"
+    ],
+    "course": [
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "сосуды",
+      "сердце"
+    ],
+    "keySymptoms": [
+      "повышенное давление",
+      "головная боль",
+      "головокружение",
+      "шум в ушах",
+      "слабость"
+    ],
+    "diagnostics": [
+      "измерение артериального давления",
+      "СМАД",
+      "ЭКГ",
+      "анализ крови"
+    ],
+    "riskFactors": [
+      "пожилой возраст",
+      "ожирение",
+      "наследственность",
+      "курение",
+      "стресс",
+      "избыток соли"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово, при кризе срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 62,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое состояние, при котором артериальное давление устойчиво повышено.",
+    "topRank": 20,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Сосуды, давление, СМАД и хроническое течение.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Артериальная гипертензия клинические рекомендации Минздрав",
+      "Артериальная гипертензия МКБ-10",
+      "Артериальная гипертензия MSD Manual русский"
+    ],
+    "facts": [
+      "В игре часто является фактором риска для инсульта и инфаркта."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_type_1_diabetes",
+    "mode": "diagnosis",
+    "titleRu": "Сахарный диабет 1 типа",
+    "titleOriginal": "Type 1 diabetes mellitus",
+    "alternativeTitles": [
+      "диабет 1 типа",
+      "инсулинозависимый диабет"
+    ],
+    "icd10": [
+      "E10"
+    ],
+    "icdGroup": "E00-E90",
+    "bodySystems": [
+      "эндокринная система"
+    ],
+    "diseaseTypes": [
+      "эндокринное",
+      "аутоиммунное",
+      "метаболическое"
+    ],
+    "course": [
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "поджелудочная железа",
+      "кровь"
+    ],
+    "keySymptoms": [
+      "повышенная жажда",
+      "частое мочеиспускание",
+      "потеря веса",
+      "слабость",
+      "повышенный аппетит"
+    ],
+    "diagnostics": [
+      "глюкоза крови",
+      "гликированный гемоглобин",
+      "анализ мочи",
+      "антитела"
+    ],
+    "riskFactors": [
+      "наследственность",
+      "аутоиммунные факторы"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "планово, при кетоацидозе срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 60,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое эндокринное заболевание, связанное с дефицитом инсулина.",
+    "topRank": 21,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Молодой возраст, инсулин, антитела и эндокринная система.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Сахарный диабет 1 типа клинические рекомендации Минздрав",
+      "Сахарный диабет 1 типа МКБ-10",
+      "Сахарный диабет 1 типа MSD Manual русский"
+    ],
+    "facts": [
+      "В игре близок к диабету 2 типа по системе и симптомам, но отличается типом и возрастной подсказкой."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_type_2_diabetes",
+    "mode": "diagnosis",
+    "titleRu": "Сахарный диабет 2 типа",
+    "titleOriginal": "Type 2 diabetes mellitus",
+    "alternativeTitles": [
+      "диабет 2 типа",
+      "инсулиннезависимый диабет"
+    ],
+    "icd10": [
+      "E11"
+    ],
+    "icdGroup": "E00-E90",
+    "bodySystems": [
+      "эндокринная система"
+    ],
+    "diseaseTypes": [
+      "эндокринное",
+      "метаболическое"
+    ],
+    "course": [
+      "хроническое",
+      "прогрессирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "поджелудочная железа",
+      "кровь"
+    ],
+    "keySymptoms": [
+      "повышенная жажда",
+      "частое мочеиспускание",
+      "слабость",
+      "зуд",
+      "медленное заживление ран"
+    ],
+    "diagnostics": [
+      "глюкоза крови",
+      "гликированный гемоглобин",
+      "анализ мочи"
+    ],
+    "riskFactors": [
+      "ожирение",
+      "наследственность",
+      "пожилой возраст",
+      "низкая физическая активность"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 58,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое метаболическое заболевание, связанное с нарушением регуляции уровня глюкозы в крови.",
+    "topRank": 22,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Эндокринная система, глюкоза, возраст и метаболические факторы риска.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Сахарный диабет 2 типа клинические рекомендации Минздрав",
+      "Сахарный диабет 2 типа МКБ-10",
+      "Сахарный диабет 2 типа MSD Manual русский"
+    ],
+    "facts": [
+      "В игре может частично совпасть с гипертонией и инфарктом по факторам риска."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_hypothyroidism",
+    "mode": "diagnosis",
+    "titleRu": "Гипотиреоз",
+    "titleOriginal": "Hypothyroidism",
+    "alternativeTitles": [
+      "недостаточность щитовидной железы"
+    ],
+    "icd10": [
+      "E03"
+    ],
+    "icdGroup": "E00-E90",
+    "bodySystems": [
+      "эндокринная система"
+    ],
+    "diseaseTypes": [
+      "эндокринное"
+    ],
+    "course": [
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "чаще женщины",
+    "localization": [
+      "щитовидная железа"
+    ],
+    "keySymptoms": [
+      "слабость",
+      "сонливость",
+      "набор веса",
+      "сухость кожи",
+      "запор",
+      "зябкость"
+    ],
+    "diagnostics": [
+      "ТТГ",
+      "свободный Т4",
+      "УЗИ щитовидной железы",
+      "антитела"
+    ],
+    "riskFactors": [
+      "аутоиммунные заболевания",
+      "женский пол",
+      "возраст",
+      "операция на щитовидной железе"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 56,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Состояние, при котором функция щитовидной железы снижена.",
+    "topRank": 23,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Щитовидная железа, ТТГ, сонливость, зябкость и набор веса.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Гипотиреоз клинические рекомендации Минздрав",
+      "Гипотиреоз МКБ-10",
+      "Гипотиреоз MSD Manual русский"
+    ],
+    "facts": [
+      "В игре пересекается с диабетом по эндокринной системе, но симптоматика и диагностика другие."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_iron_deficiency_anemia",
+    "mode": "diagnosis",
+    "titleRu": "Железодефицитная анемия",
+    "titleOriginal": "Iron deficiency anemia",
+    "alternativeTitles": [
+      "анемия",
+      "дефицит железа"
+    ],
+    "icd10": [
+      "D50"
+    ],
+    "icdGroup": "D50-D89",
+    "bodySystems": [
+      "кровь и иммунная система"
+    ],
+    "diseaseTypes": [
+      "гематологическое",
+      "метаболическое"
+    ],
+    "course": [
+      "хроническое",
+      "прогрессирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "чаще женщины",
+    "localization": [
+      "кровь"
+    ],
+    "keySymptoms": [
+      "слабость",
+      "головокружение",
+      "бледность",
+      "одышка",
+      "сердцебиение",
+      "ломкость ногтей"
+    ],
+    "diagnostics": [
+      "общий анализ крови",
+      "ферритин",
+      "сывороточное железо"
+    ],
+    "riskFactors": [
+      "кровопотеря",
+      "беременность",
+      "нарушение питания",
+      "обильные менструации"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 54,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Анемия, связанная с дефицитом железа и снижением гемоглобина.",
+    "topRank": 24,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Кровь, ферритин, слабость, бледность и дефицит железа.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Железодефицитная анемия клинические рекомендации Минздрав",
+      "Железодефицитная анемия МКБ-10",
+      "Железодефицитная анемия MSD Manual русский"
+    ],
+    "facts": [
+      "В игре может частично совпасть с гипотиреозом по слабости, но отличается системой и лабораторными подсказками."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_depressive_episode",
+    "mode": "diagnosis",
+    "titleRu": "Депрессивный эпизод",
+    "titleOriginal": "Depressive episode",
+    "alternativeTitles": [
+      "депрессия"
+    ],
+    "icd10": [
+      "F32"
+    ],
+    "icdGroup": "F00-F99",
+    "bodySystems": [
+      "психика и поведение"
+    ],
+    "diseaseTypes": [
+      "психическое"
+    ],
+    "course": [
+      "эпизодическое",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "подростки",
+      "взрослые",
+      "пожилые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "психика"
+    ],
+    "keySymptoms": [
+      "сниженное настроение",
+      "потеря интереса",
+      "слабость",
+      "нарушение сна",
+      "снижение концентрации",
+      "чувство вины"
+    ],
+    "diagnostics": [
+      "клиническая беседа",
+      "психиатрическая оценка",
+      "психометрические шкалы"
+    ],
+    "riskFactors": [
+      "стресс",
+      "наследственность",
+      "хронические заболевания",
+      "травматический опыт"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "планово, при риске самоповреждения срочно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 52,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Психическое состояние со сниженным настроением, утратой интереса и изменением активности.",
+    "topRank": 25,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Психика, сниженное настроение, потеря интереса и клиническая беседа.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Депрессивный эпизод клинические рекомендации Минздрав",
+      "Депрессивный эпизод МКБ-10",
+      "Депрессивный эпизод MSD Manual русский"
+    ],
+    "facts": [
+      "Для публичной игры по психическим расстройствам особенно важен дисклеймер и аккуратные формулировки."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_generalized_anxiety_disorder",
+    "mode": "diagnosis",
+    "titleRu": "Генерализованное тревожное расстройство",
+    "titleOriginal": "Generalized anxiety disorder",
+    "alternativeTitles": [
+      "ГТР",
+      "тревожное расстройство"
+    ],
+    "icd10": [
+      "F41.1"
+    ],
+    "icdGroup": "F00-F99",
+    "bodySystems": [
+      "психика и поведение",
+      "нервная система"
+    ],
+    "diseaseTypes": [
+      "психическое"
+    ],
+    "course": [
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "подростки",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "психика"
+    ],
+    "keySymptoms": [
+      "тревога",
+      "напряжение",
+      "нарушение сна",
+      "раздражительность",
+      "снижение концентрации",
+      "сердцебиение"
+    ],
+    "diagnostics": [
+      "клиническая беседа",
+      "психиатрическая оценка",
+      "психометрические шкалы"
+    ],
+    "riskFactors": [
+      "стресс",
+      "наследственность",
+      "травматический опыт",
+      "хронические заболевания"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 50,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Психическое расстройство с длительной и чрезмерной тревогой, которая не ограничивается одной конкретной ситуацией.",
+    "topRank": 26,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Тревога, напряжение, сон и психометрические шкалы.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Генерализованное тревожное расстройство клинические рекомендации Минздрав",
+      "Генерализованное тревожное расстройство МКБ-10",
+      "Генерализованное тревожное расстройство MSD Manual русский"
+    ],
+    "facts": [
+      "В игре близко к депрессивному эпизоду по системе и диагностике, но отличается ключевыми симптомами."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_conjunctivitis",
+    "mode": "diagnosis",
+    "titleRu": "Конъюнктивит",
+    "titleOriginal": "Conjunctivitis",
+    "alternativeTitles": [
+      "воспаление конъюнктивы"
+    ],
+    "icd10": [
+      "H10"
+    ],
+    "icdGroup": "H00-H59",
+    "bodySystems": [
+      "органы зрения"
+    ],
+    "diseaseTypes": [
+      "воспалительное",
+      "инфекционное",
+      "аллергическое"
+    ],
+    "course": [
+      "острое",
+      "хроническое"
+    ],
+    "contagiousness": "частично",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "глаза",
+      "конъюнктива"
+    ],
+    "keySymptoms": [
+      "покраснение глаз",
+      "слезотечение",
+      "зуд",
+      "выделения из глаз",
+      "ощущение песка в глазах"
+    ],
+    "diagnostics": [
+      "осмотр офтальмолога",
+      "клиническая картина",
+      "мазок"
+    ],
+    "riskFactors": [
+      "контакт с заболевшим",
+      "аллергия",
+      "контактные линзы",
+      "нарушение гигиены"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 48,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Воспаление конъюнктивы глаза, которое может быть инфекционным или аллергическим.",
+    "topRank": 27,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Глаза, покраснение, слезотечение и офтальмологический осмотр.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Конъюнктивит клинические рекомендации Минздрав",
+      "Конъюнктивит МКБ-10",
+      "Конъюнктивит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре имеет несколько возможных типов: инфекционный и аллергический."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_otitis_media",
+    "mode": "diagnosis",
+    "titleRu": "Средний отит",
+    "titleOriginal": "Otitis media",
+    "alternativeTitles": [
+      "отит",
+      "воспаление среднего уха"
+    ],
+    "icd10": [
+      "H65",
+      "H66"
+    ],
+    "icdGroup": "H60-H95",
+    "bodySystems": [
+      "органы слуха"
+    ],
+    "diseaseTypes": [
+      "воспалительное",
+      "инфекционное"
+    ],
+    "course": [
+      "острое",
+      "хроническое"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "среднее ухо"
+    ],
+    "keySymptoms": [
+      "боль в ухе",
+      "снижение слуха",
+      "лихорадка",
+      "выделения из уха",
+      "слабость"
+    ],
+    "diagnostics": [
+      "отоскопия",
+      "осмотр ЛОР-врача",
+      "аудиометрия"
+    ],
+    "riskFactors": [
+      "ОРВИ",
+      "детский возраст",
+      "аденоиды",
+      "переохлаждение"
+    ],
+    "severityTypical": "лёгкая или средняя",
+    "urgencyTypical": "обычно амбулаторно",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 46,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Воспаление среднего уха, часто возникающее после инфекций верхних дыхательных путей.",
+    "topRank": 28,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Ухо, боль, отоскопия и ЛОР-врач.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Средний отит клинические рекомендации Минздрав",
+      "Средний отит МКБ-10",
+      "Средний отит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре пересекается с ОРВИ как возможный фактор риска, но система и локализация другие."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_atopic_dermatitis",
+    "mode": "diagnosis",
+    "titleRu": "Атопический дерматит",
+    "titleOriginal": "Atopic dermatitis",
+    "alternativeTitles": [
+      "атопическая экзема",
+      "нейродермит"
+    ],
+    "icd10": [
+      "L20"
+    ],
+    "icdGroup": "L00-L99",
+    "bodySystems": [
+      "кожа и подкожная клетчатка",
+      "кровь и иммунная система"
+    ],
+    "diseaseTypes": [
+      "аллергическое",
+      "воспалительное"
+    ],
+    "course": [
+      "хроническое",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "дети",
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "кожа"
+    ],
+    "keySymptoms": [
+      "зуд",
+      "сыпь",
+      "сухость кожи",
+      "покраснение кожи",
+      "шелушение"
+    ],
+    "diagnostics": [
+      "осмотр дерматолога",
+      "клиническая картина",
+      "аллергологическое обследование"
+    ],
+    "riskFactors": [
+      "аллергия",
+      "наследственность",
+      "сухость кожи",
+      "контакт с раздражителями"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 44,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое воспалительное заболевание кожи, часто связанное с зудом, сухостью и рецидивами.",
+    "topRank": 29,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Кожа, зуд, сухость и аллергический фон.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Атопический дерматит клинические рекомендации Минздрав",
+      "Атопический дерматит МКБ-10",
+      "Атопический дерматит MSD Manual русский"
+    ],
+    "facts": [
+      "В игре близок к псориазу по коже и хроническому течению, но отличается аллергическим типом."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  },
+  {
+    "id": "dx_psoriasis",
+    "mode": "diagnosis",
+    "titleRu": "Псориаз",
+    "titleOriginal": "Psoriasis",
+    "alternativeTitles": [
+      "чешуйчатый лишай"
+    ],
+    "icd10": [
+      "L40"
+    ],
+    "icdGroup": "L00-L99",
+    "bodySystems": [
+      "кожа и подкожная клетчатка",
+      "кровь и иммунная система"
+    ],
+    "diseaseTypes": [
+      "аутоиммунное",
+      "воспалительное"
+    ],
+    "course": [
+      "хроническое",
+      "рецидивирующее"
+    ],
+    "contagiousness": "незаразное",
+    "typicalAgeGroups": [
+      "взрослые"
+    ],
+    "sex": "любой",
+    "localization": [
+      "кожа",
+      "суставы"
+    ],
+    "keySymptoms": [
+      "сыпь",
+      "шелушение",
+      "зуд",
+      "покраснение кожи",
+      "боль в суставах"
+    ],
+    "diagnostics": [
+      "осмотр дерматолога",
+      "клиническая картина",
+      "биопсия кожи"
+    ],
+    "riskFactors": [
+      "наследственность",
+      "стресс",
+      "инфекции",
+      "курение",
+      "ожирение"
+    ],
+    "severityTypical": "вариативная",
+    "urgencyTypical": "обычно планово",
+    "ratings": {
+      "gameDifficulty": null,
+      "recognizability": null
+    },
+    "votes": {
+      "gamesPlayed": 0,
+      "correctGuesses": 0
+    },
+    "popularityScore": 42,
+    "posterUrl": null,
+    "backdropUrl": null,
+    "description": "Хроническое незаразное воспалительное заболевание кожи, которое может проявляться бляшками и шелушением.",
+    "topRank": 30,
+    "dataQuality": {
+      "source": [
+        "starter_model_by_llm",
+        "requires_minzdrav_verification",
+        "requires_icd10_verification",
+        "requires_medical_review"
+      ],
+      "verified": false,
+      "missingFields": [],
+      "notes": [
+        "Черновая игровая запись по аналогии с movies.generated.json.",
+        "Не использовать как медицинский справочник.",
+        "Перед публичным релизом сверить с клиническими рекомендациями, МКБ-10 и медицинским редактором."
+      ]
+    },
+    "plotHint": "Кожа, шелушение, хроническое течение и аутоиммунный след.",
+    "safetyDisclaimer": "Образовательная игра. Не используется для самодиагностики и не заменяет консультацию врача.",
+    "sourceRefs": [
+      {
+        "name": "Рубрикатор клинических рекомендаций Минздрава РФ",
+        "url": "https://cr.minzdrav.gov.ru/",
+        "role": "Основная точка верификации русской терминологии, клинической картины, диагностики и кода МКБ"
+      },
+      {
+        "name": "МКБ-10",
+        "url": "https://mkb-10.com/",
+        "role": "Код и группа заболевания"
+      },
+      {
+        "name": "MSD Manual, русская версия",
+        "url": "https://www.msdmanuals.com/ru",
+        "role": "Дополнительная сверка понятных формулировок симптомов и диагностики"
+      }
+    ],
+    "sourceSearchQueries": [
+      "Псориаз клинические рекомендации Минздрав",
+      "Псориаз МКБ-10",
+      "Псориаз MSD Manual русский"
+    ],
+    "facts": [
+      "В игре отличается от атопического дерматита типом и возможным вовлечением суставов."
+    ],
+    "comparisonHints": {
+      "exactListFields": [
+        "bodySystems",
+        "diseaseTypes",
+        "course",
+        "typicalAgeGroups",
+        "localization"
+      ],
+      "overlapListFields": [
+        "keySymptoms",
+        "diagnostics",
+        "riskFactors"
+      ],
+      "exactScalarFields": [
+        "contagiousness",
+        "sex",
+        "severityTypical",
+        "urgencyTypical"
+      ],
+      "hierarchyFields": [
+        "icdGroup",
+        "icd10"
+      ]
+    }
+  }
+]
