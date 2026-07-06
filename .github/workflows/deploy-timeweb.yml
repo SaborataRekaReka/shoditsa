@@ -28,10 +28,10 @@ jobs:
       - name: Upload dist to server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.TIMEWEB_HOST }}
-          username: ${{ secrets.TIMEWEB_USER }}
+          host: 72.56.240.222
+          username: root
           key: ${{ secrets.TIMEWEB_SSH_KEY }}
-          port: ${{ secrets.TIMEWEB_PORT || 22 }}
+          port: 22
           source: "dist/*"
           target: "/opt/repeto/deploy/shoditsa"
           strip_components: 1
@@ -40,10 +40,10 @@ jobs:
       - name: Set permissions and list deployed files
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.TIMEWEB_HOST }}
-          username: ${{ secrets.TIMEWEB_USER }}
+          host: 72.56.240.222
+          username: root
           key: ${{ secrets.TIMEWEB_SSH_KEY }}
-          port: ${{ secrets.TIMEWEB_PORT || 22 }}
+          port: 22
           script: |
             set -e
             chmod -R a+rX /opt/repeto/deploy/shoditsa
