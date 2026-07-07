@@ -963,14 +963,31 @@ button:active { transform: translateY(1px); }
   touch-action: pan-y;
   cursor: grab;
 }
+.dx-cloud__chips.is-wrap {
+  flex-wrap: wrap;
+  overflow: visible;
+  padding-bottom: 0;
+  cursor: default;
+  scroll-behavior: auto;
+}
 .dx-cloud__chips.is-dragging {
   cursor: grabbing;
   user-select: none;
+}
+.dx-cloud__chips.is-wrap.is-dragging {
+  cursor: default;
 }
 .dx-cloud__chips::-webkit-scrollbar { height: 6px; }
 .dx-cloud__chips::-webkit-scrollbar-thumb { background: var(--color-line-strong); border-radius: 999px; }
 .dx-chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border: 1px solid var(--color-line); border-radius: 999px; background: var(--color-surface-2); color: var(--color-muted); font-size: 11px; font-weight: 600; line-height: 1; }
 .dx-chip { flex: 0 0 auto; white-space: nowrap; }
+.dx-cloud__chips.is-wrap .dx-chip {
+  flex: 0 1 auto;
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
 .dx-chip svg { width: 12px; height: 12px; stroke-width: 2.6; }
 .dx-chip__icon { width: 12px; height: 12px; flex: 0 0 auto; }
 .dx-chip.match { color: var(--color-ink); background: var(--color-primary); border-color: var(--color-primary-border); }

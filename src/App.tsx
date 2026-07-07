@@ -938,18 +938,19 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
   </article>
 }
 
-function DxChipCloud({ label, hint, items, limit = 6, iconKind }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories' }) {
+function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories'; wrap?: boolean }) {
   if (!items.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
   const matchedCount = items.filter((value) => matched.has(normalizeTextMatch(value))).length
-  const shouldScroll = items.length > limit
+  const shouldScroll = !wrap && items.length > limit
   const countTone = matchedCount === items.length ? 'match' : matchedCount ? 'partial' : 'miss'
+  const chipsClassName = ['dx-cloud__chips', wrap ? 'is-wrap' : '', shouldScroll ? 'is-scrollable' : ''].filter(Boolean).join(' ')
   return <div className="dx-cloud">
     <div className="dx-cloud__head">
       <span>{label}</span>
       <small className={countTone}>{matchedCount}/{items.length}</small>
     </div>
-    <HorizontalScrollLane className={`dx-cloud__chips ${shouldScroll ? 'is-scrollable' : ''}`}>
+    <HorizontalScrollLane className={chipsClassName}>
       {items.map((value) => {
         const isMatched = matched.has(normalizeTextMatch(value))
         const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
@@ -994,9 +995,9 @@ function DiagnosisAttemptCard({ attempt, item, index }: { attempt: Attempt; item
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
 
     <div className="dx-clouds">
-      <DxChipCloud label="Симптомы" hint={byKey.get('symptoms')} items={item.keySymptoms ?? []} limit={6} />
-      <DxChipCloud label="Диагностика" hint={byKey.get('diagnostics')} items={item.diagnostics ?? []} limit={4} />
-      <DxChipCloud label="Факторы риска" hint={byKey.get('risk_factors')} items={item.riskFactors ?? []} limit={4} />
+      <DxChipCloud label="Симптомы" hint={byKey.get('symptoms')} items={item.keySymptoms ?? []} limit={6} wrap />
+      <DxChipCloud label="Диагностика" hint={byKey.get('diagnostics')} items={item.diagnostics ?? []} limit={4} wrap />
+      <DxChipCloud label="Факторы риска" hint={byKey.get('risk_factors')} items={item.riskFactors ?? []} limit={4} wrap />
     </div>
   </article>
 }
