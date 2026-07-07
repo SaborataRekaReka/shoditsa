@@ -27,10 +27,30 @@ const hashIndex = (seed: string, length: number) => {
   return (hash >>> 0) % length
 }
 
+const isAnimatedEntry = (item: TitleItem) =>
+  (item.genres ?? []).some((genre) => /мультфильм|аниме|animation|anime/i.test(genre))
+
+const looksLikeFeatureFilm = (item: TitleItem) => {
+  const runtime = item.runtimeMinutes ?? null
+  const year = item.year ?? null
+  const endYear = item.endYear ?? null
+  const hasMultipleYears = typeof year === 'number' && typeof endYear === 'number' && endYear > year
+  return Boolean(runtime && runtime >= 75 && !hasMultipleYears)
+}
+
+const isAllowedInMode = (item: TitleItem, mode: TitleMode) => {
+  if (item.mode !== mode) return false
+  if (mode !== 'series') return true
+
+  if (isAnimatedEntry(item)) return false
+  if (looksLikeFeatureFilm(item)) return false
+  return true
+}
+
 export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey) => {
   const from = PERIODS[period].fromYear
   return titles.filter((item) => {
-    if (item.mode !== mode) return false
+    if (!isAllowedInMode(item, mode)) return false
     if (mode === 'diagnosis' || from === null) return true
     return typeof item.year === 'number' && item.year >= from
   })

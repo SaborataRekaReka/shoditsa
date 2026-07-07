@@ -126,6 +126,15 @@ const saveState = (pathToState, state) => {
 
 const collectFromPage = async (page) => page.evaluate(() => {
   const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim().toLowerCase()
+  const isNavigatorUrl = (value) => {
+    if (!value) return false
+    try {
+      const url = new URL(value, location.href)
+      return url.pathname.includes('/top/navigator/')
+    } catch {
+      return false
+    }
+  }
   const filmIds = [...new Set(Array.from(document.querySelectorAll('a[href*="/film/"]'))
     .map((link) => {
       const href = link.getAttribute('href') || ''
@@ -136,6 +145,7 @@ const collectFromPage = async (page) => page.evaluate(() => {
 
   const relNext = document.querySelector('a[rel="next"][href]')
   let nextUrl = relNext ? relNext.href : ''
+  if (nextUrl && !isNavigatorUrl(nextUrl)) nextUrl = ''
 
   if (!nextUrl) {
     const links = Array.from(document.querySelectorAll('a[href]'))
@@ -143,6 +153,7 @@ const collectFromPage = async (page) => page.evaluate(() => {
       const text = normalize(link.textContent)
       const aria = normalize(link.getAttribute('aria-label'))
       const title = normalize(link.getAttribute('title'))
+      if (!isNavigatorUrl(link.href)) return false
       return /next|след/.test(text) || /next|след/.test(aria) || /next|след/.test(title) || text === '>' || text === '›' || text === '»'
     })
     nextUrl = nextByText ? nextByText.href : ''
@@ -154,7 +165,7 @@ const collectFromPage = async (page) => page.evaluate(() => {
     if (current) {
       const currentPage = Number((current.textContent || '').trim())
       if (Number.isFinite(currentPage)) {
-        const nextNumeric = links.find((link) => Number((link.textContent || '').trim()) === currentPage + 1)
+        const nextNumeric = links.find((link) => isNavigatorUrl(link.href) && Number((link.textContent || '').trim()) === currentPage + 1)
         if (nextNumeric) nextUrl = nextNumeric.href
       }
     }

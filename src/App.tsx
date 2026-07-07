@@ -596,7 +596,10 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
           </>}
           {ageText !== '—' && <>
             <i className="gm-head__dot" aria-hidden="true">·</i>
-            <span className={ageHint?.status === 'match' ? 'is-match' : ''}>{ageText}</span>
+            <span className={`gm-year gm-year--age ${ageHint?.status ?? ''}`}>
+              {ageText}
+              {ageHint?.direction === 'up' ? <ArrowUp /> : ageHint?.direction === 'down' ? <ArrowDown /> : ageHint?.status === 'match' ? <Check /> : null}
+            </span>
           </>}
         </p>
         {!!genres.length && <div className="gm-genres">
@@ -623,11 +626,12 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
 }
 
 function GameAttrBadge({ hint }: { hint: Attempt['hints'][number] }) {
+  const showCross = (hint.status === 'miss' || hint.status === 'partial') && hint.key !== 'age'
   return <div className={`dx-attr ${hint.status}`}>
     <span className="dx-attr__label">{hint.label}</span>
     <strong className="dx-attr__val">{hint.value}</strong>
     <i className="dx-attr__mark" aria-hidden="true">
-      {hint.direction === 'up' ? <ArrowUp /> : hint.direction === 'down' ? <ArrowDown /> : hint.status === 'match' ? <Check /> : (hint.status === 'miss' || hint.status === 'partial') ? <X /> : null}
+      {hint.direction === 'up' ? <ArrowUp /> : hint.direction === 'down' ? <ArrowDown /> : hint.status === 'match' ? <Check /> : showCross ? <X /> : null}
     </i>
   </div>
 }
@@ -888,6 +892,8 @@ function Game({
   const preferredHintRound = nextUndismissedHintRound ?? nextHintRound
   const canUseHint = status === 'playing' && pendingHintRounds.length > 0
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
+  const showPeriodControl = mode === 'movie' || mode === 'series'
+  const showTodayLink = date !== getMoscowDate()
 
   useEffect(() => {
     if (!canUseHint) {
@@ -1049,11 +1055,10 @@ function Game({
         <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>
       </section>
 
-      <section className="game-toolbar" aria-label="Настройки игры">
-        <GameSelector mode={mode} onClick={onHome} />
-        {(mode === 'movie' || mode === 'series') && <PeriodControl value={period} onChange={setPeriod} />}
-        {date !== getMoscowDate() && <ActionButton variant="ghost" className="today-link" onClick={() => setDate(getMoscowDate())}>Сегодня</ActionButton>}
-      </section>
+      {(showPeriodControl || showTodayLink) && <section className="game-toolbar" aria-label="Настройки игры">
+        {showPeriodControl && <PeriodControl value={period} onChange={setPeriod} />}
+        {showTodayLink && <ActionButton variant="ghost" className="today-link" onClick={() => setDate(getMoscowDate())}>Сегодня</ActionButton>}
+      </section>}
 
       <div className="progress-row">
         <Progress attempts={attempts.length} />
@@ -1095,12 +1100,12 @@ function Game({
       </section>}
 
       {status === 'playing' && <section className="search-area">
-        <label htmlFor="movie-search">{mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : 'Введите название'}</label>
         <div className={`search-box ${selected ? 'selected' : ''}`}>
           <Search />
           <input
             ref={inputRef}
             id="movie-search"
+            aria-label={mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : 'Введите название'}
             value={query}
             autoComplete="off"
             placeholder={modeSearchPlaceholder(mode)}

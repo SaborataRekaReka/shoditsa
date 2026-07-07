@@ -26,8 +26,10 @@ const modeArg = String(argValue('--mode', 'movie')).toLowerCase()
 if (!['movie', 'series'].includes(modeArg)) throw new Error('Invalid --mode. Use "movie" or "series"')
 const mode = modeArg
 const mergeOutput = args.includes('--merge')
+const includeAnimationInSeries = args.includes('--include-animation-series')
 
-const idsPath = resolve(root, argValue('--ids', 'data/kinopoisk-navigator-ids.json'))
+const defaultIdsPath = mode === 'series' ? 'data/kinopoisk-navigator-series-ids.json' : 'data/kinopoisk-navigator-movies-ids.json'
+const idsPath = resolve(root, argValue('--ids', defaultIdsPath))
 const outPath = resolve(root, argValue('--out', mode === 'series' ? 'public/data/series.generated.json' : 'public/data/movies.generated.json'))
 const moviesPath = resolve(root, argValue('--movies', 'public/data/movies.generated.json'))
 const seriesPath = resolve(root, argValue('--series', 'public/data/series.generated.json'))
@@ -141,6 +143,13 @@ const person = (item) => ({
 })
 
 const isValidYear = (year) => Number.isFinite(year) && year > 1880 && year < 2100
+const MOVIE_TYPES = new Set(['FILM', 'VIDEO', 'TV_MOVIE'])
+const SERIES_TYPES = new Set(['TV_SERIES', 'MINI_SERIES', 'TV_SHOW'])
+
+const detailsType = (details) => String(details?.type || '').toUpperCase().trim()
+const isSeriesDetails = (details) => details?.serial === true || SERIES_TYPES.has(detailsType(details))
+const isMovieDetails = (details) => details?.serial === false || MOVIE_TYPES.has(detailsType(details))
+const hasAnimatedGenre = (genres) => genres.some((genre) => /мультфильм|аниме|animation|anime/i.test(String(genre)))
 
 const missingCore = (item) => {
   const miss = []
@@ -187,8 +196,21 @@ for (const kinopoiskId of targetIds) {
     const details = await request(`/api/v2.2/films/${kinopoiskId}`)
     const staff = await request(`/api/v1/staff?filmId=${kinopoiskId}`)
 
+    if (mode === 'series' && !isSeriesDetails(details)) {
+      skipped.push({ kinopoiskId, reason: `type_mismatch:${detailsType(details) || 'unknown'}` })
+      continue
+    }
+    if (mode === 'movie' && !isMovieDetails(details)) {
+      skipped.push({ kinopoiskId, reason: `type_mismatch:${detailsType(details) || 'unknown'}` })
+      continue
+    }
+
     const countries = (details.countries ?? []).map((entry) => entry?.country).filter(Boolean)
     const genres = (details.genres ?? []).map((entry) => entry?.genre).filter(Boolean).slice(0, 5)
+    if (mode === 'series' && !includeAnimationInSeries && hasAnimatedGenre(genres)) {
+      skipped.push({ kinopoiskId, reason: 'excluded:animated_series' })
+      continue
+    }
     const directors = staff.filter((entry) => entry.professionKey === 'DIRECTOR').slice(0, 3).map(person)
     const writers = staff.filter((entry) => entry.professionKey === 'WRITER').slice(0, 3).map(person)
     const producers = staff.filter((entry) => entry.professionKey === 'PRODUCER').slice(0, 3).map(person)
