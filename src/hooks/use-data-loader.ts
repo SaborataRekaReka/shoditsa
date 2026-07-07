@@ -7,6 +7,10 @@ type ModeCounts = { movie: number | null; series: number | null; game: number | 
 
 const initialData: ModeData = { movie: [], series: [], game: [], diagnosis: [] }
 const initialCounts: ModeCounts = { movie: null, series: null, game: null, diagnosis: null }
+const toIntegerOrNull = (value: unknown) => {
+  const parsed = Math.trunc(Number(value))
+  return Number.isFinite(parsed) ? parsed : null
+}
 
 const requestCache = new Map<string, Promise<unknown>>()
 
@@ -24,6 +28,7 @@ export const useDataLoader = (mode: TitleMode) => {
   const [data, setData] = useState<ModeData>(initialData)
   const [titleCounts, setTitleCounts] = useState<ModeCounts>(initialCounts)
   const [caseVignettes, setCaseVignettes] = useState<CaseVignetteMap>({})
+  const [globalDailySalt, setGlobalDailySalt] = useState(0)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -35,6 +40,16 @@ export const useDataLoader = (mode: TitleMode) => {
           game: Number.isFinite(source.gameCount) ? source.gameCount! : current.game,
           diagnosis: Number.isFinite(source.diagnosisCount) ? source.diagnosisCount! : current.diagnosis,
         }))
+
+        const sourceSalt = toIntegerOrNull((source as { dailySalt?: number }).dailySalt)
+        if (sourceSalt != null) setGlobalDailySalt(sourceSalt)
+      })
+      .catch(() => undefined)
+
+    fetchJsonCached<{ globalSalt?: number; dailySalt?: number }>('./data/daily-config.json')
+      .then((config) => {
+        const configSalt = toIntegerOrNull(config.globalSalt ?? config.dailySalt)
+        if (configSalt != null) setGlobalDailySalt(configSalt)
       })
       .catch(() => undefined)
 
@@ -69,5 +84,5 @@ export const useDataLoader = (mode: TitleMode) => {
       .finally(() => setLoading(false))
   }, [mode, data])
 
-  return { data, titleCounts, caseVignettes, loading }
+  return { data, titleCounts, caseVignettes, loading, globalDailySalt }
 }

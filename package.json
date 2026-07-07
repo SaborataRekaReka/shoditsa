@@ -29,6 +29,7 @@
     "data:translate:games:ru": "node scripts/translate-game-hints-google.mjs",
     "data:collect-ids": "node scripts/collect-kinopoisk-ids.mjs",
     "data:validate": "node scripts/validate-generated-data.mjs",
+    "daily:salt": "node scripts/set-global-daily-salt.mjs",
     "metrics:baseline": "node scripts/collect-baseline-metrics.mjs",
     "smoke": "npm run build && npm run data:validate"
   },

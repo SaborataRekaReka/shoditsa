@@ -1048,6 +1048,7 @@ function Game({
   onRules,
   caseVignettes,
   dailySalt,
+  isPracticeSession,
 }: {
   titles: TitleItem[]
   mode: TitleMode
@@ -1061,12 +1062,12 @@ function Game({
   onRules: () => void
   caseVignettes: CaseVignetteMap
   dailySalt: number
+  isPracticeSession: boolean
 }) {
   const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' ? 'all' : period
   const pool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
   const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, dailySalt) : null, [pool, mode, effectivePeriod, date, dailySalt])
   const key = dailySalt === 0 ? gameKey(mode, effectivePeriod, date) : `${gameKey(mode, effectivePeriod, date)}|salt:${dailySalt}`
-  const isAdminVariant = dailySalt !== 0
   const [sessionState, dispatchSession] = useReducer(gameSessionReducer, undefined, createInitialGameSessionState)
   const { attempts, status, query, selected, activeSuggestionIndex, message, hintChoices, dismissedHintRounds } = sessionState
   const debouncedQuery = useDebouncedValue(query, 100)
@@ -1257,7 +1258,7 @@ function Game({
     const nextStatus: GameStatus = nextSelection.id === answer.id ? 'won' : nextAttempts.length >= 10 ? 'lost' : 'playing'
     dispatchSession({ type: 'submit_attempt', attempts: nextAttempts, status: nextStatus })
     persistGame(nextAttempts, nextStatus, hintChoices)
-    if (nextStatus !== 'playing' && !isAdminVariant) updateStats(nextStatus === 'won', nextAttempts.length)
+    if (nextStatus !== 'playing' && !isPracticeSession) updateStats(nextStatus === 'won', nextAttempts.length)
     setTimeout(() => {
       const targetSelector = nextStatus === 'playing' ? '.attempt-card:first-child' : '.result-card'
       document.querySelector(targetSelector)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -1584,13 +1585,15 @@ export default function App() {
   const [date, setDate] = useState(getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
-  const { data, titleCounts, caseVignettes, loading } = useDataLoader(mode)
+  const { data, titleCounts, caseVignettes, loading, globalDailySalt } = useDataLoader(mode)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const transitionTimerRef = useRef<number | null>(null)
   const screenHistoryReadyRef = useRef(false)
   const screenFromPopStateRef = useRef(false)
   const lastScreenRef = useRef<AppScreen>('hub')
   const adminDailySaltRef = useRef(0)
+  const globalDailySaltRef = useRef(0)
+  const effectiveDailySalt = globalDailySalt + adminDailySalt
 
   useEffect(() => {
     if (mode === 'diagnosis' && period !== 'all') {
@@ -1601,6 +1604,10 @@ export default function App() {
   useEffect(() => {
     adminDailySaltRef.current = adminDailySalt
   }, [adminDailySalt])
+
+  useEffect(() => {
+    globalDailySaltRef.current = globalDailySalt
+  }, [globalDailySalt])
 
   useEffect(() => {
     markAppFirstRender()
@@ -1646,7 +1653,7 @@ export default function App() {
       return nextSalt
     }
 
-    adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__ = () => adminDailySaltRef.current
+    adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__ = () => globalDailySaltRef.current + adminDailySaltRef.current
 
     adminWindow.SEANS_ADMIN_NEW_DAILY = adminWindow.__SEANS_ADMIN_NEW_DAILY__
     adminWindow.SEANS_ADMIN_SET_DAILY_SALT = adminWindow.__SEANS_ADMIN_SET_DAILY_SALT__
@@ -1726,11 +1733,11 @@ export default function App() {
     if (mode !== 'diagnosis' || !data.diagnosis.length) return null
     const pool = poolFor(data.diagnosis, 'diagnosis', 'all')
     if (!pool.length) return null
-    const answer = dailyTitle(pool, 'diagnosis', 'all', getMoscowDate())
+    const answer = dailyTitle(pool, 'diagnosis', 'all', getMoscowDate(), effectiveDailySalt)
     if (!answer) return null
     const vignette = pickDailyVignette(caseVignettes[answer.id] ?? [], answer.id, getMoscowDate())
     return vignette?.text ? { text: vignette.text } : null
-  }, [mode, data.diagnosis, caseVignettes])
+  }, [mode, data.diagnosis, caseVignettes, effectiveDailySalt])
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
   const goBackFromGame = () => moveToScreen(gameBackTarget)
@@ -1821,7 +1828,8 @@ export default function App() {
           mode={mode}
           period={period}
           date={date}
-          dailySalt={adminDailySalt}
+          dailySalt={effectiveDailySalt}
+          isPracticeSession={adminDailySalt !== 0}
           setDate={setDate}
           onHome={goHome}
           onBack={goBackFromGame}

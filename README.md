@@ -44,6 +44,23 @@ npm run deploy:quick
 npm run deploy:quick:skip-build
 ```
 
+## Глобальная смена ежедневного ответа (для всех)
+
+Сдвиг для всех игроков задается в `public/data/daily-config.json` (`globalSalt`).
+
+Быстро обновить значение:
+
+```powershell
+npm run daily:salt -- 1
+```
+
+После изменения `globalSalt` выполните сборку и деплой, чтобы значение применилось у всех пользователей:
+
+```powershell
+npm run build
+npm run deploy:quick:skip-build
+```
+
 ## Что работает
 
 - режимы «Фильм дня» и «Сериал дня»;
