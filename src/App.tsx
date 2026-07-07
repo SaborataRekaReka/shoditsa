@@ -11,6 +11,7 @@ import {
   CircleHelp,
   Copy,
   Film,
+  Gamepad2,
   Lock,
   MapPin,
   Music2,
@@ -22,11 +23,12 @@ import {
   Stethoscope,
   Ticket,
   Target,
+  Trophy,
   Tv,
   X,
 } from 'lucide-react'
 import { compareTitles, dailyTitle, getMoscowDate, PERIODS, poolFor, prettyDate, resultText, searchTitles } from './game'
-import { allGames, gameKey, loadGame, loadStats, saveGame, saveStats } from './storage'
+import { allGames, gameKey, loadGame, loadStats, removeGame, saveGame, saveStats } from './storage'
 import type { AssistHintKey, Attempt, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode } from './types'
 
 const statusLabel = {
@@ -38,16 +40,22 @@ const statusLabel = {
 }
 
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
-const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : <Stethoscope />
-const modeTitle = (mode: TitleMode) => mode === 'movie' ? 'Кино' : mode === 'series' ? 'Сериалы' : 'Диагнозы'
-const modePlural = (mode: TitleMode) => mode === 'movie' ? 'Фильмы' : mode === 'series' ? 'Сериалы' : 'Диагнозы'
-const modeSubject = (mode: TitleMode) => mode === 'movie' ? 'фильм' : mode === 'series' ? 'сериал' : 'диагноз'
-const modeSubjectGenitive = (mode: TitleMode) => mode === 'movie' ? 'фильма' : mode === 'series' ? 'сериала' : 'диагноза'
-const modeDaily = (mode: TitleMode) => mode === 'movie' ? 'Фильм' : mode === 'series' ? 'Сериал' : 'Диагноз'
-const modeLower = (mode: TitleMode) => mode === 'movie' ? 'кино' : mode === 'series' ? 'сериалы' : 'диагнозы'
-const modeSearchPlaceholder = (mode: TitleMode) => mode === 'movie' ? 'Найти фильм…' : mode === 'series' ? 'Найти сериал…' : 'Найти диагноз…'
-const modePoolLabel = (mode: TitleMode, count: number) => mode === 'diagnosis' ? `${count} диагнозов в подборке` : `${count} тайтлов в подборке`
-const modeDataFile = (mode: TitleMode) => mode === 'movie' ? 'movies' : mode === 'series' ? 'series' : 'diagnoses'
+const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : mode === 'game' ? <Gamepad2 /> : <Stethoscope />
+const modeTitle = (mode: TitleMode) => mode === 'movie' ? 'Кино' : mode === 'series' ? 'Сериалы' : mode === 'game' ? 'Игры' : 'Диагнозы'
+const modePlural = (mode: TitleMode) => mode === 'movie' ? 'Фильмы' : mode === 'series' ? 'Сериалы' : mode === 'game' ? 'Игры' : 'Диагнозы'
+const modeSubject = (mode: TitleMode) => mode === 'movie' ? 'фильм' : mode === 'series' ? 'сериал' : mode === 'game' ? 'игру' : 'диагноз'
+const modeSubjectGenitive = (mode: TitleMode) => mode === 'movie' ? 'фильма' : mode === 'series' ? 'сериала' : mode === 'game' ? 'игры' : 'диагноза'
+const modeDaily = (mode: TitleMode) => mode === 'movie' ? 'Фильм' : mode === 'series' ? 'Сериал' : mode === 'game' ? 'Игра' : 'Диагноз'
+const modeLower = (mode: TitleMode) => mode === 'movie' ? 'кино' : mode === 'series' ? 'сериалы' : mode === 'game' ? 'игры' : 'диагнозы'
+const modeSearchPlaceholder = (mode: TitleMode) => mode === 'movie' ? 'Найти фильм…' : mode === 'series' ? 'Найти сериал…' : mode === 'game' ? 'Найти игру…' : 'Найти диагноз…'
+const modePoolLabel = (mode: TitleMode, count: number) => mode === 'diagnosis' ? `${count} диагнозов в подборке` : mode === 'game' ? `${count} игр в подборке` : `${count} тайтлов в подборке`
+const modeDataFile = (mode: TitleMode) => mode === 'movie' ? 'movies' : mode === 'series' ? 'series' : mode === 'game' ? 'games' : 'diagnoses'
+
+const isEditableTarget = (target: EventTarget | null) => {
+  if (!(target instanceof HTMLElement)) return false
+  const tag = target.tagName
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
+}
 
 type AssistHintView = {
   key: AssistHintKey
@@ -61,6 +69,7 @@ type AssistHintView = {
 const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
+const hasProgressMatch = (hint: Attempt['hints'][number]) => hint.status === 'match' || Boolean(hint.matchedValues?.length)
 
 const buildAssistHints = (item: TitleItem): AssistHintView[] => {
   const plot = cropHintText(cleanHintText(item.plotHint || item.description || ''))
@@ -69,7 +78,6 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
 
   if (item.mode === 'diagnosis') {
     const diagnosticsHint = cropHintText(cleanHintText((item.diagnostics ?? []).slice(0, 4).join(', ')))
-    const safetyHint = cropHintText(cleanHintText(item.safetyDisclaimer || fact))
     return [
       {
         key: 'plot',
@@ -87,10 +95,45 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
       },
       {
         key: 'fact',
-        title: 'Важно',
-        subtitle: 'Образовательный дисклеймер',
-        body: safetyHint,
-        available: Boolean(safetyHint),
+        title: 'Факт',
+        subtitle: 'Дополнительная деталь по состоянию',
+        body: fact,
+        available: Boolean(fact),
+      },
+    ]
+  }
+
+  if (item.mode === 'game') {
+    const tagsHint = cropHintText(cleanHintText([
+      ...(item.genres ?? []).slice(0, 3),
+      ...(item.steamCategories ?? []).slice(0, 3),
+    ].join(', ')))
+    const gameFact = cropHintText(cleanHintText([
+      item.year ? `Год релиза: ${item.year}` : '',
+      item.topRank ? `Позиция в топе: #${item.topRank}` : '',
+      item.ratings?.metacritic ?? item.metacritic ? `Metacritic: ${item.ratings?.metacritic ?? item.metacritic}` : '',
+    ].filter(Boolean).join(' · ')))
+    return [
+      {
+        key: 'plot',
+        title: 'Описание',
+        subtitle: 'Фрагмент карточки игры без спойлеров',
+        body: plot,
+        available: Boolean(plot),
+      },
+      {
+        key: 'slogan',
+        title: 'Жанры и категории',
+        subtitle: 'Подсказка по жанрам и тегам Steam',
+        body: tagsHint,
+        available: Boolean(tagsHint),
+      },
+      {
+        key: 'fact',
+        title: 'Релизный факт',
+        subtitle: 'Год, место в топе или оценка Metacritic',
+        body: gameFact,
+        available: Boolean(gameFact),
       },
     ]
   }
@@ -181,17 +224,20 @@ function AppHeader({ onHome, onArchive, onStats, onRules }: {
   </header>
 }
 
-function HubScreen({ onSelect, onRewatch, onStats, onRules, titleCounts }: {
+function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSessionsCount, titleCounts }: {
   onSelect: (mode: TitleMode) => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
-  titleCounts: { movie: number | null; series: number | null; diagnosis: number | null }
+  onResume: () => void
+  activeSessionsCount: number
+  titleCounts: { movie: number | null; series: number | null; game: number | null; diagnosis: number | null }
 }) {
   const futureCategories = [
     { title: 'Музыка', copy: 'Угадайте группу или исполнителя', icon: <Music2 /> },
     { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
   ]
+  const availableNowCount = 4
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return <>
@@ -201,10 +247,12 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, titleCounts }: {
         <div className="hub-hero__copy">
           <span>Ежедневные игры</span>
           <h1>Выберите тему<br />{' '}и всё сойдется!</h1>
-          <p>Кино, сериалы, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
+          <p>Кино, сериалы, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
           <div className="hub-hero__actions">
             <ActionButton onClick={scrollToGames}><Play /> Играть сейчас</ActionButton>
-            <ActionButton variant="secondary" onClick={onRules}><CircleHelp /> Как это работает</ActionButton>
+            {activeSessionsCount > 0
+              ? <ActionButton variant="secondary" onClick={onResume}><RotateCcw /> {activeSessionsCount > 1 ? `Вернуться к игре (${activeSessionsCount})` : 'Вернуться к игре'}</ActionButton>
+              : <ActionButton variant="secondary" onClick={onRules}><CircleHelp /> Как это работает</ActionButton>}
           </div>
           <div className="hub-hero__facts" aria-label="Об игре">
             <span><CalendarDays /><strong>1 загадка в день</strong></span>
@@ -217,7 +265,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, titleCounts }: {
       </section>
 
       <section className="category-section" id="available-games">
-        <div className="category-heading"><span>Доступно сейчас</span><small>03 игры</small></div>
+        <div className="category-heading"><span>Доступно сейчас</span><small>{String(availableNowCount).padStart(2, '0')} игры</small></div>
         <div className="category-grid category-grid--active">
           <button className="category-card category-card--movie" onClick={() => onSelect('movie')}>
             <div className="category-card__head">
@@ -235,6 +283,15 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, titleCounts }: {
             </div>
             <i>Ежедневная игра</i><h2>Сериалы</h2>
             <p>Найдите сериал, сравнивая создателей, каст и периоды.</p>
+            <strong>Играть <ChevronRight /></strong>
+          </button>
+          <button className="category-card category-card--game" onClick={() => onSelect('game')}>
+            <div className="category-card__head">
+              <span className="category-card__icon"><Gamepad2 /></span>
+              <span className="category-card__pool"><b>{titleCounts.game ?? '—'}</b> в пуле</span>
+            </div>
+            <i>Ежедневная игра</i><h2>Игры</h2>
+            <p>Угадайте игру по жанрам, рейтингу, месту в топе и метрикам Steam.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--diagnosis" onClick={() => onSelect('diagnosis')}>
@@ -275,11 +332,29 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   onRules: () => void
   isLeaving?: boolean
 }) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onBack()
+        return
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault()
+        onPlay()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [onBack, onPlay])
+
   return <>
     <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} />
     <main className={`title-screen ${isLeaving ? 'is-leaving' : ''}`}>
       <div className="screen-back-row">
         <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
+        <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
       <section className="title-stage">
         <div className="title-game-mark">
@@ -302,9 +377,30 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
                 <h1>Ежедневная игра: диагнозы</h1>
                 <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
-                <div className="med-chart__note" role="note"><span aria-hidden="true"><i /><i /></span> Образовательная игра — не для самодиагностики.</div>
               </div>
             </section>
+          : mode === 'game'
+            ? <section className="game-case">
+                <div className="game-case__spine" aria-hidden="true"><span>Сходится · Игры</span></div>
+                <div className="game-case__body">
+                  <div className="game-case__band">
+                    <span className="game-case__platform">PC</span>
+                    <span className="game-case__band-title">Игра дня</span>
+                    <span className="game-case__band-no">№ {dayNumber(date)}</span>
+                  </div>
+                  <div className="game-case__cover">
+                    <span className="game-case__disc" aria-hidden="true"><i /></span>
+                    <div className="game-case__info">
+                      <div className="game-case__kicker"><span>Ежедневный релиз</span><i /> <small>глобальный чарт</small></div>
+                      <h1>Ежедневная игра: игры</h1>
+                      <p>Каждый день — новая игра из мирового чарта. У вас есть <strong>10 попыток</strong>, чтобы узнать её по жанрам, студии и рейтингам.</p>
+                    </div>
+                  </div>
+                  <div className="game-case__actions">
+                    <ActionButton className="game-case__play" onClick={onPlay}><Play /> Начать игру <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>
+                  </div>
+                </div>
+              </section>
           : <section className="admit-ticket">
               <div className="admit-ticket__stub">
                 <span>ВХОД</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small><em>{date.slice(8,10)}.{date.slice(5,7)}</em><i />
@@ -318,7 +414,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 </div>
               </div>
             </section>}
-        <ActionButton className="play-button" onClick={onPlay}><Play /> Начать игру</ActionButton>
+        {mode !== 'game' && <ActionButton className="play-button" onClick={onPlay}><Play /> Начать игру <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>}
       </section>
     </main>
   </>
@@ -344,10 +440,10 @@ function RewatchScreen({ mode, setMode, period, setPeriod, dates, games, onOpen,
   return <>
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} />
     <main className="rewatch-screen">
-      <div className="rewatch-heading"><RotateCcw /><h1>Ревотч</h1><p>Пропустили премьеру? Пройдите один из шести прошлых сеансов.</p></div>
+      <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
       <div className="rewatch-toolbar">
-        <div className="mode-tabs"><button className={mode === 'movie' ? 'active' : ''} onClick={() => setMode('movie')}>Фильмы</button><button className={mode === 'series' ? 'active' : ''} onClick={() => setMode('series')}>Сериалы</button><button className={mode === 'diagnosis' ? 'active' : ''} onClick={() => setMode('diagnosis')}>Диагнозы</button></div>
-        {mode !== 'diagnosis' && <PeriodControl value={period} onChange={setPeriod} />}
+        <div className="mode-tabs"><button className={mode === 'movie' ? 'active' : ''} onClick={() => setMode('movie')}>Фильмы</button><button className={mode === 'series' ? 'active' : ''} onClick={() => setMode('series')}>Сериалы</button><button className={mode === 'game' ? 'active' : ''} onClick={() => setMode('game')}>Игры</button><button className={mode === 'diagnosis' ? 'active' : ''} onClick={() => setMode('diagnosis')}>Диагнозы</button></div>
+        {(mode === 'movie' || mode === 'series') && <PeriodControl value={period} onChange={setPeriod} />}
       </div>
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
@@ -355,13 +451,13 @@ function RewatchScreen({ mode, setMode, period, setPeriod, dates, games, onOpen,
         const played = playedInCurrentPeriod ?? latestByUpdatedAt(dayGames)
         return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)}>
           <div className="rewatch-poster"><span>#{dayNumber(itemDate)}</span><i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : ''}</i></div>
-          <strong>{index === 0 ? 'Вчера' : prettyDate(itemDate)}</strong>
+          <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
           <small>{played
-            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'diagnosis' ? '' : ` · ${PERIODS[played.period].short}`}`
+            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'movie' || played.mode === 'series' ? ` · ${PERIODS[played.period].short}` : ''}`
             : 'Не сыгран'}</small>
         </button>
       })}</section>
-      <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>К выбору игры</ActionButton>
+      <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
     </main>
   </>
 }
@@ -395,7 +491,7 @@ function ClueTile({ hint, delay }: { hint: Attempt['hints'][number]; delay: numb
 }
 
 function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
-  return <div className={`people-group ${hint.status}`}>
+  return <div className={`people-group ${hint.status} people-${hint.key}`}>
     <div className="people-group__head"><span>{hint.label}</span><small>{statusLabel[hint.status]}</small></div>
     <div className="people-row">
       {hint.people?.length
@@ -407,11 +503,12 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
 
 function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const primary = ['year', 'country', 'kp'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const metricClues = ['country', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
-  const secondary = ['imdb', 'runtime', 'age', 'popularity'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
-  const genresHint = byKey.get('genres')
-  const matchedGenres = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
+  const yearHint = byKey.get('year')
+  const ageHint = byKey.get('age')
+  const yearText = item.year != null ? String(item.year) : '—'
+  const ageText = item.ageRating ?? '—'
   return <article className="attempt-card">
     <div className="attempt-card__header">
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
@@ -419,22 +516,113 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
       <div className="attempt-card__identity">
         <span className="attempt-label">Попытка {index + 1}</span>
         <h2>{item.titleRu}</h2>
-        <p>{item.titleOriginal || 'Оригинальное название не указано'} · {item.year}</p>
-        <div className="genre-pills">{(item.genres ?? []).map((genre) => {
-          const normalizedGenre = normalizeTextMatch(genre)
-          const pillStatus = genresHint?.status === 'unknown'
-            ? 'unknown'
-            : matchedGenres.has(normalizedGenre)
-              ? 'match'
-              : 'miss'
-          return <span key={genre} className={pillStatus}>{genre}</span>
-        })}</div>
+        <p className="attempt-meta">
+          <span>{item.titleOriginal || 'Оригинальное название не указано'}</span>
+          <i className="attempt-meta__sep" aria-hidden="true">·</i>
+          <span className={yearHint?.status === 'match' ? 'is-match' : ''}>{yearText}</span>
+          <i className="attempt-meta__sep" aria-hidden="true">·</i>
+          <span className={ageHint?.status === 'match' ? 'is-match' : ''}>{ageText}</span>
+        </p>
       </div>
       <div className="rating-badge"><small>КП</small><strong>{item.ratings?.kinopoisk?.toFixed(1) ?? '—'}</strong></div>
     </div>
-    <div className="primary-clues">{primary.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>
-    <div className="people-strip">{people.map((hint) => <PeopleGroup key={hint.key} hint={hint} />)}</div>
-    <div className="secondary-clues">{secondary.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex + primary.length} />)}</div>
+    <div className="attempt-clue-grid">
+      {metricClues.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+      {people.map((hint) => <PeopleGroup key={hint.key} hint={hint} />)}
+    </div>
+  </article>
+}
+
+function GameAttrBadge({ hint }: { hint: Attempt['hints'][number] }) {
+  return <div className={`dx-attr ${hint.status}`}>
+    <span className="dx-attr__label">{hint.label}</span>
+    <strong className="dx-attr__val">{hint.value}</strong>
+    <i className="dx-attr__mark" aria-hidden="true">
+      {hint.direction === 'up' ? <ArrowUp /> : hint.direction === 'down' ? <ArrowDown /> : hint.status === 'match' ? <Check /> : (hint.status === 'miss' || hint.status === 'partial') ? <X /> : null}
+    </i>
+  </div>
+}
+
+function GameStudioPlate({ label, names, hint }: { label: string; names: string[]; hint: Attempt['hints'][number] | undefined }) {
+  if (!names.length) return null
+  const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
+  const isMatch = hint?.status === 'match' || names.some((name) => matched.has(normalizeTextMatch(name)))
+  const monogram = (names[0].match(/[A-Za-zА-Яа-я0-9]+/g) ?? []).slice(0, 2).map((word) => word[0]).join('').toUpperCase() || '?'
+  return <div className={`gm-studio ${isMatch ? 'match' : 'miss'}`}>
+    <span className="gm-studio__logo" aria-hidden="true">{monogram}</span>
+    <span className="gm-studio__meta">
+      <small>{label}</small>
+      <strong title={names.join(', ')}>{names.join(', ')}</strong>
+    </span>
+    <i className="gm-studio__mark" aria-hidden="true">{isMatch ? <Check /> : null}</i>
+  </div>
+}
+
+function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
+  const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
+  const genresHint = byKey.get('genres')
+  const rankHint = byKey.get('rank')
+  const yearHint = byKey.get('year')
+  const total = attempt.hints.length
+  const matchedCount = attempt.hints.filter((hint) => hint.status === 'match').length
+  const genres = item.genres ?? []
+  const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
+  const attrs = ['metacritic', 'steam_positive', 'reviews', 'price', 'age']
+    .map((key) => byKey.get(key))
+    .filter(Boolean) as Attempt['hints']
+  const rankText = item.topRank != null ? `#${item.topRank}` : '—'
+
+  return <article className="attempt-card attempt-card--game">
+    <div className="gm-head">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} className="gm-head__art" />
+      <div className="gm-head__identity">
+        <span className="attempt-label">Попытка {index + 1}</span>
+        <h2>{item.titleRu}</h2>
+        <p className="gm-head__sub">
+          <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
+          {item.year != null && <>
+            <i className="gm-head__dot" aria-hidden="true">·</i>
+            <span className={`gm-year ${yearHint?.status ?? ''}`}>
+              {item.year}
+              {yearHint?.direction === 'up' ? <ArrowUp /> : yearHint?.direction === 'down' ? <ArrowDown /> : yearHint?.status === 'match' ? <Check /> : null}
+            </span>
+          </>}
+        </p>
+        {!!genres.length && <div className="gm-genres">
+          {genres.slice(0, 4).map((genre) => {
+            const isMatch = genreMatched.has(normalizeTextMatch(genre))
+            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{isMatch && <Check />}{genre}</span>
+          })}
+        </div>}
+      </div>
+      {rankHint && <div className={`gm-rank ${rankHint.status}`}>
+        <span className="gm-rank__ico" aria-hidden="true"><Trophy /></span>
+        <div className="gm-rank__val">
+          <strong>{rankText}</strong>
+          {rankHint.direction === 'up' ? <ArrowUp /> : rankHint.direction === 'down' ? <ArrowDown /> : null}
+        </div>
+        <small>место</small>
+      </div>}
+    </div>
+
+    <div className="dx-score" aria-label={`Совпало признаков: ${matchedCount} из ${total}`}>
+      <span>Совпадений</span>
+      <div className="dx-score__bar">{Array.from({ length: total }, (_, i) => <i key={i} className={i < matchedCount ? 'on' : ''} />)}</div>
+      <strong>{matchedCount}/{total}</strong>
+    </div>
+
+    {(!!(item.developers ?? []).length || !!(item.publishers ?? []).length) && <div className="gm-studios">
+      <GameStudioPlate label="Разработчик" names={item.developers ?? []} hint={byKey.get('developer')} />
+      <GameStudioPlate label="Издатель" names={item.publishers ?? []} hint={byKey.get('publisher')} />
+    </div>}
+
+    {!!attrs.length && <div className="dx-attrs">{attrs.map((hint) => <GameAttrBadge key={hint.key} hint={hint} />)}</div>}
+
+    <div className="dx-clouds">
+      <DxChipCloud label="Категории" hint={byKey.get('steam_categories')} items={item.steamCategories ?? []} limit={6} />
+      <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={item.platforms ?? []} limit={6} />
+    </div>
   </article>
 }
 
@@ -478,7 +666,7 @@ function DiagnosisAttemptCard({ attempt, item, index }: { attempt: Attempt; item
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const total = attempt.hints.length
-  const matchedCount = attempt.hints.filter((hint) => hint.status === 'match').length
+  const matchedCount = attempt.hints.filter(hasProgressMatch).length
   const icdValue = item.icd10?.[0] ?? item.icdGroup ?? '—'
 
   return <article className="attempt-card attempt-card--dx">
@@ -543,7 +731,7 @@ function Game({
   onStats: () => void
   onRules: () => void
 }) {
-  const effectivePeriod: PeriodKey = mode === 'diagnosis' ? 'all' : period
+  const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' ? 'all' : period
   const pool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
   const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date) : null, [pool, mode, effectivePeriod, date])
   const key = gameKey(mode, effectivePeriod, date)
@@ -551,6 +739,7 @@ function Game({
   const [status, setStatus] = useState<GameStatus>('playing')
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<TitleItem | null>(null)
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1)
   const [message, setMessage] = useState('')
   const [hintChoices, setHintChoices] = useState<HintChoice[]>([])
   const [dismissedHintRounds, setDismissedHintRounds] = useState<HintCheckpoint[]>([])
@@ -570,25 +759,85 @@ function Game({
     setHintModalRound(null)
     setQuery('')
     setSelected(null)
+    setActiveSuggestionIndex(-1)
     setMessage('')
   }, [key])
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => searchTitles(pool, query, used), [pool, query, used])
+
+  useEffect(() => {
+    if (!query || selected || !suggestions.length) {
+      setActiveSuggestionIndex(-1)
+      return
+    }
+    setActiveSuggestionIndex((current) => {
+      if (current < 0) return 0
+      if (current >= suggestions.length) return suggestions.length - 1
+      return current
+    })
+  }, [query, selected, suggestions])
   const assistHints = useMemo(() => answer ? buildAssistHints(answer) : [], [answer])
   const usedHintsSet = useMemo(() => new Set(hintChoices.map((choice) => choice.key)), [hintChoices])
   const revealedAssistHints = useMemo(() => assistHints.filter((hint) => usedHintsSet.has(hint.key)), [assistHints, usedHintsSet])
   const currentRound = Math.min(attempts.length + 1, 10)
-  const activeHintRound = status === 'playing' && (currentRound === 5 || currentRound === 8) ? currentRound as HintCheckpoint : null
-  const hasUsedActiveHint = activeHintRound !== null && hintChoices.some((choice) => choice.round === activeHintRound)
+  const unlockedHintRounds: HintCheckpoint[] = []
+  if (currentRound >= 5) unlockedHintRounds.push(5)
+  if (currentRound >= 8) unlockedHintRounds.push(8)
+  const usedHintRounds = useMemo(() => new Set(hintChoices.map((choice) => choice.round)), [hintChoices])
+  const pendingHintRounds = useMemo(() => unlockedHintRounds.filter((round) => !usedHintRounds.has(round)), [unlockedHintRounds, usedHintRounds])
+  const nextHintRound = pendingHintRounds[0] ?? null
+  const nextUndismissedHintRound = pendingHintRounds.find((round) => !dismissedHintRounds.includes(round)) ?? null
+  const preferredHintRound = nextUndismissedHintRound ?? nextHintRound
+  const canUseHint = status === 'playing' && pendingHintRounds.length > 0
+  const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
 
   useEffect(() => {
-    if (activeHintRound && !hasUsedActiveHint && !dismissedHintRounds.includes(activeHintRound)) {
-      setHintModalRound(activeHintRound)
-    } else if (!activeHintRound) {
+    if (!canUseHint) {
       setHintModalRound(null)
+      return
     }
-  }, [activeHintRound, hasUsedActiveHint, dismissedHintRounds])
+    if (hintModalRound && !pendingHintRounds.includes(hintModalRound)) {
+      setHintModalRound(null)
+      return
+    }
+    if (!hintModalRound && nextUndismissedHintRound) {
+      setHintModalRound(nextUndismissedHintRound)
+    }
+  }, [canUseHint, hintModalRound, nextUndismissedHintRound, pendingHintRounds])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onBack()
+        return
+      }
+      if (status !== 'playing' || hintModalRound) return
+      if (event.ctrlKey || event.metaKey || event.altKey) return
+      if (isEditableTarget(event.target)) return
+
+      if (event.key.length === 1) {
+        event.preventDefault()
+        inputRef.current?.focus()
+        setQuery((prev) => `${prev}${event.key}`)
+        setSelected(null)
+        setMessage('')
+        return
+      }
+
+      if (event.key === 'Backspace') {
+        event.preventDefault()
+        inputRef.current?.focus()
+        setQuery((prev) => prev.slice(0, -1))
+        setSelected(null)
+        setMessage('')
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [hintModalRound, onBack, status])
 
   const updateStats = (won: boolean, count: number) => {
     const stats = loadStats(mode)
@@ -622,19 +871,23 @@ function Game({
   }
 
   const revealAssistHint = (hintKey: AssistHintKey) => {
-    if (!answer || status !== 'playing' || !activeHintRound) return
+    if (!answer || status !== 'playing') return
     if (usedHintsSet.has(hintKey)) return
+    const targetRound = hintModalRound ?? preferredHintRound
+    if (!targetRound) return
 
     const targetHint = assistHints.find((hint) => hint.key === hintKey)
     if (!targetHint?.available) {
       setMessage('Для этой подсказки пока нет данных')
       return
     }
-    const nextHintChoices = [...hintChoices, { round: activeHintRound, key: hintKey }]
+    const nextHintChoices = [...hintChoices, { round: targetRound, key: hintKey }]
+    const nextDismissedRounds = dismissedHintRounds.filter((round) => round !== targetRound)
+    setDismissedHintRounds(nextDismissedRounds)
     setHintChoices(nextHintChoices)
     setHintModalRound(null)
     setMessage('')
-    persistGame(attempts, status, nextHintChoices)
+    persistGame(attempts, status, nextHintChoices, nextDismissedRounds)
   }
 
   const dismissHintModal = () => {
@@ -688,6 +941,7 @@ function Game({
     <main className="game-shell">
       <div className="screen-back-row">
         <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
+        <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
       <section className="game-heading">
         <div>
@@ -700,13 +954,13 @@ function Game({
 
       <section className="game-toolbar" aria-label="Настройки игры">
         <GameSelector mode={mode} onClick={onHome} />
-        {mode !== 'diagnosis' && <PeriodControl value={period} onChange={setPeriod} />}
+        {(mode === 'movie' || mode === 'series') && <PeriodControl value={period} onChange={setPeriod} />}
         {date !== getMoscowDate() && <ActionButton variant="ghost" className="today-link" onClick={() => setDate(getMoscowDate())}>Сегодня</ActionButton>}
       </section>
 
       <div className="progress-row">
         <Progress attempts={attempts.length} />
-        {activeHintRound && !hasUsedActiveHint && !hintModalRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(activeHintRound)}><Sparkles /> Подсказка</ActionButton>}
+        {canUseHint && !hintModalRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => preferredHintRound && setHintModalRound(preferredHintRound)}><Sparkles /> {hintTriggerLabel}</ActionButton>}
       </div>
 
       {!!revealedAssistHints.length && <section className="assist-revealed" aria-label="Открытые подсказки">
@@ -726,12 +980,15 @@ function Game({
           <h2>{answer.titleRu}</h2>
           <p>{answer.mode === 'diagnosis'
             ? [answer.titleOriginal, ...(answer.icd10?.length ? [answer.icd10.join(', ')] : []), ...(answer.icdGroup ? [answer.icdGroup] : [])].filter(Boolean).join(' · ')
-            : `${answer.titleOriginal || 'Оригинальное название не указано'} · ${answer.year ?? '—'}`}</p>
+            : answer.mode === 'game'
+              ? [answer.titleOriginal || 'Оригинальное название не указано', answer.year != null ? String(answer.year) : '—', answer.topRank != null ? `#${answer.topRank}` : null].filter(Boolean).join(' · ')
+              : `${answer.titleOriginal || 'Оригинальное название не указано'} · ${answer.year ?? '—'}`}</p>
           <div className="result-tags">{(answer.mode === 'diagnosis'
             ? [...(answer.bodySystems ?? []).slice(0, 2), ...(answer.diseaseTypes ?? []).slice(0, 2), ...(answer.icd10 ?? []).slice(0, 1)]
-            : (answer.genres ?? [])
+            : answer.mode === 'game'
+              ? [...(answer.genres ?? []).slice(0, 3), ...(answer.steamCategories ?? []).slice(0, 2)]
+              : (answer.genres ?? [])
           ).map((tag) => <i key={tag}>{tag}</i>)}</div>
-          {answer.mode === 'diagnosis' && answer.safetyDisclaimer && <p>{answer.safetyDisclaimer}</p>}
           <strong>{status === 'won' ? `${attempts.length}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
         </div>
         <div className="result-actions">
@@ -741,7 +998,7 @@ function Game({
       </section>}
 
       {status === 'playing' && <section className="search-area">
-        <label htmlFor="movie-search">{mode === 'diagnosis' ? 'Введите диагноз' : 'Введите название'}</label>
+        <label htmlFor="movie-search">{mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : 'Введите название'}</label>
         <div className={`search-box ${selected ? 'selected' : ''}`}>
           <Search />
           <input
@@ -750,19 +1007,56 @@ function Game({
             value={query}
             autoComplete="off"
             placeholder={modeSearchPlaceholder(mode)}
-            onChange={(event) => { setQuery(event.target.value); setSelected(null); setMessage('') }}
-            onKeyDown={(event) => event.key === 'Enter' && submit()}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setSelected(null)
+              setActiveSuggestionIndex(0)
+              setMessage('')
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'ArrowDown') {
+                if (!suggestions.length || selected) return
+                event.preventDefault()
+                setActiveSuggestionIndex((current) => current < 0 ? 0 : Math.min(current + 1, suggestions.length - 1))
+                return
+              }
+              if (event.key === 'ArrowUp') {
+                if (!suggestions.length || selected) return
+                event.preventDefault()
+                setActiveSuggestionIndex((current) => current <= 0 ? 0 : current - 1)
+                return
+              }
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                if (selected) {
+                  submit()
+                  return
+                }
+                if (suggestions.length) {
+                  const index = activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0
+                  submit(suggestions[index])
+                  return
+                }
+                submit()
+              }
+            }}
           />
           {selected && <Check className="selected-check" />}
           <button onClick={() => submit()} aria-label="Проверить ответ"><ChevronRight /></button>
         </div>
         {query && !selected && <div className="suggestions">
-          {suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)}>
+          {suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => setActiveSuggestionIndex(index)} onClick={() => submit(item)}>
             <Poster item={item} />
             <span><strong>{item.titleRu}</strong><small>{item.mode === 'diagnosis'
               ? [item.titleOriginal || 'Без оригинального названия', ...(item.icd10?.length ? [item.icd10.join(', ')] : []), ...(item.icdGroup ? [item.icdGroup] : [])].filter(Boolean).join(' · ')
-              : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
-            <em>{item.mode === 'diagnosis' ? (item.contagiousness ?? item.icd10?.[0] ?? '—') : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
+              : item.mode === 'game'
+                ? [item.titleOriginal || 'Без оригинального названия', item.year != null ? String(item.year) : '—', item.topRank != null ? `#${item.topRank}` : null].filter(Boolean).join(' · ')
+                : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
+            <em>{item.mode === 'diagnosis'
+              ? (item.contagiousness ?? item.icd10?.[0] ?? '—')
+              : item.mode === 'game'
+                ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
+                : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
           </button>) : <div className="empty-search">Ничего не найдено</div>}
         </div>}
         <div className="search-meta"><span>{modePoolLabel(mode, pool.length)}</span>{message && <strong>{message}</strong>}</div>
@@ -770,9 +1064,11 @@ function Game({
 
       {!attempts.length && status === 'playing' && <section className="empty-card">
         <div className="empty-card__icon">{modeIcon(mode)}</div>
-        <div><h2>Начните с любого {modeSubjectGenitive(mode)}</h2><p>{mode === 'diagnosis'
+        <div><h2>Начните с {mode === 'game' ? 'любой' : 'любого'} {modeSubjectGenitive(mode)}</h2><p>{mode === 'diagnosis'
           ? 'После ответа появятся сравнения по системе, симптомам, диагностике и коду МКБ.'
-          : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
+          : mode === 'game'
+            ? 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.'
+            : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
         <ActionButton variant="secondary" onClick={onRules}>Как читать подсказки <ChevronRight /></ActionButton>
       </section>}
 
@@ -783,7 +1079,9 @@ function Game({
           if (!item) return null
           return item.mode === 'diagnosis'
             ? <DiagnosisAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
-            : <AttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
+            : item.mode === 'game'
+              ? <GameAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
+              : <AttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
         })}
       </section>}
     </main>
@@ -795,7 +1093,7 @@ function Game({
           <button onClick={dismissHintModal} aria-label="Закрыть"><X /></button>
         </div>
         <h2 id="hint-modal-title">Выберите подсказку</h2>
-        <p>{hintModalRound === 5 ? 'Можно открыть одну из трёх. Следующая возможность появится перед 8-й попыткой.' : 'Это последняя возможность открыть одну из оставшихся подсказок.'}</p>
+        <p>{hintModalRound === 5 ? 'Это первая возможность. Если пропустить её сейчас, она всё равно останется доступной до конца сеанса.' : 'Это вторая возможность. Её также можно открыть в любой момент до конца сеанса.'}</p>
         <div className="hint-modal__options">
           {assistHints.map((hint, index) => {
             const isOpen = usedHintsSet.has(hint.key)
@@ -839,12 +1137,36 @@ function RulesView() {
   return <div className="rules-list">
     <p>Выберите тайтл из поиска. После каждой попытки значения сравниваются с ответом дня.</p>
     <p>Перед 5-й и 8-й попытками можно открыть по одной из трёх дополнительных подсказок.</p>
-    <p>Режим «Диагнозы» носит образовательный характер и не предназначен для самодиагностики.</p>
+    <p>В режиме «Игры» дополнительно сравниваются позиция в топе, метрики Steam и Metacritic.</p>
     <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
     <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
     <div><i className="miss" /><span><strong>Мимо</strong> — значение не совпало.</span></div>
     <p>Стрелка показывает, выше или ниже находится правильный год, рейтинг или хронометраж.</p>
   </div>
+}
+
+function ResumeSessionsView({ sessions, onOpen, onClose }: {
+  sessions: SavedGame[]
+  onOpen: (session: SavedGame) => void
+  onClose: (session: SavedGame) => void
+}) {
+  return <>
+    <p className="modal-lead">Незавершенные игры сохраняются автоматически. Выберите сеанс, чтобы продолжить, или закройте его.</p>
+    <div className="resume-list">
+      {sessions.map((session) => {
+        const attemptText = `${session.attempts.length}/10`
+        const periodText = session.mode === 'movie' || session.mode === 'series' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
+        return <article className="resume-item" key={session.key}>
+          <button className="resume-item__open" onClick={() => onOpen(session)}>
+            <span className="resume-item__mode">{modeIcon(session.mode)}<i>{modeTitle(session.mode)}</i></span>
+            <strong>{prettyDate(session.date)} · Сеанс №{dayNumber(session.date)}</strong>
+            <small>{periodText} · Попытки: {attemptText}</small>
+          </button>
+          <button className="resume-item__close" aria-label="Закрыть сеанс" onClick={() => onClose(session)}><X /></button>
+        </article>
+      })}
+    </div>
+  </>
 }
 
 export default function App() {
@@ -854,9 +1176,10 @@ export default function App() {
   const [period, setPeriod] = useState<PeriodKey>('all')
   const [date, setDate] = useState(getMoscowDate())
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
-  const [data, setData] = useState<Record<TitleMode, TitleItem[]>>({ movie: [], series: [], diagnosis: [] })
-  const [titleCounts, setTitleCounts] = useState<{ movie: number | null; series: number | null; diagnosis: number | null }>({ movie: null, series: null, diagnosis: null })
-  const [modal, setModal] = useState<'stats' | 'rules' | null>(null)
+  const [data, setData] = useState<Record<TitleMode, TitleItem[]>>({ movie: [], series: [], game: [], diagnosis: [] })
+  const [titleCounts, setTitleCounts] = useState<{ movie: number | null; series: number | null; game: number | null; diagnosis: number | null }>({ movie: null, series: null, game: null, diagnosis: null })
+  const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | null>(null)
+  const [gamesRevision, setGamesRevision] = useState(0)
   const [loading, setLoading] = useState(false)
   const transitionTimerRef = useRef<number | null>(null)
 
@@ -866,6 +1189,7 @@ export default function App() {
       .then((source) => setTitleCounts({
         movie: Number.isFinite(source.movieCount) ? source.movieCount : null,
         series: Number.isFinite(source.seriesCount) ? source.seriesCount : null,
+        game: Number.isFinite(source.gameCount) ? source.gameCount : null,
         diagnosis: Number.isFinite(source.diagnosisCount) ? source.diagnosisCount : null,
       }))
       .catch(() => undefined)
@@ -875,6 +1199,13 @@ export default function App() {
     fetch('/data/diagnoses.generated.json')
       .then((response) => response.json())
       .then((items: TitleItem[]) => setTitleCounts((current) => ({ ...current, diagnosis: current.diagnosis ?? items.length })))
+      .catch(() => undefined)
+  }, [])
+
+  useEffect(() => {
+    fetch('/data/games.generated.json')
+      .then((response) => response.json())
+      .then((items: TitleItem[]) => setTitleCounts((current) => ({ ...current, game: current.game ?? items.length })))
       .catch(() => undefined)
   }, [])
 
@@ -899,9 +1230,9 @@ export default function App() {
     }
   }, [mode, period])
 
-  const archiveDates = Array.from({ length: 6 }, (_, offset) => {
+  const archiveDates = Array.from({ length: 7 }, (_, offset) => {
     const day = new Date(`${getMoscowDate()}T12:00:00+03:00`)
-    day.setDate(day.getDate() - offset - 1)
+    day.setDate(day.getDate() - offset)
     return getMoscowDate(day)
   })
   const clearTransitionTimer = () => {
@@ -914,7 +1245,7 @@ export default function App() {
 
   const setModeSafe = (nextMode: TitleMode) => {
     setMode(nextMode)
-    if (nextMode === 'diagnosis') {
+    if (nextMode === 'diagnosis' || nextMode === 'game') {
       setPeriod('all')
     }
   }
@@ -930,10 +1261,44 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }
 
-  const games = allGames()
+  const games = useMemo(() => allGames(), [screen, gamesRevision])
+  const activeGames = useMemo(() => games.filter((game) => game.status === 'playing').sort((a, b) => b.updatedAt - a.updatedAt), [games])
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
   const goBackFromGame = () => moveToScreen(gameBackTarget)
+
+  useEffect(() => {
+    if (modal === 'resume' && !activeGames.length) {
+      setModal(null)
+    }
+  }, [modal, activeGames.length])
+
+  const openSavedSession = (savedGame: SavedGame, backTarget: 'hub' | 'rewatch' = 'hub') => {
+    clearTransitionTimer()
+    setTransition('idle')
+    setGameBackTarget(backTarget)
+    setModeSafe(savedGame.mode)
+    setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' ? savedGame.period : 'all')
+    setDate(savedGame.date)
+    setScreen('game')
+    setModal(null)
+    window.scrollTo({ top: 0 })
+  }
+
+  const resumeActiveSession = () => {
+    if (!activeGames.length) return
+    if (activeGames.length === 1) {
+      openSavedSession(activeGames[0], 'hub')
+      return
+    }
+    setModal('resume')
+  }
+
+  const closeActiveSession = (session: SavedGame) => {
+    removeGame(session.key)
+    setGamesRevision((value) => value + 1)
+  }
+
   const selectCategory = (nextMode: TitleMode) => {
     clearTransitionTimer()
     setTransition('idle')
@@ -965,13 +1330,13 @@ export default function App() {
     }, 460)
   }
   const openArchive = (archiveDate: string, savedGame: SavedGame | null) => {
+    if (savedGame) {
+      openSavedSession(savedGame, 'rewatch')
+      return
+    }
     clearTransitionTimer()
     setTransition('idle')
     setGameBackTarget('rewatch')
-    if (savedGame) {
-      setModeSafe(savedGame.mode)
-      setPeriod(savedGame.mode === 'diagnosis' ? 'all' : savedGame.period)
-    }
     setDate(archiveDate)
     setScreen('game')
     setModal(null)
@@ -980,7 +1345,7 @@ export default function App() {
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
 
   return <div className={`app app--${appTone}`}>
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} titleCounts={titleCounts} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} />}
 
     {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} />}
 
@@ -1004,5 +1369,6 @@ export default function App() {
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modePlural(mode)}</div><StatsView mode={mode} /></Modal>}
+    {modal === 'resume' && <Modal title="Вернуться к игре" onClose={() => setModal(null)}><ResumeSessionsView sessions={activeGames} onOpen={(session) => openSavedSession(session, 'hub')} onClose={closeActiveSession} /></Modal>}
   </div>
 }

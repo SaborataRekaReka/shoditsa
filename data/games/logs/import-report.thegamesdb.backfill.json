@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-07-07T09:36:38.420Z",
+  "source": "thegamesdb_backfill",
+  "counts": {
+    "totalGames": 1000,
+    "addedThisRun": 185,
+    "requestedBackfill": 185,
+    "unresolvedThisRun": 0,
+    "tgdbApiCalls": 0,
+    "wikiApiCalls": 420,
+    "tgdbCacheHits": 185,
+    "tgdbCacheMisses": 0,
+    "wikiCacheHits": 159,
+    "wikiCacheMisses": 205,
+    "remainingMissingAfterRun": 0
+  },
+  "unresolvedTop50": []
+}

@@ -11,8 +11,16 @@
     "deploy:quick:skip-build": "powershell -ExecutionPolicy Bypass -File scripts/deploy-timeweb.ps1 -SkipBuild",
     "data:build": "tsx scripts/import-kinopoisk.ts",
     "data:build:navigator": "node scripts/import-kinopoisk-navigator.mjs",
+    "data:build:games": "node scripts/import-thegamesdb-incremental.mjs --batch=20",
+    "data:build:games:steam": "node scripts/import-steam-games.mjs",
+    "data:build:games:all": "node scripts/import-steam-games.mjs --all",
+    "data:build:games:top10": "node scripts/build-thegamesdb-top10.mjs",
+    "data:build:games:incremental": "node scripts/import-thegamesdb-incremental.mjs",
+    "data:build:games:backfill": "node scripts/backfill-missing-cards.mjs",
     "data:refill": "node scripts/refill-missing-movies.mjs",
     "data:hints": "node scripts/enrich-movie-hints.mjs",
+    "data:sanitize:movies": "node scripts/sanitize-movie-hints.mjs",
+    "data:sanitize:games": "node scripts/sanitize-game-hints.mjs",
     "data:collect-ids": "node scripts/collect-kinopoisk-ids.mjs"
   },
   "dependencies": {

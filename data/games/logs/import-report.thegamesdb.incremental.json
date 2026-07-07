@@ -1,0 +1,231 @@
+{
+  "generatedAt": "2026-07-07T09:30:35.029Z",
+  "source": "thegamesdb_incremental",
+  "state": {
+    "cursor": 1000,
+    "completed": true,
+    "updatedAt": "2026-07-07T09:30:35.028Z",
+    "lastRun": {
+      "batchRequested": 50,
+      "batchAdded": 50,
+      "scanned": 53,
+      "maxScans": 600,
+      "apiCalls": 58,
+      "cacheHits": 1,
+      "cacheMisses": 52,
+      "totalGames": 815
+    }
+  },
+  "counts": {
+    "totalGames": 815,
+    "addedThisRun": 50,
+    "scannedThisRun": 53,
+    "skippedThisRun": 3,
+    "apiCalls": 58,
+    "cacheHits": 1,
+    "cacheMisses": 52
+  },
+  "skippedTop50": [
+    {
+      "rank": 948,
+      "name": "Wii Fit",
+      "reason": "not_full_data",
+      "missing": [
+        "description"
+      ]
+    },
+    {
+      "rank": 949,
+      "name": "FIFA '09",
+      "reason": "not_full_data",
+      "missing": [
+        "developers_or_publishers"
+      ]
+    },
+    {
+      "rank": 982,
+      "name": "Myth: The Fallen Lords",
+      "reason": "not_full_data",
+      "missing": [
+        "description"
+      ]
+    }
+  ],
+  "top25": [
+    {
+      "topRank": 1,
+      "titleRu": "Tetris",
+      "seedRank": 1,
+      "thegamesdbId": 65556,
+      "verified": true
+    },
+    {
+      "topRank": 2,
+      "titleRu": "The Legend of Zelda: Ocarina of Time",
+      "seedRank": 2,
+      "thegamesdbId": 133332,
+      "verified": true
+    },
+    {
+      "topRank": 3,
+      "titleRu": "Super Mario 64",
+      "seedRank": 3,
+      "thegamesdbId": 216,
+      "verified": true
+    },
+    {
+      "topRank": 4,
+      "titleRu": "Half-Life 2",
+      "seedRank": 4,
+      "thegamesdbId": 146,
+      "verified": true
+    },
+    {
+      "topRank": 5,
+      "titleRu": "BioShock",
+      "seedRank": 6,
+      "thegamesdbId": 132250,
+      "verified": true
+    },
+    {
+      "topRank": 6,
+      "titleRu": "Final Fantasy VII",
+      "seedRank": 7,
+      "thegamesdbId": 68681,
+      "verified": true
+    },
+    {
+      "topRank": 7,
+      "titleRu": "World of Warcraft",
+      "seedRank": 8,
+      "thegamesdbId": 149,
+      "verified": true
+    },
+    {
+      "topRank": 8,
+      "titleRu": "Metal Gear Solid",
+      "seedRank": 9,
+      "thegamesdbId": 196,
+      "verified": true
+    },
+    {
+      "topRank": 9,
+      "titleRu": "Doom",
+      "seedRank": 10,
+      "thegamesdbId": 745,
+      "verified": true
+    },
+    {
+      "topRank": 10,
+      "titleRu": "The Elder Scrolls V: Skyrim",
+      "seedRank": 11,
+      "thegamesdbId": 2511,
+      "verified": true
+    },
+    {
+      "topRank": 11,
+      "titleRu": "The Last of Us",
+      "seedRank": 13,
+      "thegamesdbId": 103667,
+      "verified": true
+    },
+    {
+      "topRank": 12,
+      "titleRu": "Super Mario World",
+      "seedRank": 14,
+      "thegamesdbId": 136,
+      "verified": true
+    },
+    {
+      "topRank": 13,
+      "titleRu": "Chrono Trigger",
+      "seedRank": 15,
+      "thegamesdbId": 67935,
+      "verified": true
+    },
+    {
+      "topRank": 14,
+      "titleRu": "The Legend of Zelda: A Link to the Past",
+      "seedRank": 16,
+      "thegamesdbId": 1318,
+      "verified": true
+    },
+    {
+      "topRank": 15,
+      "titleRu": "Red Dead Redemption",
+      "seedRank": 17,
+      "thegamesdbId": 100167,
+      "verified": true
+    },
+    {
+      "topRank": 16,
+      "titleRu": "Halo: Combat Evolved",
+      "seedRank": 19,
+      "thegamesdbId": 3996,
+      "verified": true
+    },
+    {
+      "topRank": 17,
+      "titleRu": "Portal 2",
+      "seedRank": 20,
+      "thegamesdbId": 118754,
+      "verified": true
+    },
+    {
+      "topRank": 18,
+      "titleRu": "Minecraft",
+      "seedRank": 21,
+      "thegamesdbId": 68757,
+      "verified": true
+    },
+    {
+      "topRank": 19,
+      "titleRu": "Street Fighter II",
+      "seedRank": 22,
+      "thegamesdbId": 108260,
+      "verified": true
+    },
+    {
+      "topRank": 20,
+      "titleRu": "Portal",
+      "seedRank": 23,
+      "thegamesdbId": 158,
+      "verified": true
+    },
+    {
+      "topRank": 21,
+      "titleRu": "The Witcher 3: Wild Hunt - Hearts of Stone",
+      "seedRank": 24,
+      "thegamesdbId": 34972,
+      "verified": true
+    },
+    {
+      "topRank": 22,
+      "titleRu": "Super Metroid",
+      "seedRank": 25,
+      "thegamesdbId": 83385,
+      "verified": true
+    },
+    {
+      "topRank": 23,
+      "titleRu": "Super Mario Bros.",
+      "seedRank": 26,
+      "thegamesdbId": 126692,
+      "verified": true
+    },
+    {
+      "topRank": 24,
+      "titleRu": "Shadow of the Colossus",
+      "seedRank": 27,
+      "thegamesdbId": 99081,
+      "verified": true
+    },
+    {
+      "topRank": 25,
+      "titleRu": "Deus Ex",
+      "seedRank": 28,
+      "thegamesdbId": 65748,
+      "verified": true
+    }
+  ]
+}

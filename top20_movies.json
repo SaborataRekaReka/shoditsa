@@ -1,0 +1,2886 @@
+[
+  {
+    "id": "kp_435",
+    "mode": "movie",
+    "titleRu": "Зеленая миля",
+    "titleOriginal": "The Green Mile",
+    "alternativeTitles": [],
+    "year": 1999,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал",
+      "фэнтези"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 189,
+    "directors": [
+      {
+        "nameRu": "Фрэнк Дарабонт",
+        "nameOriginal": "Frank Darabont",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24262.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Стивен Кинг",
+        "nameOriginal": "Stephen King",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24263.jpg"
+      },
+      {
+        "nameRu": "Фрэнк Дарабонт",
+        "nameOriginal": "Frank Darabont",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24262.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Том Хэнкс",
+        "nameOriginal": "Tom Hanks",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_9144.jpg"
+      },
+      {
+        "nameRu": "Дэвид Морс",
+        "nameOriginal": "David Morse",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12759.jpg"
+      },
+      {
+        "nameRu": "Бонни Хант",
+        "nameOriginal": "Bonnie Hunt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_22527.jpg"
+      },
+      {
+        "nameRu": "Майкл Кларк Дункан",
+        "nameOriginal": "Michael Clarke Duncan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_677.jpg"
+      },
+      {
+        "nameRu": "Джеймс Кромуэлл",
+        "nameOriginal": "James Cromwell",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_20664.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 435,
+    "imdbId": "tt0120689",
+    "ratings": {
+      "kinopoisk": 9.1,
+      "imdb": 8.6
+    },
+    "votes": {
+      "kinopoisk": 1087060,
+      "imdb": 1600000
+    },
+    "popularityScore": 99,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/435.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/223007/2a0000017c07576c36b897fb11d4d05fd49e/orig",
+    "description": "Пол Эджкомб — начальник блока смертников в тюрьме «Холодная гора», каждый из узников которого однажды проходит «зеленую милю» по пути к месту казни. Пол повидал много заключённых и надзирателей за время работы. Однако гигант Джон Коффи, обвинённый в страшном преступлении, стал одним из самых необычных обитателей блока.",
+    "topRank": 1,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "В тюрьме для смертников появляется заключенный с божественным даром. Мистическая драма по роману Стивена Кинга",
+    "slogan": "Пол Эджкомб не верил в чудеса. Пока не столкнулся с одним из них",
+    "supportingCast": [
+      {
+        "nameRu": "Майкл Джитер",
+        "nameOriginal": "Michael Jeter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8989.jpg"
+      },
+      {
+        "nameRu": "Грэм Грин",
+        "nameOriginal": "Graham Greene",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1130.jpg"
+      },
+      {
+        "nameRu": "Даг Хатчисон",
+        "nameOriginal": "Doug Hutchison",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12761.jpg"
+      },
+      {
+        "nameRu": "Сэм Рокуэлл",
+        "nameOriginal": "Sam Rockwell",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_21496.jpg"
+      },
+      {
+        "nameRu": "Барри Пеппер",
+        "nameOriginal": "Barry Pepper",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7370.jpg"
+      }
+    ],
+    "facts": [
+      "Для того чтобы придать картине соответствующее настроение, все тюремные охранники были одеты в униформу, хотя в 1935 году в тюрьмах такого правила еще не существовало.",
+      "На самом деле в штате Луизиана электрический стул стал способом казни лишь в 1941 году. В год, значащийся временем действия фильма — 1935 (в книге — 1932), осужденных преступников казнили путем повешения.",
+      "Фильм снят по мотивам романа Стивена Кинга &laquo;Зеленая миля&raquo; (The Green Mile, 1996).",
+      "События картины развиваются в 1935 году (в книге – в 1932). Данное изменение было вызвано желанием использовать в фильме кадры из « Цилиндра » (1935).",
+      "Дэвид Морс ниже Майкла Кларка Дункана всего на один дюйм. В ходе съемок было применено несколько различных способов, дабы создать иллюзию того, что Джон Коффи был невероятным гигантом.",
+      "Исполнитель роли Эдуарда Делакруа, Майкл Джитер , к моменту съемок картины уже имел опыт совместных съемок с «одаренными» мышами. Этим фильмом стала лента 1997 года – « Мышиная охота ».",
+      "По первоначальной задумке, Том Хэнкс должен был исполнить и роль постаревшего Пола Эджкомба. После пары-тройки экспериментов гримеров было решено, что должным образом загримировать Тома не удастся, и тогда на эту маленькую роль был выбран Даббс Грир .",
+      "Модель электрического стула, задействованная в ходе съемок картины, была сконструирована по оригинальным чертежам допотопного электрического стула, известного под названием «Old Sparky». Стивен Кинг попытался понять, что испытывают приговоренные к смертной казни, и попросил привязать себя к стулу. По его словам, ощущения были не из самых приятных."
+    ],
+    "awards": {
+      "wins": 3,
+      "nominations": 10,
+      "notable": [
+        "2000 · Премия Гильдии актеров — Лучшая мужская роль второго плана",
+        "2000 · Сатурн — Лучшая актриса второго плана",
+        "2000 · Сатурн — Лучший приключенческий фильм, боевик или триллер"
+      ]
+    }
+  },
+  {
+    "id": "kp_326",
+    "mode": "movie",
+    "titleRu": "Побег из Шоушенка",
+    "titleOriginal": "The Shawshank Redemption",
+    "alternativeTitles": [],
+    "year": 1994,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 142,
+    "directors": [
+      {
+        "nameRu": "Фрэнк Дарабонт",
+        "nameOriginal": "Frank Darabont",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24262.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Стивен Кинг",
+        "nameOriginal": "Stephen King",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24263.jpg"
+      },
+      {
+        "nameRu": "Фрэнк Дарабонт",
+        "nameOriginal": "Frank Darabont",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24262.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Тим Роббинс",
+        "nameOriginal": "Tim Robbins",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7987.jpg"
+      },
+      {
+        "nameRu": "Морган Фриман",
+        "nameOriginal": "Morgan Freeman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6750.jpg"
+      },
+      {
+        "nameRu": "Боб Гантон",
+        "nameOriginal": "Bob Gunton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23481.jpg"
+      },
+      {
+        "nameRu": "Уильям Сэдлер",
+        "nameOriginal": "William Sadler",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24267.jpg"
+      },
+      {
+        "nameRu": "Клэнси Браун",
+        "nameOriginal": "Clancy Brown",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_20802.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 326,
+    "imdbId": "tt0111161",
+    "ratings": {
+      "kinopoisk": 9.1,
+      "imdb": 9.3
+    },
+    "votes": {
+      "kinopoisk": 1128851,
+      "imdb": 3200000
+    },
+    "popularityScore": 100,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/326.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1652588/2a00000186aca5e13ea6cec11d584ac5455b/orig",
+    "description": "Бухгалтер Энди Дюфрейн обвинён в убийстве собственной жены и её любовника. Оказавшись в тюрьме под названием Шоушенк, он сталкивается с жестокостью и беззаконием, царящими по обе стороны решётки. Каждый, кто попадает в эти стены, становится их рабом до конца жизни. Но Энди, обладающий живым умом и доброй душой, находит подход как к заключённым, так и к охранникам, добиваясь их особого к себе расположения.",
+    "topRank": 2,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Несправедливо осужденный банкир готовит побег из тюрьмы. Тим Роббинс в выдающейся экранизации Стивена Кинга",
+    "slogan": "Страх - это кандалы. Надежда - это свобода",
+    "supportingCast": [
+      {
+        "nameRu": "Гил Беллоуз",
+        "nameOriginal": "Gil Bellows",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8531.jpg"
+      },
+      {
+        "nameRu": "Марк Ролстон",
+        "nameOriginal": "Mark Rolston",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_47327.jpg"
+      },
+      {
+        "nameRu": "Джеймс Уитмор",
+        "nameOriginal": "James Whitmore",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50162.jpg"
+      },
+      {
+        "nameRu": "Джеффри ДеМанн",
+        "nameOriginal": "Jeffrey DeMunn",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24264.jpg"
+      },
+      {
+        "nameRu": "Ларри Бранденбург",
+        "nameOriginal": "Larry Brandenburg",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_63758.jpg"
+      }
+    ],
+    "facts": [
+      "Фильм снят по мотивам повести Стивена Кинга «Рита Хейуорт и спасение из Шоушенка» (Rita Hayworth and Shawshank Redemption), опубликованной в составе сборника «Четыре сезона» (Different Seasons, 1982).",
+      "Съемки проходили в&#160;Мэнсфилдской исправительной колонии в&#160;штате Огайо. Тюрьма находилась в&#160;таком плачевном состоянии, что пришлось приводить её&#160;в&#160;должный вид.",
+      "Оригинальная повесть Стивена Кинга была, по словам самого писателя, кульминацией всех его впечатлений от различных тюремных фильмов, которые он смотрел в детстве.",
+      "Стивен Кинг согласился продать права на&#160;свое произведение практически даром, так как с&#160; Фрэнком их&#160;связывает давняя крепкая дружба. Произошло это после того, как Фрэнк довольно успешно экранизировал рассказ Кинга &#171; Женщина в палате &#187;.",
+      "Американское общество защиты животных выступило с&#160;критикой в&#160;адрес фильма, в&#160;котором единственным представителем фауны стал ворон старика Брукса. В&#160;картине есть сцена кормления птицы червяком, найденном во&#160;время обеда в&#160;тарелке главного героя фильма. Общество настояло на&#160;том, чтобы была использована уже мертвая личинка, погибшая естественной смертью. После того как такая особь была найдена, сцену отсняли.",
+      "Роль Томми Уильямса изначально была написана под Брэда Питта .",
+      "Картина, которую смотрят заключенные, — &#171; Гильда &#187;.",
+      "Начальник тюрьмы Нортон насвистывает гимн «Eine feste Burg ist unser Gott», название которого переводится примерно так: «Могучая крепость и есть наш бог»."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 12,
+      "notable": [
+        "1995 · Золотой глобус — Лучшая мужская роль (драма)",
+        "1995 · Оскар — Лучший оригинальный саундтрек",
+        "1995 · Сатурн — Лучший сценарий"
+      ]
+    }
+  },
+  {
+    "id": "kp_535341",
+    "mode": "movie",
+    "titleRu": "1+1",
+    "titleOriginal": "Intouchables",
+    "alternativeTitles": [],
+    "year": 2011,
+    "endYear": null,
+    "countries": [
+      "Франция"
+    ],
+    "originalLanguage": "fr",
+    "genres": [
+      "драма",
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 112,
+    "directors": [
+      {
+        "nameRu": "Оливье Накаш",
+        "nameOriginal": "Olivier Nakache",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_382906.jpg"
+      },
+      {
+        "nameRu": "Эрик Толедано",
+        "nameOriginal": "Éric Toledano",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_426346.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Оливье Накаш",
+        "nameOriginal": "Olivier Nakache",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_382906.jpg"
+      },
+      {
+        "nameRu": "Эрик Толедано",
+        "nameOriginal": "Éric Toledano",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_426346.jpg"
+      },
+      {
+        "nameRu": "Филипп Поццо ди Борго",
+        "nameOriginal": "Philippe Pozzo di Borgo",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3152842.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Франсуа Клюзе",
+        "nameOriginal": "François Cluzet",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_71427.jpg"
+      },
+      {
+        "nameRu": "Омар Си",
+        "nameOriginal": "Omar Sy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_41644.jpg"
+      },
+      {
+        "nameRu": "Анн Ле Ни",
+        "nameOriginal": "Anne Le Ny",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_57174.jpg"
+      },
+      {
+        "nameRu": "Одри Флёро",
+        "nameOriginal": "Audrey Fleurot",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_868557.jpg"
+      },
+      {
+        "nameRu": "Жозефин де Мо",
+        "nameOriginal": "Joséphine de Meaux",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_541041.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 535341,
+    "imdbId": "tt1675434",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 8.5
+    },
+    "votes": {
+      "kinopoisk": 2838313,
+      "imdb": 1000000
+    },
+    "popularityScore": 97,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/535341.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/13074011/2a0000019504097dd3ec1bf7f8db56b4026e/orig",
+    "description": "Пострадав в результате несчастного случая, богатый аристократ Филипп нанимает в помощники человека, который менее всего подходит для этой работы, – молодого жителя предместья Дрисса, только что освободившегося из тюрьмы. Несмотря на то, что Филипп прикован к инвалидному креслу, Дриссу удается привнести в размеренную жизнь аристократа дух приключений.",
+    "topRank": 3,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Аристократ на коляске нанимает в сиделки бывшего заключенного. Искрометная французская комедия с Омаром Си",
+    "slogan": "Sometimes you have to reach into someone else's world to find out what's missing in your own.",
+    "supportingCast": [
+      {
+        "nameRu": "Клотильд Молле",
+        "nameOriginal": "Clotilde Mollet",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_445.jpg"
+      },
+      {
+        "nameRu": "Альба Гайя Крагеде Беллуджи",
+        "nameOriginal": "Alba Gaïa Bellugi",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_964574.jpg"
+      },
+      {
+        "nameRu": "Сирил Менди",
+        "nameOriginal": "Cyril Mendy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2237576.jpg"
+      },
+      {
+        "nameRu": "Салимата Камате",
+        "nameOriginal": "Salimata Kamate",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3084679.jpg"
+      },
+      {
+        "nameRu": "Абса Дьяту Тур",
+        "nameOriginal": "Absa Diatou Toure",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3084680.jpg"
+      }
+    ],
+    "facts": [
+      "Когда Дрисс и Филипп были в галерее, то у Дрисса провод от наушников сначала был с правой стороны, а в следующем кадре с левой.",
+      "В сцене, когда главные герои находятся в картинной галерее, Филипп просит конфету. Дрис протягивает руку с зеленой конфетой, а в следующем кадре он кладет Филиппу в рот уже желтую.",
+      "Когда Дрисс устраивается на работу курьером, девушка упоминает, что он получил права месяц назад. При этом Филипп в сцене погони сетует на то, что Дриссу не мешало бы получить права, хотя эта сцена происходит позже во времени.",
+      "В сцене, когда Дрис бреет Филиппа, мокрые волосы Филиппа при переходах между ракурсами становятся то сухими, то снова мокрыми.",
+      "Во время танца Дрисса скрипач сначала играет, а в следующем кадре уже просто сидит.",
+      "В фильме используются два автомобиля Мазерати. В первой сцене Maserati Quattroporte GTS 4.2 (0:01:28), а в сцене с эскортом из полицейских машин уже Maserati Quattroporte 4.7 ((0:06:21), (0:06:41)). Разглядеть данное различие можно так: в Maserati Quattroporte GTS 4.2 4 выхлопных трубы и радиаторная решетка-сетка, а в Maserati Quattroporte 4.7 &#8211; две больших выхлопных трубы и радиаторная решетка с вертикальными спицами.",
+      "На 15 минуте фильма, когда Дрисс сидит около стола, яйцо и стакан, находящиеся на этом столе в разных кадрах находятся на разном расстоянии друг от друга.",
+      "В сцене, где тетя Дрисса ругается на него, шарфик на ее шее при каждой смене кадра лежит по-разному. Также, судя по цветным полоскам на ее шарфе, он у нее затянут то туже, то слабее."
+    ],
+    "awards": {
+      "wins": 3,
+      "nominations": 14,
+      "notable": [
+        "2012 · Сезар — Лучший звук",
+        "2013 · Гойя — Лучший европейский фильм",
+        "2012 · Европейская киноакадемия — Лучшая мужская роль"
+      ]
+    }
+  },
+  {
+    "id": "kp_448",
+    "mode": "movie",
+    "titleRu": "Форрест Гамп",
+    "titleOriginal": "Forrest Gump",
+    "alternativeTitles": [],
+    "year": 1994,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "мелодрама",
+      "комедия",
+      "военный",
+      "история"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 142,
+    "directors": [
+      {
+        "nameRu": "Роберт Земекис",
+        "nameOriginal": "Robert Zemeckis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2435.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Уинстон Грум",
+        "nameOriginal": "Winston Groom",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7957.jpg"
+      },
+      {
+        "nameRu": "Эрик Рот",
+        "nameOriginal": "Eric Roth",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_512.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Том Хэнкс",
+        "nameOriginal": "Tom Hanks",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_9144.jpg"
+      },
+      {
+        "nameRu": "Робин Райт",
+        "nameOriginal": "Robin Wright",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8887.jpg"
+      },
+      {
+        "nameRu": "Салли Филд",
+        "nameOriginal": "Sally Field",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_13477.jpg"
+      },
+      {
+        "nameRu": "Гэри Синиз",
+        "nameOriginal": "Gary Sinise",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3100.jpg"
+      },
+      {
+        "nameRu": "Майкелти Уильямсон",
+        "nameOriginal": "Mykelti Williamson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_519.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 448,
+    "imdbId": "tt0109830",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 8.8
+    },
+    "votes": {
+      "kinopoisk": 996974,
+      "imdb": 2500000
+    },
+    "popularityScore": 96,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/448.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2385704/2a00000196499ac806fab6cfa90b87cc7ef1/orig",
+    "description": "Сидя на автобусной остановке, Форрест Гамп — не очень умный, но добрый и открытый парень — рассказывает случайным встречным историю своей необыкновенной жизни.\n\nС самого малолетства парень страдал от заболевания ног, соседские мальчишки дразнили его, но в один прекрасный день Форрест открыл в себе невероятные способности к бегу. Подруга детства Дженни всегда его поддерживала и защищала, но вскоре дороги их разошлись.",
+    "topRank": 4,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Полувековая история США глазами чудака из Алабамы. Абсолютная классика Роберта Земекиса с Томом Хэнксом",
+    "slogan": "Мир уже никогда не будет прежним, после того как вы увидите его глазами Форреста Гампа",
+    "supportingCast": [
+      {
+        "nameRu": "Майкл Коннер Хэмпфри",
+        "nameOriginal": "Michael Conner Humphreys",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_101657.jpg"
+      },
+      {
+        "nameRu": "Ханна Р. Холл",
+        "nameOriginal": "Hanna R. Hall",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24763.jpg"
+      },
+      {
+        "nameRu": "Сэм Андерсон",
+        "nameOriginal": "Sam Anderson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_11843.jpg"
+      },
+      {
+        "nameRu": "Шиван Фэллон Хоган",
+        "nameOriginal": "Siobhan Fallon Hogan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_31636.jpg"
+      },
+      {
+        "nameRu": "Ребекка Уильямс",
+        "nameOriginal": "Rebecca Williams",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_101656.jpg"
+      }
+    ],
+    "facts": [
+      "Фамилия Дженни — Каррен — фигурирует только один раз в фильме: на конверте, который вернулся Форресту во Вьетнам.",
+      "Фильм снят по мотивам романа Уинстона Грума &laquo;Форрест Гамп&raquo; (Forrest Gump, 1986).",
+      "Фильм достаточно далеко ушёл от исходного романа Уинстона Грума , в котором Форрест Гамп показан резким несносным циником. А цитата из фильма «Жизнь — это как коробка конфет» полностью противоположна мысли из романа «Быть идиотом — это не коробка конфет».",
+      "В ходе съемок одной из сцен Том Хэнкс говорит: «Мое имя — Форрест Гамп. Люди зовут меня Форрест Гамп». На самом деле актер совершил оговорку, но режиссеру Роберту Земекису она пришлась по вкусу, и он включил именно этот дубль в итоговую версию картины.",
+      "Режиссерское кресло могло достаться Барри Зонненфельду и Терри Гиллиаму .",
+      "Во время съемок футбольных сцен Том Хэнкс был болен гриппом, однако стойко выдержал испытания и отработал в эти дни через «не могу».",
+      "Том Хэнкс согласился принять участие в съемках с одним условием: все события картины должны перекликаться с реальными историческими событиями.",
+      "В эпизодических ролях были задействованы Александр Земекис (сын режиссера) и Элизабет Хэнкс (дочь актера)."
+    ],
+    "awards": {
+      "wins": 13,
+      "nominations": 29,
+      "notable": [
+        "1995 · Оскар — Лучший звук",
+        "1995 · Оскар — Лучший монтаж звука",
+        "1995 · Сатурн — Лучший фэнтези-фильм"
+      ]
+    }
+  },
+  {
+    "id": "kp_329",
+    "mode": "movie",
+    "titleRu": "Список Шиндлера",
+    "titleOriginal": "Schindler's List",
+    "alternativeTitles": [],
+    "year": 1993,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "биография",
+      "военный",
+      "история"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 195,
+    "directors": [
+      {
+        "nameRu": "Стивен Спилберг",
+        "nameOriginal": "Steven Spielberg",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_22260.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Томас Кенилли",
+        "nameOriginal": "Thomas Keneally",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_251903.jpg"
+      },
+      {
+        "nameRu": "Стивен Зеллиан",
+        "nameOriginal": "Steven Zaillian",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_41493.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Лиам Нисон",
+        "nameOriginal": "Liam Neeson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6534.jpg"
+      },
+      {
+        "nameRu": "Бен Кингсли",
+        "nameOriginal": "Ben Kingsley",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6846.jpg"
+      },
+      {
+        "nameRu": "Рэйф Файнс",
+        "nameOriginal": "Ralph Fiennes",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_22670.jpg"
+      },
+      {
+        "nameRu": "Кэролайн Гудолл",
+        "nameOriginal": "Caroline Goodall",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12093.jpg"
+      },
+      {
+        "nameRu": "Эмбет Дэвидц",
+        "nameOriginal": "Embeth Davidtz",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_21893.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 329,
+    "imdbId": "tt0108052",
+    "ratings": {
+      "kinopoisk": 8.9,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 559017,
+      "imdb": 1600000
+    },
+    "popularityScore": 87,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/329.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1534341/2a0000017c071cda3d15cfc602392e1a4263/orig",
+    "description": "Оскар Шиндлер, член национал-социалистической немецкой рабочей партии и преуспевающий промышленник, во время Второй мировой войны спасает евреев от ужасной смерти в концлагерях.",
+    "topRank": 5,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "История немецкого промышленника, спасшего тысячи жизней во время Холокоста. Драма Стивена Спилберга",
+    "slogan": "Этот список - жизнь",
+    "supportingCast": [
+      {
+        "nameRu": "Йонатан Сэгаль",
+        "nameOriginal": "Jonathan Sagall",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_157676.jpg"
+      },
+      {
+        "nameRu": "Малгоша Гебель",
+        "nameOriginal": "Malgoscha Gebel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_152279.jpg"
+      },
+      {
+        "nameRu": "Шмуэль Леви",
+        "nameOriginal": "Shmuel Levy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_829028.jpg"
+      },
+      {
+        "nameRu": "Марк Иванир",
+        "nameOriginal": "Mark Ivanir",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_54872.jpg"
+      },
+      {
+        "nameRu": "Беатриче Макола",
+        "nameOriginal": "Béatrice Macola",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_252711.jpg"
+      }
+    ],
+    "facts": [
+      "Специально для своей роли Рэйф Файнс поправился на 13 кг. Для этого он пил много пива «Guinness». По словам режиссера, он пригласил этого актера из-за его «дьявольской сексуальности».",
+      "Спилберг собирался взять в картину Клэр Дэйнс , но та отказалась, иначе ей пришлось бы на время забросить учебу.",
+      "На роль Амона Гёта рассматривалась кандидатура Тима Рота .",
+      "Когда бывшую узницу Освенцима Милу Пфефферберг представили Рэйфу Файнсу , она не могла скрыть дрожи от волнения — настолько он был похож на реального Амона Гёта.",
+      "Знаменитый режиссер и кинодраматург Билли Уайлдер участвовал в создании первого варианта сценария, а на самой ранней стадии разработки проекта был даже привлечен к нему в качестве постановщика. Именно Уайлдер потом уговорил Спилберга стать режиссером этой картины.",
+      "В 80-х годах Мартин Скорсезе отказался от постановки, поскольку считал, что только режиссер-еврей может должным образом снять этот фильм. В итоге он поменялся со Спилбергом проектами, взявшись за « Мыс страха » (1991).",
+      "Спилберг предлагал постановку Роману Полански , но тот отказался по личным причинам. Дело в том, что, когда ему было 8 лет, он жил в краковском гетто и сбежал оттуда в день его ликвидации. Позднее мать Полански умерла в Освенциме.",
+      "Сцена ликвидации краковского гетто занимала в сценарии всего одну страницу. Спилберг расширил ее до 20 страниц и 20 минут экранного времени. А создавал он ее на основе свидетельств очевидцев тех событий."
+    ],
+    "awards": {
+      "wins": 16,
+      "nominations": 17,
+      "notable": [
+        "1994 · Оскар — Лучший грим",
+        "1994 · Золотой глобус — Лучший фильм (драма)",
+        "1994 · Оскар — Лучший оригинальный саундтрек"
+      ]
+    }
+  },
+  {
+    "id": "kp_6402838",
+    "mode": "movie",
+    "titleRu": "Атака Титанов: Последняя атака",
+    "titleOriginal": "Shingeki no Kyojin Movie: Kanketsu-hen - The Last Attack",
+    "alternativeTitles": [],
+    "year": 2024,
+    "endYear": null,
+    "countries": [
+      "Япония"
+    ],
+    "originalLanguage": "ja",
+    "genres": [
+      "драма",
+      "фантастика",
+      "боевик",
+      "фэнтези",
+      "мультфильм"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 145,
+    "directors": [
+      {
+        "nameRu": "Дзюн Сисидо",
+        "nameOriginal": "Jun Shishido",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1571960.jpg"
+      },
+      {
+        "nameRu": "Юитиро Хаяси",
+        "nameOriginal": "Yuichiro Hayashi",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1698429.jpg"
+      },
+      {
+        "nameRu": "Рёта Аикэи",
+        "nameOriginal": "Ryota Aikei",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10131355.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Хадзимэ Исаяма",
+        "nameOriginal": "Hajime Isayama",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2635029.jpg"
+      },
+      {
+        "nameRu": "Хироси Сэко",
+        "nameOriginal": "Hiroshi Seko",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3724191.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Юки Кадзи",
+        "nameOriginal": "Yuki Kaji",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1571701.jpg"
+      },
+      {
+        "nameRu": "Юи Исикава",
+        "nameOriginal": "Yui Ishikawa",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1849420.jpg"
+      },
+      {
+        "nameRu": "Марина Иноуэ",
+        "nameOriginal": "Marina Inoue",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1202776.jpg"
+      },
+      {
+        "nameRu": "Такэхито Коясу",
+        "nameOriginal": "Takehito Koyasu",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_83911.jpg"
+      },
+      {
+        "nameRu": "Ёсимаса Хосоя",
+        "nameOriginal": "Yoshimasa Hosoya",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1654616.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 6402838,
+    "imdbId": "tt33175825",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 9.2
+    },
+    "votes": {
+      "kinopoisk": 92693,
+      "imdb": 25000
+    },
+    "popularityScore": 20,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/6402838.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2385704/2a000001930b1b6846ce406002ad731f5dde/orig",
+    "description": "После катастрофических действий Эрена его друзья и бывшие враги объединяются против него. Армин, Микаса и оставшиеся в живых солдаты разведкорпуса формируют временный союз с Райнером Брауном и остатками марлийской армии. Противостояние людей и титанов достигает апогея.",
+    "topRank": 6,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Армия титанов восстает против людей. Развязка культового аниме — с улучшенной графикой и сценой после титров",
+    "slogan": null,
+    "supportingCast": [
+      {
+        "nameRu": "Ю Симамура",
+        "nameOriginal": "Yu Shimamura",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1686658.jpg"
+      },
+      {
+        "nameRu": "Хиро Симоно",
+        "nameOriginal": "Hiro Shimono",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1506426.jpg"
+      },
+      {
+        "nameRu": "Нацуки Ханаэ",
+        "nameOriginal": "Natsuki Hanae",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2924154.jpg"
+      },
+      {
+        "nameRu": "Аянэ Сакура",
+        "nameOriginal": "Ayane Sakura",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2796784.jpg"
+      },
+      {
+        "nameRu": "Роми Пак",
+        "nameOriginal": "Romi Park",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_932817.jpg"
+      }
+    ],
+    "facts": [],
+    "awards": {
+      "wins": 0,
+      "nominations": 1,
+      "notable": [
+        "2026 · Сатурн — Лучший иностранный анимационный фильм"
+      ]
+    }
+  },
+  {
+    "id": "kp_42782",
+    "mode": "movie",
+    "titleRu": "Операция «Ы» и другие приключения Шурика",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 1965,
+    "endYear": null,
+    "countries": [
+      "СССР"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "криминал",
+      "мелодрама",
+      "комедия"
+    ],
+    "ageRating": "6+",
+    "runtimeMinutes": 95,
+    "directors": [
+      {
+        "nameRu": "Леонид Гайдай",
+        "nameOriginal": "Леонид Гайдай",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_191587.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Леонид Гайдай",
+        "nameOriginal": "Леонид Гайдай",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_191587.jpg"
+      },
+      {
+        "nameRu": "Яков Костюковский",
+        "nameOriginal": "Яков Костюковский",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_191588.jpg"
+      },
+      {
+        "nameRu": "Морис Слободской",
+        "nameOriginal": "Морис Слободской",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_191589.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Александр Демьяненко",
+        "nameOriginal": "Александр Демьяненко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_284624.jpg"
+      },
+      {
+        "nameRu": "Наталья Селезнёва",
+        "nameOriginal": "Наталья Селезнёва",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_307598.jpg"
+      },
+      {
+        "nameRu": "Алексей Смирнов",
+        "nameOriginal": "Алексей Смирнов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_268130.jpg"
+      },
+      {
+        "nameRu": "Юрий Никулин",
+        "nameOriginal": "Юрий Никулин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_188847.jpg"
+      },
+      {
+        "nameRu": "Евгений Моргунов",
+        "nameOriginal": "Евгений Моргунов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_109510.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 42782,
+    "imdbId": "tt0059550",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 8.4
+    },
+    "votes": {
+      "kinopoisk": 1260285,
+      "imdb": 16000
+    },
+    "popularityScore": 91,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/42782.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c28046f1fe9a75346fa89a78e0a/orig",
+    "description": "Студент Шурик попадает в самые невероятные ситуации: сражается с хулиганом Верзилой, весьма оригинальным способом готовится к экзамену и предотвращает «ограбление века», на которое идёт троица бандитов — Балбес, Трус и Бывалый.",
+    "topRank": 7,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Похождения хронически оптимистичного очкарика. Блистательная комедия Леонида Гайдая",
+    "slogan": null,
+    "supportingCast": [
+      {
+        "nameRu": "Георгий Вицин",
+        "nameOriginal": "Георгий Вицин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_179092.jpg"
+      },
+      {
+        "nameRu": "Михаил Пуговкин",
+        "nameOriginal": "Михаил Пуговкин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_179790.jpg"
+      },
+      {
+        "nameRu": "Виктор Павлов",
+        "nameOriginal": "Виктор Павлов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_245771.jpg"
+      },
+      {
+        "nameRu": "Владимир Басов",
+        "nameOriginal": "Владимир Басов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_174296.jpg"
+      },
+      {
+        "nameRu": "Рина Зелёная",
+        "nameOriginal": "Рина Зелёная",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_307742.jpg"
+      }
+    ],
+    "facts": [
+      "В сцене борьбы героев Демьяненко и Никулина , когда последний толкает ногой рельсовую тележку, она возвращается назад, ударившись об автомобильную покрышку. Однако, в следующем кадре мы видим, что за тележкой, подъезжающей к Шурику, нет никакой покрышки.",
+      "В новелле «Операция „Ы“» в сценке на рынке видно, что когда Балбес ( Юрий Никулин ) высыпает деньги из копилки за пазуху курточки, эти деньги потом высыпаются из-под курточки и падают вниз.",
+      "В момент, когда Юрий Никулин разбивает бутылки на базе, он кладет себе в куртку бутылку, взятую из ящика, в правый карман. Но в сцене сражения Шурика с Балбесом на шпагах, Шурик делает выпад и пронзает бутылку, которая появляется в левом кармане.",
+      "По сюжету новелл действие происходит в городе Зареченск.",
+      "Гонорары за съемки: Леонид Гайдай — 2375 рублей, плюс 1500 за соавторство в написании сценария; Александр Демьяненко — 3376 рублей; Алексей Смирнов — 875 рублей; Михаил Пуговкин — 875 рублей; Наталья Селезнева — 450 рублей; Георгий Вицин — 1620 рублей; Юрий Никулин — 1620 рублей; Евгений Моргунов — 810 рублей.",
+      "Автобус, в котором Шурик подрался с Верзилой, — ЗиЛ-158. Сейчас такой автобус имеется в коллекции Музея пассажирского транспорта Москвы.",
+      "В новелле «Наваждение» Шурик и девушка едут на трамвае Татра-Т3 бортовой номер 530. Этот вагон относился к одной из первых партий этих трамваев, в отличие от более поздних «Татр» он имел всего две двери. Также в кадр попал трамвай МТВ-82А в типичной раскраске (с ниспадающей красной чертой).",
+      "Фильм был лидером проката в 1965 году (69,6 миллионов зрителей)."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 1,
+      "notable": [
+        "2009 · Кинонаграды «MTV-Россия» — Лучший советский фильм"
+      ]
+    }
+  },
+  {
+    "id": "kp_2360",
+    "mode": "movie",
+    "titleRu": "Король Лев",
+    "titleOriginal": "The Lion King",
+    "alternativeTitles": [
+      "The Lion King"
+    ],
+    "year": 1994,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "приключения",
+      "фэнтези",
+      "мультфильм",
+      "семейный"
+    ],
+    "ageRating": "0+",
+    "runtimeMinutes": 88,
+    "directors": [
+      {
+        "nameRu": "Роджер Аллерс",
+        "nameOriginal": "Roger Allers",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7313.jpg"
+      },
+      {
+        "nameRu": "Роб Минкофф",
+        "nameOriginal": "Rob Minkoff",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_21358.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Ирен Меччи",
+        "nameOriginal": "Irene Mecchi",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29095.jpg"
+      },
+      {
+        "nameRu": "Джонатан Робертс",
+        "nameOriginal": "Jonathan Roberts",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_50554.jpg"
+      },
+      {
+        "nameRu": "Линда Вулвертон",
+        "nameOriginal": "Linda Woolverton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_102637.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Мэттью Бродерик",
+        "nameOriginal": "Matthew Broderick",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10968.jpg"
+      },
+      {
+        "nameRu": "Джереми Айронс",
+        "nameOriginal": "Jeremy Irons",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_33061.jpg"
+      },
+      {
+        "nameRu": "Нэйтан Лейн",
+        "nameOriginal": "Nathan Lane",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6463.jpg"
+      },
+      {
+        "nameRu": "Эрни Сабелла",
+        "nameOriginal": "Ernie Sabella",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_28828.jpg"
+      },
+      {
+        "nameRu": "Джеймс Эрл Джонс",
+        "nameOriginal": "James Earl Jones",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29101.jpg"
+      }
+    ],
+    "supportingCast": [
+      {
+        "nameRu": "Мойра Келли",
+        "nameOriginal": "Moira Kelly",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3422.jpg"
+      },
+      {
+        "nameRu": "Роуэн Эткинсон",
+        "nameOriginal": "Rowan Atkinson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_15545.jpg"
+      },
+      {
+        "nameRu": "Вупи Голдберг",
+        "nameOriginal": "Whoopi Goldberg",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_22266.jpg"
+      },
+      {
+        "nameRu": "Чич Марин",
+        "nameOriginal": "Cheech Marin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12722.jpg"
+      },
+      {
+        "nameRu": "Никета Калам",
+        "nameOriginal": "Niketa Calame-Harris",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_102639.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 2360,
+    "imdbId": "tt0110357",
+    "ratings": {
+      "kinopoisk": 8.8,
+      "imdb": 8.5
+    },
+    "votes": {
+      "kinopoisk": 734281,
+      "imdb": 1300000
+    },
+    "popularityScore": 93,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/2360.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c074626ae42ced3ad9b7807a867/orig",
+    "description": "У величественного Короля-Льва Муфасы рождается наследник по имени Симба. Уже в детстве любознательный малыш становится жертвой интриг своего завистливого дяди Шрама, мечтающего о власти.\nСимба познаёт горе утраты, предательство и изгнание, но в конце концов обретает верных друзей и находит любимую. Закалённый испытаниями, он в нелёгкой борьбе отвоёвывает своё законное место в «Круге жизни», осознав, что значит быть настоящим Королём. ",
+    "plotHint": "Львенок Симба бросает вызов дяде-убийце. Величественный саундтрек, рисованная анимация и шекспировский размах",
+    "slogan": "The Circle of Life",
+    "facts": [],
+    "awards": null,
+    "topRank": 8,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_navigator_ids",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_staff"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "kp_1143242",
+    "mode": "movie",
+    "titleRu": "Джентльмены",
+    "titleOriginal": "The Gentlemen",
+    "alternativeTitles": [],
+    "year": 2019,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "криминал",
+      "боевик",
+      "комедия"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 113,
+    "directors": [
+      {
+        "nameRu": "Гай Ричи",
+        "nameOriginal": "Guy Ritchie",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_45159.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Гай Ричи",
+        "nameOriginal": "Guy Ritchie",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_45159.jpg"
+      },
+      {
+        "nameRu": "Айван Эткинсон",
+        "nameOriginal": "Ivan Atkinson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4984694.jpg"
+      },
+      {
+        "nameRu": "Марн Дэвис",
+        "nameOriginal": "Marn Davies",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1910756.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Мэттью Макконахи",
+        "nameOriginal": "Matthew McConaughey",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_797.jpg"
+      },
+      {
+        "nameRu": "Чарли Ханнэм",
+        "nameOriginal": "Charlie Hunnam",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_38702.jpg"
+      },
+      {
+        "nameRu": "Генри Голдинг",
+        "nameOriginal": "Henry Golding",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4950097.jpg"
+      },
+      {
+        "nameRu": "Хью Грант",
+        "nameOriginal": "Hugh Grant",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8090.jpg"
+      },
+      {
+        "nameRu": "Мишель Докери",
+        "nameOriginal": "Michelle Dockery",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1067193.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 1143242,
+    "imdbId": "tt8367814",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 7.8
+    },
+    "votes": {
+      "kinopoisk": 2540556,
+      "imdb": 454000
+    },
+    "popularityScore": 99,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/1143242.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a0000017c2d142413d1706adc62df739bbf/orig",
+    "description": "Один ушлый американец ещё со студенческих лет приторговывал наркотиками, а теперь придумал схему нелегального обогащения с использованием поместий обедневшей английской аристократии и очень неплохо на этом разбогател. Другой пронырливый журналист приходит к Рэю, правой руке американца, и предлагает тому купить киносценарий, в котором подробно описаны преступления его босса при участии других представителей лондонского криминального мира — партнёра-еврея, китайской диаспоры, чернокожих спортсменов и даже русского олигарха.",
+    "topRank": 9,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Гангстеры всех мастей делят нелегальный бизнес. Закрученная экшен-комедия Гая Ричи с Мэттью Макконахи",
+    "slogan": "Criminal. Class",
+    "supportingCast": [
+      {
+        "nameRu": "Джереми Стронг",
+        "nameOriginal": "Jeremy Strong",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1146480.jpg"
+      },
+      {
+        "nameRu": "Эдди Марсан",
+        "nameOriginal": "Eddie Marsan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2444.jpg"
+      },
+      {
+        "nameRu": "Джейсон Вон",
+        "nameOriginal": "Jason Wong",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2454111.jpg"
+      },
+      {
+        "nameRu": "Колин Фаррелл",
+        "nameOriginal": "Colin Farrell",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_373.jpg"
+      },
+      {
+        "nameRu": "Лин Рене",
+        "nameOriginal": "Lyne Renée",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1006787.jpg"
+      }
+    ],
+    "facts": [
+      "Когда Майкл возвращается в паб, снаружи зритель видит фургончик с надписью Gritchie Brewery. Пивоваренной компанией с таким названием владеет режиссёр фильма Гай Ричи.",
+      "В начале фильма Розалинд Пирсон ( Мишель Докери ) заходит в гараж в туфлях с красной подошвой, но в офисе видно, что у её туфель светлые подошвы.",
+      "Когда Рей забегает в подворотню в погоне за парнем с телефоном, он достаёт из-под плаща автомат. После того как телефон был получен, он отпускает автомат, и ствол (глушитель) автомата видно из-под плаща. Хотя во всех предыдущих кадрах погони видно, что у Рея под плащом ничего нет.",
+      "Хью Грант и Чарли Ханнэм снимали свои сцены в течение 5 дней, и за это время произнесли более 40 страниц диалогов."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 1,
+      "notable": [
+        "2021 · Сатурн — Лучший приключенческий фильм или боевик"
+      ]
+    }
+  },
+  {
+    "id": "kp_679486",
+    "mode": "movie",
+    "titleRu": "Тайна Коко",
+    "titleOriginal": "Coco",
+    "alternativeTitles": [],
+    "year": 2017,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Мексика"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "приключения",
+      "фэнтези",
+      "комедия",
+      "музыка",
+      "мультфильм"
+    ],
+    "ageRating": "12+",
+    "runtimeMinutes": 105,
+    "directors": [
+      {
+        "nameRu": "Ли Анкрич",
+        "nameOriginal": "Lee Unkrich",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23949.jpg"
+      },
+      {
+        "nameRu": "Эдриан Молина",
+        "nameOriginal": "Adrian Molina",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4376631.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Ли Анкрич",
+        "nameOriginal": "Lee Unkrich",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23949.jpg"
+      },
+      {
+        "nameRu": "Джейсон Кац",
+        "nameOriginal": "Jason Katz",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_65210.jpg"
+      },
+      {
+        "nameRu": "Мэттью Олдрич",
+        "nameOriginal": "Matthew Aldrich",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_383137.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Энтони Гонсалес",
+        "nameOriginal": "Anthony Gonzalez",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3229588.jpg"
+      },
+      {
+        "nameRu": "Гаэль Гарсиа Берналь",
+        "nameOriginal": "Gael García Bernal",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_44234.jpg"
+      },
+      {
+        "nameRu": "Бенджамин Брэтт",
+        "nameOriginal": "Benjamin Bratt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2803.jpg"
+      },
+      {
+        "nameRu": "Аланна Юбак",
+        "nameOriginal": "Alanna Ubach",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32561.jpg"
+      },
+      {
+        "nameRu": "Рене Виктор",
+        "nameOriginal": "Renee Victor",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_27534.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 679486,
+    "imdbId": "tt2380307",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.4
+    },
+    "votes": {
+      "kinopoisk": 804341,
+      "imdb": 700000
+    },
+    "popularityScore": 86,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/679486.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/2439731/2a0000017c0771239f12d94e40418314a93d/orig",
+    "description": "12-летний Мигель живёт в мексиканской деревушке в семье сапожников и тайно мечтает стать музыкантом. Тайно, потому что в его семье музыка считается проклятием. Когда-то его прапрадед оставил жену, прапрабабку Мигеля, ради мечты, которая теперь не даёт спокойно жить и его праправнуку. С тех пор музыкальная тема в семье стала табу. Мигель обнаруживает, что между ним и его любимым певцом Эрнесто де ла Крусом, ныне покойным, существует некая связь. Паренёк отправляется к своему кумиру в Страну Мёртвых, где встречает души предков. Мигель знакомится там с духом-скелетом по имени Гектор, который становится его проводником. Вдвоём они отправляются на поиски де ла Круса.",
+    "topRank": 10,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Юный музыкант Мигель попадает в мир мертвых. Трогательная история о любви без границ, получившая два «Оскара»",
+    "slogan": "The celebration of a lifetime",
+    "supportingCast": [
+      {
+        "nameRu": "Хайме Камиль",
+        "nameOriginal": "Jaime Camil",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_233381.jpg"
+      },
+      {
+        "nameRu": "Альфонсо Арау",
+        "nameOriginal": "Alfonso Arau",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10466.jpg"
+      },
+      {
+        "nameRu": "Херберт Сигенса",
+        "nameOriginal": "Herbert Siguenza",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_82111.jpg"
+      },
+      {
+        "nameRu": "Габриэль Иглесиас",
+        "nameOriginal": "Gabriel Iglesias",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_554693.jpg"
+      },
+      {
+        "nameRu": "Ломбардо Бойяр",
+        "nameOriginal": "Lombardo Boyar",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_20214.jpg"
+      }
+    ],
+    "facts": [
+      "Рабочим названием проекта было Dia de los Muertos, или &laquo;День мёртвых&raquo; (так называется праздник, посвящённый памяти умерших, отмечается 1 и 2 ноября в Мексике, Гватемале, Никарагуа, Гондурасе, Сальвадоре).",
+      "Сотрудники Pixar ранее не работали с анимацией скелетов, поэтому у них возникла технологическая проблема во время создания мультфильма. Программа Presto, отвечающая за рендеринг, не смогла справиться с одеждой на скелетах. Ткань неправильно ложилась на кости, постоянно путалась в шее, ногах и руках, застревая в пустотах на стыках. Решение — создать с нуля новую программу, которая гораздо лучше справлялась с симуляцией одежды на скелетах. Но наполнение пустот, чтобы туда не попадала ткань, — это лишь часть проблемы. Новое программное обеспечение также отлично справилось с объемом. У каждого скелета 127 костей, и примерно 80 из них видно зрителю. Программа позволила в массовом объеме генерировать персонажей, создавая незначительные, на первый взгляд, изменения, благодаря которым появлялось ощущение уникальности.",
+      "Для одного только мира мертвых, где разворачивается большая часть действия, пришлось создать 7 миллионов отдельных источников освещения — от уличных фонарей до лампочек на трамваях. Чтобы все они правильно отображались на экране, аниматоры взяли программу, созданную для сцены со светлячками из &#171; Хорошего динозавра &#187;, и переработали код. В итоге программа группировала источники света по разным критериям, вместо того чтобы обрабатывать каждый по отдельности. Это позволило значительно сократить время рендеринга.",
+      "В рамках подготовки представители творческого коллектива фильма и аниматоры совершили пять поездок в Мексику для изучения местной культуры, жизненного уклада, традиций, кухни и пр.",
+      "Изначально предполагалось, что Мигель (его озвучил Энтони Гонсалес ) будет только играть на гитаре, но не петь. Затем режиссёру и сценаристу Ли Анкричу стало известно, что Гонсалес очень неплохо поёт, и было решено, что главный герой фильма будет и играть на гитаре, и петь.",
+      "В фильме постоянно показывают цветок. Это бархатец прямостоячий, однолетнее травянистое растение, естественная среда обитания которого – сосново-дубовые леса Мексики с низкой влажностью. Оно является основным цветком Дня мёртвых (проходит ежегодно 1 и 2 ноября, считается, что в эти дни души умерших в состоянии посещать родной дом).",
+      "Во время посещения одной из местных семей в Мексике режиссёр и сценарист Ли Анкрич обратил внимание на домашний алтарь, на котором было выложено традиционное подношение умершим родственникам (там же имелись и фотографии умерших) — традиционную офренду. Неподдельный интерес к разложенному на алтаре угощению проявлял пёс, которого приходилось постоянно отгонять. Анкричу этот нюанс так понравился, что он включил соответствующую сцену в сценарий.",
+      "По словам режиссёров Ли Анкрича и Эдриана Молины , самым трудным в работе над фильмом было анимировать шею бабушки (её озвучивала Рене Виктор ). Молина даже попросил свою тёщу, которая жила в Мехико, приехать на студию, где они с Анкричем изо всех сил постарались женщину разозлить, чтобы увидеть, как движется у неё шея. Это оказалось нелегко, т.к. тёща была по жизни человеком незлобивым, но через несколько часов они своего всё-таки добились."
+    ],
+    "awards": {
+      "wins": 6,
+      "nominations": 1,
+      "notable": [
+        "2018 · Оскар — Лучшая песня",
+        "2018 · Оскар — Лучший анимационный фильм",
+        "2018 · Золотой глобус — Лучший анимационный фильм"
+      ]
+    }
+  },
+  {
+    "id": "kp_970882",
+    "mode": "movie",
+    "titleRu": "Дангал",
+    "titleOriginal": "Dangal",
+    "alternativeTitles": [],
+    "year": 2016,
+    "endYear": null,
+    "countries": [
+      "Индия"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "биография",
+      "спорт"
+    ],
+    "ageRating": "16+",
+    "runtimeMinutes": 161,
+    "directors": [
+      {
+        "nameRu": "Нитеш Тивари",
+        "nameOriginal": "Nitesh Tiwari",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2412055.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Пиюш Гупта",
+        "nameOriginal": "Piyush Gupta",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3600459.jpg"
+      },
+      {
+        "nameRu": "Шрейаз Джайн",
+        "nameOriginal": "Shreyas Jain",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3600460.jpg"
+      },
+      {
+        "nameRu": "Никхил Мехротра",
+        "nameOriginal": "Nikhil Mehrotra",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3600461.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Аамир Кхан",
+        "nameOriginal": "Aamir Khan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1081.jpg"
+      },
+      {
+        "nameRu": "Фатима Сана Шайкх",
+        "nameOriginal": "Fatima Sana Shaikh",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_261493.jpg"
+      },
+      {
+        "nameRu": "Санья Малхотра",
+        "nameOriginal": "Sanya Malhotra",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4360628.jpg"
+      },
+      {
+        "nameRu": "Сакши Танвар",
+        "nameOriginal": "Sakshi Tanwar",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1742141.jpg"
+      },
+      {
+        "nameRu": "Апаршакти Кхурана",
+        "nameOriginal": "Aparshakti Khurana",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3669736.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 970882,
+    "imdbId": "tt5074352",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.3
+    },
+    "votes": {
+      "kinopoisk": 223386,
+      "imdb": 241000
+    },
+    "popularityScore": 50,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/970882.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1648503/2a000001934e50aa87a895136ea1435629cc/orig",
+    "description": "Когда-то Махавир Сингх Пхогат был чемпионом Индии по борьбе. По причине бедности он был вынужден бросить спорт, но поклялся воспитать сына, который станет в будущем олимпийским чемпионом. Но вот досада — у них с женой родились четыре дочки. Отец сначала отчаялся, но потом, увидев, что подросшие девчонки поколачивают одноклассников, решил всё же сделать из них спортсменок.",
+    "topRank": 11,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Бывший борец решает стать тренером для своих дочерей. Яркий байопик со звездой Болливуда Аамиром Кханом",
+    "slogan": "Измени свою судьбу",
+    "supportingCast": [
+      {
+        "nameRu": "Зайра Васим",
+        "nameOriginal": "Zaira Wasim",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4351571.jpg"
+      },
+      {
+        "nameRu": "Сухани Бхатнагар",
+        "nameOriginal": "Suhani Bhatnagar",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4360629.jpg"
+      },
+      {
+        "nameRu": "Ритвик Сахоре",
+        "nameOriginal": "Ritvik Sahore",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3094309.jpg"
+      },
+      {
+        "nameRu": "Гириш Кулкарни",
+        "nameOriginal": "Girish Kulkarni",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1591352.jpg"
+      },
+      {
+        "nameRu": "Рави Анеджа",
+        "nameOriginal": "Ravi Aneja",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4545684.jpg"
+      }
+    ],
+    "facts": [
+      "Чтобы сыграть Махавира в 60-летнем возрасте, Аамир Кхан набрал 30 кг, позже сбросив вес, чтобы сыграть Махавира в возрасте 20 лет.",
+      "Для съёмок Аамир Кхан изучал язык хариани.",
+      "В 2012 году Дивья Рао , член креативной команды Disney, прочитала в газете статью про Махавир Сингха Пхогата, который тренировал дочерей, чтобы они стали чемпионками мира. Она подумала, что из этого получился бы отличный фильм, и рассказала об этом Сидхарту Рою Капуру . Компания Disney обратилась к Нитешу Тивари , чтобы он написал сценарий и срежиссировал фильм. Тивари встретился с Пхогатом и его дочерьми, которые сразу согласились рассказать их историю.",
+      "В 2013 году Сидхарт Рой Капур и Нитеш Тивари побывали у Аамира Кхана и рассказали ему сюжет, который ему сразу понравился. Он хотел сделать фильм через 5—10 лет, когда ему будет 60, поскольку роль требовала от него изобразить 55-летнего. Но история осталась у него в голове, а несколько месяцев спустя, он вызвал Тивари и попросил его рассказать сценарий ещё раз. В итоге он согласился исполнить главную роль.",
+      "Тренер молодёжной женской сборной по вольной борьбе Крипа Шанкар Патель Бишной тренировал Аамира Кхана и других актёров и актрис.",
+      "Дивья Рао заявила, что если бы Аамир Кхан отказался от этой роли, то её предложили бы Моханлалу и Камал Хаасану .",
+      "Съёмки фильма проходили в деревнях Гуджджарвал, Нарангвал, Кила Райпур, Данго и Лил в штатах Пенджаб и Харьяна.",
+      "14 ноября 2015 года во время съёмок в Лудхиане Аамир Кхан получил травму спины, а через несколько дней ему сделали операцию на плече. После восстановления Аамир вернулся к съёмкам в декабре 2015 года."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 0,
+      "notable": []
+    }
+  },
+  {
+    "id": "kp_258687",
+    "mode": "movie",
+    "titleRu": "Интерстеллар",
+    "titleOriginal": "Interstellar",
+    "alternativeTitles": [],
+    "year": 2014,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Великобритания",
+      "Канада"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "фантастика",
+      "приключения"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 169,
+    "directors": [
+      {
+        "nameRu": "Кристофер Нолан",
+        "nameOriginal": "Christopher Nolan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_41477.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Джонатан Нолан",
+        "nameOriginal": "Jonathan Nolan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_55539.jpg"
+      },
+      {
+        "nameRu": "Кристофер Нолан",
+        "nameOriginal": "Christopher Nolan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_41477.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Мэттью Макконахи",
+        "nameOriginal": "Matthew McConaughey",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_797.jpg"
+      },
+      {
+        "nameRu": "Энн Хэтэуэй",
+        "nameOriginal": "Anne Hathaway",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_38703.jpg"
+      },
+      {
+        "nameRu": "Джессика Честейн",
+        "nameOriginal": "Jessica Chastain",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1111242.jpg"
+      },
+      {
+        "nameRu": "Маккензи Фой",
+        "nameOriginal": "Mackenzie Foy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2007922.jpg"
+      },
+      {
+        "nameRu": "Майкл Кейн",
+        "nameOriginal": "Michael Caine",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3711.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 258687,
+    "imdbId": "tt0816692",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.7
+    },
+    "votes": {
+      "kinopoisk": 1155320,
+      "imdb": 2500000
+    },
+    "popularityScore": 100,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/258687.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/212840/2a0000017c2839ec77fcdddef3d2ea36a2dc/orig",
+    "description": "Когда засуха, пыльные бури и вымирание растений приводят человечество к продовольственному кризису, коллектив исследователей и учёных отправляется сквозь червоточину (которая предположительно соединяет области пространства-времени через большое расстояние) в путешествие, чтобы превзойти прежние ограничения для космических путешествий человека и найти планету с подходящими для человечества условиями.",
+    "topRank": 12,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Фантастический эпос про задыхающуюся Землю, космические полеты и парадоксы времени. «Оскар» за спецэффекты",
+    "slogan": "Следующий шаг человечества станет величайшим",
+    "supportingCast": [
+      {
+        "nameRu": "Дэвид Джеси",
+        "nameOriginal": "David Gyasi",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_34831.jpg"
+      },
+      {
+        "nameRu": "Уэс Бентли",
+        "nameOriginal": "Wes Bentley",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_3.jpg"
+      },
+      {
+        "nameRu": "Кейси Аффлек",
+        "nameOriginal": "Casey Affleck",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_4.jpg"
+      },
+      {
+        "nameRu": "Джон Литгоу",
+        "nameOriginal": "John Lithgow",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8837.jpg"
+      },
+      {
+        "nameRu": "Мэтт Дэймон",
+        "nameOriginal": "Matt Damon",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6458.jpg"
+      }
+    ],
+    "facts": [
+      "В начале фильма герой МакКонахи бросает монету на самый конец пыльной дорожки, в следующем кадре монета находится на ее середине.",
+      "Когда Купер успокаивает дочь, цепочка на её шее меняет положение: она то под майкой, то на ней, в зависимости от ракурса.",
+      "В одной из сцен фильма, перед тем как главный герой дарит дочери наручные часы, он обнимает её рукой, на которой эти часы надеты, и видно расположение стрелок на циферблате. В следующем кадре, когда происходит вручение этих же часов, стрелки уже совсем в другом месте, хотя промежуток времени прошёл совсем незначительный.",
+      "На ледяной планете Манн сталкивает Купера с обрыва, но в следующих сценах их драки, местность просто холмистая, никакого обрыва нет.",
+      "В сцене, где доктор Манн, состыковавшись с &laquo;Endurance&raquo;, пытается проникнуть внутрь корабля, он находится в стыковочном шлюзе, соединяющем два модуля. Учитывая конструкцию корабля, Манн должен был пытаться открыть дверь ведущую вправо или влево. Однако, вместо этого он открывал дверь прямо перед собой, которая, видимо, вела в открытый космос.",
+      "Схема посадки на водяную планету, нарисованная Купом, к концу эпизода выглядит по-другому (круг шире).",
+      "Стивен Спилберг был прикреплен к проекту с 2006 года и нанял Джонатана Нолана писать сценарий, но отложил работу и занялся другими фильмами. В 2012, после окончательного ухода Спилберга, Джонатан Нолан предложил нанять своего брата Кристофера Нолана в качестве режиссера.",
+      "Когда Спилберг ещё был прикреплен к проекту в качестве режиссёра, он собирался снимать в главной роли Уилла Смита . Позже, после ухода Спилберга с поста режиссёра, роль отошла Мэттью МакКонахи ."
+    ],
+    "awards": {
+      "wins": 9,
+      "nominations": 13,
+      "notable": [
+        "2015 · Сатурн — Лучшие декорации",
+        "2015 · Сатурн — Лучший режиссер",
+        "2015 · Сатурн — Лучшая актриса"
+      ]
+    }
+  },
+  {
+    "id": "kp_447301",
+    "mode": "movie",
+    "titleRu": "Начало",
+    "titleOriginal": "Inception",
+    "alternativeTitles": [],
+    "year": 2010,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "детектив",
+      "фантастика",
+      "боевик"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 148,
+    "directors": [
+      {
+        "nameRu": "Кристофер Нолан",
+        "nameOriginal": "Christopher Nolan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_41477.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Кристофер Нолан",
+        "nameOriginal": "Christopher Nolan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_41477.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Леонардо ДиКаприо",
+        "nameOriginal": "Leonardo DiCaprio",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_37859.jpg"
+      },
+      {
+        "nameRu": "Джозеф Гордон-Левитт",
+        "nameOriginal": "Joseph Gordon-Levitt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_9867.jpg"
+      },
+      {
+        "nameRu": "Эллиот Пейдж",
+        "nameOriginal": "Elliot Page",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_43503.jpg"
+      },
+      {
+        "nameRu": "Том Харди",
+        "nameOriginal": "Tom Hardy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_39984.jpg"
+      },
+      {
+        "nameRu": "Кэн Ватанабэ",
+        "nameOriginal": "Ken Watanabe",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_30759.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 447301,
+    "imdbId": "tt1375666",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.8
+    },
+    "votes": {
+      "kinopoisk": 1109896,
+      "imdb": 2800000
+    },
+    "popularityScore": 94,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/447301.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/224348/2a0000017c0755f86f8385d57d3402151a0b/orig",
+    "description": "Кобб – талантливый вор, лучший из лучших в опасном искусстве извлечения: он крадет ценные секреты из глубин подсознания во время сна, когда человеческий разум наиболее уязвим. Редкие способности Кобба сделали его ценным игроком в привычном к предательству мире промышленного шпионажа, но они же превратили его в извечного беглеца и лишили всего, что он когда-либо любил. \n\nИ вот у Кобба появляется шанс исправить ошибки. Его последнее дело может вернуть все назад, но для этого ему нужно совершить невозможное – инициацию. Вместо идеальной кражи Кобб и его команда спецов должны будут провернуть обратное. Теперь их задача – не украсть идею, а внедрить ее. Если у них получится, это и станет идеальным преступлением. \n\nНо никакое планирование или мастерство не могут подготовить команду к встрече с опасным противником, который, кажется, предугадывает каждый их ход. Врагом, увидеть которого мог бы лишь Кобб.",
+    "topRank": 13,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Профессиональные воры внедряются в сон наследника огромной империи. Фантастический боевик Кристофера Нолана",
+    "slogan": "Твой разум - место преступления",
+    "supportingCast": [
+      {
+        "nameRu": "Дилип Рао",
+        "nameOriginal": "Dileep Rao",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1234077.jpg"
+      },
+      {
+        "nameRu": "Киллиан Мерфи",
+        "nameOriginal": "Cillian Murphy",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_5005.jpg"
+      },
+      {
+        "nameRu": "Том Беренджер",
+        "nameOriginal": "Tom Berenger",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6409.jpg"
+      },
+      {
+        "nameRu": "Марион Котийяр",
+        "nameOriginal": "Marion Cotillard",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32545.jpg"
+      },
+      {
+        "nameRu": "Пит Постлетуэйт",
+        "nameOriginal": "Pete Postlethwaite",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8634.jpg"
+      }
+    ],
+    "facts": [
+      "Джеймс Франко начал вести переговоры с Кристофером Ноланом по поводу роли в фильме. Однако из-за нестыковок в расписании актера он не смог присоединиться к актерской команде. Роль, предназначавшуюся Франко, исполнил Джозеф Гордон-Левитт .",
+      "Съемки фильма начались 13 июля 2009 года.",
+      "Леонардо ДиКаприо был первым актером, который дал согласие на участие в проекте.",
+      "Персонажа Леонардо ДиКаприо зовут Дом Кобб. Коббом представился профессиональный вор в дебютном фильме Нолана — « Преследование » (1998).",
+      "Первоначальное название сценария — «Стрела Оливера».",
+      "Герои фильма выходят из состояния сна под песню Эдит Пиаф Non, Je Ne Regrette Rien (&laquo;Нет, я ни о чём не жалею&raquo;). Марион Котийяр в 2007 году исполняла роль Эдит Пиаф.",
+      "На роль Ариадны Нолан хотел пригласить Эван Рэйчел Вуд , но актриса заявила, что не заинтересована в сотрудничестве. Также на роль Ариадны рассматривались Кира Найтли , Эмили Блант , Эмма Робертс , Джесси Шрэм , Тейлор Свифт и Кэри Маллиган .",
+      "«Начало» стало первым фильмом Тома Беренджера со времен « Тренировочного дня » (2001), добравшимся до киноэкранов США."
+    ],
+    "awards": {
+      "wins": 15,
+      "nominations": 26,
+      "notable": [
+        "2011 · Сатурн — Лучшие декорации",
+        "2011 · Британская академия — Лучшая работа художника-постановщика",
+        "2011 · Британская академия — Лучший монтаж"
+      ]
+    }
+  },
+  {
+    "id": "kp_3498",
+    "mode": "movie",
+    "titleRu": "Властелин колец: Возвращение короля",
+    "titleOriginal": "The Lord of the Rings: The Return of the King",
+    "alternativeTitles": [],
+    "year": 2003,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Новая Зеландия"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "приключения",
+      "боевик",
+      "фэнтези"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 201,
+    "directors": [
+      {
+        "nameRu": "Питер Джексон",
+        "nameOriginal": "Peter Jackson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32383.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Дж.Р.Р. Толкин",
+        "nameOriginal": "J.R.R. Tolkien",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32384.jpg"
+      },
+      {
+        "nameRu": "Фрэн Уолш",
+        "nameOriginal": "Fran Walsh",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32385.jpg"
+      },
+      {
+        "nameRu": "Филиппа Бойенс",
+        "nameOriginal": "Philippa Boyens",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32386.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Элайджа Вуд",
+        "nameOriginal": "Elijah Wood",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_20287.jpg"
+      },
+      {
+        "nameRu": "Вигго Мортенсен",
+        "nameOriginal": "Viggo Mortensen",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10779.jpg"
+      },
+      {
+        "nameRu": "Шон Эстин",
+        "nameOriginal": "Sean Astin",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_28426.jpg"
+      },
+      {
+        "nameRu": "Иэн Маккеллен",
+        "nameOriginal": "Ian McKellen",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8215.jpg"
+      },
+      {
+        "nameRu": "Орландо Блум",
+        "nameOriginal": "Orlando Bloom",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_30875.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 3498,
+    "imdbId": "tt0167260",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 9
+    },
+    "votes": {
+      "kinopoisk": 655717,
+      "imdb": 2200000
+    },
+    "popularityScore": 98,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/3498.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/224348/2a0000017c2800e7bbd4e6936413173a393d/orig",
+    "description": "Повелитель сил тьмы Саурон направляет свою бесчисленную армию под стены Минас-Тирита, крепости Последней Надежды. Он предвкушает близкую победу, но именно это мешает ему заметить две крохотные фигурки — хоббитов, приближающихся к Роковой Горе, где им предстоит уничтожить Кольцо Всевластья.",
+    "topRank": 14,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Арагорн штурмует Мордор, а Фродо устал бороться с чарами кольца. Эффектный финал саги, собравший 11 «Оскаров»",
+    "slogan": "There can be no triumph without loss. No victory without suffering. No freedom without sacrifice",
+    "supportingCast": [
+      {
+        "nameRu": "Доминик Монахэн",
+        "nameOriginal": "Dominic Monaghan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23240.jpg"
+      },
+      {
+        "nameRu": "Билли Бойд",
+        "nameOriginal": "Billy Boyd",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_28463.jpg"
+      },
+      {
+        "nameRu": "Энди Серкис",
+        "nameOriginal": "Andy Serkis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_13176.jpg"
+      },
+      {
+        "nameRu": "Миранда Отто",
+        "nameOriginal": "Miranda Otto",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_32387.jpg"
+      },
+      {
+        "nameRu": "Бернард Хилл",
+        "nameOriginal": "Bernard Hill",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_13143.jpg"
+      }
+    ],
+    "facts": [
+      "Фильм снят по мотивам романа Дж. Р.Р. Толкина &laquo;Властелин колец&raquo; (The Lord of the Rings, 1954-1955).",
+      "В процессе написания сценария трилогии, роль Арагорна по задумке Питера Джексона должен был сыграть 26-летний Стюарт Таунсенд . Спустя 6 недель подготовительной работы было принято решение найти более возрастного актера. Как известно, им стал 41-летний Вигго Мортенсен .",
+      "Батальные сцены, в которых по заявлению создателей участвовало порядка 200 тысяч виртуальных персонажей, требовали огромного количества времени на обработку. Студия Weta Digital, ответственная за эффекты, была даже вынуждена отстроить новую комнату для оборудования, т.к. потребовалось колоссальное количество техники для обработки изображения.",
+      "Первая сцена фильма, в которой объясняется происхождение Голлума, первоначально должна была войти в состав второго фильма — &laquo; Властелин колец: Две крепости &raquo; (2002).",
+      "Количество компьютерных спецэффектов возрастало от серии к серии. Если в первой части их было использовано 560, то во второй их было уже 800, а в заключительной и вовсе 1500.",
+      "Все три части трилогии снимались одновременно.",
+      "Вигго Мортенесен настолько вжился в свою роль, что иногда даже вне съемок спокойно отзывался на имя Арагорн.",
+      "Факты и цифры: за все время съемок было потрачено 900 км кинопленки; использовано 48000 всевозможных мечей, топоров и прочих доспехов; задействовано 20600 актеров в ходе различных массовых сцен; 2400 человек персонала (грим, монтаж, спецэффекты, звук и т.д.); в одной из сцен было задействовано 250 лошадей; 114 персональных ролей (персонажи, произносящие хотя бы пару реплик за фильм); 30 актеров заучивали несуществующие языки и диалекты; на всю трилогию у создателей ушло 7 лет."
+    ],
+    "awards": {
+      "wins": 30,
+      "nominations": 12,
+      "notable": [
+        "2004 · Премия канала «MTV» — Лучший фильм",
+        "2004 · Британская академия — Лучшие костюмы",
+        "2004 · Британская академия — Лучший звук"
+      ]
+    }
+  },
+  {
+    "id": "kp_361",
+    "mode": "movie",
+    "titleRu": "Бойцовский клуб",
+    "titleOriginal": "Fight Club",
+    "alternativeTitles": [],
+    "year": 1999,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Германия"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 139,
+    "directors": [
+      {
+        "nameRu": "Дэвид Финчер",
+        "nameOriginal": "David Fincher",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2944.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Чак Паланик",
+        "nameOriginal": "Chuck Palahniuk",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25772.jpg"
+      },
+      {
+        "nameRu": "Джим Улс",
+        "nameOriginal": "Jim Uhls",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25773.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Эдвард Нортон",
+        "nameOriginal": "Edward Norton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25774.jpg"
+      },
+      {
+        "nameRu": "Брэд Питт",
+        "nameOriginal": "Brad Pitt",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25584.jpg"
+      },
+      {
+        "nameRu": "Хелена Бонем Картер",
+        "nameOriginal": "Helena Bonham Carter",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25775.jpg"
+      },
+      {
+        "nameRu": "Мит Лоаф",
+        "nameOriginal": "Meat Loaf",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_14127.jpg"
+      },
+      {
+        "nameRu": "Зэк Гренье",
+        "nameOriginal": "Zach Grenier",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25776.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 361,
+    "imdbId": "tt0137523",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.8
+    },
+    "votes": {
+      "kinopoisk": 1250536,
+      "imdb": 2600000
+    },
+    "popularityScore": 97,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/361.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1672343/2a0000019a2f250a8bae21fe92f261982c91/orig",
+    "description": "Сотрудник страховой компании страдает хронической бессонницей и отчаянно пытается вырваться из мучительно скучной жизни. Однажды в очередной командировке он встречает некоего Тайлера Дёрдена — харизматического торговца мылом с извращенной философией. Тайлер уверен, что самосовершенствование — удел слабых, а единственное, ради чего стоит жить, — саморазрушение.\n\nПроходит немного времени, и вот уже новые друзья лупят друг друга почем зря на стоянке перед баром, и очищающий мордобой доставляет им высшее блаженство. Приобщая других мужчин к простым радостям физической жестокости, они основывают тайный Бойцовский клуб, который начинает пользоваться невероятной популярностью.",
+    "topRank": 15,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Бессонница, драки и мыло. Контркультурный шедевр Дэвида Финчера, который можно пересматривать бесконечно",
+    "slogan": null,
+    "supportingCast": [
+      {
+        "nameRu": "Холт Маккэллани",
+        "nameOriginal": "Holt McCallany",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8151.jpg"
+      },
+      {
+        "nameRu": "Джаред Лето",
+        "nameOriginal": "Jared Leto",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1876.jpg"
+      },
+      {
+        "nameRu": "Эйон Бэйли",
+        "nameOriginal": "Eion Bailey",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7241.jpg"
+      },
+      {
+        "nameRu": "Ричмонд Аркетт",
+        "nameOriginal": "Richmond Arquette",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_8460.jpg"
+      },
+      {
+        "nameRu": "Дэвид Эндрюс",
+        "nameOriginal": "David Andrews",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25777.jpg"
+      }
+    ],
+    "facts": [
+      "Идея создания книги пришла Чаку Паланику после того, как его избили во время туристического похода. Обратившись к соседствующим неподалеку людям с просьбой убавить звук радиоприемника, Чак получил несколько внушительных ударов по своей физиономии.",
+      "Чак Паланик признал, что концовка фильма получилась более удачной, нежели концовка его книги.",
+      "Режиссер Дэвид Финчер в ходе съемочного процесса потратил около полутора тысяч катушек кинопленки — в 3 раза больше среднестатистического количества.",
+      "Герой Брэда Питта представил на суд общественности свой рецепт производства взрывчатки на дому. Опасаясь возможных попыток повторения данных опытов, создатели фильма решили использовать заведомо ложный способ изготовления «домашней бомбы».",
+      "Во время съемок в&#160;жилом квартале один из&#160;жильцов был настолько взбешен шумом сопровождавшим съемки, что в&#160;ярости швырнул в&#160;источник беспокойства бутылку пива. Бутылка попала в&#160;голову оператора Джеффа Кроненвета , однако серьезных неудобств ему эта травма не&#160;доставила. Метатель бутылок был немедленно арестован.",
+      "В сцене, где герои Брэда Питта и Эдварда Нортона напиваются и начинают гонять мячи для гольфа, актеры на самом деле были пьяны. Поэтому для того, чтобы мячи попадали туда, куда и было задумано, были использованы специальные приспособления.",
+      "На роль Марлы Сингер в свое время пробовались Кортни Лав и Вайнона Райдер .",
+      "В тот момент, когда герой Нортона пытается убедить героиню Хелены Бонем Картер покинуть город на автобусе, взору зрителей предстает парочка кинотеатров, рекламирующих следующие фильмы — « Семь лет в Тибете » (1997) (с участием Питта ), « Народ против Ларри Флинта » (1996) (с участием Нортона) и « Крылья голубки » (1997) (с участием Картер)."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 2,
+      "notable": [
+        "2000 · Оскар — Лучший монтаж звука",
+        "2000 · Премия канала «MTV» — Лучшая драка"
+      ]
+    }
+  },
+  {
+    "id": "kp_342",
+    "mode": "movie",
+    "titleRu": "Криминальное чтиво",
+    "titleOriginal": "Pulp Fiction",
+    "alternativeTitles": [],
+    "year": 1994,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 154,
+    "directors": [
+      {
+        "nameRu": "Квентин Тарантино",
+        "nameOriginal": "Quentin Tarantino",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7640.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Квентин Тарантино",
+        "nameOriginal": "Quentin Tarantino",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7640.jpg"
+      },
+      {
+        "nameRu": "Роджер Эвери",
+        "nameOriginal": "Roger Avary",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_17501.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Джон Траволта",
+        "nameOriginal": "John Travolta",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6479.jpg"
+      },
+      {
+        "nameRu": "Сэмюэл Л. Джексон",
+        "nameOriginal": "Samuel L. Jackson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7164.jpg"
+      },
+      {
+        "nameRu": "Брюс Уиллис",
+        "nameOriginal": "Bruce Willis",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_110.jpg"
+      },
+      {
+        "nameRu": "Ума Турман",
+        "nameOriginal": "Uma Thurman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29595.jpg"
+      },
+      {
+        "nameRu": "Винг Реймз",
+        "nameOriginal": "Ving Rhames",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24355.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 342,
+    "imdbId": "tt0110912",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.8
+    },
+    "votes": {
+      "kinopoisk": 859398,
+      "imdb": 2400000
+    },
+    "popularityScore": 92,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/342.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/374297/2a0000017c07a0d5fb7317c327d00289ff07/orig",
+    "description": "Двое бандитов Винсент Вега и Джулс Винфилд ведут философские беседы в перерывах между разборками и решением проблем с должниками криминального босса Марселласа Уоллеса.\nВ первой истории Винсент проводит незабываемый вечер с женой Марселласа Мией. Во второй Марселлас покупает боксёра Бутча Кулиджа, чтобы тот сдал бой. В третьей истории Винсент и Джулс по нелепой случайности попадают в неприятности.",
+    "topRank": 16,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Несколько связанных историй из жизни бандитов. Шедевр Квентина Тарантино, который изменил мировое кино",
+    "slogan": "Just because you are a character doesn't mean you have character",
+    "supportingCast": [
+      {
+        "nameRu": "Тим Рот",
+        "nameOriginal": "Tim Roth",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2145.jpg"
+      },
+      {
+        "nameRu": "Харви Кейтель",
+        "nameOriginal": "Harvey Keitel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1600.jpg"
+      },
+      {
+        "nameRu": "Квентин Тарантино",
+        "nameOriginal": "Quentin Tarantino",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7640.jpg"
+      },
+      {
+        "nameRu": "Питер Грин",
+        "nameOriginal": "Peter Greene",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_25640.jpg"
+      },
+      {
+        "nameRu": "Аманда Пламмер",
+        "nameOriginal": "Amanda Plummer",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_29519.jpg"
+      }
+    ],
+    "facts": [
+      "В начале сцены «Ситуация с Бонни» у парня с пистолетом не застегнуты штаны, но, когда он выходит из ванной комнаты, они уже застегнуты.",
+      "На 125-й минуте (33-я секунда) можно заметить киноляп. В этот момент в багажнике на мгновение показывают тело случайно убитого негра, как известно, с простреленной головой. Что примечательно, голова у него оказалась целой, несмотря на мозги, обрызгавшие весь салон автомобиля.",
+      "Когда Винсент расстегивает футляр со шприцем в квартире Лэнса, хорошо видно, что шприц стеклянный. А когда показывают инъекцию крупным планом, он уже почему-то пластмассовый.",
+      "В первой сцене героиня Аманды Пламмер кричит: &#171;Any of you fucking pricks move, and I'll execute every motherfucking last one of ya&#187;. А в конце фильма в той же самой сцене она кричит уже слегка иначе: &#171;Any of you fucking pricks move and I'll execute every one of ya motherfuckers!&#187;",
+      "Когда Винстон Вульф отъезжает от конторы «Монстр Джо» в своей Acura, он делает крутой поворот, но звук при этом идет такой, как если бы было непрерывное ускорение по прямой линии.",
+      "В «Джек Рэббит Слимс» карлик, который подвел Мию и Винсента к их столику в машине, уходя, говорит: «Call for Phillip Morris». При этом движения его губ не синхронизированы со звуком.",
+      "На заднем сиденье такси Бутч снимает свои боксерские перчатки, а затем бросает их в окно. При этом отлично слышно их удар о землю, как если бы машина не ехала, а стояла.",
+      "Когда Миа находит пакет с героином в пальто Винсента, она говорит &#171;привет&#187; (&#171;hello&#187;). Второе &#171;hello&#187; можно четко услышать идущим в дубль с первым."
+    ],
+    "awards": {
+      "wins": 8,
+      "nominations": 26,
+      "notable": [
+        "1995 · Золотой глобус — Лучший режиссер",
+        "1995 · Британская академия — Лучший фильм",
+        "1995 · Золотой глобус — Лучший фильм (драма)"
+      ]
+    }
+  },
+  {
+    "id": "kp_389",
+    "mode": "movie",
+    "titleRu": "Леон",
+    "titleOriginal": "Léon",
+    "alternativeTitles": [],
+    "year": 1994,
+    "endYear": null,
+    "countries": [
+      "США",
+      "Франция"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал",
+      "боевик"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 133,
+    "directors": [
+      {
+        "nameRu": "Люк Бессон",
+        "nameOriginal": "Luc Besson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24505.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Люк Бессон",
+        "nameOriginal": "Luc Besson",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24505.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Жан Рено",
+        "nameOriginal": "Jean Reno",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_11505.jpg"
+      },
+      {
+        "nameRu": "Натали Портман",
+        "nameOriginal": "Natalie Portman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_24285.jpg"
+      },
+      {
+        "nameRu": "Гари Олдман",
+        "nameOriginal": "Gary Oldman",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6650.jpg"
+      },
+      {
+        "nameRu": "Дэнни Айелло",
+        "nameOriginal": "Danny Aiello",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_14316.jpg"
+      },
+      {
+        "nameRu": "Питер Эппел",
+        "nameOriginal": "Peter Appel",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_10514.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 389,
+    "imdbId": "tt0110413",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.5
+    },
+    "votes": {
+      "kinopoisk": 940632,
+      "imdb": 1300000
+    },
+    "popularityScore": 78,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/389.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1531675/2a000001893576ecd6cc34fc6a76f8d638c2/orig",
+    "description": "Профессиональный убийца Леон неожиданно для себя самого решает помочь 12-летней соседке Матильде, семью которой убили коррумпированные полицейские.",
+    "topRank": 17,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Осиротевшая девочка становится напарницей наемного убийцы. Культовый триллер с Жаном Рено и Натали Портман",
+    "slogan": "Вы не можете остановить того, кого не видно",
+    "supportingCast": [
+      {
+        "nameRu": "Уилли Уан Блад",
+        "nameOriginal": "Willi One Blood",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_86393.jpg"
+      },
+      {
+        "nameRu": "Дон Крич",
+        "nameOriginal": "Don Creech",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_16671.jpg"
+      },
+      {
+        "nameRu": "Кит А. Гласко",
+        "nameOriginal": "Keith A. Glascoe",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_102577.jpg"
+      },
+      {
+        "nameRu": "Рэндольф Скотт",
+        "nameOriginal": "Randolph Scott",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_102578.jpg"
+      },
+      {
+        "nameRu": "Майкл Бадалукко",
+        "nameOriginal": "Michael Badalucco",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_27459.jpg"
+      }
+    ],
+    "facts": [
+      "Натали Портман пробовалась на роль, но была отвергнута в силу своего слишком юного возраста. Однако неутомимая девчонка через некоторое время вновь пробилась на пробы и выдала такой спектакль, что Люк Бессон ни на секунду больше не усомнился в таланте актрисы и взял ее на роль Матильды.",
+      "Растение в горшке, которое постоянно таскали с собой главные герои, называется аглаонема (aglaonema). По-английски слово произносится как «ag-leon-ema».",
+      "На ту же роль пробовалась Лив Тайлер , но была признана великовозрастной для ее исполнения.",
+      "Во время съемок произошел довольно забавный эпизод. Некий злоумышленник ограбил магазин и бежал с добычей по улицам города. Внезапно он натолкнулся на съемочную бригаду. Увидев кучу «полицейских», он предпочел немедленно сдаться. Каково же было его удивление, когда выяснилось, что все полицейские на самом деле простые статисты на съемках кинокартины.",
+      "Леон Гамон — известный французский изобретатель. Внес непосредственный вклад в развитие кинематографа наряду с братьями Люмьер. В честь него была названа французская кинокомпания «Gaumont», которая и выпустила данную кинокартину.",
+      "Марка пистолета, используемого Леоном, носит название Beretta 92.",
+      "Полное имя главного героя — Леон Монтана.",
+      "Полная версия фильма имеет хронометраж 136 минут."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 7,
+      "notable": [
+        "1995 · Сезар — Лучший актер",
+        "1995 · Сезар — Лучший фильм",
+        "1995 · Сезар — Лучший звук"
+      ]
+    }
+  },
+  {
+    "id": "kp_567118",
+    "mode": "movie",
+    "titleRu": "Деревья на асфальте",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 1984,
+    "endYear": null,
+    "countries": [
+      "СССР"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "драма"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 74,
+    "directors": [
+      {
+        "nameRu": "Владимир Колос",
+        "nameOriginal": "Владимир Колос",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_298201.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Константин Губаревич",
+        "nameOriginal": "Константин Губаревич",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_334502.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Галина Макарова",
+        "nameOriginal": "Галина Макарова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_281038.jpg"
+      },
+      {
+        "nameRu": "Леонид Кулагин",
+        "nameOriginal": "Леонид Кулагин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_277519.jpg"
+      },
+      {
+        "nameRu": "Светлана Кузьмина",
+        "nameOriginal": "Светлана Кузьмина",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_297974.jpg"
+      },
+      {
+        "nameRu": "Виктор Мирный",
+        "nameOriginal": "Виктор Мирный",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2294605.jpg"
+      },
+      {
+        "nameRu": "Наталья Волчек",
+        "nameOriginal": "Наталья Волчек",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_310418.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 567118,
+    "imdbId": "tt4492666",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": null
+    },
+    "votes": {
+      "kinopoisk": 99776,
+      "imdb": 0
+    },
+    "popularityScore": 85,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/567118.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/1648503/2a00000192576c225d9a89eb17a2d573655c/orig",
+    "description": "Добрая, душевная Анна Тимофеевна с болью покидала свой деревенский дом, своих односельчан. Сын Степан, опасаясь за здоровье матери, уговорил ее переехать в город. Чем могла, помогала она его семье и ждала возвращения из армии внука Генки, который, наконец, приехал с молодой красивой женой Светой. На смену радостным хлопотам пришла болезнь, после которой Анна Тимофеевна оказалась в загородном пансионате для престарелых. Затосковав по дому, она уезжает в родную деревню. Там она встречает Генку, и он становится для пожилой женщины самым близким и дорогим человеком.",
+    "topRank": 18,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Пожилая мать решает переехать из родной деревни в город к сыну. Эмоциональная драма с Галиной Макаровой",
+    "slogan": null,
+    "supportingCast": [
+      {
+        "nameRu": "Николай Крюков",
+        "nameOriginal": "Николай Крюков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_313652.jpg"
+      },
+      {
+        "nameRu": "Татьяна Алексеева",
+        "nameOriginal": "Татьяна Алексеева",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_327356.jpg"
+      },
+      {
+        "nameRu": "Здислав Стомма",
+        "nameOriginal": "Здислав Стомма",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_322384.jpg"
+      },
+      {
+        "nameRu": "Евгения Ковалева",
+        "nameOriginal": "Евгения Ковалева",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_298006.jpg"
+      },
+      {
+        "nameRu": "Людмила Былинская",
+        "nameOriginal": "Людмила Былинская",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_2294619.jpg"
+      }
+    ],
+    "facts": [],
+    "awards": {
+      "wins": 0,
+      "nominations": 0,
+      "notable": []
+    }
+  },
+  {
+    "id": "kp_77263",
+    "mode": "movie",
+    "titleRu": "Приключения Шерлока Холмса и доктора Ватсона: Собака Баскервилей",
+    "titleOriginal": "",
+    "alternativeTitles": [],
+    "year": 1981,
+    "endYear": null,
+    "countries": [
+      "СССР"
+    ],
+    "originalLanguage": "ru",
+    "genres": [
+      "детектив"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 154,
+    "directors": [
+      {
+        "nameRu": "Игорь Масленников",
+        "nameOriginal": "Игорь Масленников",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_284219.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Артур Конан Дойл",
+        "nameOriginal": "Arthur Conan Doyle",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_70084.jpg"
+      },
+      {
+        "nameRu": "Игорь Масленников",
+        "nameOriginal": "Игорь Масленников",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_284219.jpg"
+      },
+      {
+        "nameRu": "Юрий Векслер",
+        "nameOriginal": "Юрий Векслер",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_281143.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Василий Ливанов",
+        "nameOriginal": "Василий Ливанов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_266224.jpg"
+      },
+      {
+        "nameRu": "Виталий Соломин",
+        "nameOriginal": "Виталий Соломин",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_174122.jpg"
+      },
+      {
+        "nameRu": "Никита Михалков",
+        "nameOriginal": "Никита Михалков",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_101749.jpg"
+      },
+      {
+        "nameRu": "Олег Янковский",
+        "nameOriginal": "Олег Янковский",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_54829.jpg"
+      },
+      {
+        "nameRu": "Ирина Купченко",
+        "nameOriginal": "Ирина Купченко",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_122788.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 77263,
+    "imdbId": "tt0083100",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 8.5
+    },
+    "votes": {
+      "kinopoisk": 339614,
+      "imdb": 6900
+    },
+    "popularityScore": 70,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/77263.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/236744/2a000001992dc6818374269ab0d50f02bbe8/orig",
+    "description": "Труп Чарльза Баскервиля обнаруживают неподалеку от его родового поместья. Выражение нечеловеческого ужаса на лице покойника и следы крупной собаки поблизости заставляют вспомнить старинную легенду о проклятии, тяготеющем над родом Баскервилей. Шерлоку Холмсу предстоит докопаться до истины.",
+    "topRank": 19,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_unofficial_refill",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "Ватсон вынужден жить с эксцентричным клиентом в доме на болотах. Блестящая советская экранизация Конан Дойла",
+    "slogan": null,
+    "supportingCast": [
+      {
+        "nameRu": "Александр Адабашьян",
+        "nameOriginal": "Александр Адабашьян",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_174179.jpg"
+      },
+      {
+        "nameRu": "Светлана Крючкова",
+        "nameOriginal": "Светлана Крючкова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_101752.jpg"
+      },
+      {
+        "nameRu": "Алла Демидова",
+        "nameOriginal": "Алла Демидова",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_181214.jpg"
+      },
+      {
+        "nameRu": "Евгений Стеблов",
+        "nameOriginal": "Евгений Стеблов",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_174189.jpg"
+      },
+      {
+        "nameRu": "Сергей Мартинсон",
+        "nameOriginal": "Сергей Мартинсон",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_185570.jpg"
+      }
+    ],
+    "facts": [
+      "В древней рукописи о Собаке Баскервилей, которую доктор Мортимер зачитывает мистеру Шерлоку Холмсу и доктору Ватсону, есть орфографические ошибки: вместо «in» — «im», «who» — «woho», «with» — «noth», «would» — «worid», «believe» — «belive», «Justice» — «Justiee», «Learn» — «Jearn», «this» — «his», «earnestly» — «larnestly», «commend» — «comend», «nor» — «war». А также несколько раз пропущены куски предложений, что делает их бессмысленными.",
+      "Александр Адабашьян , игравший Бэрримора, носит обручальное кольцо на правой руке, как это принято в России (в то время в СССР). Английский же Бэрримор должен носить обручальное кольцо на левой руке.",
+      "В фильме Холмс находит коробочку с белым фосфором в хижине, где содержалась собака. Но белый фосфор — ядовитое вещество, кроме всего прочего, быстро окисляющееся (его хранят под водой из-за опасности самовоспламенения). На съёмках использовался фосфоресцирующий состав без содержания фосфора.",
+      "Чудак Френкленд обозревает окрестности Гримпенской трясины при помощи зрительной трубы с зеркально-линзовым объективом (создан только в 1930 г.). Когда Френкленд приглашает Ватсона на балкон, где установлена зрительная труба, в правом нижнем углу экрана видны 3 керамических изолятора на стене дома — вероятно, трехфазная электропроводка. В левой части балкона вдоль стены также свисает белый провод, очень похожий на телевизионный антенный кабель.",
+      "Когда Ватсон в Баскервиль-холле пишет отчёт мистеру Шерлоку Холмсу, на крупном плане видно, что запонки на рукавах рубашки доктора Ватсона квадратные, а на общем плане — они круглые. И конверт на общем плане тоже выглядит не так, как на крупном. Причём доктор Ватсон неправильно оформил адрес, куда надо доставить письмо, ибо &laquo;настоящие&raquo; англичане пишут сначала номер дома, а потом улицу.",
+      "Фильм снят по мотивам повести Артура Конан Дойля &laquo;Собака Баскервилей&raquo; (The Hound of the Baskervilles, 1902).",
+      "Монетный двор Новой Зеландии ввел в обращение серию серебряных двухдолларовых монет, посвящённых рассказам о Шерлоке Холмсе, на аверсе которых используются кадры из этого фильма.",
+      "Характерные диалоги сэра Генри и Бэрримора, послужившие основой для многочисленных анекдотов, Никита Михалков (Генри) и Александр Адабашьян (Бэрримор) придумали сами по ходу съёмок."
+    ],
+    "awards": {
+      "wins": 0,
+      "nominations": 0,
+      "notable": []
+    }
+  },
+  {
+    "id": "kp_325",
+    "mode": "movie",
+    "titleRu": "Крестный отец",
+    "titleOriginal": "The Godfather",
+    "alternativeTitles": [],
+    "year": 1972,
+    "endYear": null,
+    "countries": [
+      "США"
+    ],
+    "originalLanguage": "en",
+    "genres": [
+      "драма",
+      "криминал"
+    ],
+    "ageRating": "18+",
+    "runtimeMinutes": 175,
+    "directors": [
+      {
+        "nameRu": "Фрэнсис Форд Коппола",
+        "nameOriginal": "Francis Ford Coppola",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12665.jpg"
+      }
+    ],
+    "showrunners": [],
+    "writers": [
+      {
+        "nameRu": "Марио Пьюзо",
+        "nameOriginal": "Mario Puzo",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_115897.jpg"
+      },
+      {
+        "nameRu": "Фрэнсис Форд Коппола",
+        "nameOriginal": "Francis Ford Coppola",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_12665.jpg"
+      }
+    ],
+    "cast": [
+      {
+        "nameRu": "Марлон Брандо",
+        "nameOriginal": "Marlon Brando",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_33037.jpg"
+      },
+      {
+        "nameRu": "Аль Пачино",
+        "nameOriginal": "Al Pacino",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_26240.jpg"
+      },
+      {
+        "nameRu": "Джеймс Каан",
+        "nameOriginal": "James Caan",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_7088.jpg"
+      },
+      {
+        "nameRu": "Роберт Дювалл",
+        "nameOriginal": "Robert Duvall",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_6273.jpg"
+      },
+      {
+        "nameRu": "Ричард С. Кастеллано",
+        "nameOriginal": "Richard S. Castellano",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_128548.jpg"
+      }
+    ],
+    "studios": [],
+    "kinopoiskId": 325,
+    "imdbId": "tt0068646",
+    "ratings": {
+      "kinopoisk": 8.7,
+      "imdb": 9.2
+    },
+    "votes": {
+      "kinopoisk": 450385,
+      "imdb": 2200000
+    },
+    "popularityScore": 89,
+    "budget": null,
+    "posterUrl": "https://kinopoiskapiunofficial.tech/images/posters/kp/325.jpg",
+    "backdropUrl": "https://avatars.mds.yandex.net/get-ott/374297/2a000001963f72757763becfb93aa835d006/orig",
+    "description": "Криминальная сага, повествующая о нью-йоркской сицилийской мафиозной семье Корлеоне. Фильм охватывает период 1945-1955 годов.\n\nГлава семьи, Дон Вито Корлеоне, выдаёт замуж свою дочь. В это время со Второй мировой войны возвращается его любимый сын Майкл. Майкл, герой войны, гордость семьи, не выражает желания заняться жестоким семейным бизнесом. Дон Корлеоне ведёт дела по старым правилам, но наступают иные времена, и появляются люди, желающие изменить сложившиеся порядки. На Дона Корлеоне совершается покушение.",
+    "topRank": 20,
+    "dataQuality": {
+      "source": [
+        "kinopoisk_top_collection",
+        "kinopoisk_api_unofficial",
+        "kinopoisk_api_hints_details",
+        "kinopoisk_api_staff",
+        "kinopoisk_api_facts",
+        "kinopoisk_api_awards"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "plotHint": "В семье крупного нью-йоркского мафиози наметился кризис. Революция в гангстерском кино и начало большого эпоса",
+    "slogan": "Настоящая сила не может быть дана, она может быть взята...",
+    "supportingCast": [
+      {
+        "nameRu": "Дайан Китон",
+        "nameOriginal": "Diane Keaton",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_11754.jpg"
+      },
+      {
+        "nameRu": "Талия Шайр",
+        "nameOriginal": "Talia Shire",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_33823.jpg"
+      },
+      {
+        "nameRu": "Джон Казале",
+        "nameOriginal": "John Cazale",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_128549.jpg"
+      },
+      {
+        "nameRu": "Аль Леттьери",
+        "nameOriginal": "Al Lettieri",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_181343.jpg"
+      },
+      {
+        "nameRu": "Стерлинг Хейден",
+        "nameOriginal": "Sterling Hayden",
+        "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_169662.jpg"
+      }
+    ],
+    "facts": [
+      "Фильм снят по мотивам романа Марио Пьюзо &laquo;Крёстный отец&raquo; (The Godfather, 1969).",
+      "Марио Пьюзо был полностью разорен, когда подписывал контракт с «Random House» на издание «Крестного отца».",
+      "Студия Paramount приобрела права на экранизацию романа еще до того, как он был опубликован. В распоряжении студии был лишь 20-страничный план романа.",
+      "Книга Пьюзо стала бестселлером, разойдясь тиражом 10 миллионов экземпляров.",
+      "Сам писатель как-то признался, что все свои знания о мафии он почерпнул из других книг.",
+      "Место режиссёра фильма было сначала предложено Серджио Леоне , но тот отказался. Впоследствии Леоне сожалел о своём решении и в 1983 году решил снять столь же масштабный фильм « Однажды в Америке ».",
+      "Кинокомпания Paramount Pictures до начала съёмок хотела отобрать проект у Копполы и передать его режиссёру Элии Казану , но Брандо сказал, что тоже уйдёт, если уволят Копполу.",
+      "На разные роли в фильме рассматривались: Уоррен Битти , Ален Делон , Берт Рейнолдс , Роберт Редфорд , Дастин Хоффман , Джек Николсон , Роберт Де Ниро , Лоуренс Оливье и другие. Но Коппола отверг все эти кандидатуры."
+    ],
+    "awards": {
+      "wins": 8,
+      "nominations": 12,
+      "notable": [
+        "1973 · Оскар — Лучшая мужская роль второго плана",
+        "1973 · Оскар — Лучший монтаж",
+        "1973 · Британская академия — Лучшая мужская роль второго плана"
+      ]
+    }
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-07-07T07:36:52.253Z",
+  "source": "thegamesdb_top10",
+  "targetCount": 10,
+  "selectedCount": 10,
+  "items": [
+    {
+      "topRank": 1,
+      "title": "Tetris",
+      "seedRank": 1,
+      "thegamesdbId": 65556,
+      "verified": true
+    },
+    {
+      "topRank": 2,
+      "title": "The Legend of Zelda: Ocarina of Time",
+      "seedRank": 2,
+      "thegamesdbId": 133332,
+      "verified": true
+    },
+    {
+      "topRank": 3,
+      "title": "Super Mario 64",
+      "seedRank": 3,
+      "thegamesdbId": 216,
+      "verified": true
+    },
+    {
+      "topRank": 4,
+      "title": "BioShock",
+      "seedRank": 6,
+      "thegamesdbId": 132250,
+      "verified": true
+    },
+    {
+      "topRank": 5,
+      "title": "Final Fantasy VII",
+      "seedRank": 7,
+      "thegamesdbId": 68681,
+      "verified": true
+    },
+    {
+      "topRank": 6,
+      "title": "World of Warcraft",
+      "seedRank": 8,
+      "thegamesdbId": 149,
+      "verified": true
+    },
+    {
+      "topRank": 7,
+      "title": "Metal Gear Solid",
+      "seedRank": 9,
+      "thegamesdbId": 196,
+      "verified": true
+    },
+    {
+      "topRank": 8,
+      "title": "Doom",
+      "seedRank": 10,
+      "thegamesdbId": 745,
+      "verified": true
+    },
+    {
+      "topRank": 9,
+      "title": "The Elder Scrolls V: Skyrim",
+      "seedRank": 11,
+      "thegamesdbId": 2511,
+      "verified": true
+    },
+    {
+      "topRank": 10,
+      "title": "The Last of Us",
+      "seedRank": 13,
+      "thegamesdbId": 103667,
+      "verified": true
+    }
+  ]
+}

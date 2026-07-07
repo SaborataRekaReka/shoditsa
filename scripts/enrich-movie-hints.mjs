@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { sanitizeMovieRecord } from './movie-hint-sanitize.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const envFile = resolve(root, '.env.local')
@@ -137,6 +138,8 @@ for (const movie of pending) {
       changed = true
     }
 
+    if (changed) Object.assign(movie, sanitizeMovieRecord(movie))
+
     if (needsAwards(movie, sourceSet)) {
       const awardsResponse = await request(`/api/v2.2/films/${movie.kinopoiskId}/awards`)
       requestCount += 1
@@ -153,6 +156,8 @@ for (const movie of pending) {
       sourceSet.add(SOURCE_AWARDS)
       changed = true
     }
+
+    if (changed) Object.assign(movie, sanitizeMovieRecord(movie))
 
     movie.dataQuality = {
       source: [...sourceSet],

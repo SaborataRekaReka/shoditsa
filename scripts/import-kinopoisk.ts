@@ -2,6 +2,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+const { sanitizeMovieRecord } = await import('./movie-hint-sanitize.mjs')
+
 type Mode = 'movie' | 'series'
 type CollectionItem = Record<string, any> & { kinopoiskId: number }
 
@@ -124,7 +126,7 @@ const enrich = async (items: CollectionItem[], mode: Mode, withStaff = false, wi
       if (withStaff) source.push('kinopoisk_api_staff')
       if (withFacts) source.push('kinopoisk_api_facts')
       if (withAwards) source.push('kinopoisk_api_awards')
-      return {
+      return sanitizeMovieRecord({
         id: `kp_${collection.kinopoiskId}`,
         mode,
         titleRu,
@@ -158,7 +160,7 @@ const enrich = async (items: CollectionItem[], mode: Mode, withStaff = false, wi
         awards,
         topRank: rank,
         dataQuality: { source, verified: true, missingFields: [] },
-      }
+      })
     }))
     result.push(...rows)
     completed += batch.length

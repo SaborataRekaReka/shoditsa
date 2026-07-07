@@ -1,58 +1,44 @@
 {
-  "generatedAt": "2026-07-06T13:32:06.980Z",
+  "generatedAt": "2026-07-07T10:18:26.548Z",
   "requestedSource": "https://www.kinopoisk.ru/top/navigator/",
-  "currentMovieSubset": "Merged: previous dataset + navigator complete titles",
+  "currentMovieSubset": "Navigator IDs + details + staff, incomplete titles skipped",
   "api": "https://kinopoiskapiunofficial.tech/documentation/api/",
   "includeSeries": false,
   "includeStaff": true,
   "includeFacts": false,
   "includeAwards": false,
-  "sourceListIdCount": 3235,
-  "movieCount": 816,
-  "skippedCount": 2832,
-  "seriesCount": 40,
+  "sourceListIdCount": 2596,
+  "mode": "movie",
+  "mergeOutput": true,
+  "outputCount": 1246,
+  "movieCount": 1246,
+  "skippedCount": 2166,
+  "seriesCount": 887,
   "keyUsage": [
     {
       "index": 1,
-      "used": 146,
+      "used": 172,
       "exhausted": true
     },
     {
       "index": 2,
-      "used": 146,
+      "used": 172,
       "exhausted": true
     },
     {
       "index": 3,
-      "used": 146,
+      "used": 172,
+      "exhausted": true
+    },
+    {
+      "index": 4,
+      "used": 172,
+      "exhausted": true
+    },
+    {
+      "index": 5,
+      "used": 172,
       "exhausted": true
     }
-  ],
-  "merge": {
-    "previousCount": 500,
-    "navigatorRunCount": 219,
-    "addedNew": 148,
-    "replacedByQuality": 15,
-    "batchMerge": {
-      "batchCount": 184,
-      "beforeCount": 648,
-      "afterCount": 816,
-      "addedNew": 168,
-      "replacedByQuality": 6,
-      "keptExisting": 10
-    },
-    "latestBatchRun": {
-      "sourceListIdCount": 3016,
-      "movieCount": 184,
-      "skippedCount": 2832,
-      "seriesCount": 40,
-      "keyUsage": [
-        {
-          "index": 1,
-          "used": 369,
-          "exhausted": true
-        }
-      ]
-    }
-  }
+  ]
 }

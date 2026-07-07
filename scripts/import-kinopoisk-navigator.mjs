@@ -22,8 +22,14 @@ const argValue = (name, fallback) => {
   return args[index + 1]
 }
 
+const modeArg = String(argValue('--mode', 'movie')).toLowerCase()
+if (!['movie', 'series'].includes(modeArg)) throw new Error('Invalid --mode. Use "movie" or "series"')
+const mode = modeArg
+const mergeOutput = args.includes('--merge')
+
 const idsPath = resolve(root, argValue('--ids', 'data/kinopoisk-navigator-ids.json'))
-const outPath = resolve(root, argValue('--out', 'public/data/movies.generated.json'))
+const outPath = resolve(root, argValue('--out', mode === 'series' ? 'public/data/series.generated.json' : 'public/data/movies.generated.json'))
+const moviesPath = resolve(root, argValue('--movies', 'public/data/movies.generated.json'))
 const seriesPath = resolve(root, argValue('--series', 'public/data/series.generated.json'))
 const sourcePath = resolve(root, argValue('--source', 'public/data/source.json'))
 const skippedPath = resolve(root, argValue('--skipped', 'data/kinopoisk-navigator-skipped.json'))
@@ -136,15 +142,29 @@ const person = (item) => ({
 
 const isValidYear = (year) => Number.isFinite(year) && year > 1880 && year < 2100
 
-const missingCore = (movie) => {
+const missingCore = (item) => {
   const miss = []
-  if (!movie.titleRu) miss.push('titleRu')
-  if (!isValidYear(movie.year)) miss.push('year')
-  if (!Array.isArray(movie.countries) || !movie.countries.length) miss.push('countries')
-  if (!Array.isArray(movie.genres) || !movie.genres.length) miss.push('genres')
-  if (!Array.isArray(movie.directors) || !movie.directors.length) miss.push('directors')
-  if (!Array.isArray(movie.cast) || !movie.cast.length) miss.push('cast')
+  if (!item.titleRu) miss.push('titleRu')
+  if (!isValidYear(item.year) && !isValidYear(item.endYear)) miss.push('year')
+  if (!Array.isArray(item.countries) || !item.countries.length) miss.push('countries')
+  if (!Array.isArray(item.genres) || !item.genres.length) miss.push('genres')
+
+  if (mode === 'movie') {
+    if (!Array.isArray(item.directors) || !item.directors.length) miss.push('directors')
+    if (!Array.isArray(item.cast) || !item.cast.length) miss.push('cast')
+  }
+
   return miss
+}
+
+const readCollection = async (pathToJson) => {
+  if (!existsSync(pathToJson)) return []
+  try {
+    const parsed = JSON.parse(await readFile(pathToJson, 'utf8'))
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
 }
 
 const idsRaw = JSON.parse(await readFile(idsPath, 'utf8'))
@@ -153,12 +173,13 @@ if (!Array.isArray(idsRaw)) throw new Error(`IDs file is not an array: ${idsPath
 const ids = [...new Set(idsRaw.map((value) => Number(value)).filter((value) => Number.isInteger(value) && value > 0))]
 const targetIds = maxItems ? ids.slice(0, maxItems) : ids
 
-const movies = []
+const items = []
 const skipped = []
 let processed = 0
 
 console.log(`IDs loaded: ${targetIds.length}`)
 console.log(`API keys loaded: ${uniqueKeys.length}`)
+console.log(`Mode: ${mode}`)
 
 for (const kinopoiskId of targetIds) {
   processed += 1
@@ -170,14 +191,18 @@ for (const kinopoiskId of targetIds) {
     const genres = (details.genres ?? []).map((entry) => entry?.genre).filter(Boolean).slice(0, 5)
     const directors = staff.filter((entry) => entry.professionKey === 'DIRECTOR').slice(0, 3).map(person)
     const writers = staff.filter((entry) => entry.professionKey === 'WRITER').slice(0, 3).map(person)
+    const producers = staff.filter((entry) => entry.professionKey === 'PRODUCER').slice(0, 3).map(person)
     const actors = staff.filter((entry) => entry.professionKey === 'ACTOR')
     const cast = actors.slice(0, 5).map(person)
     const supportingCast = actors.slice(5, 10).map(person)
+    const showrunners = mode === 'series'
+      ? [...new Map([...writers, ...producers].map((entry) => [entry.nameRu, entry])).values()].slice(0, 2)
+      : []
 
     const yearNumber = Number(details.year)
-    const movie = {
+    const item = {
       id: `kp_${kinopoiskId}`,
-      mode: 'movie',
+      mode,
       titleRu: details.nameRu || details.nameOriginal || details.nameEn || `Кинопоиск #${kinopoiskId}`,
       titleOriginal: details.nameOriginal || details.nameEn || '',
       alternativeTitles: [...new Set([details.nameEn, details.nameOriginal].filter(Boolean))],
@@ -189,7 +214,7 @@ for (const kinopoiskId of targetIds) {
       ageRating: details.ratingAgeLimits ? `${String(details.ratingAgeLimits).replace('age', '')}+` : null,
       runtimeMinutes: details.filmLength ?? null,
       directors,
-      showrunners: [],
+      showrunners,
       writers,
       cast,
       supportingCast,
@@ -221,52 +246,66 @@ for (const kinopoiskId of targetIds) {
       },
     }
 
-    const miss = missingCore(movie)
+    const miss = missingCore(item)
     if (miss.length) {
       skipped.push({ kinopoiskId, reason: `missing:${miss.join(',')}` })
       continue
     }
 
-    movies.push(movie)
+    items.push(item)
   } catch (error) {
     skipped.push({ kinopoiskId, reason: String(error?.message || error).slice(0, 220) })
   }
 
   if (processed % 25 === 0 || processed === targetIds.length) {
-    console.log(`processed=${processed}/${targetIds.length} added=${movies.length} skipped=${skipped.length}`)
+    console.log(`processed=${processed}/${targetIds.length} added=${items.length} skipped=${skipped.length}`)
   }
 }
 
-const sorted = movies.sort((a, b) => (b.ratings.kinopoisk ?? 0) - (a.ratings.kinopoisk ?? 0))
-sorted.forEach((item, index) => { item.topRank = index + 1 })
+const sorted = items.sort((a, b) => (b.ratings.kinopoisk ?? 0) - (a.ratings.kinopoisk ?? 0))
+
+let outputItems = sorted
+if (mergeOutput) {
+  const existing = await readCollection(outPath)
+  const merged = new Map(existing.map((entry) => [entry?.id || `kp_${entry?.kinopoiskId}`, entry]))
+  for (const entry of sorted) merged.set(entry.id, entry)
+  outputItems = [...merged.values()]
+}
+
+outputItems = outputItems
+  .filter((entry) => entry && typeof entry === 'object')
+  .sort((a, b) => (b?.ratings?.kinopoisk ?? 0) - (a?.ratings?.kinopoisk ?? 0))
+
+outputItems.forEach((entry, index) => {
+  entry.mode = mode
+  entry.topRank = index + 1
+})
 
 await mkdir(resolve(outPath, '..'), { recursive: true })
-await writeFile(outPath, `${JSON.stringify(sorted, null, 2)}\n`, 'utf8')
+await writeFile(outPath, `${JSON.stringify(outputItems, null, 2)}\n`, 'utf8')
 
-let series = []
-if (existsSync(seriesPath)) {
-  try {
-    series = JSON.parse(await readFile(seriesPath, 'utf8'))
-  } catch {
-    series = []
-  }
-}
+const movieCount = mode === 'movie' ? outputItems.length : (await readCollection(moviesPath)).length
+const seriesCount = mode === 'series' ? outputItems.length : (await readCollection(seriesPath)).length
 
 await writeFile(
   sourcePath,
   `${JSON.stringify({
     generatedAt: new Date().toISOString(),
     requestedSource: 'https://www.kinopoisk.ru/top/navigator/',
-    currentMovieSubset: 'Navigator IDs + details + staff, incomplete titles skipped',
+    currentMovieSubset: mode === 'movie' ? 'Navigator IDs + details + staff, incomplete titles skipped' : undefined,
+    currentSeriesSubset: mode === 'series' ? 'Navigator IDs + details + staff, incomplete titles skipped' : undefined,
     api: 'https://kinopoiskapiunofficial.tech/documentation/api/',
-    includeSeries: false,
+    includeSeries: mode === 'series',
     includeStaff: true,
     includeFacts: false,
     includeAwards: false,
     sourceListIdCount: targetIds.length,
-    movieCount: sorted.length,
+    mode,
+    mergeOutput,
+    outputCount: outputItems.length,
+    movieCount,
     skippedCount: skipped.length,
-    seriesCount: Array.isArray(series) ? series.length : 0,
+    seriesCount,
     keyUsage: keyState.map((entry, index) => ({ index: index + 1, used: entry.used, exhausted: entry.exhausted })),
   }, null, 2)}\n`,
   'utf8',
@@ -277,6 +316,7 @@ await writeFile(skippedPath, `${JSON.stringify(skipped, null, 2)}\n`, 'utf8')
 
 console.log('Done:')
 console.log(`added=${sorted.length}`)
+console.log(`output=${outputItems.length}`)
 console.log(`skipped=${skipped.length}`)
 console.log(`out=${outPath}`)
 console.log(`skippedFile=${skippedPath}`)

@@ -1,0 +1,15 @@
+{
+  "cursor": 1000,
+  "completed": true,
+  "updatedAt": "2026-07-07T09:30:35.028Z",
+  "lastRun": {
+    "batchRequested": 50,
+    "batchAdded": 50,
+    "scanned": 53,
+    "maxScans": 600,
+    "apiCalls": 58,
+    "cacheHits": 1,
+    "cacheMisses": 52,
+    "totalGames": 815
+  }
+}

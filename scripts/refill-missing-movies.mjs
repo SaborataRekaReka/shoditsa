@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { sanitizeMovieRecord } from './movie-hint-sanitize.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const envFile = resolve(root, '.env.local')
@@ -120,6 +121,8 @@ for (let i = 0; i < pending.length; i += 1) {
       verified: true,
       missingFields: Array.isArray(movie.dataQuality?.missingFields) ? movie.dataQuality.missingFields : [],
     }
+
+    Object.assign(movie, sanitizeMovieRecord(movie))
 
     updated += 1
     process.stdout.write(`\rRefilled ${updated}/${pending.length}`)

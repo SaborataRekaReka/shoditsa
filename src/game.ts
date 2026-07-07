@@ -62,7 +62,7 @@ export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<str
     const typo = q.length > 3 && names.some((name) => distance(name.slice(0, Math.max(q.length, 4)), q) <= (q.length > 7 ? 2 : 1))
     return { item, score: exact ? 0 : starts ? 1 : includes ? 2 : typo ? 3 : 99 }
   }).filter(({ item, score }) => score < 99 && !excluded.has(item.id))
-    .sort((a, b) => a.score - b.score || b.item.popularityScore - a.item.popularityScore).slice(0, 8).map(({ item }) => item)
+    .sort((a, b) => a.score - b.score || a.item.titleRu.localeCompare(b.item.titleRu, 'ru-RU')).slice(0, 8).map(({ item }) => item)
 }
 
 const setStatus = (guess: string[], answer: string[]): MatchStatus => {
@@ -85,6 +85,39 @@ const people = (values: TitleItem['cast']) => list((values ?? []).map((person) =
 const overlaps = (guess: string[], answer: string[]) => {
   const answerSet = new Set(answer.map(normalize))
   return guess.filter((value) => answerSet.has(normalize(value)))
+}
+const formatNumber = (value: number | null | undefined) => value == null ? '—' : new Intl.NumberFormat('ru-RU').format(value)
+const gameScore = (value: number | null | undefined) => value == null ? null : Math.round(value)
+
+const reviewHint = (guess: number | null | undefined, answer: number | null | undefined): { status: MatchStatus; direction: Direction } => {
+  if (!guess || !answer) return { status: 'unknown', direction: null }
+  if (guess === answer) return { status: 'match', direction: null }
+  const ratio = Math.max(guess, answer) / Math.max(1, Math.min(guess, answer))
+  if (ratio <= 1.25) return { status: 'close', direction: answer > guess ? 'up' : 'down' }
+  if (ratio <= 2) return { status: 'partial', direction: answer > guess ? 'up' : 'down' }
+  return { status: 'miss', direction: answer > guess ? 'up' : 'down' }
+}
+
+const gamePriceLabel = (item: TitleItem) => {
+  if (!item.price) return 'Нет данных'
+  if (item.price.isFree) return 'Бесплатно'
+  if (item.price.final != null) {
+    const rubles = item.price.final / 100
+    return `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(rubles)} ₽`
+  }
+  return 'Платно'
+}
+
+const gamePriceHint = (guess: TitleItem, answer: TitleItem): { status: MatchStatus; direction: Direction } => {
+  if (!guess.price || !answer.price) return { status: 'unknown', direction: null }
+  if (guess.price.isFree && answer.price.isFree) return { status: 'match', direction: null }
+  if (guess.price.isFree !== answer.price.isFree) return { status: 'miss', direction: null }
+  if (guess.price.final == null || answer.price.final == null) return { status: 'unknown', direction: null }
+  const delta = Math.abs(guess.price.final - answer.price.final)
+  return {
+    status: delta <= 10_000 ? 'match' : delta <= 35_000 ? 'close' : 'miss',
+    direction: delta <= 10_000 ? null : answer.price.final > guess.price.final ? 'up' : 'down',
+  }
 }
 
 const compareDiagnoses = (guess: TitleItem, answer: TitleItem): Hint[] => {
@@ -135,7 +168,6 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const kp = numeric(guess.ratings?.kinopoisk, answer.ratings?.kinopoisk, 0.1, 0.3)
   const imdb = numeric(guess.ratings?.imdb, answer.ratings?.imdb, 0.1, 0.3)
   const runtime = numeric(guess.runtimeMinutes, answer.runtimeMinutes, 5, 15)
-  const popularity = numeric(guess.popularityScore, answer.popularityScore, 3, 10)
 
   const guessShowrunners = guess.showrunners ?? []
   const answerShowrunners = answer.showrunners ?? []
@@ -183,21 +215,72 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
       status: guess.ageRating && answer.ageRating ? (guess.ageRating === answer.ageRating ? 'match' : 'miss') : 'unknown',
       direction: null,
     },
-    { key: 'popularity', label: 'Популярность', value: `${guess.popularityScore}/100`, ...popularity },
+  ]
+
+  return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
+}
+
+const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const guessGenres = guess.genres ?? []
+  const answerGenres = answer.genres ?? []
+  const guessCategories = guess.steamCategories ?? []
+  const answerCategories = answer.steamCategories ?? []
+  const guessPlatforms = guess.platforms ?? []
+  const answerPlatforms = answer.platforms ?? []
+  const guessDevelopers = guess.developers ?? []
+  const answerDevelopers = answer.developers ?? []
+  const guessPublishers = guess.publishers ?? []
+  const answerPublishers = answer.publishers ?? []
+  const guessSteamPositive = gameScore(guess.ratings?.steamPositivePercent)
+  const answerSteamPositive = gameScore(answer.ratings?.steamPositivePercent)
+  const guessMeta = gameScore(guess.ratings?.metacritic ?? guess.metacritic)
+  const answerMeta = gameScore(answer.ratings?.metacritic ?? answer.metacritic)
+
+  const year = numeric(guess.year, answer.year, 0, 2)
+  const rank = numeric(guess.topRank, answer.topRank, 0, 15)
+  const steamPositive = numeric(guessSteamPositive, answerSteamPositive, 1, 5)
+  const metacritic = numeric(guessMeta, answerMeta, 1, 5)
+  const reviews = reviewHint(guess.votes?.steamReviews, answer.votes?.steamReviews)
+  const price = gamePriceHint(guess, answer)
+  const hasGenres = guessGenres.length > 0 || answerGenres.length > 0
+  const hasSteamCategories = guessCategories.length > 0 || answerCategories.length > 0
+  const hasPlatforms = guessPlatforms.length > 0 || answerPlatforms.length > 0
+  const hasDevelopers = guessDevelopers.length > 0 || answerDevelopers.length > 0
+  const hasPublishers = guessPublishers.length > 0 || answerPublishers.length > 0
+  const hasSteamPositive = guessSteamPositive != null || answerSteamPositive != null
+  const hasMetacritic = guessMeta != null || answerMeta != null
+  const hasReviews = Boolean(guess.votes?.steamReviews) || Boolean(answer.votes?.steamReviews)
+  const hasPrice = Boolean(guess.price) || Boolean(answer.price)
+  const hasAge = Boolean(guess.ageRating) || Boolean(answer.ageRating)
+
+  const hints: Hint[] = [
+    { key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year },
+    { key: 'rank', label: 'Место в топе', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank },
+    ...(hasGenres ? [{ key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: overlaps(guessGenres, answerGenres) } satisfies Hint] : []),
+    ...(hasSteamCategories ? [{ key: 'steam_categories', label: 'Категории', value: list(guessCategories), status: setStatus(guessCategories, answerCategories), direction: null, matchedValues: overlaps(guessCategories, answerCategories) } satisfies Hint] : []),
+    ...(hasPlatforms ? [{ key: 'platforms', label: 'Платформы', value: list(guessPlatforms), status: setStatus(guessPlatforms, answerPlatforms), direction: null, matchedValues: overlaps(guessPlatforms, answerPlatforms) } satisfies Hint] : []),
+    ...(hasDevelopers ? [{ key: 'developer', label: 'Разработчик', value: list(guessDevelopers), status: setStatus(guessDevelopers, answerDevelopers), direction: null, matchedValues: overlaps(guessDevelopers, answerDevelopers) } satisfies Hint] : []),
+    ...(hasPublishers ? [{ key: 'publisher', label: 'Издатель', value: list(guessPublishers), status: setStatus(guessPublishers, answerPublishers), direction: null, matchedValues: overlaps(guessPublishers, answerPublishers) } satisfies Hint] : []),
+    ...(hasSteamPositive ? [{ key: 'steam_positive', label: 'Позитив Steam', value: guessSteamPositive != null ? `${guessSteamPositive}%` : '—', ...steamPositive } satisfies Hint] : []),
+    ...(hasMetacritic ? [{ key: 'metacritic', label: 'Metacritic', value: formatNumber(guessMeta), ...metacritic } satisfies Hint] : []),
+    ...(hasReviews ? [{ key: 'reviews', label: 'Отзывы Steam', value: formatNumber(guess.votes?.steamReviews), ...reviews } satisfies Hint] : []),
+    ...(hasPrice ? [{ key: 'price', label: 'Цена', value: gamePriceLabel(guess), ...price } satisfies Hint] : []),
+    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', status: scalar(guess.ageRating, answer.ageRating), direction: null } satisfies Hint] : []),
   ]
 
   return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
 }
 
 export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
-  return guess.mode === 'diagnosis' || answer.mode === 'diagnosis'
-    ? compareDiagnoses(guess, answer)
-    : compareScreenTitles(guess, answer)
+  if (guess.mode === 'diagnosis' || answer.mode === 'diagnosis') return compareDiagnoses(guess, answer)
+  if (guess.mode === 'game' || answer.mode === 'game') return compareGames(guess, answer)
+  return compareScreenTitles(guess, answer)
 }
 
 export const emptyStats = (): Stats => ({ played: 0, won: 0, currentStreak: 0, bestStreak: 0, distribution: Array(10).fill(0) })
 export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean) => {
   const rows = hints.map((row) => row.map((hint) => hint.status === 'match' ? '🟩' : hint.status === 'close' || hint.status === 'partial' ? '🟨' : hint.status === 'unknown' ? '⬜' : '⬛').join('')).join('\n')
-  const dailyLabel = mode === 'movie' ? 'Фильм дня' : mode === 'series' ? 'Сериал дня' : 'Диагноз дня'
-  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n🎬 ${won ? hints.length : 'X'}/10\n${rows}`
+  const dailyLabel = mode === 'movie' ? 'Фильм дня' : mode === 'series' ? 'Сериал дня' : mode === 'game' ? 'Игра дня' : 'Диагноз дня'
+  const icon = mode === 'game' ? '🎮' : mode === 'diagnosis' ? '🩺' : '🎬'
+  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/10\n${rows}`
 }
