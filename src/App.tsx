@@ -572,11 +572,13 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
   const genresHint = byKey.get('genres')
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
+  const total = attempt.hints.length
+  const matchedCount = attempt.hints.filter(hasProgressMatch).length
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
   const yearText = item.year != null ? String(item.year) : null
   const ageText = item.ageRating ?? '—'
-  return <article className="attempt-card">
+  return <article className="attempt-card attempt-card--screen">
     <div className="attempt-card__header">
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
       <Poster item={item} />
@@ -606,6 +608,13 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
       </div>
       <div className="rating-badge"><small>КП</small><strong>{item.ratings?.kinopoisk?.toFixed(1) ?? '—'}</strong></div>
     </div>
+
+    <div className="dx-score" aria-label={`Совпало признаков: ${matchedCount} из ${total}`}>
+      <span>Совпадений</span>
+      <div className="dx-score__bar">{Array.from({ length: total }, (_, i) => <i key={i} className={i < matchedCount ? 'on' : ''} />)}</div>
+      <strong>{matchedCount}/{total}</strong>
+    </div>
+
     <div className="attempt-clue-grid">
       {metricClues.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
       {people.map((hint) => <PeopleGroup key={hint.key} hint={hint} />)}
@@ -647,7 +656,7 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
   const matchedCount = attempt.hints.filter((hint) => hint.status === 'match').length
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
-  const attrs = ['metacritic', 'steam_positive', 'reviews', 'price', 'age']
+  const attrs = ['players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const rankText = item.topRank != null ? `#${item.topRank}` : '—'

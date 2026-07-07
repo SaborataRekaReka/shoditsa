@@ -726,6 +726,9 @@ button:active { transform: translateY(1px); }
 .rating-badge strong { display: block; font: 500 16px Oswald, sans-serif; overflow-wrap: anywhere; }
 .attempt-clue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding-top: 10px; }
 .attempt-clue-grid .people-group { grid-column: 1/-1; min-height: 112px; }
+.attempt-card--screen { padding: 0; overflow: hidden; }
+.attempt-card--screen .attempt-card__header { padding: 13px 13px 12px; border-bottom: 1px solid var(--color-line); }
+.attempt-card--screen .attempt-clue-grid { padding: 12px 13px 13px; }
 /* --- Game attempt card --- */
 .attempt-card--game { padding: 0; overflow: hidden; }
 .gm-head { display: grid; grid-template-columns: 22px 66px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 13px 13px 12px; border-bottom: 1px solid var(--color-line); }
@@ -825,6 +828,7 @@ button:active { transform: translateY(1px); }
 .dx-chip.match { color: var(--color-ink); background: var(--color-primary); border-color: var(--color-primary-border); }
 .dx-chip.miss { color: #c9c1b5; background: var(--color-surface-2); border-color: var(--color-line); }
 .attempt-card--game .dx-chip.miss { color: var(--color-text); }
+.attempt-card--game .dx-chip.miss .dx-chip__icon { filter: brightness(0) invert(1); }
 .dx-chip--more { border-style: dashed; border-color: var(--color-line-strong); color: var(--color-muted); cursor: pointer; }
 .dx-chip--more:hover { color: var(--color-text); border-color: var(--color-primary-border); background: var(--color-surface-3); }
 
@@ -971,8 +975,11 @@ button:active { transform: translateY(1px); }
   .empty-card { grid-template-columns: 52px 1fr auto; align-items: center; padding: 19px; }
   .empty-card .ui-button { grid-column: auto; min-width: 190px; margin: 0; }
   .attempt-card { padding: 16px; }
+  .attempt-card--screen { padding: 0; }
   .attempt-card--dx { padding: 0; }
   .attempt-card--game { padding: 0; }
+  .attempt-card--screen .attempt-card__header { padding: 16px 16px 14px; }
+  .attempt-card--screen .attempt-clue-grid { padding: 14px 16px; }
   .gm-head { grid-template-columns: 26px 86px minmax(0, 1fr) auto; padding: 16px 16px 14px; }
   .gm-head__art { width: 86px; height: 116px; }
   .gm-head__identity h2 { font-size: 25px; }

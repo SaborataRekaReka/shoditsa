@@ -88,6 +88,35 @@ const overlaps = (guess: string[], answer: string[]) => {
 }
 const formatNumber = (value: number | null | undefined) => value == null ? '—' : new Intl.NumberFormat('ru-RU').format(value)
 const gameScore = (value: number | null | undefined) => value == null ? null : Math.round(value)
+const ageNumber = (value: string | null | undefined) => {
+  if (!value) return null
+  const match = value.match(/(\d{1,2})/)
+  if (!match) return null
+  const num = Number(match[1])
+  return Number.isFinite(num) ? num : null
+}
+const playersNumber = (categories: string[]) => {
+  let max: number | null = null
+  for (const category of categories) {
+    const countMatch = category.match(/^(\d+)/)
+    if (countMatch) {
+      const count = Number(countMatch[1])
+      if (Number.isFinite(count)) {
+        max = max == null ? count : Math.max(max, count)
+      }
+      continue
+    }
+    const text = normalize(category)
+    if (text.includes('одиноч')) {
+      max = max == null ? 1 : Math.max(max, 1)
+      continue
+    }
+    if (text.includes('мульти') || text.includes('кооп') || text.includes('сет')) {
+      max = max == null ? 2 : Math.max(max, 2)
+    }
+  }
+  return max
+}
 
 const reviewHint = (guess: number | null | undefined, answer: number | null | undefined): { status: MatchStatus; direction: Direction } => {
   if (!guess || !answer) return { status: 'unknown', direction: null }
@@ -236,18 +265,27 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerSteamPositive = gameScore(answer.ratings?.steamPositivePercent)
   const guessMeta = gameScore(guess.ratings?.metacritic ?? guess.metacritic)
   const answerMeta = gameScore(answer.ratings?.metacritic ?? answer.metacritic)
+  const guessPlayers = playersNumber(guessCategories)
+  const answerPlayers = playersNumber(answerCategories)
+  const guessAge = ageNumber(guess.ageRating)
+  const answerAge = ageNumber(answer.ageRating)
 
   const year = numeric(guess.year, answer.year, 0, 2)
   const rank = numeric(guess.topRank, answer.topRank, 0, 15)
+  const players = numeric(guessPlayers, answerPlayers, 0, 2)
   const steamPositive = numeric(guessSteamPositive, answerSteamPositive, 1, 5)
   const metacritic = numeric(guessMeta, answerMeta, 1, 5)
   const reviews = reviewHint(guess.votes?.steamReviews, answer.votes?.steamReviews)
   const price = gamePriceHint(guess, answer)
+  const age = guessAge != null || answerAge != null
+    ? numeric(guessAge, answerAge, 0, 2)
+    : { status: scalar(guess.ageRating, answer.ageRating), direction: null }
   const hasGenres = guessGenres.length > 0 || answerGenres.length > 0
   const hasSteamCategories = guessCategories.length > 0 || answerCategories.length > 0
   const hasPlatforms = guessPlatforms.length > 0 || answerPlatforms.length > 0
   const hasDevelopers = guessDevelopers.length > 0 || answerDevelopers.length > 0
   const hasPublishers = guessPublishers.length > 0 || answerPublishers.length > 0
+  const hasPlayers = guessPlayers != null || answerPlayers != null
   const hasSteamPositive = guessSteamPositive != null || answerSteamPositive != null
   const hasMetacritic = guessMeta != null || answerMeta != null
   const hasReviews = Boolean(guess.votes?.steamReviews) || Boolean(answer.votes?.steamReviews)
@@ -257,6 +295,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const hints: Hint[] = [
     { key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year },
     { key: 'rank', label: 'Место в топе', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank },
+    ...(hasPlayers ? [{ key: 'players', label: 'Игроков', value: guessPlayers != null ? String(guessPlayers) : '—', ...players } satisfies Hint] : []),
     ...(hasGenres ? [{ key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: overlaps(guessGenres, answerGenres) } satisfies Hint] : []),
     ...(hasSteamCategories ? [{ key: 'steam_categories', label: 'Категории', value: list(guessCategories), status: setStatus(guessCategories, answerCategories), direction: null, matchedValues: overlaps(guessCategories, answerCategories) } satisfies Hint] : []),
     ...(hasPlatforms ? [{ key: 'platforms', label: 'Платформы', value: list(guessPlatforms), status: setStatus(guessPlatforms, answerPlatforms), direction: null, matchedValues: overlaps(guessPlatforms, answerPlatforms) } satisfies Hint] : []),
@@ -266,7 +305,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ...(hasMetacritic ? [{ key: 'metacritic', label: 'Metacritic', value: formatNumber(guessMeta), ...metacritic } satisfies Hint] : []),
     ...(hasReviews ? [{ key: 'reviews', label: 'Отзывы Steam', value: formatNumber(guess.votes?.steamReviews), ...reviews } satisfies Hint] : []),
     ...(hasPrice ? [{ key: 'price', label: 'Цена', value: gamePriceLabel(guess), ...price } satisfies Hint] : []),
-    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', status: scalar(guess.ageRating, answer.ageRating), direction: null } satisfies Hint] : []),
+    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', ...age } satisfies Hint] : []),
   ]
 
   return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
