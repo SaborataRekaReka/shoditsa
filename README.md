@@ -18,6 +18,14 @@ npm run build
 npm run preview
 ```
 
+Базовая валидация перед и после рефакторинга:
+
+```powershell
+npm run data:validate
+npm run metrics:baseline
+npm run smoke
+```
+
 ## Быстрый деплой на сервер
 
 Если нужно доставлять правки быстрее, чем через цикл commit -> GitHub Actions,

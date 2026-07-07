@@ -1,0 +1,8 @@
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--color-bg); }
+button, input, select { font: inherit; }
+button, a { color: inherit; }
+button { cursor: pointer; }
+button, a, select { transition: transform .22s var(--ease), background-color .22s ease, border-color .22s ease, color .22s ease, opacity .22s ease; }
+button:active { transform: translateY(1px); }
