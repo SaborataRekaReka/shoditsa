@@ -1,0 +1,20 @@
+{
+  "collectedAt": "2026-07-07T17:24:18.798Z",
+  "dist": {
+    "bytes": 4096,
+    "kb": 4
+  },
+  "assets": [
+    {
+      "file": "index-DH6h3Qch.js",
+      "bytes": 274240,
+      "kb": 267.81
+    },
+    {
+      "file": "index-D9Buo9Va.css",
+      "bytes": 65905,
+      "kb": 64.36
+    }
+  ],
+  "runtimeMetricsNote": "Runtime first-render/search/web-vitals are collected in window.__SEANS_REFACTOR_METRICS__"
+}
