@@ -20,7 +20,11 @@
     "data:refill": "node scripts/refill-missing-movies.mjs",
     "data:hints": "node scripts/enrich-movie-hints.mjs",
     "data:sanitize:movies": "node scripts/sanitize-movie-hints.mjs",
+    "data:sanitize:movies:title-overlap": "node scripts/rewrite-movie-title-overlaps.mjs",
+    "data:sanitize:series": "node scripts/sanitize-series-hints.mjs",
+    "data:sanitize:series:title-overlap": "node scripts/rewrite-series-title-overlaps.mjs",
     "data:sanitize:games": "node scripts/sanitize-game-hints.mjs",
+    "data:translate:games:ru": "node scripts/translate-game-hints-google.mjs",
     "data:collect-ids": "node scripts/collect-kinopoisk-ids.mjs"
   },
   "dependencies": {
