@@ -90,6 +90,19 @@ const renderHintBody = (value: string): ReactNode => {
 }
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
 const hasProgressMatch = (hint: Attempt['hints'][number]) => hint.status === 'match' || Boolean(hint.matchedValues?.length)
+const steamCategoryIcon = (value: string): 'single' | 'multi' | null => {
+  const text = normalizeTextMatch(value).trim()
+  if (!text) return null
+
+  const countMatch = text.match(/^(\d+)/)
+  if (countMatch) {
+    const count = Number(countMatch[1])
+    return count === 1 ? 'single' : 'multi'
+  }
+  if (text.includes('одиноч')) return 'single'
+  if (text.includes('мульти') || text.includes('кооп') || text.includes('онлайн') || text.includes('игрок')) return 'multi'
+  return null
+}
 const collectGameMatchedTags = (attempts: Attempt[]) => {
   const tags: string[] = []
   const seen = new Set<string>()
@@ -668,7 +681,7 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint) => <GameAttrBadge key={hint.key} hint={hint} />)}</div>}
 
     <div className="dx-clouds">
-      <DxChipCloud label="Категории" hint={byKey.get('steam_categories')} items={item.steamCategories ?? []} limit={6} />
+      <DxChipCloud label="Категории" hint={byKey.get('steam_categories')} items={item.steamCategories ?? []} limit={6} iconKind="steam-categories" />
       <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={item.platforms ?? []} limit={6} />
     </div>
   </article>
@@ -684,7 +697,7 @@ function DxAttrBadge({ hint }: { hint: Attempt['hints'][number] }) {
   </div>
 }
 
-function DxChipCloud({ label, hint, items, limit = 6 }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number }) {
+function DxChipCloud({ label, hint, items, limit = 6, iconKind }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories' }) {
   const [expanded, setExpanded] = useState(false)
   if (!items.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
@@ -700,7 +713,12 @@ function DxChipCloud({ label, hint, items, limit = 6 }: { label: string; hint: A
     <div className="dx-cloud__chips">
       {visible.map((value) => {
         const isMatched = matched.has(normalizeTextMatch(value))
-        return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>{isMatched && <Check />}{value}</span>
+        const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
+        return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>
+          {isMatched && <Check />}
+          {icon && <img className="dx-chip__icon" src={icon === 'single' ? '/images/steam-icons/single-player.svg' : '/images/steam-icons/multi-player.svg'} alt="" aria-hidden="true" />}
+          {value}
+        </span>
       })}
       {!expanded && hidden.length > 0 && <button type="button" className="dx-chip dx-chip--more" title={hidden.join(', ')} onClick={() => setExpanded(true)}>+{hidden.length}</button>}
       {expanded && items.length > limit && <button type="button" className="dx-chip dx-chip--more" onClick={() => setExpanded(false)}>свернуть</button>}

@@ -814,6 +814,7 @@ button:active { transform: translateY(1px); }
 .dx-cloud__chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .dx-chip { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border: 1px solid var(--color-line); border-radius: 999px; background: var(--color-surface-2); color: var(--color-muted); font-size: 11px; font-weight: 600; line-height: 1; }
 .dx-chip svg { width: 12px; height: 12px; stroke-width: 2.6; }
+.dx-chip__icon { width: 12px; height: 12px; flex: 0 0 auto; }
 .dx-chip.match { color: var(--color-ink); background: var(--color-primary); border-color: var(--color-primary-border); }
 .dx-chip.miss { color: #c9c1b5; background: var(--color-surface-2); border-color: var(--color-line); }
 .dx-chip--more { border-style: dashed; border-color: var(--color-line-strong); color: var(--color-muted); cursor: pointer; }
@@ -906,6 +907,10 @@ button:active { transform: translateY(1px); }
 @keyframes tileIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes sheet { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: none; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@media (max-width: 719px) {
+  .keycap-hint { display: none; }
+}
 
 @media (min-width: 720px) {
   .app-header__inner { padding: 0 28px; }
