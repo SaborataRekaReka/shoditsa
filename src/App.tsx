@@ -750,7 +750,6 @@ function DxSystemIcons({ hint }: { hint: Attempt['hints'][number] }) {
         const icon = diagnosisSystemIconByKey.get(key) ?? defaultDiagnosisSystemIcon
         const isMatched = matched.has(key)
         const style = {
-          '--dx-system-icon': `url("${icon}")`,
           animationDelay: `${index * 26}ms`,
         } as CSSProperties
         return <span
@@ -763,7 +762,7 @@ function DxSystemIcons({ hint }: { hint: Attempt['hints'][number] }) {
           onFocus={(event) => alignSystemTooltip(event.currentTarget)}
           onTouchStart={(event) => alignSystemTooltip(event.currentTarget)}
         >
-          <span className="dx-system-icon__glyph" aria-hidden="true" />
+          <img className="dx-system-icon__glyph" src={icon} alt="" aria-hidden="true" loading="lazy" />
           <span className="dx-system-icon__tooltip" role="tooltip">{system}</span>
         </span>
       })}

@@ -830,15 +830,14 @@
 .dx-system-icon__glyph {
   width: 23px;
   height: 23px;
-  background-color: currentColor;
-  -webkit-mask-image: var(--dx-system-icon);
-  mask-image: var(--dx-system-icon);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
+  display: block;
+  object-fit: contain;
+  opacity: .92;
+  filter: brightness(0);
+}
+.dx-system-icon.miss .dx-system-icon__glyph {
+  opacity: .86;
+  filter: brightness(0) invert(.86);
 }
 .dx-system-icon__tooltip {
   position: absolute;
