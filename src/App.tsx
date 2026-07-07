@@ -1297,7 +1297,7 @@ function Game({
       {status !== 'playing' && <section className={`result-card ${status}`}>
         <Poster item={answer} />
         <div className="result-card__copy">
-          <span>{status === 'won' ? 'Сеанс угадан' : 'Сеанс завершён'}</span>
+          <span>{status === 'won' ? (answer.mode === 'diagnosis' ? 'Диагноз угадан' : 'Сеанс угадан') : 'Сеанс завершён'}</span>
           <h2>{answer.titleRu}</h2>
           <p>{answer.mode === 'diagnosis'
             ? [answer.titleOriginal, ...(answer.icd10?.length ? [answer.icd10.join(', ')] : []), ...(answer.icdGroup ? [answer.icdGroup] : [])].filter(Boolean).join(' · ')
