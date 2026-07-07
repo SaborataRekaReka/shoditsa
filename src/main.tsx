@@ -7,6 +7,16 @@ import './styles.css'
 markAppBootStart()
 initWebVitalsObservers()
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode><App /></React.StrictMode>,
-)
+// Initialize Yandex Games SDK before mounting the app.
+// YaGames is injected globally by /sdk.js loaded in index.html.
+const mountApp = () => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode><App /></React.StrictMode>,
+  )
+}
+
+if (typeof YaGames !== 'undefined') {
+  YaGames.init().then(mountApp).catch(mountApp)
+} else {
+  mountApp()
+}
