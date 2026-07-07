@@ -3,11 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/@symbol.svg" />
-    <link rel="shortcut icon" href="/@symbol.svg" />
+    <link rel="icon" type="image/svg+xml" href="./@symbol.svg" />
+    <link rel="shortcut icon" href="./@symbol.svg" />
     <meta name="theme-color" content="#2b060a" />
     <meta name="description" content="Сходится! — платформа ежедневных игр, где ответ находят по признакам." />
     <title>Сходится! — ежедневные игры</title>
+    <!-- Yandex Games SDK (required for moderation) -->
+    <script src="/sdk.js"></script>
+    <style>
+      /* Disable long-tap text selection and context menu on mobile (Yandex Games requirement) */
+      * { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+      input, textarea { -webkit-user-select: text; user-select: text; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

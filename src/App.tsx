@@ -45,22 +45,22 @@ const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'se
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const normalizeSystemKey = (value: string) => normalizeTextMatch(value).replace(/[^a-zа-я0-9]+/gi, ' ').trim()
 const diagnosisSystemIconByKey = new Map<string, string>([
-  ['дыхательная система', '/images/diagnosis-systems/respiratory.svg'],
-  ['пищеварительная система', '/images/diagnosis-systems/digestive.svg'],
-  ['психика и поведение', '/images/diagnosis-systems/mental.svg'],
-  ['зубы и полость рта', '/images/diagnosis-systems/dental.svg'],
-  ['мочевыделительная система', '/images/diagnosis-systems/urinary.svg'],
-  ['нервная система', '/images/diagnosis-systems/nervous.svg'],
-  ['органы зрения', '/images/diagnosis-systems/vision.svg'],
-  ['органы слуха', '/images/diagnosis-systems/hearing.svg'],
-  ['кожа и подкожная клетчатка', '/images/diagnosis-systems/skin.svg'],
-  ['костно мышечная система', '/images/diagnosis-systems/musculoskeletal.svg'],
-  ['кровь и иммунная система', '/images/diagnosis-systems/blood-immune.svg'],
-  ['репродуктивная система', '/images/diagnosis-systems/reproductive.svg'],
-  ['сердечно сосудистая система', '/images/diagnosis-systems/cardiovascular.svg'],
-  ['эндокринная система', '/images/diagnosis-systems/endocrine.svg'],
+  ['дыхательная система', './images/diagnosis-systems/respiratory.svg'],
+  ['пищеварительная система', './images/diagnosis-systems/digestive.svg'],
+  ['психика и поведение', './images/diagnosis-systems/mental.svg'],
+  ['зубы и полость рта', './images/diagnosis-systems/dental.svg'],
+  ['мочевыделительная система', './images/diagnosis-systems/urinary.svg'],
+  ['нервная система', './images/diagnosis-systems/nervous.svg'],
+  ['органы зрения', './images/diagnosis-systems/vision.svg'],
+  ['органы слуха', './images/diagnosis-systems/hearing.svg'],
+  ['кожа и подкожная клетчатка', './images/diagnosis-systems/skin.svg'],
+  ['костно мышечная система', './images/diagnosis-systems/musculoskeletal.svg'],
+  ['кровь и иммунная система', './images/diagnosis-systems/blood-immune.svg'],
+  ['репродуктивная система', './images/diagnosis-systems/reproductive.svg'],
+  ['сердечно сосудистая система', './images/diagnosis-systems/cardiovascular.svg'],
+  ['эндокринная система', './images/diagnosis-systems/endocrine.svg'],
 ])
-const defaultDiagnosisSystemIcon = '/images/diagnosis-systems/nervous.svg'
+const defaultDiagnosisSystemIcon = './images/diagnosis-systems/nervous.svg'
 const splitHintValues = (value: string) => value.split(',').map((item) => item.trim()).filter((item) => item && item !== 'Нет данных')
 
 const isEditableTarget = (target: EventTarget | null) => {
@@ -363,7 +363,7 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
 }
 
 function BrandLogo({ className = '' }: { className?: string }) {
-  return <img className={className} src="/images/logo.svg" alt="Сходится!" />
+  return <img className={className} src="./images/logo.svg" alt="Сходится!" />
 }
 
 function ActionButton({ variant = 'primary', className = '', children, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -444,7 +444,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
           </div>
         </div>
         <div className="hub-hero__visual" aria-hidden="true">
-          <img src="/images/hero.png" alt="" />
+          <img src="./images/hero.png" alt="" />
         </div>
       </section>
 
@@ -963,7 +963,7 @@ function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: 
         const isMatched = matched.has(normalizeTextMatch(value))
         const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
         return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>
-          {icon && <img className="dx-chip__icon" src={icon === 'single' ? '/images/steam-icons/single-player.svg' : '/images/steam-icons/multi-player.svg'} alt="" aria-hidden="true" />}
+          {icon && <img className="dx-chip__icon" src={icon === 'single' ? './images/steam-icons/single-player.svg' : './images/steam-icons/multi-player.svg'} alt="" aria-hidden="true" />}
           {value}
           {isMatched && <Check />}
         </span>
@@ -1376,7 +1376,7 @@ function Game({
             aria-expanded={gameMatchStripOpen}
             aria-controls="game-match-strip-panel"
           >
-            <span className="game-match-strip__logo" aria-hidden="true"><img src="/images/symbol.svg" alt="" /></span>
+            <span className="game-match-strip__logo" aria-hidden="true"><img src="./images/symbol.svg" alt="" /></span>
             <span className="game-match-strip__title">Что сходится</span>
             <ChevronRight aria-hidden="true" />
           </button>

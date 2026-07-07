@@ -27,7 +27,7 @@ export const useDataLoader = (mode: TitleMode) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetchJsonCached<{ movieCount?: number; seriesCount?: number; gameCount?: number; diagnosisCount?: number }>('/data/source.json')
+    fetchJsonCached<{ movieCount?: number; seriesCount?: number; gameCount?: number; diagnosisCount?: number }>('./data/source.json')
       .then((source) => {
         setTitleCounts((current) => ({
           movie: Number.isFinite(source.movieCount) ? source.movieCount! : current.movie,
@@ -38,7 +38,7 @@ export const useDataLoader = (mode: TitleMode) => {
       })
       .catch(() => undefined)
 
-    fetchJsonCached<DiagnosisCaseVignettes[]>('/data/diagnosis-case-vignettes.by-id.json')
+    fetchJsonCached<DiagnosisCaseVignettes[]>('./data/diagnosis-case-vignettes.by-id.json')
       .then((entries) => {
         if (!Array.isArray(entries)) return
         const map: CaseVignetteMap = {}
@@ -49,11 +49,11 @@ export const useDataLoader = (mode: TitleMode) => {
       })
       .catch(() => undefined)
 
-    fetchJsonCached<TitleItem[]>('/data/diagnoses.generated.json')
+    fetchJsonCached<TitleItem[]>('./data/diagnoses.generated.json')
       .then((items) => setTitleCounts((current) => ({ ...current, diagnosis: current.diagnosis ?? items.length })))
       .catch(() => undefined)
 
-    fetchJsonCached<TitleItem[]>('/data/games.generated.json')
+    fetchJsonCached<TitleItem[]>('./data/games.generated.json')
       .then((items) => setTitleCounts((current) => ({ ...current, game: current.game ?? items.length })))
       .catch(() => undefined)
   }, [])
@@ -61,7 +61,7 @@ export const useDataLoader = (mode: TitleMode) => {
   useEffect(() => {
     if (data[mode].length) return
     setLoading(true)
-    fetchJsonCached<TitleItem[]>(`/data/${MODE_CONFIG[mode].dataFile}.generated.json`)
+    fetchJsonCached<TitleItem[]>(`./data/${MODE_CONFIG[mode].dataFile}.generated.json`)
       .then((items) => {
         setData((current) => ({ ...current, [mode]: items }))
         setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? items.length }))
