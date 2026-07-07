@@ -147,9 +147,26 @@ const hintProgressScore = (hint: Attempt['hints'][number]) => {
   if ((hint.key === 'creator' || hint.key === 'cast') && hint.people?.some((person) => person.matched)) return 1
   return hint.status === 'match' ? 1 : 0
 }
-const progressMatches = (hints: Attempt['hints']) => {
-  const raw = hints.reduce((sum, hint) => sum + hintProgressScore(hint), 0)
-  return Math.min(hints.length, raw)
+const progressStats = (hints: Attempt['hints']) => {
+  const scores = hints.map(hintProgressScore)
+  return {
+    matchedCount: scores.reduce((sum, score) => sum + score, 0),
+    matchedFields: scores.filter((score) => score > 0).length,
+    totalFields: hints.length,
+  }
+}
+function AttemptScore({ matchedCount, matchedFields, totalFields, isCorrectAttempt }: { matchedCount: number; matchedFields: number; totalFields: number; isCorrectAttempt: boolean }) {
+  const isFullFieldMatch = totalFields > 0 && matchedFields === totalFields
+  const tone = matchedCount === 0 ? 'miss' : isFullFieldMatch && !isCorrectAttempt ? 'partial' : 'match'
+  const label = isFullFieldMatch && !isCorrectAttempt
+    ? `Совпадений: ${matchedCount}; все поля сходятся, ответ не совпал`
+    : `Совпадений: ${matchedCount}; полей с совпадениями: ${matchedFields} из ${totalFields}`
+
+  return <div className={`dx-score dx-score--${tone}`} aria-label={label}>
+    <span>Совпадений</span>
+    <div className="dx-score__bar">{Array.from({ length: totalFields }, (_, i) => <i key={i} className={i < matchedFields ? 'on' : ''} />)}</div>
+    <strong>{matchedCount}</strong>
+  </div>
 }
 const alignSystemTooltip = (iconEl: HTMLElement | null) => {
   if (!iconEl || typeof window === 'undefined') return
@@ -834,15 +851,14 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
   </div>
 }
 
-function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
+function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
   const metricClues = ['country', 'series_status', 'seasons', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const genresHint = byKey.get('genres')
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
-  const total = attempt.hints.length
-  const matchedCount = progressMatches(attempt.hints)
+  const score = progressStats(attempt.hints)
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
   const yearText = item.year != null ? String(item.year) : null
@@ -882,11 +898,7 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
       <div className="rating-badge"><small>КП</small><strong>{item.ratings?.kinopoisk?.toFixed(1) ?? '—'}</strong></div>
     </div>
 
-    <div className="dx-score" aria-label={`Совпало признаков: ${matchedCount} из ${total}`}>
-      <span>Совпадений</span>
-      <div className="dx-score__bar">{Array.from({ length: total }, (_, i) => <i key={i} className={i < matchedCount ? 'on' : ''} />)}</div>
-      <strong>{matchedCount}/{total}</strong>
-    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
     <div className="attempt-clue-grid">
       {metricClues.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
@@ -910,13 +922,12 @@ function GameStudioPlate({ label, names, hint }: { label: string; names: string[
   </div>
 }
 
-function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
+function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
   const genresHint = byKey.get('genres')
   const rankHint = byKey.get('rank')
   const yearHint = byKey.get('year')
-  const total = attempt.hints.length
-  const matchedCount = progressMatches(attempt.hints)
+  const score = progressStats(attempt.hints)
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const attrs = ['players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
@@ -960,11 +971,7 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
       </div>}
     </div>
 
-    <div className="dx-score" aria-label={`Совпало признаков: ${matchedCount} из ${total}`}>
-      <span>Совпадений</span>
-      <div className="dx-score__bar">{Array.from({ length: total }, (_, i) => <i key={i} className={i < matchedCount ? 'on' : ''} />)}</div>
-      <strong>{matchedCount}/{total}</strong>
-    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
     {(!!(item.developers ?? []).length || !!(item.publishers ?? []).length) && <div className="gm-studios">
       <GameStudioPlate label="Разработчик" names={item.developers ?? []} hint={byKey.get('developer')} />
@@ -1006,14 +1013,13 @@ function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: 
   </div>
 }
 
-function DiagnosisAttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
+function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
   const bodySystemsHint = byKey.get('body_systems')
   const attrs = ['disease_types', 'course', 'contagiousness', 'typical_age', 'localization']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
-  const total = attempt.hints.length
-  const matchedCount = progressMatches(attempt.hints)
+  const score = progressStats(attempt.hints)
   const icdValue = item.icd10?.[0] ?? item.icdGroup ?? '—'
 
   return <article className="attempt-card attempt-card--dx">
@@ -1027,11 +1033,7 @@ function DiagnosisAttemptCard({ attempt, item, index }: { attempt: Attempt; item
       <div className="dx-head__icd"><small>МКБ</small><strong>{icdValue}</strong></div>
     </div>
 
-    <div className="dx-score" aria-label={`Совпало признаков: ${matchedCount} из ${total}`}>
-      <span>Совпадений</span>
-      <div className="dx-score__bar">{Array.from({ length: total }, (_, i) => <i key={i} className={i < matchedCount ? 'on' : ''} />)}</div>
-      <strong>{matchedCount}/{total}</strong>
-    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
     {bodySystemsHint && <DxSystemIcons hint={bodySystemsHint} />}
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
@@ -1459,11 +1461,12 @@ function Game({
         {attempts.map((attempt, index) => ({ attempt, index })).reverse().map(({ attempt, index }) => {
           const item = titles.find((title) => title.id === attempt.titleId)
           if (!item) return null
+          const isCorrectAttempt = answer?.id === attempt.titleId
           return item.mode === 'diagnosis'
-            ? <DiagnosisAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
+            ? <DiagnosisAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
             : item.mode === 'game'
-              ? <GameAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
-              : <AttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} />
+              ? <GameAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
+              : <AttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
         })}
       </section>}
     </main>

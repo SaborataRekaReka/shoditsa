@@ -783,6 +783,9 @@
 .dx-score__bar i { height: 6px; border-radius: 9px; background: var(--color-surface-3); }
 .dx-score__bar i.on { background: var(--color-primary); }
 .dx-score > strong { color: var(--color-primary); font: 500 16px Oswald, sans-serif; white-space: nowrap; }
+.dx-score--partial .dx-score__bar i.on { background: var(--color-accent); }
+.dx-score--partial > strong { color: var(--color-accent); }
+.dx-score--miss > strong { color: var(--color-muted-2); }
 
 .dx-systems { padding: 12px 13px 2px; }
 .dx-systems__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
