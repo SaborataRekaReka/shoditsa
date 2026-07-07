@@ -43,6 +43,10 @@ import type { AssistHintKey, Attempt, CaseVignetteMap, GameStatus, HintCheckpoin
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : mode === 'game' ? <Gamepad2 /> : <Stethoscope />
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
+const toInteger = (value: number | string | undefined, fallback: number) => {
+  const parsed = Math.trunc(Number(value))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
 const normalizeSystemKey = (value: string) => normalizeTextMatch(value).replace(/[^a-zа-я0-9]+/gi, ' ').trim()
 const diagnosisSystemIconByKey = new Map<string, string>([
   ['дыхательная система', './images/diagnosis-systems/respiratory.svg'],
@@ -82,6 +86,11 @@ type AssistHintView = {
 
 type AppScreen = 'hub' | 'title' | 'game' | 'rewatch'
 const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch'
+type AdminWindow = Window & {
+  __SEANS_ADMIN_NEW_DAILY__?: (saltStep?: number | string) => number
+  __SEANS_ADMIN_SET_DAILY_SALT__?: (saltValue?: number | string) => number
+  __SEANS_ADMIN_GET_DAILY_SALT__?: () => number
+}
 
 const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
@@ -1035,6 +1044,7 @@ function Game({
   onStats,
   onRules,
   caseVignettes,
+  dailySalt,
 }: {
   titles: TitleItem[]
   mode: TitleMode
@@ -1047,11 +1057,13 @@ function Game({
   onStats: () => void
   onRules: () => void
   caseVignettes: CaseVignetteMap
+  dailySalt: number
 }) {
   const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' ? 'all' : period
   const pool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
-  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date) : null, [pool, mode, effectivePeriod, date])
-  const key = gameKey(mode, effectivePeriod, date)
+  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, dailySalt) : null, [pool, mode, effectivePeriod, date, dailySalt])
+  const key = dailySalt === 0 ? gameKey(mode, effectivePeriod, date) : `${gameKey(mode, effectivePeriod, date)}|salt:${dailySalt}`
+  const isAdminVariant = dailySalt !== 0
   const [sessionState, dispatchSession] = useReducer(gameSessionReducer, undefined, createInitialGameSessionState)
   const { attempts, status, query, selected, activeSuggestionIndex, message, hintChoices, dismissedHintRounds } = sessionState
   const debouncedQuery = useDebouncedValue(query, 100)
@@ -1242,7 +1254,7 @@ function Game({
     const nextStatus: GameStatus = nextSelection.id === answer.id ? 'won' : nextAttempts.length >= 10 ? 'lost' : 'playing'
     dispatchSession({ type: 'submit_attempt', attempts: nextAttempts, status: nextStatus })
     persistGame(nextAttempts, nextStatus, hintChoices)
-    if (nextStatus !== 'playing') updateStats(nextStatus === 'won', nextAttempts.length)
+    if (nextStatus !== 'playing' && !isAdminVariant) updateStats(nextStatus === 'won', nextAttempts.length)
     setTimeout(() => {
       const targetSelector = nextStatus === 'playing' ? '.attempt-card:first-child' : '.result-card'
       document.querySelector(targetSelector)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -1567,6 +1579,7 @@ export default function App() {
   const [mode, setMode] = useState<TitleMode>('movie')
   const [period, setPeriod] = useState<PeriodKey>('all')
   const [date, setDate] = useState(getMoscowDate())
+  const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const { data, titleCounts, caseVignettes, loading } = useDataLoader(mode)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
@@ -1574,12 +1587,17 @@ export default function App() {
   const screenHistoryReadyRef = useRef(false)
   const screenFromPopStateRef = useRef(false)
   const lastScreenRef = useRef<AppScreen>('hub')
+  const adminDailySaltRef = useRef(0)
 
   useEffect(() => {
     if (mode === 'diagnosis' && period !== 'all') {
       setPeriod('all')
     }
   }, [mode, period])
+
+  useEffect(() => {
+    adminDailySaltRef.current = adminDailySalt
+  }, [adminDailySalt])
 
   useEffect(() => {
     markAppFirstRender()
@@ -1596,6 +1614,44 @@ export default function App() {
       transitionTimerRef.current = null
     }
   }
+
+  useEffect(() => {
+    const adminWindow = window as AdminWindow
+    const openAdminSession = () => {
+      clearTransitionTimer()
+      setTransition('idle')
+      setModal(null)
+      setScreen('game')
+      window.scrollTo({ top: 0 })
+    }
+
+    adminWindow.__SEANS_ADMIN_NEW_DAILY__ = (saltStep = 1) => {
+      const parsedStep = toInteger(saltStep, 1)
+      const safeStep = parsedStep === 0 ? 1 : parsedStep
+      const nextSalt = adminDailySaltRef.current + safeStep
+      adminDailySaltRef.current = nextSalt
+      setAdminDailySalt(nextSalt)
+      openAdminSession()
+      return nextSalt
+    }
+
+    adminWindow.__SEANS_ADMIN_SET_DAILY_SALT__ = (saltValue = 0) => {
+      const nextSalt = toInteger(saltValue, 0)
+      adminDailySaltRef.current = nextSalt
+      setAdminDailySalt(nextSalt)
+      openAdminSession()
+      return nextSalt
+    }
+
+    adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__ = () => adminDailySaltRef.current
+
+    return () => {
+      delete adminWindow.__SEANS_ADMIN_NEW_DAILY__
+      delete adminWindow.__SEANS_ADMIN_SET_DAILY_SALT__
+      delete adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__
+    }
+  }, [])
+
   useEffect(() => clearTransitionTimer, [])
 
   useEffect(() => {
@@ -1755,6 +1811,7 @@ export default function App() {
           mode={mode}
           period={period}
           date={date}
+          dailySalt={adminDailySalt}
           setDate={setDate}
           onHome={goHome}
           onBack={goBackFromGame}

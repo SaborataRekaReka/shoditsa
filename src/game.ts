@@ -56,8 +56,10 @@ export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey)
   })
 }
 
-export const dailyTitle = (pool: TitleItem[], mode: TitleMode, period: PeriodKey, date: string) =>
-  pool[hashIndex(`seans|${mode}|${period}|${date}`, pool.length)]
+export const dailyTitle = (pool: TitleItem[], mode: TitleMode, period: PeriodKey, date: string, salt = 0) => {
+  const safeSalt = Number.isFinite(salt) ? Math.trunc(salt) : 0
+  return pool[hashIndex(`seans|${mode}|${period}|${date}|${safeSalt}`, pool.length)]
+}
 
 export const pickDailyVignette = <T,>(vignettes: T[], diagnosisId: string, date: string): T | null =>
   vignettes.length ? vignettes[hashIndex(`vignette|${diagnosisId}|${date}`, vignettes.length)] : null
