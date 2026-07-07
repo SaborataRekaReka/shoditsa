@@ -168,6 +168,7 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const kp = numeric(guess.ratings?.kinopoisk, answer.ratings?.kinopoisk, 0.1, 0.3)
   const imdb = numeric(guess.ratings?.imdb, answer.ratings?.imdb, 0.1, 0.3)
   const runtime = numeric(guess.runtimeMinutes, answer.runtimeMinutes, 5, 15)
+  const showRuntime = guess.mode !== 'series' && answer.mode !== 'series'
 
   const guessShowrunners = guess.showrunners ?? []
   const answerShowrunners = answer.showrunners ?? []
@@ -207,7 +208,7 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
     },
     { key: 'kp', label: 'Кинопоиск', value: guess.ratings?.kinopoisk?.toFixed(1) ?? '—', ...kp },
     { key: 'imdb', label: 'IMDb', value: guess.ratings?.imdb?.toFixed(1) ?? '—', ...imdb },
-    { key: 'runtime', label: 'Хронометраж', value: guess.runtimeMinutes ? `${guess.runtimeMinutes} мин` : '—', ...runtime },
+    ...(showRuntime ? [{ key: 'runtime', label: 'Хронометраж', value: guess.runtimeMinutes ? `${guess.runtimeMinutes} мин` : '—', ...runtime } satisfies Hint] : []),
     {
       key: 'age',
       label: 'Возраст',

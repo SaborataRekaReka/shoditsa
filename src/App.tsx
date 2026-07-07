@@ -106,7 +106,7 @@ const steamCategoryIcon = (value: string): 'single' | 'multi' | null => {
   if (text.includes('мульти') || text.includes('кооп') || text.includes('онлайн') || text.includes('игрок')) return 'multi'
   return null
 }
-const collectGameMatchedTags = (attempts: Attempt[]) => {
+const collectMatchedTags = (attempts: Attempt[]) => {
   const tags: string[] = []
   const seen = new Set<string>()
 
@@ -121,7 +121,7 @@ const collectGameMatchedTags = (attempts: Attempt[]) => {
       }
 
       if (matchedValues.length || hint.status !== 'match') continue
-      if (!['year', 'rank', 'age', 'price'].includes(hint.key)) continue
+      if (['creator', 'cast'].includes(hint.key)) continue
       if (!hint.value || hint.value === '—' || hint.value === 'Нет данных') continue
 
       const exactTag = `${hint.label}: ${hint.value}`
@@ -567,7 +567,7 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
 
 function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const metricClues = ['country', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const metricClues = ['country', 'genres', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
@@ -836,7 +836,7 @@ function Game({
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => searchTitles(pool, query, used), [pool, query, used])
-  const matchedGameTags = useMemo(() => mode === 'game' ? collectGameMatchedTags(attempts) : [], [mode, attempts])
+  const matchedTags = useMemo(() => collectMatchedTags(attempts), [attempts])
 
   useEffect(() => {
     if (!query || selected || !suggestions.length) {
@@ -1116,7 +1116,7 @@ function Game({
           {selected && <Check className="selected-check" />}
           <button onClick={() => submit()} aria-label="Проверить ответ"><ChevronRight /></button>
         </div>
-        {mode === 'game' && !!attempts.length && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
+        {!!attempts.length && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
           <button
             type="button"
             className="game-match-strip__toggle"
@@ -1130,8 +1130,8 @@ function Game({
           </button>
           <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!gameMatchStripOpen}>
             <div className="game-match-strip__tags">
-              {matchedGameTags.length
-                ? matchedGameTags.map((tag) => <span key={tag} className="game-match-strip__tag">{tag}</span>)
+              {matchedTags.length
+                ? matchedTags.map((tag) => <span key={tag} className="game-match-strip__tag">{tag}</span>)
                 : <span className="game-match-strip__empty">Пока совпадений нет</span>}
             </div>
           </div>
