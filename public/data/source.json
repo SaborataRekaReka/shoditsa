@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T10:18:26.548Z",
+  "generatedAt": "2026-07-07T15:11:09.947Z",
   "requestedSource": "https://www.kinopoisk.ru/top/navigator/",
   "currentMovieSubset": "Navigator IDs + details + staff, incomplete titles skipped",
   "api": "https://kinopoiskapiunofficial.tech/documentation/api/",
@@ -13,7 +13,7 @@
   "outputCount": 1246,
   "movieCount": 1246,
   "skippedCount": 2166,
-  "seriesCount": 887,
+  "seriesCount": 811,
   "keyUsage": [
     {
       "index": 1,

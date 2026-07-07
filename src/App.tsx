@@ -31,14 +31,6 @@ import { compareTitles, dailyTitle, getMoscowDate, PERIODS, poolFor, prettyDate,
 import { allGames, gameKey, loadGame, loadStats, removeGame, saveGame, saveStats } from './storage'
 import type { AssistHintKey, Attempt, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode } from './types'
 
-const statusLabel = {
-  match: 'точно',
-  close: 'рядом',
-  partial: 'частично',
-  miss: 'мимо',
-  unknown: 'нет данных',
-}
-
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : mode === 'game' ? <Gamepad2 /> : <Stethoscope />
 const modeTitle = (mode: TitleMode) => mode === 'movie' ? 'Кино' : mode === 'series' ? 'Сериалы' : mode === 'game' ? 'Игры' : 'Диагнозы'
@@ -550,13 +542,12 @@ function ClueTile({ hint, delay }: { hint: Attempt['hints'][number]; delay: numb
     {genreTiles.length
       ? <div className="clue-genre-list">{genreTiles.map((genre) => <span key={genre}>{genre}</span>)}</div>
       : <strong>{hint.value}</strong>}
-    <small>{statusLabel[hint.status]}</small>
   </div>
 }
 
 function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
   return <div className={`people-group ${hint.status} people-${hint.key}`}>
-    <div className="people-group__head"><span>{hint.label}</span><small>{statusLabel[hint.status]}</small></div>
+    <div className="people-group__head"><span>{hint.label}</span></div>
     <div className="people-row">
       {hint.people?.length
         ? hint.people.map((person, index) => <PersonPortrait key={`${person.nameRu}-${index}`} person={person} />)
@@ -605,7 +596,7 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
         {!!genres.length && <div className="gm-genres">
           {genres.slice(0, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
-            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{isMatch && <Check />}{genre}</span>
+            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
         </div>}
       </div>
@@ -685,7 +676,7 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
         {!!genres.length && <div className="gm-genres">
           {genres.slice(0, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
-            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{isMatch && <Check />}{genre}</span>
+            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
         </div>}
       </div>
@@ -747,9 +738,9 @@ function DxChipCloud({ label, hint, items, limit = 6, iconKind }: { label: strin
         const isMatched = matched.has(normalizeTextMatch(value))
         const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
         return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>
-          {isMatched && <Check />}
           {icon && <img className="dx-chip__icon" src={icon === 'single' ? '/images/steam-icons/single-player.svg' : '/images/steam-icons/multi-player.svg'} alt="" aria-hidden="true" />}
           {value}
+          {isMatched && <Check />}
         </span>
       })}
       {!expanded && hidden.length > 0 && <button type="button" className="dx-chip dx-chip--more" title={hidden.join(', ')} onClick={() => setExpanded(true)}>+{hidden.length}</button>}
