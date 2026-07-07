@@ -819,6 +819,11 @@
   background: var(--color-primary);
   border-color: var(--color-primary-border);
 }
+.dx-system-icon.partial {
+  color: var(--color-ink);
+  background: var(--color-accent);
+  border-color: var(--color-accent-border);
+}
 .dx-system-icon__glyph {
   width: 23px;
   height: 23px;

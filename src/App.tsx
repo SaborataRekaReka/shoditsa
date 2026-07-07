@@ -720,7 +720,7 @@ function DxSystemIcons({ hint }: { hint: Attempt['hints'][number] }) {
 
   const matched = new Set((hint.matchedValues ?? []).map(normalizeSystemKey))
   const matchedCount = systems.filter((value) => matched.has(normalizeSystemKey(value))).length
-  const countTone = matchedCount === systems.length ? 'match' : matchedCount ? 'partial' : 'miss'
+  const countTone = hint.status === 'match' ? 'match' : matchedCount ? 'partial' : 'miss'
 
   return <section className="dx-systems" aria-label={`Совпадение систем: ${matchedCount} из ${systems.length}`}>
     <div className="dx-systems__head">
@@ -738,7 +738,7 @@ function DxSystemIcons({ hint }: { hint: Attempt['hints'][number] }) {
         } as CSSProperties
         return <span
           key={`${hint.key}-${system}`}
-          className={`dx-system-icon ${isMatched ? 'match' : 'miss'}`}
+          className={`dx-system-icon ${isMatched ? countTone : 'miss'}`}
           style={style}
           aria-label={system}
           tabIndex={0}
