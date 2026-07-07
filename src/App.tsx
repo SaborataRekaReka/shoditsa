@@ -48,7 +48,6 @@ const modeSubjectGenitive = (mode: TitleMode) => mode === 'movie' ? 'фильм�
 const modeDaily = (mode: TitleMode) => mode === 'movie' ? 'Фильм' : mode === 'series' ? 'Сериал' : mode === 'game' ? 'Игра' : 'Диагноз'
 const modeLower = (mode: TitleMode) => mode === 'movie' ? 'кино' : mode === 'series' ? 'сериалы' : mode === 'game' ? 'игры' : 'диагнозы'
 const modeSearchPlaceholder = (mode: TitleMode) => mode === 'movie' ? 'Найти фильм…' : mode === 'series' ? 'Найти сериал…' : mode === 'game' ? 'Найти игру…' : 'Найти диагноз…'
-const modePoolLabel = (mode: TitleMode, count: number) => mode === 'diagnosis' ? `${count} диагнозов в подборке` : mode === 'game' ? `${count} игр в подборке` : `${count} тайтлов в подборке`
 const modeDataFile = (mode: TitleMode) => mode === 'movie' ? 'movies' : mode === 'series' ? 'series' : mode === 'game' ? 'games' : 'diagnoses'
 
 const isEditableTarget = (target: EventTarget | null) => {
@@ -68,8 +67,57 @@ type AssistHintView = {
 
 const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
+const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
+const isRedactedToken = (value: string) => /^\[+\s*REDACTED\s*\]+$/i.test(value)
+const renderHintBody = (value: string): ReactNode => {
+  const text = cleanHintText(value)
+  if (!text) return ''
+
+  const parts = text.split(REDACTED_TOKEN_RE).filter(Boolean)
+  if (parts.length === 1) return text
+
+  const nodes: ReactNode[] = []
+  for (let i = 0; i < parts.length; i += 1) {
+    const part = parts[i]
+    if (isRedactedToken(part)) {
+      nodes.push(<span className="redaction-chip" key={`redaction-${i}`} aria-label="Скрытый фрагмент">██████</span>)
+      continue
+    }
+    nodes.push(part)
+  }
+
+  return nodes
+}
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
 const hasProgressMatch = (hint: Attempt['hints'][number]) => hint.status === 'match' || Boolean(hint.matchedValues?.length)
+const collectGameMatchedTags = (attempts: Attempt[]) => {
+  const tags: string[] = []
+  const seen = new Set<string>()
+
+  for (const attempt of attempts) {
+    for (const hint of attempt.hints) {
+      const matchedValues = (hint.matchedValues ?? []).map((value) => value.trim()).filter(Boolean)
+      for (const value of matchedValues) {
+        const hash = `value:${normalizeTextMatch(value)}`
+        if (seen.has(hash)) continue
+        seen.add(hash)
+        tags.push(value)
+      }
+
+      if (matchedValues.length || hint.status !== 'match') continue
+      if (!['year', 'rank', 'age', 'price'].includes(hint.key)) continue
+      if (!hint.value || hint.value === '—' || hint.value === 'Нет данных') continue
+
+      const exactTag = `${hint.label}: ${hint.value}`
+      const hash = `exact:${hint.key}:${normalizeTextMatch(hint.value)}`
+      if (seen.has(hash)) continue
+      seen.add(hash)
+      tags.push(exactTag)
+    }
+  }
+
+  return tags
+}
 
 const buildAssistHints = (item: TitleItem): AssistHintView[] => {
   const plot = cropHintText(cleanHintText(item.plotHint || item.description || ''))
@@ -741,6 +789,7 @@ function Game({
   const [selected, setSelected] = useState<TitleItem | null>(null)
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1)
   const [message, setMessage] = useState('')
+  const [gameMatchStripOpen, setGameMatchStripOpen] = useState(false)
   const [hintChoices, setHintChoices] = useState<HintChoice[]>([])
   const [dismissedHintRounds, setDismissedHintRounds] = useState<HintCheckpoint[]>([])
   const [hintModalRound, setHintModalRound] = useState<HintCheckpoint | null>(null)
@@ -761,10 +810,12 @@ function Game({
     setSelected(null)
     setActiveSuggestionIndex(-1)
     setMessage('')
+    setGameMatchStripOpen(false)
   }, [key])
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => searchTitles(pool, query, used), [pool, query, used])
+  const matchedGameTags = useMemo(() => mode === 'game' ? collectGameMatchedTags(attempts) : [], [mode, attempts])
 
   useEffect(() => {
     if (!query || selected || !suggestions.length) {
@@ -966,7 +1017,7 @@ function Game({
       {!!revealedAssistHints.length && <section className="assist-revealed" aria-label="Открытые подсказки">
         {revealedAssistHints.map((hint) => <article key={hint.key} className="assist-reveal-card">
           <span><Sparkles /> {hint.title}</span>
-          {hint.body && <p>{hint.body}</p>}
+          {hint.body && <p>{renderHintBody(hint.body)}</p>}
           {!!hint.people?.length && <div className="assist-people-row">
             {hint.people.map((person, index) => <PersonPortrait key={`${personName(person)}-${index}`} person={person} />)}
           </div>}
@@ -1044,6 +1095,26 @@ function Game({
           {selected && <Check className="selected-check" />}
           <button onClick={() => submit()} aria-label="Проверить ответ"><ChevronRight /></button>
         </div>
+        {mode === 'game' && !!attempts.length && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
+          <button
+            type="button"
+            className="game-match-strip__toggle"
+            onClick={() => setGameMatchStripOpen((current) => !current)}
+            aria-expanded={gameMatchStripOpen}
+            aria-controls="game-match-strip-panel"
+          >
+            <span className="game-match-strip__logo" aria-hidden="true"><img src="/images/symbol.svg" alt="" /></span>
+            <span className="game-match-strip__title">Что сходится</span>
+            <ChevronRight aria-hidden="true" />
+          </button>
+          <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!gameMatchStripOpen}>
+            <div className="game-match-strip__tags">
+              {matchedGameTags.length
+                ? matchedGameTags.map((tag) => <span key={tag} className="game-match-strip__tag">{tag}</span>)
+                : <span className="game-match-strip__empty">Пока совпадений нет</span>}
+            </div>
+          </div>
+        </div>}
         {query && !selected && <div className="suggestions">
           {suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => setActiveSuggestionIndex(index)} onClick={() => submit(item)}>
             <Poster item={item} />
@@ -1059,7 +1130,7 @@ function Game({
                 : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
           </button>) : <div className="empty-search">Ничего не найдено</div>}
         </div>}
-        <div className="search-meta"><span>{modePoolLabel(mode, pool.length)}</span>{message && <strong>{message}</strong>}</div>
+        {message && <div className="search-meta"><strong>{message}</strong></div>}
       </section>}
 
       {!attempts.length && status === 'playing' && <section className="empty-card">
