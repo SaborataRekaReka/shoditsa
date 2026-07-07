@@ -90,6 +90,9 @@ type AdminWindow = Window & {
   __SEANS_ADMIN_NEW_DAILY__?: (saltStep?: number | string) => number
   __SEANS_ADMIN_SET_DAILY_SALT__?: (saltValue?: number | string) => number
   __SEANS_ADMIN_GET_DAILY_SALT__?: () => number
+  SEANS_ADMIN_NEW_DAILY?: (saltStep?: number | string) => number
+  SEANS_ADMIN_SET_DAILY_SALT?: (saltValue?: number | string) => number
+  SEANS_ADMIN_GET_DAILY_SALT?: () => number
 }
 
 const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
@@ -1645,10 +1648,17 @@ export default function App() {
 
     adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__ = () => adminDailySaltRef.current
 
+    adminWindow.SEANS_ADMIN_NEW_DAILY = adminWindow.__SEANS_ADMIN_NEW_DAILY__
+    adminWindow.SEANS_ADMIN_SET_DAILY_SALT = adminWindow.__SEANS_ADMIN_SET_DAILY_SALT__
+    adminWindow.SEANS_ADMIN_GET_DAILY_SALT = adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__
+
     return () => {
       delete adminWindow.__SEANS_ADMIN_NEW_DAILY__
       delete adminWindow.__SEANS_ADMIN_SET_DAILY_SALT__
       delete adminWindow.__SEANS_ADMIN_GET_DAILY_SALT__
+      delete adminWindow.SEANS_ADMIN_NEW_DAILY
+      delete adminWindow.SEANS_ADMIN_SET_DAILY_SALT
+      delete adminWindow.SEANS_ADMIN_GET_DAILY_SALT
     }
   }, [])
 
