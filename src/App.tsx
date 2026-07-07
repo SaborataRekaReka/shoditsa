@@ -567,11 +567,14 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
 
 function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const metricClues = ['country', 'genres', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const metricClues = ['country', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const genresHint = byKey.get('genres')
+  const genres = item.genres ?? []
+  const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
-  const yearText = item.year != null ? String(item.year) : '—'
+  const yearText = item.year != null ? String(item.year) : null
   const ageText = item.ageRating ?? '—'
   return <article className="attempt-card">
     <div className="attempt-card__header">
@@ -580,13 +583,26 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
       <div className="attempt-card__identity">
         <span className="attempt-label">Попытка {index + 1}</span>
         <h2>{item.titleRu}</h2>
-        <p className="attempt-meta">
-          <span>{item.titleOriginal || 'Оригинальное название не указано'}</span>
-          <i className="attempt-meta__sep" aria-hidden="true">·</i>
-          <span className={yearHint?.status === 'match' ? 'is-match' : ''}>{yearText}</span>
-          <i className="attempt-meta__sep" aria-hidden="true">·</i>
-          <span className={ageHint?.status === 'match' ? 'is-match' : ''}>{ageText}</span>
+        <p className="gm-head__sub">
+          <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
+          {yearText && <>
+            <i className="gm-head__dot" aria-hidden="true">·</i>
+            <span className={`gm-year ${yearHint?.status ?? ''}`}>
+              {yearText}
+              {yearHint?.direction === 'up' ? <ArrowUp /> : yearHint?.direction === 'down' ? <ArrowDown /> : yearHint?.status === 'match' ? <Check /> : null}
+            </span>
+          </>}
+          {ageText !== '—' && <>
+            <i className="gm-head__dot" aria-hidden="true">·</i>
+            <span className={ageHint?.status === 'match' ? 'is-match' : ''}>{ageText}</span>
+          </>}
         </p>
+        {!!genres.length && <div className="gm-genres">
+          {genres.slice(0, 4).map((genre) => {
+            const isMatch = genreMatched.has(normalizeTextMatch(genre))
+            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{isMatch && <Check />}{genre}</span>
+          })}
+        </div>}
       </div>
       <div className="rating-badge"><small>КП</small><strong>{item.ratings?.kinopoisk?.toFixed(1) ?? '—'}</strong></div>
     </div>
