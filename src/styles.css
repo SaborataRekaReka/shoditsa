@@ -824,6 +824,7 @@ button:active { transform: translateY(1px); }
 .dx-chip__icon { width: 12px; height: 12px; flex: 0 0 auto; }
 .dx-chip.match { color: var(--color-ink); background: var(--color-primary); border-color: var(--color-primary-border); }
 .dx-chip.miss { color: #c9c1b5; background: var(--color-surface-2); border-color: var(--color-line); }
+.attempt-card--game .dx-chip.miss { color: var(--color-text); }
 .dx-chip--more { border-style: dashed; border-color: var(--color-line-strong); color: var(--color-muted); cursor: pointer; }
 .dx-chip--more:hover { color: var(--color-text); border-color: var(--color-primary-border); background: var(--color-surface-3); }
 
