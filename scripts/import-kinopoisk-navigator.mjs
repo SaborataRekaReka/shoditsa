@@ -136,6 +136,13 @@ const inferLanguage = (countries) => {
 }
 
 const cleanText = (value) => String(value || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+const isTruncatedHintText = (value) => /(?:\.\.\.|…)\s*$/.test(cleanText(value))
+const pickPlotHint = (shortDescription, description) => {
+  const shortText = cleanText(shortDescription || '')
+  const fullText = cleanText(description || '')
+  if (shortText && !isTruncatedHintText(shortText)) return shortText
+  return fullText || shortText
+}
 const person = (item) => ({
   nameRu: item?.nameRu || item?.nameEn || 'Не указано',
   nameOriginal: item?.nameEn || item?.nameRu || '',
@@ -256,7 +263,7 @@ for (const kinopoiskId of targetIds) {
       posterUrl: details.posterUrl || null,
       backdropUrl: details.coverUrl || null,
       description: details.description || details.shortDescription || null,
-      plotHint: cleanText(details.shortDescription || details.description || ''),
+      plotHint: pickPlotHint(details.shortDescription, details.description) || null,
       slogan: cleanText(details.slogan || ''),
       facts: [],
       awards: null,

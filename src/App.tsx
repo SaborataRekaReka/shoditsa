@@ -97,6 +97,15 @@ type AdminWindow = Window & {
 
 const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
+const TRUNCATED_HINT_END_RE = /(?:\.\.\.|…)\s*$/
+const resolvePlotHintText = (item: TitleItem) => {
+  const plotHint = cleanHintText(item.plotHint || '')
+  const description = cleanHintText(item.description || '')
+
+  if (!plotHint) return description
+  if (TRUNCATED_HINT_END_RE.test(plotHint) && description) return description
+  return plotHint
+}
 const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
 const isRedactedToken = (value: string) => /^\[+\s*REDACTED\s*\]+$/i.test(value)
 const renderHintBody = (value: string): ReactNode => {
@@ -268,9 +277,11 @@ const collectMatchedTags = (attempts: Attempt[]) => {
 }
 
 const buildAssistHints = (item: TitleItem): AssistHintView[] => {
-  const plot = cropHintText(cleanHintText(item.plotHint || item.description || ''))
+  const plotBase = resolvePlotHintText(item)
+  const plot = item.mode === 'movie' || item.mode === 'series' ? plotBase : cropHintText(plotBase)
   const facts = (item.facts ?? []).map(cleanHintText).filter(Boolean)
-  const fact = facts[0] || cropHintText(cleanHintText(item.slogan || ''))
+  const sloganHint = cleanHintText(item.slogan || '')
+  const fact = facts[0]
 
   if (item.mode === 'diagnosis') {
     const diagnosticsHint = cropHintText(cleanHintText((item.diagnostics ?? []).slice(0, 4).join(', ')))
@@ -344,6 +355,13 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
       subtitle: 'Короткое описание истории',
       body: plot,
       available: Boolean(plot),
+    },
+    {
+      key: 'slogan',
+      title: 'Слоган',
+      subtitle: 'Официальный рекламный слоган релиза',
+      body: sloganHint,
+      available: Boolean(sloganHint),
     },
     {
       key: 'cast_main',
