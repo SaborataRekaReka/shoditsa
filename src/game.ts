@@ -59,6 +59,9 @@ export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey)
 export const dailyTitle = (pool: TitleItem[], mode: TitleMode, period: PeriodKey, date: string) =>
   pool[hashIndex(`seans|${mode}|${period}|${date}`, pool.length)]
 
+export const pickDailyVignette = <T,>(vignettes: T[], diagnosisId: string, date: string): T | null =>
+  vignettes.length ? vignettes[hashIndex(`vignette|${diagnosisId}|${date}`, vignettes.length)] : null
+
 export const normalize = (value: string) => value.toLocaleLowerCase('ru-RU')
   .replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/gi, ' ').trim()
 
@@ -95,6 +98,10 @@ const scalar = (guess: string | null | undefined, answer: string | null | undefi
   if (!guess || !answer) return 'unknown'
   return normalize(guess) === normalize(answer) ? 'match' : 'miss'
 }
+const normalizeContagiousness = (value: string | null | undefined) => {
+  if (!value) return value
+  return value.replace(/^(заразность|contagiousness)\s*:\s*/i, '').trim()
+}
 const numeric = (guess: number | null | undefined, answer: number | null | undefined, match: number, close: number): { status: MatchStatus; direction: Direction } => {
   if (guess == null || answer == null) return { status: 'unknown', direction: null }
   const delta = Math.abs(guess - answer)
@@ -115,23 +122,47 @@ const ageNumber = (value: string | null | undefined) => {
   const num = Number(match[1])
   return Number.isFinite(num) ? num : null
 }
+const playerCountWord = (count: number) => {
+  const mod100 = Math.abs(count) % 100
+  const mod10 = mod100 % 10
+  if (mod100 >= 11 && mod100 <= 14) return 'игроков'
+  if (mod10 === 1) return 'игрок'
+  if (mod10 >= 2 && mod10 <= 4) return 'игрока'
+  return 'игроков'
+}
+const playerCountLabel = (count: number | null | undefined) => count == null ? '—' : `${count} ${playerCountWord(count)}`
+const seasonCountWord = (count: number) => {
+  const mod100 = Math.abs(count) % 100
+  const mod10 = mod100 % 10
+  if (mod100 >= 11 && mod100 <= 14) return 'сезонов'
+  if (mod10 === 1) return 'сезон'
+  if (mod10 >= 2 && mod10 <= 4) return 'сезона'
+  return 'сезонов'
+}
+const seasonCountLabel = (count: number | null | undefined) => count == null ? '—' : `${count} ${seasonCountWord(count)}`
+const playersCountFromCategory = (category: string) => {
+  const text = normalize(category)
+  const matches = [...text.matchAll(/\d{1,2}/g)]
+  if (!matches.length || !/(игрок|player)/.test(text)) return null
+  const numbers = matches.map((match) => Number(match[0])).filter((num) => Number.isFinite(num))
+  if (!numbers.length) return null
+  return Math.max(...numbers)
+}
 const playersNumber = (categories: string[]) => {
   let max: number | null = null
   for (const category of categories) {
-    const countMatch = category.match(/^(\d+)/)
-    if (countMatch) {
-      const count = Number(countMatch[1])
-      if (Number.isFinite(count)) {
-        max = max == null ? count : Math.max(max, count)
-      }
+    const count = playersCountFromCategory(category)
+    if (count != null) {
+      max = max == null ? count : Math.max(max, count)
       continue
     }
+
     const text = normalize(category)
     if (text.includes('одиноч')) {
       max = max == null ? 1 : Math.max(max, 1)
       continue
     }
-    if (text.includes('мульти') || text.includes('кооп') || text.includes('сет')) {
+    if (text.includes('мульти') || text.includes('кооп') || text.includes('сетев') || text.includes('online') || text.includes('multiplayer') || text.includes('игрок') || text.includes('player')) {
       max = max == null ? 2 : Math.max(max, 2)
     }
   }
@@ -186,6 +217,8 @@ const compareDiagnoses = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerDiagnostics = answer.diagnostics ?? []
   const guessRiskFactors = guess.riskFactors ?? []
   const answerRiskFactors = answer.riskFactors ?? []
+  const guessContagiousness = normalizeContagiousness(guess.contagiousness)
+  const answerContagiousness = normalizeContagiousness(answer.contagiousness)
   const guessIcd = [...(guess.icd10 ?? []), ...(guess.icdGroup ? [guess.icdGroup] : [])]
   const answerIcd = [...(answer.icd10 ?? []), ...(answer.icdGroup ? [answer.icdGroup] : [])]
 
@@ -193,7 +226,7 @@ const compareDiagnoses = (guess: TitleItem, answer: TitleItem): Hint[] => {
     { key: 'body_systems', label: 'Система', value: list(guessBodySystems), status: setStatus(guessBodySystems, answerBodySystems), direction: null, matchedValues: overlaps(guessBodySystems, answerBodySystems) },
     { key: 'disease_types', label: 'Тип', value: list(guessDiseaseTypes), status: setStatus(guessDiseaseTypes, answerDiseaseTypes), direction: null, matchedValues: overlaps(guessDiseaseTypes, answerDiseaseTypes) },
     { key: 'course', label: 'Течение', value: list(guessCourse), status: setStatus(guessCourse, answerCourse), direction: null, matchedValues: overlaps(guessCourse, answerCourse) },
-    { key: 'contagiousness', label: 'Заразность', value: guess.contagiousness ?? 'Нет данных', status: scalar(guess.contagiousness, answer.contagiousness), direction: null },
+    { key: 'contagiousness', label: 'Заразность', value: guessContagiousness ?? 'Нет данных', status: scalar(guessContagiousness, answerContagiousness), direction: null },
     { key: 'typical_age', label: 'Возраст', value: list(guessAgeGroups), status: setStatus(guessAgeGroups, answerAgeGroups), direction: null, matchedValues: overlaps(guessAgeGroups, answerAgeGroups) },
     { key: 'localization', label: 'Локализация', value: list(guessLocalization), status: setStatus(guessLocalization, answerLocalization), direction: null, matchedValues: overlaps(guessLocalization, answerLocalization) },
     { key: 'symptoms', label: 'Симптомы', value: list(guessSymptoms), status: setStatus(guessSymptoms, answerSymptoms), direction: null, matchedValues: overlaps(guessSymptoms, answerSymptoms) },
@@ -218,6 +251,12 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const imdb = numeric(guess.ratings?.imdb, answer.ratings?.imdb, 0.1, 0.3)
   const runtime = numeric(guess.runtimeMinutes, answer.runtimeMinutes, 5, 15)
   const showRuntime = guess.mode !== 'series' && answer.mode !== 'series'
+  const showSeriesMeta = guess.mode === 'series' && answer.mode === 'series'
+  const guessSeasons = Number.isFinite(Number(guess.seasonsCount)) ? Number(guess.seasonsCount) : null
+  const answerSeasons = Number.isFinite(Number(answer.seasonsCount)) ? Number(answer.seasonsCount) : null
+  const seasons = numeric(guessSeasons, answerSeasons, 0, 1)
+  const guessSeriesStatus = guess.seriesStatus ?? null
+  const answerSeriesStatus = answer.seriesStatus ?? null
 
   const guessShowrunners = guess.showrunners ?? []
   const answerShowrunners = answer.showrunners ?? []
@@ -235,6 +274,8 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const hints: Hint[] = [
     { key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year },
     { key: 'country', label: 'Страна', value: list(guessCountries), status: setStatus(guessCountries, answerCountries), direction: null },
+    ...(showSeriesMeta ? [{ key: 'series_status', label: 'Статус', value: guessSeriesStatus ?? '—', status: scalar(guessSeriesStatus, answerSeriesStatus), direction: null } satisfies Hint] : []),
+    ...(showSeriesMeta ? [{ key: 'seasons', label: 'Сезоны', value: seasonCountLabel(guessSeasons), ...seasons } satisfies Hint] : []),
     { key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: matchedGenres },
     {
       key: 'creator',
@@ -315,7 +356,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const hints: Hint[] = [
     { key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year },
     { key: 'rank', label: 'Место в топе', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank },
-    ...(hasPlayers ? [{ key: 'players', label: 'Игроков', value: guessPlayers != null ? String(guessPlayers) : '—', ...players } satisfies Hint] : []),
+    ...(hasPlayers ? [{ key: 'players', label: 'Игроки', value: playerCountLabel(guessPlayers), ...players } satisfies Hint] : []),
     ...(hasGenres ? [{ key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: overlaps(guessGenres, answerGenres) } satisfies Hint] : []),
     ...(hasSteamCategories ? [{ key: 'steam_categories', label: 'Категории', value: list(guessCategories), status: setStatus(guessCategories, answerCategories), direction: null, matchedValues: overlaps(guessCategories, answerCategories) } satisfies Hint] : []),
     ...(hasPlatforms ? [{ key: 'platforms', label: 'Платформы', value: list(guessPlatforms), status: setStatus(guessPlatforms, answerPlatforms), direction: null, matchedValues: overlaps(guessPlatforms, answerPlatforms) } satisfies Hint] : []),

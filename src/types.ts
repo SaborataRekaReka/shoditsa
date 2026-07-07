@@ -44,6 +44,8 @@ export type TitleItem = {
   ageRating?: string | null
   metacritic?: number | null
   runtimeMinutes?: number | null
+  seasonsCount?: number | null
+  seriesStatus?: string | null
   directors?: Person[]
   showrunners?: Person[]
   writers?: Person[]
@@ -100,6 +102,10 @@ export type TitleItem = {
   urgencyTypical?: string | null
   safetyDisclaimer?: string | null
 }
+
+export type CaseVignette = { id: string; text: string }
+export type DiagnosisCaseVignettes = { diagnosisId: string; caseVignettes: CaseVignette[] }
+export type CaseVignetteMap = Record<string, CaseVignette[]>
 
 export type MatchStatus = 'match' | 'close' | 'partial' | 'miss' | 'unknown'
 export type Direction = 'up' | 'down' | null

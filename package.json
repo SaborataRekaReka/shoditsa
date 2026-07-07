@@ -23,6 +23,7 @@
     "data:sanitize:movies:title-overlap": "node scripts/rewrite-movie-title-overlaps.mjs",
     "data:sanitize:series": "node scripts/sanitize-series-hints.mjs",
     "data:sanitize:series:title-overlap": "node scripts/rewrite-series-title-overlaps.mjs",
+    "data:enrich:series-meta": "node scripts/enrich-series-seasons-status.mjs",
     "data:sanitize:games": "node scripts/sanitize-game-hints.mjs",
     "data:translate:games:ru": "node scripts/translate-game-hints-google.mjs",
     "data:collect-ids": "node scripts/collect-kinopoisk-ids.mjs"

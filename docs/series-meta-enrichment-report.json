@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-07-07T15:50:13.972Z",
+  "inputPath": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\series.generated.json",
+  "outputPath": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\series.generated.json",
+  "totalSeries": 811,
+  "requestedToEnrich": 811,
+  "updated": 811,
+  "skipped": 0,
+  "fallbackStatusUsed": 157,
+  "seasonsEndpointUsed": 0,
+  "tvmazeLookupUsed": 736,
+  "tvmazeStatusUsed": 654,
+  "tvmazeSeasonsUsed": 654,
+  "keyUsage": [
+    {
+      "index": 1,
+      "used": 0,
+      "exhausted": true
+    },
+    {
+      "index": 2,
+      "used": 0,
+      "exhausted": true
+    },
+    {
+      "index": 3,
+      "used": 0,
+      "exhausted": true
+    },
+    {
+      "index": 4,
+      "used": 0,
+      "exhausted": true
+    },
+    {
+      "index": 5,
+      "used": 0,
+      "exhausted": true
+    }
+  ],
+  "skippedItems": []
+}

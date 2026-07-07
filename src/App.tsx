@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
 import {
   Archive,
   ArrowDown,
@@ -9,12 +9,15 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleHelp,
+  ClipboardList,
   Copy,
   Film,
   Gamepad2,
+  HeartPulse,
   Lock,
   MapPin,
   Music2,
+  NotebookText,
   Play,
   RotateCcw,
   Search,
@@ -25,11 +28,12 @@ import {
   Target,
   Trophy,
   Tv,
+  UserRound,
   X,
 } from 'lucide-react'
-import { compareTitles, dailyTitle, getMoscowDate, PERIODS, poolFor, prettyDate, resultText, searchTitles } from './game'
-import { allGames, gameKey, loadGame, loadStats, removeGame, saveGame, saveStats } from './storage'
-import type { AssistHintKey, Attempt, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode } from './types'
+import { compareTitles, dailyTitle, getMoscowDate, PERIODS, pickDailyVignette, poolFor, prettyDate, resultText, searchTitles } from './game'
+import { allGames, gameKey, loadGame, loadStats, saveGame, saveStats } from './storage'
+import type { AssistHintKey, Attempt, CaseVignetteMap, DiagnosisCaseVignettes, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode } from './types'
 
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : mode === 'game' ? <Gamepad2 /> : <Stethoscope />
@@ -41,6 +45,25 @@ const modeDaily = (mode: TitleMode) => mode === 'movie' ? 'Фильм' : mode ==
 const modeLower = (mode: TitleMode) => mode === 'movie' ? 'кино' : mode === 'series' ? 'сериалы' : mode === 'game' ? 'игры' : 'диагнозы'
 const modeSearchPlaceholder = (mode: TitleMode) => mode === 'movie' ? 'Найти фильм…' : mode === 'series' ? 'Найти сериал…' : mode === 'game' ? 'Найти игру…' : 'Найти диагноз…'
 const modeDataFile = (mode: TitleMode) => mode === 'movie' ? 'movies' : mode === 'series' ? 'series' : mode === 'game' ? 'games' : 'diagnoses'
+const normalizeSystemKey = (value: string) => normalizeTextMatch(value).replace(/[^a-zа-я0-9]+/gi, ' ').trim()
+const diagnosisSystemIconByKey = new Map<string, string>([
+  ['дыхательная система', '/images/diagnosis-systems/respiratory.svg'],
+  ['пищеварительная система', '/images/diagnosis-systems/digestive.svg'],
+  ['психика и поведение', '/images/diagnosis-systems/mental.svg'],
+  ['зубы и полость рта', '/images/diagnosis-systems/dental.svg'],
+  ['мочевыделительная система', '/images/diagnosis-systems/urinary.svg'],
+  ['нервная система', '/images/diagnosis-systems/nervous.svg'],
+  ['органы зрения', '/images/diagnosis-systems/vision.svg'],
+  ['органы слуха', '/images/diagnosis-systems/hearing.svg'],
+  ['кожа и подкожная клетчатка', '/images/diagnosis-systems/skin.svg'],
+  ['костно мышечная система', '/images/diagnosis-systems/musculoskeletal.svg'],
+  ['кровь и иммунная система', '/images/diagnosis-systems/blood-immune.svg'],
+  ['репродуктивная система', '/images/diagnosis-systems/reproductive.svg'],
+  ['сердечно сосудистая система', '/images/diagnosis-systems/cardiovascular.svg'],
+  ['эндокринная система', '/images/diagnosis-systems/endocrine.svg'],
+])
+const defaultDiagnosisSystemIcon = '/images/diagnosis-systems/nervous.svg'
+const splitHintValues = (value: string) => value.split(',').map((item) => item.trim()).filter((item) => item && item !== 'Нет данных')
 
 const isEditableTarget = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false
@@ -84,7 +107,51 @@ const renderHintBody = (value: string): ReactNode => {
   return nodes
 }
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
-const hasProgressMatch = (hint: Attempt['hints'][number]) => hint.status === 'match' || Boolean(hint.matchedValues?.length)
+const progressOverlapHintKeys = new Set([
+  'body_systems',
+  'symptoms',
+  'diagnostics',
+  'risk_factors',
+  'genres',
+  'steam_categories',
+  'platforms',
+])
+const hintProgressScore = (hint: Attempt['hints'][number]) => {
+  if (progressOverlapHintKeys.has(hint.key)) {
+    const overlapCount = (hint.matchedValues ?? []).filter(Boolean).length
+    if (overlapCount > 0) return overlapCount
+  }
+  if ((hint.key === 'creator' || hint.key === 'cast') && hint.people?.some((person) => person.matched)) return 1
+  return hint.status === 'match' ? 1 : 0
+}
+const progressMatches = (hints: Attempt['hints']) => {
+  const raw = hints.reduce((sum, hint) => sum + hintProgressScore(hint), 0)
+  return Math.min(hints.length, raw)
+}
+const alignSystemTooltip = (iconEl: HTMLElement | null) => {
+  if (!iconEl || typeof window === 'undefined') return
+
+  if (!window.matchMedia('(max-width: 719px)').matches) {
+    iconEl.style.setProperty('--dx-tooltip-shift', '0px')
+    return
+  }
+
+  const tooltipEl = iconEl.querySelector<HTMLElement>('.dx-system-icon__tooltip')
+  if (!tooltipEl) return
+
+  iconEl.style.setProperty('--dx-tooltip-shift', '0px')
+  const tooltipRect = tooltipEl.getBoundingClientRect()
+  const viewportPadding = 10
+  let shift = 0
+
+  if (tooltipRect.left < viewportPadding) {
+    shift = viewportPadding - tooltipRect.left
+  } else if (tooltipRect.right > window.innerWidth - viewportPadding) {
+    shift = window.innerWidth - viewportPadding - tooltipRect.right
+  }
+
+  iconEl.style.setProperty('--dx-tooltip-shift', `${Math.round(shift)}px`)
+}
 const steamCategoryIcon = (value: string): 'single' | 'multi' | null => {
   const text = normalizeTextMatch(value).trim()
   if (!text) return null
@@ -97,6 +164,57 @@ const steamCategoryIcon = (value: string): 'single' | 'multi' | null => {
   if (text.includes('одиноч')) return 'single'
   if (text.includes('мульти') || text.includes('кооп') || text.includes('онлайн') || text.includes('игрок')) return 'multi'
   return null
+}
+const playerCountFromCategory = (value: string) => {
+  const text = normalizeTextMatch(value)
+  const matches = [...text.matchAll(/\d{1,2}/g)]
+  if (!matches.length || !/(игрок|player)/.test(text)) return null
+  const numbers = matches.map((match) => Number(match[0])).filter((num) => Number.isFinite(num))
+  if (!numbers.length) return null
+  return Math.max(...numbers)
+}
+const isPlayerCategory = (value: string) => {
+  const text = normalizeTextMatch(value).trim()
+  if (!text) return false
+  if (playerCountFromCategory(text) != null) return true
+  return text.includes('одиноч')
+    || text.includes('single')
+    || text.includes('мульти')
+    || text.includes('multiplayer')
+    || text.includes('кооп')
+    || text.includes('coop')
+    || text.includes('co-op')
+    || text.includes('игрок')
+    || text.includes('player')
+    || text.includes('сетев')
+    || text.includes('online')
+}
+const normalizeGameCategoryKey = (value: string) => {
+  const text = normalizeTextMatch(value).trim()
+  if (!text) return ''
+  const playersCount = playerCountFromCategory(text)
+  if (playersCount != null) return `players:${playersCount}`
+  if (text.includes('одиноч') || text.includes('single')) return 'players:single'
+  if (text.includes('мульти') || text.includes('multiplayer') || text.includes('кооп') || text.includes('coop') || text.includes('co-op') || text.includes('игрок') || text.includes('player') || text.includes('online') || text.includes('сетев')) {
+    return 'players:multi'
+  }
+  return text.replace(/[^a-zа-я0-9]+/gi, ' ').trim()
+}
+const dedupeGameCategories = (categories: string[], removePlayerCategories: boolean) => {
+  const seen = new Set<string>()
+  const result: string[] = []
+
+  for (const rawCategory of categories) {
+    const category = rawCategory.trim()
+    if (!category) continue
+    if (removePlayerCategories && isPlayerCategory(category)) continue
+    const key = normalizeGameCategoryKey(category) || normalizeTextMatch(category)
+    if (seen.has(key)) continue
+    seen.add(key)
+    result.push(category)
+  }
+
+  return result
 }
 const collectMatchedTags = (attempts: Attempt[]) => {
   const tags: string[] = []
@@ -160,9 +278,10 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
   }
 
   if (item.mode === 'game') {
+    const dedupedGameCategories = dedupeGameCategories(item.steamCategories ?? [], true)
     const tagsHint = cropHintText(cleanHintText([
       ...(item.genres ?? []).slice(0, 3),
-      ...(item.steamCategories ?? []).slice(0, 3),
+      ...dedupedGameCategories.slice(0, 3),
     ].join(', ')))
     const gameFact = cropHintText(cleanHintText([
       item.year ? `Год релиза: ${item.year}` : '',
@@ -231,7 +350,10 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
   const [failed, setFailed] = useState(false)
   return item.posterUrl && !failed
     ? <img className={className} src={item.posterUrl} alt={`Постер «${item.titleRu}»`} onError={() => setFailed(true)} />
-    : <div className={`${className} poster-fallback`}>{modeIcon(item.mode)}<span>{item.titleRu}</span></div>
+    : <div className={`${className} poster-fallback`}>
+      {item.mode !== 'diagnosis' ? modeIcon(item.mode) : null}
+      <span>{item.titleRu}</span>
+    </div>
 }
 
 function BrandLogo({ className = '' }: { className?: string }) {
@@ -375,7 +497,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -387,6 +509,8 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   onStats: () => void
   onRules: () => void
   isLeaving?: boolean
+  onReadAnamnesis: () => void
+  hasAnamnesis: boolean
 }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -433,6 +557,11 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
                 <h1>Ежедневная игра: диагнозы</h1>
                 <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
+                {hasAnamnesis && <button type="button" className="med-chart__anamnesis" onClick={onReadAnamnesis}>
+                  <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
+                  <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
+                  <ChevronRight aria-hidden="true" />
+                </button>}
               </div>
             </section>
           : mode === 'game'
@@ -476,11 +605,10 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   </>
 }
 
-function RewatchScreen({ mode, setMode, period, setPeriod, dates, games, onOpen, onHome, onStats, onRules }: {
+function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, onStats, onRules }: {
   mode: TitleMode
   setMode: (mode: TitleMode) => void
   period: PeriodKey
-  setPeriod: (period: PeriodKey) => void
   dates: string[]
   games: SavedGame[]
   onOpen: (date: string, game: SavedGame | null) => void
@@ -499,7 +627,6 @@ function RewatchScreen({ mode, setMode, period, setPeriod, dates, games, onOpen,
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
       <div className="rewatch-toolbar">
         <div className="mode-tabs"><button className={mode === 'movie' ? 'active' : ''} onClick={() => setMode('movie')}>Фильмы</button><button className={mode === 'series' ? 'active' : ''} onClick={() => setMode('series')}>Сериалы</button><button className={mode === 'game' ? 'active' : ''} onClick={() => setMode('game')}>Игры</button><button className={mode === 'diagnosis' ? 'active' : ''} onClick={() => setMode('diagnosis')}>Диагнозы</button></div>
-        {(mode === 'movie' || mode === 'series') && <PeriodControl value={period} onChange={setPeriod} />}
       </div>
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
@@ -545,6 +672,115 @@ function ClueTile({ hint, delay }: { hint: Attempt['hints'][number]; delay: numb
   </div>
 }
 
+function DxSystemIcons({ hint }: { hint: Attempt['hints'][number] }) {
+  const systems = splitHintValues(hint.value)
+  if (!systems.length) return null
+
+  const matched = new Set((hint.matchedValues ?? []).map(normalizeSystemKey))
+  const matchedCount = systems.filter((value) => matched.has(normalizeSystemKey(value))).length
+  const countTone = matchedCount === systems.length ? 'match' : matchedCount ? 'partial' : 'miss'
+
+  return <section className="dx-systems" aria-label={`Совпадение систем: ${matchedCount} из ${systems.length}`}>
+    <div className="dx-systems__head">
+      <span>{hint.label}</span>
+      <small className={countTone}>{matchedCount}/{systems.length}</small>
+    </div>
+    <div className="dx-systems__list">
+      {systems.map((system, index) => {
+        const key = normalizeSystemKey(system)
+        const icon = diagnosisSystemIconByKey.get(key) ?? defaultDiagnosisSystemIcon
+        const isMatched = matched.has(key)
+        const style = {
+          '--dx-system-icon': `url("${icon}")`,
+          animationDelay: `${index * 26}ms`,
+        } as CSSProperties
+        return <span
+          key={`${hint.key}-${system}`}
+          className={`dx-system-icon ${isMatched ? 'match' : 'miss'}`}
+          style={style}
+          aria-label={system}
+          tabIndex={0}
+          onMouseEnter={(event) => alignSystemTooltip(event.currentTarget)}
+          onFocus={(event) => alignSystemTooltip(event.currentTarget)}
+          onTouchStart={(event) => alignSystemTooltip(event.currentTarget)}
+        >
+          <span className="dx-system-icon__glyph" aria-hidden="true" />
+          <span className="dx-system-icon__tooltip" role="tooltip">{system}</span>
+        </span>
+      })}
+    </div>
+  </section>
+}
+
+function HorizontalScrollLane({ className, children }: { className: string; children: ReactNode }) {
+  const laneRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef({
+    pointerId: -1,
+    startX: 0,
+    startScrollLeft: 0,
+    moved: false,
+  })
+  const [isDragging, setIsDragging] = useState(false)
+
+  const stopDrag = (pointerId: number) => {
+    const lane = laneRef.current
+    if (!lane) return
+    if (lane.hasPointerCapture(pointerId)) lane.releasePointerCapture(pointerId)
+    const shouldResetAfterClick = dragRef.current.moved
+    dragRef.current.pointerId = -1
+    setIsDragging(false)
+    if (shouldResetAfterClick) {
+      requestAnimationFrame(() => {
+        dragRef.current.moved = false
+      })
+    }
+  }
+
+  return <div
+    ref={laneRef}
+    className={`${className} ${isDragging ? 'is-dragging' : ''}`.trim()}
+    onWheel={(event) => {
+      const lane = laneRef.current
+      if (!lane || lane.scrollWidth <= lane.clientWidth) return
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+      if (!delta) return
+      lane.scrollLeft += delta
+      event.preventDefault()
+    }}
+    onPointerDown={(event) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return
+      const lane = laneRef.current
+      if (!lane || lane.scrollWidth <= lane.clientWidth) return
+      dragRef.current.pointerId = event.pointerId
+      dragRef.current.startX = event.clientX
+      dragRef.current.startScrollLeft = lane.scrollLeft
+      dragRef.current.moved = false
+      lane.setPointerCapture(event.pointerId)
+      setIsDragging(true)
+    }}
+    onPointerMove={(event) => {
+      const lane = laneRef.current
+      if (!lane || dragRef.current.pointerId !== event.pointerId) return
+      const dx = event.clientX - dragRef.current.startX
+      if (Math.abs(dx) > 4) dragRef.current.moved = true
+      lane.scrollLeft = dragRef.current.startScrollLeft - dx
+    }}
+    onPointerUp={(event) => stopDrag(event.pointerId)}
+    onPointerCancel={(event) => stopDrag(event.pointerId)}
+    onPointerLeave={(event) => {
+      if (event.pointerType === 'mouse' && dragRef.current.pointerId === event.pointerId) stopDrag(event.pointerId)
+    }}
+    onClickCapture={(event) => {
+      if (!dragRef.current.moved) return
+      event.preventDefault()
+      event.stopPropagation()
+      dragRef.current.moved = false
+    }}
+  >
+    {children}
+  </div>
+}
+
 function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
   return <div className={`people-group ${hint.status} people-${hint.key}`}>
     <div className="people-group__head"><span>{hint.label}</span></div>
@@ -558,18 +794,19 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
 
 function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const metricClues = ['country', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const metricClues = ['country', 'series_status', 'seasons', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const genresHint = byKey.get('genres')
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const total = attempt.hints.length
-  const matchedCount = attempt.hints.filter(hasProgressMatch).length
+  const matchedCount = progressMatches(attempt.hints)
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
   const yearText = item.year != null ? String(item.year) : null
   const ageText = item.ageRating ?? '—'
-  return <article className="attempt-card attempt-card--screen">
+  const isSeriesAttempt = item.mode === 'series'
+  return <article className={`attempt-card attempt-card--screen${isSeriesAttempt ? ' attempt-card--screen-series' : ''}`}>
     <div className="attempt-card__header">
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
       <Poster item={item} />
@@ -616,17 +853,6 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
   </article>
 }
 
-function GameAttrBadge({ hint }: { hint: Attempt['hints'][number] }) {
-  const showCross = (hint.status === 'miss' || hint.status === 'partial') && hint.key !== 'age'
-  return <div className={`dx-attr ${hint.status}`}>
-    <span className="dx-attr__label">{hint.label}</span>
-    <strong className="dx-attr__val">{hint.value}</strong>
-    <i className="dx-attr__mark" aria-hidden="true">
-      {hint.direction === 'up' ? <ArrowUp /> : hint.direction === 'down' ? <ArrowDown /> : hint.status === 'match' ? <Check /> : showCross ? <X /> : null}
-    </i>
-  </div>
-}
-
 function GameStudioPlate({ label, names, hint }: { label: string; names: string[]; hint: Attempt['hints'][number] | undefined }) {
   if (!names.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
@@ -648,12 +874,14 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
   const rankHint = byKey.get('rank')
   const yearHint = byKey.get('year')
   const total = attempt.hints.length
-  const matchedCount = attempt.hints.filter((hint) => hint.status === 'match').length
+  const matchedCount = progressMatches(attempt.hints)
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const attrs = ['players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
+  const steamCategories = dedupeGameCategories(item.steamCategories ?? [], Boolean(byKey.get('players')))
+  const platforms = dedupeGameCategories(item.platforms ?? [], false)
   const rankText = item.topRank != null ? `#${item.topRank}` : '—'
 
   return <article className="attempt-card attempt-card--game">
@@ -701,40 +929,28 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
       <GameStudioPlate label="Издатель" names={item.publishers ?? []} hint={byKey.get('publisher')} />
     </div>}
 
-    {!!attrs.length && <div className="dx-attrs">{attrs.map((hint) => <GameAttrBadge key={hint.key} hint={hint} />)}</div>}
+    {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
 
     <div className="dx-clouds">
-      <DxChipCloud label="Категории" hint={byKey.get('steam_categories')} items={item.steamCategories ?? []} limit={6} iconKind="steam-categories" />
-      <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={item.platforms ?? []} limit={6} />
+      <DxChipCloud label="Категории" hint={byKey.get('steam_categories')} items={steamCategories} limit={6} iconKind="steam-categories" />
+      <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={platforms} limit={6} />
     </div>
   </article>
 }
 
-function DxAttrBadge({ hint }: { hint: Attempt['hints'][number] }) {
-  return <div className={`dx-attr ${hint.status}`}>
-    <span className="dx-attr__label">{hint.label}</span>
-    <strong className="dx-attr__val">{hint.value}</strong>
-    <i className="dx-attr__mark" aria-hidden="true">
-      {hint.status === 'match' ? <Check /> : hint.status === 'miss' ? <X /> : null}
-    </i>
-  </div>
-}
-
 function DxChipCloud({ label, hint, items, limit = 6, iconKind }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories' }) {
-  const [expanded, setExpanded] = useState(false)
   if (!items.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
   const matchedCount = items.filter((value) => matched.has(normalizeTextMatch(value))).length
-  const visible = expanded ? items : items.slice(0, limit)
-  const hidden = items.slice(limit)
+  const shouldScroll = items.length > limit
   const countTone = matchedCount === items.length ? 'match' : matchedCount ? 'partial' : 'miss'
   return <div className="dx-cloud">
     <div className="dx-cloud__head">
       <span>{label}</span>
       <small className={countTone}>{matchedCount}/{items.length}</small>
     </div>
-    <div className="dx-cloud__chips">
-      {visible.map((value) => {
+    <HorizontalScrollLane className={`dx-cloud__chips ${shouldScroll ? 'is-scrollable' : ''}`}>
+      {items.map((value) => {
         const isMatched = matched.has(normalizeTextMatch(value))
         const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
         return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>
@@ -743,25 +959,23 @@ function DxChipCloud({ label, hint, items, limit = 6, iconKind }: { label: strin
           {isMatched && <Check />}
         </span>
       })}
-      {!expanded && hidden.length > 0 && <button type="button" className="dx-chip dx-chip--more" title={hidden.join(', ')} onClick={() => setExpanded(true)}>+{hidden.length}</button>}
-      {expanded && items.length > limit && <button type="button" className="dx-chip dx-chip--more" onClick={() => setExpanded(false)}>свернуть</button>}
-    </div>
+    </HorizontalScrollLane>
   </div>
 }
 
 function DiagnosisAttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleItem; index: number }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const attrs = ['body_systems', 'disease_types', 'course', 'contagiousness', 'typical_age', 'localization']
+  const bodySystemsHint = byKey.get('body_systems')
+  const attrs = ['disease_types', 'course', 'contagiousness', 'typical_age', 'localization']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const total = attempt.hints.length
-  const matchedCount = attempt.hints.filter(hasProgressMatch).length
+  const matchedCount = progressMatches(attempt.hints)
   const icdValue = item.icd10?.[0] ?? item.icdGroup ?? '—'
 
   return <article className="attempt-card attempt-card--dx">
     <div className="dx-head">
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <span className="dx-head__icon"><Stethoscope /></span>
       <div className="dx-head__identity">
         <span className="attempt-label">Попытка {index + 1}</span>
         <h2>{item.titleRu}</h2>
@@ -776,7 +990,8 @@ function DiagnosisAttemptCard({ attempt, item, index }: { attempt: Attempt; item
       <strong>{matchedCount}/{total}</strong>
     </div>
 
-    {!!attrs.length && <div className="dx-attrs">{attrs.map((hint) => <DxAttrBadge key={hint.key} hint={hint} />)}</div>}
+    {bodySystemsHint && <DxSystemIcons hint={bodySystemsHint} />}
+    {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
 
     <div className="dx-clouds">
       <DxChipCloud label="Симптомы" hint={byKey.get('symptoms')} items={item.keySymptoms ?? []} limit={6} />
@@ -799,7 +1014,6 @@ function Game({
   titles,
   mode,
   period,
-  setPeriod,
   date,
   setDate,
   onHome,
@@ -807,11 +1021,11 @@ function Game({
   onArchive,
   onStats,
   onRules,
+  caseVignettes,
 }: {
   titles: TitleItem[]
   mode: TitleMode
   period: PeriodKey
-  setPeriod: (period: PeriodKey) => void
   date: string
   setDate: (date: string) => void
   onHome: () => void
@@ -819,6 +1033,7 @@ function Game({
   onArchive: () => void
   onStats: () => void
   onRules: () => void
+  caseVignettes: CaseVignetteMap
 }) {
   const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' ? 'all' : period
   const pool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
@@ -835,6 +1050,7 @@ function Game({
   const [dismissedHintRounds, setDismissedHintRounds] = useState<HintCheckpoint[]>([])
   const [hintModalRound, setHintModalRound] = useState<HintCheckpoint | null>(null)
   const [copied, setCopied] = useState(false)
+  const [anamnesisOpen, setAnamnesisOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -851,8 +1067,9 @@ function Game({
     setSelected(null)
     setActiveSuggestionIndex(-1)
     setMessage('')
-    setGameMatchStripOpen(false)
-  }, [key])
+    setGameMatchStripOpen(mode === 'diagnosis')
+    setAnamnesisOpen(false)
+  }, [key, mode])
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => searchTitles(pool, query, used), [pool, query, used])
@@ -870,6 +1087,9 @@ function Game({
     })
   }, [query, selected, suggestions])
   const assistHints = useMemo(() => answer ? buildAssistHints(answer) : [], [answer])
+  const anamnesisText = useMemo(() => answer && mode === 'diagnosis'
+    ? (pickDailyVignette(caseVignettes[answer.id] ?? [], answer.id, date)?.text ?? '')
+    : '', [answer, mode, caseVignettes, date])
   const usedHintsSet = useMemo(() => new Set(hintChoices.map((choice) => choice.key)), [hintChoices])
   const revealedAssistHints = useMemo(() => assistHints.filter((hint) => usedHintsSet.has(hint.key)), [assistHints, usedHintsSet])
   const currentRound = Math.min(attempts.length + 1, 10)
@@ -883,7 +1103,6 @@ function Game({
   const preferredHintRound = nextUndismissedHintRound ?? nextHintRound
   const canUseHint = status === 'playing' && pendingHintRounds.length > 0
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
-  const showPeriodControl = mode === 'movie' || mode === 'series'
   const showTodayLink = date !== getMoscowDate()
 
   useEffect(() => {
@@ -1037,7 +1256,7 @@ function Game({
         <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
         <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
-      <section className="game-heading">
+      <section className={`game-heading${mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}>
         <div>
           <span className="game-heading__kicker">{date === getMoscowDate() ? 'Сегодня' : 'Архив'} · Сеанс №{dayNumber(date)}</span>
           <h1>{modeDaily(mode)} дня</h1>
@@ -1046,8 +1265,8 @@ function Game({
         <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>
       </section>
 
-      {(showPeriodControl || showTodayLink) && <section className="game-toolbar" aria-label="Настройки игры">
-        {showPeriodControl && <PeriodControl value={period} onChange={setPeriod} />}
+      {(showTodayLink || (mode === 'diagnosis' && !!anamnesisText)) && <section className="game-toolbar" aria-label="Настройки игры">
+        {mode === 'diagnosis' && !!anamnesisText && <ActionButton variant="secondary" className="anamnesis-link" onClick={() => setAnamnesisOpen(true)}><ClipboardList /> Анамнез</ActionButton>}
         {showTodayLink && <ActionButton variant="ghost" className="today-link" onClick={() => setDate(getMoscowDate())}>Сегодня</ActionButton>}
       </section>}
 
@@ -1079,7 +1298,7 @@ function Game({
           <div className="result-tags">{(answer.mode === 'diagnosis'
             ? [...(answer.bodySystems ?? []).slice(0, 2), ...(answer.diseaseTypes ?? []).slice(0, 2), ...(answer.icd10 ?? []).slice(0, 1)]
             : answer.mode === 'game'
-              ? [...(answer.genres ?? []).slice(0, 3), ...(answer.steamCategories ?? []).slice(0, 2)]
+              ? [...(answer.genres ?? []).slice(0, 3), ...dedupeGameCategories(answer.steamCategories ?? [], true).slice(0, 2)]
               : (answer.genres ?? [])
           ).map((tag) => <i key={tag}>{tag}</i>)}</div>
           <strong>{status === 'won' ? `${attempts.length}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
@@ -1137,7 +1356,7 @@ function Game({
           {selected && <Check className="selected-check" />}
           <button onClick={() => submit()} aria-label="Проверить ответ"><ChevronRight /></button>
         </div>
-        {!!attempts.length && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
+        {(mode === 'diagnosis' || !!attempts.length) && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
           <button
             type="button"
             className="game-match-strip__toggle"
@@ -1150,11 +1369,11 @@ function Game({
             <ChevronRight aria-hidden="true" />
           </button>
           <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!gameMatchStripOpen}>
-            <div className="game-match-strip__tags">
+            <HorizontalScrollLane className="game-match-strip__tags">
               {matchedTags.length
-                ? matchedTags.map((tag) => <span key={tag} className="game-match-strip__tag">{tag}</span>)
-                : <span className="game-match-strip__empty">Пока совпадений нет</span>}
-            </div>
+                ? matchedTags.map((tag) => <span key={tag} className="dx-chip match game-match-strip__tag">{tag}</span>)
+                : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
+            </HorizontalScrollLane>
           </div>
         </div>}
         {query && !selected && <div className="suggestions">
@@ -1218,6 +1437,8 @@ function Game({
         <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
       </section>
     </div>}
+
+    {anamnesisOpen && !!anamnesisText && <AnamnesisModal text={anamnesisText} dayNo={dayNumber(date)} onClose={() => setAnamnesisOpen(false)} />}
   </>
 }
 
@@ -1229,6 +1450,49 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
     </div>
   </div>
 }
+
+function AnamnesisModal({ text, dayNo, onClose, onStart }: {
+  text: string
+  dayNo: number
+  onClose: () => void
+  onStart?: () => void
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown, true)
+    return () => window.removeEventListener('keydown', onKeyDown, true)
+  }, [onClose])
+
+  return <div className="anamnesis-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <section className="anamnesis-modal" role="dialog" aria-modal="true" aria-labelledby="anamnesis-title">
+      <div className="anamnesis-modal__head">
+        <span><Stethoscope /> Амбулаторная карта · Анамнез</span>
+        <button onClick={onClose} aria-label="Закрыть"><X /></button>
+      </div>
+      <div className="anamnesis-modal__patient">
+        <span className="anamnesis-modal__avatar" aria-hidden="true"><UserRound /></span>
+        <div className="anamnesis-modal__patient-copy">
+          <small>Анонимный пациент</small>
+          <h2 id="anamnesis-title">Приём № {dayNo}</h2>
+          <em>Жалобы записаны со слов пациента</em>
+        </div>
+      </div>
+      <p className="anamnesis-modal__text">{text}</p>
+      <div className="anamnesis-modal__note"><HeartPulse /> Поставьте верный диагноз по симптомам за десять попыток.</div>
+      <div className="anamnesis-modal__actions">
+        {onStart
+          ? <ActionButton className="anamnesis-modal__start" onClick={onStart}><Stethoscope /> Взяться за дело</ActionButton>
+          : <ActionButton className="anamnesis-modal__start" onClick={onClose}><Check /> Понятно</ActionButton>}
+      </div>
+    </section>
+  </div>
+}
+
 
 function StatsView({ mode }: { mode: TitleMode }) {
   const stats = loadStats(mode)
@@ -1254,28 +1518,27 @@ function RulesView() {
     <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
     <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
     <div><i className="miss" /><span><strong>Мимо</strong> — значение не совпало.</span></div>
-    <p>Стрелка показывает, выше или ниже находится правильный год, рейтинг или хронометраж.</p>
+    <p>Стрелка показывает, выше или ниже находится правильный год, рейтинг, хронометраж или количество сезонов.</p>
   </div>
 }
 
-function ResumeSessionsView({ sessions, onOpen, onClose }: {
+function ResumeSessionsView({ sessions, onOpen }: {
   sessions: SavedGame[]
   onOpen: (session: SavedGame) => void
-  onClose: (session: SavedGame) => void
 }) {
   return <>
-    <p className="modal-lead">Незавершенные игры сохраняются автоматически. Выберите сеанс, чтобы продолжить, или закройте его.</p>
+    <p className="modal-lead">Незавершенные игры сохраняются автоматически. Выберите сохраненную игру, чтобы продолжить.</p>
     <div className="resume-list">
       {sessions.map((session) => {
         const attemptText = `${session.attempts.length}/10`
+        const sessionLabel = session.mode === 'diagnosis' ? 'Прием' : 'Сеанс'
         const periodText = session.mode === 'movie' || session.mode === 'series' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
         return <article className="resume-item" key={session.key}>
           <button className="resume-item__open" onClick={() => onOpen(session)}>
             <span className="resume-item__mode">{modeIcon(session.mode)}<i>{modeTitle(session.mode)}</i></span>
-            <strong>{prettyDate(session.date)} · Сеанс №{dayNumber(session.date)}</strong>
+            <strong>{prettyDate(session.date)} · {sessionLabel} №{dayNumber(session.date)}</strong>
             <small>{periodText} · Попытки: {attemptText}</small>
           </button>
-          <button className="resume-item__close" aria-label="Закрыть сеанс" onClick={() => onClose(session)}><X /></button>
         </article>
       })}
     </div>
@@ -1291,8 +1554,8 @@ export default function App() {
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const [data, setData] = useState<Record<TitleMode, TitleItem[]>>({ movie: [], series: [], game: [], diagnosis: [] })
   const [titleCounts, setTitleCounts] = useState<{ movie: number | null; series: number | null; game: number | null; diagnosis: number | null }>({ movie: null, series: null, game: null, diagnosis: null })
-  const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | null>(null)
-  const [gamesRevision, setGamesRevision] = useState(0)
+  const [caseVignettes, setCaseVignettes] = useState<CaseVignetteMap>({})
+  const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const [loading, setLoading] = useState(false)
   const transitionTimerRef = useRef<number | null>(null)
   const screenHistoryReadyRef = useRef(false)
@@ -1315,6 +1578,22 @@ export default function App() {
     fetch('/data/diagnoses.generated.json')
       .then((response) => response.json())
       .then((items: TitleItem[]) => setTitleCounts((current) => ({ ...current, diagnosis: current.diagnosis ?? items.length })))
+      .catch(() => undefined)
+  }, [])
+
+  useEffect(() => {
+    fetch('/data/diagnosis-case-vignettes.by-id.json')
+      .then((response) => response.json())
+      .then((entries: DiagnosisCaseVignettes[]) => {
+        if (!Array.isArray(entries)) return
+        const map: CaseVignetteMap = {}
+        for (const entry of entries) {
+          if (entry?.diagnosisId && Array.isArray(entry.caseVignettes)) {
+            map[entry.diagnosisId] = entry.caseVignettes
+          }
+        }
+        setCaseVignettes(map)
+      })
       .catch(() => undefined)
   }, [])
 
@@ -1415,8 +1694,17 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }
 
-  const games = useMemo(() => allGames(), [screen, gamesRevision])
+  const games = useMemo(() => allGames(), [screen])
   const activeGames = useMemo(() => games.filter((game) => game.status === 'playing').sort((a, b) => b.updatedAt - a.updatedAt), [games])
+  const diagnosisAnamnesis = useMemo(() => {
+    if (mode !== 'diagnosis' || !data.diagnosis.length) return null
+    const pool = poolFor(data.diagnosis, 'diagnosis', 'all')
+    if (!pool.length) return null
+    const answer = dailyTitle(pool, 'diagnosis', 'all', getMoscowDate())
+    if (!answer) return null
+    const vignette = pickDailyVignette(caseVignettes[answer.id] ?? [], answer.id, getMoscowDate())
+    return vignette?.text ? { text: vignette.text } : null
+  }, [mode, data.diagnosis, caseVignettes])
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
   const goBackFromGame = () => moveToScreen(gameBackTarget)
@@ -1446,11 +1734,6 @@ export default function App() {
       return
     }
     setModal('resume')
-  }
-
-  const closeActiveSession = (session: SavedGame) => {
-    removeGame(session.key)
-    setGamesRevision((value) => value + 1)
   }
 
   const selectCategory = (nextMode: TitleMode) => {
@@ -1501,9 +1784,9 @@ export default function App() {
   return <div className={`app app--${appTone}`}>
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} />}
 
-    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} setPeriod={setPeriod} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} />}
+    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} />}
 
     {screen === 'game' && (loading || !data[mode].length
       ? <div className="loading"><Sparkles /> Настраиваем проектор…</div>
@@ -1511,7 +1794,6 @@ export default function App() {
           titles={data[mode]}
           mode={mode}
           period={period}
-          setPeriod={setPeriod}
           date={date}
           setDate={setDate}
           onHome={goHome}
@@ -1519,10 +1801,12 @@ export default function App() {
           onArchive={() => setScreen('rewatch')}
           onStats={() => setModal('stats')}
           onRules={() => setModal('rules')}
+          caseVignettes={caseVignettes}
         />)}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modePlural(mode)}</div><StatsView mode={mode} /></Modal>}
-    {modal === 'resume' && <Modal title="Вернуться к игре" onClose={() => setModal(null)}><ResumeSessionsView sessions={activeGames} onOpen={(session) => openSavedSession(session, 'hub')} onClose={closeActiveSession} /></Modal>}
+    {modal === 'resume' && <Modal title="Вернуться к игре" onClose={() => setModal(null)}><ResumeSessionsView sessions={activeGames} onOpen={(session) => openSavedSession(session, 'hub')} /></Modal>}
+    {modal === 'anamnesis' && diagnosisAnamnesis && <AnamnesisModal text={diagnosisAnamnesis.text} dayNo={dayNumber(getMoscowDate())} onClose={() => setModal(null)} onStart={() => { setModal(null); playToday() }} />}
   </div>
 }
