@@ -139,15 +139,23 @@ const alignSystemTooltip = (iconEl: HTMLElement | null) => {
   const tooltipEl = iconEl.querySelector<HTMLElement>('.dx-system-icon__tooltip')
   if (!tooltipEl) return
 
+  const visualViewport = window.visualViewport
+  const viewportLeft = visualViewport?.offsetLeft ?? 0
+  const viewportWidth = Math.min(
+    window.innerWidth,
+    document.documentElement?.clientWidth || window.innerWidth,
+    visualViewport?.width || window.innerWidth,
+  )
+  const viewportRight = viewportLeft + viewportWidth
   iconEl.style.setProperty('--dx-tooltip-shift', '0px')
   const tooltipRect = tooltipEl.getBoundingClientRect()
   const viewportPadding = 10
   let shift = 0
 
-  if (tooltipRect.left < viewportPadding) {
-    shift = viewportPadding - tooltipRect.left
-  } else if (tooltipRect.right > window.innerWidth - viewportPadding) {
-    shift = window.innerWidth - viewportPadding - tooltipRect.right
+  if (tooltipRect.left < viewportLeft + viewportPadding) {
+    shift = viewportLeft + viewportPadding - tooltipRect.left
+  } else if (tooltipRect.right > viewportRight - viewportPadding) {
+    shift = viewportRight - viewportPadding - tooltipRect.right
   }
 
   iconEl.style.setProperty('--dx-tooltip-shift', `${Math.round(shift)}px`)
