@@ -169,7 +169,7 @@ export const cleanText = (value) => String(value || '').replace(/<[^>]+>/g, ' ')
 
 const escapeRegExp = (value) => String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-const normalize = (value) => cleanText(value)
+export const normalize = (value) => cleanText(value)
   .toLowerCase()
   .replace(/&/g, ' and ')
   .replace(/[«»"'`]/g, ' ')
@@ -179,7 +179,7 @@ const normalize = (value) => cleanText(value)
 
 const unique = (items) => [...new Set(items.filter(Boolean))]
 
-const titleTokens = (title) => unique(normalize(title)
+export const titleTokens = (title) => unique(normalize(title)
   .split(' ')
   .filter((token) => {
     if (!token || STOPWORDS.has(token)) return false
@@ -188,7 +188,7 @@ const titleTokens = (title) => unique(normalize(title)
     return token.length >= 4
   }))
 
-const titleVariants = (title) => unique([
+export const titleVariants = (title) => unique([
   cleanText(title),
   cleanText(title).replace(/\s*\([^)]*\)/g, '').trim(),
   cleanText(title).replace(/:\s.*$/, '').trim(),
@@ -238,10 +238,13 @@ const replaceTokens = (text, tokens, replacement = ' ') => {
 
 const normalizePunctuation = (text) => text
   .replace(/\s+/g, ' ')
+  .replace(/[«"]\s*[»"]/g, ' ')
+  .replace(/known\s+as\s*,/giu, ' ')
+  .replace(/известн(?:ый|ая|ое|ые|ом|ого|ому|ым|ой)\s+как\s*,/giu, ' ')
   .replace(/\s+([,.;:!?])/g, '$1')
   .replace(/([,.;:!?]){2,}/g, '$1')
-  .replace(/^[\s,;:!?-]+/, '')
-  .replace(/[\s,;:!?-]+$/, '')
+  .replace(/^[\s,;:!?—-]+/, '')
+  .replace(/[\s,;:!?—-]+$/, '')
   .trim()
 
 const maskNarrativeNames = (text) => normalizePunctuation(text

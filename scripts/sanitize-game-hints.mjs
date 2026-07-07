@@ -1,18 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { cleanText, normalize, redactSpoilers, titleTokens, titleVariants } from './plot-hint.mjs'
+import { buildPlotHint, cleanText, normalize, redactSpoilers, titleTokens, titleVariants } from './plot-hint.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const gamesPath = resolve(root, 'public', 'data', 'games.generated.json')
 const reportPath = resolve(root, 'docs', 'game-hints-redaction-report.json')
-
-const readJsonIfExists = async (filePath) => {
-  try {
-    return JSON.parse(await readFile(filePath, 'utf8'))
-  } catch {
-    return null
-  }
-}
 
 const cropText = (text, maxLength) => {
   const value = cleanText(text)
@@ -22,6 +14,7 @@ const cropText = (text, maxLength) => {
 
 const unique = (items) => [...new Set(items.filter(Boolean))]
 const escapeRegExp = (value) => String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const boundedPattern = (value) => `(^|[^A-Za-zА-Яа-яЁё0-9])${escapeRegExp(value)}(?=$|[^A-Za-zА-Яа-яЁё0-9])`
 
 const buildTitles = (game) => unique([
   game.titleOriginal,
@@ -44,7 +37,7 @@ const fieldHasRisk = (text, context) => {
     return true
   }
 
-  return context.titles.some((title) => title && new RegExp(escapeRegExp(title), 'i').test(value))
+  return context.titles.some((title) => title && new RegExp(boundedPattern(title), 'iu').test(value))
 }
 
 const sanitizeField = (game, text, maxLength) => cropText(redactSpoilers({
@@ -54,23 +47,20 @@ const sanitizeField = (game, text, maxLength) => cropText(redactSpoilers({
   maxLength,
 }), maxLength)
 
-const previousReport = await readJsonIfExists(reportPath)
-const previousFieldsById = new Map((previousReport?.changed ?? []).map((entry) => [entry.id, entry.fields]))
-
-const baselineField = (game, field) => {
-  const currentValue = game[field]
-  if (!cleanText(currentValue).includes('[REDACTED]')) return currentValue
-  return previousFieldsById.get(game.id)?.[field]?.before ?? currentValue
-}
+const sanitizePlotHint = (game, text) => buildPlotHint({
+  title: game.titleOriginal || game.titleRu,
+  text,
+  maxLength: 190,
+}) || cropText(sanitizeField(game, game.shortDescription || game.description || '', 220), 190)
 
 const sanitizeGameRecord = (game) => {
-  const descriptionSource = cleanText(baselineField(game, 'description'))
-  const shortSource = cleanText(baselineField(game, 'shortDescription') || baselineField(game, 'description'))
-  const plotSource = cleanText(baselineField(game, 'plotHint') || baselineField(game, 'shortDescription') || baselineField(game, 'description'))
+  const descriptionSource = cleanText(game.description)
+  const shortSource = cleanText(game.shortDescription || game.description)
+  const plotSource = cleanText(game.plotHint || game.shortDescription || game.description)
 
   const description = sanitizeField(game, descriptionSource, 420)
   const shortDescription = sanitizeField(game, shortSource, 220) || cropText(description, 220)
-  const plotHint = sanitizeField(game, plotSource, 190) || cropText(shortDescription || description, 190)
+  const plotHint = sanitizePlotHint(game, plotSource) || cropText(shortDescription || description, 190)
 
   return {
     ...game,

@@ -53,7 +53,7 @@ export const titleTokens = (title) => {
     .filter((token) => {
       if (!token || STOPWORDS.has(token)) return false
       if (/^\d+$/.test(token)) return true
-      if (/^[ivxlcdm]+$/.test(token)) return true
+      if (/^[ivxlcdm]+$/i.test(token)) return token.length >= 2
       return token.length >= 4
     }))
 }
@@ -82,14 +82,13 @@ const normalizePunctuation = (text) => text
   .replace(/\s+/g, ' ')
   .replace(/\s+([,.;:!?])/g, '$1')
   .replace(/([,.;:!?]){2,}/g, '$1')
-  .replace(/\[{2,}REDACTED\]{2,}/g, REDACTION)
   .replace(/(?:\[REDACTED\][\s,;:]*){2,}/g, `${REDACTION} `)
   .replace(/^[\s,;:!?-]+/, '')
   .replace(/[\s,;:!?-]+$/, '')
   .trim()
 
 const redactNamedSequences = (text, replacement = REDACTION) => text.replace(
-  /\b(?:[A-ZА-ЯЁ][a-zа-яё0-9']{2,}|[A-ZА-ЯЁ]{2,}|[0-9]{1,3})(?:[-\s](?:[A-ZА-ЯЁ][a-zа-яё0-9']{2,}|[A-ZА-ЯЁ]{2,}|[0-9]{1,3}|of|the|and|de|da|van|von)){1,3}\b/g,
+  /\b(?:[A-ZА-ЯЁ][a-zа-яё0-9']{2,}|[A-Z]{3,}|[А-ЯЁ]{3,})(?:[-\s](?:[A-ZА-ЯЁ][a-zа-яё0-9']{2,}|[A-Z]{3,}|[А-ЯЁ]{3,}|of|the|and|de|da|van|von))*\b/g,
   (match) => {
     const tokens = normalize(match).split(' ').filter(Boolean)
     const meaningful = tokens.filter((token) => !STOPWORDS.has(token) && !/^\d+$/.test(token) && token.length >= 3)
@@ -135,14 +134,15 @@ export const buildPlotHint = ({ title, text, maxLength = 240 }) => {
   hint = stripMetadataLead(hint)
   hint = hint.replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim()
 
-  if (hint.length > maxLength) {
-    hint = `${hint.slice(0, maxLength).trimEnd()}...`
-  }
-
-  return hint
+  return redactSpoilers({
+    title,
+    text: hint,
+    maxLength,
+    maskNames: false,
+  })
 }
 
-export const redactSpoilers = ({ title, titles = [], text, maxLength = 420, replacement = REDACTION }) => {
+export const redactSpoilers = ({ title, titles = [], text, maxLength = 420, replacement = REDACTION, maskNames = true }) => {
   const source = cleanText(text)
   if (!source) return ''
 
@@ -155,7 +155,9 @@ export const redactSpoilers = ({ title, titles = [], text, maxLength = 420, repl
     result = replaceTokens(result, titleTokens(titleText), replacement)
   }
 
-  result = redactNamedSequences(result, replacement)
+  if (maskNames) {
+    result = redactNamedSequences(result, replacement)
+  }
   result = normalizePunctuation(result)
 
   if (result.length > maxLength) {
