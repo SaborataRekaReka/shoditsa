@@ -65,6 +65,9 @@ type AssistHintView = {
   available: boolean
 }
 
+type AppScreen = 'hub' | 'title' | 'game' | 'rewatch'
+const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch'
+
 const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
@@ -1259,7 +1262,7 @@ function ResumeSessionsView({ sessions, onOpen, onClose }: {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<'hub' | 'title' | 'game' | 'rewatch'>('hub')
+  const [screen, setScreen] = useState<AppScreen>('hub')
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
   const [mode, setMode] = useState<TitleMode>('movie')
   const [period, setPeriod] = useState<PeriodKey>('all')
@@ -1271,6 +1274,9 @@ export default function App() {
   const [gamesRevision, setGamesRevision] = useState(0)
   const [loading, setLoading] = useState(false)
   const transitionTimerRef = useRef<number | null>(null)
+  const screenHistoryReadyRef = useRef(false)
+  const screenFromPopStateRef = useRef(false)
+  const lastScreenRef = useRef<AppScreen>('hub')
 
   useEffect(() => {
     fetch('/data/source.json')
@@ -1331,6 +1337,44 @@ export default function App() {
     }
   }
   useEffect(() => clearTransitionTimer, [])
+
+  useEffect(() => {
+    if (!screenHistoryReadyRef.current) {
+      window.history.replaceState({ seansScreen: screen }, '')
+      screenHistoryReadyRef.current = true
+      lastScreenRef.current = screen
+      return
+    }
+    if (screenFromPopStateRef.current) {
+      screenFromPopStateRef.current = false
+      lastScreenRef.current = screen
+      return
+    }
+    if (lastScreenRef.current !== screen) {
+      window.history.pushState({ seansScreen: screen }, '')
+      lastScreenRef.current = screen
+    }
+  }, [screen])
+
+  useEffect(() => {
+    const onPopState = (event: PopStateEvent) => {
+      const nextScreen = event.state?.seansScreen
+      if (!isAppScreen(nextScreen)) return
+
+      if (transitionTimerRef.current !== null) {
+        window.clearTimeout(transitionTimerRef.current)
+        transitionTimerRef.current = null
+      }
+      screenFromPopStateRef.current = true
+      setTransition('idle')
+      setModal(null)
+      setScreen(nextScreen)
+      window.scrollTo({ top: 0 })
+    }
+
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
 
   const setModeSafe = (nextMode: TitleMode) => {
     setMode(nextMode)
