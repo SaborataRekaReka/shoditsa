@@ -62,6 +62,8 @@ const diagnosisSystemIconByKey = new Map<string, string>([
 ])
 const defaultDiagnosisSystemIcon = './images/diagnosis-systems/nervous.svg'
 const splitHintValues = (value: string) => value.split(',').map((item) => item.trim()).filter((item) => item && item !== 'Нет данных')
+const visibleMatchedItems = (items: string[], matched: Set<string>, limit: number) =>
+  items.filter((item, index) => index < limit || matched.has(normalizeTextMatch(item)))
 
 const isEditableTarget = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false
@@ -113,6 +115,8 @@ const progressOverlapHintKeys = new Set([
   'genres',
   'steam_categories',
   'platforms',
+  'developer',
+  'publisher',
 ])
 const hintProgressScore = (hint: Attempt['hints'][number]) => {
   if (progressOverlapHintKeys.has(hint.key)) {
@@ -839,7 +843,7 @@ function AttemptCard({ attempt, item, index }: { attempt: Attempt; item: TitleIt
           </>}
         </p>
         {!!genres.length && <div className="gm-genres">
-          {genres.slice(0, 4).map((genre) => {
+          {visibleMatchedItems(genres, genreMatched, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
@@ -910,7 +914,7 @@ function GameAttemptCard({ attempt, item, index }: { attempt: Attempt; item: Tit
           </>}
         </p>
         {!!genres.length && <div className="gm-genres">
-          {genres.slice(0, 4).map((genre) => {
+          {visibleMatchedItems(genres, genreMatched, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
