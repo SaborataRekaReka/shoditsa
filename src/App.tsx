@@ -961,7 +961,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                     <span className="game-case__band-no">№ {dayNumber(date)}</span>
                   </div>
                   <div className="game-case__cover">
-                    <span className="game-case__disc" aria-hidden="true"><i /></span>
+                    <span className="game-case__disc cd disc" aria-hidden="true"><i /></span>
                     <div className="game-case__info">
                       <div className="game-case__kicker"><span>Ежедневный релиз</span><i /> <small>глобальный чарт</small></div>
                       <h1>Ежедневная игра: игры</h1>
