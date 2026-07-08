@@ -80,7 +80,7 @@
 }
 .header-economy:hover { transform: translateY(-1px); }
 .header-economy span {
-  min-height: 30px;
+  min-height: 40px;
   padding: 0 8px;
   border: 0;
   border-radius: 10px;
@@ -1182,7 +1182,7 @@
   .brand { width: 108px; }
   .app-header__inner { padding: 0 10px; }
   .header-economy { gap: 4px; margin-right: 6px; }
-  .header-economy span { min-height: 28px; padding: 0 6px; font-size: 10px; }
+  .header-economy span { min-height: 36px; padding: 0 6px; font-size: 10px; }
   .header-economy strong { font-size: 16px; }
   .header-economy svg { width: 13px; height: 13px; }
   .app-header nav { gap: 5px; }
