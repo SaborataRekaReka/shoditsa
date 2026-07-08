@@ -18,6 +18,16 @@ npm run build
 npm run preview
 ```
 
+## Сборка архива для Яндекс Игр / Build archive for Yandex Games
+
+Для Яндекс Игр `index.html` должен находиться в корне ZIP-архива (не внутри папки `dist/`).
+
+```bash
+npm run build
+cd dist
+zip -r ../dist.zip .
+```
+
 Базовая валидация перед и после рефакторинга:
 
 ```powershell
