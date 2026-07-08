@@ -10,6 +10,18 @@ export const readJson = async (filePath) => {
   return JSON.parse(content)
 }
 
+const readFirstExistingJson = async (paths) => {
+  for (const filePath of paths) {
+    try {
+      return await readJson(filePath)
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') continue
+      throw error
+    }
+  }
+  throw new Error(`Missing JSON files: ${paths.join(', ')}`)
+}
+
 const validateTitleItem = (item, file) => {
   const errors = []
   if (!isObject(item)) return [`${file}: entry is not object`]
@@ -59,10 +71,17 @@ export const validateGeneratedData = async (rootDir) => {
 
   const errors = []
 
-  for (const file of [files.movies, files.series, files.animes, files.games, files.diagnoses]) {
-    const fullPath = path.join(dataDir, file)
-    const json = await readJson(fullPath)
-    errors.push(...validateTitleDataset(json, file))
+  const datasetLocations = {
+    movies: [path.join(dataDir, files.movies), path.join(dataDir, 'libraries', 'movies', 'items.json')],
+    series: [path.join(dataDir, files.series), path.join(dataDir, 'libraries', 'series', 'items.json')],
+    animes: [path.join(dataDir, files.animes), path.join(dataDir, 'libraries', 'animes', 'items.json')],
+    games: [path.join(dataDir, files.games), path.join(dataDir, 'libraries', 'games', 'items.json')],
+    diagnoses: [path.join(dataDir, files.diagnoses), path.join(dataDir, 'libraries', 'diagnoses', 'items.json')],
+  }
+
+  for (const [datasetName, locations] of Object.entries(datasetLocations)) {
+    const json = await readFirstExistingJson(locations)
+    errors.push(...validateTitleDataset(json, datasetName))
   }
 
   errors.push(...validateVignetteMap(await readJson(path.join(dataDir, files.vignettes)), files.vignettes))
