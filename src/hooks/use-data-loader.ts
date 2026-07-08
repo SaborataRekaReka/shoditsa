@@ -26,6 +26,14 @@ const fetchJsonCached = async <T,>(url: string): Promise<T> => {
   return requestCache.get(url) as Promise<T>
 }
 
+const loadModeItems = async (dataFile: string) => {
+  try {
+    return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
+  } catch {
+    return fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
+  }
+}
+
 export const useDataLoader = (mode: TitleMode) => {
   const [data, setData] = useState<ModeData>(initialData)
   const [titleCounts, setTitleCounts] = useState<ModeCounts>(initialCounts)
@@ -95,7 +103,7 @@ export const useDataLoader = (mode: TitleMode) => {
   useEffect(() => {
     if (data[mode].length) return
     setLoading(true)
-    fetchJsonCached<TitleItem[]>(`./data/${MODE_CONFIG[mode].dataFile}.generated.json`)
+    loadModeItems(MODE_CONFIG[mode].dataFile)
       .then((items) => {
         setData((current) => ({ ...current, [mode]: items }))
         setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? items.length }))
