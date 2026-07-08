@@ -5,10 +5,14 @@ type RefactorMetric = {
   meta?: Record<string, string | number | boolean>
   at: string
 }
+type MetrikaParamValue = string | number | boolean
+const METRIKA_COUNTER_ID = 110517987
 
 declare global {
   interface Window {
     __SEANS_REFACTOR_METRICS__?: RefactorMetric[]
+    ym?: (...args: unknown[]) => void
+    dataLayer?: unknown[]
   }
 }
 
@@ -16,6 +20,51 @@ const pushMetric = (metric: RefactorMetric) => {
   if (typeof window === 'undefined') return
   window.__SEANS_REFACTOR_METRICS__ = window.__SEANS_REFACTOR_METRICS__ ?? []
   window.__SEANS_REFACTOR_METRICS__.push(metric)
+}
+
+const canUseMetrika = () => typeof window !== 'undefined' && typeof window.ym === 'function'
+const normalizeMetrikaParams = (meta?: Record<string, unknown>) => {
+  if (!meta) return undefined
+  const allowedEntries = Object.entries(meta).filter(([, value]) => {
+    const type = typeof value
+    return value != null && (type === 'string' || type === 'number' || type === 'boolean')
+  })
+  if (!allowedEntries.length) return undefined
+  return Object.fromEntries(allowedEntries) as Record<string, MetrikaParamValue>
+}
+
+export const initMetrikaDataLayer = () => {
+  if (typeof window === 'undefined') return
+  window.dataLayer = window.dataLayer ?? []
+}
+
+export const trackMetrikaGoal = (goal: string, meta?: Record<string, unknown>) => {
+  if (!canUseMetrika()) return
+  const params = normalizeMetrikaParams(meta)
+  try {
+    if (params) {
+      window.ym?.(METRIKA_COUNTER_ID, 'reachGoal', goal, params)
+      return
+    }
+    window.ym?.(METRIKA_COUNTER_ID, 'reachGoal', goal)
+  } catch {
+    // ignore metrika transport errors
+  }
+}
+
+export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {
+  if (!canUseMetrika()) return
+  const params = normalizeMetrikaParams({ screen, ...(meta ?? {}) })
+  const virtualUrl = `${window.location.pathname}#${screen}`
+  try {
+    window.ym?.(METRIKA_COUNTER_ID, 'hit', virtualUrl, {
+      title: document.title,
+      ...(params ? { params } : {}),
+    })
+  } catch {
+    // ignore metrika transport errors
+  }
+  trackMetrikaGoal('screen_view', params)
 }
 
 export const markAppBootStart = () => {

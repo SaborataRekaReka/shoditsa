@@ -33,7 +33,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
-import { markAppFirstRender, markSearchDuration } from './app/metrics'
+import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { compareTitles, dailyTitle, getMoscowDate, PERIODS, pickDailyVignette, poolFor, prettyDate, resultText, searchTitles } from './game'
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
@@ -68,6 +68,7 @@ const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
 const TICKET_PROMO_AWARD = 50
 const TICKET_PROMO_LIMIT = 3
 const WIPE_TICKETS_CODE = 'СОСО'
+const ECONOMY_CHANGE_EVENT = 'seans:economy-change'
 const freePlayCost = (launchesToday: number) => {
   const safeLaunches = Math.max(0, Math.trunc(Number(launchesToday) || 0))
   return FREE_PLAY_BASE_COST + safeLaunches * FREE_PLAY_COST_STEP
@@ -796,6 +797,12 @@ function PeriodControl({
           className={`period-option ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : isUnlockable ? 'unlockable' : 'locked'}`}
           onClick={(event) => {
             event.stopPropagation()
+            trackMetrikaGoal('select_period', {
+              mode,
+              period: periodKey,
+              unlocked: isUnlocked,
+              unlockable: isUnlockable,
+            })
             onChange(periodKey)
             setOpen(false)
           }}
@@ -815,6 +822,11 @@ function PeriodControl({
         onClick={(event) => {
           event.stopPropagation()
           if (freePlayShortage > 0) return
+          trackMetrikaGoal('open_free_play', {
+            mode,
+            cost: freePlayCostValue,
+            launchesToday: freePlayLaunchesToday,
+          })
           setOpen(false)
           onStartFreePlay()
         }}
@@ -849,15 +861,30 @@ function AppHeader({ onHome, onArchive, onStats, onRules }: {
   return <>
     <header className="app-header">
       <div className="app-header__inner">
-        <button className="brand" aria-label="На главный экран" onClick={onHome}><BrandLogo /></button>
-        <button className="header-economy" aria-label="Билеты и абонемент" onClick={() => setEconomyOpen(true)}>
+        <button className="brand" aria-label="На главный экран" onClick={() => {
+          trackMetrikaGoal('header_home_click')
+          onHome()
+        }}><BrandLogo /></button>
+        <button className="header-economy" aria-label="Билеты и абонемент" onClick={() => {
+          trackMetrikaGoal('open_economy_modal')
+          setEconomyOpen(true)
+        }}>
           <span><Ticket /> <strong>{wallet.tickets}</strong></span>
           <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
         </button>
         <nav aria-label="Навигация">
-          <button onClick={onRules} aria-label="Как играть"><CircleHelp /></button>
-          <button onClick={onArchive} aria-label="Архив"><Archive /></button>
-          <button onClick={onStats} aria-label="Статистика"><BarChart3 /></button>
+          <button onClick={() => {
+            trackMetrikaGoal('open_rules')
+            onRules()
+          }} aria-label="Как играть"><CircleHelp /></button>
+          <button onClick={() => {
+            trackMetrikaGoal('open_archive')
+            onArchive()
+          }} aria-label="Архив"><Archive /></button>
+          <button onClick={() => {
+            trackMetrikaGoal('open_stats')
+            onStats()
+          }} aria-label="Статистика"><BarChart3 /></button>
         </nav>
       </div>
     </header>
@@ -894,10 +921,19 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
           <h1>Все сойдется!</h1>
           <p>Кино, сериалы, аниме, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
           <div className="hub-hero__actions">
-            <ActionButton onClick={scrollToGames}><Play /> Играть сейчас</ActionButton>
+            <ActionButton onClick={() => {
+              trackMetrikaGoal('hub_scroll_to_games')
+              scrollToGames()
+            }}><Play /> Играть сейчас</ActionButton>
             {activeSessionsCount > 0
-              ? <ActionButton variant="secondary" onClick={onResume}><RotateCcw /> {activeSessionsCount > 1 ? `Вернуться к игре (${activeSessionsCount})` : 'Вернуться к игре'}</ActionButton>
-              : <ActionButton variant="secondary" onClick={onRules}><CircleHelp /> Как это работает</ActionButton>}
+              ? <ActionButton variant="secondary" onClick={() => {
+                trackMetrikaGoal('hub_resume_session', { activeSessionsCount })
+                onResume()
+              }}><RotateCcw /> {activeSessionsCount > 1 ? `Вернуться к игре (${activeSessionsCount})` : 'Вернуться к игре'}</ActionButton>
+              : <ActionButton variant="secondary" onClick={() => {
+                trackMetrikaGoal('hub_open_rules')
+                onRules()
+              }}><CircleHelp /> Как это работает</ActionButton>}
           </div>
         </div>
         <div className="hub-hero__visual" aria-hidden="true">
@@ -1027,7 +1063,10 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
     <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} />
     <main className={`title-screen ${isLeaving ? 'is-leaving' : ''}`}>
       <div className="screen-back-row">
-        <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
+        <button className="screen-back" onClick={() => {
+          trackMetrikaGoal('title_back_click', { mode })
+          onBack()
+        }} aria-label="Назад"><ChevronLeft /></button>
         <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
       <section className="title-stage">
@@ -1738,6 +1777,7 @@ function Game({
       return
     }
     const nextHintChoices = [...hintChoices, { round: targetRound, key: hintKey }]
+    trackMetrikaGoal('reveal_hint', { mode, period: effectivePeriod, round: targetRound, hintKey })
     const nextDismissedRounds = dismissedHintRounds.filter((round) => round !== targetRound)
     dispatchSession({ type: 'set_dismissed_rounds', rounds: nextDismissedRounds })
     dispatchSession({ type: 'set_hint_choices', hintChoices: nextHintChoices })
@@ -1767,6 +1807,18 @@ function Game({
     setIsSearchDropdownOpen(false)
     const nextAttempts = [...attempts, { titleId: nextSelection.id, hints: compareTitles(nextSelection, answer) }]
     const nextStatus: GameStatus = nextSelection.id === answer.id ? 'won' : nextAttempts.length >= 10 ? 'lost' : 'playing'
+    trackMetrikaGoal('submit_attempt', {
+      mode,
+      period: effectivePeriod,
+      attempt: nextAttempts.length,
+      status: nextStatus,
+    })
+    if (nextStatus === 'won') {
+      trackMetrikaGoal('game_won', { mode, period: effectivePeriod, attempts: nextAttempts.length })
+    }
+    if (nextStatus === 'lost') {
+      trackMetrikaGoal('game_lost', { mode, period: effectivePeriod, attempts: nextAttempts.length })
+    }
     dispatchSession({ type: 'submit_attempt', attempts: nextAttempts, status: nextStatus })
     persistGame(nextAttempts, nextStatus, hintChoices)
     if (nextStatus !== 'playing' && !isPracticeSession) {
@@ -1786,9 +1838,11 @@ function Game({
     const text = resultText(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won')
     try {
       await navigator.clipboard.writeText(text)
+      trackMetrikaGoal('share_copy', { mode, period: effectivePeriod, status })
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     } catch {
+      trackMetrikaGoal('share_copy_error', { mode, period: effectivePeriod, status })
       dispatchSession({ type: 'set_message', message: 'Не удалось скопировать результат' })
     }
   }
@@ -1799,7 +1853,10 @@ function Game({
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} />
     <main className="game-shell">
       <div className="screen-back-row">
-        <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
+        <button className="screen-back" onClick={() => {
+          trackMetrikaGoal('game_back_click', { mode, period: effectivePeriod })
+          onBack()
+        }} aria-label="Назад"><ChevronLeft /></button>
         <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
       <section className={`game-heading${mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}>
@@ -1817,13 +1874,23 @@ function Game({
       </section>
 
       {(showTodayLink || (mode === 'diagnosis' && !!anamnesisText)) && <section className="game-toolbar" aria-label="Настройки игры">
-        {mode === 'diagnosis' && !!anamnesisText && <ActionButton variant="secondary" className="anamnesis-link" onClick={() => setAnamnesisOpen(true)}><ClipboardList /> Анамнез</ActionButton>}
-        {showTodayLink && <ActionButton variant="ghost" className="today-link" onClick={() => setDate(getMoscowDate())}>Сегодня</ActionButton>}
+        {mode === 'diagnosis' && !!anamnesisText && <ActionButton variant="secondary" className="anamnesis-link" onClick={() => {
+          trackMetrikaGoal('open_anamnesis', { mode })
+          setAnamnesisOpen(true)
+        }}><ClipboardList /> Анамнез</ActionButton>}
+        {showTodayLink && <ActionButton variant="ghost" className="today-link" onClick={() => {
+          trackMetrikaGoal('switch_to_today', { mode })
+          setDate(getMoscowDate())
+        }}>Сегодня</ActionButton>}
       </section>}
 
       <div className="progress-row">
         <Progress attempts={attempts.length} />
-        {canUseHint && !hintModalRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => preferredHintRound && setHintModalRound(preferredHintRound)}><Sparkles /> {hintTriggerLabel}</ActionButton>}
+        {canUseHint && !hintModalRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => {
+          if (!preferredHintRound) return
+          trackMetrikaGoal('open_hint_modal', { mode, period: effectivePeriod, round: preferredHintRound })
+          setHintModalRound(preferredHintRound)
+        }}><Sparkles /> {hintTriggerLabel}</ActionButton>}
       </div>
 
       {!!revealedAssistHints.length && <section className="assist-revealed" aria-label="Открытые подсказки">
@@ -1857,7 +1924,7 @@ function Game({
         </div>
         <div className="result-actions">
           <button onClick={share}>{copied ? <Check /> : <Copy />}{copied ? 'Скопировано' : 'Скопировать'}</button>
-          <a href={`https://t.me/share/url?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(resultText(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won'))}`} target="_blank" rel="noreferrer"><Share2 /> Telegram</a>
+          <a href={`https://t.me/share/url?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(resultText(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won'))}`} onClick={() => trackMetrikaGoal('share_telegram', { mode, period: effectivePeriod, status })} target="_blank" rel="noreferrer"><Share2 /> Telegram</a>
         </div>
       </section>}
 
@@ -1946,7 +2013,10 @@ function Game({
           <button
             type="button"
             className="game-match-strip__toggle"
-            onClick={() => setGameMatchStripOpen((current) => !current)}
+            onClick={() => {
+              trackMetrikaGoal('toggle_match_strip', { mode, period: effectivePeriod })
+              setGameMatchStripOpen((current) => !current)
+            }}
             aria-expanded={gameMatchStripOpen}
             aria-controls="game-match-strip-panel"
           >
@@ -1974,7 +2044,10 @@ function Game({
           : mode === 'game'
             ? 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.'
             : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
-        <ActionButton variant="secondary" onClick={onRules}>Как читать подсказки <ChevronRight /></ActionButton>
+        <ActionButton variant="secondary" onClick={() => {
+          trackMetrikaGoal('open_rules_from_empty', { mode })
+          onRules()
+        }}>Как читать подсказки <ChevronRight /></ActionButton>
       </section>}
 
       {!!attempts.length && <section className="attempt-list">
@@ -2122,12 +2195,14 @@ function EconomyView() {
   const nextAt = nextMultiplierAt(attendance.currentDailyStreak)
   const multiplier = streakMultiplier(attendance.currentDailyStreak)
   const promoUsesLeft = Math.max(0, TICKET_PROMO_LIMIT - (promoUsage[TICKET_PROMO_CODE] ?? 0))
+  const notifyEconomyChange = () => window.dispatchEvent(new Event(ECONOMY_CHANGE_EVENT))
 
   const submitPromoCode = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const normalizedCode = promoCode.trim().toLocaleUpperCase('ru-RU').replace(/Ё/g, 'Е')
     if (!normalizedCode) {
-      setPromoMessage('Кассир ждёт код на билете.')
+      trackMetrikaGoal('promo_empty_submit')
+      setPromoMessage('Кассир ждёт')
       return
     }
 
@@ -2146,16 +2221,20 @@ function EconomyView() {
       setLedger(loadTicketLedger())
       setPromoCode('')
       setPromoMessage('Кассир забрал все билетики.')
+      trackMetrikaGoal('promo_wipe_tickets', { removed: currentWallet.tickets })
+      notifyEconomyChange()
       return
     }
 
     if (normalizedCode !== TICKET_PROMO_CODE) {
+      trackMetrikaGoal('promo_invalid_code')
       setPromoMessage('Кассир не узнал этот код.')
       return
     }
 
     const used = promoUsage[TICKET_PROMO_CODE] ?? 0
     if (used >= TICKET_PROMO_LIMIT) {
+      trackMetrikaGoal('promo_limit_reached')
       setPromoMessage('Этот код уже шептали кассиру три раза.')
       return
     }
@@ -2180,6 +2259,8 @@ function EconomyView() {
     setPromoUsage(nextUsage)
     setPromoCode('')
     setPromoMessage(`Кассир выдал ${formatTickets(TICKET_PROMO_AWARD)}.`)
+    trackMetrikaGoal('promo_ticket_bonus', { amount: TICKET_PROMO_AWARD, usage: used + 1 })
+    notifyEconomyChange()
   }
 
   return <div className="economy-view">
@@ -2197,10 +2278,10 @@ function EconomyView() {
     <form className="ticket-promo" onSubmit={submitPromoCode}>
       <div className="ticket-promo__copy">
         <span><Ticket /> Шепнуть кассиру</span>
-        <small>Промокод можно использовать ещё {promoUsesLeft} из {TICKET_PROMO_LIMIT} раз.</small>
+        <small>Неизвестно, сколько раз это сработает</small>
       </div>
       <div className="ticket-promo__row">
-        <input value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Код на билете" autoComplete="off" />
+        <input value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Секретная фраза" autoComplete="off" />
         <button type="submit">Сказать</button>
       </div>
       {promoMessage && <p>{promoMessage}</p>}
@@ -2281,6 +2362,7 @@ export default function App() {
   const screenHistoryReadyRef = useRef(false)
   const screenFromPopStateRef = useRef(false)
   const lastScreenRef = useRef<AppScreen>('hub')
+  const lastTrackedScreenRef = useRef<AppScreen | null>(null)
   const adminDailySaltRef = useRef(0)
   const globalDailySaltRef = useRef(0)
   const effectiveDailySalt = globalDailySalt + adminDailySalt
@@ -2292,6 +2374,11 @@ export default function App() {
   const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
   const currentUnlockedPeriods = useMemo(() => unlockedPeriodsFor(mode, periodUnlocks), [mode, periodUnlocks])
   const refreshEconomy = () => setEconomyVersion((version) => version + 1)
+
+  useEffect(() => {
+    window.addEventListener(ECONOMY_CHANGE_EVENT, refreshEconomy)
+    return () => window.removeEventListener(ECONOMY_CHANGE_EVENT, refreshEconomy)
+  }, [])
 
   useEffect(() => {
     if ((mode === 'diagnosis' || mode === 'game') && period !== 'all') {
@@ -2388,6 +2475,17 @@ export default function App() {
   }, [screen])
 
   useEffect(() => {
+    document.body.dataset.seansScreen = screen
+    if (lastTrackedScreenRef.current === screen) return
+    lastTrackedScreenRef.current = screen
+    trackMetrikaScreen(screen, {
+      mode,
+      period,
+      date,
+    })
+  }, [screen, mode, period, date])
+
+  useEffect(() => {
     const onPopState = (event: PopStateEvent) => {
       const nextScreen = event.state?.seansScreen
       if (!isAppScreen(nextScreen)) return
@@ -2447,6 +2545,7 @@ export default function App() {
   }, [modal, activeGames.length])
 
   const openSavedSession = (savedGame: SavedGame, backTarget: 'hub' | 'rewatch' = 'hub') => {
+    trackMetrikaGoal('open_saved_session', { mode: savedGame.mode, status: savedGame.status, backTarget })
     clearTransitionTimer()
     setTransition('idle')
     setGameBackTarget(backTarget)
@@ -2460,6 +2559,7 @@ export default function App() {
 
   const resumeActiveSession = () => {
     if (!activeGames.length) return
+    trackMetrikaGoal('resume_active_session', { count: activeGames.length })
     if (activeGames.length === 1) {
       openSavedSession(activeGames[0], 'hub')
       return
@@ -2468,6 +2568,7 @@ export default function App() {
   }
 
   const selectCategory = (nextMode: TitleMode) => {
+    trackMetrikaGoal('select_mode', { mode: nextMode })
     clearTransitionTimer()
     setTransition('idle')
     setModeSafe(nextMode)
@@ -2479,6 +2580,7 @@ export default function App() {
   const buyPeriodUnlock = (periodKey: PeriodKey) => {
     if (!canUnlockPeriods(mode)) return false
     if (isPeriodUnlocked(mode, periodKey, periodUnlocks)) {
+      trackMetrikaGoal('select_period', { mode, period: periodKey, alreadyUnlocked: true })
       setPeriod(periodKey)
       return true
     }
@@ -2497,12 +2599,14 @@ export default function App() {
       period: periodKey,
     })
     unlockPeriod(mode, periodKey)
+    trackMetrikaGoal('unlock_period', { mode, period: periodKey, cost })
     setPeriod(periodKey)
     refreshEconomy()
     return true
   }
   const playToday = () => {
     if (transition === 'title-to-game') return
+    trackMetrikaGoal('start_session', { mode, period })
     adminDailySaltRef.current = 0
     setAdminDailySalt(0)
     const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
@@ -2547,6 +2651,11 @@ export default function App() {
       mode,
       period: 'all',
     })
+    trackMetrikaGoal('start_free_play', {
+      mode,
+      launchCost,
+      nextLaunchNumber,
+    })
 
     const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
     setGameBackTarget(backTarget)
@@ -2576,6 +2685,7 @@ export default function App() {
     }, 460)
   }
   const openArchive = (archiveDate: string, savedGame: SavedGame | null) => {
+    trackMetrikaGoal('open_archive_day', { hasSavedSession: Boolean(savedGame) })
     if (savedGame) {
       openSavedSession(savedGame, 'rewatch')
       return
