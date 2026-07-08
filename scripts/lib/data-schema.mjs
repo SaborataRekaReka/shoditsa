@@ -13,7 +13,8 @@ export const readJson = async (filePath) => {
 const readFirstExistingJson = async (paths) => {
   for (const filePath of paths) {
     try {
-      return await readJson(filePath)
+      const json = await readJson(filePath)
+      return { json, sourcePath: filePath }
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') continue
       throw error
@@ -80,8 +81,9 @@ export const validateGeneratedData = async (rootDir) => {
   }
 
   for (const [datasetName, locations] of Object.entries(datasetLocations)) {
-    const json = await readFirstExistingJson(locations)
-    errors.push(...validateTitleDataset(json, datasetName))
+    const { json, sourcePath } = await readFirstExistingJson(locations)
+    const fileLabel = path.relative(dataDir, sourcePath)
+    errors.push(...validateTitleDataset(json, fileLabel || datasetName))
   }
 
   errors.push(...validateVignetteMap(await readJson(path.join(dataDir, files.vignettes)), files.vignettes))
