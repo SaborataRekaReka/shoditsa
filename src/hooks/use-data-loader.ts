@@ -26,6 +26,20 @@ const fetchJsonCached = async <T,>(url: string): Promise<T> => {
   return requestCache.get(url) as Promise<T>
 }
 
+const loadModeItems = async (dataFile: string) => {
+  try {
+    return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
+  } catch (primaryError) {
+    try {
+      return await fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
+    } catch (fallbackError) {
+      const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError)
+      const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
+      throw new Error(`Failed to load dataset "${dataFile}". Primary source error: ${primaryMessage}. Fallback source error: ${fallbackMessage}`)
+    }
+  }
+}
+
 export const useDataLoader = (mode: TitleMode) => {
   const [data, setData] = useState<ModeData>(initialData)
   const [titleCounts, setTitleCounts] = useState<ModeCounts>(initialCounts)
@@ -95,7 +109,7 @@ export const useDataLoader = (mode: TitleMode) => {
   useEffect(() => {
     if (data[mode].length) return
     setLoading(true)
-    fetchJsonCached<TitleItem[]>(`./data/${MODE_CONFIG[mode].dataFile}.generated.json`)
+    loadModeItems(MODE_CONFIG[mode].dataFile)
       .then((items) => {
         setData((current) => ({ ...current, [mode]: items }))
         setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? items.length }))
