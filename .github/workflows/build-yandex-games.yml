@@ -1,0 +1,61 @@
+name: Build Yandex Games Archive
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-yandex:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate project
+        run: |
+          npm run typecheck
+          npm run data:validate
+
+      - name: Build and package Yandex archive
+        run: npm run yandex:bundle
+
+      - name: Compute archive version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
+            VERSION="$(date -u +%Y%m%d)-${GITHUB_SHA::7}"
+          fi
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          cp dist.zip "dist-${VERSION}.zip"
+
+      - name: Upload versioned archive artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yandex-games-${{ steps.version.outputs.version }}
+          path: dist-${{ steps.version.outputs.version }}.zip
+          if-no-files-found: error
+
+      - name: Upload archive to release assets
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist-${{ steps.version.outputs.version }}.zip
