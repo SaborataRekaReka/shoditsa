@@ -22,6 +22,7 @@ const ATTENDANCE_PREFIX = 'seans:v1:attendance:'
 const ATTENDANCE_STATS_KEY = 'seans:v1:attendance:stats'
 const WALLET_KEY = 'seans:v1:wallet'
 const TICKET_LEDGER_KEY = 'seans:v1:ticket-ledger'
+const PROMO_USAGE_KEY = 'seans:v1:promo-usage'
 const PERIOD_UNLOCKS_KEY = 'seans:v1:period-unlocks'
 const FREE_PLAY_USAGE_PREFIX = 'seans:v1:free-play-usage:'
 const SAVED_GAME_SCHEMA_VERSION = 2
@@ -236,6 +237,18 @@ export const addTicketLedgerEntry = (entry: Omit<TicketLedgerEntry, 'id' | 'at'>
   localStorage.setItem(TICKET_LEDGER_KEY, JSON.stringify(next))
   return nextEntry
 }
+
+export const loadPromoUsage = (): Record<string, number> => {
+  try {
+    const value = localStorage.getItem(PROMO_USAGE_KEY)
+    const usage = value ? JSON.parse(value) as Record<string, unknown> : {}
+    return Object.fromEntries(Object.entries(usage).map(([code, count]) => [code, Math.max(0, Math.trunc(Number(count) || 0))]))
+  } catch {
+    return {}
+  }
+}
+
+export const savePromoUsage = (usage: Record<string, number>) => localStorage.setItem(PROMO_USAGE_KEY, JSON.stringify(usage))
 
 export const loadFreePlayUsage = (date: string): number => {
   try {

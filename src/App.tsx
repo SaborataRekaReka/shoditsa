@@ -38,7 +38,7 @@ import { compareTitles, dailyTitle, getMoscowDate, PERIODS, pickDailyVignette, p
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
-import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadPeriodUnlocks, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, unlockPeriod, unlockedPeriodsFor } from './storage'
+import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadPeriodUnlocks, loadPromoUsage, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, savePromoUsage, saveStats, saveWallet, unlockPeriod, unlockedPeriodsFor } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
@@ -64,6 +64,10 @@ const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series', 'anime'])
 const FREE_PLAY_BASE_COST = 45
 const FREE_PLAY_COST_STEP = 15
+const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
+const TICKET_PROMO_AWARD = 50
+const TICKET_PROMO_LIMIT = 3
+const WIPE_TICKETS_CODE = 'СОСО'
 const freePlayCost = (launchesToday: number) => {
   const safeLaunches = Math.max(0, Math.trunc(Number(launchesToday) || 0))
   return FREE_PLAY_BASE_COST + safeLaunches * FREE_PLAY_COST_STEP
@@ -2109,11 +2113,74 @@ function StatsView({ mode }: { mode: TitleMode }) {
 }
 
 function EconomyView() {
-  const wallet = loadWallet()
+  const [wallet, setWallet] = useState(loadWallet)
+  const [ledger, setLedger] = useState(loadTicketLedger)
+  const [promoUsage, setPromoUsage] = useState(loadPromoUsage)
+  const [promoCode, setPromoCode] = useState('')
+  const [promoMessage, setPromoMessage] = useState('')
   const attendance = loadAttendanceStats()
-  const ledger = loadTicketLedger()
   const nextAt = nextMultiplierAt(attendance.currentDailyStreak)
   const multiplier = streakMultiplier(attendance.currentDailyStreak)
+  const promoUsesLeft = Math.max(0, TICKET_PROMO_LIMIT - (promoUsage[TICKET_PROMO_CODE] ?? 0))
+
+  const submitPromoCode = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const normalizedCode = promoCode.trim().toLocaleUpperCase('ru-RU').replace(/Ё/g, 'Е')
+    if (!normalizedCode) {
+      setPromoMessage('Кассир ждёт код на билете.')
+      return
+    }
+
+    if (normalizedCode === WIPE_TICKETS_CODE) {
+      const currentWallet = loadWallet()
+      const nextWallet = { ...currentWallet, tickets: 0 }
+      saveWallet(nextWallet)
+      addTicketLedgerEntry({
+        type: 'spend',
+        amount: currentWallet.tickets,
+        balanceAfter: 0,
+        title: 'Кассирский шёпот',
+        detail: 'Код СОСО · билетики обнулены',
+      })
+      setWallet(nextWallet)
+      setLedger(loadTicketLedger())
+      setPromoCode('')
+      setPromoMessage('Кассир забрал все билетики.')
+      return
+    }
+
+    if (normalizedCode !== TICKET_PROMO_CODE) {
+      setPromoMessage('Кассир не узнал этот код.')
+      return
+    }
+
+    const used = promoUsage[TICKET_PROMO_CODE] ?? 0
+    if (used >= TICKET_PROMO_LIMIT) {
+      setPromoMessage('Этот код уже шептали кассиру три раза.')
+      return
+    }
+
+    const currentWallet = loadWallet()
+    const nextWallet = {
+      tickets: currentWallet.tickets + TICKET_PROMO_AWARD,
+      lifetimeTickets: currentWallet.lifetimeTickets + TICKET_PROMO_AWARD,
+    }
+    const nextUsage = { ...promoUsage, [TICKET_PROMO_CODE]: used + 1 }
+    saveWallet(nextWallet)
+    savePromoUsage(nextUsage)
+    addTicketLedgerEntry({
+      type: 'earn',
+      amount: TICKET_PROMO_AWARD,
+      balanceAfter: nextWallet.tickets,
+      title: 'Кассирский шёпот',
+      detail: `Промокод ${TICKET_PROMO_CODE} · ${used + 1}/${TICKET_PROMO_LIMIT}`,
+    })
+    setWallet(nextWallet)
+    setLedger(loadTicketLedger())
+    setPromoUsage(nextUsage)
+    setPromoCode('')
+    setPromoMessage(`Кассир выдал ${formatTickets(TICKET_PROMO_AWARD)}.`)
+  }
 
   return <div className="economy-view">
     <div className="stats-grid stats-grid--economy">
@@ -2127,6 +2194,17 @@ function EconomyView() {
       <p>Билеты открывают дополнительные периоды в кино и сериалах. Базовый сеанс всегда доступен, а закрытый период можно выбрать заранее.</p>
     </div>
     <p className="modal-lead">Билеты хранятся только в этом браузере на этом устройстве. В другом браузере или на другом устройстве они не переносятся. Если очистить данные сайта, билеты и их история могут исчезнуть.</p>
+    <form className="ticket-promo" onSubmit={submitPromoCode}>
+      <div className="ticket-promo__copy">
+        <span><Ticket /> Шепнуть кассиру</span>
+        <small>Промокод можно использовать ещё {promoUsesLeft} из {TICKET_PROMO_LIMIT} раз.</small>
+      </div>
+      <div className="ticket-promo__row">
+        <input value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Код на билете" autoComplete="off" />
+        <button type="submit">Сказать</button>
+      </div>
+      {promoMessage && <p>{promoMessage}</p>}
+    </form>
     <h3 className="subheading">Как начисляется</h3>
     <div className="economy-rules">
       <span><strong>+10</strong> завершить сеанс</span>

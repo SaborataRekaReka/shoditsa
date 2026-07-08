@@ -1184,6 +1184,15 @@
 .economy-note { margin-top: 12px; padding: 11px 12px; border: 1px solid var(--color-paper-line); border-radius: 13px; background: var(--color-paper-2); display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
 .economy-note svg { width: 22px; height: 22px; color: #8a5d1c; }
 .economy-note p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.5; }
+.ticket-promo { margin-top: 13px; padding: 12px; border: 1px dashed #9a7a42; border-radius: 14px; background: #efe6d1; display: grid; gap: 10px; }
+.ticket-promo__copy { display: grid; gap: 3px; }
+.ticket-promo__copy span { display: inline-flex; align-items: center; gap: 7px; color: var(--color-ink); font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.ticket-promo__copy svg { width: 15px; height: 15px; color: #8a5d1c; }
+.ticket-promo__copy small { color: var(--color-paper-muted); font-size: 11px; line-height: 1.35; }
+.ticket-promo__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; }
+.ticket-promo input { min-width: 0; min-height: 40px; padding: 0 11px; border: 1px solid var(--color-paper-line); border-radius: 11px; background: var(--color-paper); color: var(--color-ink); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.ticket-promo button { min-height: 40px; padding: 0 12px; border: 1px solid var(--color-ink); border-radius: 11px; background: var(--color-primary); color: var(--color-ink); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.ticket-promo p { margin: 0; color: #6d4d17; font-size: 11px; font-weight: 700; }
 .economy-rules { display: grid; grid-template-columns: 1fr; gap: 6px; }
 .economy-rules span { padding: 8px 10px; border: 1px solid var(--color-paper-line); border-radius: 10px; background: var(--color-paper-2); color: var(--color-paper-muted); font-size: 12px; display: flex; align-items: center; gap: 8px; }
 .economy-rules strong { min-width: 44px; color: var(--color-ink); font: 500 18px/1 Oswald, sans-serif; }
