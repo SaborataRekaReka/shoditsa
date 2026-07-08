@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
 import {
   Archive,
   ArrowDown,
@@ -37,12 +37,66 @@ import { compareTitles, dailyTitle, getMoscowDate, PERIODS, pickDailyVignette, p
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
-import { allGames, gameKey, loadGame, loadStats, saveGame, saveStats } from './storage'
-import type { AssistHintKey, Attempt, CaseVignetteMap, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode } from './types'
+import { addTicketLedgerEntry, allGames, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadGame, loadPeriodUnlocks, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, unlockPeriod, unlockedPeriodsFor } from './storage'
+import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : mode === 'game' ? <Gamepad2 /> : <Stethoscope />
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
+const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
+  from_2020: 25,
+  from_2010: 35,
+  from_2000: 45,
+  from_1990: 60,
+  from_1980: 75,
+  from_1960: 90,
+}
+const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
+const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series'])
+type EconomyAward = {
+  total: number
+  base: number
+  multiplier: number
+  completed: number
+  win: number
+  speed: number
+  firstDaily: number
+  fullHouse: number
+  newDailyStreak: number
+  gracePasses: number
+  alreadyClaimed: boolean
+}
+const emptyAward = (attendance: AttendanceStats): EconomyAward => ({
+  total: 0,
+  base: 0,
+  multiplier: 1,
+  completed: 0,
+  win: 0,
+  speed: 0,
+  firstDaily: 0,
+  fullHouse: 0,
+  newDailyStreak: attendance.currentDailyStreak,
+  gracePasses: attendance.gracePasses,
+  alreadyClaimed: true,
+})
+const streakMultiplier = (days: number) => days >= 30 ? 1.6 : days >= 14 ? 1.4 : days >= 7 ? 1.25 : days >= 3 ? 1.1 : 1
+const nextMultiplierAt = (days: number) => days < 3 ? 3 : days < 7 ? 7 : days < 14 ? 14 : days < 30 ? 30 : null
+const formatMultiplier = (value: number) => `×${value.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: value % 1 ? 2 : 1 })}`
+const dateIndex = (date: string) => Math.floor(new Date(`${date}T12:00:00+03:00`).getTime() / 86_400_000)
+const dateDistance = (from: string, to: string) => dateIndex(to) - dateIndex(from)
+const uniqueModes = (modes: TitleMode[]) => [...new Set(modes)]
+const completionSessionKey = (mode: TitleMode, period: PeriodKey, date: string) => gameKey(mode, period, date)
+const periodUnlockCost = (period: PeriodKey) => PERIOD_UNLOCK_COSTS[period] ?? 0
+const canUnlockPeriods = (mode: TitleMode) => UNLOCKABLE_PERIOD_MODES.has(mode)
+const formatTickets = (count: number) => `${count} ${countWord(count, ['билет', 'билета', 'билетов'])}`
+const countWord = (count: number, forms: [string, string, string]) => {
+  const mod100 = Math.abs(count) % 100
+  const mod10 = mod100 % 10
+  if (mod100 >= 11 && mod100 <= 14) return forms[2]
+  if (mod10 === 1) return forms[0]
+  if (mod10 >= 2 && mod10 <= 4) return forms[1]
+  return forms[2]
+}
 const toInteger = (value: number | string | undefined, fallback: number) => {
   const parsed = Math.trunc(Number(value))
   return Number.isFinite(parsed) ? parsed : fallback
@@ -73,6 +127,35 @@ const isEditableTarget = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false
   const tag = target.tagName
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
+}
+
+const useDismissOnOutside = (
+  open: boolean,
+  containerRef: { current: HTMLElement | null },
+  onDismiss: () => void,
+) => {
+  useEffect(() => {
+    if (!open) return
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!(event.target instanceof Node)) return
+      if (containerRef.current?.contains(event.target)) return
+      onDismiss()
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      onDismiss()
+    }
+
+    window.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open, containerRef, onDismiss])
 }
 
 type AssistHintView = {
@@ -403,6 +486,87 @@ const dayNumber = (date: string) => {
   return Math.max(1, Math.floor((current - start) / 86_400_000) + 1)
 }
 
+const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string, won: boolean, attemptsCount: number): EconomyAward => {
+  const sessionKey = completionSessionKey(mode, period, date)
+  const attendance = loadDailyAttendance(date)
+  if (attendance.completedSessions.includes(sessionKey)) return emptyAward(loadAttendanceStats())
+
+  const previousStats = loadAttendanceStats()
+  const firstCompletionForDay = attendance.completedSessions.length === 0
+  const nextAttendance: DailyAttendance = {
+    ...attendance,
+    completedModes: uniqueModes([...attendance.completedModes, mode]),
+    wonModes: won ? uniqueModes([...attendance.wonModes, mode]) : attendance.wonModes,
+    completedSessions: [...attendance.completedSessions, sessionKey],
+    firstCompletedAt: attendance.firstCompletedAt || Date.now(),
+    fullHouse: attendance.fullHouse || uniqueModes([...attendance.completedModes, mode]).length >= MODE_TABS.length,
+  }
+
+  let nextStats = previousStats
+  if (firstCompletionForDay) {
+    const distance = previousStats.lastCompletedDate ? dateDistance(previousStats.lastCompletedDate, date) : 0
+    let nextStreak = previousStats.lastCompletedDate
+      ? distance === 1
+        ? previousStats.currentDailyStreak + 1
+        : distance === 2 && previousStats.gracePasses > 0
+          ? previousStats.currentDailyStreak + 1
+          : 1
+      : 1
+    if (distance <= 0 && previousStats.lastCompletedDate) nextStreak = previousStats.currentDailyStreak
+    const usedGrace = Boolean(previousStats.lastCompletedDate && distance === 2 && previousStats.gracePasses > 0)
+    const earnedGrace = nextStreak > previousStats.currentDailyStreak && nextStreak % 7 === 0 ? 1 : 0
+    nextStats = {
+      ...previousStats,
+      currentDailyStreak: nextStreak,
+      bestDailyStreak: Math.max(previousStats.bestDailyStreak, nextStreak),
+      lastCompletedDate: date,
+      gracePasses: Math.min(2, Math.max(0, previousStats.gracePasses - (usedGrace ? 1 : 0)) + earnedGrace),
+      totalActiveDays: previousStats.lastCompletedDate === date ? previousStats.totalActiveDays : previousStats.totalActiveDays + 1,
+    }
+  }
+  if (!attendance.fullHouse && nextAttendance.fullHouse) {
+    nextStats = { ...nextStats, fullHouseDays: nextStats.fullHouseDays + 1 }
+  }
+
+  const completed = 10
+  const win = won ? 10 : 0
+  const speed = won ? Math.max(0, 10 - attemptsCount) : 0
+  const firstDaily = firstCompletionForDay ? 5 : 0
+  const fullHouse = !attendance.fullHouse && nextAttendance.fullHouse ? 25 : 0
+  const base = completed + win + speed + firstDaily + fullHouse
+  const multiplier = firstCompletionForDay ? streakMultiplier(nextStats.currentDailyStreak) : 1
+  const total = Math.round(base * multiplier)
+  const wallet = loadWallet()
+  const nextWallet = { tickets: wallet.tickets + total, lifetimeTickets: wallet.lifetimeTickets + total }
+  saveWallet(nextWallet)
+  addTicketLedgerEntry({
+    type: 'earn',
+    amount: total,
+    balanceAfter: nextWallet.tickets,
+    title: 'Сеанс завершён',
+    detail: `${modeMeta(mode).daily} · ${won ? 'угадан' : 'ответ открыт'} · ${attemptsCount}/10`,
+    date,
+    mode,
+    period,
+  })
+  saveDailyAttendance(nextAttendance)
+  saveAttendanceStats(nextStats)
+
+  return {
+    total,
+    base,
+    multiplier,
+    completed,
+    win,
+    speed,
+    firstDaily,
+    fullHouse,
+    newDailyStreak: nextStats.currentDailyStreak,
+    gracePasses: nextStats.gracePasses,
+    alreadyClaimed: false,
+  }
+}
+
 const Poster = ({ item, className = '' }: { item: TitleItem; className?: string }) => {
   const [failed, setFailed] = useState(false)
   return item.posterUrl && !failed
@@ -432,13 +596,76 @@ function GameSelector({ mode, onClick, compact = false }: { mode: TitleMode; onC
   </button>
 }
 
-function PeriodControl({ value, onChange, compact = false }: { value: PeriodKey; onChange: (period: PeriodKey) => void; compact?: boolean }) {
-  return <label className={`period-control ${compact ? 'period-control--compact' : ''}`}>
-    <span>Период</span>
-    <select value={value} onChange={(event) => onChange(event.target.value as PeriodKey)}>
-      {Object.entries(PERIODS).map(([id, item]) => <option value={id} key={id}>{item.label}</option>)}
-    </select>
-  </label>
+function PeriodControl({
+  mode,
+  value,
+  onChange,
+  wallet,
+  unlockedPeriods,
+}: {
+  mode: TitleMode
+  value: PeriodKey
+  onChange: (period: PeriodKey) => void
+  wallet: Wallet
+  unlockedPeriods: PeriodKey[]
+}) {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement | null>(null)
+  const closePeriodMenu = useCallback(() => setOpen(false), [])
+  const unlocked = new Set(unlockedPeriods)
+  const selectedLocked = !unlocked.has(value)
+  const selectedCost = periodUnlockCost(value)
+  const shortage = Math.max(0, selectedCost - wallet.tickets)
+  useDismissOnOutside(open, wrapRef, closePeriodMenu)
+
+  return <div ref={wrapRef} className={`period-select-wrap ${open ? 'is-open' : ''}`}>
+    <button type="button" className={`period-control period-control--custom ${selectedLocked ? 'is-locked' : ''}`} onClick={(event) => {
+      event.stopPropagation()
+      setOpen((current) => !current)
+    }} aria-expanded={open}>
+      <span className="period-control__top">
+        <span>Период</span>
+        <strong><Ticket /> {wallet.tickets}</strong>
+      </span>
+      <span className="period-control__value">
+        {selectedLocked && <Lock />}
+        <span>{PERIODS[value].label}</span>
+        <ChevronRight />
+      </span>
+    </button>
+    {open && <div className="period-menu" role="listbox" aria-label="Период">
+      {PERIOD_UNLOCK_ORDER.map((periodKey) => {
+        const isUnlocked = unlocked.has(periodKey)
+        const isActive = value === periodKey
+        const cost = periodUnlockCost(periodKey)
+        return <button
+          type="button"
+          key={periodKey}
+          className={`period-option ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : 'locked'}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            onChange(periodKey)
+            setOpen(false)
+          }}
+          role="option"
+          aria-selected={isActive}
+        >
+          <span className="period-option__lock">{isUnlocked ? <Check /> : <Lock />}</span>
+          <span className="period-option__copy">
+            <strong>{PERIODS[periodKey].label}</strong>
+            <small>{periodKey === 'all' ? 'Главный сеанс' : isUnlocked ? 'Открыт' : `${cost} билетов`}</small>
+          </span>
+        </button>
+      })}
+    </div>}
+    <p className={`period-control__note ${selectedLocked ? 'is-warning' : ''}`}>
+      {selectedLocked
+        ? shortage > 0
+          ? `Не хватает ${formatTickets(shortage)}. Период можно выбрать, но старт пока закрыт.`
+          : `Период откроется за ${formatTickets(selectedCost)} при старте.`
+        : 'Период открыт. Можно начинать сеанс.'}
+    </p>
+  </div>
 }
 
 function AppHeader({ onHome, onArchive, onStats, onRules }: {
@@ -447,19 +674,29 @@ function AppHeader({ onHome, onArchive, onStats, onRules }: {
   onStats: () => void
   onRules: () => void
 }) {
-  return <header className="app-header">
-    <div className="app-header__inner">
-      <button className="brand" aria-label="На главный экран" onClick={onHome}><BrandLogo /></button>
-      <nav aria-label="Навигация">
-        <button onClick={onRules} aria-label="Как играть"><CircleHelp /></button>
-        <button onClick={onArchive} aria-label="Архив"><Archive /></button>
-        <button onClick={onStats} aria-label="Статистика"><BarChart3 /></button>
-      </nav>
-    </div>
-  </header>
+  const [economyOpen, setEconomyOpen] = useState(false)
+  const wallet = loadWallet()
+  const attendance = loadAttendanceStats()
+  return <>
+    <header className="app-header">
+      <div className="app-header__inner">
+        <button className="brand" aria-label="На главный экран" onClick={onHome}><BrandLogo /></button>
+        <button className="header-economy" aria-label="Билеты и абонемент" onClick={() => setEconomyOpen(true)}>
+          <span><Ticket /> <strong>{wallet.tickets}</strong></span>
+          <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
+        </button>
+        <nav aria-label="Навигация">
+          <button onClick={onRules} aria-label="Как играть"><CircleHelp /></button>
+          <button onClick={onArchive} aria-label="Архив"><Archive /></button>
+          <button onClick={onStats} aria-label="Статистика"><BarChart3 /></button>
+        </nav>
+      </div>
+    </header>
+    {economyOpen && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
+  </>
 }
 
-function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSessionsCount, titleCounts }: {
+function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSessionsCount, titleCounts, todayAttendance }: {
   onSelect: (mode: TitleMode) => void
   onRewatch: () => void
   onStats: () => void
@@ -467,6 +704,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   onResume: () => void
   activeSessionsCount: number
   titleCounts: { movie: number | null; series: number | null; game: number | null; diagnosis: number | null }
+  todayAttendance: DailyAttendance
 }) {
   const futureCategories = [
     { title: 'Музыка', copy: 'Угадайте группу или исполнителя', icon: <Music2 /> },
@@ -480,18 +718,17 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
     <main className="hub-screen">
       <section className="hub-hero">
         <div className="hub-hero__copy">
-          <span>Ежедневные игры</span>
-          <h1>Выберите тему<br />{' '}и всё сойдется!</h1>
+          <div className="hub-hero__facts" aria-label="Об игре">
+            <span><CalendarDays /><strong>1 загадка в день</strong></span>
+            <span><Target /><strong>10 попыток</strong></span>
+          </div>
+          <h1>Все сойдется!</h1>
           <p>Кино, сериалы, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
           <div className="hub-hero__actions">
             <ActionButton onClick={scrollToGames}><Play /> Играть сейчас</ActionButton>
             {activeSessionsCount > 0
               ? <ActionButton variant="secondary" onClick={onResume}><RotateCcw /> {activeSessionsCount > 1 ? `Вернуться к игре (${activeSessionsCount})` : 'Вернуться к игре'}</ActionButton>
               : <ActionButton variant="secondary" onClick={onRules}><CircleHelp /> Как это работает</ActionButton>}
-          </div>
-          <div className="hub-hero__facts" aria-label="Об игре">
-            <span><CalendarDays /><strong>1 загадка в день</strong></span>
-            <span><Target /><strong>10 попыток</strong></span>
           </div>
         </div>
         <div className="hub-hero__visual" aria-hidden="true">
@@ -507,7 +744,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
               <span className="category-card__icon"><Film /></span>
               <span className="category-card__pool"><b>{titleCounts.movie ?? '—'}</b> в пуле</span>
             </div>
-            <i>Ежедневная игра</i><h2>Кино</h2>
+            <i>{todayAttendance.completedModes.includes('movie') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Кино</h2>
             <p>Угадайте фильм по актёрам, жанрам, году и рейтингам.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
@@ -516,7 +753,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
               <span className="category-card__icon"><Tv /></span>
               <span className="category-card__pool"><b>{titleCounts.series ?? '—'}</b> в пуле</span>
             </div>
-            <i>Ежедневная игра</i><h2>Сериалы</h2>
+            <i>{todayAttendance.completedModes.includes('series') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Сериалы</h2>
             <p>Найдите сериал, сравнивая создателей, каст и периоды.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
@@ -525,7 +762,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
               <span className="category-card__icon"><Gamepad2 /></span>
               <span className="category-card__pool"><b>{titleCounts.game ?? '—'}</b> в пуле</span>
             </div>
-            <i>Ежедневная игра</i><h2>Игры</h2>
+            <i>{todayAttendance.completedModes.includes('game') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Игры</h2>
             <p>Угадайте игру по жанрам, рейтингу, месту в топе и метрикам Steam.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
@@ -534,7 +771,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
               <span className="category-card__icon"><Stethoscope /></span>
               <span className="category-card__pool"><b>{titleCounts.diagnosis ?? '—'}</b> в пуле</span>
             </div>
-            <i>Ежедневная игра</i><h2>Диагнозы</h2>
+            <i>{todayAttendance.completedModes.includes('diagnosis') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Диагнозы</h2>
             <p>Угадайте диагноз по симптомам, системе, факторам риска и МКБ-подсказкам.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
@@ -554,7 +791,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, onUnlockPeriod }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -568,7 +805,25 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   isLeaving?: boolean
   onReadAnamnesis: () => void
   hasAnamnesis: boolean
+  wallet: Wallet
+  unlockedPeriods: PeriodKey[]
+  onUnlockPeriod: (period: PeriodKey) => boolean
 }) {
+  const periodLocked = canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
+  const periodCost = periodUnlockCost(period)
+  const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
+  const canStart = !periodLocked || periodShortage === 0
+  const playButtonLabel = periodLocked
+    ? periodShortage > 0
+      ? `Не хватает ${formatTickets(periodShortage)}`
+      : `Открыть за ${formatTickets(periodCost)}`
+    : 'Начать игру'
+  const startSelectedPeriod = () => {
+    if (!canStart) return
+    if (periodLocked && !onUnlockPeriod(period)) return
+    onPlay()
+  }
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return
@@ -579,12 +834,12 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
       }
       if (event.key === 'Enter') {
         event.preventDefault()
-        onPlay()
+        startSelectedPeriod()
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onBack, onPlay])
+  }, [onBack, startSelectedPeriod])
 
   return <>
     <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} />
@@ -652,11 +907,11 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 <h1>Ежедневная игра: {modeMeta(mode).lower}</h1>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 <div className="ticket-settings">
-                  <PeriodControl value={period} onChange={setPeriod} compact />
+                  <PeriodControl mode={mode} value={period} onChange={setPeriod} wallet={wallet} unlockedPeriods={unlockedPeriods} />
                 </div>
               </div>
             </section>}
-        {mode !== 'game' && <ActionButton className="play-button" onClick={onPlay}><Play /> Начать игру <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>}
+        {mode !== 'game' && <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
     </main>
   </>
@@ -1065,6 +1320,7 @@ function Game({
   onArchive,
   onStats,
   onRules,
+  onEconomyChange,
   caseVignettes,
   dailySalt,
   isPracticeSession,
@@ -1079,6 +1335,7 @@ function Game({
   onArchive: () => void
   onStats: () => void
   onRules: () => void
+  onEconomyChange: () => void
   caseVignettes: CaseVignetteMap
   dailySalt: number
   isPracticeSession: boolean
@@ -1094,6 +1351,9 @@ function Game({
   const [hintModalRound, setHintModalRound] = useState<HintCheckpoint | null>(null)
   const [copied, setCopied] = useState(false)
   const [anamnesisOpen, setAnamnesisOpen] = useState(false)
+  const [lastAward, setLastAward] = useState<EconomyAward | null>(null)
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false)
+  const searchPickerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -1113,6 +1373,8 @@ function Game({
     setHintModalRound(null)
     setGameMatchStripOpen(mode === 'diagnosis')
     setAnamnesisOpen(false)
+    setLastAward(null)
+    setIsSearchDropdownOpen(false)
   }, [key, mode])
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
@@ -1126,8 +1388,10 @@ function Game({
   }, [pool, debouncedQuery, used, mode])
   const matchedTags = useMemo(() => collectMatchedTags(attempts), [attempts])
 
+  const isSuggestionsOpen = isSearchDropdownOpen && Boolean(query) && !selected
+
   useEffect(() => {
-    if (!query || selected || !suggestions.length) {
+    if (!isSuggestionsOpen || !suggestions.length) {
       dispatchSession({ type: 'set_active_index', index: -1 })
       return
     }
@@ -1137,7 +1401,7 @@ function Game({
         ? suggestions.length - 1
         : activeSuggestionIndex
     dispatchSession({ type: 'set_active_index', index: nextIndex })
-  }, [query, selected, suggestions, activeSuggestionIndex])
+  }, [isSuggestionsOpen, suggestions, activeSuggestionIndex])
   const assistHints = useMemo(() => answer ? buildAssistHints(answer) : [], [answer])
   const anamnesisText = useMemo(() => answer && mode === 'diagnosis'
     ? (pickDailyVignette(caseVignettes[answer.id] ?? [], answer.id, date)?.text ?? '')
@@ -1156,6 +1420,13 @@ function Game({
   const canUseHint = status === 'playing' && pendingHintRounds.length > 0
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
   const showTodayLink = date !== getMoscowDate()
+  const closeSearchDropdown = useCallback(() => setIsSearchDropdownOpen(false), [])
+  const headingPeriodBadge = mode === 'movie' || mode === 'series'
+    ? effectivePeriod === 'all'
+      ? 'Главная премьера'
+      : PERIODS[effectivePeriod].label.replace(' года', '')
+    : null
+  useDismissOnOutside(isSuggestionsOpen, searchPickerRef, closeSearchDropdown)
 
   useEffect(() => {
     if (!canUseHint) {
@@ -1273,11 +1544,18 @@ function Game({
       dispatchSession({ type: 'set_message', message: 'Этот вариант уже был в попытках' })
       return
     }
+    setIsSearchDropdownOpen(false)
     const nextAttempts = [...attempts, { titleId: nextSelection.id, hints: compareTitles(nextSelection, answer) }]
     const nextStatus: GameStatus = nextSelection.id === answer.id ? 'won' : nextAttempts.length >= 10 ? 'lost' : 'playing'
     dispatchSession({ type: 'submit_attempt', attempts: nextAttempts, status: nextStatus })
     persistGame(nextAttempts, nextStatus, hintChoices)
-    if (nextStatus !== 'playing' && !isPracticeSession) updateStats(nextStatus === 'won', nextAttempts.length)
+    if (nextStatus !== 'playing' && !isPracticeSession) {
+      updateStats(nextStatus === 'won', nextAttempts.length)
+      if (date === getMoscowDate()) {
+        setLastAward(recordDailyCompletion(mode, effectivePeriod, date, nextStatus === 'won', nextAttempts.length))
+        onEconomyChange()
+      }
+    }
     setTimeout(() => {
       const targetSelector = nextStatus === 'playing' ? '.attempt-card:first-child' : '.result-card'
       document.querySelector(targetSelector)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -1306,7 +1584,12 @@ function Game({
       </div>
       <section className={`game-heading${mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}>
         <div>
-          <span className="game-heading__kicker">{date === getMoscowDate() ? 'Сегодня' : 'Архив'} · Сеанс №{dayNumber(date)}</span>
+          <div className="game-heading__kicker">
+            <span>
+              {date === getMoscowDate() ? 'Сегодня' : 'Архив'} · Сеанс №{dayNumber(date)}
+              {headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}
+            </span>
+          </div>
           <h1>{modeMeta(mode).daily} дня</h1>
           <p>{prettyDate(date)} · обновление в 00:00 МСК</p>
         </div>
@@ -1350,6 +1633,7 @@ function Game({
               : (answer.genres ?? [])
           ).map((tag) => <i key={tag}>{tag}</i>)}</div>
           <strong>{status === 'won' ? `${attempts.length}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
+          {lastAward && <EconomyAwardPanel award={lastAward} />}
         </div>
         <div className="result-actions">
           <button onClick={share}>{copied ? <Check /> : <Copy />}{copied ? 'Скопировано' : 'Скопировать'}</button>
@@ -1358,6 +1642,7 @@ function Game({
       </section>}
 
       {status === 'playing' && <section className="search-area">
+        <div ref={searchPickerRef} className="search-picker">
         <div className={`search-box ${selected ? 'selected' : ''}`}>
           <Search />
           <input
@@ -1367,13 +1652,20 @@ function Game({
             value={query}
             autoComplete="off"
             placeholder={modeMeta(mode).searchPlaceholder}
+            onFocus={() => setIsSearchDropdownOpen(true)}
             onChange={(event) => {
               dispatchSession({ type: 'set_query', query: event.target.value })
               dispatchSession({ type: 'set_selected', selected: null })
               dispatchSession({ type: 'set_active_index', index: 0 })
               dispatchSession({ type: 'set_message', message: '' })
+              setIsSearchDropdownOpen(true)
             }}
             onKeyDown={(event) => {
+              if (event.key === 'Escape' && isSuggestionsOpen) {
+                event.preventDefault()
+                setIsSearchDropdownOpen(false)
+                return
+              }
               if (event.key === 'ArrowDown') {
                 if (!suggestions.length || selected) return
                 event.preventDefault()
@@ -1407,6 +1699,22 @@ function Game({
           {selected && <Check className="selected-check" />}
           <button onClick={() => submit()} aria-label="Проверить ответ"><ChevronRight /></button>
         </div>
+        {isSuggestionsOpen && <div className="suggestions">
+          {suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => submit(item)}>
+            <Poster item={item} />
+            <span><strong>{item.titleRu}</strong><small>{item.mode === 'diagnosis'
+              ? [item.titleOriginal || 'Без оригинального названия', ...(item.icd10?.length ? [item.icd10.join(', ')] : []), ...(item.icdGroup ? [item.icdGroup] : [])].filter(Boolean).join(' · ')
+              : item.mode === 'game'
+                ? [item.titleOriginal || 'Без оригинального названия', item.year != null ? String(item.year) : '—', item.topRank != null ? `#${item.topRank}` : null].filter(Boolean).join(' · ')
+                : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
+            <em>{item.mode === 'diagnosis'
+              ? (item.contagiousness ?? item.icd10?.[0] ?? '—')
+              : item.mode === 'game'
+                ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
+                : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
+          </button>) : <div className="empty-search">Ничего не найдено</div>}
+        </div>}
+        </div>
         {(mode === 'diagnosis' || !!attempts.length) && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
           <button
             type="button"
@@ -1426,21 +1734,6 @@ function Game({
                 : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
             </HorizontalScrollLane>
           </div>
-        </div>}
-        {query && !selected && <div className="suggestions">
-          {suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => submit(item)}>
-            <Poster item={item} />
-            <span><strong>{item.titleRu}</strong><small>{item.mode === 'diagnosis'
-              ? [item.titleOriginal || 'Без оригинального названия', ...(item.icd10?.length ? [item.icd10.join(', ')] : []), ...(item.icdGroup ? [item.icdGroup] : [])].filter(Boolean).join(' · ')
-              : item.mode === 'game'
-                ? [item.titleOriginal || 'Без оригинального названия', item.year != null ? String(item.year) : '—', item.topRank != null ? `#${item.topRank}` : null].filter(Boolean).join(' · ')
-                : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
-            <em>{item.mode === 'diagnosis'
-              ? (item.contagiousness ?? item.icd10?.[0] ?? '—')
-              : item.mode === 'game'
-                ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
-                : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
-          </button>) : <div className="empty-search">Ничего не найдено</div>}
         </div>}
         {message && <div className="search-meta"><strong>{message}</strong></div>}
       </section>}
@@ -1503,6 +1796,20 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   </div>
 }
 
+function EconomyAwardPanel({ award }: { award: EconomyAward }) {
+  if (award.alreadyClaimed) {
+    return <div className="ticket-award ticket-award--claimed">
+      <Ticket />
+      <span>Билеты уже начислены</span>
+    </div>
+  }
+
+  return <div className="ticket-award">
+    <Ticket />
+    <strong>+{award.total}</strong>
+  </div>
+}
+
 function AnamnesisModal({ text, dayNo, onClose, onStart }: {
   text: string
   dayNo: number
@@ -1548,18 +1855,76 @@ function AnamnesisModal({ text, dayNo, onClose, onStart }: {
 
 function StatsView({ mode }: { mode: TitleMode }) {
   const stats = loadStats(mode)
+  const attendance = loadAttendanceStats()
+  const wallet = loadWallet()
   const rate = stats.played ? Math.round(stats.won / stats.played * 100) : 0
   const max = Math.max(1, ...stats.distribution)
   return <>
+    <div className="stats-grid stats-grid--economy">
+      <div><strong>{wallet.tickets}</strong><span>билетов</span></div>
+      <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
+      <div><strong>{formatMultiplier(streakMultiplier(attendance.currentDailyStreak))}</strong><span>множитель</span></div>
+      <div><strong>{attendance.gracePasses}</strong><span>контрамарки</span></div>
+    </div>
+    <h3 className="subheading">Статистика темы</h3>
     <div className="stats-grid">
       <div><strong>{stats.played}</strong><span>сеансов</span></div>
       <div><strong>{rate}%</strong><span>побед</span></div>
-      <div><strong>{stats.currentStreak}</strong><span>серия</span></div>
-      <div><strong>{stats.bestStreak}</strong><span>рекорд</span></div>
+      <div><strong>{stats.currentStreak}</strong><span>серия побед</span></div>
+      <div><strong>{stats.bestStreak}</strong><span>рекорд побед</span></div>
+    </div>
+    <div className="attendance-line">
+      <span>Активных дней: <strong>{attendance.totalActiveDays}</strong></span>
+      <span>Полных залов: <strong>{attendance.fullHouseDays}</strong></span>
+      <span>Рекорд абонемента: <strong>{attendance.bestDailyStreak}</strong></span>
     </div>
     <h3 className="subheading">Победы по попыткам</h3>
     <div className="distribution">{stats.distribution.map((count, index) => <div key={index}><span>{index + 1}</span><i style={{ width: `${Math.max(6, count / max * 100)}%` }}>{count}</i></div>)}</div>
   </>
+}
+
+function EconomyView() {
+  const wallet = loadWallet()
+  const attendance = loadAttendanceStats()
+  const ledger = loadTicketLedger()
+  const nextAt = nextMultiplierAt(attendance.currentDailyStreak)
+  const multiplier = streakMultiplier(attendance.currentDailyStreak)
+
+  return <div className="economy-view">
+    <div className="stats-grid stats-grid--economy">
+      <div><strong>{wallet.tickets}</strong><span>сейчас</span></div>
+      <div><strong>{wallet.lifetimeTickets}</strong><span>всего</span></div>
+      <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
+      <div><strong>{formatMultiplier(multiplier)}</strong><span>множитель</span></div>
+    </div>
+    <div className="economy-note">
+      <Ticket />
+      <p>Билеты открывают дополнительные периоды в кино и сериалах. Базовый сеанс всегда доступен, а закрытый период можно выбрать заранее.</p>
+    </div>
+    <p className="modal-lead">Билеты хранятся только в этом браузере на этом устройстве. В другом браузере или на другом устройстве они не переносятся. Если очистить данные сайта, билеты и их история могут исчезнуть.</p>
+    <h3 className="subheading">Как начисляется</h3>
+    <div className="economy-rules">
+      <span><strong>+10</strong> завершить сеанс</span>
+      <span><strong>+10</strong> угадать ответ</span>
+      <span><strong>+0-9</strong> бонус за попытки</span>
+      <span><strong>+5</strong> первый сеанс дня</span>
+      <span><strong>+25</strong> полный зал 4/4</span>
+    </div>
+    <p className="modal-lead">
+      Абонемент продлевается за первый завершённый daily-сеанс дня, даже если ответ не угадан. Первый сеанс дня умножается на текущий множитель. {nextAt ? `До ${formatMultiplier(streakMultiplier(nextAt))}: ${nextAt - attendance.currentDailyStreak} дн.` : 'Максимальный множитель уже активен.'}
+    </p>
+    <h3 className="subheading">История билетов</h3>
+    {ledger.length
+      ? <div className="ticket-ledger">{ledger.slice(0, 14).map((entry) => <article className={`ticket-ledger__item ${entry.type}`} key={entry.id}>
+          <span>{entry.type === 'earn' ? <Ticket /> : <Lock />}</span>
+          <div>
+            <strong>{entry.title}</strong>
+            <small>{entry.detail} · {new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(entry.at))}</small>
+          </div>
+          <em>{entry.type === 'earn' ? '+' : '-'}{entry.amount}</em>
+        </article>)}</div>
+      : <p className="modal-lead">История появится после первого завершённого сеанса или открытия периода.</p>}
+  </div>
 }
 
 function RulesView() {
@@ -1607,6 +1972,7 @@ export default function App() {
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const { data, titleCounts, caseVignettes, loading, globalDailySalt } = useDataLoader(mode)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
+  const [economyVersion, setEconomyVersion] = useState(0)
   const transitionTimerRef = useRef<number | null>(null)
   const screenHistoryReadyRef = useRef(false)
   const screenFromPopStateRef = useRef(false)
@@ -1614,9 +1980,14 @@ export default function App() {
   const adminDailySaltRef = useRef(0)
   const globalDailySaltRef = useRef(0)
   const effectiveDailySalt = globalDailySalt + adminDailySalt
+  const wallet = useMemo(() => loadWallet(), [economyVersion])
+  const todayAttendance = useMemo(() => loadDailyAttendance(getMoscowDate()), [economyVersion])
+  const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
+  const currentUnlockedPeriods = useMemo(() => unlockedPeriodsFor(mode, periodUnlocks), [mode, periodUnlocks])
+  const refreshEconomy = () => setEconomyVersion((version) => version + 1)
 
   useEffect(() => {
-    if (mode === 'diagnosis' && period !== 'all') {
+    if ((mode === 'diagnosis' || mode === 'game') && period !== 'all') {
       setPeriod('all')
     }
   }, [mode, period])
@@ -1798,6 +2169,31 @@ export default function App() {
     setModal(null)
     window.scrollTo({ top: 0 })
   }
+  const buyPeriodUnlock = (periodKey: PeriodKey) => {
+    if (!canUnlockPeriods(mode)) return false
+    if (isPeriodUnlocked(mode, periodKey, periodUnlocks)) {
+      setPeriod(periodKey)
+      return true
+    }
+    const cost = periodUnlockCost(periodKey)
+    const currentWallet = loadWallet()
+    if (currentWallet.tickets < cost) return false
+    const nextWallet = { ...currentWallet, tickets: currentWallet.tickets - cost }
+    saveWallet(nextWallet)
+    addTicketLedgerEntry({
+      type: 'spend',
+      amount: cost,
+      balanceAfter: nextWallet.tickets,
+      title: 'Открыт период',
+      detail: `${modeMeta(mode).plural} · ${PERIODS[periodKey].label}`,
+      mode,
+      period: periodKey,
+    })
+    unlockPeriod(mode, periodKey)
+    setPeriod(periodKey)
+    refreshEconomy()
+    return true
+  }
   const playToday = () => {
     if (transition === 'title-to-game') return
     const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
@@ -1835,9 +2231,9 @@ export default function App() {
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
 
   return <div className={`app app--${appTone}`}>
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} onUnlockPeriod={buyPeriodUnlock} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} />}
 
@@ -1856,6 +2252,7 @@ export default function App() {
           onArchive={() => setScreen('rewatch')}
           onStats={() => setModal('stats')}
           onRules={() => setModal('rules')}
+          onEconomyChange={refreshEconomy}
           caseVignettes={caseVignettes}
         />)}
 

@@ -115,3 +115,33 @@ export type Attempt = { titleId: string; hints: Hint[] }
 export type GameStatus = 'playing' | 'won' | 'lost'
 export type SavedGame = { key: string; mode: TitleMode; period: PeriodKey; date: string; answerId: string; attempts: Attempt[]; status: GameStatus; usedHints?: AssistHintKey[]; hintChoices?: HintChoice[]; dismissedHintRounds?: HintCheckpoint[]; updatedAt: number }
 export type Stats = { played: number; won: number; currentStreak: number; bestStreak: number; distribution: number[] }
+export type Wallet = { tickets: number; lifetimeTickets: number }
+export type TicketLedgerEntry = {
+  id: string
+  at: number
+  type: 'earn' | 'spend'
+  amount: number
+  balanceAfter: number
+  title: string
+  detail: string
+  date?: string
+  mode?: TitleMode
+  period?: PeriodKey
+}
+export type DailyAttendance = {
+  date: string
+  completedModes: TitleMode[]
+  wonModes: TitleMode[]
+  completedSessions: string[]
+  firstCompletedAt: number
+  fullHouse: boolean
+}
+export type AttendanceStats = {
+  currentDailyStreak: number
+  bestDailyStreak: number
+  lastCompletedDate: string | null
+  gracePasses: number
+  totalActiveDays: number
+  fullHouseDays: number
+}
+export type PeriodUnlocks = Partial<Record<TitleMode, PeriodKey[]>>
