@@ -18,7 +18,7 @@ const requestCache = new Map<string, Promise<unknown>>()
 
 const fetchJsonCached = async <T,>(url: string): Promise<T> => {
   if (!requestCache.has(url)) {
-    requestCache.set(url, fetch(url).then(async (response) => {
+    requestCache.set(url, fetch(url, { cache: 'no-store' }).then(async (response) => {
       if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.status}`)
       return response.json()
     }))

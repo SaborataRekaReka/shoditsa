@@ -1,5 +1,20 @@
 import { emptyStats } from './game'
-import type { AttendanceStats, DailyAttendance, PeriodKey, PeriodUnlocks, SavedGame, Stats, TicketLedgerEntry, TitleMode, Wallet } from './types'
+import type {
+  AssistHintKey,
+  AttendanceStats,
+  Attempt,
+  DailyAttendance,
+  GameStatus,
+  HintCheckpoint,
+  HintChoice,
+  PeriodKey,
+  PeriodUnlocks,
+  SavedGame,
+  Stats,
+  TicketLedgerEntry,
+  TitleMode,
+  Wallet,
+} from './types'
 
 const GAME_PREFIX = 'seans:v1:game:'
 const STATS_PREFIX = 'seans:v1:stats:'
@@ -9,15 +24,177 @@ const WALLET_KEY = 'seans:v1:wallet'
 const TICKET_LEDGER_KEY = 'seans:v1:ticket-ledger'
 const PERIOD_UNLOCKS_KEY = 'seans:v1:period-unlocks'
 const FREE_PLAY_USAGE_PREFIX = 'seans:v1:free-play-usage:'
+const SAVED_GAME_SCHEMA_VERSION = 2
+
+const TITLE_MODES: TitleMode[] = ['movie', 'series', 'anime', 'game', 'diagnosis']
+const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020']
+const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost']
+const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards']
+
+const isTitleMode = (value: unknown): value is TitleMode => typeof value === 'string' && TITLE_MODES.includes(value as TitleMode)
+const isPeriodKey = (value: unknown): value is PeriodKey => typeof value === 'string' && PERIOD_KEYS.includes(value as PeriodKey)
+const isGameStatus = (value: unknown): value is GameStatus => typeof value === 'string' && GAME_STATUSES.includes(value as GameStatus)
+const isHintCheckpoint = (value: unknown): value is HintCheckpoint => typeof value === 'number' && HINT_CHECKPOINTS.includes(value as HintCheckpoint)
+const isAssistHintKey = (value: unknown): value is AssistHintKey => typeof value === 'string' && ASSIST_HINT_KEYS.includes(value as AssistHintKey)
+
+const toSafeInteger = (value: unknown, fallback: number) => {
+  const parsed = Math.trunc(Number(value))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+const normalizeAttempts = (value: unknown): Attempt[] => {
+  if (!Array.isArray(value)) return []
+  const attempts: Attempt[] = []
+  for (const rawAttempt of value) {
+    if (!rawAttempt || typeof rawAttempt !== 'object') continue
+    const titleId = (rawAttempt as { titleId?: unknown }).titleId
+    if (typeof titleId !== 'string' || !titleId) continue
+    const hintsValue = (rawAttempt as { hints?: unknown }).hints
+    attempts.push({ titleId, hints: Array.isArray(hintsValue) ? (hintsValue as Attempt['hints']) : [] })
+    if (attempts.length >= 10) break
+  }
+  return attempts
+}
+
+const normalizeHintChoices = (value: unknown): HintChoice[] => {
+  if (!Array.isArray(value)) return []
+  const seenRounds = new Set<HintCheckpoint>()
+  const choices: HintChoice[] = []
+  for (const rawChoice of value) {
+    if (!rawChoice || typeof rawChoice !== 'object') continue
+    const round = (rawChoice as { round?: unknown }).round
+    const key = (rawChoice as { key?: unknown }).key
+    if (!isHintCheckpoint(round) || !isAssistHintKey(key) || seenRounds.has(round)) continue
+    seenRounds.add(round)
+    choices.push({ round, key })
+  }
+  return choices
+}
+
+const normalizeUsedHints = (value: unknown): AssistHintKey[] => {
+  if (!Array.isArray(value)) return []
+  const unique = new Set<AssistHintKey>()
+  for (const item of value) {
+    if (isAssistHintKey(item)) unique.add(item)
+  }
+  return [...unique]
+}
+
+const legacyHintChoicesFromUsedHints = (value: unknown): HintChoice[] => {
+  const hints = normalizeUsedHints(value).slice(0, 2)
+  return hints.map((key, index) => ({
+    round: (index === 0 ? 5 : 8) as HintCheckpoint,
+    key,
+  }))
+}
+
+const normalizeDismissedHintRounds = (value: unknown, openedRounds: Set<HintCheckpoint>): HintCheckpoint[] => {
+  if (!Array.isArray(value)) return []
+  const unique = new Set<HintCheckpoint>()
+  for (const item of value) {
+    if (!isHintCheckpoint(item) || openedRounds.has(item)) continue
+    unique.add(item)
+  }
+  return [...unique]
+}
+
+const normalizeAttemptTitleIds = (value: unknown, attempts: Attempt[]): string[] => {
+  const fromStored = Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string' && Boolean(item))
+    : []
+  const fallback = attempts.map((attempt) => attempt.titleId)
+  const source = fromStored.length ? fromStored : fallback
+  return source.slice(0, 10)
+}
+
+const normalizeSavedGame = (value: unknown, fallbackKey?: string): SavedGame | null => {
+  if (!value || typeof value !== 'object') return null
+  const raw = value as Partial<SavedGame> & {
+    attemptTitleIds?: unknown
+    schemaVersion?: unknown
+    usedHints?: unknown
+    hintChoices?: unknown
+    dismissedHintRounds?: unknown
+    attempts?: unknown
+  }
+  const key = typeof raw.key === 'string' && raw.key ? raw.key : fallbackKey
+  if (!key || !isTitleMode(raw.mode)) return null
+
+  const date = typeof raw.date === 'string' && raw.date ? raw.date : null
+  const answerId = typeof raw.answerId === 'string' && raw.answerId ? raw.answerId : null
+  if (!date || !answerId) return null
+
+  const attempts = normalizeAttempts(raw.attempts)
+  const attemptTitleIds = normalizeAttemptTitleIds(raw.attemptTitleIds, attempts)
+  const hintChoices = (() => {
+    const direct = normalizeHintChoices(raw.hintChoices)
+    if (direct.length) return direct
+    return legacyHintChoicesFromUsedHints(raw.usedHints)
+  })()
+  const openedRounds = new Set(hintChoices.map((choice) => choice.round))
+
+  return {
+    key,
+    mode: raw.mode,
+    period: isPeriodKey(raw.period) ? raw.period : 'all',
+    date,
+    answerId,
+    attempts,
+    attemptTitleIds,
+    status: isGameStatus(raw.status) ? raw.status : 'playing',
+    usedHints: hintChoices.map((choice) => choice.key),
+    hintChoices,
+    dismissedHintRounds: normalizeDismissedHintRounds(raw.dismissedHintRounds, openedRounds),
+    updatedAt: Math.max(0, toSafeInteger(raw.updatedAt, Date.now())),
+    schemaVersion: Math.max(1, toSafeInteger(raw.schemaVersion, 1)),
+  }
+}
+
+const prepareSavedGameForStore = (game: SavedGame): SavedGame => {
+  const normalized = normalizeSavedGame({
+    ...game,
+    attemptTitleIds: Array.isArray(game.attemptTitleIds) && game.attemptTitleIds.length
+      ? game.attemptTitleIds
+      : game.attempts.map((attempt) => attempt.titleId),
+    schemaVersion: SAVED_GAME_SCHEMA_VERSION,
+  }, game.key)
+
+  if (normalized) return { ...normalized, schemaVersion: SAVED_GAME_SCHEMA_VERSION }
+
+  return {
+    ...game,
+    attemptTitleIds: game.attempts.map((attempt) => attempt.titleId).slice(0, 10),
+    hintChoices: game.hintChoices ?? [],
+    dismissedHintRounds: game.dismissedHintRounds ?? [],
+    schemaVersion: SAVED_GAME_SCHEMA_VERSION,
+  }
+}
+
 export const gameKey = (mode: string, period: string, date: string) => `${mode}|${period}|${date}`
 
 export const loadGame = (key: string): SavedGame | null => {
-  try { const value = localStorage.getItem(GAME_PREFIX + key); return value ? JSON.parse(value) : null } catch { return null }
+  try {
+    const value = localStorage.getItem(GAME_PREFIX + key)
+    if (!value) return null
+    return normalizeSavedGame(JSON.parse(value), key)
+  } catch {
+    return null
+  }
 }
-export const saveGame = (game: SavedGame) => localStorage.setItem(GAME_PREFIX + game.key, JSON.stringify(game))
+export const saveGame = (game: SavedGame) => localStorage.setItem(GAME_PREFIX + game.key, JSON.stringify(prepareSavedGameForStore(game)))
 export const removeGame = (key: string) => localStorage.removeItem(GAME_PREFIX + key)
 export const allGames = (): SavedGame[] => Object.keys(localStorage).filter((key) => key.startsWith(GAME_PREFIX))
-  .map((key) => { try { return JSON.parse(localStorage.getItem(key) || '') as SavedGame } catch { return null } })
+  .map((storageKey) => {
+    try {
+      const key = storageKey.slice(GAME_PREFIX.length)
+      const value = localStorage.getItem(storageKey)
+      if (!value) return null
+      return normalizeSavedGame(JSON.parse(value), key)
+    } catch {
+      return null
+    }
+  })
   .filter((game): game is SavedGame => Boolean(game)).sort((a, b) => b.date.localeCompare(a.date))
 export const loadStats = (mode: TitleMode): Stats => {
   try { const value = localStorage.getItem(STATS_PREFIX + mode); return value ? JSON.parse(value) : emptyStats() } catch { return emptyStats() }

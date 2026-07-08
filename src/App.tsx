@@ -192,6 +192,73 @@ type AdminWindow = Window & {
   SEANS_ADMIN_GET_DAILY_SALT?: () => number
 }
 
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards']
+const isAssistHintKeyValue = (value: unknown): value is AssistHintKey => typeof value === 'string' && ASSIST_HINT_KEYS.includes(value as AssistHintKey)
+const isHintCheckpointValue = (value: unknown): value is HintCheckpoint => value === 5 || value === 8
+
+const collectSavedAttemptIds = (saved: SavedGame | null): string[] => {
+  if (!saved) return []
+  const fromIds = Array.isArray(saved.attemptTitleIds)
+    ? saved.attemptTitleIds.filter((id): id is string => typeof id === 'string' && Boolean(id))
+    : []
+  if (fromIds.length) return fromIds.slice(0, 10)
+  return saved.attempts.map((attempt) => attempt.titleId).filter(Boolean).slice(0, 10)
+}
+
+const sanitizeStoredHintChoices = (saved: SavedGame | null, allowedHintKeys: Set<AssistHintKey>): HintChoice[] => {
+  if (!saved) return []
+
+  const fallbackChoices = (saved.usedHints ?? []).filter(isAssistHintKeyValue).slice(0, 2).map((key, index) => ({
+    round: (index === 0 ? 5 : 8) as HintCheckpoint,
+    key,
+  }))
+  const rawChoices = Array.isArray(saved.hintChoices) && saved.hintChoices.length ? saved.hintChoices : fallbackChoices
+  const seenRounds = new Set<HintCheckpoint>()
+  const choices: HintChoice[] = []
+
+  for (const rawChoice of rawChoices) {
+    if (!rawChoice || typeof rawChoice !== 'object') continue
+    const round = (rawChoice as { round?: unknown }).round
+    const key = (rawChoice as { key?: unknown }).key
+    if (!isHintCheckpointValue(round) || !isAssistHintKeyValue(key)) continue
+    if (allowedHintKeys.size > 0 && !allowedHintKeys.has(key)) continue
+    if (seenRounds.has(round)) continue
+    seenRounds.add(round)
+    choices.push({ round, key })
+  }
+
+  return choices
+}
+
+const sanitizeDismissedRounds = (saved: SavedGame | null, openedRounds: Set<HintCheckpoint>): HintCheckpoint[] => {
+  if (!saved || !Array.isArray(saved.dismissedHintRounds)) return []
+  const rounds = new Set<HintCheckpoint>()
+  for (const round of saved.dismissedHintRounds) {
+    if (!isHintCheckpointValue(round) || openedRounds.has(round)) continue
+    rounds.add(round)
+  }
+  return [...rounds]
+}
+
+const rebuildAttemptsForAnswer = (attemptIds: string[], poolById: Map<string, TitleItem>, answer: TitleItem): Attempt[] => {
+  const attempts: Attempt[] = []
+
+  for (const titleId of attemptIds) {
+    const guess = poolById.get(titleId)
+    if (!guess) continue
+    attempts.push({ titleId, hints: compareTitles(guess, answer) })
+    if (titleId === answer.id || attempts.length >= 10) break
+  }
+
+  return attempts
+}
+
+const deriveStatusFromAttempts = (attempts: Attempt[], answerId: string): GameStatus => {
+  if (attempts.some((attempt) => attempt.titleId === answerId)) return 'won'
+  if (attempts.length >= 10) return 'lost'
+  return 'playing'
+}
+
 const cleanHintText = (value: string) => {
   const redactionPlaceholder = '__SEANS_REDACTION__'
   return value
@@ -1435,27 +1502,61 @@ function Game({
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false)
   const searchPickerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const assistHints = useMemo(() => answer ? buildAssistHints(answer) : [], [answer])
+  const availableAssistHintKeys = useMemo(
+    () => new Set<AssistHintKey>(assistHints.filter((hint) => hint.available).map((hint) => hint.key)),
+    [assistHints],
+  )
 
   useEffect(() => {
     const saved = loadGame(key)
-    const restoredChoices = Array.isArray(saved?.hintChoices)
-      ? saved.hintChoices
-      : (saved?.usedHints ?? []).slice(0, 2).map((hintKey, index) => ({ round: (index === 0 ? 5 : 8) as HintCheckpoint, key: hintKey }))
+    const poolById = new Map(pool.map((item) => [item.id, item]))
+    const restoredAttemptIds = collectSavedAttemptIds(saved)
+    const shouldRebuildAttempts = Boolean(answer && saved && (saved.status === 'playing' || saved.answerId === answer.id))
+    const restoredAttempts = answer && shouldRebuildAttempts
+      ? rebuildAttemptsForAnswer(restoredAttemptIds, poolById, answer)
+      : (saved?.attempts ?? [])
+    const restoredStatus: GameStatus = answer && shouldRebuildAttempts
+      ? deriveStatusFromAttempts(restoredAttempts, answer.id)
+      : (saved?.status ?? 'playing')
+    const restoredChoices = sanitizeStoredHintChoices(saved, availableAssistHintKeys)
+    const openedRounds = new Set(restoredChoices.map((choice) => choice.round))
+    const restoredDismissedRounds = sanitizeDismissedRounds(saved, openedRounds)
+
     dispatchSession({
       type: 'reset',
       payload: {
-        attempts: saved?.attempts ?? [],
-        status: saved?.status ?? 'playing',
+        attempts: restoredAttempts,
+        status: restoredStatus,
         hintChoices: restoredChoices,
-        dismissedHintRounds: Array.isArray(saved?.dismissedHintRounds) ? saved.dismissedHintRounds : [],
+        dismissedHintRounds: restoredDismissedRounds,
       },
     })
+
+    if (saved && answer && shouldRebuildAttempts) {
+      saveGame({
+        ...saved,
+        key,
+        mode,
+        period: effectivePeriod,
+        date,
+        answerId: answer.id,
+        attempts: restoredAttempts,
+        attemptTitleIds: restoredAttempts.map((attempt) => attempt.titleId),
+        status: restoredStatus,
+        usedHints: restoredChoices.map((choice) => choice.key),
+        hintChoices: restoredChoices,
+        dismissedHintRounds: restoredDismissedRounds,
+        updatedAt: Date.now(),
+      })
+    }
+
     setHintModalRound(null)
     setGameMatchStripOpen(mode === 'diagnosis')
     setAnamnesisOpen(false)
     setLastAward(null)
     setIsSearchDropdownOpen(false)
-  }, [key, mode])
+  }, [answer, availableAssistHintKeys, date, effectivePeriod, key, mode, pool])
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => {
@@ -1482,7 +1583,6 @@ function Game({
         : activeSuggestionIndex
     dispatchSession({ type: 'set_active_index', index: nextIndex })
   }, [isSuggestionsOpen, suggestions, activeSuggestionIndex])
-  const assistHints = useMemo(() => answer ? buildAssistHints(answer) : [], [answer])
   const anamnesisText = useMemo(() => answer && mode === 'diagnosis'
     ? (pickDailyVignette(caseVignettes[answer.id] ?? [], answer.id, date)?.text ?? '')
     : '', [answer, mode, caseVignettes, date])

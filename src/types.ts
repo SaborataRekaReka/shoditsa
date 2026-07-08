@@ -145,7 +145,21 @@ export type HintPerson = Person & { matched?: boolean }
 export type Hint = { key: string; label: string; value: string; status: MatchStatus; direction: Direction; people?: HintPerson[]; matchedValues?: string[] }
 export type Attempt = { titleId: string; hints: Hint[] }
 export type GameStatus = 'playing' | 'won' | 'lost'
-export type SavedGame = { key: string; mode: TitleMode; period: PeriodKey; date: string; answerId: string; attempts: Attempt[]; status: GameStatus; usedHints?: AssistHintKey[]; hintChoices?: HintChoice[]; dismissedHintRounds?: HintCheckpoint[]; updatedAt: number }
+export type SavedGame = {
+  key: string
+  mode: TitleMode
+  period: PeriodKey
+  date: string
+  answerId: string
+  attempts: Attempt[]
+  attemptTitleIds?: string[]
+  status: GameStatus
+  usedHints?: AssistHintKey[]
+  hintChoices?: HintChoice[]
+  dismissedHintRounds?: HintCheckpoint[]
+  updatedAt: number
+  schemaVersion?: number
+}
 export type Stats = { played: number; won: number; currentStreak: number; bestStreak: number; distribution: number[] }
 export type Wallet = { tickets: number; lifetimeTickets: number }
 export type TicketLedgerEntry = {
