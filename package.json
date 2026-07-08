@@ -8,7 +8,7 @@
     "typecheck": "tsc -b",
     "build": "tsc -b && vite build",
     "yandex:build": "npm run build",
-    "yandex:pack": "rm -f dist.zip && cd dist && zip -r ../dist.zip .",
+    "yandex:pack": "node scripts/package-yandex-archive.mjs",
     "yandex:bundle": "npm run yandex:build && npm run yandex:pack",
     "preview": "vite preview",
     "deploy:quick": "powershell -ExecutionPolicy Bypass -File scripts/deploy-timeweb.ps1",
@@ -48,6 +48,7 @@
     "vite": "latest"
   },
   "devDependencies": {
+    "archiver": "^7.0.1",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

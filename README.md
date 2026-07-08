@@ -29,14 +29,15 @@ npm run yandex:bundle
 Команда делает production-сборку и автоматически упаковывает `dist.zip` с корректной структурой архива.
 
 Автоматическая сборка в CI выполняется workflow  
-`/home/runner/work/shoditsa/shoditsa/.github/workflows/build-yandex-games.yml`:
+`.github/workflows/build-yandex-games.yml`:
 
 - на каждый `push` в `main`;
 - вручную через `workflow_dispatch`;
 - при публикации релиза (`release: published`).
 
-После выполнения workflow публикуется versioned-артефакт `yandex-games-<version>` с файлом
+После выполнения workflow публикуется версионированный артефакт `yandex-games-<version>` с файлом
 `dist-<version>.zip` (версия = тег релиза или `YYYYMMDD-<sha7>`).  
+Для `release: published` используется тег релиза, для `push`/`workflow_dispatch` — формат даты и SHA.
 Для релизов этот же архив добавляется в assets релиза.
 
 Базовая валидация перед и после рефакторинга:
