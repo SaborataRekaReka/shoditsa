@@ -294,6 +294,8 @@
 .period-option.locked .period-option__lock svg { color: #9b6b22; }
 .period-option.unlockable .period-option__lock svg,
 .period-option.unlocked .period-option__lock svg { color: #31794b; }
+.period-option--main .period-option__lock { background: rgba(111, 101, 82, .15); }
+.period-option--main .period-option__lock svg { color: #6f6552; }
 .period-option__copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .period-option__copy strong { font-size: 12px; }
 .period-option__copy small { color: var(--color-paper-muted-2); font-size: 11px; }

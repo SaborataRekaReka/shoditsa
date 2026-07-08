@@ -749,6 +749,7 @@ function PeriodControl({
   freePlayLaunchesToday,
   wallet,
   unlockedPeriods,
+  completedPeriods,
 }: {
   mode: TitleMode
   value: PeriodKey
@@ -759,11 +760,13 @@ function PeriodControl({
   freePlayLaunchesToday: number
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
+  completedPeriods: PeriodKey[]
 }) {
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const closePeriodMenu = useCallback(() => setOpen(false), [])
   const unlocked = new Set(unlockedPeriods)
+  const completed = new Set(completedPeriods)
   const selectedLocked = !unlocked.has(value)
   const selectedCost = periodUnlockCost(value)
   const shortage = Math.max(0, selectedCost - wallet.tickets)
@@ -789,12 +792,28 @@ function PeriodControl({
       {PERIOD_UNLOCK_ORDER.map((periodKey) => {
         const isUnlocked = unlocked.has(periodKey)
         const isActive = value === periodKey
+        const isMainSession = periodKey === 'all'
+        const isCompleted = !isMainSession && completed.has(periodKey)
         const cost = periodUnlockCost(periodKey)
         const isUnlockable = !isUnlocked && cost > 0 && wallet.tickets >= cost
+        const optionIcon = isMainSession
+          ? <Target />
+          : isCompleted
+            ? <Check />
+            : isUnlocked || isUnlockable
+              ? <LockOpen />
+              : <Lock />
+        const optionDescription = isMainSession
+          ? 'Главный сеанс'
+          : isCompleted
+            ? 'Пройден'
+            : isUnlocked
+              ? 'Открыт'
+              : `${cost} билетов`
         return <button
           type="button"
           key={periodKey}
-          className={`period-option ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : isUnlockable ? 'unlockable' : 'locked'}`}
+          className={`period-option ${isMainSession ? 'period-option--main' : ''} ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : isUnlockable ? 'unlockable' : 'locked'}`}
           onClick={(event) => {
             event.stopPropagation()
             trackMetrikaGoal('select_period', {
@@ -809,10 +828,10 @@ function PeriodControl({
           role="option"
           aria-selected={isActive}
         >
-          <span className="period-option__lock">{isUnlocked ? <Check /> : isUnlockable ? <LockOpen /> : <Lock />}</span>
+          <span className="period-option__lock">{optionIcon}</span>
           <span className="period-option__copy">
             <strong>{PERIODS[periodKey].label}</strong>
-            <small>{periodKey === 'all' ? 'Главный сеанс' : isUnlocked ? 'Открыт' : `${cost} билетов`}</small>
+            <small>{optionDescription}</small>
           </span>
         </button>
       })}
@@ -1005,7 +1024,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, onUnlockPeriod, onStartFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -1021,6 +1040,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   hasAnamnesis: boolean
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
+  completedPeriods: PeriodKey[]
   onUnlockPeriod: (period: PeriodKey) => boolean
   onStartFreePlay: () => void
   freePlayCostValue: number
@@ -1128,7 +1148,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 <h1>Ежедневная игра: {modeMeta(mode).lower}</h1>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 <div className="ticket-settings">
-                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} />
+                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
                 </div>
               </div>
             </section>}
@@ -2524,6 +2544,16 @@ export default function App() {
   }
 
   const games = useMemo(() => allGames(), [screen])
+  const currentCompletedPeriods = useMemo(() => {
+    if (!canUnlockPeriods(mode)) return [] as PeriodKey[]
+    const completed = new Set<PeriodKey>()
+    for (const savedGame of games) {
+      if (savedGame.mode !== mode) continue
+      if (savedGame.status !== 'won' && savedGame.status !== 'lost') continue
+      completed.add(savedGame.period)
+    }
+    return PERIOD_UNLOCK_ORDER.filter((periodKey) => completed.has(periodKey))
+  }, [games, mode])
   const activeGames = useMemo(() => games.filter((game) => game.status === 'playing').sort((a, b) => b.updatedAt - a.updatedAt), [games])
   const diagnosisAnamnesis = useMemo(() => {
     if (mode !== 'diagnosis' || !data.diagnosis.length) return null
@@ -2703,7 +2733,7 @@ export default function App() {
   return <div className={`app app--${appTone}`}>
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} />}
 
