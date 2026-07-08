@@ -248,8 +248,10 @@
 }
 .period-control--custom:hover { background: #e6ddc9; border-color: #817660; }
 .period-control--custom.is-locked { border-color: #a46d3a; }
+.period-control--custom.is-unlockable { border-color: #5b9b70; }
 .period-control__value { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 7px; color: var(--color-ink); font-size: 13px; font-weight: 700; letter-spacing: 0; text-transform: none; }
 .period-control__value > svg:first-child { width: 14px; height: 14px; color: #9b6b22; }
+.period-control--custom.is-unlockable .period-control__value > svg:first-child { color: #31794b; }
 .period-control__value > svg:last-child { width: 15px; height: 15px; color: var(--color-paper-muted); transition: transform .2s var(--ease); }
 .period-select-wrap.is-open .period-control__value > svg:last-child { transform: rotate(90deg); }
 .period-menu {
@@ -290,6 +292,7 @@
 .period-option__lock { width: 24px; height: 24px; border-radius: 8px; background: rgba(23, 26, 23, .08); display: grid; place-items: center; }
 .period-option__lock svg { width: 13px; height: 13px; }
 .period-option.locked .period-option__lock svg { color: #9b6b22; }
+.period-option.unlockable .period-option__lock svg,
 .period-option.unlocked .period-option__lock svg { color: #31794b; }
 .period-option__copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .period-option__copy strong { font-size: 12px; }

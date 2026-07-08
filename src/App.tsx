@@ -15,6 +15,7 @@ import {
   Gamepad2,
   HeartPulse,
   Lock,
+  LockOpen,
   MapPin,
   Music2,
   NotebookText,
@@ -728,10 +729,11 @@ function PeriodControl({
   const selectedLocked = !unlocked.has(value)
   const selectedCost = periodUnlockCost(value)
   const shortage = Math.max(0, selectedCost - wallet.tickets)
+  const selectedUnlockable = selectedLocked && selectedCost > 0 && shortage === 0
   useDismissOnOutside(open, wrapRef, closePeriodMenu)
 
   return <div ref={wrapRef} className={`period-select-wrap ${open ? 'is-open' : ''}`}>
-    <button type="button" className={`period-control period-control--custom ${selectedLocked ? 'is-locked' : ''}`} onClick={(event) => {
+    <button type="button" className={`period-control period-control--custom ${selectedLocked ? 'is-locked' : ''} ${selectedUnlockable ? 'is-unlockable' : ''}`} onClick={(event) => {
       event.stopPropagation()
       setOpen((current) => !current)
     }} aria-expanded={open}>
@@ -740,7 +742,7 @@ function PeriodControl({
         <strong><Ticket /> {wallet.tickets}</strong>
       </span>
       <span className="period-control__value">
-        {selectedLocked && <Lock />}
+        {selectedLocked && (selectedUnlockable ? <LockOpen /> : <Lock />)}
         <span>{PERIODS[value].label}</span>
         <ChevronRight />
       </span>
@@ -750,10 +752,11 @@ function PeriodControl({
         const isUnlocked = unlocked.has(periodKey)
         const isActive = value === periodKey
         const cost = periodUnlockCost(periodKey)
+        const isUnlockable = !isUnlocked && cost > 0 && wallet.tickets >= cost
         return <button
           type="button"
           key={periodKey}
-          className={`period-option ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : 'locked'}`}
+          className={`period-option ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : isUnlockable ? 'unlockable' : 'locked'}`}
           onClick={(event) => {
             event.stopPropagation()
             onChange(periodKey)
@@ -762,7 +765,7 @@ function PeriodControl({
           role="option"
           aria-selected={isActive}
         >
-          <span className="period-option__lock">{isUnlocked ? <Check /> : <Lock />}</span>
+          <span className="period-option__lock">{isUnlocked ? <Check /> : isUnlockable ? <LockOpen /> : <Lock />}</span>
           <span className="period-option__copy">
             <strong>{PERIODS[periodKey].label}</strong>
             <small>{periodKey === 'all' ? 'Главный сеанс' : isUnlocked ? 'Открыт' : `${cost} билетов`}</small>
