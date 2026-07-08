@@ -20,7 +20,7 @@ const readFirstExistingJson = async (paths) => {
       throw error
     }
   }
-  throw new Error(`Missing JSON files: ${paths.join(', ')}`)
+  throw new Error(`Could not find JSON file at any of the following paths: ${paths.join(', ')}`)
 }
 
 const validateTitleItem = (item, file) => {

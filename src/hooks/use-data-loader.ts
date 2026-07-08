@@ -29,8 +29,14 @@ const fetchJsonCached = async <T,>(url: string): Promise<T> => {
 const loadModeItems = async (dataFile: string) => {
   try {
     return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
-  } catch {
-    return fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
+  } catch (primaryError) {
+    try {
+      return await fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
+    } catch (fallbackError) {
+      const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError)
+      const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
+      throw new Error(`Failed to load dataset "${dataFile}". Primary source error: ${primaryMessage}. Fallback source error: ${fallbackMessage}`)
+    }
   }
 }
 
