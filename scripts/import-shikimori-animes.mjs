@@ -323,14 +323,9 @@ const buildSafeAnimeHint = ({ details, summary, characterNames, loreKeywords }) 
   return redactedNames
 }
 
-const createSafeFacts = ({ kindLabel, statusLabel, episodes, episodesAired, sourceLabel, season }) => {
+const createSafeFacts = ({ season }) => {
   const facts = []
-  if (kindLabel) facts.push(`Формат: ${kindLabel}`)
-  if (statusLabel) facts.push(`Статус: ${statusLabel}`)
-  if (episodes != null) facts.push(`Эпизоды: ${episodes}`)
-  if (episodesAired != null && episodesAired > 0) facts.push(`Вышло эпизодов: ${episodesAired}`)
   if (season) facts.push(`Сезон: ${season}`)
-  if (sourceLabel) facts.push(`Первоисточник: ${sourceLabel}`)
   return facts.slice(0, 4)
 }
 

@@ -182,6 +182,19 @@ type AssistHintView = {
   available: boolean
 }
 
+const comparedAnimeFactLabels = new Set([
+  'формат',
+  'статус',
+  'эпизоды',
+  'вышло эпизодов',
+  'вышло серий',
+  'первоисточник',
+])
+const animeAssistFact = (facts: string[]) => facts.find((fact) => {
+  const label = normalizeTextMatch(fact.split(':')[0] ?? '')
+  return label && !comparedAnimeFactLabels.has(label)
+}) ?? ''
+
 type AppScreen = 'hub' | 'title' | 'game' | 'rewatch'
 const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch'
 type AdminWindow = Window & {
@@ -487,6 +500,26 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
   const facts = (item.facts ?? []).map(cleanHintText).filter(Boolean)
   const sloganHint = cleanHintText(item.slogan || '')
   const fact = facts[0]
+
+  if (item.mode === 'anime') {
+    const factHint = animeAssistFact(facts)
+    return [
+      {
+        key: 'plot',
+        title: 'Сюжет',
+        subtitle: 'Фрагмент описания без спойлеров',
+        body: plot,
+        available: Boolean(plot),
+      },
+      {
+        key: 'fact',
+        title: 'Факт',
+        subtitle: 'Дополнительная деталь вне обычных признаков',
+        body: factHint,
+        available: Boolean(factHint),
+      },
+    ]
+  }
 
   if (item.mode === 'diagnosis') {
     const diagnosticsHint = cropHintText(cleanHintText((item.diagnostics ?? []).slice(0, 4).join(', ')))
