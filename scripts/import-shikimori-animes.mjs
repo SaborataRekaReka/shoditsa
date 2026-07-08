@@ -475,7 +475,8 @@ for (const [index, row] of listEntries.entries()) {
     const seasonLabel = cleanText(details?.season || '') || null
 
     const episodes = toIntOrNull(details?.episodes ?? summary?.episodes)
-    const episodesAired = toIntOrNull(details?.episodes_aired ?? summary?.episodes_aired)
+    const episodesAiredRaw = toIntOrNull(details?.episodes_aired ?? summary?.episodes_aired)
+    const episodesAired = episodesAiredRaw != null && episodesAiredRaw > 0 && episodesAiredRaw !== episodes ? episodesAiredRaw : null
     const duration = toIntOrNull(details?.duration)
     const score = toNumberOrNull(details?.score ?? summary?.score)
     const ageRatingCode = cleanText(details?.rating || '').toLowerCase()

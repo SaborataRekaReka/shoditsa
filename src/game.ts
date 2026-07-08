@@ -161,6 +161,11 @@ const ageNumber = (value: string | null | undefined) => {
   const num = Number(match[1])
   return Number.isFinite(num) ? num : null
 }
+const positiveNumber = (value: number | null | undefined) => value != null && value > 0 ? value : null
+const distinctAnimeEpisodesAired = (episodesAired: number | null, episodes: number | null) => {
+  if (episodesAired == null) return null
+  return episodesAired === episodes ? null : episodesAired
+}
 const playerCountWord = (count: number) => {
   const mod100 = Math.abs(count) % 100
   const mod10 = mod100 % 10
@@ -252,13 +257,15 @@ const gamePriceLabel = (item: TitleItem) => {
 
 const gamePriceHint = (guess: TitleItem, answer: TitleItem): { status: MatchStatus; direction: Direction } => {
   if (!guess.price || !answer.price) return { status: 'unknown', direction: null }
-  if (guess.price.isFree && answer.price.isFree) return { status: 'match', direction: null }
+  if (guess.price.isFree === answer.price.isFree && (guess.price.isFree || guess.price.final == null || answer.price.final == null)) return { status: 'match', direction: null }
   if (guess.price.isFree !== answer.price.isFree) return { status: 'miss', direction: null }
-  if (guess.price.final == null || answer.price.final == null) return { status: 'unknown', direction: null }
-  const delta = Math.abs(guess.price.final - answer.price.final)
+  const guessFinal = guess.price.final
+  const answerFinal = answer.price.final
+  if (guessFinal == null || answerFinal == null) return { status: 'match', direction: null }
+  const delta = Math.abs(guessFinal - answerFinal)
   return {
     status: delta <= 10_000 ? 'match' : delta <= 35_000 ? 'close' : 'miss',
-    direction: delta <= 10_000 ? null : answer.price.final > guess.price.final ? 'up' : 'down',
+    direction: delta <= 10_000 ? null : answerFinal > guessFinal ? 'up' : 'down',
   }
 }
 
@@ -401,13 +408,17 @@ const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
 
   const year = numeric(guess.year, answer.year, 0, 2)
   const rank = numeric(guess.topRank, answer.topRank, 0, 20)
-  const episodes = numeric(guess.episodes, answer.episodes, 0, 2)
-  const episodesAired = numeric(guess.animeEpisodesAired, answer.animeEpisodesAired, 0, 2)
+  const guessEpisodes = positiveNumber(guess.episodes)
+  const answerEpisodes = positiveNumber(answer.episodes)
+  const guessEpisodesAired = distinctAnimeEpisodesAired(positiveNumber(guess.animeEpisodesAired), guessEpisodes)
+  const answerEpisodesAired = distinctAnimeEpisodesAired(positiveNumber(answer.animeEpisodesAired), answerEpisodes)
+  const episodes = numeric(guessEpisodes, answerEpisodes, 0, 2)
+  const episodesAired = numeric(guessEpisodesAired, answerEpisodesAired, 0, 2)
   const runtime = numeric(guess.runtimeMinutes, answer.runtimeMinutes, 2, 5)
   const score = numeric(guessScore, answerScore, 0.05, 0.2)
 
-  const hasEpisodes = guess.episodes != null || answer.episodes != null
-  const hasEpisodesAired = guess.animeEpisodesAired != null || answer.animeEpisodesAired != null
+  const hasEpisodes = guessEpisodes != null || answerEpisodes != null
+  const hasEpisodesAired = guessEpisodesAired != null || answerEpisodesAired != null
   const hasRuntime = guess.runtimeMinutes != null || answer.runtimeMinutes != null
   const hasStudios = guessStudios.length > 0 || answerStudios.length > 0
   const hasSource = Boolean(guessSource || answerSource)
@@ -421,8 +432,8 @@ const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
     { key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year },
     { key: 'anime_kind', label: 'Формат', value: guess.animeKind ?? guessKind ?? '—', status: scalar(guessKind, answerKind), direction: null },
     { key: 'anime_status', label: 'Статус', value: guess.animeStatus ?? guess.seriesStatus ?? guessStatus ?? '—', status: scalar(guessStatus, answerStatus), direction: null },
-    ...(hasEpisodes ? [{ key: 'episodes', label: 'Эпизоды', value: guess.episodes != null ? String(guess.episodes) : '—', ...episodes } satisfies Hint] : []),
-    ...(hasEpisodesAired ? [{ key: 'episodes_aired', label: 'Вышло серий', value: guess.animeEpisodesAired != null ? String(guess.animeEpisodesAired) : '—', ...episodesAired } satisfies Hint] : []),
+    ...(hasEpisodes ? [{ key: 'episodes', label: 'Эпизоды', value: guessEpisodes != null ? String(guessEpisodes) : '—', ...episodes } satisfies Hint] : []),
+    ...(hasEpisodesAired ? [{ key: 'episodes_aired', label: 'Вышло серий', value: guessEpisodesAired != null ? String(guessEpisodesAired) : '—', ...episodesAired } satisfies Hint] : []),
     ...(hasRuntime ? [{ key: 'runtime', label: 'Длительность', value: guess.runtimeMinutes ? `${guess.runtimeMinutes} мин` : '—', ...runtime } satisfies Hint] : []),
     { key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: matchedGenres },
     ...(hasStudios ? [{ key: 'studio', label: 'Студия', value: list(guessStudios), status: setStatus(guessStudios, answerStudios), direction: null, matchedValues: matchedStudios } satisfies Hint] : []),
