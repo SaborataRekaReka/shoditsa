@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T15:11:09.947Z",
+  "generatedAt": "2026-07-08T12:28:47.068Z",
   "requestedSource": "https://www.kinopoisk.ru/top/navigator/",
   "currentMovieSubset": "Navigator IDs + details + staff, incomplete titles skipped",
   "api": "https://kinopoiskapiunofficial.tech/documentation/api/",
@@ -40,5 +40,22 @@
       "used": 172,
       "exhausted": true
     }
-  ]
+  ],
+  "animeCount": 1000,
+  "animeSource": "https://shikimori.io/animes?order=popularity",
+  "animeImport": {
+    "orderedBy": "popularity",
+    "sequential": true,
+    "startPage": 1,
+    "perPage": 50,
+    "requested": 1000,
+    "fetched": 1000,
+    "imported": 1000,
+    "skipped": 0,
+    "fetchRoles": false,
+    "statusFilter": null,
+    "kindFilter": null,
+    "keepNsfw": false,
+    "note": "merged pages 1-20; latest appended batch pages 11-20"
+  }
 }

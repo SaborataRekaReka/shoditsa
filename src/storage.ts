@@ -8,6 +8,7 @@ const ATTENDANCE_STATS_KEY = 'seans:v1:attendance:stats'
 const WALLET_KEY = 'seans:v1:wallet'
 const TICKET_LEDGER_KEY = 'seans:v1:ticket-ledger'
 const PERIOD_UNLOCKS_KEY = 'seans:v1:period-unlocks'
+const FREE_PLAY_USAGE_PREFIX = 'seans:v1:free-play-usage:'
 export const gameKey = (mode: string, period: string, date: string) => `${mode}|${period}|${date}`
 
 export const loadGame = (key: string): SavedGame | null => {
@@ -57,6 +58,27 @@ export const addTicketLedgerEntry = (entry: Omit<TicketLedgerEntry, 'id' | 'at'>
   const next = [nextEntry, ...loadTicketLedger()].slice(0, 80)
   localStorage.setItem(TICKET_LEDGER_KEY, JSON.stringify(next))
   return nextEntry
+}
+
+export const loadFreePlayUsage = (date: string): number => {
+  try {
+    const raw = localStorage.getItem(FREE_PLAY_USAGE_PREFIX + date)
+    const parsed = Math.trunc(Number(raw))
+    return Number.isFinite(parsed) ? Math.max(0, parsed) : 0
+  } catch {
+    return 0
+  }
+}
+
+export const saveFreePlayUsage = (date: string, launches: number) => {
+  const safeValue = Math.max(0, Math.trunc(Number(launches) || 0))
+  localStorage.setItem(FREE_PLAY_USAGE_PREFIX + date, String(safeValue))
+}
+
+export const consumeFreePlayUsage = (date: string): number => {
+  const next = loadFreePlayUsage(date) + 1
+  saveFreePlayUsage(date, next)
+  return next
 }
 
 export const emptyAttendanceStats = (): AttendanceStats => ({

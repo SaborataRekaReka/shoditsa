@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import type { CaseVignetteMap, DiagnosisCaseVignettes, TitleItem, TitleMode } from '../types'
+import type { CaseVignetteMap, DiagnosisCaseVignettes, LibrarySearchIndex, TitleItem, TitleMode } from '../types'
 import { MODE_CONFIG } from '../app/mode-config'
 
 type ModeData = Record<TitleMode, TitleItem[]>
-type ModeCounts = { movie: number | null; series: number | null; game: number | null; diagnosis: number | null }
+type ModeCounts = { movie: number | null; series: number | null; anime: number | null; game: number | null; diagnosis: number | null }
+type ModeSearchIndexes = Record<TitleMode, LibrarySearchIndex | null>
 
-const initialData: ModeData = { movie: [], series: [], game: [], diagnosis: [] }
-const initialCounts: ModeCounts = { movie: null, series: null, game: null, diagnosis: null }
+const initialData: ModeData = { movie: [], series: [], anime: [], game: [], diagnosis: [] }
+const initialCounts: ModeCounts = { movie: null, series: null, anime: null, game: null, diagnosis: null }
+const initialSearchIndexes: ModeSearchIndexes = { movie: null, series: null, anime: null, game: null, diagnosis: null }
 const toIntegerOrNull = (value: unknown) => {
   const parsed = Math.trunc(Number(value))
   return Number.isFinite(parsed) ? parsed : null
@@ -27,16 +29,18 @@ const fetchJsonCached = async <T,>(url: string): Promise<T> => {
 export const useDataLoader = (mode: TitleMode) => {
   const [data, setData] = useState<ModeData>(initialData)
   const [titleCounts, setTitleCounts] = useState<ModeCounts>(initialCounts)
+  const [searchIndexes, setSearchIndexes] = useState<ModeSearchIndexes>(initialSearchIndexes)
   const [caseVignettes, setCaseVignettes] = useState<CaseVignetteMap>({})
   const [globalDailySalt, setGlobalDailySalt] = useState(0)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetchJsonCached<{ movieCount?: number; seriesCount?: number; gameCount?: number; diagnosisCount?: number }>('./data/source.json')
+    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; diagnosisCount?: number }>('./data/source.json')
       .then((source) => {
         setTitleCounts((current) => ({
           movie: Number.isFinite(source.movieCount) ? source.movieCount! : current.movie,
           series: Number.isFinite(source.seriesCount) ? source.seriesCount! : current.series,
+          anime: Number.isFinite(source.animeCount) ? source.animeCount! : current.anime,
           game: Number.isFinite(source.gameCount) ? source.gameCount! : current.game,
           diagnosis: Number.isFinite(source.diagnosisCount) ? source.diagnosisCount! : current.diagnosis,
         }))
@@ -71,7 +75,22 @@ export const useDataLoader = (mode: TitleMode) => {
     fetchJsonCached<TitleItem[]>('./data/games.generated.json')
       .then((items) => setTitleCounts((current) => ({ ...current, game: current.game ?? items.length })))
       .catch(() => undefined)
+
+    fetchJsonCached<TitleItem[]>('./data/animes.generated.json')
+      .then((items) => setTitleCounts((current) => ({ ...current, anime: current.anime ?? items.length })))
+      .catch(() => undefined)
   }, [])
+
+  useEffect(() => {
+    if (searchIndexes[mode]) return
+    const libraryKey = MODE_CONFIG[mode].dataFile
+    fetchJsonCached<LibrarySearchIndex>(`./data/libraries/${libraryKey}/search-index.json`)
+      .then((index) => {
+        if (!index || typeof index !== 'object' || !index.tokenToIds) return
+        setSearchIndexes((current) => ({ ...current, [mode]: index }))
+      })
+      .catch(() => undefined)
+  }, [mode, searchIndexes])
 
   useEffect(() => {
     if (data[mode].length) return
@@ -84,5 +103,5 @@ export const useDataLoader = (mode: TitleMode) => {
       .finally(() => setLoading(false))
   }, [mode, data])
 
-  return { data, titleCounts, caseVignettes, loading, globalDailySalt }
+  return { data, titleCounts, caseVignettes, loading, globalDailySalt, searchIndex: searchIndexes[mode] }
 }

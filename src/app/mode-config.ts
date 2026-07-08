@@ -8,7 +8,7 @@ export type ModeConfig = {
   daily: string
   lower: string
   searchPlaceholder: string
-  dataFile: 'movies' | 'series' | 'games' | 'diagnoses'
+  dataFile: 'movies' | 'series' | 'animes' | 'games' | 'diagnoses'
   emptyArticle: 'любой' | 'любого'
 }
 
@@ -35,6 +35,17 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     dataFile: 'series',
     emptyArticle: 'любого',
   },
+  anime: {
+    title: 'Аниме',
+    plural: 'Аниме',
+    subject: 'аниме',
+    subjectGenitive: 'аниме',
+    daily: 'Аниме',
+    lower: 'аниме',
+    searchPlaceholder: 'Найти аниме…',
+    dataFile: 'animes',
+    emptyArticle: 'любого',
+  },
   game: {
     title: 'Игры',
     plural: 'Игры',
@@ -59,4 +70,4 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
   },
 }
 
-export const MODE_TABS: TitleMode[] = ['movie', 'series', 'game', 'diagnosis']
+export const MODE_TABS: TitleMode[] = ['movie', 'series', 'anime', 'game', 'diagnosis']

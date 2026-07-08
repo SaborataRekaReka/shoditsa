@@ -353,6 +353,7 @@
 .category-grid--active .category-card { padding: 19px; color: var(--color-ink); background: var(--color-paper); border-color: var(--color-paper-line); display: flex; flex-direction: column; align-items: flex-start; box-shadow: var(--shadow-tile); }
 .category-card--movie { --card-accent: var(--mode-movie-brand); --card-icon-bg: var(--mode-movie-brand); }
 .category-card--series { --card-accent: var(--mode-series-brand); --card-icon-bg: var(--mode-series-brand); }
+.category-card--anime { --card-accent: var(--mode-anime-brand); --card-icon-bg: var(--mode-anime-brand); }
 .category-card--game { --card-accent: var(--mode-game-brand); --card-icon-bg: var(--palette-brand-blue-soft); }
 .category-card--diagnosis { --card-accent: var(--mode-diagnosis-brand); --card-icon-bg: var(--mode-diagnosis-brand); }
 .category-grid--active .category-card::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: var(--card-accent); }

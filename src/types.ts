@@ -1,4 +1,4 @@
-export type TitleMode = 'movie' | 'series' | 'game' | 'diagnosis'
+export type TitleMode = 'movie' | 'series' | 'anime' | 'game' | 'diagnosis'
 export type PeriodKey = 'all' | 'from_1960' | 'from_1980' | 'from_1990' | 'from_2000' | 'from_2010' | 'from_2020'
 
 export type Person = { nameRu: string; nameOriginal: string; photoUrl?: string | null }
@@ -44,8 +44,16 @@ export type TitleItem = {
   ageRating?: string | null
   metacritic?: number | null
   runtimeMinutes?: number | null
+  episodes?: number | null
   seasonsCount?: number | null
   seriesStatus?: string | null
+  animeKind?: string | null
+  animeKindCode?: string | null
+  animeStatus?: string | null
+  animeStatusCode?: string | null
+  animeEpisodesAired?: number | null
+  animeSource?: string | null
+  animeSourceCode?: string | null
   directors?: Person[]
   showrunners?: Person[]
   writers?: Person[]
@@ -53,6 +61,9 @@ export type TitleItem = {
   studios?: string[]
   kinopoiskId?: number | null
   imdbId?: string | null
+  shikimoriId?: number | null
+  shikimoriScore?: number | null
+  shikimoriUrl?: string | null
   ratings?: TitleRatings
   votes?: TitleVotes
   popularityScore: number
@@ -106,6 +117,27 @@ export type TitleItem = {
 export type CaseVignette = { id: string; text: string }
 export type DiagnosisCaseVignettes = { diagnosisId: string; caseVignettes: CaseVignette[] }
 export type CaseVignetteMap = Record<string, CaseVignette[]>
+
+export type LibrarySearchDoc = {
+  id: string
+  titleRu: string | null
+  titleOriginal: string | null
+  alternativeTitles: string[]
+  year: number | null
+  topRank: number | null
+  steamAppId: number | null
+  icd10: string[]
+}
+
+export type LibrarySearchIndex = {
+  version: number
+  library: string
+  generatedAt: string
+  totalItems: number
+  tokensCount: number
+  docs: LibrarySearchDoc[]
+  tokenToIds: Record<string, string[]>
+}
 
 export type MatchStatus = 'match' | 'close' | 'partial' | 'miss' | 'unknown'
 export type Direction = 'up' | 'down' | null

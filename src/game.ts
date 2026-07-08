@@ -1,4 +1,4 @@
-import type { Direction, Hint, MatchStatus, PeriodKey, Stats, TitleItem, TitleMode } from './types'
+import type { Direction, Hint, LibrarySearchIndex, MatchStatus, PeriodKey, Stats, TitleItem, TitleMode } from './types'
 
 export const PERIODS: Record<PeriodKey, { label: string; short: string; fromYear: number | null }> = {
   all: { label: 'Все годы', short: 'Весь экран', fromYear: null },
@@ -67,6 +67,37 @@ export const pickDailyVignette = <T,>(vignettes: T[], diagnosisId: string, date:
 export const normalize = (value: string) => value.toLocaleLowerCase('ru-RU')
   .replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/gi, ' ').trim()
 
+const queryTokens = (value: string) => normalize(value).split(/\s+/).filter((token) => token.length >= 2)
+
+const candidateIdsFromIndex = (index: LibrarySearchIndex, query: string) => {
+  const tokens = queryTokens(query)
+  if (!tokens.length) return new Set<string>()
+
+  const result = new Set<string>()
+  const tokenEntries = Object.entries(index.tokenToIds)
+  const maxCandidates = 500
+
+  for (const token of tokens) {
+    const exactIds = index.tokenToIds[token]
+    if (exactIds) {
+      for (const id of exactIds) {
+        result.add(id)
+        if (result.size >= maxCandidates) return result
+      }
+    }
+
+    for (const [indexedToken, ids] of tokenEntries) {
+      if (!indexedToken.startsWith(token)) continue
+      for (const id of ids) {
+        result.add(id)
+        if (result.size >= maxCandidates) return result
+      }
+    }
+  }
+
+  return result
+}
+
 const distance = (a: string, b: string) => {
   const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i])
   for (let j = 0; j <= a.length; j += 1) matrix[0][j] = j
@@ -76,10 +107,16 @@ const distance = (a: string, b: string) => {
   return matrix[b.length][a.length]
 }
 
-export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<string>) => {
+export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<string>, searchIndex?: LibrarySearchIndex | null) => {
   const q = normalize(query)
   if (!q) return []
-  return pool.map((item) => {
+
+  const candidateIds = searchIndex ? candidateIdsFromIndex(searchIndex, q) : new Set<string>()
+  const candidatePool = candidateIds.size
+    ? pool.filter((item) => candidateIds.has(item.id))
+    : pool
+
+  return candidatePool.map((item) => {
     const names = [item.titleRu, item.titleOriginal, ...(item.alternativeTitles ?? [])].filter(Boolean).map(normalize)
     const exact = names.some((name) => name === q)
     const starts = names.some((name) => name.startsWith(q))
@@ -178,6 +215,29 @@ const reviewHint = (guess: number | null | undefined, answer: number | null | un
   if (ratio <= 1.25) return { status: 'close', direction: answer > guess ? 'up' : 'down' }
   if (ratio <= 2) return { status: 'partial', direction: answer > guess ? 'up' : 'down' }
   return { status: 'miss', direction: answer > guess ? 'up' : 'down' }
+}
+
+const animeScore = (item: TitleItem) => {
+  if (item.shikimoriScore != null) return item.shikimoriScore
+  if (item.ratings?.recognizability != null) return item.ratings.recognizability
+  return null
+}
+
+const mergePeople = (...groups: (TitleItem['directors'] | undefined)[]) => {
+  const result: NonNullable<TitleItem['cast']> = []
+  const seen = new Set<string>()
+
+  for (const group of groups) {
+    for (const person of group ?? []) {
+      const name = person.nameRu || person.nameOriginal
+      const key = normalize(name || '')
+      if (!key || seen.has(key)) continue
+      seen.add(key)
+      result.push(person)
+    }
+  }
+
+  return result
 }
 
 const gamePriceLabel = (item: TitleItem) => {
@@ -313,6 +373,87 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
 }
 
+const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const guessGenres = guess.genres ?? []
+  const answerGenres = answer.genres ?? []
+  const guessStudios = guess.studios ?? []
+  const answerStudios = answer.studios ?? []
+  const guessCast = guess.cast ?? []
+  const answerCast = answer.cast ?? []
+  const guessCreators = mergePeople(guess.directors, guess.showrunners, guess.writers).slice(0, 5)
+  const answerCreators = mergePeople(answer.directors, answer.showrunners, answer.writers).slice(0, 5)
+
+  const guessCreatorNames = guessCreators.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
+  const answerCreatorNames = answerCreators.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
+  const creatorSet = new Set(answerCreatorNames.map(normalize))
+  const castSet = new Set(answerCast.map((person) => normalize(person.nameRu || person.nameOriginal)))
+  const matchedGenres = overlaps(guessGenres, answerGenres)
+  const matchedStudios = overlaps(guessStudios, answerStudios)
+
+  const guessKind = guess.animeKindCode ?? guess.animeKind ?? null
+  const answerKind = answer.animeKindCode ?? answer.animeKind ?? null
+  const guessStatus = guess.animeStatusCode ?? guess.animeStatus ?? guess.seriesStatus ?? null
+  const answerStatus = answer.animeStatusCode ?? answer.animeStatus ?? answer.seriesStatus ?? null
+  const guessSource = guess.animeSourceCode ?? guess.animeSource ?? null
+  const answerSource = answer.animeSourceCode ?? answer.animeSource ?? null
+  const guessScore = animeScore(guess)
+  const answerScore = animeScore(answer)
+
+  const year = numeric(guess.year, answer.year, 0, 2)
+  const rank = numeric(guess.topRank, answer.topRank, 0, 20)
+  const episodes = numeric(guess.episodes, answer.episodes, 0, 2)
+  const episodesAired = numeric(guess.animeEpisodesAired, answer.animeEpisodesAired, 0, 2)
+  const runtime = numeric(guess.runtimeMinutes, answer.runtimeMinutes, 2, 5)
+  const score = numeric(guessScore, answerScore, 0.05, 0.2)
+
+  const hasEpisodes = guess.episodes != null || answer.episodes != null
+  const hasEpisodesAired = guess.animeEpisodesAired != null || answer.animeEpisodesAired != null
+  const hasRuntime = guess.runtimeMinutes != null || answer.runtimeMinutes != null
+  const hasStudios = guessStudios.length > 0 || answerStudios.length > 0
+  const hasSource = Boolean(guessSource || answerSource)
+  const hasScore = guessScore != null || answerScore != null
+  const hasRank = guess.topRank != null || answer.topRank != null
+  const hasAge = Boolean(guess.ageRating || answer.ageRating)
+  const hasCreators = guessCreatorNames.length > 0 || answerCreatorNames.length > 0
+  const hasCast = guessCast.length > 0 || answerCast.length > 0
+
+  const hints: Hint[] = [
+    { key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year },
+    { key: 'anime_kind', label: 'Формат', value: guess.animeKind ?? guessKind ?? '—', status: scalar(guessKind, answerKind), direction: null },
+    { key: 'anime_status', label: 'Статус', value: guess.animeStatus ?? guess.seriesStatus ?? guessStatus ?? '—', status: scalar(guessStatus, answerStatus), direction: null },
+    ...(hasEpisodes ? [{ key: 'episodes', label: 'Эпизоды', value: guess.episodes != null ? String(guess.episodes) : '—', ...episodes } satisfies Hint] : []),
+    ...(hasEpisodesAired ? [{ key: 'episodes_aired', label: 'Вышло серий', value: guess.animeEpisodesAired != null ? String(guess.animeEpisodesAired) : '—', ...episodesAired } satisfies Hint] : []),
+    ...(hasRuntime ? [{ key: 'runtime', label: 'Длительность', value: guess.runtimeMinutes ? `${guess.runtimeMinutes} мин` : '—', ...runtime } satisfies Hint] : []),
+    { key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: matchedGenres },
+    ...(hasStudios ? [{ key: 'studio', label: 'Студия', value: list(guessStudios), status: setStatus(guessStudios, answerStudios), direction: null, matchedValues: matchedStudios } satisfies Hint] : []),
+    ...(hasSource ? [{ key: 'anime_source', label: 'Первоисточник', value: guess.animeSource ?? guessSource ?? '—', status: scalar(guessSource, answerSource), direction: null } satisfies Hint] : []),
+    ...(hasCreators ? [{
+      key: 'creator',
+      label: 'Авторы',
+      value: list(guessCreatorNames),
+      status: setStatus(guessCreatorNames, answerCreatorNames),
+      direction: null,
+      people: guessCreators.map((person) => ({ ...person, matched: creatorSet.has(normalize(person.nameRu || person.nameOriginal)) })),
+    } satisfies Hint] : []),
+    ...(hasCast ? [{
+      key: 'cast',
+      label: 'Сэйю',
+      value: people(guessCast),
+      status: setStatus(
+        guessCast.map((person) => person.nameRu || person.nameOriginal),
+        answerCast.map((person) => person.nameRu || person.nameOriginal),
+      ),
+      direction: null,
+      people: guessCast.map((person) => ({ ...person, matched: castSet.has(normalize(person.nameRu || person.nameOriginal)) })),
+    } satisfies Hint] : []),
+    ...(hasScore ? [{ key: 'shiki', label: 'Shikimori', value: guessScore != null ? guessScore.toFixed(2) : '—', ...score } satisfies Hint] : []),
+    ...(hasRank ? [{ key: 'rank', label: 'Популярность', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank } satisfies Hint] : []),
+    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', status: scalar(guess.ageRating, answer.ageRating), direction: null } satisfies Hint] : []),
+  ]
+
+  return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
+}
+
 const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const guessGenres = guess.genres ?? []
   const answerGenres = answer.genres ?? []
@@ -377,13 +518,14 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
 export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   if (guess.mode === 'diagnosis' || answer.mode === 'diagnosis') return compareDiagnoses(guess, answer)
   if (guess.mode === 'game' || answer.mode === 'game') return compareGames(guess, answer)
+  if (guess.mode === 'anime' || answer.mode === 'anime') return compareAnimeTitles(guess, answer)
   return compareScreenTitles(guess, answer)
 }
 
 export const emptyStats = (): Stats => ({ played: 0, won: 0, currentStreak: 0, bestStreak: 0, distribution: Array(10).fill(0) })
 export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean) => {
   const rows = hints.map((row) => row.map((hint) => hint.status === 'match' ? '🟩' : hint.status === 'close' || hint.status === 'partial' ? '🟨' : hint.status === 'unknown' ? '⬜' : '⬛').join('')).join('\n')
-  const dailyLabel = mode === 'movie' ? 'Фильм дня' : mode === 'series' ? 'Сериал дня' : mode === 'game' ? 'Игра дня' : 'Диагноз дня'
-  const icon = mode === 'game' ? '🎮' : mode === 'diagnosis' ? '🩺' : '🎬'
+  const dailyLabel = mode === 'movie' ? 'Фильм дня' : mode === 'series' ? 'Сериал дня' : mode === 'anime' ? 'Аниме дня' : mode === 'game' ? 'Игра дня' : 'Диагноз дня'
+  const icon = mode === 'game' ? '🎮' : mode === 'diagnosis' ? '🩺' : mode === 'anime' ? '🌸' : '🎬'
   return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/10\n${rows}`
 }

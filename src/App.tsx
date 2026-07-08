@@ -37,22 +37,36 @@ import { compareTitles, dailyTitle, getMoscowDate, PERIODS, pickDailyVignette, p
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
-import { addTicketLedgerEntry, allGames, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadGame, loadPeriodUnlocks, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, unlockPeriod, unlockedPeriodsFor } from './storage'
-import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, GameStatus, HintCheckpoint, HintChoice, HintPerson, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
+import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadPeriodUnlocks, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, unlockPeriod, unlockedPeriodsFor } from './storage'
+import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
-const modeIcon = (mode: TitleMode) => mode === 'movie' ? <Film /> : mode === 'series' ? <Tv /> : mode === 'game' ? <Gamepad2 /> : <Stethoscope />
+const modeIcon = (mode: TitleMode) => mode === 'movie'
+  ? <Film />
+  : mode === 'series'
+    ? <Tv />
+    : mode === 'anime'
+      ? <Sparkles />
+      : mode === 'game'
+        ? <Gamepad2 />
+        : <Stethoscope />
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
   from_2020: 25,
-  from_2010: 35,
-  from_2000: 45,
-  from_1990: 60,
-  from_1980: 75,
-  from_1960: 90,
+  from_2010: 25,
+  from_2000: 25,
+  from_1990: 25,
+  from_1980: 25,
+  from_1960: 25,
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
-const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series'])
+const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series', 'anime'])
+const FREE_PLAY_BASE_COST = 45
+const FREE_PLAY_COST_STEP = 15
+const freePlayCost = (launchesToday: number) => {
+  const safeLaunches = Math.max(0, Math.trunc(Number(launchesToday) || 0))
+  return FREE_PLAY_BASE_COST + safeLaunches * FREE_PLAY_COST_STEP
+}
 type EconomyAward = {
   total: number
   base: number
@@ -178,7 +192,17 @@ type AdminWindow = Window & {
   SEANS_ADMIN_GET_DAILY_SALT?: () => number
 }
 
-const cleanHintText = (value: string) => value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+const cleanHintText = (value: string) => {
+  const redactionPlaceholder = '__SEANS_REDACTION__'
+  return value
+    .replace(/\[+\s*REDACTED\s*\]+/gi, redactionPlaceholder)
+    .replace(/\[\[([^\[\]]+)\]\]/g, '$1')
+    .replace(/\[\/?[a-z_]+(?:=[^\]]+)?\]/gi, ' ')
+    .replace(new RegExp(redactionPlaceholder, 'g'), '[REDACTED]')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const TRUNCATED_HINT_END_RE = /(?:\.\.\.|…)\s*$/
 const resolvePlotHintText = (item: TitleItem) => {
@@ -186,7 +210,8 @@ const resolvePlotHintText = (item: TitleItem) => {
   const description = cleanHintText(item.description || '')
 
   if (!plotHint) return description
-  if (TRUNCATED_HINT_END_RE.test(plotHint) && description) return description
+  if (item.mode === 'anime') return plotHint
+  if (TRUNCATED_HINT_END_RE.test(plotHint) && description && !/\[+\s*REDACTED\s*\]+/i.test(plotHint)) return description
   return plotHint
 }
 const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
@@ -211,6 +236,18 @@ const renderHintBody = (value: string): ReactNode => {
   return nodes
 }
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
+const titlePrimaryScore = (item: TitleItem) => {
+  if (item.mode === 'anime') return item.shikimoriScore ?? item.ratings?.recognizability ?? null
+  if (item.mode === 'movie' || item.mode === 'series') return item.ratings?.kinopoisk ?? null
+  return null
+}
+const ratingBadge = (item: TitleItem) => {
+  if (item.mode === 'anime') {
+    const value = titlePrimaryScore(item)
+    return { label: 'SHIKI', value: value != null ? value.toFixed(2) : '—' }
+  }
+  return { label: 'КП', value: item.ratings?.kinopoisk?.toFixed(1) ?? '—' }
+}
 const progressOverlapHintKeys = new Set([
   'body_systems',
   'symptoms',
@@ -378,7 +415,7 @@ const collectMatchedTags = (attempts: Attempt[]) => {
 
 const buildAssistHints = (item: TitleItem): AssistHintView[] => {
   const plotBase = resolvePlotHintText(item)
-  const plot = item.mode === 'movie' || item.mode === 'series' ? plotBase : cropHintText(plotBase)
+  const plot = item.mode === 'movie' || item.mode === 'series' || item.mode === 'anime' ? plotBase : cropHintText(plotBase)
   const facts = (item.facts ?? []).map(cleanHintText).filter(Boolean)
   const sloganHint = cleanHintText(item.slogan || '')
   const fact = facts[0]
@@ -600,12 +637,20 @@ function PeriodControl({
   mode,
   value,
   onChange,
+  onStartFreePlay,
+  freePlayCostValue,
+  freePlayShortage,
+  freePlayLaunchesToday,
   wallet,
   unlockedPeriods,
 }: {
   mode: TitleMode
   value: PeriodKey
   onChange: (period: PeriodKey) => void
+  onStartFreePlay: () => void
+  freePlayCostValue: number
+  freePlayShortage: number
+  freePlayLaunchesToday: number
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
 }) {
@@ -657,6 +702,23 @@ function PeriodControl({
           </span>
         </button>
       })}
+      {(mode === 'movie' || mode === 'series' || mode === 'anime') && <button
+        type="button"
+        className={`period-option period-option--free-play ${freePlayShortage > 0 ? 'locked' : 'unlocked'}`}
+        onClick={(event) => {
+          event.stopPropagation()
+          if (freePlayShortage > 0) return
+          setOpen(false)
+          onStartFreePlay()
+        }}
+        disabled={freePlayShortage > 0}
+      >
+        <span className="period-option__lock"><Sparkles /></span>
+        <span className="period-option__copy">
+          <strong>Свободная игра</strong>
+          <small>{freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
+        </span>
+      </button>}
     </div>}
     <p className={`period-control__note ${selectedLocked ? 'is-warning' : ''}`}>
       {selectedLocked
@@ -703,14 +765,14 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   onRules: () => void
   onResume: () => void
   activeSessionsCount: number
-  titleCounts: { movie: number | null; series: number | null; game: number | null; diagnosis: number | null }
+  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; diagnosis: number | null }
   todayAttendance: DailyAttendance
 }) {
   const futureCategories = [
     { title: 'Музыка', copy: 'Угадайте группу или исполнителя', icon: <Music2 /> },
     { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
   ]
-  const availableNowCount = 4
+  const availableNowCount = MODE_TABS.length
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return <>
@@ -723,7 +785,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
             <span><Target /><strong>10 попыток</strong></span>
           </div>
           <h1>Все сойдется!</h1>
-          <p>Кино, сериалы, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
+          <p>Кино, сериалы, аниме, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
           <div className="hub-hero__actions">
             <ActionButton onClick={scrollToGames}><Play /> Играть сейчас</ActionButton>
             {activeSessionsCount > 0
@@ -755,6 +817,15 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
             </div>
             <i>{todayAttendance.completedModes.includes('series') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Сериалы</h2>
             <p>Найдите сериал, сравнивая создателей, каст и периоды.</p>
+            <strong>Играть <ChevronRight /></strong>
+          </button>
+          <button className="category-card category-card--anime" onClick={() => onSelect('anime')}>
+            <div className="category-card__head">
+              <span className="category-card__icon"><Sparkles /></span>
+              <span className="category-card__pool"><b>{titleCounts.anime ?? '—'}</b> в пуле</span>
+            </div>
+            <i>{todayAttendance.completedModes.includes('anime') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Аниме</h2>
+            <p>Угадайте аниме по формату, эпизодам, студии, сэйю и рангу в популярности.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--game" onClick={() => onSelect('game')}>
@@ -791,7 +862,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, onUnlockPeriod }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, onUnlockPeriod, onStartFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -808,6 +879,10 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
   onUnlockPeriod: (period: PeriodKey) => boolean
+  onStartFreePlay: () => void
+  freePlayCostValue: number
+  freePlayShortage: number
+  freePlayLaunchesToday: number
 }) {
   const periodLocked = canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
@@ -907,7 +982,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 <h1>Ежедневная игра: {modeMeta(mode).lower}</h1>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 <div className="ticket-settings">
-                  <PeriodControl mode={mode} value={period} onChange={setPeriod} wallet={wallet} unlockedPeriods={unlockedPeriods} />
+                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} />
                 </div>
               </div>
             </section>}
@@ -950,7 +1025,7 @@ function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, on
           <div className="rewatch-poster"><span>#{dayNumber(itemDate)}</span><i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : ''}</i></div>
           <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
           <small>{played
-            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'movie' || played.mode === 'series' ? ` · ${PERIODS[played.period].short}` : ''}`
+            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'movie' || played.mode === 'series' || played.mode === 'anime' ? ` · ${PERIODS[played.period].short}` : ''}`
             : 'Не сыгран'}</small>
         </button>
       })}</section>
@@ -1107,7 +1182,9 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
 
 function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const metricClues = ['country', 'series_status', 'seasons', 'runtime', 'kp', 'imdb'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const metricClues = ['country', 'series_status', 'seasons', 'runtime', 'kp', 'imdb', 'anime_kind', 'anime_status', 'episodes', 'episodes_aired', 'studio', 'anime_source', 'shiki', 'rank']
+    .map((key) => byKey.get(key))
+    .filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const genresHint = byKey.get('genres')
   const genres = item.genres ?? []
@@ -1118,6 +1195,7 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
   const yearText = item.year != null ? String(item.year) : null
   const ageText = item.ageRating ?? '—'
   const isSeriesAttempt = item.mode === 'series'
+  const badge = ratingBadge(item)
   return <article className={`attempt-card attempt-card--screen${isSeriesAttempt ? ' attempt-card--screen-series' : ''}`}>
     <div className="attempt-card__header">
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
@@ -1149,7 +1227,7 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
           })}
         </div>}
       </div>
-      <div className="rating-badge"><small>КП</small><strong>{item.ratings?.kinopoisk?.toFixed(1) ?? '—'}</strong></div>
+      <div className="rating-badge"><small>{badge.label}</small><strong>{badge.value}</strong></div>
     </div>
 
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
@@ -1324,6 +1402,7 @@ function Game({
   caseVignettes,
   dailySalt,
   isPracticeSession,
+  searchIndex,
 }: {
   titles: TitleItem[]
   mode: TitleMode
@@ -1339,6 +1418,7 @@ function Game({
   caseVignettes: CaseVignetteMap
   dailySalt: number
   isPracticeSession: boolean
+  searchIndex: LibrarySearchIndex | null
 }) {
   const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' ? 'all' : period
   const pool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
@@ -1380,12 +1460,12 @@ function Game({
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => {
     const startedAt = typeof performance !== 'undefined' ? performance.now() : 0
-    const next = searchTitles(pool, debouncedQuery, used)
+    const next = searchTitles(pool, debouncedQuery, used, searchIndex)
     if (typeof performance !== 'undefined') {
       markSearchDuration(mode, debouncedQuery.length, performance.now() - startedAt, next.length)
     }
     return next
-  }, [pool, debouncedQuery, used, mode])
+  }, [pool, debouncedQuery, used, mode, searchIndex])
   const matchedTags = useMemo(() => collectMatchedTags(attempts), [attempts])
 
   const isSuggestionsOpen = isSearchDropdownOpen && Boolean(query) && !selected
@@ -1421,7 +1501,7 @@ function Game({
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
   const showTodayLink = date !== getMoscowDate()
   const closeSearchDropdown = useCallback(() => setIsSearchDropdownOpen(false), [])
-  const headingPeriodBadge = mode === 'movie' || mode === 'series'
+  const headingPeriodBadge = mode === 'movie' || mode === 'series' || mode === 'anime'
     ? effectivePeriod === 'all'
       ? 'Главная премьера'
       : PERIODS[effectivePeriod].label.replace(' года', '')
@@ -1709,6 +1789,13 @@ function Game({
                 : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
             <em>{item.mode === 'diagnosis'
               ? (item.contagiousness ?? item.icd10?.[0] ?? '—')
+              : item.mode === 'anime'
+                ? (() => {
+                    const score = titlePrimaryScore(item)
+                    const scoreText = score != null ? score.toFixed(2) : '—'
+                    const rankText = item.topRank != null ? `#${item.topRank}` : null
+                    return rankText ? `${scoreText} · ${rankText}` : scoreText
+                  })()
               : item.mode === 'game'
                 ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
                 : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
@@ -1742,6 +1829,8 @@ function Game({
         <div className="empty-card__icon">{modeIcon(mode)}</div>
         <div><h2>Начните с {modeMeta(mode).emptyArticle} {modeMeta(mode).subjectGenitive}</h2><p>{mode === 'diagnosis'
           ? 'После ответа появятся сравнения по системе, симптомам, диагностике и коду МКБ.'
+          : mode === 'anime'
+            ? 'После ответа появятся сравнения по формату, статусу, эпизодам, студии, сэйю и рейтингу Shikimori.'
           : mode === 'game'
             ? 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.'
             : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
@@ -1931,6 +2020,7 @@ function RulesView() {
   return <div className="rules-list">
     <p>Выберите тайтл из поиска. После каждой попытки значения сравниваются с ответом дня.</p>
     <p>Перед 5-й и 8-й попытками можно открыть по одной из трёх дополнительных подсказок.</p>
+    <p>В режиме «Аниме» сравниваются формат, статус, эпизоды, студия, сэйю и рейтинг Shikimori.</p>
     <p>В режиме «Игры» дополнительно сравниваются позиция в топе, метрики Steam и Metacritic.</p>
     <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
     <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
@@ -1949,7 +2039,7 @@ function ResumeSessionsView({ sessions, onOpen }: {
       {sessions.map((session) => {
         const attemptText = `${session.attempts.length}/10`
         const sessionLabel = session.mode === 'diagnosis' ? 'Прием' : 'Сеанс'
-        const periodText = session.mode === 'movie' || session.mode === 'series' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
+        const periodText = session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
         return <article className="resume-item" key={session.key}>
           <button className="resume-item__open" onClick={() => onOpen(session)}>
             <span className="resume-item__mode">{modeIcon(session.mode)}<i>{modeMeta(session.mode).title}</i></span>
@@ -1970,7 +2060,7 @@ export default function App() {
   const [date, setDate] = useState(getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
-  const { data, titleCounts, caseVignettes, loading, globalDailySalt } = useDataLoader(mode)
+  const { data, titleCounts, caseVignettes, loading, globalDailySalt, searchIndex } = useDataLoader(mode)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const [economyVersion, setEconomyVersion] = useState(0)
   const transitionTimerRef = useRef<number | null>(null)
@@ -1982,6 +2072,9 @@ export default function App() {
   const effectiveDailySalt = globalDailySalt + adminDailySalt
   const wallet = useMemo(() => loadWallet(), [economyVersion])
   const todayAttendance = useMemo(() => loadDailyAttendance(getMoscowDate()), [economyVersion])
+  const freePlayLaunchesToday = useMemo(() => loadFreePlayUsage(getMoscowDate()), [economyVersion])
+  const freePlayCostValue = useMemo(() => freePlayCost(freePlayLaunchesToday), [freePlayLaunchesToday])
+  const freePlayShortage = Math.max(0, freePlayCostValue - wallet.tickets)
   const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
   const currentUnlockedPeriods = useMemo(() => unlockedPeriodsFor(mode, periodUnlocks), [mode, periodUnlocks])
   const refreshEconomy = () => setEconomyVersion((version) => version + 1)
@@ -2144,7 +2237,7 @@ export default function App() {
     setTransition('idle')
     setGameBackTarget(backTarget)
     setModeSafe(savedGame.mode)
-    setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' ? savedGame.period : 'all')
+    setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' || savedGame.mode === 'anime' ? savedGame.period : 'all')
     setDate(savedGame.date)
     setScreen('game')
     setModal(null)
@@ -2196,6 +2289,8 @@ export default function App() {
   }
   const playToday = () => {
     if (transition === 'title-to-game') return
+    adminDailySaltRef.current = 0
+    setAdminDailySalt(0)
     const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
     setGameBackTarget(backTarget)
     setDate(getMoscowDate())
@@ -2207,6 +2302,57 @@ export default function App() {
       setScreen('game')
       return
     }
+    setTransition('title-to-game')
+    clearTransitionTimer()
+    transitionTimerRef.current = window.setTimeout(() => {
+      setScreen('game')
+      setTransition('idle')
+      transitionTimerRef.current = null
+    }, 460)
+  }
+  const startFreePlay = () => {
+    if (transition === 'title-to-game') return
+    if (mode !== 'movie' && mode !== 'series' && mode !== 'anime') return
+
+    const today = getMoscowDate()
+    const launchesToday = loadFreePlayUsage(today)
+    const launchCost = freePlayCost(launchesToday)
+    const currentWallet = loadWallet()
+    if (currentWallet.tickets < launchCost) return
+
+    const nextWallet = { ...currentWallet, tickets: currentWallet.tickets - launchCost }
+    saveWallet(nextWallet)
+    const nextLaunchNumber = consumeFreePlayUsage(today)
+    addTicketLedgerEntry({
+      type: 'spend',
+      amount: launchCost,
+      balanceAfter: nextWallet.tickets,
+      title: 'Свободная игра',
+      detail: `${modeMeta(mode).plural} · запуск #${nextLaunchNumber}`,
+      date: today,
+      mode,
+      period: 'all',
+    })
+
+    const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
+    setGameBackTarget(backTarget)
+    setPeriod('all')
+    setDate(today)
+    setModal(null)
+    window.scrollTo({ top: 0 })
+
+    const nextSalt = adminDailySaltRef.current + 1
+    adminDailySaltRef.current = nextSalt
+    setAdminDailySalt(nextSalt)
+    refreshEconomy()
+
+    if (screen !== 'title') {
+      clearTransitionTimer()
+      setTransition('idle')
+      setScreen('game')
+      return
+    }
+
     setTransition('title-to-game')
     clearTransitionTimer()
     transitionTimerRef.current = window.setTimeout(() => {
@@ -2233,7 +2379,7 @@ export default function App() {
   return <div className={`app app--${appTone}`}>
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} onUnlockPeriod={buyPeriodUnlock} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} />}
 
@@ -2254,6 +2400,7 @@ export default function App() {
           onRules={() => setModal('rules')}
           onEconomyChange={refreshEconomy}
           caseVignettes={caseVignettes}
+          searchIndex={searchIndex}
         />)}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}

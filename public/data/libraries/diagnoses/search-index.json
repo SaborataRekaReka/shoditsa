@@ -1,0 +1,4747 @@
+{
+  "version": 1,
+  "library": "diagnoses",
+  "generatedAt": "2026-07-08T12:02:01.139Z",
+  "totalItems": 120,
+  "tokensCount": 800,
+  "docs": [
+    {
+      "id": "dx_acne",
+      "titleRu": "Акне",
+      "titleOriginal": "Acne vulgaris",
+      "alternativeTitles": [
+        "угревая болезнь",
+        "угри",
+        "прыщи"
+      ],
+      "year": null,
+      "topRank": 59,
+      "steamAppId": null,
+      "icd10": [
+        "L70"
+      ]
+    },
+    {
+      "id": "dx_allergic_rhinitis",
+      "titleRu": "Аллергический ринит",
+      "titleOriginal": "Allergic rhinitis",
+      "alternativeTitles": [
+        "поллиноз",
+        "сенная лихорадка"
+      ],
+      "year": null,
+      "topRank": 8,
+      "steamAppId": null,
+      "icd10": [
+        "J30"
+      ]
+    },
+    {
+      "id": "dx_hypertension",
+      "titleRu": "Артериальная гипертензия",
+      "titleOriginal": "Arterial hypertension",
+      "alternativeTitles": [
+        "гипертония",
+        "повышенное давление"
+      ],
+      "year": null,
+      "topRank": 20,
+      "steamAppId": null,
+      "icd10": [
+        "I10"
+      ]
+    },
+    {
+      "id": "dx_atherosclerosis",
+      "titleRu": "Атеросклероз",
+      "titleOriginal": "Atherosclerosis",
+      "alternativeTitles": [
+        "атеросклеротическая болезнь",
+        "бляшки в сосудах"
+      ],
+      "year": null,
+      "topRank": 73,
+      "steamAppId": null,
+      "icd10": [
+        "I70"
+      ]
+    },
+    {
+      "id": "dx_atopic_dermatitis",
+      "titleRu": "Атопический дерматит",
+      "titleOriginal": "Atopic dermatitis",
+      "alternativeTitles": [
+        "атопическая экзема",
+        "нейродермит"
+      ],
+      "year": null,
+      "topRank": 29,
+      "steamAppId": null,
+      "icd10": [
+        "L20"
+      ]
+    },
+    {
+      "id": "dx_bacterial_vaginosis",
+      "titleRu": "Бактериальный вагиноз",
+      "titleOriginal": "Bacterial vaginosis",
+      "alternativeTitles": [
+        "дисбиоз влагалища",
+        "вагинальный дисбиоз"
+      ],
+      "year": null,
+      "topRank": 55,
+      "steamAppId": null,
+      "icd10": [
+        "N76.0",
+        "B96"
+      ]
+    },
+    {
+      "id": "dx_insomnia",
+      "titleRu": "Бессонница",
+      "titleOriginal": "Insomnia",
+      "alternativeTitles": [
+        "инсомния",
+        "расстройство сна"
+      ],
+      "year": null,
+      "topRank": 77,
+      "steamAppId": null,
+      "icd10": [
+        "G47.0",
+        "F51.0"
+      ]
+    },
+    {
+      "id": "dx_bipolar_affective_disorder",
+      "titleRu": "Биполярное аффективное расстройство",
+      "titleOriginal": "Bipolar affective disorder",
+      "alternativeTitles": [
+        "БАР",
+        "биполярное расстройство"
+      ],
+      "year": null,
+      "topRank": 120,
+      "steamAppId": null,
+      "icd10": [
+        "F31"
+      ]
+    },
+    {
+      "id": "dx_blepharitis",
+      "titleRu": "Блефарит",
+      "titleOriginal": "Blepharitis",
+      "alternativeTitles": [
+        "воспаление век",
+        "краевой блефарит"
+      ],
+      "year": null,
+      "topRank": 83,
+      "steamAppId": null,
+      "icd10": [
+        "H01.0"
+      ]
+    },
+    {
+      "id": "dx_crohn_disease",
+      "titleRu": "Болезнь Крона",
+      "titleOriginal": "Crohn disease",
+      "alternativeTitles": [
+        "крон",
+        "регионарный энтерит"
+      ],
+      "year": null,
+      "topRank": 94,
+      "steamAppId": null,
+      "icd10": [
+        "K50"
+      ]
+    },
+    {
+      "id": "dx_parkinsons_disease",
+      "titleRu": "Болезнь Паркинсона",
+      "titleOriginal": "Parkinson disease",
+      "alternativeTitles": [
+        "паркинсонизм"
+      ],
+      "year": null,
+      "topRank": 115,
+      "steamAppId": null,
+      "icd10": [
+        "G20"
+      ]
+    },
+    {
+      "id": "dx_bronchial_asthma",
+      "titleRu": "Бронхиальная астма",
+      "titleOriginal": "Bronchial asthma",
+      "alternativeTitles": [
+        "астма"
+      ],
+      "year": null,
+      "topRank": 7,
+      "steamAppId": null,
+      "icd10": [
+        "J45"
+      ]
+    },
+    {
+      "id": "dx_varicose_veins_lower_extremities",
+      "titleRu": "Варикозная болезнь вен нижних конечностей",
+      "titleOriginal": "Varicose veins of lower extremities",
+      "alternativeTitles": [
+        "варикоз",
+        "варикоз вен ног"
+      ],
+      "year": null,
+      "topRank": 72,
+      "steamAppId": null,
+      "icd10": [
+        "I83"
+      ]
+    },
+    {
+      "id": "dx_varicella",
+      "titleRu": "Ветряная оспа",
+      "titleOriginal": "Varicella",
+      "alternativeTitles": [
+        "ветрянка"
+      ],
+      "year": null,
+      "topRank": 64,
+      "steamAppId": null,
+      "icd10": [
+        "B01"
+      ]
+    },
+    {
+      "id": "dx_hepatitis_a",
+      "titleRu": "Вирусный гепатит A",
+      "titleOriginal": "Hepatitis A",
+      "alternativeTitles": [
+        "гепатит А",
+        "болезнь Боткина"
+      ],
+      "year": null,
+      "topRank": 89,
+      "steamAppId": null,
+      "icd10": [
+        "B15"
+      ]
+    },
+    {
+      "id": "dx_hiv_infection",
+      "titleRu": "ВИЧ-инфекция",
+      "titleOriginal": "HIV infection",
+      "alternativeTitles": [
+        "ВИЧ",
+        "инфекция вируса иммунодефицита человека",
+        "HIV"
+      ],
+      "year": null,
+      "topRank": 107,
+      "steamAppId": null,
+      "icd10": [
+        "B20",
+        "B21",
+        "B22",
+        "B23",
+        "B24",
+        "Z21"
+      ]
+    },
+    {
+      "id": "dx_pelvic_inflammatory_disease",
+      "titleRu": "Воспалительные заболевания органов малого таза",
+      "titleOriginal": "Pelvic inflammatory disease",
+      "alternativeTitles": [
+        "ВЗОМТ",
+        "воспаление придатков",
+        "сальпингоофорит"
+      ],
+      "year": null,
+      "topRank": 103,
+      "steamAppId": null,
+      "icd10": [
+        "N73"
+      ]
+    },
+    {
+      "id": "dx_vulvovaginal_candidiasis",
+      "titleRu": "Вульвовагинальный кандидоз",
+      "titleOriginal": "Vulvovaginal candidiasis",
+      "alternativeTitles": [
+        "молочница",
+        "кандидоз влагалища"
+      ],
+      "year": null,
+      "topRank": 54,
+      "steamAppId": null,
+      "icd10": [
+        "B37.3"
+      ]
+    },
+    {
+      "id": "dx_gastritis",
+      "titleRu": "Гастрит",
+      "titleOriginal": "Gastritis",
+      "alternativeTitles": [
+        "воспаление желудка"
+      ],
+      "year": null,
+      "topRank": 9,
+      "steamAppId": null,
+      "icd10": [
+        "K29"
+      ]
+    },
+    {
+      "id": "dx_hemorrhagic_stroke",
+      "titleRu": "Геморрагический инсульт",
+      "titleOriginal": "Hemorrhagic stroke",
+      "alternativeTitles": [
+        "кровоизлияние в мозг",
+        "внутримозговое кровоизлияние"
+      ],
+      "year": null,
+      "topRank": 114,
+      "steamAppId": null,
+      "icd10": [
+        "I61",
+        "I62"
+      ]
+    },
+    {
+      "id": "dx_hemorrhoids",
+      "titleRu": "Геморрой",
+      "titleOriginal": "Hemorrhoids",
+      "alternativeTitles": [
+        "геморроидальная болезнь",
+        "варикоз геморроидальных вен"
+      ],
+      "year": null,
+      "topRank": 40,
+      "steamAppId": null,
+      "icd10": [
+        "K64"
+      ]
+    },
+    {
+      "id": "dx_generalized_anxiety_disorder",
+      "titleRu": "Генерализованное тревожное расстройство",
+      "titleOriginal": "Generalized anxiety disorder",
+      "alternativeTitles": [
+        "ГТР",
+        "тревожное расстройство"
+      ],
+      "year": null,
+      "topRank": 26,
+      "steamAppId": null,
+      "icd10": [
+        "F41.1"
+      ]
+    },
+    {
+      "id": "dx_gingivitis",
+      "titleRu": "Гингивит",
+      "titleOriginal": "Gingivitis",
+      "alternativeTitles": [
+        "воспаление дёсен"
+      ],
+      "year": null,
+      "topRank": 67,
+      "steamAppId": null,
+      "icd10": [
+        "K05.0",
+        "K05.1"
+      ]
+    },
+    {
+      "id": "dx_hyperthyroidism",
+      "titleRu": "Гипертиреоз",
+      "titleOriginal": "Hyperthyroidism",
+      "alternativeTitles": [
+        "тиреотоксикоз",
+        "повышенная функция щитовидной железы"
+      ],
+      "year": null,
+      "topRank": 42,
+      "steamAppId": null,
+      "icd10": [
+        "E05"
+      ]
+    },
+    {
+      "id": "dx_hypothyroidism",
+      "titleRu": "Гипотиреоз",
+      "titleOriginal": "Hypothyroidism",
+      "alternativeTitles": [
+        "недостаточность щитовидной железы"
+      ],
+      "year": null,
+      "topRank": 23,
+      "steamAppId": null,
+      "icd10": [
+        "E03"
+      ]
+    },
+    {
+      "id": "dx_glaucoma",
+      "titleRu": "Глаукома",
+      "titleOriginal": "Glaucoma",
+      "alternativeTitles": [
+        "повышенное внутриглазное давление"
+      ],
+      "year": null,
+      "topRank": 70,
+      "steamAppId": null,
+      "icd10": [
+        "H40"
+      ]
+    },
+    {
+      "id": "dx_glomerulonephritis",
+      "titleRu": "Гломерулонефрит",
+      "titleOriginal": "Glomerulonephritis",
+      "alternativeTitles": [
+        "воспаление клубочков почек"
+      ],
+      "year": null,
+      "topRank": 99,
+      "steamAppId": null,
+      "icd10": [
+        "N00",
+        "N03",
+        "N05"
+      ]
+    },
+    {
+      "id": "dx_gonorrhea",
+      "titleRu": "Гонорея",
+      "titleOriginal": "Gonorrhea",
+      "alternativeTitles": [
+        "триппер",
+        "гонококковая инфекция"
+      ],
+      "year": null,
+      "topRank": 105,
+      "steamAppId": null,
+      "icd10": [
+        "A54"
+      ]
+    },
+    {
+      "id": "dx_influenza",
+      "titleRu": "Грипп",
+      "titleOriginal": "Influenza",
+      "alternativeTitles": [
+        "инфлюэнца",
+        "influenza"
+      ],
+      "year": null,
+      "topRank": 2,
+      "steamAppId": null,
+      "icd10": [
+        "J10",
+        "J11"
+      ]
+    },
+    {
+      "id": "dx_gastroesophageal_reflux_disease",
+      "titleRu": "ГЭРБ",
+      "titleOriginal": "Gastroesophageal reflux disease",
+      "alternativeTitles": [
+        "гастроэзофагеальная рефлюксная болезнь",
+        "рефлюкс",
+        "изжога"
+      ],
+      "year": null,
+      "topRank": 35,
+      "steamAppId": null,
+      "icd10": [
+        "K21"
+      ]
+    },
+    {
+      "id": "dx_dementia",
+      "titleRu": "Деменция",
+      "titleOriginal": "Dementia",
+      "alternativeTitles": [
+        "слабоумие",
+        "когнитивное снижение"
+      ],
+      "year": null,
+      "topRank": 79,
+      "steamAppId": null,
+      "icd10": [
+        "F00",
+        "F01",
+        "F03"
+      ]
+    },
+    {
+      "id": "dx_depressive_episode",
+      "titleRu": "Депрессивный эпизод",
+      "titleOriginal": "Depressive episode",
+      "alternativeTitles": [
+        "депрессия"
+      ],
+      "year": null,
+      "topRank": 25,
+      "steamAppId": null,
+      "icd10": [
+        "F32"
+      ]
+    },
+    {
+      "id": "dx_intestinal_diverticulosis",
+      "titleRu": "Дивертикулёз кишечника",
+      "titleOriginal": "Intestinal diverticulosis",
+      "alternativeTitles": [
+        "дивертикулы кишечника",
+        "дивертикулярная болезнь"
+      ],
+      "year": null,
+      "topRank": 98,
+      "steamAppId": null,
+      "icd10": [
+        "K57"
+      ]
+    },
+    {
+      "id": "dx_dyslipidemia",
+      "titleRu": "Дислипидемия",
+      "titleOriginal": "Disorders of lipoprotein metabolism",
+      "alternativeTitles": [
+        "нарушение липидного обмена",
+        "повышенный холестерин",
+        "гиперлипидемия"
+      ],
+      "year": null,
+      "topRank": 43,
+      "steamAppId": null,
+      "icd10": [
+        "E78"
+      ]
+    },
+    {
+      "id": "dx_dysmenorrhea",
+      "titleRu": "Дисменорея",
+      "titleOriginal": "Dysmenorrhea",
+      "alternativeTitles": [
+        "болезненные менструации",
+        "менструальная боль"
+      ],
+      "year": null,
+      "topRank": 58,
+      "steamAppId": null,
+      "icd10": [
+        "N94.6"
+      ]
+    },
+    {
+      "id": "dx_benign_prostatic_hyperplasia",
+      "titleRu": "Доброкачественная гиперплазия предстательной железы",
+      "titleOriginal": "Benign prostatic hyperplasia",
+      "alternativeTitles": [
+        "ДГПЖ",
+        "аденома простаты",
+        "гиперплазия простаты"
+      ],
+      "year": null,
+      "topRank": 52,
+      "steamAppId": null,
+      "icd10": [
+        "N40"
+      ]
+    },
+    {
+      "id": "dx_dorsalgia",
+      "titleRu": "Дорсалгия",
+      "titleOriginal": "Dorsalgia",
+      "alternativeTitles": [
+        "боль в спине",
+        "люмбалгия",
+        "цервикалгия"
+      ],
+      "year": null,
+      "topRank": 48,
+      "steamAppId": null,
+      "icd10": [
+        "M54"
+      ]
+    },
+    {
+      "id": "dx_iron_deficiency_anemia",
+      "titleRu": "Железодефицитная анемия",
+      "titleOriginal": "Iron deficiency anemia",
+      "alternativeTitles": [
+        "анемия",
+        "дефицит железа"
+      ],
+      "year": null,
+      "topRank": 24,
+      "steamAppId": null,
+      "icd10": [
+        "D50"
+      ]
+    },
+    {
+      "id": "dx_cholelithiasis",
+      "titleRu": "Желчнокаменная болезнь",
+      "titleOriginal": "Cholelithiasis",
+      "alternativeTitles": [
+        "камни в желчном пузыре",
+        "холелитиаз"
+      ],
+      "year": null,
+      "topRank": 13,
+      "steamAppId": null,
+      "icd10": [
+        "K80"
+      ]
+    },
+    {
+      "id": "dx_constipation",
+      "titleRu": "Запор",
+      "titleOriginal": "Constipation",
+      "alternativeTitles": [
+        "констипация",
+        "задержка стула"
+      ],
+      "year": null,
+      "topRank": 39,
+      "steamAppId": null,
+      "icd10": [
+        "K59.0"
+      ]
+    },
+    {
+      "id": "dx_myocardial_infarction",
+      "titleRu": "Инфаркт миокарда",
+      "titleOriginal": "Myocardial infarction",
+      "alternativeTitles": [
+        "сердечный приступ"
+      ],
+      "year": null,
+      "topRank": 19,
+      "steamAppId": null,
+      "icd10": [
+        "I21"
+      ]
+    },
+    {
+      "id": "dx_infectious_mononucleosis",
+      "titleRu": "Инфекционный мононуклеоз",
+      "titleOriginal": "Infectious mononucleosis",
+      "alternativeTitles": [
+        "мононуклеоз",
+        "болезнь поцелуев",
+        "EBV-инфекция"
+      ],
+      "year": null,
+      "topRank": 88,
+      "steamAppId": null,
+      "icd10": [
+        "B27"
+      ]
+    },
+    {
+      "id": "dx_ischemic_stroke",
+      "titleRu": "Ишемический инсульт",
+      "titleOriginal": "Ischemic stroke",
+      "alternativeTitles": [
+        "инсульт",
+        "инфаркт мозга"
+      ],
+      "year": null,
+      "topRank": 18,
+      "steamAppId": null,
+      "icd10": [
+        "I63"
+      ]
+    },
+    {
+      "id": "dx_dental_caries",
+      "titleRu": "Кариес зубов",
+      "titleOriginal": "Dental caries",
+      "alternativeTitles": [
+        "кариес",
+        "разрушение зуба"
+      ],
+      "year": null,
+      "topRank": 66,
+      "steamAppId": null,
+      "icd10": [
+        "K02"
+      ]
+    },
+    {
+      "id": "dx_cataract",
+      "titleRu": "Катаракта",
+      "titleOriginal": "Cataract",
+      "alternativeTitles": [
+        "помутнение хрусталика"
+      ],
+      "year": null,
+      "topRank": 69,
+      "steamAppId": null,
+      "icd10": [
+        "H25",
+        "H26"
+      ]
+    },
+    {
+      "id": "dx_pertussis",
+      "titleRu": "Коклюш",
+      "titleOriginal": "Pertussis",
+      "alternativeTitles": [
+        "whooping cough",
+        "коклюшная инфекция"
+      ],
+      "year": null,
+      "topRank": 87,
+      "steamAppId": null,
+      "icd10": [
+        "A37"
+      ]
+    },
+    {
+      "id": "dx_contact_dermatitis",
+      "titleRu": "Контактный дерматит",
+      "titleOriginal": "Contact dermatitis",
+      "alternativeTitles": [
+        "аллергический контактный дерматит",
+        "раздражительный контактный дерматит"
+      ],
+      "year": null,
+      "topRank": 108,
+      "steamAppId": null,
+      "icd10": [
+        "L23",
+        "L24",
+        "L25"
+      ]
+    },
+    {
+      "id": "dx_conjunctivitis",
+      "titleRu": "Конъюнктивит",
+      "titleOriginal": "Conjunctivitis",
+      "alternativeTitles": [
+        "воспаление конъюнктивы"
+      ],
+      "year": null,
+      "topRank": 27,
+      "steamAppId": null,
+      "icd10": [
+        "H10"
+      ]
+    },
+    {
+      "id": "dx_measles",
+      "titleRu": "Корь",
+      "titleOriginal": "Measles",
+      "alternativeTitles": [
+        "коревая инфекция",
+        "measles"
+      ],
+      "year": null,
+      "topRank": 86,
+      "steamAppId": null,
+      "icd10": [
+        "B05"
+      ]
+    },
+    {
+      "id": "dx_urticaria",
+      "titleRu": "Крапивница",
+      "titleOriginal": "Urticaria",
+      "alternativeTitles": [
+        "уртикария",
+        "аллергическая крапивница"
+      ],
+      "year": null,
+      "topRank": 65,
+      "steamAppId": null,
+      "icd10": [
+        "L50"
+      ]
+    },
+    {
+      "id": "dx_lactose_intolerance",
+      "titleRu": "Лактазная недостаточность",
+      "titleOriginal": "Lactose intolerance",
+      "alternativeTitles": [
+        "непереносимость лактозы",
+        "лактазная недостаточность у взрослых"
+      ],
+      "year": null,
+      "topRank": 97,
+      "steamAppId": null,
+      "icd10": [
+        "E73"
+      ]
+    },
+    {
+      "id": "dx_migraine",
+      "titleRu": "Мигрень",
+      "titleOriginal": "Migraine",
+      "alternativeTitles": [
+        "мигренозная головная боль"
+      ],
+      "year": null,
+      "topRank": 16,
+      "steamAppId": null,
+      "icd10": [
+        "G43"
+      ]
+    },
+    {
+      "id": "dx_tinea_pedis",
+      "titleRu": "Микоз стоп",
+      "titleOriginal": "Tinea pedis",
+      "alternativeTitles": [
+        "грибок стопы",
+        "дерматофития стоп",
+        "эпидермофития стоп"
+      ],
+      "year": null,
+      "topRank": 61,
+      "steamAppId": null,
+      "icd10": [
+        "B35.3"
+      ]
+    },
+    {
+      "id": "dx_uterine_fibroids",
+      "titleRu": "Миома матки",
+      "titleOriginal": "Uterine leiomyoma",
+      "alternativeTitles": [
+        "лейомиома матки",
+        "фибромиома матки"
+      ],
+      "year": null,
+      "topRank": 57,
+      "steamAppId": null,
+      "icd10": [
+        "D25"
+      ]
+    },
+    {
+      "id": "dx_myopia",
+      "titleRu": "Миопия",
+      "titleOriginal": "Myopia",
+      "alternativeTitles": [
+        "близорукость"
+      ],
+      "year": null,
+      "topRank": 71,
+      "steamAppId": null,
+      "icd10": [
+        "H52.1"
+      ]
+    },
+    {
+      "id": "dx_urolithiasis",
+      "titleRu": "Мочекаменная болезнь",
+      "titleOriginal": "Urolithiasis",
+      "alternativeTitles": [
+        "камни в почках",
+        "почечнокаменная болезнь",
+        "нефролитиаз"
+      ],
+      "year": null,
+      "topRank": 50,
+      "steamAppId": null,
+      "icd10": [
+        "N20",
+        "N21",
+        "N23"
+      ]
+    },
+    {
+      "id": "dx_non_alcoholic_fatty_liver_disease",
+      "titleRu": "Неалкогольная жировая болезнь печени",
+      "titleOriginal": "Non-alcoholic fatty liver disease",
+      "alternativeTitles": [
+        "НАЖБП",
+        "жировой гепатоз",
+        "стеатоз печени"
+      ],
+      "year": null,
+      "topRank": 92,
+      "steamAppId": null,
+      "icd10": [
+        "K76.0"
+      ]
+    },
+    {
+      "id": "dx_urinary_incontinence",
+      "titleRu": "Недержание мочи",
+      "titleOriginal": "Urinary incontinence",
+      "alternativeTitles": [
+        "инконтиненция",
+        "непроизвольное мочеиспускание"
+      ],
+      "year": null,
+      "topRank": 101,
+      "steamAppId": null,
+      "icd10": [
+        "N39.3",
+        "N39.4",
+        "R32"
+      ]
+    },
+    {
+      "id": "dx_nephrotic_syndrome",
+      "titleRu": "Нефротический синдром",
+      "titleOriginal": "Nephrotic syndrome",
+      "alternativeTitles": [
+        "нефротический синдром у детей",
+        "протеинурия с отёками"
+      ],
+      "year": null,
+      "topRank": 100,
+      "steamAppId": null,
+      "icd10": [
+        "N04"
+      ]
+    },
+    {
+      "id": "dx_obsessive_compulsive_disorder",
+      "titleRu": "Обсессивно-компульсивное расстройство",
+      "titleOriginal": "Obsessive-compulsive disorder",
+      "alternativeTitles": [
+        "ОКР",
+        "навязчивости и компульсии"
+      ],
+      "year": null,
+      "topRank": 118,
+      "steamAppId": null,
+      "icd10": [
+        "F42"
+      ]
+    },
+    {
+      "id": "dx_obesity",
+      "titleRu": "Ожирение",
+      "titleOriginal": "Obesity",
+      "alternativeTitles": [
+        "избыточная масса тела",
+        "ожирение алиментарное"
+      ],
+      "year": null,
+      "topRank": 41,
+      "steamAppId": null,
+      "icd10": [
+        "E66"
+      ]
+    },
+    {
+      "id": "dx_onychomycosis",
+      "titleRu": "Онихомикоз",
+      "titleOriginal": "Onychomycosis",
+      "alternativeTitles": [
+        "грибок ногтей",
+        "дерматофития ногтей"
+      ],
+      "year": null,
+      "topRank": 62,
+      "steamAppId": null,
+      "icd10": [
+        "B35.1"
+      ]
+    },
+    {
+      "id": "dx_orvi",
+      "titleRu": "ОРВИ",
+      "titleOriginal": "Acute upper respiratory infection",
+      "alternativeTitles": [
+        "острая респираторная вирусная инфекция",
+        "простуда"
+      ],
+      "year": null,
+      "topRank": 1,
+      "steamAppId": null,
+      "icd10": [
+        "J06.9"
+      ]
+    },
+    {
+      "id": "dx_osteoarthritis",
+      "titleRu": "Остеоартроз",
+      "titleOriginal": "Osteoarthritis",
+      "alternativeTitles": [
+        "артроз",
+        "деформирующий остеоартроз"
+      ],
+      "year": null,
+      "topRank": 44,
+      "steamAppId": null,
+      "icd10": [
+        "M15",
+        "M16",
+        "M17",
+        "M19"
+      ]
+    },
+    {
+      "id": "dx_osteoporosis",
+      "titleRu": "Остеопороз",
+      "titleOriginal": "Osteoporosis",
+      "alternativeTitles": [
+        "снижение плотности костей",
+        "хрупкость костей"
+      ],
+      "year": null,
+      "topRank": 47,
+      "steamAppId": null,
+      "icd10": [
+        "M80",
+        "M81"
+      ]
+    },
+    {
+      "id": "dx_spinal_osteochondrosis",
+      "titleRu": "Остеохондроз позвоночника",
+      "titleOriginal": "Spinal osteochondrosis",
+      "alternativeTitles": [
+        "остеохондроз",
+        "дегенеративное заболевание позвоночника"
+      ],
+      "year": null,
+      "topRank": 49,
+      "steamAppId": null,
+      "icd10": [
+        "M42"
+      ]
+    },
+    {
+      "id": "dx_acute_appendicitis",
+      "titleRu": "Острый аппендицит",
+      "titleOriginal": "Acute appendicitis",
+      "alternativeTitles": [
+        "аппендицит"
+      ],
+      "year": null,
+      "topRank": 11,
+      "steamAppId": null,
+      "icd10": [
+        "K35"
+      ]
+    },
+    {
+      "id": "dx_acute_bronchitis",
+      "titleRu": "Острый бронхит",
+      "titleOriginal": "Acute bronchitis",
+      "alternativeTitles": [
+        "бронхит"
+      ],
+      "year": null,
+      "topRank": 5,
+      "steamAppId": null,
+      "icd10": [
+        "J20"
+      ]
+    },
+    {
+      "id": "dx_acute_gastroenteritis",
+      "titleRu": "Острый гастроэнтерит",
+      "titleOriginal": "Acute gastroenteritis",
+      "alternativeTitles": [
+        "кишечная инфекция",
+        "острый энтероколит",
+        "диарейная инфекция"
+      ],
+      "year": null,
+      "topRank": 36,
+      "steamAppId": null,
+      "icd10": [
+        "A09"
+      ]
+    },
+    {
+      "id": "dx_acute_laryngitis",
+      "titleRu": "Острый ларингит",
+      "titleOriginal": "Acute laryngitis",
+      "alternativeTitles": [
+        "ларингит",
+        "воспаление гортани"
+      ],
+      "year": null,
+      "topRank": 32,
+      "steamAppId": null,
+      "icd10": [
+        "J04.0"
+      ]
+    },
+    {
+      "id": "dx_acute_otitis_externa",
+      "titleRu": "Острый наружный отит",
+      "titleOriginal": "Acute otitis externa",
+      "alternativeTitles": [
+        "наружный отит",
+        "ухо пловца"
+      ],
+      "year": null,
+      "topRank": 81,
+      "steamAppId": null,
+      "icd10": [
+        "H60.3",
+        "H60.5"
+      ]
+    },
+    {
+      "id": "dx_acute_pancreatitis",
+      "titleRu": "Острый панкреатит",
+      "titleOriginal": "Acute pancreatitis",
+      "alternativeTitles": [
+        "панкреатит"
+      ],
+      "year": null,
+      "topRank": 12,
+      "steamAppId": null,
+      "icd10": [
+        "K85"
+      ]
+    },
+    {
+      "id": "dx_acute_rhinosinusitis",
+      "titleRu": "Острый риносинусит",
+      "titleOriginal": "Acute rhinosinusitis",
+      "alternativeTitles": [
+        "синусит",
+        "гайморит",
+        "острый синусит"
+      ],
+      "year": null,
+      "topRank": 33,
+      "steamAppId": null,
+      "icd10": [
+        "J01"
+      ]
+    },
+    {
+      "id": "dx_acute_tonsillitis",
+      "titleRu": "Острый тонзиллит",
+      "titleOriginal": "Acute tonsillitis",
+      "alternativeTitles": [
+        "ангина",
+        "острая ангина"
+      ],
+      "year": null,
+      "topRank": 4,
+      "steamAppId": null,
+      "icd10": [
+        "J03"
+      ]
+    },
+    {
+      "id": "dx_acute_pharyngitis",
+      "titleRu": "Острый фарингит",
+      "titleOriginal": "Acute pharyngitis",
+      "alternativeTitles": [
+        "фарингит",
+        "воспаление глотки"
+      ],
+      "year": null,
+      "topRank": 31,
+      "steamAppId": null,
+      "icd10": [
+        "J02"
+      ]
+    },
+    {
+      "id": "dx_acute_cholecystitis",
+      "titleRu": "Острый холецистит",
+      "titleOriginal": "Acute cholecystitis",
+      "alternativeTitles": [
+        "воспаление желчного пузыря"
+      ],
+      "year": null,
+      "topRank": 93,
+      "steamAppId": null,
+      "icd10": [
+        "K81.0"
+      ]
+    },
+    {
+      "id": "dx_panic_disorder",
+      "titleRu": "Паническое расстройство",
+      "titleOriginal": "Panic disorder",
+      "alternativeTitles": [
+        "панические атаки",
+        "эпизодическая пароксизмальная тревога"
+      ],
+      "year": null,
+      "topRank": 78,
+      "steamAppId": null,
+      "icd10": [
+        "F41.0"
+      ]
+    },
+    {
+      "id": "dx_pediculosis",
+      "titleRu": "Педикулёз",
+      "titleOriginal": "Pediculosis",
+      "alternativeTitles": [
+        "вшивость",
+        "головные вши"
+      ],
+      "year": null,
+      "topRank": 111,
+      "steamAppId": null,
+      "icd10": [
+        "B85"
+      ]
+    },
+    {
+      "id": "dx_pyelonephritis",
+      "titleRu": "Пиелонефрит",
+      "titleOriginal": "Pyelonephritis",
+      "alternativeTitles": [
+        "воспаление почек"
+      ],
+      "year": null,
+      "topRank": 15,
+      "steamAppId": null,
+      "icd10": [
+        "N10",
+        "N11"
+      ]
+    },
+    {
+      "id": "dx_food_poisoning",
+      "titleRu": "Пищевое отравление",
+      "titleOriginal": "Bacterial foodborne intoxication",
+      "alternativeTitles": [
+        "токсикоинфекция",
+        "пищевой токсикоз"
+      ],
+      "year": null,
+      "topRank": 37,
+      "steamAppId": null,
+      "icd10": [
+        "A05"
+      ]
+    },
+    {
+      "id": "dx_pneumonia",
+      "titleRu": "Пневмония",
+      "titleOriginal": "Pneumonia",
+      "alternativeTitles": [
+        "воспаление лёгких"
+      ],
+      "year": null,
+      "topRank": 6,
+      "steamAppId": null,
+      "icd10": [
+        "J12",
+        "J13",
+        "J14",
+        "J15",
+        "J16",
+        "J18"
+      ]
+    },
+    {
+      "id": "dx_gout",
+      "titleRu": "Подагра",
+      "titleOriginal": "Gout",
+      "alternativeTitles": [
+        "подагрический артрит",
+        "гиперурикемия с артритом"
+      ],
+      "year": null,
+      "topRank": 46,
+      "steamAppId": null,
+      "icd10": [
+        "M10"
+      ]
+    },
+    {
+      "id": "dx_post_traumatic_stress_disorder",
+      "titleRu": "Посттравматическое стрессовое расстройство",
+      "titleOriginal": "Post-traumatic stress disorder",
+      "alternativeTitles": [
+        "ПТСР",
+        "post-traumatic stress disorder"
+      ],
+      "year": null,
+      "topRank": 119,
+      "steamAppId": null,
+      "icd10": [
+        "F43.1"
+      ]
+    },
+    {
+      "id": "dx_herpes_simplex",
+      "titleRu": "Простой герпес",
+      "titleOriginal": "Herpes simplex",
+      "alternativeTitles": [
+        "герпес",
+        "лабиальный герпес",
+        "герпес на губах"
+      ],
+      "year": null,
+      "topRank": 63,
+      "steamAppId": null,
+      "icd10": [
+        "B00"
+      ]
+    },
+    {
+      "id": "dx_psoriasis",
+      "titleRu": "Псориаз",
+      "titleOriginal": "Psoriasis",
+      "alternativeTitles": [
+        "чешуйчатый лишай"
+      ],
+      "year": null,
+      "topRank": 30,
+      "steamAppId": null,
+      "icd10": [
+        "L40"
+      ]
+    },
+    {
+      "id": "dx_multiple_sclerosis",
+      "titleRu": "Рассеянный склероз",
+      "titleOriginal": "Multiple sclerosis",
+      "alternativeTitles": [
+        "РС",
+        "множественный склероз"
+      ],
+      "year": null,
+      "topRank": 116,
+      "steamAppId": null,
+      "icd10": [
+        "G35"
+      ]
+    },
+    {
+      "id": "dx_rheumatoid_arthritis",
+      "titleRu": "Ревматоидный артрит",
+      "titleOriginal": "Rheumatoid arthritis",
+      "alternativeTitles": [
+        "РА",
+        "ревматоидное воспаление суставов"
+      ],
+      "year": null,
+      "topRank": 45,
+      "steamAppId": null,
+      "icd10": [
+        "M05",
+        "M06"
+      ]
+    },
+    {
+      "id": "dx_rosacea",
+      "titleRu": "Розацеа",
+      "titleOriginal": "Rosacea",
+      "alternativeTitles": [
+        "розовые угри"
+      ],
+      "year": null,
+      "topRank": 109,
+      "steamAppId": null,
+      "icd10": [
+        "L71"
+      ]
+    },
+    {
+      "id": "dx_type_1_diabetes",
+      "titleRu": "Сахарный диабет 1 типа",
+      "titleOriginal": "Type 1 diabetes mellitus",
+      "alternativeTitles": [
+        "диабет 1 типа",
+        "инсулинозависимый диабет"
+      ],
+      "year": null,
+      "topRank": 21,
+      "steamAppId": null,
+      "icd10": [
+        "E10"
+      ]
+    },
+    {
+      "id": "dx_type_2_diabetes",
+      "titleRu": "Сахарный диабет 2 типа",
+      "titleOriginal": "Type 2 diabetes mellitus",
+      "alternativeTitles": [
+        "диабет 2 типа",
+        "инсулиннезависимый диабет"
+      ],
+      "year": null,
+      "topRank": 22,
+      "steamAppId": null,
+      "icd10": [
+        "E11"
+      ]
+    },
+    {
+      "id": "dx_attention_deficit_hyperactivity_disorder",
+      "titleRu": "СДВГ",
+      "titleOriginal": "Attention-deficit/hyperactivity disorder",
+      "alternativeTitles": [
+        "синдром дефицита внимания и гиперактивности",
+        "ADHD"
+      ],
+      "year": null,
+      "topRank": 117,
+      "steamAppId": null,
+      "icd10": [
+        "F90"
+      ]
+    },
+    {
+      "id": "dx_seborrheic_dermatitis",
+      "titleRu": "Себорейный дерматит",
+      "titleOriginal": "Seborrheic dermatitis",
+      "alternativeTitles": [
+        "себорея",
+        "перхоть"
+      ],
+      "year": null,
+      "topRank": 60,
+      "steamAppId": null,
+      "icd10": [
+        "L21"
+      ]
+    },
+    {
+      "id": "dx_heart_failure",
+      "titleRu": "Сердечная недостаточность",
+      "titleOriginal": "Heart failure",
+      "alternativeTitles": [
+        "хроническая сердечная недостаточность",
+        "ХСН"
+      ],
+      "year": null,
+      "topRank": 75,
+      "steamAppId": null,
+      "icd10": [
+        "I50"
+      ]
+    },
+    {
+      "id": "dx_sleep_apnea",
+      "titleRu": "Синдром обструктивного апноэ сна",
+      "titleOriginal": "Obstructive sleep apnea",
+      "alternativeTitles": [
+        "апноэ сна",
+        "СОАС",
+        "храп с остановками дыхания"
+      ],
+      "year": null,
+      "topRank": 80,
+      "steamAppId": null,
+      "icd10": [
+        "G47.3"
+      ]
+    },
+    {
+      "id": "dx_polycystic_ovary_syndrome",
+      "titleRu": "Синдром поликистозных яичников",
+      "titleOriginal": "Polycystic ovary syndrome",
+      "alternativeTitles": [
+        "СПКЯ",
+        "поликистоз яичников",
+        "PCOS"
+      ],
+      "year": null,
+      "topRank": 102,
+      "steamAppId": null,
+      "icd10": [
+        "E28.2"
+      ]
+    },
+    {
+      "id": "dx_irritable_bowel_syndrome",
+      "titleRu": "Синдром раздражённого кишечника",
+      "titleOriginal": "Irritable bowel syndrome",
+      "alternativeTitles": [
+        "СРК",
+        "irritable bowel syndrome",
+        "раздражённый кишечник"
+      ],
+      "year": null,
+      "topRank": 38,
+      "steamAppId": null,
+      "icd10": [
+        "K58"
+      ]
+    },
+    {
+      "id": "dx_dry_eye_syndrome",
+      "titleRu": "Синдром сухого глаза",
+      "titleOriginal": "Dry eye syndrome",
+      "alternativeTitles": [
+        "сухой кератоконъюнктивит",
+        "ксерофтальмия",
+        "dry eye"
+      ],
+      "year": null,
+      "topRank": 82,
+      "steamAppId": null,
+      "icd10": [
+        "H04.1"
+      ]
+    },
+    {
+      "id": "dx_syphilis",
+      "titleRu": "Сифилис",
+      "titleOriginal": "Syphilis",
+      "alternativeTitles": [
+        "люэс"
+      ],
+      "year": null,
+      "topRank": 106,
+      "steamAppId": null,
+      "icd10": [
+        "A50",
+        "A51",
+        "A52",
+        "A53"
+      ]
+    },
+    {
+      "id": "dx_otitis_media",
+      "titleRu": "Средний отит",
+      "titleOriginal": "Otitis media",
+      "alternativeTitles": [
+        "отит",
+        "воспаление среднего уха"
+      ],
+      "year": null,
+      "topRank": 28,
+      "steamAppId": null,
+      "icd10": [
+        "H65",
+        "H66"
+      ]
+    },
+    {
+      "id": "dx_angina_pectoris",
+      "titleRu": "Стенокардия",
+      "titleOriginal": "Angina pectoris",
+      "alternativeTitles": [
+        "грудная жаба",
+        "стабильная стенокардия"
+      ],
+      "year": null,
+      "topRank": 74,
+      "steamAppId": null,
+      "icd10": [
+        "I20"
+      ]
+    },
+    {
+      "id": "dx_stomatitis",
+      "titleRu": "Стоматит",
+      "titleOriginal": "Stomatitis",
+      "alternativeTitles": [
+        "воспаление слизистой полости рта",
+        "язвочки во рту"
+      ],
+      "year": null,
+      "topRank": 68,
+      "steamAppId": null,
+      "icd10": [
+        "K12"
+      ]
+    },
+    {
+      "id": "dx_deep_vein_thrombosis",
+      "titleRu": "Тромбоз глубоких вен",
+      "titleOriginal": "Deep vein thrombosis",
+      "alternativeTitles": [
+        "ТГВ",
+        "флеботромбоз",
+        "deep venous thrombosis"
+      ],
+      "year": null,
+      "topRank": 112,
+      "steamAppId": null,
+      "icd10": [
+        "I80.2"
+      ]
+    },
+    {
+      "id": "dx_pulmonary_embolism",
+      "titleRu": "Тромбоэмболия лёгочной артерии",
+      "titleOriginal": "Pulmonary embolism",
+      "alternativeTitles": [
+        "ТЭЛА",
+        "эмболия легочной артерии"
+      ],
+      "year": null,
+      "topRank": 113,
+      "steamAppId": null,
+      "icd10": [
+        "I26"
+      ]
+    },
+    {
+      "id": "dx_pulmonary_tuberculosis",
+      "titleRu": "Туберкулёз лёгких",
+      "titleOriginal": "Pulmonary tuberculosis",
+      "alternativeTitles": [
+        "туберкулез",
+        "чахотка",
+        "легочный туберкулез"
+      ],
+      "year": null,
+      "topRank": 85,
+      "steamAppId": null,
+      "icd10": [
+        "A15",
+        "A16"
+      ]
+    },
+    {
+      "id": "dx_atrial_fibrillation",
+      "titleRu": "Фибрилляция предсердий",
+      "titleOriginal": "Atrial fibrillation",
+      "alternativeTitles": [
+        "мерцательная аритмия",
+        "ФП"
+      ],
+      "year": null,
+      "topRank": 76,
+      "steamAppId": null,
+      "icd10": [
+        "I48"
+      ]
+    },
+    {
+      "id": "dx_chlamydial_infection",
+      "titleRu": "Хламидийная инфекция",
+      "titleOriginal": "Chlamydial infection",
+      "alternativeTitles": [
+        "хламидиоз",
+        "урогенитальный хламидиоз"
+      ],
+      "year": null,
+      "topRank": 104,
+      "steamAppId": null,
+      "icd10": [
+        "A56"
+      ]
+    },
+    {
+      "id": "dx_chronic_obstructive_pulmonary_disease",
+      "titleRu": "ХОБЛ",
+      "titleOriginal": "Chronic obstructive pulmonary disease",
+      "alternativeTitles": [
+        "хроническая обструктивная болезнь лёгких",
+        "COPD"
+      ],
+      "year": null,
+      "topRank": 34,
+      "steamAppId": null,
+      "icd10": [
+        "J44"
+      ]
+    },
+    {
+      "id": "dx_chronic_kidney_disease",
+      "titleRu": "Хроническая болезнь почек",
+      "titleOriginal": "Chronic kidney disease",
+      "alternativeTitles": [
+        "ХБП",
+        "хроническая почечная недостаточность"
+      ],
+      "year": null,
+      "topRank": 51,
+      "steamAppId": null,
+      "icd10": [
+        "N18"
+      ]
+    },
+    {
+      "id": "dx_chronic_hepatitis_c",
+      "titleRu": "Хронический вирусный гепатит C",
+      "titleOriginal": "Chronic hepatitis C",
+      "alternativeTitles": [
+        "гепатит C",
+        "хронический гепатит С",
+        "HCV-инфекция"
+      ],
+      "year": null,
+      "topRank": 90,
+      "steamAppId": null,
+      "icd10": [
+        "B18.2"
+      ]
+    },
+    {
+      "id": "dx_chronic_prostatitis",
+      "titleRu": "Хронический простатит",
+      "titleOriginal": "Chronic prostatitis",
+      "alternativeTitles": [
+        "простатит",
+        "воспаление предстательной железы"
+      ],
+      "year": null,
+      "topRank": 53,
+      "steamAppId": null,
+      "icd10": [
+        "N41.1"
+      ]
+    },
+    {
+      "id": "dx_celiac_disease",
+      "titleRu": "Целиакия",
+      "titleOriginal": "Celiac disease",
+      "alternativeTitles": [
+        "глютеновая энтеропатия",
+        "непереносимость глютена"
+      ],
+      "year": null,
+      "topRank": 96,
+      "steamAppId": null,
+      "icd10": [
+        "K90.0"
+      ]
+    },
+    {
+      "id": "dx_liver_cirrhosis",
+      "titleRu": "Цирроз печени",
+      "titleOriginal": "Liver cirrhosis",
+      "alternativeTitles": [
+        "цирроз",
+        "фиброз печени"
+      ],
+      "year": null,
+      "topRank": 91,
+      "steamAppId": null,
+      "icd10": [
+        "K74"
+      ]
+    },
+    {
+      "id": "dx_cystitis",
+      "titleRu": "Цистит",
+      "titleOriginal": "Cystitis",
+      "alternativeTitles": [
+        "воспаление мочевого пузыря"
+      ],
+      "year": null,
+      "topRank": 14,
+      "steamAppId": null,
+      "icd10": [
+        "N30"
+      ]
+    },
+    {
+      "id": "dx_scabies",
+      "titleRu": "Чесотка",
+      "titleOriginal": "Scabies",
+      "alternativeTitles": [
+        "скабиес",
+        "чесоточный клещ"
+      ],
+      "year": null,
+      "topRank": 110,
+      "steamAppId": null,
+      "icd10": [
+        "B86"
+      ]
+    },
+    {
+      "id": "dx_endometriosis",
+      "titleRu": "Эндометриоз",
+      "titleOriginal": "Endometriosis",
+      "alternativeTitles": [
+        "эндометриоидная болезнь"
+      ],
+      "year": null,
+      "topRank": 56,
+      "steamAppId": null,
+      "icd10": [
+        "N80"
+      ]
+    },
+    {
+      "id": "dx_epilepsy",
+      "titleRu": "Эпилепсия",
+      "titleOriginal": "Epilepsy",
+      "alternativeTitles": [
+        "эпилептическое расстройство"
+      ],
+      "year": null,
+      "topRank": 17,
+      "steamAppId": null,
+      "icd10": [
+        "G40"
+      ]
+    },
+    {
+      "id": "dx_peptic_ulcer",
+      "titleRu": "Язвенная болезнь",
+      "titleOriginal": "Peptic ulcer disease",
+      "alternativeTitles": [
+        "язва желудка",
+        "язва двенадцатиперстной кишки"
+      ],
+      "year": null,
+      "topRank": 10,
+      "steamAppId": null,
+      "icd10": [
+        "K25",
+        "K26"
+      ]
+    },
+    {
+      "id": "dx_ulcerative_colitis",
+      "titleRu": "Язвенный колит",
+      "titleOriginal": "Ulcerative colitis",
+      "alternativeTitles": [
+        "неспецифический язвенный колит",
+        "НЯК"
+      ],
+      "year": null,
+      "topRank": 95,
+      "steamAppId": null,
+      "icd10": [
+        "K51"
+      ]
+    },
+    {
+      "id": "dx_hordeolum",
+      "titleRu": "Ячмень",
+      "titleOriginal": "Hordeolum",
+      "alternativeTitles": [
+        "гордеолум",
+        "ячмень на глазу"
+      ],
+      "year": null,
+      "topRank": 84,
+      "steamAppId": null,
+      "icd10": [
+        "H00.0"
+      ]
+    },
+    {
+      "id": "dx_covid_19",
+      "titleRu": "COVID-19",
+      "titleOriginal": "COVID-19",
+      "alternativeTitles": [
+        "коронавирусная инфекция",
+        "новая коронавирусная инфекция",
+        "ковид"
+      ],
+      "year": null,
+      "topRank": 3,
+      "steamAppId": null,
+      "icd10": [
+        "U07.1",
+        "U07.2"
+      ]
+    }
+  ],
+  "tokenToIds": {
+    "19": [
+      "dx_covid_19"
+    ],
+    "аденома": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "акне": [
+      "dx_acne"
+    ],
+    "алиментарное": [
+      "dx_obesity"
+    ],
+    "аллергическая": [
+      "dx_urticaria"
+    ],
+    "аллергический": [
+      "dx_allergic_rhinitis",
+      "dx_contact_dermatitis"
+    ],
+    "ангина": [
+      "dx_acute_tonsillitis"
+    ],
+    "анемия": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "апноэ": [
+      "dx_sleep_apnea"
+    ],
+    "аппендицит": [
+      "dx_acute_appendicitis"
+    ],
+    "аритмия": [
+      "dx_atrial_fibrillation"
+    ],
+    "артериальная": [
+      "dx_hypertension"
+    ],
+    "артерии": [
+      "dx_pulmonary_embolism"
+    ],
+    "артрит": [
+      "dx_gout",
+      "dx_rheumatoid_arthritis"
+    ],
+    "артритом": [
+      "dx_gout"
+    ],
+    "артроз": [
+      "dx_osteoarthritis"
+    ],
+    "астма": [
+      "dx_bronchial_asthma"
+    ],
+    "атаки": [
+      "dx_panic_disorder"
+    ],
+    "атеросклероз": [
+      "dx_atherosclerosis"
+    ],
+    "атеросклеротическая": [
+      "dx_atherosclerosis"
+    ],
+    "атопическая": [
+      "dx_atopic_dermatitis"
+    ],
+    "атопический": [
+      "dx_atopic_dermatitis"
+    ],
+    "аффективное": [
+      "dx_bipolar_affective_disorder"
+    ],
+    "бактериальный": [
+      "dx_bacterial_vaginosis"
+    ],
+    "бар": [
+      "dx_bipolar_affective_disorder"
+    ],
+    "бессонница": [
+      "dx_insomnia"
+    ],
+    "биполярное": [
+      "dx_bipolar_affective_disorder"
+    ],
+    "блефарит": [
+      "dx_blepharitis"
+    ],
+    "близорукость": [
+      "dx_myopia"
+    ],
+    "бляшки": [
+      "dx_atherosclerosis"
+    ],
+    "болезненные": [
+      "dx_dysmenorrhea"
+    ],
+    "болезнь": [
+      "dx_acne",
+      "dx_atherosclerosis",
+      "dx_cholelithiasis",
+      "dx_chronic_kidney_disease",
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_crohn_disease",
+      "dx_endometriosis",
+      "dx_gastroesophageal_reflux_disease",
+      "dx_hemorrhoids",
+      "dx_hepatitis_a",
+      "dx_infectious_mononucleosis",
+      "dx_intestinal_diverticulosis",
+      "dx_non_alcoholic_fatty_liver_disease",
+      "dx_parkinsons_disease",
+      "dx_peptic_ulcer",
+      "dx_urolithiasis",
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "боль": [
+      "dx_dorsalgia",
+      "dx_dysmenorrhea",
+      "dx_migraine"
+    ],
+    "боткина": [
+      "dx_hepatitis_a"
+    ],
+    "бронхиальная": [
+      "dx_bronchial_asthma"
+    ],
+    "бронхит": [
+      "dx_acute_bronchitis"
+    ],
+    "вагинальный": [
+      "dx_bacterial_vaginosis"
+    ],
+    "вагиноз": [
+      "dx_bacterial_vaginosis"
+    ],
+    "варикоз": [
+      "dx_hemorrhoids",
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "варикозная": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "век": [
+      "dx_blepharitis"
+    ],
+    "вен": [
+      "dx_deep_vein_thrombosis",
+      "dx_hemorrhoids",
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "ветряная": [
+      "dx_varicella"
+    ],
+    "ветрянка": [
+      "dx_varicella"
+    ],
+    "взомт": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "взрослых": [
+      "dx_lactose_intolerance"
+    ],
+    "вируса": [
+      "dx_hiv_infection"
+    ],
+    "вирусная": [
+      "dx_orvi"
+    ],
+    "вирусный": [
+      "dx_chronic_hepatitis_c",
+      "dx_hepatitis_a"
+    ],
+    "вич": [
+      "dx_hiv_infection"
+    ],
+    "влагалища": [
+      "dx_bacterial_vaginosis",
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "внимания": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "внутриглазное": [
+      "dx_glaucoma"
+    ],
+    "внутримозговое": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "во": [
+      "dx_stomatitis"
+    ],
+    "воспаление": [
+      "dx_acute_cholecystitis",
+      "dx_acute_laryngitis",
+      "dx_acute_pharyngitis",
+      "dx_blepharitis",
+      "dx_chronic_prostatitis",
+      "dx_conjunctivitis",
+      "dx_cystitis",
+      "dx_gastritis",
+      "dx_gingivitis",
+      "dx_glomerulonephritis",
+      "dx_otitis_media",
+      "dx_pelvic_inflammatory_disease",
+      "dx_pneumonia",
+      "dx_pyelonephritis",
+      "dx_rheumatoid_arthritis",
+      "dx_stomatitis"
+    ],
+    "воспалительные": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "вульвовагинальный": [
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "вши": [
+      "dx_pediculosis"
+    ],
+    "вшивость": [
+      "dx_pediculosis"
+    ],
+    "гайморит": [
+      "dx_acute_rhinosinusitis"
+    ],
+    "гастрит": [
+      "dx_gastritis"
+    ],
+    "гастроэзофагеальная": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "гастроэнтерит": [
+      "dx_acute_gastroenteritis"
+    ],
+    "геморрагический": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "геморроидальная": [
+      "dx_hemorrhoids"
+    ],
+    "геморроидальных": [
+      "dx_hemorrhoids"
+    ],
+    "геморрой": [
+      "dx_hemorrhoids"
+    ],
+    "генерализованное": [
+      "dx_generalized_anxiety_disorder"
+    ],
+    "гепатит": [
+      "dx_chronic_hepatitis_c",
+      "dx_hepatitis_a"
+    ],
+    "гепатоз": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "герпес": [
+      "dx_herpes_simplex"
+    ],
+    "гингивит": [
+      "dx_gingivitis"
+    ],
+    "гиперактивности": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "гиперлипидемия": [
+      "dx_dyslipidemia"
+    ],
+    "гиперплазия": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "гипертензия": [
+      "dx_hypertension"
+    ],
+    "гипертиреоз": [
+      "dx_hyperthyroidism"
+    ],
+    "гипертония": [
+      "dx_hypertension"
+    ],
+    "гиперурикемия": [
+      "dx_gout"
+    ],
+    "гипотиреоз": [
+      "dx_hypothyroidism"
+    ],
+    "глаза": [
+      "dx_blepharitis",
+      "dx_dry_eye_syndrome",
+      "dx_hordeolum"
+    ],
+    "глазу": [
+      "dx_hordeolum"
+    ],
+    "глаукома": [
+      "dx_glaucoma"
+    ],
+    "гломерулонефрит": [
+      "dx_glomerulonephritis"
+    ],
+    "глотки": [
+      "dx_acute_pharyngitis"
+    ],
+    "глубоких": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "глютена": [
+      "dx_celiac_disease"
+    ],
+    "глютеновая": [
+      "dx_celiac_disease"
+    ],
+    "головная": [
+      "dx_migraine"
+    ],
+    "головные": [
+      "dx_pediculosis"
+    ],
+    "гонококковая": [
+      "dx_gonorrhea"
+    ],
+    "гонорея": [
+      "dx_gonorrhea"
+    ],
+    "гордеолум": [
+      "dx_hordeolum"
+    ],
+    "горло": [
+      "dx_acute_otitis_externa"
+    ],
+    "гортани": [
+      "dx_acute_laryngitis"
+    ],
+    "грибок": [
+      "dx_onychomycosis",
+      "dx_tinea_pedis"
+    ],
+    "грипп": [
+      "dx_influenza"
+    ],
+    "грудная": [
+      "dx_angina_pectoris"
+    ],
+    "гтр": [
+      "dx_generalized_anxiety_disorder"
+    ],
+    "губах": [
+      "dx_herpes_simplex"
+    ],
+    "гэрб": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "давление": [
+      "dx_glaucoma",
+      "dx_hypertension"
+    ],
+    "двенадцатиперстной": [
+      "dx_peptic_ulcer"
+    ],
+    "дгпж": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "дегенеративное": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "деменция": [
+      "dx_dementia"
+    ],
+    "депрессивный": [
+      "dx_depressive_episode"
+    ],
+    "депрессия": [
+      "dx_depressive_episode"
+    ],
+    "дерматит": [
+      "dx_atopic_dermatitis",
+      "dx_contact_dermatitis",
+      "dx_seborrheic_dermatitis"
+    ],
+    "дерматофития": [
+      "dx_onychomycosis",
+      "dx_tinea_pedis"
+    ],
+    "десен": [
+      "dx_gingivitis"
+    ],
+    "детей": [
+      "dx_nephrotic_syndrome"
+    ],
+    "дефицит": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "дефицита": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "деформирующий": [
+      "dx_osteoarthritis"
+    ],
+    "диабет": [
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "диарейная": [
+      "dx_acute_gastroenteritis"
+    ],
+    "дивертикулез": [
+      "dx_intestinal_diverticulosis"
+    ],
+    "дивертикулы": [
+      "dx_intestinal_diverticulosis"
+    ],
+    "дивертикулярная": [
+      "dx_intestinal_diverticulosis"
+    ],
+    "дисбиоз": [
+      "dx_bacterial_vaginosis"
+    ],
+    "дислипидемия": [
+      "dx_dyslipidemia"
+    ],
+    "дисменорея": [
+      "dx_dysmenorrhea"
+    ],
+    "доброкачественная": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "дорсалгия": [
+      "dx_dorsalgia"
+    ],
+    "дыхания": [
+      "dx_sleep_apnea"
+    ],
+    "дыхательная": [
+      "dx_acute_bronchitis",
+      "dx_acute_laryngitis",
+      "dx_acute_pharyngitis",
+      "dx_acute_rhinosinusitis",
+      "dx_acute_tonsillitis",
+      "dx_allergic_rhinitis",
+      "dx_bronchial_asthma",
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_covid_19",
+      "dx_heart_failure",
+      "dx_infectious_mononucleosis",
+      "dx_influenza",
+      "dx_measles",
+      "dx_orvi",
+      "dx_pertussis",
+      "dx_pneumonia",
+      "dx_pulmonary_embolism",
+      "dx_pulmonary_tuberculosis",
+      "dx_sleep_apnea"
+    ],
+    "жаба": [
+      "dx_angina_pectoris"
+    ],
+    "железа": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "железодефицитная": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "железы": [
+      "dx_benign_prostatic_hyperplasia",
+      "dx_chronic_prostatitis",
+      "dx_hyperthyroidism",
+      "dx_hypothyroidism"
+    ],
+    "желудка": [
+      "dx_gastritis",
+      "dx_peptic_ulcer"
+    ],
+    "желчного": [
+      "dx_acute_cholecystitis"
+    ],
+    "желчнокаменная": [
+      "dx_cholelithiasis"
+    ],
+    "желчном": [
+      "dx_cholelithiasis"
+    ],
+    "жировая": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "жировой": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "заболевание": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "заболевания": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "задержка": [
+      "dx_constipation"
+    ],
+    "запор": [
+      "dx_constipation"
+    ],
+    "зрения": [
+      "dx_cataract",
+      "dx_conjunctivitis",
+      "dx_glaucoma",
+      "dx_myopia"
+    ],
+    "зуба": [
+      "dx_dental_caries"
+    ],
+    "зубов": [
+      "dx_dental_caries"
+    ],
+    "зубы": [
+      "dx_dental_caries",
+      "dx_gingivitis",
+      "dx_stomatitis"
+    ],
+    "избыточная": [
+      "dx_obesity"
+    ],
+    "изжога": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "иммунная": [
+      "dx_allergic_rhinitis",
+      "dx_atopic_dermatitis",
+      "dx_celiac_disease",
+      "dx_chronic_hepatitis_c",
+      "dx_contact_dermatitis",
+      "dx_covid_19",
+      "dx_crohn_disease",
+      "dx_glomerulonephritis",
+      "dx_hiv_infection",
+      "dx_infectious_mononucleosis",
+      "dx_iron_deficiency_anemia",
+      "dx_liver_cirrhosis",
+      "dx_measles",
+      "dx_multiple_sclerosis",
+      "dx_nephrotic_syndrome",
+      "dx_psoriasis",
+      "dx_rheumatoid_arthritis",
+      "dx_ulcerative_colitis",
+      "dx_urticaria",
+      "dx_varicella"
+    ],
+    "иммунодефицита": [
+      "dx_hiv_infection"
+    ],
+    "инконтиненция": [
+      "dx_urinary_incontinence"
+    ],
+    "инсомния": [
+      "dx_insomnia"
+    ],
+    "инсулиннезависимый": [
+      "dx_type_2_diabetes"
+    ],
+    "инсулинозависимый": [
+      "dx_type_1_diabetes"
+    ],
+    "инсульт": [
+      "dx_hemorrhagic_stroke",
+      "dx_ischemic_stroke"
+    ],
+    "инфаркт": [
+      "dx_ischemic_stroke",
+      "dx_myocardial_infarction"
+    ],
+    "инфекционный": [
+      "dx_infectious_mononucleosis"
+    ],
+    "инфекция": [
+      "dx_acute_gastroenteritis",
+      "dx_chlamydial_infection",
+      "dx_chronic_hepatitis_c",
+      "dx_covid_19",
+      "dx_gonorrhea",
+      "dx_hiv_infection",
+      "dx_infectious_mononucleosis",
+      "dx_measles",
+      "dx_orvi",
+      "dx_pertussis"
+    ],
+    "инфлюэнца": [
+      "dx_influenza"
+    ],
+    "ишемический": [
+      "dx_ischemic_stroke"
+    ],
+    "камни": [
+      "dx_cholelithiasis",
+      "dx_urolithiasis"
+    ],
+    "кандидоз": [
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "кариес": [
+      "dx_dental_caries"
+    ],
+    "катаракта": [
+      "dx_cataract"
+    ],
+    "кератоконъюнктивит": [
+      "dx_dry_eye_syndrome"
+    ],
+    "кишечная": [
+      "dx_acute_gastroenteritis"
+    ],
+    "кишечник": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "кишечника": [
+      "dx_intestinal_diverticulosis",
+      "dx_irritable_bowel_syndrome"
+    ],
+    "кишки": [
+      "dx_peptic_ulcer"
+    ],
+    "клетчатка": [
+      "dx_acne",
+      "dx_atopic_dermatitis",
+      "dx_blepharitis",
+      "dx_contact_dermatitis",
+      "dx_herpes_simplex",
+      "dx_hordeolum",
+      "dx_measles",
+      "dx_onychomycosis",
+      "dx_pediculosis",
+      "dx_psoriasis",
+      "dx_rosacea",
+      "dx_scabies",
+      "dx_seborrheic_dermatitis",
+      "dx_stomatitis",
+      "dx_syphilis",
+      "dx_tinea_pedis",
+      "dx_urticaria",
+      "dx_varicella",
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "клещ": [
+      "dx_scabies"
+    ],
+    "клубочков": [
+      "dx_glomerulonephritis"
+    ],
+    "ковид": [
+      "dx_covid_19"
+    ],
+    "когнитивное": [
+      "dx_dementia"
+    ],
+    "кожа": [
+      "dx_acne",
+      "dx_atopic_dermatitis",
+      "dx_blepharitis",
+      "dx_contact_dermatitis",
+      "dx_herpes_simplex",
+      "dx_hordeolum",
+      "dx_measles",
+      "dx_onychomycosis",
+      "dx_pediculosis",
+      "dx_psoriasis",
+      "dx_rosacea",
+      "dx_scabies",
+      "dx_seborrheic_dermatitis",
+      "dx_stomatitis",
+      "dx_syphilis",
+      "dx_tinea_pedis",
+      "dx_urticaria",
+      "dx_varicella",
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "коклюш": [
+      "dx_pertussis"
+    ],
+    "коклюшная": [
+      "dx_pertussis"
+    ],
+    "колит": [
+      "dx_ulcerative_colitis"
+    ],
+    "компульсивное": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "компульсии": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "конечностей": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "констипация": [
+      "dx_constipation"
+    ],
+    "контактный": [
+      "dx_contact_dermatitis"
+    ],
+    "конъюнктивит": [
+      "dx_conjunctivitis"
+    ],
+    "конъюнктивы": [
+      "dx_conjunctivitis"
+    ],
+    "коревая": [
+      "dx_measles"
+    ],
+    "коронавирусная": [
+      "dx_covid_19"
+    ],
+    "корь": [
+      "dx_measles"
+    ],
+    "костей": [
+      "dx_osteoporosis"
+    ],
+    "костно": [
+      "dx_dorsalgia",
+      "dx_gout",
+      "dx_osteoarthritis",
+      "dx_osteoporosis",
+      "dx_rheumatoid_arthritis",
+      "dx_spinal_osteochondrosis"
+    ],
+    "краевой": [
+      "dx_blepharitis"
+    ],
+    "крапивница": [
+      "dx_urticaria"
+    ],
+    "кровоизлияние": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "кровь": [
+      "dx_allergic_rhinitis",
+      "dx_atopic_dermatitis",
+      "dx_celiac_disease",
+      "dx_chronic_hepatitis_c",
+      "dx_contact_dermatitis",
+      "dx_covid_19",
+      "dx_crohn_disease",
+      "dx_glomerulonephritis",
+      "dx_hiv_infection",
+      "dx_infectious_mononucleosis",
+      "dx_iron_deficiency_anemia",
+      "dx_liver_cirrhosis",
+      "dx_measles",
+      "dx_multiple_sclerosis",
+      "dx_nephrotic_syndrome",
+      "dx_psoriasis",
+      "dx_rheumatoid_arthritis",
+      "dx_ulcerative_colitis",
+      "dx_urticaria",
+      "dx_varicella"
+    ],
+    "крон": [
+      "dx_crohn_disease"
+    ],
+    "крона": [
+      "dx_crohn_disease"
+    ],
+    "ксерофтальмия": [
+      "dx_dry_eye_syndrome"
+    ],
+    "лабиальный": [
+      "dx_herpes_simplex"
+    ],
+    "лактазная": [
+      "dx_lactose_intolerance"
+    ],
+    "лактозы": [
+      "dx_lactose_intolerance"
+    ],
+    "ларингит": [
+      "dx_acute_laryngitis"
+    ],
+    "легких": [
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_pneumonia",
+      "dx_pulmonary_tuberculosis"
+    ],
+    "легочной": [
+      "dx_pulmonary_embolism"
+    ],
+    "легочный": [
+      "dx_pulmonary_tuberculosis"
+    ],
+    "лейомиома": [
+      "dx_uterine_fibroids"
+    ],
+    "липидного": [
+      "dx_dyslipidemia"
+    ],
+    "лихорадка": [
+      "dx_allergic_rhinitis"
+    ],
+    "лишай": [
+      "dx_psoriasis"
+    ],
+    "люмбалгия": [
+      "dx_dorsalgia"
+    ],
+    "люэс": [
+      "dx_syphilis"
+    ],
+    "малого": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "масса": [
+      "dx_obesity"
+    ],
+    "матки": [
+      "dx_uterine_fibroids"
+    ],
+    "менструальная": [
+      "dx_dysmenorrhea"
+    ],
+    "менструации": [
+      "dx_dysmenorrhea"
+    ],
+    "мерцательная": [
+      "dx_atrial_fibrillation"
+    ],
+    "мигренозная": [
+      "dx_migraine"
+    ],
+    "мигрень": [
+      "dx_migraine"
+    ],
+    "микоз": [
+      "dx_tinea_pedis"
+    ],
+    "миокарда": [
+      "dx_myocardial_infarction"
+    ],
+    "миома": [
+      "dx_uterine_fibroids"
+    ],
+    "миопия": [
+      "dx_myopia"
+    ],
+    "множественный": [
+      "dx_multiple_sclerosis"
+    ],
+    "мозг": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "мозга": [
+      "dx_ischemic_stroke"
+    ],
+    "молочница": [
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "мононуклеоз": [
+      "dx_infectious_mononucleosis"
+    ],
+    "мочевого": [
+      "dx_cystitis"
+    ],
+    "мочевыделительная": [
+      "dx_benign_prostatic_hyperplasia",
+      "dx_chlamydial_infection",
+      "dx_chronic_kidney_disease",
+      "dx_chronic_prostatitis",
+      "dx_cystitis",
+      "dx_glomerulonephritis",
+      "dx_gonorrhea",
+      "dx_nephrotic_syndrome",
+      "dx_pyelonephritis",
+      "dx_urinary_incontinence",
+      "dx_urolithiasis"
+    ],
+    "мочеиспускание": [
+      "dx_urinary_incontinence"
+    ],
+    "мочекаменная": [
+      "dx_urolithiasis"
+    ],
+    "мочи": [
+      "dx_urinary_incontinence"
+    ],
+    "мышечная": [
+      "dx_dorsalgia",
+      "dx_gout",
+      "dx_osteoarthritis",
+      "dx_osteoporosis",
+      "dx_rheumatoid_arthritis",
+      "dx_spinal_osteochondrosis"
+    ],
+    "на": [
+      "dx_herpes_simplex",
+      "dx_hordeolum"
+    ],
+    "навязчивости": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "нажбп": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "наружный": [
+      "dx_acute_otitis_externa"
+    ],
+    "нарушение": [
+      "dx_dyslipidemia"
+    ],
+    "неалкогольная": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "недержание": [
+      "dx_urinary_incontinence"
+    ],
+    "недостаточность": [
+      "dx_chronic_kidney_disease",
+      "dx_heart_failure",
+      "dx_hypothyroidism",
+      "dx_lactose_intolerance"
+    ],
+    "нейродермит": [
+      "dx_atopic_dermatitis"
+    ],
+    "непереносимость": [
+      "dx_celiac_disease",
+      "dx_lactose_intolerance"
+    ],
+    "непроизвольное": [
+      "dx_urinary_incontinence"
+    ],
+    "нервная": [
+      "dx_attention_deficit_hyperactivity_disorder",
+      "dx_dementia",
+      "dx_dorsalgia",
+      "dx_epilepsy",
+      "dx_generalized_anxiety_disorder",
+      "dx_glaucoma",
+      "dx_hemorrhagic_stroke",
+      "dx_herpes_simplex",
+      "dx_insomnia",
+      "dx_ischemic_stroke",
+      "dx_migraine",
+      "dx_multiple_sclerosis",
+      "dx_panic_disorder",
+      "dx_parkinsons_disease",
+      "dx_post_traumatic_stress_disorder",
+      "dx_sleep_apnea",
+      "dx_spinal_osteochondrosis",
+      "dx_syphilis",
+      "dx_urinary_incontinence"
+    ],
+    "неспецифический": [
+      "dx_ulcerative_colitis"
+    ],
+    "нефролитиаз": [
+      "dx_urolithiasis"
+    ],
+    "нефротический": [
+      "dx_nephrotic_syndrome"
+    ],
+    "нижних": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "новая": [
+      "dx_covid_19"
+    ],
+    "ног": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "ногтей": [
+      "dx_onychomycosis"
+    ],
+    "нос": [
+      "dx_acute_otitis_externa"
+    ],
+    "няк": [
+      "dx_ulcerative_colitis"
+    ],
+    "обмена": [
+      "dx_dyslipidemia"
+    ],
+    "обсессивно": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "обструктивная": [
+      "dx_chronic_obstructive_pulmonary_disease"
+    ],
+    "обструктивного": [
+      "dx_sleep_apnea"
+    ],
+    "ожирение": [
+      "dx_obesity"
+    ],
+    "окр": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "онихомикоз": [
+      "dx_onychomycosis"
+    ],
+    "орви": [
+      "dx_orvi"
+    ],
+    "органов": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "органы": [
+      "dx_cataract",
+      "dx_conjunctivitis",
+      "dx_glaucoma",
+      "dx_myopia",
+      "dx_otitis_media"
+    ],
+    "оспа": [
+      "dx_varicella"
+    ],
+    "остановками": [
+      "dx_sleep_apnea"
+    ],
+    "остеоартроз": [
+      "dx_osteoarthritis"
+    ],
+    "остеопороз": [
+      "dx_osteoporosis"
+    ],
+    "остеохондроз": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "острая": [
+      "dx_acute_tonsillitis",
+      "dx_orvi"
+    ],
+    "острый": [
+      "dx_acute_appendicitis",
+      "dx_acute_bronchitis",
+      "dx_acute_cholecystitis",
+      "dx_acute_gastroenteritis",
+      "dx_acute_laryngitis",
+      "dx_acute_otitis_externa",
+      "dx_acute_pancreatitis",
+      "dx_acute_pharyngitis",
+      "dx_acute_rhinosinusitis",
+      "dx_acute_tonsillitis"
+    ],
+    "отеками": [
+      "dx_nephrotic_syndrome"
+    ],
+    "отит": [
+      "dx_acute_otitis_externa",
+      "dx_otitis_media"
+    ],
+    "отравление": [
+      "dx_food_poisoning"
+    ],
+    "панические": [
+      "dx_panic_disorder"
+    ],
+    "паническое": [
+      "dx_panic_disorder"
+    ],
+    "панкреатит": [
+      "dx_acute_pancreatitis"
+    ],
+    "паркинсона": [
+      "dx_parkinsons_disease"
+    ],
+    "паркинсонизм": [
+      "dx_parkinsons_disease"
+    ],
+    "пароксизмальная": [
+      "dx_panic_disorder"
+    ],
+    "педикулез": [
+      "dx_pediculosis"
+    ],
+    "перхоть": [
+      "dx_seborrheic_dermatitis"
+    ],
+    "печени": [
+      "dx_liver_cirrhosis",
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "пиелонефрит": [
+      "dx_pyelonephritis"
+    ],
+    "пищеварительная": [
+      "dx_acute_appendicitis",
+      "dx_acute_cholecystitis",
+      "dx_acute_gastroenteritis",
+      "dx_acute_pancreatitis",
+      "dx_celiac_disease",
+      "dx_cholelithiasis",
+      "dx_chronic_hepatitis_c",
+      "dx_constipation",
+      "dx_crohn_disease",
+      "dx_food_poisoning",
+      "dx_gastritis",
+      "dx_gastroesophageal_reflux_disease",
+      "dx_hemorrhoids",
+      "dx_hepatitis_a",
+      "dx_intestinal_diverticulosis",
+      "dx_irritable_bowel_syndrome",
+      "dx_lactose_intolerance",
+      "dx_liver_cirrhosis",
+      "dx_non_alcoholic_fatty_liver_disease",
+      "dx_obesity",
+      "dx_peptic_ulcer",
+      "dx_ulcerative_colitis"
+    ],
+    "пищевое": [
+      "dx_food_poisoning"
+    ],
+    "пищевой": [
+      "dx_food_poisoning"
+    ],
+    "пловца": [
+      "dx_acute_otitis_externa"
+    ],
+    "плотности": [
+      "dx_osteoporosis"
+    ],
+    "пневмония": [
+      "dx_pneumonia"
+    ],
+    "поведение": [
+      "dx_attention_deficit_hyperactivity_disorder",
+      "dx_bipolar_affective_disorder",
+      "dx_dementia",
+      "dx_depressive_episode",
+      "dx_generalized_anxiety_disorder",
+      "dx_insomnia",
+      "dx_obsessive_compulsive_disorder",
+      "dx_panic_disorder",
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "повышенная": [
+      "dx_hyperthyroidism"
+    ],
+    "повышенное": [
+      "dx_glaucoma",
+      "dx_hypertension"
+    ],
+    "повышенный": [
+      "dx_dyslipidemia"
+    ],
+    "подагра": [
+      "dx_gout"
+    ],
+    "подагрический": [
+      "dx_gout"
+    ],
+    "подкожная": [
+      "dx_acne",
+      "dx_atopic_dermatitis",
+      "dx_blepharitis",
+      "dx_contact_dermatitis",
+      "dx_herpes_simplex",
+      "dx_hordeolum",
+      "dx_measles",
+      "dx_onychomycosis",
+      "dx_pediculosis",
+      "dx_psoriasis",
+      "dx_rosacea",
+      "dx_scabies",
+      "dx_seborrheic_dermatitis",
+      "dx_stomatitis",
+      "dx_syphilis",
+      "dx_tinea_pedis",
+      "dx_urticaria",
+      "dx_varicella",
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "позвоночника": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "поликистоз": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "поликистозных": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "поллиноз": [
+      "dx_allergic_rhinitis"
+    ],
+    "полости": [
+      "dx_stomatitis"
+    ],
+    "полость": [
+      "dx_dental_caries",
+      "dx_gingivitis",
+      "dx_stomatitis"
+    ],
+    "помутнение": [
+      "dx_cataract"
+    ],
+    "посттравматическое": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "поцелуев": [
+      "dx_infectious_mononucleosis"
+    ],
+    "почек": [
+      "dx_chronic_kidney_disease",
+      "dx_glomerulonephritis",
+      "dx_pyelonephritis"
+    ],
+    "почечная": [
+      "dx_chronic_kidney_disease"
+    ],
+    "почечнокаменная": [
+      "dx_urolithiasis"
+    ],
+    "почках": [
+      "dx_urolithiasis"
+    ],
+    "предсердий": [
+      "dx_atrial_fibrillation"
+    ],
+    "предстательной": [
+      "dx_benign_prostatic_hyperplasia",
+      "dx_chronic_prostatitis"
+    ],
+    "придатков": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "приступ": [
+      "dx_myocardial_infarction"
+    ],
+    "простатит": [
+      "dx_chronic_prostatitis"
+    ],
+    "простаты": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "простой": [
+      "dx_herpes_simplex"
+    ],
+    "простуда": [
+      "dx_orvi"
+    ],
+    "протеинурия": [
+      "dx_nephrotic_syndrome"
+    ],
+    "прыщи": [
+      "dx_acne"
+    ],
+    "психика": [
+      "dx_attention_deficit_hyperactivity_disorder",
+      "dx_bipolar_affective_disorder",
+      "dx_dementia",
+      "dx_depressive_episode",
+      "dx_generalized_anxiety_disorder",
+      "dx_insomnia",
+      "dx_obsessive_compulsive_disorder",
+      "dx_panic_disorder",
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "псориаз": [
+      "dx_psoriasis"
+    ],
+    "птср": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "пузыре": [
+      "dx_cholelithiasis"
+    ],
+    "пузыря": [
+      "dx_acute_cholecystitis",
+      "dx_cystitis"
+    ],
+    "ра": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "раздраженного": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "раздраженный": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "раздражительный": [
+      "dx_contact_dermatitis"
+    ],
+    "разрушение": [
+      "dx_dental_caries"
+    ],
+    "рассеянный": [
+      "dx_multiple_sclerosis"
+    ],
+    "расстройство": [
+      "dx_bipolar_affective_disorder",
+      "dx_epilepsy",
+      "dx_generalized_anxiety_disorder",
+      "dx_insomnia",
+      "dx_obsessive_compulsive_disorder",
+      "dx_panic_disorder",
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "ревматоидное": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "ревматоидный": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "регионарный": [
+      "dx_crohn_disease"
+    ],
+    "репродуктивная": [
+      "dx_bacterial_vaginosis",
+      "dx_benign_prostatic_hyperplasia",
+      "dx_chlamydial_infection",
+      "dx_chronic_prostatitis",
+      "dx_dysmenorrhea",
+      "dx_endometriosis",
+      "dx_gonorrhea",
+      "dx_pelvic_inflammatory_disease",
+      "dx_polycystic_ovary_syndrome",
+      "dx_syphilis",
+      "dx_uterine_fibroids",
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "респираторная": [
+      "dx_orvi"
+    ],
+    "рефлюкс": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "рефлюксная": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "ринит": [
+      "dx_allergic_rhinitis"
+    ],
+    "риносинусит": [
+      "dx_acute_rhinosinusitis"
+    ],
+    "розацеа": [
+      "dx_rosacea"
+    ],
+    "розовые": [
+      "dx_rosacea"
+    ],
+    "рс": [
+      "dx_multiple_sclerosis"
+    ],
+    "рта": [
+      "dx_dental_caries",
+      "dx_gingivitis",
+      "dx_stomatitis"
+    ],
+    "рту": [
+      "dx_stomatitis"
+    ],
+    "сальпингоофорит": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "сахарный": [
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "сдвг": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "себорейный": [
+      "dx_seborrheic_dermatitis"
+    ],
+    "себорея": [
+      "dx_seborrheic_dermatitis"
+    ],
+    "сенная": [
+      "dx_allergic_rhinitis"
+    ],
+    "сердечная": [
+      "dx_heart_failure"
+    ],
+    "сердечно": [
+      "dx_angina_pectoris",
+      "dx_atherosclerosis",
+      "dx_atrial_fibrillation",
+      "dx_chronic_kidney_disease",
+      "dx_deep_vein_thrombosis",
+      "dx_dyslipidemia",
+      "dx_heart_failure",
+      "dx_hemorrhagic_stroke",
+      "dx_hemorrhoids",
+      "dx_hypertension",
+      "dx_ischemic_stroke",
+      "dx_myocardial_infarction",
+      "dx_pulmonary_embolism",
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "сердечный": [
+      "dx_myocardial_infarction"
+    ],
+    "синдром": [
+      "dx_attention_deficit_hyperactivity_disorder",
+      "dx_dry_eye_syndrome",
+      "dx_irritable_bowel_syndrome",
+      "dx_nephrotic_syndrome",
+      "dx_polycystic_ovary_syndrome",
+      "dx_sleep_apnea"
+    ],
+    "синусит": [
+      "dx_acute_rhinosinusitis"
+    ],
+    "система": [
+      "dx_acute_appendicitis",
+      "dx_acute_bronchitis",
+      "dx_acute_cholecystitis",
+      "dx_acute_gastroenteritis",
+      "dx_acute_laryngitis",
+      "dx_acute_pancreatitis",
+      "dx_acute_pharyngitis",
+      "dx_acute_rhinosinusitis",
+      "dx_acute_tonsillitis",
+      "dx_allergic_rhinitis",
+      "dx_angina_pectoris",
+      "dx_atherosclerosis",
+      "dx_atopic_dermatitis",
+      "dx_atrial_fibrillation",
+      "dx_attention_deficit_hyperactivity_disorder",
+      "dx_bacterial_vaginosis",
+      "dx_benign_prostatic_hyperplasia",
+      "dx_bronchial_asthma",
+      "dx_celiac_disease",
+      "dx_chlamydial_infection",
+      "dx_cholelithiasis",
+      "dx_chronic_hepatitis_c",
+      "dx_chronic_kidney_disease",
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_chronic_prostatitis",
+      "dx_constipation",
+      "dx_contact_dermatitis",
+      "dx_covid_19",
+      "dx_crohn_disease",
+      "dx_cystitis",
+      "dx_deep_vein_thrombosis",
+      "dx_dementia",
+      "dx_dorsalgia",
+      "dx_dyslipidemia",
+      "dx_dysmenorrhea",
+      "dx_endometriosis",
+      "dx_epilepsy",
+      "dx_food_poisoning",
+      "dx_gastritis",
+      "dx_gastroesophageal_reflux_disease",
+      "dx_generalized_anxiety_disorder",
+      "dx_glaucoma",
+      "dx_glomerulonephritis",
+      "dx_gonorrhea",
+      "dx_gout",
+      "dx_heart_failure",
+      "dx_hemorrhagic_stroke",
+      "dx_hemorrhoids",
+      "dx_hepatitis_a",
+      "dx_herpes_simplex",
+      "dx_hiv_infection",
+      "dx_hypertension",
+      "dx_hyperthyroidism",
+      "dx_hypothyroidism",
+      "dx_infectious_mononucleosis",
+      "dx_influenza",
+      "dx_insomnia",
+      "dx_intestinal_diverticulosis",
+      "dx_iron_deficiency_anemia",
+      "dx_irritable_bowel_syndrome",
+      "dx_ischemic_stroke",
+      "dx_lactose_intolerance",
+      "dx_liver_cirrhosis",
+      "dx_measles",
+      "dx_migraine",
+      "dx_multiple_sclerosis",
+      "dx_myocardial_infarction",
+      "dx_nephrotic_syndrome",
+      "dx_non_alcoholic_fatty_liver_disease",
+      "dx_obesity",
+      "dx_orvi",
+      "dx_osteoarthritis",
+      "dx_osteoporosis",
+      "dx_panic_disorder",
+      "dx_parkinsons_disease",
+      "dx_pelvic_inflammatory_disease",
+      "dx_peptic_ulcer",
+      "dx_pertussis",
+      "dx_pneumonia",
+      "dx_polycystic_ovary_syndrome",
+      "dx_post_traumatic_stress_disorder",
+      "dx_psoriasis",
+      "dx_pulmonary_embolism",
+      "dx_pulmonary_tuberculosis",
+      "dx_pyelonephritis",
+      "dx_rheumatoid_arthritis",
+      "dx_sleep_apnea",
+      "dx_spinal_osteochondrosis",
+      "dx_syphilis",
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes",
+      "dx_ulcerative_colitis",
+      "dx_urinary_incontinence",
+      "dx_urolithiasis",
+      "dx_urticaria",
+      "dx_uterine_fibroids",
+      "dx_varicella",
+      "dx_varicose_veins_lower_extremities",
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "сифилис": [
+      "dx_syphilis"
+    ],
+    "скабиес": [
+      "dx_scabies"
+    ],
+    "склероз": [
+      "dx_multiple_sclerosis"
+    ],
+    "слабоумие": [
+      "dx_dementia"
+    ],
+    "слизистой": [
+      "dx_stomatitis"
+    ],
+    "слуха": [
+      "dx_otitis_media"
+    ],
+    "сна": [
+      "dx_insomnia",
+      "dx_sleep_apnea"
+    ],
+    "снижение": [
+      "dx_dementia",
+      "dx_osteoporosis"
+    ],
+    "соас": [
+      "dx_sleep_apnea"
+    ],
+    "сосудах": [
+      "dx_atherosclerosis"
+    ],
+    "сосудистая": [
+      "dx_angina_pectoris",
+      "dx_atherosclerosis",
+      "dx_atrial_fibrillation",
+      "dx_chronic_kidney_disease",
+      "dx_deep_vein_thrombosis",
+      "dx_dyslipidemia",
+      "dx_heart_failure",
+      "dx_hemorrhagic_stroke",
+      "dx_hemorrhoids",
+      "dx_hypertension",
+      "dx_ischemic_stroke",
+      "dx_myocardial_infarction",
+      "dx_pulmonary_embolism",
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "спине": [
+      "dx_dorsalgia"
+    ],
+    "спкя": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "среднего": [
+      "dx_otitis_media"
+    ],
+    "средний": [
+      "dx_otitis_media"
+    ],
+    "срк": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "стабильная": [
+      "dx_angina_pectoris"
+    ],
+    "стеатоз": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "стенокардия": [
+      "dx_angina_pectoris"
+    ],
+    "стоматит": [
+      "dx_stomatitis"
+    ],
+    "стоп": [
+      "dx_tinea_pedis"
+    ],
+    "стопы": [
+      "dx_tinea_pedis"
+    ],
+    "стрессовое": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "стула": [
+      "dx_constipation"
+    ],
+    "суставов": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "сухого": [
+      "dx_dry_eye_syndrome"
+    ],
+    "сухой": [
+      "dx_dry_eye_syndrome"
+    ],
+    "таза": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "тгв": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "тела": [
+      "dx_obesity"
+    ],
+    "типа": [
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "тиреотоксикоз": [
+      "dx_hyperthyroidism"
+    ],
+    "токсикоз": [
+      "dx_food_poisoning"
+    ],
+    "токсикоинфекция": [
+      "dx_food_poisoning"
+    ],
+    "тонзиллит": [
+      "dx_acute_tonsillitis"
+    ],
+    "тревога": [
+      "dx_panic_disorder"
+    ],
+    "тревожное": [
+      "dx_generalized_anxiety_disorder"
+    ],
+    "триппер": [
+      "dx_gonorrhea"
+    ],
+    "тромбоз": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "тромбоэмболия": [
+      "dx_pulmonary_embolism"
+    ],
+    "туберкулез": [
+      "dx_pulmonary_tuberculosis"
+    ],
+    "тэла": [
+      "dx_pulmonary_embolism"
+    ],
+    "угревая": [
+      "dx_acne"
+    ],
+    "угри": [
+      "dx_acne",
+      "dx_rosacea"
+    ],
+    "урогенитальный": [
+      "dx_chlamydial_infection"
+    ],
+    "уртикария": [
+      "dx_urticaria"
+    ],
+    "уха": [
+      "dx_otitis_media"
+    ],
+    "ухо": [
+      "dx_acute_otitis_externa"
+    ],
+    "фарингит": [
+      "dx_acute_pharyngitis"
+    ],
+    "фибрилляция": [
+      "dx_atrial_fibrillation"
+    ],
+    "фиброз": [
+      "dx_liver_cirrhosis"
+    ],
+    "фибромиома": [
+      "dx_uterine_fibroids"
+    ],
+    "флеботромбоз": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "фп": [
+      "dx_atrial_fibrillation"
+    ],
+    "функция": [
+      "dx_hyperthyroidism"
+    ],
+    "хбп": [
+      "dx_chronic_kidney_disease"
+    ],
+    "хламидийная": [
+      "dx_chlamydial_infection"
+    ],
+    "хламидиоз": [
+      "dx_chlamydial_infection"
+    ],
+    "хобл": [
+      "dx_chronic_obstructive_pulmonary_disease"
+    ],
+    "холелитиаз": [
+      "dx_cholelithiasis"
+    ],
+    "холестерин": [
+      "dx_dyslipidemia"
+    ],
+    "холецистит": [
+      "dx_acute_cholecystitis"
+    ],
+    "храп": [
+      "dx_sleep_apnea"
+    ],
+    "хроническая": [
+      "dx_chronic_kidney_disease",
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_heart_failure"
+    ],
+    "хронический": [
+      "dx_chronic_hepatitis_c",
+      "dx_chronic_prostatitis"
+    ],
+    "хрупкость": [
+      "dx_osteoporosis"
+    ],
+    "хрусталика": [
+      "dx_cataract"
+    ],
+    "хсн": [
+      "dx_heart_failure"
+    ],
+    "целиакия": [
+      "dx_celiac_disease"
+    ],
+    "цервикалгия": [
+      "dx_dorsalgia"
+    ],
+    "цирроз": [
+      "dx_liver_cirrhosis"
+    ],
+    "цистит": [
+      "dx_cystitis"
+    ],
+    "чахотка": [
+      "dx_pulmonary_tuberculosis"
+    ],
+    "человека": [
+      "dx_hiv_infection"
+    ],
+    "чесотка": [
+      "dx_scabies"
+    ],
+    "чесоточный": [
+      "dx_scabies"
+    ],
+    "чешуйчатый": [
+      "dx_psoriasis"
+    ],
+    "щитовидной": [
+      "dx_hyperthyroidism",
+      "dx_hypothyroidism"
+    ],
+    "экзема": [
+      "dx_atopic_dermatitis"
+    ],
+    "эмболия": [
+      "dx_pulmonary_embolism"
+    ],
+    "эндокринная": [
+      "dx_acute_pancreatitis",
+      "dx_dyslipidemia",
+      "dx_gout",
+      "dx_hyperthyroidism",
+      "dx_hypothyroidism",
+      "dx_non_alcoholic_fatty_liver_disease",
+      "dx_obesity",
+      "dx_polycystic_ovary_syndrome",
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "эндометриоз": [
+      "dx_endometriosis"
+    ],
+    "эндометриоидная": [
+      "dx_endometriosis"
+    ],
+    "энтерит": [
+      "dx_crohn_disease"
+    ],
+    "энтероколит": [
+      "dx_acute_gastroenteritis"
+    ],
+    "энтеропатия": [
+      "dx_celiac_disease"
+    ],
+    "эпидермофития": [
+      "dx_tinea_pedis"
+    ],
+    "эпизод": [
+      "dx_depressive_episode"
+    ],
+    "эпизодическая": [
+      "dx_panic_disorder"
+    ],
+    "эпилепсия": [
+      "dx_epilepsy"
+    ],
+    "эпилептическое": [
+      "dx_epilepsy"
+    ],
+    "язва": [
+      "dx_peptic_ulcer"
+    ],
+    "язвенная": [
+      "dx_peptic_ulcer"
+    ],
+    "язвенный": [
+      "dx_ulcerative_colitis"
+    ],
+    "язвочки": [
+      "dx_stomatitis"
+    ],
+    "яичников": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "ячмень": [
+      "dx_hordeolum"
+    ],
+    "a05": [
+      "dx_food_poisoning"
+    ],
+    "a09": [
+      "dx_acute_gastroenteritis"
+    ],
+    "a15": [
+      "dx_pulmonary_tuberculosis"
+    ],
+    "a16": [
+      "dx_pulmonary_tuberculosis"
+    ],
+    "a37": [
+      "dx_pertussis"
+    ],
+    "a50": [
+      "dx_syphilis"
+    ],
+    "a51": [
+      "dx_syphilis"
+    ],
+    "a52": [
+      "dx_syphilis"
+    ],
+    "a53": [
+      "dx_syphilis"
+    ],
+    "a54": [
+      "dx_gonorrhea"
+    ],
+    "a56": [
+      "dx_chlamydial_infection"
+    ],
+    "acne": [
+      "dx_acne"
+    ],
+    "acute": [
+      "dx_acute_appendicitis",
+      "dx_acute_bronchitis",
+      "dx_acute_cholecystitis",
+      "dx_acute_gastroenteritis",
+      "dx_acute_laryngitis",
+      "dx_acute_otitis_externa",
+      "dx_acute_pancreatitis",
+      "dx_acute_pharyngitis",
+      "dx_acute_rhinosinusitis",
+      "dx_acute_tonsillitis",
+      "dx_orvi"
+    ],
+    "adhd": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "affective": [
+      "dx_bipolar_affective_disorder"
+    ],
+    "alcoholic": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "allergic": [
+      "dx_allergic_rhinitis"
+    ],
+    "anemia": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "angina": [
+      "dx_angina_pectoris"
+    ],
+    "anxiety": [
+      "dx_generalized_anxiety_disorder"
+    ],
+    "apnea": [
+      "dx_sleep_apnea"
+    ],
+    "appendicitis": [
+      "dx_acute_appendicitis"
+    ],
+    "arterial": [
+      "dx_hypertension"
+    ],
+    "arthritis": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "asthma": [
+      "dx_bronchial_asthma"
+    ],
+    "atherosclerosis": [
+      "dx_atherosclerosis"
+    ],
+    "atopic": [
+      "dx_atopic_dermatitis"
+    ],
+    "atrial": [
+      "dx_atrial_fibrillation"
+    ],
+    "attention": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "b00": [
+      "dx_herpes_simplex"
+    ],
+    "b01": [
+      "dx_varicella"
+    ],
+    "b05": [
+      "dx_measles"
+    ],
+    "b15": [
+      "dx_hepatitis_a"
+    ],
+    "b18": [
+      "dx_chronic_hepatitis_c"
+    ],
+    "b20": [
+      "dx_hiv_infection"
+    ],
+    "b21": [
+      "dx_hiv_infection"
+    ],
+    "b22": [
+      "dx_hiv_infection"
+    ],
+    "b23": [
+      "dx_hiv_infection"
+    ],
+    "b24": [
+      "dx_hiv_infection"
+    ],
+    "b27": [
+      "dx_infectious_mononucleosis"
+    ],
+    "b35": [
+      "dx_onychomycosis",
+      "dx_tinea_pedis"
+    ],
+    "b37": [
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "b85": [
+      "dx_pediculosis"
+    ],
+    "b86": [
+      "dx_scabies"
+    ],
+    "b96": [
+      "dx_bacterial_vaginosis"
+    ],
+    "bacterial": [
+      "dx_bacterial_vaginosis",
+      "dx_food_poisoning"
+    ],
+    "benign": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "bipolar": [
+      "dx_bipolar_affective_disorder"
+    ],
+    "blepharitis": [
+      "dx_blepharitis"
+    ],
+    "bowel": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "bronchial": [
+      "dx_bronchial_asthma"
+    ],
+    "bronchitis": [
+      "dx_acute_bronchitis"
+    ],
+    "candidiasis": [
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "caries": [
+      "dx_dental_caries"
+    ],
+    "cataract": [
+      "dx_cataract"
+    ],
+    "celiac": [
+      "dx_celiac_disease"
+    ],
+    "chlamydial": [
+      "dx_chlamydial_infection"
+    ],
+    "cholecystitis": [
+      "dx_acute_cholecystitis"
+    ],
+    "cholelithiasis": [
+      "dx_cholelithiasis"
+    ],
+    "chronic": [
+      "dx_chronic_hepatitis_c",
+      "dx_chronic_kidney_disease",
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_chronic_prostatitis"
+    ],
+    "cirrhosis": [
+      "dx_liver_cirrhosis"
+    ],
+    "colitis": [
+      "dx_ulcerative_colitis"
+    ],
+    "compulsive": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "conjunctivitis": [
+      "dx_conjunctivitis"
+    ],
+    "constipation": [
+      "dx_constipation"
+    ],
+    "contact": [
+      "dx_contact_dermatitis"
+    ],
+    "copd": [
+      "dx_chronic_obstructive_pulmonary_disease"
+    ],
+    "cough": [
+      "dx_pertussis"
+    ],
+    "covid": [
+      "dx_covid_19"
+    ],
+    "crohn": [
+      "dx_crohn_disease"
+    ],
+    "cystitis": [
+      "dx_cystitis"
+    ],
+    "d25": [
+      "dx_uterine_fibroids"
+    ],
+    "d50": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "deep": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "deficiency": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "deficit": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "dementia": [
+      "dx_dementia"
+    ],
+    "dental": [
+      "dx_dental_caries"
+    ],
+    "depressive": [
+      "dx_depressive_episode"
+    ],
+    "dermatitis": [
+      "dx_atopic_dermatitis",
+      "dx_contact_dermatitis",
+      "dx_seborrheic_dermatitis"
+    ],
+    "diabetes": [
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "disease": [
+      "dx_celiac_disease",
+      "dx_chronic_kidney_disease",
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_crohn_disease",
+      "dx_gastroesophageal_reflux_disease",
+      "dx_non_alcoholic_fatty_liver_disease",
+      "dx_parkinsons_disease",
+      "dx_pelvic_inflammatory_disease",
+      "dx_peptic_ulcer"
+    ],
+    "disorder": [
+      "dx_attention_deficit_hyperactivity_disorder",
+      "dx_bipolar_affective_disorder",
+      "dx_generalized_anxiety_disorder",
+      "dx_obsessive_compulsive_disorder",
+      "dx_panic_disorder",
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "disorders": [
+      "dx_dyslipidemia"
+    ],
+    "diverticulosis": [
+      "dx_intestinal_diverticulosis"
+    ],
+    "dorsalgia": [
+      "dx_dorsalgia"
+    ],
+    "dry": [
+      "dx_dry_eye_syndrome"
+    ],
+    "dysmenorrhea": [
+      "dx_dysmenorrhea"
+    ],
+    "e03": [
+      "dx_hypothyroidism"
+    ],
+    "e05": [
+      "dx_hyperthyroidism"
+    ],
+    "e10": [
+      "dx_type_1_diabetes"
+    ],
+    "e11": [
+      "dx_type_2_diabetes"
+    ],
+    "e28": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "e66": [
+      "dx_obesity"
+    ],
+    "e73": [
+      "dx_lactose_intolerance"
+    ],
+    "e78": [
+      "dx_dyslipidemia"
+    ],
+    "ebv": [
+      "dx_infectious_mononucleosis"
+    ],
+    "embolism": [
+      "dx_pulmonary_embolism"
+    ],
+    "endometriosis": [
+      "dx_endometriosis"
+    ],
+    "epilepsy": [
+      "dx_epilepsy"
+    ],
+    "episode": [
+      "dx_depressive_episode"
+    ],
+    "externa": [
+      "dx_acute_otitis_externa"
+    ],
+    "extremities": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "eye": [
+      "dx_dry_eye_syndrome"
+    ],
+    "f00": [
+      "dx_dementia"
+    ],
+    "f01": [
+      "dx_dementia"
+    ],
+    "f03": [
+      "dx_dementia"
+    ],
+    "f31": [
+      "dx_bipolar_affective_disorder"
+    ],
+    "f32": [
+      "dx_depressive_episode"
+    ],
+    "f41": [
+      "dx_generalized_anxiety_disorder",
+      "dx_panic_disorder"
+    ],
+    "f42": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "f43": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "f51": [
+      "dx_insomnia"
+    ],
+    "f90": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "failure": [
+      "dx_heart_failure"
+    ],
+    "fatty": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "fibrillation": [
+      "dx_atrial_fibrillation"
+    ],
+    "foodborne": [
+      "dx_food_poisoning"
+    ],
+    "g20": [
+      "dx_parkinsons_disease"
+    ],
+    "g35": [
+      "dx_multiple_sclerosis"
+    ],
+    "g40": [
+      "dx_epilepsy"
+    ],
+    "g43": [
+      "dx_migraine"
+    ],
+    "g47": [
+      "dx_insomnia",
+      "dx_sleep_apnea"
+    ],
+    "gastritis": [
+      "dx_gastritis"
+    ],
+    "gastroenteritis": [
+      "dx_acute_gastroenteritis"
+    ],
+    "gastroesophageal": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "generalized": [
+      "dx_generalized_anxiety_disorder"
+    ],
+    "gingivitis": [
+      "dx_gingivitis"
+    ],
+    "glaucoma": [
+      "dx_glaucoma"
+    ],
+    "glomerulonephritis": [
+      "dx_glomerulonephritis"
+    ],
+    "gonorrhea": [
+      "dx_gonorrhea"
+    ],
+    "gout": [
+      "dx_gout"
+    ],
+    "h00": [
+      "dx_hordeolum"
+    ],
+    "h01": [
+      "dx_blepharitis"
+    ],
+    "h04": [
+      "dx_dry_eye_syndrome"
+    ],
+    "h10": [
+      "dx_conjunctivitis"
+    ],
+    "h25": [
+      "dx_cataract"
+    ],
+    "h26": [
+      "dx_cataract"
+    ],
+    "h40": [
+      "dx_glaucoma"
+    ],
+    "h52": [
+      "dx_myopia"
+    ],
+    "h60": [
+      "dx_acute_otitis_externa"
+    ],
+    "h65": [
+      "dx_otitis_media"
+    ],
+    "h66": [
+      "dx_otitis_media"
+    ],
+    "hcv": [
+      "dx_chronic_hepatitis_c"
+    ],
+    "heart": [
+      "dx_heart_failure"
+    ],
+    "hemorrhagic": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "hemorrhoids": [
+      "dx_hemorrhoids"
+    ],
+    "hepatitis": [
+      "dx_chronic_hepatitis_c",
+      "dx_hepatitis_a"
+    ],
+    "herpes": [
+      "dx_herpes_simplex"
+    ],
+    "hiv": [
+      "dx_hiv_infection"
+    ],
+    "hordeolum": [
+      "dx_hordeolum"
+    ],
+    "hyperactivity": [
+      "dx_attention_deficit_hyperactivity_disorder"
+    ],
+    "hyperplasia": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "hypertension": [
+      "dx_hypertension"
+    ],
+    "hyperthyroidism": [
+      "dx_hyperthyroidism"
+    ],
+    "hypothyroidism": [
+      "dx_hypothyroidism"
+    ],
+    "i10": [
+      "dx_hypertension"
+    ],
+    "i20": [
+      "dx_angina_pectoris"
+    ],
+    "i21": [
+      "dx_myocardial_infarction"
+    ],
+    "i26": [
+      "dx_pulmonary_embolism"
+    ],
+    "i48": [
+      "dx_atrial_fibrillation"
+    ],
+    "i50": [
+      "dx_heart_failure"
+    ],
+    "i61": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "i62": [
+      "dx_hemorrhagic_stroke"
+    ],
+    "i63": [
+      "dx_ischemic_stroke"
+    ],
+    "i70": [
+      "dx_atherosclerosis"
+    ],
+    "i80": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "i83": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "incontinence": [
+      "dx_urinary_incontinence"
+    ],
+    "infarction": [
+      "dx_myocardial_infarction"
+    ],
+    "infection": [
+      "dx_chlamydial_infection",
+      "dx_hiv_infection",
+      "dx_orvi"
+    ],
+    "infectious": [
+      "dx_infectious_mononucleosis"
+    ],
+    "inflammatory": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "influenza": [
+      "dx_influenza"
+    ],
+    "insomnia": [
+      "dx_insomnia"
+    ],
+    "intestinal": [
+      "dx_intestinal_diverticulosis"
+    ],
+    "intolerance": [
+      "dx_lactose_intolerance"
+    ],
+    "intoxication": [
+      "dx_food_poisoning"
+    ],
+    "iron": [
+      "dx_iron_deficiency_anemia"
+    ],
+    "irritable": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "ischemic": [
+      "dx_ischemic_stroke"
+    ],
+    "j01": [
+      "dx_acute_rhinosinusitis"
+    ],
+    "j02": [
+      "dx_acute_pharyngitis"
+    ],
+    "j03": [
+      "dx_acute_tonsillitis"
+    ],
+    "j04": [
+      "dx_acute_laryngitis"
+    ],
+    "j06": [
+      "dx_orvi"
+    ],
+    "j10": [
+      "dx_influenza"
+    ],
+    "j11": [
+      "dx_influenza"
+    ],
+    "j12": [
+      "dx_pneumonia"
+    ],
+    "j13": [
+      "dx_pneumonia"
+    ],
+    "j14": [
+      "dx_pneumonia"
+    ],
+    "j15": [
+      "dx_pneumonia"
+    ],
+    "j16": [
+      "dx_pneumonia"
+    ],
+    "j18": [
+      "dx_pneumonia"
+    ],
+    "j20": [
+      "dx_acute_bronchitis"
+    ],
+    "j30": [
+      "dx_allergic_rhinitis"
+    ],
+    "j44": [
+      "dx_chronic_obstructive_pulmonary_disease"
+    ],
+    "j45": [
+      "dx_bronchial_asthma"
+    ],
+    "k02": [
+      "dx_dental_caries"
+    ],
+    "k05": [
+      "dx_gingivitis"
+    ],
+    "k12": [
+      "dx_stomatitis"
+    ],
+    "k21": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "k25": [
+      "dx_peptic_ulcer"
+    ],
+    "k26": [
+      "dx_peptic_ulcer"
+    ],
+    "k29": [
+      "dx_gastritis"
+    ],
+    "k35": [
+      "dx_acute_appendicitis"
+    ],
+    "k50": [
+      "dx_crohn_disease"
+    ],
+    "k51": [
+      "dx_ulcerative_colitis"
+    ],
+    "k57": [
+      "dx_intestinal_diverticulosis"
+    ],
+    "k58": [
+      "dx_irritable_bowel_syndrome"
+    ],
+    "k59": [
+      "dx_constipation"
+    ],
+    "k64": [
+      "dx_hemorrhoids"
+    ],
+    "k74": [
+      "dx_liver_cirrhosis"
+    ],
+    "k76": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "k80": [
+      "dx_cholelithiasis"
+    ],
+    "k81": [
+      "dx_acute_cholecystitis"
+    ],
+    "k85": [
+      "dx_acute_pancreatitis"
+    ],
+    "k90": [
+      "dx_celiac_disease"
+    ],
+    "kidney": [
+      "dx_chronic_kidney_disease"
+    ],
+    "l20": [
+      "dx_atopic_dermatitis"
+    ],
+    "l21": [
+      "dx_seborrheic_dermatitis"
+    ],
+    "l23": [
+      "dx_contact_dermatitis"
+    ],
+    "l24": [
+      "dx_contact_dermatitis"
+    ],
+    "l25": [
+      "dx_contact_dermatitis"
+    ],
+    "l40": [
+      "dx_psoriasis"
+    ],
+    "l50": [
+      "dx_urticaria"
+    ],
+    "l70": [
+      "dx_acne"
+    ],
+    "l71": [
+      "dx_rosacea"
+    ],
+    "lactose": [
+      "dx_lactose_intolerance"
+    ],
+    "laryngitis": [
+      "dx_acute_laryngitis"
+    ],
+    "leiomyoma": [
+      "dx_uterine_fibroids"
+    ],
+    "lipoprotein": [
+      "dx_dyslipidemia"
+    ],
+    "liver": [
+      "dx_liver_cirrhosis",
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "lower": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "m05": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "m06": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "m10": [
+      "dx_gout"
+    ],
+    "m15": [
+      "dx_osteoarthritis"
+    ],
+    "m16": [
+      "dx_osteoarthritis"
+    ],
+    "m17": [
+      "dx_osteoarthritis"
+    ],
+    "m19": [
+      "dx_osteoarthritis"
+    ],
+    "m42": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "m54": [
+      "dx_dorsalgia"
+    ],
+    "m80": [
+      "dx_osteoporosis"
+    ],
+    "m81": [
+      "dx_osteoporosis"
+    ],
+    "measles": [
+      "dx_measles"
+    ],
+    "media": [
+      "dx_otitis_media"
+    ],
+    "mellitus": [
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "metabolism": [
+      "dx_dyslipidemia"
+    ],
+    "migraine": [
+      "dx_migraine"
+    ],
+    "mononucleosis": [
+      "dx_infectious_mononucleosis"
+    ],
+    "multiple": [
+      "dx_multiple_sclerosis"
+    ],
+    "myocardial": [
+      "dx_myocardial_infarction"
+    ],
+    "myopia": [
+      "dx_myopia"
+    ],
+    "n00": [
+      "dx_glomerulonephritis"
+    ],
+    "n03": [
+      "dx_glomerulonephritis"
+    ],
+    "n04": [
+      "dx_nephrotic_syndrome"
+    ],
+    "n05": [
+      "dx_glomerulonephritis"
+    ],
+    "n10": [
+      "dx_pyelonephritis"
+    ],
+    "n11": [
+      "dx_pyelonephritis"
+    ],
+    "n18": [
+      "dx_chronic_kidney_disease"
+    ],
+    "n20": [
+      "dx_urolithiasis"
+    ],
+    "n21": [
+      "dx_urolithiasis"
+    ],
+    "n23": [
+      "dx_urolithiasis"
+    ],
+    "n30": [
+      "dx_cystitis"
+    ],
+    "n39": [
+      "dx_urinary_incontinence"
+    ],
+    "n40": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "n41": [
+      "dx_chronic_prostatitis"
+    ],
+    "n73": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "n76": [
+      "dx_bacterial_vaginosis"
+    ],
+    "n80": [
+      "dx_endometriosis"
+    ],
+    "n94": [
+      "dx_dysmenorrhea"
+    ],
+    "nephrotic": [
+      "dx_nephrotic_syndrome"
+    ],
+    "non": [
+      "dx_non_alcoholic_fatty_liver_disease"
+    ],
+    "obesity": [
+      "dx_obesity"
+    ],
+    "obsessive": [
+      "dx_obsessive_compulsive_disorder"
+    ],
+    "obstructive": [
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_sleep_apnea"
+    ],
+    "of": [
+      "dx_dyslipidemia",
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "onychomycosis": [
+      "dx_onychomycosis"
+    ],
+    "osteoarthritis": [
+      "dx_osteoarthritis"
+    ],
+    "osteochondrosis": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "osteoporosis": [
+      "dx_osteoporosis"
+    ],
+    "otitis": [
+      "dx_acute_otitis_externa",
+      "dx_otitis_media"
+    ],
+    "ovary": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "pancreatitis": [
+      "dx_acute_pancreatitis"
+    ],
+    "panic": [
+      "dx_panic_disorder"
+    ],
+    "parkinson": [
+      "dx_parkinsons_disease"
+    ],
+    "pcos": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "pectoris": [
+      "dx_angina_pectoris"
+    ],
+    "pediculosis": [
+      "dx_pediculosis"
+    ],
+    "pedis": [
+      "dx_tinea_pedis"
+    ],
+    "pelvic": [
+      "dx_pelvic_inflammatory_disease"
+    ],
+    "peptic": [
+      "dx_peptic_ulcer"
+    ],
+    "pertussis": [
+      "dx_pertussis"
+    ],
+    "pharyngitis": [
+      "dx_acute_pharyngitis"
+    ],
+    "pneumonia": [
+      "dx_pneumonia"
+    ],
+    "polycystic": [
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "post": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "prostatic": [
+      "dx_benign_prostatic_hyperplasia"
+    ],
+    "prostatitis": [
+      "dx_chronic_prostatitis"
+    ],
+    "psoriasis": [
+      "dx_psoriasis"
+    ],
+    "pulmonary": [
+      "dx_chronic_obstructive_pulmonary_disease",
+      "dx_pulmonary_embolism",
+      "dx_pulmonary_tuberculosis"
+    ],
+    "pyelonephritis": [
+      "dx_pyelonephritis"
+    ],
+    "r32": [
+      "dx_urinary_incontinence"
+    ],
+    "reflux": [
+      "dx_gastroesophageal_reflux_disease"
+    ],
+    "respiratory": [
+      "dx_orvi"
+    ],
+    "rheumatoid": [
+      "dx_rheumatoid_arthritis"
+    ],
+    "rhinitis": [
+      "dx_allergic_rhinitis"
+    ],
+    "rhinosinusitis": [
+      "dx_acute_rhinosinusitis"
+    ],
+    "rosacea": [
+      "dx_rosacea"
+    ],
+    "scabies": [
+      "dx_scabies"
+    ],
+    "sclerosis": [
+      "dx_multiple_sclerosis"
+    ],
+    "seborrheic": [
+      "dx_seborrheic_dermatitis"
+    ],
+    "simplex": [
+      "dx_herpes_simplex"
+    ],
+    "sleep": [
+      "dx_sleep_apnea"
+    ],
+    "spinal": [
+      "dx_spinal_osteochondrosis"
+    ],
+    "stomatitis": [
+      "dx_stomatitis"
+    ],
+    "stress": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "stroke": [
+      "dx_hemorrhagic_stroke",
+      "dx_ischemic_stroke"
+    ],
+    "syndrome": [
+      "dx_dry_eye_syndrome",
+      "dx_irritable_bowel_syndrome",
+      "dx_nephrotic_syndrome",
+      "dx_polycystic_ovary_syndrome"
+    ],
+    "syphilis": [
+      "dx_syphilis"
+    ],
+    "thrombosis": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "tinea": [
+      "dx_tinea_pedis"
+    ],
+    "tonsillitis": [
+      "dx_acute_tonsillitis"
+    ],
+    "traumatic": [
+      "dx_post_traumatic_stress_disorder"
+    ],
+    "tuberculosis": [
+      "dx_pulmonary_tuberculosis"
+    ],
+    "type": [
+      "dx_type_1_diabetes",
+      "dx_type_2_diabetes"
+    ],
+    "u07": [
+      "dx_covid_19"
+    ],
+    "ulcer": [
+      "dx_peptic_ulcer"
+    ],
+    "ulcerative": [
+      "dx_ulcerative_colitis"
+    ],
+    "upper": [
+      "dx_orvi"
+    ],
+    "urinary": [
+      "dx_urinary_incontinence"
+    ],
+    "urolithiasis": [
+      "dx_urolithiasis"
+    ],
+    "urticaria": [
+      "dx_urticaria"
+    ],
+    "uterine": [
+      "dx_uterine_fibroids"
+    ],
+    "vaginosis": [
+      "dx_bacterial_vaginosis"
+    ],
+    "varicella": [
+      "dx_varicella"
+    ],
+    "varicose": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "vein": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "veins": [
+      "dx_varicose_veins_lower_extremities"
+    ],
+    "venous": [
+      "dx_deep_vein_thrombosis"
+    ],
+    "vulgaris": [
+      "dx_acne"
+    ],
+    "vulvovaginal": [
+      "dx_vulvovaginal_candidiasis"
+    ],
+    "whooping": [
+      "dx_pertussis"
+    ],
+    "z21": [
+      "dx_hiv_infection"
+    ]
+  }
+}

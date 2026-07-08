@@ -14,10 +14,12 @@
   --palette-brand-paper: #efe7d7;
   --palette-brand-blue-soft: #7c93c0;
   --palette-brand-plum: #8a4c7d;
+  --palette-brand-coral: #cf7a5d;
   --palette-brand-cyan: #5cb5cc;
   --palette-brand-blue-deep: #5270ab;
   --mode-movie-brand: var(--palette-brand-green);
   --mode-series-brand: var(--palette-brand-amber);
+  --mode-anime-brand: var(--palette-brand-coral);
   --mode-game-brand: var(--palette-brand-blue-deep);
   --mode-diagnosis-brand: var(--palette-brand-cyan);
   --mode-city-brand: var(--palette-brand-blue-soft);

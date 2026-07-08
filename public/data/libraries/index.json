@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-07-08T12:28:40.714Z",
+  "root": "public/data/libraries",
+  "libraries": [
+    {
+      "key": "movies",
+      "source": "public/data/movies.generated.json",
+      "itemsFile": "public/data/libraries/movies/items.json",
+      "searchIndexFile": "public/data/libraries/movies/search-index.json",
+      "count": 1246
+    },
+    {
+      "key": "series",
+      "source": "public/data/series.generated.json",
+      "itemsFile": "public/data/libraries/series/items.json",
+      "searchIndexFile": "public/data/libraries/series/search-index.json",
+      "count": 811
+    },
+    {
+      "key": "animes",
+      "source": "public/data/animes.generated.json",
+      "itemsFile": "public/data/libraries/animes/items.json",
+      "searchIndexFile": "public/data/libraries/animes/search-index.json",
+      "count": 1000
+    },
+    {
+      "key": "games",
+      "source": "public/data/games.generated.json",
+      "itemsFile": "public/data/libraries/games/items.json",
+      "searchIndexFile": "public/data/libraries/games/search-index.json",
+      "count": 1000
+    },
+    {
+      "key": "diagnoses",
+      "source": "public/data/diagnoses.generated.json",
+      "itemsFile": "public/data/libraries/diagnoses/items.json",
+      "searchIndexFile": "public/data/libraries/diagnoses/search-index.json",
+      "count": 120
+    }
+  ]
+}

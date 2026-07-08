@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const REQUIRED_MODES = ['movie', 'series', 'game', 'diagnosis']
+const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis']
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -39,7 +39,7 @@ const validateVignetteMap = (json, file) => {
 
 const validateSource = (json, file) => {
   if (!isObject(json)) return [`${file}: root must be object`]
-  const numericKeys = ['movieCount', 'seriesCount', 'gameCount', 'diagnosisCount']
+  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount']
   return numericKeys
     .filter((key) => json[key] != null && typeof json[key] !== 'number')
     .map((key) => `${file}: ${key} must be number when present`)
@@ -50,6 +50,7 @@ export const validateGeneratedData = async (rootDir) => {
   const files = {
     movies: 'movies.generated.json',
     series: 'series.generated.json',
+    animes: 'animes.generated.json',
     games: 'games.generated.json',
     diagnoses: 'diagnoses.generated.json',
     vignettes: 'diagnosis-case-vignettes.by-id.json',
@@ -58,7 +59,7 @@ export const validateGeneratedData = async (rootDir) => {
 
   const errors = []
 
-  for (const file of [files.movies, files.series, files.games, files.diagnoses]) {
+  for (const file of [files.movies, files.series, files.animes, files.games, files.diagnoses]) {
     const fullPath = path.join(dataDir, file)
     const json = await readJson(fullPath)
     errors.push(...validateTitleDataset(json, file))

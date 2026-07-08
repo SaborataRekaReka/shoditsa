@@ -63,7 +63,7 @@ npm run deploy:quick:skip-build
 
 ## Что работает
 
-- режимы «Фильм дня» и «Сериал дня»;
+- режимы «Фильм дня», «Сериал дня» и «Аниме дня»;
 - 7 временных периодов;
 - стабильный тайтл дня по московской дате;
 - поиск по русскому, оригинальному и альтернативным названиям, `е/ё` и базовым опечаткам;
@@ -81,6 +81,7 @@ npm run deploy:quick:skip-build
 
 - 500 фильмов из списка [500 лучших фильмов Кинопоиска](https://www.kinopoisk.ru/lists/movies/top500/) по фиксированным ID в `data/top500-ids.json`;
 - 40 сериалов из `TOP_250_TV_SHOWS`.
+- 500 аниме из [Shikimori Popularity](https://shikimori.io/animes?order=popularity) в последовательном порядке.
 
 Для обновления данных создайте `.env.local`:
 
@@ -93,6 +94,25 @@ KINOPOISK_API_KEY=your_key_here
 ```powershell
 npm run data:build
 ```
+
+### Каталогизированная JSON-структура и search-index
+
+Чтобы разложить библиотеки по каталогам и построить индексы быстрого поиска:
+
+```powershell
+npm run data:catalogs
+```
+
+Скрипт создаёт структуру:
+
+- `public/data/libraries/index.json` — общий каталог библиотек;
+- `public/data/libraries/movies/items.json` + `search-index.json`;
+- `public/data/libraries/series/items.json` + `search-index.json`;
+- `public/data/libraries/animes/items.json` + `search-index.json`;
+- `public/data/libraries/games/items.json` + `search-index.json`;
+- `public/data/libraries/diagnoses/items.json` + `search-index.json` + `case-vignettes.by-id.json`.
+
+Текущие файлы в `public/data/*.generated.json` сохраняются для обратной совместимости.
 
 Для ключей с небольшим дневным лимитом используйте режим экономии квоты (только фильмы, без staff), чтобы уложиться в 500 запросов:
 
@@ -158,6 +178,35 @@ npm run data:refill
 ```
 
 Ключ используется только Node-скриптом `scripts/import-kinopoisk.ts` и никогда не попадает в клиентскую сборку. Сведения об источнике и времени генерации сохраняются в `public/data/source.json`.
+
+### Импорт аниме из Shikimori (по порядку популярности)
+
+Импорт берется из каталога `https://shikimori.io/animes?order=popularity` строго по порядку: страница 1, затем 2, затем 3 и так далее.
+
+Базовый импорт (первые 500):
+
+```powershell
+npm run data:build:anime
+```
+
+С ролями (персонажи/люди из `/api/animes/:id/roles`):
+
+```powershell
+npm run data:build:anime:roles
+```
+
+Полезные параметры:
+
+```powershell
+node scripts/import-shikimori-animes.mjs --max-items 500 --page-start 1 --limit 50 --delay-ms 700
+```
+
+Что важно:
+
+- порядок не перемешивается: всегда от первого популярного к следующим;
+- в запросах выставляется `User-Agent` (можно задать через `SHIKIMORI_USER_AGENT` в `.env.local`);
+- антиспойлер для `plotHint` сейчас делает только явную маскировку названия, имен персонажей/людей (если включен `--fetch-roles`) и лор-ключей;
+- маскировка trigger-фраз намеренно не используется.
 
 ## Структура
 
