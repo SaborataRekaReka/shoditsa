@@ -32,6 +32,13 @@
     "data:enrich:series-meta": "node scripts/enrich-series-seasons-status.mjs",
     "data:sanitize:games": "node scripts/sanitize-game-hints.mjs",
     "data:catalogs": "node scripts/build-library-json-structure.mjs",
+    "data:download:library-images": "node scripts/download-library-images.mjs",
+    "data:optimize:library-images": "node scripts/optimize-library-images.mjs",
+    "data:relink:library-images": "node scripts/relink-library-images.mjs",
+    "data:fix:people-anime-images": "node scripts/fix-people-and-anime-images.mjs",
+    "data:dedupe:backdrops": "node scripts/dedupe-library-backdrops.mjs",
+    "data:assets:prepare": "npm run data:download:library-images && npm run data:optimize:library-images && npm run data:relink:library-images && npm run data:fix:people-anime-images && npm run data:dedupe:backdrops",
+    "deploy:library-assets": "powershell -ExecutionPolicy Bypass -File scripts/deploy-library-assets.ps1",
     "data:translate:games:ru": "node scripts/translate-game-hints-google.mjs",
     "data:collect-ids": "node scripts/collect-kinopoisk-ids.mjs",
     "data:validate": "node scripts/validate-generated-data.mjs",
@@ -48,11 +55,12 @@
     "vite": "latest"
   },
   "devDependencies": {
-    "archiver": "^7.0.1",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "archiver": "^7.0.1",
     "playwright": "^1.61.1",
+    "sharp": "^0.35.3",
     "tsx": "latest"
   }
 }

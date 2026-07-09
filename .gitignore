@@ -5,4 +5,12 @@ dist
 .env.local
 *.log
 .tmp/
+tmp/
 data/kinopoisk-navigator-*.json
+
+# Generated media assets (rebuild via scripts)
+public/data/libraries/movies/img/
+public/data/libraries/series/img/
+public/data/libraries/animes/img/
+public/data/libraries/games/img/
+public/data/libraries/people/img/
