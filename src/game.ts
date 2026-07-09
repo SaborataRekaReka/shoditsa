@@ -18,7 +18,7 @@ export const DIFFICULTIES: Record<DifficultyKey, { label: string; short: string;
   easy: {
     label: 'Лёгкий',
     short: 'Разогрев',
-    hint: '10% RU / 90% INTL',
+    hint: 'Самые популярные артисты',
     ruShare: 0.1,
     ruPoolFraction: 0.2,
     intlPoolFraction: 0.1,
@@ -26,15 +26,15 @@ export const DIFFICULTIES: Record<DifficultyKey, { label: string; short: string;
   medium: {
     label: 'Средний',
     short: 'Плотный чарт',
-    hint: '30% RU / 70% INTL',
+    hint: 'Популярные и менее популярные артисты',
     ruShare: 0.3,
     ruPoolFraction: 0.55,
     intlPoolFraction: 0.35,
   },
   hard: {
     label: 'Сложный',
-    short: 'RU only',
-    hint: '100% RU',
+    short: 'Селективный',
+    hint: 'Менее популярные артисты',
     ruShare: 1,
     ruPoolFraction: 1,
     intlPoolFraction: 1,
