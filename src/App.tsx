@@ -113,6 +113,15 @@ const completionSessionKey = (mode: TitleMode, period: PeriodKey, date: string, 
   const base = gameKey(mode, period, date)
   return variant ? `${base}|diff:${variant}` : base
 }
+const forceClientRefresh = () => {
+  try {
+    const url = new URL(window.location.href)
+    url.searchParams.set('refresh', String(Date.now()))
+    window.location.replace(url.toString())
+  } catch {
+    window.location.reload()
+  }
+}
 const periodUnlockCost = (period: PeriodKey) => PERIOD_UNLOCK_COSTS[period] ?? 0
 const canUnlockPeriods = (mode: TitleMode) => UNLOCKABLE_PERIOD_MODES.has(mode)
 const formatTickets = (count: number) => `${count} ${countWord(count, ['билет', 'билета', 'билетов'])}`
@@ -1170,6 +1179,10 @@ function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: {
           <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
         </button>
         <nav aria-label="Навигация">
+          <button onClick={() => {
+            trackMetrikaGoal('refresh_client')
+            forceClientRefresh()
+          }} aria-label="Получить обновления" title="Получить обновления"><RotateCcw /></button>
           <button onClick={() => {
             trackMetrikaGoal('open_rules')
             onRules()
