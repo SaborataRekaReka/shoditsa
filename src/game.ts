@@ -234,10 +234,24 @@ const normalizeContagiousness = (value: string | null | undefined) => {
   if (!value) return value
   return value.replace(/^(заразность|contagiousness)\s*:\s*/i, '').trim()
 }
-const numeric = (guess: number | null | undefined, answer: number | null | undefined, match: number, close: number): { status: MatchStatus; direction: Direction } => {
+type DirectionOptions = { lowerIsUp?: boolean }
+
+const compareDirection = (guess: number, answer: number, options: DirectionOptions = {}): Direction => {
+  if (guess === answer) return null
+  if (options.lowerIsUp) return answer < guess ? 'up' : 'down'
+  return answer > guess ? 'up' : 'down'
+}
+
+const numeric = (
+  guess: number | null | undefined,
+  answer: number | null | undefined,
+  match: number,
+  close: number,
+  options: DirectionOptions = {},
+): { status: MatchStatus; direction: Direction } => {
   if (guess == null || answer == null) return { status: 'unknown', direction: null }
   const delta = Math.abs(guess - answer)
-  return { status: delta <= match ? 'match' : delta <= close ? 'close' : 'miss', direction: delta <= match ? null : answer > guess ? 'up' : 'down' }
+  return { status: delta <= match ? 'match' : delta <= close ? 'close' : 'miss', direction: delta <= match ? null : compareDirection(guess, answer, options) }
 }
 const list = (values: string[]) => values.length ? values.join(', ') : 'Нет данных'
 const countryCode = (value: string) => {
@@ -323,13 +337,18 @@ const playersNumber = (categories: string[]) => {
   return max
 }
 
-const reviewHint = (guess: number | null | undefined, answer: number | null | undefined): { status: MatchStatus; direction: Direction } => {
-  if (!guess || !answer) return { status: 'unknown', direction: null }
+const reviewHint = (
+  guess: number | null | undefined,
+  answer: number | null | undefined,
+  options: DirectionOptions = {},
+): { status: MatchStatus; direction: Direction } => {
+  if (guess == null || answer == null) return { status: 'unknown', direction: null }
   if (guess === answer) return { status: 'match', direction: null }
   const ratio = Math.max(guess, answer) / Math.max(1, Math.min(guess, answer))
-  if (ratio <= 1.25) return { status: 'close', direction: answer > guess ? 'up' : 'down' }
-  if (ratio <= 2) return { status: 'partial', direction: answer > guess ? 'up' : 'down' }
-  return { status: 'miss', direction: answer > guess ? 'up' : 'down' }
+  const direction = compareDirection(guess, answer, options)
+  if (ratio <= 1.25) return { status: 'close', direction }
+  if (ratio <= 2) return { status: 'partial', direction }
+  return { status: 'miss', direction }
 }
 
 const animeScore = (item: TitleItem) => {
@@ -375,7 +394,7 @@ const gamePriceHint = (guess: TitleItem, answer: TitleItem): { status: MatchStat
   const delta = Math.abs(guessFinal - answerFinal)
   return {
     status: delta <= 10_000 ? 'match' : delta <= 35_000 ? 'close' : 'miss',
-    direction: delta <= 10_000 ? null : answerFinal > guessFinal ? 'up' : 'down',
+    direction: delta <= 10_000 ? null : compareDirection(guessFinal, answerFinal),
   }
 }
 
@@ -517,7 +536,7 @@ const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerScore = animeScore(answer)
 
   const year = numeric(guess.year, answer.year, 0, 2)
-  const rank = numeric(guess.topRank, answer.topRank, 0, 20)
+  const rank = numeric(guess.topRank, answer.topRank, 0, 20, { lowerIsUp: true })
   const guessEpisodes = positiveNumber(guess.episodes)
   const answerEpisodes = positiveNumber(answer.episodes)
   const guessEpisodesAired = distinctAnimeEpisodesAired(positiveNumber(guess.animeEpisodesAired), guessEpisodes)
@@ -596,7 +615,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerAge = ageNumber(answer.ageRating)
 
   const year = numeric(guess.year, answer.year, 0, 2)
-  const rank = numeric(guess.topRank, answer.topRank, 0, 15)
+  const rank = numeric(guess.topRank, answer.topRank, 0, 15, { lowerIsUp: true })
   const players = numeric(guessPlayers, answerPlayers, 0, 2)
   const steamPositive = numeric(guessSteamPositive, answerSteamPositive, 1, 5)
   const metacritic = numeric(guessMeta, answerMeta, 1, 5)
@@ -657,7 +676,7 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerMembers = answer.cast ?? []
 
   const year = numeric(guess.year, answer.year, 0, 2)
-  const rank = numeric(guess.topRank, answer.topRank, 0, 20)
+  const rank = numeric(guess.topRank, answer.topRank, 0, 20, { lowerIsUp: true })
   const listeners = reviewHint(guessListeners, answerListeners)
   const relatedNamesGuess = guessRelated.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
   const relatedNamesAnswer = answerRelated.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
