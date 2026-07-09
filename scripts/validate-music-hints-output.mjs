@@ -108,10 +108,18 @@ const validateDecision = ({ decision, record }) => {
   const anti = record?.antiSpoiler ?? {}
   const minChars = Number.isFinite(Number(anti?.minHintChars)) ? Number(anti.minHintChars) : 95
   const maxChars = Number.isFinite(Number(anti?.maxHintChars)) ? Number(anti.maxHintChars) : 170
+  const recommendedMaxCharsRaw = Number.isFinite(Number(anti?.recommendedMaxHintChars))
+    ? Number(anti.recommendedMaxHintChars)
+    : Math.min(maxChars, 170)
+  const recommendedMaxChars = Math.min(maxChars, Math.max(minChars, recommendedMaxCharsRaw))
   const maxSentences = Number.isFinite(Number(anti?.maxSentences)) ? Number(anti.maxSentences) : 2
 
   if (hint && hint.length < minChars) warnings.push(`hint_too_short:${hint.length}<${minChars}`)
-  if (hint.length > maxChars) errors.push(`hint_too_long:${hint.length}>${maxChars}`)
+  if (hint.length > maxChars) {
+    errors.push(`hint_too_long:${hint.length}>${maxChars}`)
+  } else if (hint.length > recommendedMaxChars) {
+    warnings.push(`hint_over_recommended:${hint.length}>${recommendedMaxChars}`)
+  }
 
   const sentenceCount = countSentences(hint)
   if (hint && sentenceCount > maxSentences) errors.push(`too_many_sentences:${sentenceCount}>${maxSentences}`)

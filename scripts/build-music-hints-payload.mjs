@@ -8,7 +8,8 @@ const DEFAULT_INPUT = 'public/data/libraries/music/items.json'
 const DEFAULT_OUTPUT_PREFIX = 'docs/music-hints-payload'
 const DEFAULT_CHUNK_SIZE = 40
 const DEFAULT_MIN_HINT_CHARS = 95
-const DEFAULT_MAX_HINT_CHARS = 170
+const DEFAULT_RECOMMENDED_MAX_HINT_CHARS = 170
+const DEFAULT_HARD_MAX_HINT_CHARS = 210
 
 const STOP_TOKENS = new Set([
   'the',
@@ -73,7 +74,8 @@ const parseArgs = () => {
     chunkSize: DEFAULT_CHUNK_SIZE,
     limit: null,
     minHintChars: DEFAULT_MIN_HINT_CHARS,
-    maxHintChars: DEFAULT_MAX_HINT_CHARS,
+    maxHintChars: DEFAULT_RECOMMENDED_MAX_HINT_CHARS,
+    hardMaxHintChars: DEFAULT_HARD_MAX_HINT_CHARS,
   }
 
   for (const arg of process.argv.slice(2)) {
@@ -118,10 +120,20 @@ const parseArgs = () => {
       if (Number.isFinite(value) && value > 30) options.maxHintChars = value
       continue
     }
+
+    if (arg.startsWith('--hard-max-hint-chars=')) {
+      const value = Number.parseInt(arg.slice('--hard-max-hint-chars='.length), 10)
+      if (Number.isFinite(value) && value > 30) options.hardMaxHintChars = value
+      continue
+    }
   }
 
   if (options.maxHintChars < options.minHintChars) {
     throw new Error('max-hint-chars must be greater than or equal to min-hint-chars')
+  }
+
+  if (options.hardMaxHintChars < options.maxHintChars) {
+    throw new Error('hard-max-hint-chars must be greater than or equal to max-hint-chars')
   }
 
   return options
@@ -386,6 +398,20 @@ const buildBannedTokens = (bannedPhrases) => {
   return [...tokenSet].sort((a, b) => a.localeCompare(b, 'ru-RU')).slice(0, 120)
 }
 
+const isUsableBannedPhrase = (phrase) => {
+  const text = asString(phrase)
+  if (!text) return false
+
+  const normalized = normalize(text)
+  if (!normalized || normalized.length <= 2) return false
+
+  const meaningfulTokens = tokenize(text).filter((token) => !STOP_TOKENS.has(token))
+  if (!meaningfulTokens.length) return false
+
+  if (meaningfulTokens.some((token) => token.length >= 4)) return true
+  return meaningfulTokens.length >= 2
+}
+
 const buildHintRecord = (record, constraints) => {
   const current = isObject(record?.current) ? record.current : {}
 
@@ -419,7 +445,7 @@ const buildHintRecord = (record, constraints) => {
     ...topAlbums,
     ...associatedActs,
     ...members,
-  ]).slice(0, 120)
+  ]).filter((phrase) => isUsableBannedPhrase(phrase)).slice(0, 120)
 
   const bannedTokens = buildBannedTokens(bannedPhrases)
 
@@ -468,7 +494,8 @@ const buildHintRecord = (record, constraints) => {
       bannedPhrases,
       bannedTokens,
       minHintChars: constraints.minHintChars,
-      maxHintChars: constraints.maxHintChars,
+      recommendedMaxHintChars: constraints.recommendedMaxHintChars,
+      maxHintChars: constraints.hardMaxHintChars,
       maxSentences: 2,
       maxLines: 2,
       language: 'ru',
@@ -496,7 +523,8 @@ const main = () => {
 
   const hintRecords = selected.map((record) => buildHintRecord(record, {
     minHintChars: options.minHintChars,
-    maxHintChars: options.maxHintChars,
+    recommendedMaxHintChars: options.maxHintChars,
+    hardMaxHintChars: options.hardMaxHintChars,
   }))
 
   const chunks = chunksOf(hintRecords, options.chunkSize)
@@ -527,7 +555,7 @@ const main = () => {
         ],
         outputRules: [
           'Возвращай только JSON без markdown и пояснений.',
-          'Поле hint: 1-2 предложения, без переносов строк, длина в диапазоне minHintChars..maxHintChars.',
+          'Поле hint: 1-2 предложения, без переносов строк. Держи длину в диапазоне minHintChars..recommendedMaxHintChars, максимум maxHintChars.',
           'Нельзя использовать слова и фразы из antiSpoiler.bannedPhrases и antiSpoiler.bannedTokens.',
           'Нельзя упоминать названия треков/альбомов, псевдонимы, реальное имя, участников.',
           'Подсказка должна помогать сузить ответ, но не раскрывать его напрямую.',
@@ -561,7 +589,8 @@ const main = () => {
     outputPrefix: path.relative(ROOT, outputPrefixPath).replace(/\\/g, '/'),
     chunkSize: options.chunkSize,
     minHintChars: options.minHintChars,
-    maxHintChars: options.maxHintChars,
+    recommendedMaxHintChars: options.maxHintChars,
+    maxHintChars: options.hardMaxHintChars,
     totalRecords: hintRecords.length,
     partsTotal: partFiles.length,
     partFiles,

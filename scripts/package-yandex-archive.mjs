@@ -11,7 +11,8 @@ const rootDir = path.resolve(__dirname, '..')
 const distDir = path.join(rootDir, 'dist')
 const zipPath = path.join(rootDir, ARCHIVE_NAME)
 const fallbackZipPath = path.join(rootDir, FALLBACK_ARCHIVE_NAME)
-const includeLibraryImages = process.env.YANDEX_PACK_INCLUDE_IMAGES === '1'
+// Include library images by default to avoid broken posters in production bundles.
+const includeLibraryImages = String(process.env.YANDEX_PACK_INCLUDE_IMAGES ?? '1').trim() !== '0'
 
 if (!fs.existsSync(distDir)) {
   throw new Error('dist directory not found. Please ensure the build has completed successfully.')

@@ -16,7 +16,7 @@ const toIntegerOrNull = (value: unknown) => {
 
 const requestCache = new Map<string, Promise<unknown>>()
 const configuredMediaOrigin = String(import.meta.env.VITE_MEDIA_ORIGIN || '').trim().replace(/\/$/, '')
-const mediaOrigin = configuredMediaOrigin || (import.meta.env.PROD ? 'https://shoditsa.ru' : '')
+const mediaOrigin = configuredMediaOrigin
 
 const withMediaOrigin = (value: unknown) => {
   const raw = String(value ?? '').trim()

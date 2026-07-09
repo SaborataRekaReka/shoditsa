@@ -12,6 +12,7 @@
   "mergeOutput": true,
   "outputCount": 1246,
   "movieCount": 1246,
+  "gameCount": 1000,
   "skippedCount": 2166,
   "seriesCount": 811,
   "keyUsage": [
@@ -42,6 +43,7 @@
     }
   ],
   "animeCount": 1000,
+  "diagnosisCount": 120,
   "animeSource": "https://shikimori.io/animes?order=popularity",
   "animeImport": {
     "orderedBy": "popularity",

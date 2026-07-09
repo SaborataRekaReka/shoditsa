@@ -37,6 +37,8 @@ jobs:
           npm run data:validate
 
       - name: Build and package Yandex archive
+        env:
+          YANDEX_PACK_INCLUDE_IMAGES: "1"
         run: npm run yandex:bundle
 
       - name: Compute archive version
