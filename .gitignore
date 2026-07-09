@@ -28,6 +28,8 @@ docs/music-merge-batched-retry-into-first500.summary.json
 docs/music-merge-original-retry-summary.first500.json
 docs/music-music-mbwd-retry.summary.json
 docs/music-remaining-cards.after-rules.json
+docs/music-hints-payload*.json
+docs/music-hints-output*.json
 scripts/build-music-factcheck-payload.mjs
 scripts/build-music-retry-input.mjs
 scripts/build-music-test-dataset.mjs
