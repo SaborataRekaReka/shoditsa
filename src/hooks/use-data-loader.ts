@@ -75,6 +75,14 @@ const fetchJsonCached = async <T,>(url: string): Promise<T> => {
   return requestCache.get(url) as Promise<T>
 }
 
+const fetchJsonNoCache = async <T,>(url: string): Promise<T> => {
+  const response = await fetch(url, { cache: 'no-store' })
+  if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.status}`)
+  return response.json()
+}
+
+const withCacheBuster = (url: string) => `${url}${url.includes('?') ? '&' : '?'}ts=${Date.now()}`
+
 const loadModeItems = async (dataFile: string) => {
   try {
     return await fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
@@ -114,7 +122,7 @@ export const useDataLoader = (mode: TitleMode) => {
       })
       .catch(() => undefined)
 
-    fetchJsonCached<{ globalSalt?: number; dailySalt?: number }>('./data/daily-config.json')
+    fetchJsonNoCache<{ globalSalt?: number; dailySalt?: number }>(withCacheBuster('./data/daily-config.json'))
       .then((config) => {
         const configSalt = toIntegerOrNull(config.globalSalt ?? config.dailySalt)
         if (configSalt != null) setGlobalDailySalt(configSalt)
@@ -147,6 +155,35 @@ export const useDataLoader = (mode: TitleMode) => {
     fetchJsonCached<TitleItem[]>('./data/music.generated.json')
       .then((items) => setTitleCounts((current) => ({ ...current, music: current.music ?? items.length })))
       .catch(() => undefined)
+  }, [])
+
+  useEffect(() => {
+    let canceled = false
+
+    const syncGlobalDailySalt = () => {
+      fetchJsonNoCache<{ globalSalt?: number; dailySalt?: number }>(withCacheBuster('./data/daily-config.json'))
+        .then((config) => {
+          if (canceled) return
+          const configSalt = toIntegerOrNull(config.globalSalt ?? config.dailySalt)
+          if (configSalt != null) setGlobalDailySalt(configSalt)
+        })
+        .catch(() => undefined)
+    }
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') syncGlobalDailySalt()
+    }
+
+    const intervalId = window.setInterval(syncGlobalDailySalt, 60_000)
+    window.addEventListener('focus', syncGlobalDailySalt)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+
+    return () => {
+      canceled = true
+      window.clearInterval(intervalId)
+      window.removeEventListener('focus', syncGlobalDailySalt)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
   }, [])
 
   useEffect(() => {
