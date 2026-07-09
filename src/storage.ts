@@ -4,6 +4,7 @@ import type {
   AttendanceStats,
   Attempt,
   DailyAttendance,
+  DifficultyKey,
   GameStatus,
   HintCheckpoint,
   HintChoice,
@@ -25,19 +26,31 @@ const TICKET_LEDGER_KEY = 'seans:v1:ticket-ledger'
 const PROMO_USAGE_KEY = 'seans:v1:promo-usage'
 const PERIOD_UNLOCKS_KEY = 'seans:v1:period-unlocks'
 const FREE_PLAY_USAGE_PREFIX = 'seans:v1:free-play-usage:'
+const MUSIC_REVIEW_APPROVALS_KEY = 'seans:v1:music-review-approvals'
+const MUSIC_REVIEW_CONFLICT_CHOICES_KEY = 'seans:v1:music-review-conflict-choices'
 const SAVED_GAME_SCHEMA_VERSION = 2
 
-const TITLE_MODES: TitleMode[] = ['movie', 'series', 'anime', 'game', 'diagnosis']
+export type MusicReviewConflictOption = 'A' | 'B'
+export type MusicReviewConflictChoice = {
+  option: MusicReviewConflictOption
+  value: string
+  at: number
+}
+export type MusicReviewConflictChoices = Record<string, Record<string, MusicReviewConflictChoice>>
+
+const TITLE_MODES: TitleMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
 const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020']
 const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost']
 const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]
 const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards']
+const DIFFICULTY_KEYS: DifficultyKey[] = ['easy', 'medium', 'hard']
 
 const isTitleMode = (value: unknown): value is TitleMode => typeof value === 'string' && TITLE_MODES.includes(value as TitleMode)
 const isPeriodKey = (value: unknown): value is PeriodKey => typeof value === 'string' && PERIOD_KEYS.includes(value as PeriodKey)
 const isGameStatus = (value: unknown): value is GameStatus => typeof value === 'string' && GAME_STATUSES.includes(value as GameStatus)
 const isHintCheckpoint = (value: unknown): value is HintCheckpoint => typeof value === 'number' && HINT_CHECKPOINTS.includes(value as HintCheckpoint)
 const isAssistHintKey = (value: unknown): value is AssistHintKey => typeof value === 'string' && ASSIST_HINT_KEYS.includes(value as AssistHintKey)
+const isDifficultyKey = (value: unknown): value is DifficultyKey => typeof value === 'string' && DIFFICULTY_KEYS.includes(value as DifficultyKey)
 
 const toSafeInteger = (value: unknown, fallback: number) => {
   const parsed = Math.trunc(Number(value))
@@ -149,6 +162,7 @@ const normalizeSavedGame = (value: unknown, fallbackKey?: string): SavedGame | n
     dismissedHintRounds: normalizeDismissedHintRounds(raw.dismissedHintRounds, openedRounds),
     updatedAt: Math.max(0, toSafeInteger(raw.updatedAt, Date.now())),
     schemaVersion: Math.max(1, toSafeInteger(raw.schemaVersion, 1)),
+    ...(isDifficultyKey(raw.difficulty) ? { difficulty: raw.difficulty } : {}),
   }
 }
 
@@ -268,6 +282,108 @@ export const saveFreePlayUsage = (date: string, launches: number) => {
 export const consumeFreePlayUsage = (date: string): number => {
   const next = loadFreePlayUsage(date) + 1
   saveFreePlayUsage(date, next)
+  return next
+}
+
+export const loadMusicReviewApprovals = (): Record<string, number> => {
+  try {
+    const raw = localStorage.getItem(MUSIC_REVIEW_APPROVALS_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as Record<string, unknown>
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {}
+    return Object.fromEntries(
+      Object.entries(parsed)
+        .map(([id, approvedAt]) => {
+          const normalizedId = typeof id === 'string' ? id.trim() : ''
+          const value = Math.trunc(Number(approvedAt))
+          if (!normalizedId || !Number.isFinite(value) || value <= 0) return null
+          return [normalizedId, value] as const
+        })
+        .filter((entry): entry is readonly [string, number] => Boolean(entry)),
+    )
+  } catch {
+    return {}
+  }
+}
+
+export const saveMusicReviewApprovals = (approvals: Record<string, number>) => {
+  localStorage.setItem(MUSIC_REVIEW_APPROVALS_KEY, JSON.stringify(approvals))
+}
+
+export const setMusicReviewApproval = (id: string, approved: boolean) => {
+  const normalizedId = id.trim()
+  if (!normalizedId) return loadMusicReviewApprovals()
+  const next = { ...loadMusicReviewApprovals() }
+  if (approved) next[normalizedId] = Date.now()
+  else delete next[normalizedId]
+  saveMusicReviewApprovals(next)
+  return next
+}
+
+export const loadMusicReviewConflictChoices = (): MusicReviewConflictChoices => {
+  try {
+    const raw = localStorage.getItem(MUSIC_REVIEW_CONFLICT_CHOICES_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as Record<string, unknown>
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {}
+
+    const entries = Object.entries(parsed)
+      .map(([itemId, fieldMap]) => {
+        if (typeof itemId !== 'string' || !itemId.trim()) return null
+        if (!fieldMap || typeof fieldMap !== 'object' || Array.isArray(fieldMap)) return null
+
+        const normalizedFieldMap = Object.fromEntries(
+          Object.entries(fieldMap as Record<string, unknown>)
+            .map(([field, value]) => {
+              if (typeof field !== 'string' || !field.trim()) return null
+              if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+              const candidate = value as Partial<MusicReviewConflictChoice>
+              const option = candidate.option === 'A' || candidate.option === 'B' ? candidate.option : null
+              const normalizedValue = typeof candidate.value === 'string' ? candidate.value.trim() : ''
+              const at = Math.trunc(Number(candidate.at))
+              if (!option || !normalizedValue || !Number.isFinite(at) || at <= 0) return null
+              return [field.trim(), { option, value: normalizedValue, at }] as const
+            })
+            .filter((entry): entry is readonly [string, MusicReviewConflictChoice] => Boolean(entry)),
+        )
+
+        if (!Object.keys(normalizedFieldMap).length) return null
+        return [itemId.trim(), normalizedFieldMap] as const
+      })
+      .filter((entry): entry is readonly [string, Record<string, MusicReviewConflictChoice>] => Boolean(entry))
+
+    return Object.fromEntries(entries)
+  } catch {
+    return {}
+  }
+}
+
+export const saveMusicReviewConflictChoices = (choices: MusicReviewConflictChoices) => {
+  localStorage.setItem(MUSIC_REVIEW_CONFLICT_CHOICES_KEY, JSON.stringify(choices))
+}
+
+export const setMusicReviewConflictChoice = (
+  itemId: string,
+  field: string,
+  option: MusicReviewConflictOption,
+  value: string,
+) => {
+  const normalizedItemId = itemId.trim()
+  const normalizedField = field.trim()
+  const normalizedValue = value.trim()
+  if (!normalizedItemId || !normalizedField || !normalizedValue) return loadMusicReviewConflictChoices()
+
+  const next = { ...loadMusicReviewConflictChoices() }
+  const existingFieldMap = next[normalizedItemId] ?? {}
+  next[normalizedItemId] = {
+    ...existingFieldMap,
+    [normalizedField]: {
+      option,
+      value: normalizedValue,
+      at: Date.now(),
+    },
+  }
+  saveMusicReviewConflictChoices(next)
   return next
 }
 

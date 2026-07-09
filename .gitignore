@@ -7,6 +7,8 @@ dist.zip
 *.log
 .tmp/
 tmp/
+data
+
 data/kinopoisk-navigator-*.json
 
 # Generated media assets (rebuild via scripts)
@@ -15,3 +17,22 @@ public/data/libraries/series/img/
 public/data/libraries/animes/img/
 public/data/libraries/games/img/
 public/data/libraries/people/img/
+docs/music-factcheck-payload.after-rules.json
+docs/music-manual-review-report.after-rules.json
+docs/music-manual-review-report.before-rules.json
+docs/music-manual-review-report.first500.clean.batched.json
+docs/music-manual-review-report.first500.clean.json
+docs/music-manual-review-report.first500.json
+docs/music-manual-review-report.retry-first177.json
+docs/music-merge-batched-retry-into-first500.summary.json
+docs/music-merge-original-retry-summary.first500.json
+docs/music-music-mbwd-retry.summary.json
+docs/music-remaining-cards.after-rules.json
+scripts/build-music-factcheck-payload.mjs
+scripts/build-music-retry-input.mjs
+scripts/build-music-test-dataset.mjs
+scripts/enrich-music-artists-first10.mjs
+scripts/exclude-music-pending-review.mjs
+scripts/include-music-pending-review.mjs
+scripts/merge-music-enrichment-original-retry.mjs
+scripts/merge-music-retry-into-base.mjs

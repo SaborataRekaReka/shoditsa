@@ -1,5 +1,7 @@
-export type TitleMode = 'movie' | 'series' | 'anime' | 'game' | 'diagnosis'
+export type TitleMode = 'movie' | 'series' | 'anime' | 'game' | 'music' | 'diagnosis'
 export type PeriodKey = 'all' | 'from_1960' | 'from_1980' | 'from_1990' | 'from_2000' | 'from_2010' | 'from_2020'
+export type DifficultyKey = 'easy' | 'medium' | 'hard'
+export type MusicOrigin = 'ru' | 'intl'
 
 export type Person = { nameRu: string; nameOriginal: string; photoUrl?: string | null }
 export type FilmAwards = { wins: number; nominations: number; notable: string[] }
@@ -22,6 +24,25 @@ export type TitleVotes = {
   steamNegative?: number | null
   gamesPlayed?: number | null
   correctGuesses?: number | null
+}
+export type MusicTopTrack = {
+  rank: number | null
+  title: string
+  listeners?: number | null
+  playcount?: number | null
+  source?: string | null
+}
+export type MusicTopAlbum = {
+  rank: number | null
+  title: string
+  listeners?: number | null
+  source?: string | null
+}
+export type MusicSimilarArtist = {
+  rank: number | null
+  name: string
+  match?: number | null
+  source?: string | null
 }
 export type TitleItem = {
   id: string
@@ -91,6 +112,13 @@ export type TitleItem = {
   topRank?: number | null
   externalRanks?: Record<string, number>
   notes?: string[]
+  musicType?: string | null
+  musicIsActive?: boolean | null
+  musicOrigin?: MusicOrigin | null
+  topTracks?: MusicTopTrack[]
+  topAlbums?: MusicTopAlbum[]
+  similarArtists?: MusicSimilarArtist[]
+  musicLinks?: string[]
   dataQuality?: {
     source: string[]
     verified: boolean
@@ -159,6 +187,7 @@ export type SavedGame = {
   dismissedHintRounds?: HintCheckpoint[]
   updatedAt: number
   schemaVersion?: number
+  difficulty?: DifficultyKey
 }
 export type Stats = { played: number; won: number; currentStreak: number; bestStreak: number; distribution: number[] }
 export type Wallet = { tickets: number; lifetimeTickets: number }

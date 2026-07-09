@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
 import {
+  AlertTriangle,
   Archive,
   ArrowDown,
   ArrowUp,
@@ -34,12 +35,12 @@ import {
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
-import { compareTitles, dailyTitle, getMoscowDate, PERIODS, pickDailyVignette, poolFor, prettyDate, resultText, searchTitles } from './game'
+import { compareTitles, dailyTitle, DIFFICULTIES, DIFFICULTY_ORDER, getMoscowDate, musicDifficultyPool, PERIODS, pickDailyVignette, poolFor, prettyDate, resultText, searchTitles } from './game'
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
-import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadPeriodUnlocks, loadPromoUsage, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, savePromoUsage, saveStats, saveWallet, unlockPeriod, unlockedPeriodsFor } from './storage'
-import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
+import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadPromoUsage, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, savePromoUsage, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
+import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 
 const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 const modeIcon = (mode: TitleMode) => mode === 'movie'
@@ -50,7 +51,9 @@ const modeIcon = (mode: TitleMode) => mode === 'movie'
       ? <Sparkles />
       : mode === 'game'
         ? <Gamepad2 />
-        : <Stethoscope />
+        : mode === 'music'
+          ? <Music2 />
+          : <Stethoscope />
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
   from_2020: 25,
@@ -62,6 +65,7 @@ const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series', 'anime'])
+const FREE_PLAY_MODES = new Set<TitleMode>(['movie', 'series', 'anime', 'music'])
 const FREE_PLAY_BASE_COST = 45
 const FREE_PLAY_COST_STEP = 15
 const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
@@ -105,10 +109,14 @@ const formatMultiplier = (value: number) => `×${value.toLocaleString('ru-RU', {
 const dateIndex = (date: string) => Math.floor(new Date(`${date}T12:00:00+03:00`).getTime() / 86_400_000)
 const dateDistance = (from: string, to: string) => dateIndex(to) - dateIndex(from)
 const uniqueModes = (modes: TitleMode[]) => [...new Set(modes)]
-const completionSessionKey = (mode: TitleMode, period: PeriodKey, date: string) => gameKey(mode, period, date)
+const completionSessionKey = (mode: TitleMode, period: PeriodKey, date: string, variant = '') => {
+  const base = gameKey(mode, period, date)
+  return variant ? `${base}|diff:${variant}` : base
+}
 const periodUnlockCost = (period: PeriodKey) => PERIOD_UNLOCK_COSTS[period] ?? 0
 const canUnlockPeriods = (mode: TitleMode) => UNLOCKABLE_PERIOD_MODES.has(mode)
 const formatTickets = (count: number) => `${count} ${countWord(count, ['билет', 'билета', 'билетов'])}`
+const formatArtists = (count: number) => `${count} ${countWord(count, ['артист', 'артиста', 'артистов'])}`
 const countWord = (count: number, forms: [string, string, string]) => {
   const mod100 = Math.abs(count) % 100
   const mod10 = mod100 % 10
@@ -200,8 +208,8 @@ const animeAssistFact = (facts: string[]) => facts.find((fact) => {
   return label && !comparedAnimeFactLabels.has(label)
 }) ?? ''
 
-type AppScreen = 'hub' | 'title' | 'game' | 'rewatch'
-const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch'
+type AppScreen = 'hub' | 'title' | 'game' | 'rewatch' | 'review'
+const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch' || value === 'review'
 type AdminWindow = Window & {
   __SEANS_ADMIN_NEW_DAILY__?: (saltStep?: number | string) => number
   __SEANS_ADMIN_SET_DAILY_SALT__?: (saltValue?: number | string) => number
@@ -324,6 +332,7 @@ const renderHintBody = (value: string): ReactNode => {
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
 const titlePrimaryScore = (item: TitleItem) => {
   if (item.mode === 'anime') return item.shikimoriScore ?? item.ratings?.recognizability ?? null
+  if (item.mode === 'music') return item.votes?.gamesPlayed ?? null
   if (item.mode === 'movie' || item.mode === 'series') return item.ratings?.kinopoisk ?? null
   return null
 }
@@ -331,6 +340,15 @@ const ratingBadge = (item: TitleItem) => {
   if (item.mode === 'anime') {
     const value = titlePrimaryScore(item)
     return { label: 'SHIKI', value: value != null ? value.toFixed(2) : '—' }
+  }
+  if (item.mode === 'music') {
+    const value = item.votes?.gamesPlayed
+    return {
+      label: 'LFM',
+      value: value != null
+        ? new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(value)
+        : '—',
+    }
   }
   return { label: 'КП', value: item.ratings?.kinopoisk?.toFixed(1) ?? '—' }
 }
@@ -361,6 +379,138 @@ const progressStats = (hints: Attempt['hints']) => {
     totalFields: hints.length,
   }
 }
+
+const SERVICE_REVIEW_REASONS = new Set(['theaudiodb_demo_key_used'])
+const HUMAN_REVIEW_REASON_LABELS: Record<string, string> = {
+  conflict_country: 'Конфликт: страна',
+  conflict_begin_year: 'Конфликт: год дебюта',
+  conflict_canonical_name: 'Конфликт: имя артиста',
+  low_match_confidence: 'Низкая уверенность матчинга',
+  top_tracks_missing: 'Отсутствуют топ-треки',
+  top_albums_missing: 'Отсутствуют топ-альбомы',
+  canonical_name_missing: 'Отсутствует каноническое имя',
+  musicbrainz_no_match: 'MusicBrainz: не найдено',
+  wikidata_no_match: 'Wikidata: не найдено',
+  theaudiodb_no_match: 'TheAudioDB: не найдено',
+  spotify_no_match: 'Spotify: не найдено',
+}
+
+const uniqueReviewReasons = (reasons: string[]) => {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const reason of reasons) {
+    const text = String(reason ?? '').trim()
+    if (!text || seen.has(text)) continue
+    seen.add(text)
+    out.push(text)
+  }
+  return out
+}
+
+const reviewReasonLabel = (reason: string) => {
+  if (HUMAN_REVIEW_REASON_LABELS[reason]) return HUMAN_REVIEW_REASON_LABELS[reason]
+  if (reason.includes('_failed:')) {
+    const [source, details] = reason.split('_failed:')
+    return `${source.toUpperCase()}: ошибка (${details || 'request failed'})`
+  }
+  if (reason.endsWith('_no_match')) {
+    return `${reason.replace(/_no_match$/, '').toUpperCase()}: не найдено`
+  }
+  return reason.replace(/_/g, ' ')
+}
+
+const reviewReasonTone = (reason: string) => {
+  if (SERVICE_REVIEW_REASONS.has(reason)) return 'service'
+  if (reason.startsWith('conflict_')) return 'conflict'
+  return 'doubt'
+}
+
+type ConflictEvidenceField = 'canonicalName' | 'country' | 'beginYear'
+type ConflictOption = {
+  value: string
+  sources: string[]
+}
+type ConflictPair = {
+  reason: string
+  field: ConflictEvidenceField
+  fieldLabel: string
+  optionA: ConflictOption
+  optionB: ConflictOption
+}
+type MusicNormalizedEvidence = {
+  sourceEvidence?: Partial<Record<ConflictEvidenceField, unknown>>
+}
+
+const CONFLICT_REASON_META: Record<string, { field: ConflictEvidenceField; label: string }> = {
+  conflict_canonical_name: { field: 'canonicalName', label: 'Имя артиста' },
+  conflict_country: { field: 'country', label: 'Страна' },
+  conflict_begin_year: { field: 'beginYear', label: 'Год дебюта' },
+}
+
+const asRecord = (value: unknown): Record<string, unknown> | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  return value as Record<string, unknown>
+}
+
+const normalizeEvidenceValue = (value: unknown): string => {
+  if (value == null) return ''
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item ?? '').trim())
+      .filter(Boolean)
+      .join(', ')
+  }
+  if (typeof value === 'number') {
+    const parsed = Math.trunc(value)
+    return Number.isFinite(parsed) ? String(parsed) : ''
+  }
+  if (typeof value === 'boolean') return value ? 'true' : 'false'
+  return String(value).trim()
+}
+
+const toConflictPairs = (reasons: string[], normalizedItem: MusicNormalizedEvidence | null): ConflictPair[] => {
+  if (!normalizedItem?.sourceEvidence) return []
+  const sourceEvidence = normalizedItem.sourceEvidence
+  const out: ConflictPair[] = []
+
+  for (const reason of reasons) {
+    const meta = CONFLICT_REASON_META[reason]
+    if (!meta) continue
+
+    const rawEntries = sourceEvidence[meta.field]
+    if (!Array.isArray(rawEntries)) continue
+
+    const grouped = new Map<string, Set<string>>()
+    for (const entry of rawEntries) {
+      const data = asRecord(entry)
+      if (!data) continue
+      const value = normalizeEvidenceValue(data.value)
+      if (!value) continue
+      const source = typeof data.source === 'string' && data.source.trim() ? data.source.trim() : 'unknown'
+      if (!grouped.has(value)) grouped.set(value, new Set<string>())
+      grouped.get(value)?.add(source)
+    }
+
+    const options = [...grouped.entries()]
+      .map(([value, sources]) => ({ value, sources: [...sources].sort((a, b) => a.localeCompare(b, 'ru-RU')) }))
+      .sort((a, b) => {
+        if (b.sources.length !== a.sources.length) return b.sources.length - a.sources.length
+        return a.value.localeCompare(b.value, 'ru-RU')
+      })
+
+    if (options.length < 2) continue
+    out.push({
+      reason,
+      field: meta.field,
+      fieldLabel: meta.label,
+      optionA: options[0],
+      optionB: options[1],
+    })
+  }
+
+  return out
+}
+
 function AttemptScore({ matchedCount, matchedFields, totalFields, isCorrectAttempt }: { matchedCount: number; matchedFields: number; totalFields: number; isCorrectAttempt: boolean }) {
   const isFullFieldMatch = totalFields > 0 && matchedFields === totalFields
   const tone = matchedCount === 0 ? 'miss' : isFullFieldMatch && !isCorrectAttempt ? 'partial' : 'match'
@@ -589,6 +739,41 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
     ]
   }
 
+  if (item.mode === 'music') {
+    const topTracksHint = cropHintText(cleanHintText((item.topTracks ?? []).slice(0, 3).map((track) => track.title).join(', ')))
+    const topAlbumsHint = cropHintText(cleanHintText((item.topAlbums ?? []).slice(0, 3).map((album) => album.title).join(', ')))
+    const profileFact = cropHintText(cleanHintText([
+      item.year ? `Дебют: ${item.year}` : '',
+      item.musicType ? `Тип: ${item.musicType}` : '',
+      item.votes?.gamesPlayed ? `Слушатели Last.fm: ${new Intl.NumberFormat('ru-RU').format(item.votes.gamesPlayed)}` : '',
+      item.topRank ? `Позиция в пуле: #${item.topRank}` : '',
+    ].filter(Boolean).join(' · ')))
+
+    return [
+      {
+        key: 'plot',
+        title: 'Профайл',
+        subtitle: 'Короткий профиль артиста',
+        body: plot,
+        available: Boolean(plot),
+      },
+      {
+        key: 'slogan',
+        title: 'Треки и альбомы',
+        subtitle: 'Топовые релизы артиста',
+        body: [topTracksHint, topAlbumsHint].filter(Boolean).join(' · '),
+        available: Boolean(topTracksHint || topAlbumsHint),
+      },
+      {
+        key: 'fact',
+        title: 'Факт',
+        subtitle: 'Дебют, тип и метрики популярности',
+        body: profileFact,
+        available: Boolean(profileFact),
+      },
+    ]
+  }
+
   const mainCast = (item.cast ?? []).filter((person) => personName(person) !== 'Без имени').slice(0, 5)
 
   return [
@@ -629,8 +814,8 @@ const dayNumber = (date: string) => {
   return Math.max(1, Math.floor((current - start) / 86_400_000) + 1)
 }
 
-const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string, won: boolean, attemptsCount: number): EconomyAward => {
-  const sessionKey = completionSessionKey(mode, period, date)
+const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string, won: boolean, attemptsCount: number, variant = ''): EconomyAward => {
+  const sessionKey = completionSessionKey(mode, period, date, variant)
   const attendance = loadDailyAttendance(date)
   if (attendance.completedSessions.includes(sessionKey)) return emptyAward(loadAttendanceStats())
 
@@ -687,7 +872,7 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
     amount: total,
     balanceAfter: nextWallet.tickets,
     title: 'Сеанс завершён',
-    detail: `${modeMeta(mode).daily} · ${won ? 'угадан' : 'ответ открыт'} · ${attemptsCount}/10`,
+    detail: `${modeMeta(mode).daily}${variant && DIFFICULTIES[variant as DifficultyKey] ? ` · ${DIFFICULTIES[variant as DifficultyKey].label}` : ''} · ${won ? 'угадан' : 'ответ открыт'} · ${attemptsCount}/10`,
     date,
     mode,
     period,
@@ -721,7 +906,10 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
 }
 
 function BrandLogo({ className = '' }: { className?: string }) {
-  return <img className={className} src="./images/logo.svg" alt="Сходится!" />
+  return <picture className={className}>
+    <source media="(max-width: 719px)" srcSet="./images/symbol.svg" />
+    <img src="./images/logo.svg" alt="Сходится!" />
+  </picture>
 }
 
 function ActionButton({ variant = 'primary', className = '', children, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -835,7 +1023,7 @@ function PeriodControl({
           </span>
         </button>
       })}
-      {(mode === 'movie' || mode === 'series' || mode === 'anime') && <button
+      {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <button
         type="button"
         className={`period-option period-option--free-play ${freePlayShortage > 0 ? 'locked' : 'unlocked'}`}
         onClick={(event) => {
@@ -868,11 +1056,101 @@ function PeriodControl({
   </div>
 }
 
-function AppHeader({ onHome, onArchive, onStats, onRules }: {
+function DifficultyControl({
+  value,
+  onChange,
+  counts,
+  onStartFreePlay,
+  freePlayCostValue,
+  freePlayShortage,
+  freePlayLaunchesToday,
+}: {
+  value: DifficultyKey
+  onChange: (difficulty: DifficultyKey) => void
+  counts?: Record<DifficultyKey, number> | null
+  onStartFreePlay: () => void
+  freePlayCostValue: number
+  freePlayShortage: number
+  freePlayLaunchesToday: number
+}) {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement | null>(null)
+  const closeMenu = useCallback(() => setOpen(false), [])
+  useDismissOnOutside(open, wrapRef, closeMenu)
+  const current = DIFFICULTIES[value]
+
+  return <div ref={wrapRef} className={`difficulty-select-wrap ${open ? 'is-open' : ''}`}>
+    <button
+      type="button"
+      className="difficulty-trigger"
+      onClick={(event) => {
+        event.stopPropagation()
+        setOpen((prev) => !prev)
+      }}
+      aria-expanded={open}
+      aria-haspopup="listbox"
+    >
+      <span className="difficulty-trigger__label"><BarChart3 /> Сложность</span>
+      <span className="difficulty-trigger__value">
+        <span className={`difficulty-bars difficulty-bars--${value}`} aria-hidden="true"><i /><i /><i /></span>
+        <strong>{current.label}</strong>
+        <ChevronRight />
+      </span>
+    </button>
+    {open && <div className="difficulty-menu" role="listbox" aria-label="Уровень сложности">
+      <span className="difficulty-menu__head">Уровень сложности</span>
+      {DIFFICULTY_ORDER.map((key) => {
+        const meta = DIFFICULTIES[key]
+        const isActive = value === key
+        return <button
+          type="button"
+          key={key}
+          role="option"
+          aria-selected={isActive}
+          className={`difficulty-option ${isActive ? 'active' : ''}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            trackMetrikaGoal('select_difficulty', { mode: 'music', difficulty: key })
+            onChange(key)
+            setOpen(false)
+          }}
+        >
+          <span className={`difficulty-bars difficulty-bars--${key}`} aria-hidden="true"><i /><i /><i /></span>
+          <span className="difficulty-option__copy">
+            <strong>{meta.label}</strong>
+            <small>{counts ? `${formatArtists(counts[key])} · ${meta.hint}` : meta.hint}</small>
+          </span>
+          {isActive && <Check className="difficulty-option__check" />}
+        </button>
+      })}
+      <button
+        type="button"
+        className={`difficulty-option difficulty-option--free-play ${freePlayShortage > 0 ? 'locked' : ''}`}
+        onClick={(event) => {
+          event.stopPropagation()
+          if (freePlayShortage > 0) return
+          trackMetrikaGoal('open_free_play', { mode: 'music', cost: freePlayCostValue, launchesToday: freePlayLaunchesToday })
+          setOpen(false)
+          onStartFreePlay()
+        }}
+        disabled={freePlayShortage > 0}
+      >
+        <span className="difficulty-option__spark" aria-hidden="true"><Sparkles /></span>
+        <span className="difficulty-option__copy">
+          <strong>Свободная игра</strong>
+          <small>{freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
+        </span>
+      </button>
+    </div>}
+  </div>
+}
+
+function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: {
   onHome: () => void
   onArchive: () => void
   onStats: () => void
   onRules: () => void
+  onReview: () => void
 }) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const wallet = loadWallet()
@@ -911,25 +1189,25 @@ function AppHeader({ onHome, onArchive, onStats, onRules }: {
   </>
 }
 
-function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSessionsCount, titleCounts, todayAttendance }: {
+function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, titleCounts, todayAttendance }: {
   onSelect: (mode: TitleMode) => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
+  onReview: () => void
   onResume: () => void
   activeSessionsCount: number
-  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; diagnosis: number | null }
+  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; music: number | null; diagnosis: number | null }
   todayAttendance: DailyAttendance
 }) {
   const futureCategories = [
-    { title: 'Музыка', copy: 'Угадайте группу или исполнителя', icon: <Music2 /> },
     { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
   ]
   const availableNowCount = MODE_TABS.length
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return <>
-    <AppHeader onHome={() => undefined} onArchive={onRewatch} onStats={onStats} onRules={onRules} />
+    <AppHeader onHome={() => undefined} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="hub-screen">
       <section className="hub-hero">
         <div className="hub-hero__copy">
@@ -999,6 +1277,15 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
             <p>Угадайте игру по жанрам, рейтингу, месту в топе и метрикам Steam.</p>
             <strong>Играть <ChevronRight /></strong>
           </button>
+          <button className="category-card category-card--music" onClick={() => onSelect('music')}>
+            <div className="category-card__head">
+              <span className="category-card__icon"><Music2 /></span>
+              <span className="category-card__pool"><b>{titleCounts.music ?? '—'}</b> в пуле</span>
+            </div>
+            <i>{todayAttendance.completedModes.includes('music') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Музыка</h2>
+            <p>Угадайте артиста по жанрам, связям, топ-трекам и метрикам Last.fm.</p>
+            <strong>Играть <ChevronRight /></strong>
+          </button>
           <button className="category-card category-card--diagnosis" onClick={() => onSelect('diagnosis')}>
             <div className="category-card__head">
               <span className="category-card__icon"><Stethoscope /></span>
@@ -1024,7 +1311,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onResume, activeSess
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -1035,6 +1322,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
+  onReview: () => void
   isLeaving?: boolean
   onReadAnamnesis: () => void
   hasAnamnesis: boolean
@@ -1046,6 +1334,9 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
+  difficulty: DifficultyKey
+  setDifficulty: (difficulty: DifficultyKey) => void
+  difficultyCounts: Record<DifficultyKey, number> | null
 }) {
   const periodLocked = canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
@@ -1080,7 +1371,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   }, [onBack, startSelectedPeriod])
 
   return <>
-    <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} />
+    <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className={`title-screen ${isLeaving ? 'is-leaving' : ''}`}>
       <div className="screen-back-row">
         <button className="screen-back" onClick={() => {
@@ -1139,6 +1430,37 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                   </div>
                 </div>
               </section>
+          : mode === 'music'
+            ? <section className="concert-ticket">
+                <div className="concert-ticket__main">
+                  <div className="concert-ticket__head">
+                    <div className="concert-ticket__brand">
+                      <span className="concert-ticket__kicker"><Music2 /> Концерт дня</span>
+                      <h1>Артист дня</h1>
+                      <p className="concert-ticket__venue">Главная сцена · сеанс №{dayNumber(date)}</p>
+                    </div>
+                    <div className="concert-ticket__when">
+                      <strong>{date.slice(8, 10)}.{date.slice(5, 7)}</strong>
+                      <small>21:45</small>
+                    </div>
+                  </div>
+                  <p className="concert-ticket__lead">Каждый день — новый артист. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает подсказки по стране, чартам и трекам.</p>
+                  <div className="concert-ticket__meta" aria-hidden="true">
+                    <span><i>GATE</i><b>10</b></span>
+                    <span><i>SEAT</i><b>A15</b></span>
+                    <span><i>ROW</i><b>07</b></span>
+                  </div>
+                  <div className="concert-ticket__barcode" aria-hidden="true" />
+                </div>
+                <div className="concert-ticket__stub" aria-hidden="true">
+                  <span className="concert-ticket__stub-kicker">Концерт дня</span>
+                  <strong>Артист дня</strong>
+                  <small>Главная сцена</small>
+                  <em>{date.slice(8, 10)}.{date.slice(5, 7)} · 21:45</em>
+                  <span className="concert-ticket__stub-no">№ {dayNumber(date)}</span>
+                  <div className="concert-ticket__barcode concert-ticket__barcode--v" />
+                </div>
+              </section>
           : <section className="admit-ticket">
               <div className="admit-ticket__stub">
                 <span>ВХОД</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small><em>{date.slice(8,10)}.{date.slice(5,7)}</em><i />
@@ -1152,13 +1474,18 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 </div>
               </div>
             </section>}
-        {mode !== 'game' && <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
+        {mode === 'music'
+          ? <div className="title-play-row">
+              <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
+              <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
+            </div>
+          : mode !== 'game' && <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
     </main>
   </>
 }
 
-function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, onStats, onRules }: {
+function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, onStats, onRules, onReview }: {
   mode: TitleMode
   setMode: (mode: TitleMode) => void
   period: PeriodKey
@@ -1168,6 +1495,7 @@ function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, on
   onHome: () => void
   onStats: () => void
   onRules: () => void
+  onReview: () => void
 }) {
   const latestByUpdatedAt = (items: SavedGame[]): SavedGame | null => {
     if (!items.length) return null
@@ -1175,7 +1503,7 @@ function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, on
   }
 
   return <>
-    <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} />
+    <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
       <div className="rewatch-toolbar">
@@ -1191,11 +1519,339 @@ function RewatchScreen({ mode, setMode, period, dates, games, onOpen, onHome, on
           <div className="rewatch-poster"><span>#{dayNumber(itemDate)}</span><i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : ''}</i></div>
           <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
           <small>{played
-            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'movie' || played.mode === 'series' || played.mode === 'anime' ? ` · ${PERIODS[played.period].short}` : ''}`
+            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'movie' || played.mode === 'series' || played.mode === 'anime' || played.mode === 'music' ? ` · ${PERIODS[played.period].short}` : ''}`
             : 'Не сыгран'}</small>
         </button>
       })}</section>
       <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
+    </main>
+  </>
+}
+
+type MusicReviewEntry = {
+  item: TitleItem
+  reasons: string[]
+  conflictReasons: string[]
+  doubtReasons: string[]
+  serviceReasons: string[]
+  conflictPairs: ConflictPair[]
+  missingFields: string[]
+  approvedAt: number | null
+}
+
+function MusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, onReview }: {
+  onHome: () => void
+  onBack: () => void
+  onRewatch: () => void
+  onStats: () => void
+  onRules: () => void
+  onReview: () => void
+}) {
+  const [items, setItems] = useState<TitleItem[]>([])
+  const [loadingList, setLoadingList] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [showServiceReasons, setShowServiceReasons] = useState(false)
+  const [showApproved, setShowApproved] = useState(true)
+  const [conflictsOnly, setConflictsOnly] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [approvals, setApprovals] = useState<Record<string, number>>(() => loadMusicReviewApprovals())
+  const [conflictChoices, setConflictChoices] = useState<MusicReviewConflictChoices>(() => loadMusicReviewConflictChoices())
+  const [normalizedById, setNormalizedById] = useState<Record<string, MusicNormalizedEvidence>>({})
+
+  useEffect(() => {
+    let disposed = false
+    setLoadingList(true)
+    setLoadError(null)
+
+    fetch('./data/music.generated.json', { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        return response.json() as Promise<TitleItem[]>
+      })
+      .then((payload) => {
+        if (disposed) return
+        setItems(Array.isArray(payload) ? payload : [])
+      })
+      .catch((error: unknown) => {
+        if (disposed) return
+        const message = error instanceof Error ? error.message : String(error)
+        setLoadError(message)
+      })
+      .finally(() => {
+        if (!disposed) setLoadingList(false)
+      })
+
+    return () => { disposed = true }
+  }, [])
+
+  useEffect(() => {
+    let disposed = false
+    const fallbackEvidencePath = './data/music/normalized/music_artists_enriched_first500_merged_retry_batched.json'
+
+    const resolveEvidencePath = async () => {
+      try {
+        const response = await fetch('./data/source.json', { cache: 'no-store' })
+        if (!response.ok) return fallbackEvidencePath
+        const sourceMeta = await response.json() as { musicSource?: unknown }
+        const candidate = typeof sourceMeta?.musicSource === 'string' ? sourceMeta.musicSource.trim().replace(/^\/+/, '') : ''
+        return candidate ? `./${candidate}` : fallbackEvidencePath
+      } catch {
+        return fallbackEvidencePath
+      }
+    }
+
+    resolveEvidencePath()
+      .then((evidencePath) => fetch(evidencePath, { cache: 'no-store' }))
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        return response.json() as Promise<{ items?: unknown[] }>
+      })
+      .then((payload) => {
+        if (disposed) return
+        const list = Array.isArray(payload?.items) ? payload.items : []
+        const map: Record<string, MusicNormalizedEvidence> = {}
+        for (const raw of list) {
+          const row = asRecord(raw)
+          if (!row) continue
+          const artistKey = typeof row.artistKey === 'string' ? row.artistKey.trim() : ''
+          let normalizedId = artistKey ? `music:${artistKey}` : ''
+
+          if (!normalizedId) {
+            const input = asRecord(row.input)
+            const artist = typeof input?.artist === 'string' ? input.artist.trim() : ''
+            const position = Math.trunc(Number(input?.position))
+            if (!artist || !Number.isFinite(position)) continue
+            normalizedId = `music:${String(position).padStart(3, '0')}_${artist.toLocaleLowerCase('en-US').replace(/[^a-z0-9]+/g, '').slice(0, 24)}`
+          }
+
+          map[normalizedId] = { sourceEvidence: asRecord(row.sourceEvidence) as Partial<Record<ConflictEvidenceField, unknown>> | undefined }
+        }
+        setNormalizedById(map)
+      })
+      .catch(() => {
+        if (!disposed) setNormalizedById({})
+      })
+
+    return () => { disposed = true }
+  }, [])
+
+  const entries = useMemo<MusicReviewEntry[]>(() => {
+    const list: MusicReviewEntry[] = []
+    for (const item of items) {
+      const notes = uniqueReviewReasons(Array.isArray(item.notes) ? item.notes : [])
+      const reasons = notes.filter((reason) => showServiceReasons || !SERVICE_REVIEW_REASONS.has(reason))
+      if (!reasons.length) continue
+
+      const conflictReasons = reasons.filter((reason) => reason.startsWith('conflict_'))
+      const serviceReasons = reasons.filter((reason) => SERVICE_REVIEW_REASONS.has(reason))
+      const doubtReasons = reasons.filter((reason) => !reason.startsWith('conflict_') && !SERVICE_REVIEW_REASONS.has(reason))
+      if (conflictsOnly && !conflictReasons.length) continue
+
+      const conflictPairs = toConflictPairs(conflictReasons, normalizedById[item.id] ?? null)
+
+      const approvedAt = approvals[item.id] ?? null
+      if (!showApproved && approvedAt != null) continue
+
+      list.push({
+        item,
+        reasons,
+        conflictReasons,
+        doubtReasons,
+        serviceReasons,
+        conflictPairs,
+        missingFields: Array.isArray(item.dataQuality?.missingFields) ? item.dataQuality.missingFields : [],
+        approvedAt,
+      })
+    }
+
+    list.sort((a, b) => {
+      const aRank = a.item.topRank ?? Number.MAX_SAFE_INTEGER
+      const bRank = b.item.topRank ?? Number.MAX_SAFE_INTEGER
+      if (aRank !== bRank) return aRank - bRank
+      return a.item.titleRu.localeCompare(b.item.titleRu, 'ru-RU')
+    })
+
+    return list
+  }, [items, showServiceReasons, showApproved, conflictsOnly, approvals, normalizedById])
+
+  useEffect(() => {
+    setActiveIndex((current) => {
+      if (!entries.length) return 0
+      return Math.min(current, entries.length - 1)
+    })
+  }, [entries.length])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (isEditableTarget(event.target)) return
+      if (!entries.length) return
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        setActiveIndex((current) => Math.max(0, current - 1))
+        return
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        setActiveIndex((current) => Math.min(entries.length - 1, current + 1))
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [entries.length])
+
+  const current = entries[activeIndex] ?? null
+  const approvedCount = entries.filter((entry) => entry.approvedAt != null).length
+  const conflictCount = entries.filter((entry) => entry.conflictReasons.length > 0).length
+
+  const setApproval = (id: string, approved: boolean) => {
+    const next = setMusicReviewApproval(id, approved)
+    setApprovals(next)
+  }
+
+  const chooseConflictOption = (
+    itemId: string,
+    pair: ConflictPair,
+    option: MusicReviewConflictOption,
+  ) => {
+    const selectedValue = option === 'A' ? pair.optionA.value : pair.optionB.value
+    const next = setMusicReviewConflictChoice(itemId, pair.field, option, selectedValue)
+    setConflictChoices(next)
+  }
+
+  return <>
+    <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
+    <main className="review-screen">
+      <div className="screen-back-row">
+        <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
+        <span className="keycap-hint" aria-hidden="true">Esc</span>
+      </div>
+
+      <section className="review-heading">
+        <span><NotebookText /> Модерация музыки</span>
+        <h1>Сомнительные и конфликтные карточки</h1>
+        <p>Листайте карточки, проверяйте причины и помечайте записи как одобренные.</p>
+      </section>
+
+      <section className="review-toolbar">
+        <button className={showServiceReasons ? 'active' : ''} onClick={() => setShowServiceReasons((currentValue) => !currentValue)}>
+          {showServiceReasons ? <Check /> : <X />} Служебные причины
+        </button>
+        <button className={conflictsOnly ? 'active' : ''} onClick={() => setConflictsOnly((currentValue) => !currentValue)}>
+          {conflictsOnly ? <Check /> : <X />} Только конфликты
+        </button>
+        <button className={!showApproved ? 'active' : ''} onClick={() => setShowApproved((currentValue) => !currentValue)}>
+          {!showApproved ? <Check /> : <X />} Скрыть одобренные
+        </button>
+      </section>
+
+      <section className="review-stats">
+        <article><small>Всего в ревью</small><strong>{entries.length}</strong></article>
+        <article className="is-conflict"><small>С конфликтом</small><strong>{conflictCount}</strong></article>
+        <article><small>Одобрено</small><strong>{approvedCount}</strong></article>
+        <article><small>Осталось</small><strong>{Math.max(0, entries.length - approvedCount)}</strong></article>
+      </section>
+
+      {loadingList && <section className="review-empty"><Sparkles /> Загружаем карточки модерации…</section>}
+      {!loadingList && loadError && <section className="review-empty review-empty--error">Ошибка загрузки: {loadError}</section>}
+      {!loadingList && !loadError && !entries.length && <section className="review-empty">Нет карточек по выбранным фильтрам.</section>}
+
+      {!loadingList && !loadError && current && <section className={`review-card ${current.conflictReasons.length ? 'has-conflict' : ''}`}>
+        <div className="review-card__head">
+          <span className="review-card__number">{String(activeIndex + 1).padStart(3, '0')}</span>
+          <Poster item={current.item} className="review-card__poster" />
+          <div className="review-card__identity">
+            <span className="attempt-label">Ранк {current.item.topRank != null ? `#${current.item.topRank}` : '—'}</span>
+            <h2>{current.item.titleRu}</h2>
+            <p className="gm-head__sub">
+              <span className="gm-head__orig">{current.item.titleOriginal || 'Оригинальное название не указано'}</span>
+              {current.item.year != null && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{current.item.year}</span></>}
+              {current.item.countries?.[0] && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{current.item.countries[0]}</span></>}
+            </p>
+            {!!current.item.genres?.length && <div className="gm-genres">{current.item.genres.slice(0, 6).map((genre) => <span key={genre} className="gm-genre">{genre}</span>)}</div>}
+          </div>
+          <div className={`review-approval-badge ${current.approvedAt != null ? 'is-approved' : ''}`}>
+            <small>Статус</small>
+            <strong>{current.approvedAt != null ? 'Одобрено' : 'На проверке'}</strong>
+          </div>
+        </div>
+
+        {!!current.conflictReasons.length && <div className="review-conflict-banner" role="status" aria-live="polite">
+          <strong><AlertTriangle /> Конфликт данных</strong>
+          <span>{current.conflictReasons.map(reviewReasonLabel).join(' • ')}</span>
+        </div>}
+
+        <div className="review-reasons">
+          {[...current.conflictReasons, ...current.doubtReasons, ...current.serviceReasons]
+            .map((reason) => <span key={reason} className={`review-reason review-reason--${reviewReasonTone(reason)}`}>{reviewReasonLabel(reason)}</span>)}
+        </div>
+
+        {!!current.conflictPairs.length && <section className="review-conflict-chooser">
+          <h3>Выберите верный вариант по конфликту</h3>
+          <div className="review-conflict-list">
+            {current.conflictPairs.map((pair) => {
+              const selected = conflictChoices[current.item.id]?.[pair.field]
+              const isASelected = selected?.option === 'A' && selected.value === pair.optionA.value
+              const isBSelected = selected?.option === 'B' && selected.value === pair.optionB.value
+              return <article className="review-conflict-item" key={`${current.item.id}-${pair.field}`}>
+                <header>
+                  <small>{pair.fieldLabel}</small>
+                  <strong>{reviewReasonLabel(pair.reason)}</strong>
+                </header>
+                <div className="review-conflict-item__options">
+                  <button className={isASelected ? 'is-selected option-a' : 'option-a'} onClick={() => chooseConflictOption(current.item.id, pair, 'A')}>
+                    <span>Вариант A</span>
+                    <strong>{pair.optionA.value}</strong>
+                    <small>{pair.optionA.sources.join(', ') || 'источник не указан'}</small>
+                  </button>
+                  <button className={isBSelected ? 'is-selected option-b' : 'option-b'} onClick={() => chooseConflictOption(current.item.id, pair, 'B')}>
+                    <span>Вариант B</span>
+                    <strong>{pair.optionB.value}</strong>
+                    <small>{pair.optionB.sources.join(', ') || 'источник не указан'}</small>
+                  </button>
+                </div>
+                <p>
+                  {selected
+                    ? `Выбрано: вариант ${selected.option} (${selected.value})`
+                    : 'Вариант еще не выбран'}
+                </p>
+              </article>
+            })}
+          </div>
+        </section>}
+
+        {!!current.missingFields.length && <div className="review-missing">
+          <small>Неполные игровые поля</small>
+          <strong>{current.missingFields.join(', ')}</strong>
+        </div>}
+
+        <div className="review-card__meta">
+          <span><small>Тип артиста</small><strong>{current.item.musicType || '—'}</strong></span>
+          <span><small>Статус</small><strong>{current.item.musicIsActive == null ? '—' : current.item.musicIsActive ? 'Активен' : 'Неактивен'}</strong></span>
+          <span><small>Топ-трек</small><strong>{current.item.topTracks?.[0]?.title || '—'}</strong></span>
+          <span><small>Топ-альбом</small><strong>{current.item.topAlbums?.[0]?.title || '—'}</strong></span>
+        </div>
+
+        <details className="review-details">
+          <summary>Сырые данные карточки (JSON)</summary>
+          <pre>{JSON.stringify({
+            id: current.item.id,
+            notes: current.item.notes,
+            dataQuality: current.item.dataQuality,
+            topTracks: current.item.topTracks,
+            topAlbums: current.item.topAlbums,
+            similarArtists: current.item.similarArtists,
+          }, null, 2)}</pre>
+        </details>
+
+        <div className="review-card__actions">
+          <button onClick={() => setActiveIndex((currentValue) => Math.max(0, currentValue - 1))} disabled={activeIndex === 0}><ChevronLeft /> Предыдущая</button>
+          {current.approvedAt == null
+            ? <button className="approve" onClick={() => setApproval(current.item.id, true)}><Check /> Одобрить</button>
+            : <button className="revoke" onClick={() => setApproval(current.item.id, false)}><X /> Снять одобрение</button>}
+          <button onClick={() => setActiveIndex((currentValue) => Math.min(entries.length - 1, currentValue + 1))} disabled={activeIndex >= entries.length - 1}>Следующая <ChevronRight /></button>
+        </div>
+      </section>}
     </main>
   </>
 }
@@ -1348,7 +2004,7 @@ function PeopleGroup({ hint }: { hint: Attempt['hints'][number] }) {
 
 function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const metricClues = ['country', 'series_status', 'seasons', 'runtime', 'kp', 'imdb', 'anime_kind', 'anime_status', 'episodes', 'episodes_aired', 'studio', 'anime_source', 'shiki', 'rank']
+  const metricClues = ['country', 'series_status', 'seasons', 'runtime', 'kp', 'imdb', 'anime_kind', 'anime_status', 'episodes', 'episodes_aired', 'studio', 'anime_source', 'shiki', 'rank', 'music_type', 'music_active', 'top_track', 'top_album', 'listeners']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
@@ -1485,6 +2141,57 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   </article>
 }
 
+function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+  const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
+  const score = progressStats(attempt.hints)
+  const genresHint = byKey.get('genres')
+  const genres = item.genres ?? []
+  const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
+  const listenersValue = item.votes?.gamesPlayed ?? null
+  const requestedHints = ['country', 'rank', 'music_type', 'music_active', 'top_track', 'top_album']
+    .map((key) => byKey.get(key))
+    .filter(Boolean) as Attempt['hints']
+  const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
+
+  return <article className="attempt-card attempt-card--music">
+    <div className="attempt-card__header">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} />
+      <div className="attempt-card__identity">
+        <span className="attempt-label">Попытка {index + 1}</span>
+        <h2>{item.titleRu}</h2>
+        <p className="gm-head__sub">
+          <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
+          {item.year != null && <>
+            <i className="gm-head__dot" aria-hidden="true">·</i>
+            <span className={`gm-year ${byKey.get('year')?.status ?? ''}`}>
+              {item.year}
+              {byKey.get('year')?.direction === 'up' ? <ArrowUp /> : byKey.get('year')?.direction === 'down' ? <ArrowDown /> : byKey.get('year')?.status === 'match' ? <Check /> : null}
+            </span>
+          </>}
+        </p>
+        {!!genres.length && <div className="gm-genres">
+          {visibleMatchedItems(genres, genreMatched, 6).map((genre) => {
+            const isMatch = genreMatched.has(normalizeTextMatch(genre))
+            return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
+          })}
+        </div>}
+      </div>
+      <div className="rating-badge"><small>LFM</small><strong>{listenersValue != null ? new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listenersValue) : '—'}</strong></div>
+    </div>
+
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+
+    {!!requestedHints.length && <div className="attempt-clue-grid music-attempt__clues">
+      {requestedHints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+    </div>}
+
+    <div className="dx-clouds">
+      <DxChipCloud label="Похожие артисты" hint={byKey.get('creator')} items={similarArtistNames} limit={6} wrap />
+    </div>
+  </article>
+}
+
 function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories'; wrap?: boolean }) {
   if (!items.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
@@ -1557,6 +2264,7 @@ function Game({
   titles,
   mode,
   period,
+  difficulty,
   date,
   setDate,
   onHome,
@@ -1564,6 +2272,7 @@ function Game({
   onArchive,
   onStats,
   onRules,
+  onReview,
   onEconomyChange,
   caseVignettes,
   dailySalt,
@@ -1573,6 +2282,7 @@ function Game({
   titles: TitleItem[]
   mode: TitleMode
   period: PeriodKey
+  difficulty: DifficultyKey
   date: string
   setDate: (date: string) => void
   onHome: () => void
@@ -1580,16 +2290,20 @@ function Game({
   onArchive: () => void
   onStats: () => void
   onRules: () => void
+  onReview: () => void
   onEconomyChange: () => void
   caseVignettes: CaseVignetteMap
   dailySalt: number
   isPracticeSession: boolean
   searchIndex: LibrarySearchIndex | null
 }) {
-  const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' ? 'all' : period
-  const pool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
-  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, dailySalt) : null, [pool, mode, effectivePeriod, date, dailySalt])
-  const key = dailySalt === 0 ? gameKey(mode, effectivePeriod, date) : `${gameKey(mode, effectivePeriod, date)}|salt:${dailySalt}`
+  const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' || mode === 'music' ? 'all' : period
+  const difficultyVariant = mode === 'music' ? difficulty : ''
+  const basePool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
+  const pool = useMemo(() => mode === 'music' ? musicDifficultyPool(basePool, difficulty) : basePool, [basePool, mode, difficulty])
+  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, dailySalt, difficultyVariant) : null, [pool, mode, effectivePeriod, date, dailySalt, difficultyVariant])
+  const baseKey = difficultyVariant ? `${gameKey(mode, effectivePeriod, date)}|diff:${difficultyVariant}` : gameKey(mode, effectivePeriod, date)
+  const key = dailySalt === 0 ? baseKey : `${baseKey}|salt:${dailySalt}`
   const [sessionState, dispatchSession] = useReducer(gameSessionReducer, undefined, createInitialGameSessionState)
   const { attempts, status, query, selected, activeSuggestionIndex, message, hintChoices, dismissedHintRounds } = sessionState
   const debouncedQuery = useDebouncedValue(query, 100)
@@ -1647,6 +2361,7 @@ function Game({
         hintChoices: restoredChoices,
         dismissedHintRounds: restoredDismissedRounds,
         updatedAt: Date.now(),
+        ...(mode === 'music' ? { difficulty } : {}),
       })
     }
 
@@ -1655,7 +2370,7 @@ function Game({
     setAnamnesisOpen(false)
     setLastAward(null)
     setIsSearchDropdownOpen(false)
-  }, [answer, availableAssistHintKeys, date, effectivePeriod, key, mode, pool])
+  }, [answer, availableAssistHintKeys, date, difficulty, effectivePeriod, key, mode, pool])
 
   const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
   const suggestions = useMemo(() => {
@@ -1700,11 +2415,13 @@ function Game({
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
   const showTodayLink = date !== getMoscowDate()
   const closeSearchDropdown = useCallback(() => setIsSearchDropdownOpen(false), [])
-  const headingPeriodBadge = mode === 'movie' || mode === 'series' || mode === 'anime'
-    ? effectivePeriod === 'all'
-      ? 'Главная премьера'
-      : PERIODS[effectivePeriod].label.replace(' года', '')
-    : null
+  const headingPeriodBadge = mode === 'music'
+    ? DIFFICULTIES[difficulty].label
+    : mode === 'movie' || mode === 'series' || mode === 'anime'
+      ? effectivePeriod === 'all'
+        ? 'Главная премьера'
+        : PERIODS[effectivePeriod].label.replace(' года', '')
+      : null
   useDismissOnOutside(isSuggestionsOpen, searchPickerRef, closeSearchDropdown)
 
   useEffect(() => {
@@ -1782,6 +2499,7 @@ function Game({
       hintChoices: nextHintChoices,
       dismissedHintRounds: nextDismissedRounds,
       updatedAt: Date.now(),
+      ...(mode === 'music' ? { difficulty } : {}),
     })
   }
 
@@ -1844,7 +2562,7 @@ function Game({
     if (nextStatus !== 'playing' && !isPracticeSession) {
       updateStats(nextStatus === 'won', nextAttempts.length)
       if (date === getMoscowDate()) {
-        setLastAward(recordDailyCompletion(mode, effectivePeriod, date, nextStatus === 'won', nextAttempts.length))
+        setLastAward(recordDailyCompletion(mode, effectivePeriod, date, nextStatus === 'won', nextAttempts.length, difficultyVariant))
         onEconomyChange()
       }
     }
@@ -1870,7 +2588,7 @@ function Game({
   if (!answer) return <div className="loading">В этой теме пока нет записей.</div>
 
   return <>
-    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} />
+    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="game-shell">
       <div className="screen-back-row">
         <button className="screen-back" onClick={() => {
@@ -1932,11 +2650,20 @@ function Game({
             ? [answer.titleOriginal, ...(answer.icd10?.length ? [answer.icd10.join(', ')] : []), ...(answer.icdGroup ? [answer.icdGroup] : [])].filter(Boolean).join(' · ')
             : answer.mode === 'game'
               ? [answer.titleOriginal || 'Оригинальное название не указано', answer.year != null ? String(answer.year) : '—', answer.topRank != null ? `#${answer.topRank}` : null].filter(Boolean).join(' · ')
+              : answer.mode === 'music'
+                ? [
+                    answer.titleOriginal || 'Оригинальное название не указано',
+                    answer.year != null ? `дебют ${answer.year}` : null,
+                    answer.musicType ?? null,
+                    answer.topTracks?.[0]?.title ? `трек: ${answer.topTracks[0].title}` : null,
+                  ].filter(Boolean).join(' · ')
               : `${answer.titleOriginal || 'Оригинальное название не указано'} · ${answer.year ?? '—'}`}</p>
           <div className="result-tags">{(answer.mode === 'diagnosis'
             ? [...(answer.bodySystems ?? []).slice(0, 2), ...(answer.diseaseTypes ?? []).slice(0, 2), ...(answer.icd10 ?? []).slice(0, 1)]
             : answer.mode === 'game'
               ? [...(answer.genres ?? []).slice(0, 3), ...dedupeGameCategories(answer.steamCategories ?? [], true).slice(0, 2)]
+              : answer.mode === 'music'
+                ? [...(answer.genres ?? []).slice(0, 3), ...((answer.topTracks ?? []).slice(0, 2).map((track) => track.title))]
               : (answer.genres ?? [])
           ).map((tag) => <i key={tag}>{tag}</i>)}</div>
           <strong>{status === 'won' ? `${attempts.length}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
@@ -1955,7 +2682,7 @@ function Game({
           <input
             ref={inputRef}
             id="movie-search"
-            aria-label={mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : 'Введите название'}
+            aria-label={mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название'}
             value={query}
             autoComplete="off"
             placeholder={modeMeta(mode).searchPlaceholder}
@@ -2013,6 +2740,12 @@ function Game({
               ? [item.titleOriginal || 'Без оригинального названия', ...(item.icd10?.length ? [item.icd10.join(', ')] : []), ...(item.icdGroup ? [item.icdGroup] : [])].filter(Boolean).join(' · ')
               : item.mode === 'game'
                 ? [item.titleOriginal || 'Без оригинального названия', item.year != null ? String(item.year) : '—', item.topRank != null ? `#${item.topRank}` : null].filter(Boolean).join(' · ')
+                : item.mode === 'music'
+                  ? [
+                      item.titleOriginal || 'Без оригинального названия',
+                      item.year != null ? `дебют ${item.year}` : '—',
+                      item.topTracks?.[0]?.title ? `трек: ${item.topTracks[0].title}` : null,
+                    ].filter(Boolean).join(' · ')
                 : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
             <em>{item.mode === 'diagnosis'
               ? (item.contagiousness ?? item.icd10?.[0] ?? '—')
@@ -2022,6 +2755,13 @@ function Game({
                     const scoreText = score != null ? score.toFixed(2) : '—'
                     const rankText = item.topRank != null ? `#${item.topRank}` : null
                     return rankText ? `${scoreText} · ${rankText}` : scoreText
+                  })()
+              : item.mode === 'music'
+                ? (() => {
+                    const listeners = item.votes?.gamesPlayed
+                    const listenersText = listeners != null ? `${new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listeners)} слуш.` : '—'
+                    const rankText = item.topRank != null ? `#${item.topRank}` : null
+                    return rankText ? `${listenersText} · ${rankText}` : listenersText
                   })()
               : item.mode === 'game'
                 ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
@@ -2061,6 +2801,8 @@ function Game({
           ? 'После ответа появятся сравнения по системе, симптомам, диагностике и коду МКБ.'
           : mode === 'anime'
             ? 'После ответа появятся сравнения по формату, статусу, эпизодам, студии, сэйю и рейтингу Shikimori.'
+          : mode === 'music'
+            ? 'После ответа появятся сравнения по дебюту, жанрам, топ-трекам, популярности и связям между артистами.'
           : mode === 'game'
             ? 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.'
             : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
@@ -2080,6 +2822,8 @@ function Game({
             ? <DiagnosisAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
             : item.mode === 'game'
               ? <GameAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
+              : item.mode === 'music'
+                ? <MusicAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
               : <AttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
         })}
       </section>}
@@ -2292,7 +3036,7 @@ function EconomyView() {
     </div>
     <div className="economy-note">
       <Ticket />
-      <p>Билеты открывают дополнительные периоды в кино и сериалах. Базовый сеанс всегда доступен, а закрытый период можно выбрать заранее.</p>
+      <p>Билеты открывают дополнительные периоды в кино, сериалах, аниме и музыке. Базовый сеанс всегда доступен, а закрытый период можно выбрать заранее.</p>
     </div>
     <p className="modal-lead">Билеты хранятся только в этом браузере на этом устройстве. В другом браузере или на другом устройстве они не переносятся. Если очистить данные сайта, билеты и их история могут исчезнуть.</p>
     <form className="ticket-promo" onSubmit={submitPromoCode}>
@@ -2312,7 +3056,7 @@ function EconomyView() {
       <span><strong>+10</strong> угадать ответ</span>
       <span><strong>+0-9</strong> бонус за попытки</span>
       <span><strong>+5</strong> первый сеанс дня</span>
-      <span><strong>+25</strong> полный зал 4/4</span>
+      <span><strong>+25</strong> полный зал всех режимов</span>
     </div>
     <p className="modal-lead">
       Абонемент продлевается за первый завершённый daily-сеанс дня, даже если ответ не угадан. Первый сеанс дня умножается на текущий множитель. {nextAt ? `До ${formatMultiplier(streakMultiplier(nextAt))}: ${nextAt - attendance.currentDailyStreak} дн.` : 'Максимальный множитель уже активен.'}
@@ -2337,6 +3081,7 @@ function RulesView() {
     <p>Перед 5-й и 8-й попытками можно открыть по одной из трёх дополнительных подсказок.</p>
     <p>В режиме «Аниме» сравниваются формат, статус, эпизоды, студия, сэйю и рейтинг Shikimori.</p>
     <p>В режиме «Игры» дополнительно сравниваются позиция в топе, метрики Steam и Metacritic.</p>
+    <p>В режиме «Музыка» сравниваются дебют, жанры, связи между артистами, топ-треки и популярность Last.fm.</p>
     <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
     <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
     <div><i className="miss" /><span><strong>Мимо</strong> — значение не совпало.</span></div>
@@ -2354,7 +3099,7 @@ function ResumeSessionsView({ sessions, onOpen }: {
       {sessions.map((session) => {
         const attemptText = `${session.attempts.length}/10`
         const sessionLabel = session.mode === 'diagnosis' ? 'Прием' : 'Сеанс'
-        const periodText = session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
+        const periodText = session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime' || session.mode === 'music' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
         return <article className="resume-item" key={session.key}>
           <button className="resume-item__open" onClick={() => onOpen(session)}>
             <span className="resume-item__mode">{modeIcon(session.mode)}<i>{modeMeta(session.mode).title}</i></span>
@@ -2372,9 +3117,11 @@ export default function App() {
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
   const [mode, setMode] = useState<TitleMode>('movie')
   const [period, setPeriod] = useState<PeriodKey>('all')
+  const [difficulty, setDifficulty] = useState<DifficultyKey>('medium')
   const [date, setDate] = useState(getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
+  const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
   const { data, titleCounts, caseVignettes, loading, globalDailySalt, searchIndex } = useDataLoader(mode)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const [economyVersion, setEconomyVersion] = useState(0)
@@ -2393,6 +3140,15 @@ export default function App() {
   const freePlayShortage = Math.max(0, freePlayCostValue - wallet.tickets)
   const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
   const currentUnlockedPeriods = useMemo(() => unlockedPeriodsFor(mode, periodUnlocks), [mode, periodUnlocks])
+  const musicDifficultyCounts = useMemo<Record<DifficultyKey, number> | null>(() => {
+    if (!data.music.length) return null
+    const base = poolFor(data.music, 'music', 'all')
+    return {
+      easy: musicDifficultyPool(base, 'easy').length,
+      medium: musicDifficultyPool(base, 'medium').length,
+      hard: musicDifficultyPool(base, 'hard').length,
+    }
+  }, [data.music])
   const refreshEconomy = () => setEconomyVersion((version) => version + 1)
 
   useEffect(() => {
@@ -2567,6 +3323,7 @@ export default function App() {
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
   const goBackFromGame = () => moveToScreen(gameBackTarget)
+  const goBackFromReview = () => moveToScreen(reviewBackTarget)
 
   useEffect(() => {
     if (modal === 'resume' && !activeGames.length) {
@@ -2581,6 +3338,7 @@ export default function App() {
     setGameBackTarget(backTarget)
     setModeSafe(savedGame.mode)
     setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' || savedGame.mode === 'anime' ? savedGame.period : 'all')
+    if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
     setDate(savedGame.date)
     setScreen('game')
     setModal(null)
@@ -2605,6 +3363,17 @@ export default function App() {
     setDate(getMoscowDate())
     setScreen('title')
     setModal(null)
+    window.scrollTo({ top: 0 })
+  }
+
+  const openMusicReview = () => {
+    trackMetrikaGoal('open_music_review_screen', { from: screen })
+    clearTransitionTimer()
+    setTransition('idle')
+    setModal(null)
+    const backTarget = screen === 'title' || screen === 'rewatch' ? screen : 'hub'
+    setReviewBackTarget(backTarget)
+    setScreen('review')
     window.scrollTo({ top: 0 })
   }
   const buyPeriodUnlock = (periodKey: PeriodKey) => {
@@ -2660,7 +3429,7 @@ export default function App() {
   }
   const startFreePlay = () => {
     if (transition === 'title-to-game') return
-    if (mode !== 'movie' && mode !== 'series' && mode !== 'anime') return
+    if (!FREE_PLAY_MODES.has(mode)) return
 
     const today = getMoscowDate()
     const launchesToday = loadFreePlayUsage(today)
@@ -2731,11 +3500,13 @@ export default function App() {
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
 
   return <div className={`app app--${appTone}`}>
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
 
-    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} />}
+    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+
+    {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'game' && (loading || !data[mode].length
       ? <div className="loading"><Sparkles /> Настраиваем проектор…</div>
@@ -2743,6 +3514,7 @@ export default function App() {
           titles={data[mode]}
           mode={mode}
           period={period}
+          difficulty={difficulty}
           date={date}
           dailySalt={effectiveDailySalt}
           isPracticeSession={adminDailySalt !== 0}
@@ -2752,6 +3524,7 @@ export default function App() {
           onArchive={() => setScreen('rewatch')}
           onStats={() => setModal('stats')}
           onRules={() => setModal('rules')}
+          onReview={openMusicReview}
           onEconomyChange={refreshEconomy}
           caseVignettes={caseVignettes}
           searchIndex={searchIndex}

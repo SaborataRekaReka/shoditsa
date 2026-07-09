@@ -3,12 +3,12 @@ import type { CaseVignetteMap, DiagnosisCaseVignettes, LibrarySearchIndex, Title
 import { MODE_CONFIG } from '../app/mode-config'
 
 type ModeData = Record<TitleMode, TitleItem[]>
-type ModeCounts = { movie: number | null; series: number | null; anime: number | null; game: number | null; diagnosis: number | null }
+type ModeCounts = { movie: number | null; series: number | null; anime: number | null; game: number | null; music: number | null; diagnosis: number | null }
 type ModeSearchIndexes = Record<TitleMode, LibrarySearchIndex | null>
 
-const initialData: ModeData = { movie: [], series: [], anime: [], game: [], diagnosis: [] }
-const initialCounts: ModeCounts = { movie: null, series: null, anime: null, game: null, diagnosis: null }
-const initialSearchIndexes: ModeSearchIndexes = { movie: null, series: null, anime: null, game: null, diagnosis: null }
+const initialData: ModeData = { movie: [], series: [], anime: [], game: [], music: [], diagnosis: [] }
+const initialCounts: ModeCounts = { movie: null, series: null, anime: null, game: null, music: null, diagnosis: null }
+const initialSearchIndexes: ModeSearchIndexes = { movie: null, series: null, anime: null, game: null, music: null, diagnosis: null }
 const toIntegerOrNull = (value: unknown) => {
   const parsed = Math.trunc(Number(value))
   return Number.isFinite(parsed) ? parsed : null
@@ -98,13 +98,14 @@ export const useDataLoader = (mode: TitleMode) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; diagnosisCount?: number }>('./data/source.json')
+    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; musicCount?: number; diagnosisCount?: number }>('./data/source.json')
       .then((source) => {
         setTitleCounts((current) => ({
           movie: Number.isFinite(source.movieCount) ? source.movieCount! : current.movie,
           series: Number.isFinite(source.seriesCount) ? source.seriesCount! : current.series,
           anime: Number.isFinite(source.animeCount) ? source.animeCount! : current.anime,
           game: Number.isFinite(source.gameCount) ? source.gameCount! : current.game,
+          music: Number.isFinite(source.musicCount) ? source.musicCount! : current.music,
           diagnosis: Number.isFinite(source.diagnosisCount) ? source.diagnosisCount! : current.diagnosis,
         }))
 
@@ -141,6 +142,10 @@ export const useDataLoader = (mode: TitleMode) => {
 
     fetchJsonCached<TitleItem[]>('./data/animes.generated.json')
       .then((items) => setTitleCounts((current) => ({ ...current, anime: current.anime ?? items.length })))
+      .catch(() => undefined)
+
+    fetchJsonCached<TitleItem[]>('./data/music.generated.json')
+      .then((items) => setTitleCounts((current) => ({ ...current, music: current.music ?? items.length })))
       .catch(() => undefined)
   }, [])
 

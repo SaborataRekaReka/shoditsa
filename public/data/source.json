@@ -57,5 +57,9 @@
     "kindFilter": null,
     "keepNsfw": false,
     "note": "merged pages 1-20; latest appended batch pages 11-20"
-  }
+  },
+  "musicCount": 500,
+  "musicSource": "data/music/normalized/music_artists_enriched_first500_merged_retry_batched.resolved.json",
+  "musicGeneratedAt": "2026-07-09T16:14:30.210Z",
+  "musicExcludedPendingReview": 0
 }
