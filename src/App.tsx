@@ -3508,7 +3508,7 @@ export default function App() {
 
     {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'game' && (loading || !data[mode].length
+    {screen === 'game' && (loading
       ? <div className="loading"><Sparkles /> Настраиваем проектор…</div>
       : <Game
           titles={data[mode]}

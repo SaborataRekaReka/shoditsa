@@ -21,6 +21,19 @@ try {
     throw "dist/index.html not found. Run build first or remove -SkipBuild."
   }
 
+  $requiredDistFiles = @(
+    "dist/data/libraries/music/items.json",
+    "dist/data/libraries/music/search-index.json",
+    "dist/data/music.generated.json"
+  )
+
+  $missingDistFiles = @($requiredDistFiles | Where-Object { -not (Test-Path $_) })
+  if ($missingDistFiles.Count -gt 0) {
+    Write-Host "[deploy] Missing required runtime data files:" -ForegroundColor Red
+    $missingDistFiles | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+    throw "Required runtime data files are missing in dist. Rebuild data before deploy."
+  }
+
   $destination = "{0}@{1}:{2}" -f $User, $ServerHost, $TargetDir
   $remote = "{0}@{1}" -f $User, $ServerHost
 

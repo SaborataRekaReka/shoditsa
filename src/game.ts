@@ -10,14 +10,35 @@ export const PERIODS: Record<PeriodKey, { label: string; short: string; fromYear
   from_2020: { label: 'С 2020 года', short: '2020+', fromYear: 2020 },
 }
 
-// Доли исполнителей, попадающих в пул на каждой сложности.
-// Русских в каталоге кратно меньше, поэтому им задаётся более высокая доля,
-// чтобы абсолютные количества обеих групп были сбалансированы, а не равны в процентах.
+// Для каждой сложности задаем:
+// - целевую долю русских артистов внутри режима (ruShare),
+// - вклад RU/INTL сегментов в общий размер пула (ruPoolFraction/intlPoolFraction).
 export const DIFFICULTY_ORDER: DifficultyKey[] = ['easy', 'medium', 'hard']
-export const DIFFICULTIES: Record<DifficultyKey, { label: string; short: string; hint: string; ru: number; intl: number }> = {
-  easy: { label: 'Лёгкий', short: 'Разогрев', hint: 'Только самые известные', ru: 0.2, intl: 0.1 },
-  medium: { label: 'Средний', short: 'Плотный чарт', hint: 'Плюс менее популярные', ru: 0.55, intl: 0.35 },
-  hard: { label: 'Сложный', short: 'Весь пул', hint: 'Все исполнители каталога', ru: 1, intl: 1 },
+export const DIFFICULTIES: Record<DifficultyKey, { label: string; short: string; hint: string; ruShare: number; ruPoolFraction: number; intlPoolFraction: number }> = {
+  easy: {
+    label: 'Лёгкий',
+    short: 'Разогрев',
+    hint: '10% RU / 90% INTL',
+    ruShare: 0.1,
+    ruPoolFraction: 0.2,
+    intlPoolFraction: 0.1,
+  },
+  medium: {
+    label: 'Средний',
+    short: 'Плотный чарт',
+    hint: '30% RU / 70% INTL',
+    ruShare: 0.3,
+    ruPoolFraction: 0.55,
+    intlPoolFraction: 0.35,
+  },
+  hard: {
+    label: 'Сложный',
+    short: 'RU only',
+    hint: '100% RU',
+    ruShare: 1,
+    ruPoolFraction: 1,
+    intlPoolFraction: 1,
+  },
 }
 
 const RUSSIAN_SIGNAL = /росси|russia|russian|ссср|soviet|советск|украин|ukrain|беларус|белорус|belarus|казахстан|kazakh|азербайджан|azerbaij|груз|georgia|армен|armenia|латви|latvia|литв|эстони|молдав|молдов|узбекистан|киргиз|кыргыз|таджик|туркмен|абхаз/i
@@ -37,20 +58,48 @@ const artistPopularityRank = (item: TitleItem): number => {
   return Number.MAX_SAFE_INTEGER - (Number(item.popularityScore) || 0)
 }
 
-const takeTopByPopularity = (items: TitleItem[], fraction: number): TitleItem[] => {
-  if (!items.length || fraction >= 1) return items
+const takeTopByPopularityCount = (items: TitleItem[], count: number): TitleItem[] => {
+  if (!items.length || count <= 0) return []
+  if (count >= items.length) return items
   const sorted = [...items].sort((a, b) => artistPopularityRank(a) - artistPopularityRank(b))
-  const count = Math.min(sorted.length, Math.max(1, Math.ceil(sorted.length * Math.max(0, fraction))))
   return sorted.slice(0, count)
 }
 
 export const musicDifficultyPool = (pool: TitleItem[], difficulty: DifficultyKey): TitleItem[] => {
   const config = DIFFICULTIES[difficulty] ?? DIFFICULTIES.hard
-  if (config.ru >= 1 && config.intl >= 1) return pool
+
   const russian: TitleItem[] = []
   const foreign: TitleItem[] = []
   for (const item of pool) (isRussianArtist(item) ? russian : foreign).push(item)
-  return [...takeTopByPopularity(russian, config.ru), ...takeTopByPopularity(foreign, config.intl)]
+
+  const targetTotal = Math.min(
+    pool.length,
+    Math.max(
+      1,
+      Math.ceil(russian.length * Math.max(0, config.ruPoolFraction) + foreign.length * Math.max(0, config.intlPoolFraction)),
+    ),
+  )
+
+  const strictRussianOnly = config.ruShare >= 1
+  let ruTarget = strictRussianOnly
+    ? Math.min(russian.length, targetTotal)
+    : Math.min(russian.length, Math.max(0, Math.round(targetTotal * Math.max(0, config.ruShare))))
+  let intlTarget = strictRussianOnly ? 0 : Math.min(foreign.length, targetTotal - ruTarget)
+
+  // Если одна группа закончилась, добираем остаток второй, не ломая strict RU-only режим.
+  if (!strictRussianOnly && ruTarget + intlTarget < targetTotal) {
+    const remainAfterIntl = targetTotal - (ruTarget + intlTarget)
+    const extraRu = Math.min(Math.max(0, russian.length - ruTarget), remainAfterIntl)
+    ruTarget += extraRu
+
+    const remainAfterRu = targetTotal - (ruTarget + intlTarget)
+    if (remainAfterRu > 0) {
+      const extraIntl = Math.min(Math.max(0, foreign.length - intlTarget), remainAfterRu)
+      intlTarget += extraIntl
+    }
+  }
+
+  return [...takeTopByPopularityCount(russian, ruTarget), ...takeTopByPopularityCount(foreign, intlTarget)]
 }
 
 export const getMoscowDate = (date = new Date()) => new Intl.DateTimeFormat('en-CA', {

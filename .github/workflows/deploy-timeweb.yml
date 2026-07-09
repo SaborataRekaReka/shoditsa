@@ -25,6 +25,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Validate music runtime files
+        run: |
+          test -f dist/data/libraries/music/items.json
+          test -f dist/data/libraries/music/search-index.json
+          test -f dist/data/music.generated.json
+
       - name: Upload dist to server
         uses: appleboy/scp-action@v0.1.7
         with:
