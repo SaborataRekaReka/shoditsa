@@ -2325,16 +2325,21 @@ function Game({
     const saved = loadGame(key)
     const poolById = new Map(pool.map((item) => [item.id, item]))
     const restoredAttemptIds = collectSavedAttemptIds(saved)
-    const shouldRebuildAttempts = Boolean(answer && saved && (saved.status === 'playing' || saved.answerId === answer.id))
-    const restoredAttempts = answer && shouldRebuildAttempts
-      ? rebuildAttemptsForAnswer(restoredAttemptIds, poolById, answer)
-      : (saved?.attempts ?? [])
-    const restoredStatus: GameStatus = answer && shouldRebuildAttempts
-      ? deriveStatusFromAttempts(restoredAttempts, answer.id)
-      : (saved?.status ?? 'playing')
-    const restoredChoices = sanitizeStoredHintChoices(saved, availableAssistHintKeys)
+    const answerChanged = Boolean(answer && saved && saved.answerId !== answer.id)
+    const shouldRebuildAttempts = Boolean(answer && saved && !answerChanged && restoredAttemptIds.length)
+    const restoredAttempts = answerChanged
+      ? []
+      : answer && shouldRebuildAttempts
+        ? rebuildAttemptsForAnswer(restoredAttemptIds, poolById, answer)
+        : (saved?.attempts ?? [])
+    const restoredStatus: GameStatus = answerChanged
+      ? 'playing'
+      : answer && shouldRebuildAttempts
+        ? deriveStatusFromAttempts(restoredAttempts, answer.id)
+        : (saved?.status ?? 'playing')
+    const restoredChoices = answerChanged ? [] : sanitizeStoredHintChoices(saved, availableAssistHintKeys)
     const openedRounds = new Set(restoredChoices.map((choice) => choice.round))
-    const restoredDismissedRounds = sanitizeDismissedRounds(saved, openedRounds)
+    const restoredDismissedRounds = answerChanged ? [] : sanitizeDismissedRounds(saved, openedRounds)
 
     dispatchSession({
       type: 'reset',
@@ -2346,7 +2351,7 @@ function Game({
       },
     })
 
-    if (saved && answer && shouldRebuildAttempts) {
+    if (saved && answer && (shouldRebuildAttempts || answerChanged)) {
       saveGame({
         ...saved,
         key,
@@ -2560,7 +2565,9 @@ function Game({
     dispatchSession({ type: 'submit_attempt', attempts: nextAttempts, status: nextStatus })
     persistGame(nextAttempts, nextStatus, hintChoices)
     if (nextStatus !== 'playing' && !isPracticeSession) {
-      updateStats(nextStatus === 'won', nextAttempts.length)
+      const sessionKey = completionSessionKey(mode, effectivePeriod, date, difficultyVariant)
+      const alreadyCompletedSession = loadDailyAttendance(date).completedSessions.includes(sessionKey)
+      if (!alreadyCompletedSession) updateStats(nextStatus === 'won', nextAttempts.length)
       if (date === getMoscowDate()) {
         setLastAward(recordDailyCompletion(mode, effectivePeriod, date, nextStatus === 'won', nextAttempts.length, difficultyVariant))
         onEconomyChange()

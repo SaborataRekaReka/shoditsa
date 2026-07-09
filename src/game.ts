@@ -236,6 +236,12 @@ const normalizeContagiousness = (value: string | null | undefined) => {
 }
 type DirectionOptions = { lowerIsUp?: boolean }
 
+const toFiniteNumber = (value: unknown): number | null => {
+  if (value == null || value === '') return null
+  const numberValue = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(numberValue) ? numberValue : null
+}
+
 const compareDirection = (guess: number, answer: number, options: DirectionOptions = {}): Direction => {
   if (guess === answer) return null
   if (options.lowerIsUp) return answer < guess ? 'up' : 'down'
@@ -249,9 +255,11 @@ const numeric = (
   close: number,
   options: DirectionOptions = {},
 ): { status: MatchStatus; direction: Direction } => {
-  if (guess == null || answer == null) return { status: 'unknown', direction: null }
-  const delta = Math.abs(guess - answer)
-  return { status: delta <= match ? 'match' : delta <= close ? 'close' : 'miss', direction: delta <= match ? null : compareDirection(guess, answer, options) }
+  const guessNumber = toFiniteNumber(guess)
+  const answerNumber = toFiniteNumber(answer)
+  if (guessNumber == null || answerNumber == null) return { status: 'unknown', direction: null }
+  const delta = Math.abs(guessNumber - answerNumber)
+  return { status: delta <= match ? 'match' : delta <= close ? 'close' : 'miss', direction: delta <= match ? null : compareDirection(guessNumber, answerNumber, options) }
 }
 const list = (values: string[]) => values.length ? values.join(', ') : 'Нет данных'
 const countryCode = (value: string) => {
@@ -342,10 +350,12 @@ const reviewHint = (
   answer: number | null | undefined,
   options: DirectionOptions = {},
 ): { status: MatchStatus; direction: Direction } => {
-  if (guess == null || answer == null) return { status: 'unknown', direction: null }
-  if (guess === answer) return { status: 'match', direction: null }
-  const ratio = Math.max(guess, answer) / Math.max(1, Math.min(guess, answer))
-  const direction = compareDirection(guess, answer, options)
+  const guessNumber = toFiniteNumber(guess)
+  const answerNumber = toFiniteNumber(answer)
+  if (guessNumber == null || answerNumber == null) return { status: 'unknown', direction: null }
+  if (guessNumber === answerNumber) return { status: 'match', direction: null }
+  const ratio = Math.max(guessNumber, answerNumber) / Math.max(1, Math.min(guessNumber, answerNumber))
+  const direction = compareDirection(guessNumber, answerNumber, options)
   if (ratio <= 1.25) return { status: 'close', direction }
   if (ratio <= 2) return { status: 'partial', direction }
   return { status: 'miss', direction }
@@ -388,8 +398,8 @@ const gamePriceHint = (guess: TitleItem, answer: TitleItem): { status: MatchStat
   if (!guess.price || !answer.price) return { status: 'unknown', direction: null }
   if (guess.price.isFree === answer.price.isFree && (guess.price.isFree || guess.price.final == null || answer.price.final == null)) return { status: 'match', direction: null }
   if (guess.price.isFree !== answer.price.isFree) return { status: 'miss', direction: null }
-  const guessFinal = guess.price.final
-  const answerFinal = answer.price.final
+  const guessFinal = toFiniteNumber(guess.price.final)
+  const answerFinal = toFiniteNumber(answer.price.final)
   if (guessFinal == null || answerFinal == null) return { status: 'match', direction: null }
   const delta = Math.abs(guessFinal - answerFinal)
   return {
