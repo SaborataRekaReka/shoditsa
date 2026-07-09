@@ -15,6 +15,55 @@ const toIntegerOrNull = (value: unknown) => {
 }
 
 const requestCache = new Map<string, Promise<unknown>>()
+const configuredMediaOrigin = String(import.meta.env.VITE_MEDIA_ORIGIN || '').trim().replace(/\/$/, '')
+const mediaOrigin = configuredMediaOrigin || (import.meta.env.PROD ? 'https://shoditsa.ru' : '')
+
+const withMediaOrigin = (value: unknown) => {
+  const raw = String(value ?? '').trim()
+  if (!raw || !mediaOrigin) return raw
+  if (/^https?:\/\//i.test(raw)) return raw
+
+  // Keep local/dev behavior for non-library paths; rewrite only data assets paths.
+  if (!(raw.startsWith('./data/') || raw.startsWith('/data/'))) return raw
+
+  const normalized = raw.startsWith('./') ? raw.slice(1) : raw
+  return `${mediaOrigin}${normalized.startsWith('/') ? normalized : `/${normalized}`}`
+}
+
+const normalizeItemMediaUrls = (items: TitleItem[]) => {
+  if (!mediaOrigin) return items
+
+  return items.map((item) => {
+    const next: TitleItem = {
+      ...item,
+      posterUrl: withMediaOrigin(item.posterUrl) || null,
+      headerUrl: withMediaOrigin(item.headerUrl) || null,
+      backdropUrl: withMediaOrigin(item.backdropUrl) || null,
+      screenshots: Array.isArray(item.screenshots)
+        ? item.screenshots.map((entry) => withMediaOrigin(entry)).filter(Boolean)
+        : item.screenshots,
+    }
+
+    for (const [key, value] of Object.entries(next)) {
+      if (!Array.isArray(value)) continue
+      if (!value.length) continue
+
+      const maybePeople = value as Array<Record<string, unknown>>
+      const normalizedPeople = maybePeople.map((entry) => {
+        if (!entry || typeof entry !== 'object') return entry
+        if (!Object.prototype.hasOwnProperty.call(entry, 'photoUrl')) return entry
+        return {
+          ...entry,
+          photoUrl: withMediaOrigin((entry as { photoUrl?: unknown }).photoUrl) || null,
+        }
+      })
+
+      ;(next as unknown as Record<string, unknown>)[key] = normalizedPeople
+    }
+
+    return next
+  })
+}
 
 const fetchJsonCached = async <T,>(url: string): Promise<T> => {
   if (!requestCache.has(url)) {
@@ -28,10 +77,10 @@ const fetchJsonCached = async <T,>(url: string): Promise<T> => {
 
 const loadModeItems = async (dataFile: string) => {
   try {
-    return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
+    return await fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
   } catch (primaryError) {
     try {
-      return await fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
+      return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
     } catch (fallbackError) {
       const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError)
       const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
@@ -111,8 +160,9 @@ export const useDataLoader = (mode: TitleMode) => {
     setLoading(true)
     loadModeItems(MODE_CONFIG[mode].dataFile)
       .then((items) => {
-        setData((current) => ({ ...current, [mode]: items }))
-        setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? items.length }))
+        const normalizedItems = normalizeItemMediaUrls(items)
+        setData((current) => ({ ...current, [mode]: normalizedItems }))
+        setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? normalizedItems.length }))
       })
       .finally(() => setLoading(false))
   }, [mode, data])

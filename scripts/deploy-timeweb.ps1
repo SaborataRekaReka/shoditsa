@@ -22,6 +22,13 @@ try {
   }
 
   $destination = "{0}@{1}:{2}" -f $User, $ServerHost, $TargetDir
+  $remote = "{0}@{1}" -f $User, $ServerHost
+
+  Write-Host "[deploy] Cleaning target directory to avoid stale files..."
+  ssh -p $Port $remote "mkdir -p $TargetDir; find $TargetDir -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
+  if ($LASTEXITCODE -ne 0) {
+    throw "ssh cleanup failed with exit code $LASTEXITCODE"
+  }
 
   Write-Host "[deploy] Uploading dist to $destination ..."
   scp -P $Port -r dist/* $destination
@@ -30,7 +37,6 @@ try {
   }
 
   Write-Host "[deploy] Applying permissions and listing deployed files..."
-  $remote = "{0}@{1}" -f $User, $ServerHost
   ssh -p $Port $remote "chmod -R a+rX $TargetDir; ls -la $TargetDir | head -n 20"
   if ($LASTEXITCODE -ne 0) {
     throw "ssh failed with exit code $LASTEXITCODE"
