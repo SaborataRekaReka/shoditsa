@@ -66,6 +66,23 @@ npm run deploy:quick
 npm run deploy:quick:skip-build
 ```
 
+## Автодеплой на прод из GitHub
+
+В репозитории есть workflow `.github/workflows/deploy-timeweb.yml`, который выполняет деплой на прод при каждом `push` в `main`.
+
+Чтобы это работало стабильно, в GitHub нужно один раз добавить секрет:
+
+- `TIMEWEB_SSH_KEY` — приватный SSH-ключ пользователя сервера (для `root@72.56.240.222`).
+
+Путь деплоя в workflow:
+
+- `/opt/repeto/deploy/shoditsa`
+
+Проверка после пуша:
+
+- откройте вкладку `Actions`;
+- убедитесь, что workflow `Deploy To Timeweb` завершился статусом `success`.
+
 ## Глобальная смена ежедневного ответа (для всех)
 
 Сдвиг для всех игроков задается в `public/data/daily-config.json` (`globalSalt`).

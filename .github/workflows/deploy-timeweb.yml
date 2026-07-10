@@ -5,9 +5,23 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+concurrency:
+  group: deploy-timeweb-main
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DEPLOY_HOST: 72.56.240.222
+  DEPLOY_USER: root
+  DEPLOY_PORT: 22
+  DEPLOY_TARGET_DIR: /opt/repeto/deploy/shoditsa
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -31,26 +45,34 @@ jobs:
           test -f dist/data/libraries/music/search-index.json
           test -f dist/data/music.generated.json
 
+      - name: Validate SSH secret exists
+        run: |
+          if [ -z "${{ secrets.TIMEWEB_SSH_KEY }}" ]; then
+            echo "::error::TIMEWEB_SSH_KEY is missing or empty"
+            exit 1
+          fi
+
+      - name: Configure SSH key
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s' "${{ secrets.TIMEWEB_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Clean target directory
+        run: |
+          set -euo pipefail
+          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "mkdir -p $DEPLOY_TARGET_DIR; find $DEPLOY_TARGET_DIR -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
+
       - name: Upload dist to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 72.56.240.222
-          username: root
-          key: ${{ secrets.TIMEWEB_SSH_KEY }}
-          port: 22
-          source: "dist/*"
-          target: "/opt/repeto/deploy/shoditsa"
-          strip_components: 1
-          overwrite: true
+        run: |
+          set -euo pipefail
+          scp -P "$DEPLOY_PORT" -r dist/* "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_TARGET_DIR"
 
       - name: Set permissions and list deployed files
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: 72.56.240.222
-          username: root
-          key: ${{ secrets.TIMEWEB_SSH_KEY }}
-          port: 22
-          script: |
-            set -e
-            chmod -R a+rX /opt/repeto/deploy/shoditsa
-            ls -la /opt/repeto/deploy/shoditsa | head -n 20
+        run: |
+          set -euo pipefail
+          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
+            "chmod -R a+rX $DEPLOY_TARGET_DIR; ls -la $DEPLOY_TARGET_DIR | head -n 20"
