@@ -39,11 +39,15 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Validate music runtime files
+      - name: Show dist summary
         run: |
-          test -f dist/data/libraries/music/items.json
-          test -f dist/data/libraries/music/search-index.json
-          test -f dist/data/music.generated.json
+          set -euo pipefail
+          ls -la dist | head -n 40
+          if [ -d dist/data ]; then
+            ls -la dist/data | head -n 40
+          else
+            echo "::warning::dist/data is missing in this build; existing server data will be preserved"
+          fi
 
       - name: Validate SSH secret exists
         run: |
@@ -60,11 +64,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
-      - name: Clean target directory
+      - name: Ensure target directory exists
         run: |
           set -euo pipefail
-          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "mkdir -p $DEPLOY_TARGET_DIR; find $DEPLOY_TARGET_DIR -mindepth 1 -maxdepth 1 -exec rm -rf {} +"
+          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p $DEPLOY_TARGET_DIR"
 
       - name: Upload dist to server
         run: |
