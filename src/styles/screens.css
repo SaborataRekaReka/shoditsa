@@ -320,7 +320,7 @@
   margin: 0 0 32px;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
-  background: var(--color-surface);
+  background-color: var(--color-surface);
   display: grid;
   isolation: isolate;
 }
@@ -328,12 +328,21 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   background-image:
     linear-gradient(rgba(242, 236, 223, .025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(242, 236, 223, .025) 1px, transparent 1px);
   background-size: 32px 32px;
   mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+}
+.hub-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .42;
+  background: left top / auto 100% no-repeat url('/images/Vector.svg');
+  pointer-events: none;
 }
 .hub-hero__copy { z-index: 2; padding: 18px 18px 0; }
 .hub-hero__copy > span { color: var(--color-primary); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
@@ -356,13 +365,115 @@
 .category-heading small { color: var(--color-muted-2); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .category-grid { display: grid; gap: 10px; }
 .category-card { position: relative; overflow: hidden; min-width: 0; border: 1px solid var(--color-line); border-radius: var(--radius-lg); text-align: left; }
-.category-grid--active .category-card { padding: 19px 19px 25px; color: var(--color-ink); background: var(--color-paper); border-color: var(--color-paper-line); display: flex; flex-direction: column; align-items: flex-start; box-shadow: var(--shadow-tile); }
-.category-card--movie { --card-accent: var(--mode-movie-brand); --card-icon-bg: center/cover no-repeat url('/images/assests/icon_back.png'); --card-mask-image: url('/images/assests/mask.png'); }
-.category-card--series { --card-accent: var(--mode-series-brand); --card-icon-bg: var(--mode-series-brand); --card-mask-image: url('/images/assests/mask-series-ref-transparent-v8.png'); }
-.category-card--anime { --card-accent: var(--mode-anime-brand); --card-icon-bg: var(--mode-anime-brand); --card-mask-image: url('/images/assests/mask-anime-ref-transparent-v1.png'); }
-.category-card--game { --card-accent: var(--mode-game-brand); --card-icon-bg: var(--palette-brand-blue-soft); --card-mask-image: url('/images/assests/mask-game-ref-transparent-v5.png'); }
-.category-card--music { --card-accent: var(--mode-music-brand); --card-icon-bg: var(--mode-music-brand); --card-mask-image: url('/images/assests/music.png'); }
-.category-card--diagnosis { --card-accent: var(--mode-diagnosis-brand); --card-icon-bg: var(--mode-diagnosis-brand); --card-mask-image: url('/images/assests/diagnosis.png'); }
+.category-grid--active .category-card {
+  --card-paper-texture: url('/images/realistic-grain-paper-texture.webp');
+  --card-grain-size: 260px 260px;
+  --card-grain-position: center;
+  --card-grain-rotation: 0deg;
+  --card-grain-scale: 1;
+  --card-grain-shift-x: 0%;
+  --card-grain-shift-y: 0%;
+  --card-grain-flip: 1;
+  --card-grain-opacity: .3;
+  padding: 19px 19px 25px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border-color: var(--color-paper-line);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: var(--shadow-tile);
+}
+.category-grid--active .category-card > :not(.category-card__grain) {
+  position: relative;
+  z-index: 3;
+}
+.category-grid--active .category-card .category-card__grain {
+  position: absolute;
+  inset: -22%;
+  z-index: 1;
+  pointer-events: none;
+  background-image: var(--card-paper-texture);
+  background-size: var(--card-grain-size);
+  background-position: var(--card-grain-position);
+  background-repeat: repeat;
+  opacity: var(--card-grain-opacity);
+  mix-blend-mode: multiply;
+  filter: grayscale(1) contrast(1.15) brightness(1.02);
+  transform:
+    translate(var(--card-grain-shift-x), var(--card-grain-shift-y))
+    rotate(var(--card-grain-rotation))
+    scale(var(--card-grain-scale))
+    scaleX(var(--card-grain-flip));
+  transform-origin: center;
+}
+.category-card--movie {
+  --card-accent: var(--mode-movie-brand);
+  --card-icon-bg: center/cover no-repeat url('/images/assests/icon_back.png');
+  --card-mask-image: url('/images/assests/mask.webp');
+  --card-grain-size: 235px 235px;
+  --card-grain-position: 16% 22%;
+  --card-grain-rotation: -2.7deg;
+  --card-grain-scale: 1.12;
+  --card-grain-shift-x: -3%;
+  --card-grain-shift-y: -2%;
+}
+.category-card--series {
+  --card-accent: var(--mode-series-brand);
+  --card-icon-bg: var(--mode-series-brand);
+  --card-mask-image: url('/images/assests/mask-series-ref-transparent-v8.webp');
+  --card-grain-size: 280px 280px;
+  --card-grain-position: 72% 36%;
+  --card-grain-rotation: 2.4deg;
+  --card-grain-scale: .98;
+  --card-grain-shift-x: 4%;
+  --card-grain-shift-y: -1%;
+}
+.category-card--anime {
+  --card-accent: var(--mode-anime-brand);
+  --card-icon-bg: var(--mode-anime-brand);
+  --card-mask-image: url('/images/assests/mask-anime-ref-transparent-v1.webp');
+  --card-grain-size: 248px 248px;
+  --card-grain-position: 28% 76%;
+  --card-grain-rotation: 1.8deg;
+  --card-grain-scale: 1.08;
+  --card-grain-shift-x: -2%;
+  --card-grain-shift-y: 3%;
+  --card-grain-flip: -1;
+}
+.category-card--game {
+  --card-accent: var(--mode-game-brand);
+  --card-icon-bg: var(--palette-brand-blue-soft);
+  --card-mask-image: url('/images/assests/mask-game-ref-transparent-v5.webp');
+  --card-grain-size: 300px 300px;
+  --card-grain-position: 80% 68%;
+  --card-grain-rotation: -1.3deg;
+  --card-grain-scale: .94;
+  --card-grain-shift-x: 3%;
+  --card-grain-shift-y: 2%;
+}
+.category-card--music {
+  --card-accent: var(--mode-music-brand);
+  --card-icon-bg: var(--mode-music-brand);
+  --card-mask-image: url('/images/assests/music.webp');
+  --card-grain-size: 230px 230px;
+  --card-grain-position: 58% 34%;
+  --card-grain-rotation: -3.6deg;
+  --card-grain-scale: 1.16;
+  --card-grain-shift-x: -1%;
+  --card-grain-shift-y: -3%;
+}
+.category-card--diagnosis {
+  --card-accent: var(--mode-diagnosis-brand);
+  --card-icon-bg: var(--mode-diagnosis-brand);
+  --card-mask-image: url('/images/assests/diagnosis.webp');
+  --card-grain-size: 320px 320px;
+  --card-grain-position: 14% 60%;
+  --card-grain-rotation: 2.8deg;
+  --card-grain-scale: .9;
+  --card-grain-shift-x: 2%;
+  --card-grain-shift-y: 1%;
+}
 .category-grid--active .category-card--movie::before,
 .category-grid--active .category-card--series::before,
 .category-grid--active .category-card--anime::before,
@@ -372,6 +483,7 @@
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 2;
   background: right bottom/contain no-repeat var(--card-mask-image);
   opacity: 1;
   pointer-events: none;
@@ -394,19 +506,19 @@
   pointer-events: none;
 }
 .category-grid--active .category-card--series .category-card__icon::before {
-  background: center/100% 100% no-repeat url('/images/assests/icon_back-series.png');
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-series.webp');
 }
 .category-grid--active .category-card--anime .category-card__icon::before {
-  background: center/100% 100% no-repeat url('/images/assests/icon_back-anime.png');
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-anime.webp');
 }
 .category-grid--active .category-card--game .category-card__icon::before {
-  background: center/100% 100% no-repeat url('/images/assests/icon_back-game.png');
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-game.webp');
 }
 .category-grid--active .category-card--music .category-card__icon::before {
-  background: center/100% 100% no-repeat url('/images/assests/icon_back-music.png');
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-music.webp');
 }
 .category-grid--active .category-card--diagnosis .category-card__icon::before {
-  background: center/100% 100% no-repeat url('/images/assests/icon_back-diagnosis.png');
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-diagnosis.webp');
 }
 .category-grid--active .category-card .category-card__icon svg {
   position: relative;
@@ -415,6 +527,7 @@
 .category-grid--active .category-card::after {
   content: '';
   position: absolute;
+  z-index: 4;
   left: 0;
   right: 0;
   bottom: 0;
@@ -435,10 +548,10 @@
 .category-card__icon { width: 48px; height: 48px; border: 1px solid var(--color-ink); border-radius: 15px; background: var(--card-icon-bg, var(--card-accent, var(--color-surface-2))); display: grid; place-items: center; }
 .category-card__icon svg { width: 22px; }
 .category-card__pool {
-  padding: 5px 10px;
-  border: 1px solid rgba(23, 26, 23, .26);
-  border-radius: 999px;
-  background: rgba(23, 26, 23, .06);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--color-paper-muted-2);
   font-size: 11px;
   font-weight: 700;
@@ -2032,6 +2145,7 @@
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 @media (max-width: 719px) {
+  .hub-hero::after { opacity: .1; }
   .keycap-hint { display: none; }
   .title-play-row {
     flex-direction: column;
@@ -2070,7 +2184,6 @@
   .hub-hero__visual img { width: min(380px, 82%); }
   .category-grid--active { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .category-grid--active .category-card { padding: 24px; }
-  .category-card__pool { padding: 6px 11px; }
   .category-card__pool b { font-size: 17px; }
   .category-grid--active h2 { font-size: 48px; }
   .category-grid--future { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2177,6 +2290,10 @@
   .review-card__identity h2 { font-size: 27px; }
   .review-card__meta { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .review-conflict-item__options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 720px) and (max-width: 979px) {
+  .hub-hero::after { opacity: .1; }
 }
 
 @media (min-width: 860px) {

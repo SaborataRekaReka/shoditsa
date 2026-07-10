@@ -1247,7 +1247,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
           </div>
         </div>
         <div className="hub-hero__visual" aria-hidden="true">
-          <img src="./images/hero.png" alt="" />
+          <img src="./images/hero.webp" alt="" />
         </div>
       </section>
 
@@ -1255,6 +1255,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
         <div className="category-heading"><span>Доступно сейчас</span><small>{String(availableNowCount).padStart(2, '0')} игры</small></div>
         <div className="category-grid category-grid--active">
           <button className="category-card category-card--movie" onClick={() => onSelect('movie')}>
+            <span className="category-card__grain" aria-hidden="true" />
             <div className="category-card__head">
               <span className="category-card__icon"><Film /></span>
               <span className="category-card__pool"><b>{titleCounts.movie ?? '—'}</b> в пуле</span>
@@ -1264,6 +1265,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--series" onClick={() => onSelect('series')}>
+            <span className="category-card__grain" aria-hidden="true" />
             <div className="category-card__head">
               <span className="category-card__icon"><Tv /></span>
               <span className="category-card__pool"><b>{titleCounts.series ?? '—'}</b> в пуле</span>
@@ -1273,6 +1275,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--anime" onClick={() => onSelect('anime')}>
+            <span className="category-card__grain" aria-hidden="true" />
             <div className="category-card__head">
               <span className="category-card__icon"><Sparkles /></span>
               <span className="category-card__pool"><b>{titleCounts.anime ?? '—'}</b> в пуле</span>
@@ -1282,6 +1285,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--game" onClick={() => onSelect('game')}>
+            <span className="category-card__grain" aria-hidden="true" />
             <div className="category-card__head">
               <span className="category-card__icon"><Gamepad2 /></span>
               <span className="category-card__pool"><b>{titleCounts.game ?? '—'}</b> в пуле</span>
@@ -1291,6 +1295,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--music" onClick={() => onSelect('music')}>
+            <span className="category-card__grain" aria-hidden="true" />
             <div className="category-card__head">
               <span className="category-card__icon"><Music2 /></span>
               <span className="category-card__pool"><b>{titleCounts.music ?? '—'}</b> в пуле</span>
@@ -1300,6 +1305,7 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
             <strong>Играть <ChevronRight /></strong>
           </button>
           <button className="category-card category-card--diagnosis" onClick={() => onSelect('diagnosis')}>
+            <span className="category-card__grain" aria-hidden="true" />
             <div className="category-card__head">
               <span className="category-card__icon"><Stethoscope /></span>
               <span className="category-card__pool"><b>{titleCounts.diagnosis ?? '—'}</b> в пуле</span>
