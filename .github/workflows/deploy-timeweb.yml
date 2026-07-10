@@ -60,9 +60,22 @@ jobs:
         run: |
           set -euo pipefail
           install -m 700 -d ~/.ssh
-          printf '%s' "${{ secrets.TIMEWEB_SSH_KEY }}" > ~/.ssh/id_rsa
+          KEY_CONTENT="${{ secrets.TIMEWEB_SSH_KEY }}"
+          # Support both real multiline secrets and one-line secrets with escaped \n.
+          KEY_CONTENT="${KEY_CONTENT//$'\r'/}"
+          KEY_CONTENT="${KEY_CONTENT//\\n/$'\n'}"
+          printf '%s\n' "$KEY_CONTENT" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          if ! ssh-keygen -y -f ~/.ssh/id_rsa >/dev/null 2>&1; then
+            echo "::error::TIMEWEB_SSH_KEY is not a valid private key. Save the full private key including BEGIN/END lines."
+            exit 1
+          fi
           ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Validate SSH authentication
+        run: |
+          set -euo pipefail
+          ssh -o BatchMode=yes -o ConnectTimeout=10 -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "echo ssh-auth-ok"
 
       - name: Ensure target directory exists
         run: |
