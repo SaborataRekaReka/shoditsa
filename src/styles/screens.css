@@ -356,14 +356,80 @@
 .category-heading small { color: var(--color-muted-2); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .category-grid { display: grid; gap: 10px; }
 .category-card { position: relative; overflow: hidden; min-width: 0; border: 1px solid var(--color-line); border-radius: var(--radius-lg); text-align: left; }
-.category-grid--active .category-card { padding: 19px; color: var(--color-ink); background: var(--color-paper); border-color: var(--color-paper-line); display: flex; flex-direction: column; align-items: flex-start; box-shadow: var(--shadow-tile); }
-.category-card--movie { --card-accent: var(--mode-movie-brand); --card-icon-bg: var(--mode-movie-brand); }
-.category-card--series { --card-accent: var(--mode-series-brand); --card-icon-bg: var(--mode-series-brand); }
-.category-card--anime { --card-accent: var(--mode-anime-brand); --card-icon-bg: var(--mode-anime-brand); }
-.category-card--game { --card-accent: var(--mode-game-brand); --card-icon-bg: var(--palette-brand-blue-soft); }
-.category-card--music { --card-accent: var(--mode-music-brand); --card-icon-bg: var(--mode-music-brand); }
-.category-card--diagnosis { --card-accent: var(--mode-diagnosis-brand); --card-icon-bg: var(--mode-diagnosis-brand); }
-.category-grid--active .category-card::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: var(--card-accent); }
+.category-grid--active .category-card { padding: 19px 19px 25px; color: var(--color-ink); background: var(--color-paper); border-color: var(--color-paper-line); display: flex; flex-direction: column; align-items: flex-start; box-shadow: var(--shadow-tile); }
+.category-card--movie { --card-accent: var(--mode-movie-brand); --card-icon-bg: center/cover no-repeat url('/images/assests/icon_back.png'); --card-mask-image: url('/images/assests/mask.png'); }
+.category-card--series { --card-accent: var(--mode-series-brand); --card-icon-bg: var(--mode-series-brand); --card-mask-image: url('/images/assests/mask-series-ref-transparent-v8.png'); }
+.category-card--anime { --card-accent: var(--mode-anime-brand); --card-icon-bg: var(--mode-anime-brand); --card-mask-image: url('/images/assests/mask-anime-ref-transparent-v1.png'); }
+.category-card--game { --card-accent: var(--mode-game-brand); --card-icon-bg: var(--palette-brand-blue-soft); --card-mask-image: url('/images/assests/mask-game-ref-transparent-v5.png'); }
+.category-card--music { --card-accent: var(--mode-music-brand); --card-icon-bg: var(--mode-music-brand); --card-mask-image: url('/images/assests/music.png'); }
+.category-card--diagnosis { --card-accent: var(--mode-diagnosis-brand); --card-icon-bg: var(--mode-diagnosis-brand); --card-mask-image: url('/images/assests/diagnosis.png'); }
+.category-grid--active .category-card--movie::before,
+.category-grid--active .category-card--series::before,
+.category-grid--active .category-card--anime::before,
+.category-grid--active .category-card--game::before,
+.category-grid--active .category-card--music::before,
+.category-grid--active .category-card--diagnosis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: right bottom/contain no-repeat var(--card-mask-image);
+  opacity: 1;
+  pointer-events: none;
+}
+.category-grid--active .category-card--game::before {
+  mix-blend-mode: multiply;
+}
+.category-grid--active .category-card .category-card__icon {
+  position: relative;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.category-grid--active .category-card .category-card__icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: center/100% 100% no-repeat url('/images/assests/icon_back.png');
+  filter: drop-shadow(0 2px 1px rgba(62, 48, 26, .12)) drop-shadow(0 8px 14px rgba(44, 30, 12, .28));
+  pointer-events: none;
+}
+.category-grid--active .category-card--series .category-card__icon::before {
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-series.png');
+}
+.category-grid--active .category-card--anime .category-card__icon::before {
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-anime.png');
+}
+.category-grid--active .category-card--game .category-card__icon::before {
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-game.png');
+}
+.category-grid--active .category-card--music .category-card__icon::before {
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-music.png');
+}
+.category-grid--active .category-card--diagnosis .category-card__icon::before {
+  background: center/100% 100% no-repeat url('/images/assests/icon_back-diagnosis.png');
+}
+.category-grid--active .category-card .category-card__icon svg {
+  position: relative;
+  z-index: 1;
+}
+.category-grid--active .category-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  background-color: var(--card-accent);
+  background-image:
+    radial-gradient(circle at 18px 9px, rgba(21, 16, 10, .16) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 54px 6px, rgba(21, 16, 10, .1) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 90px 10px, rgba(244, 237, 222, .14) 0 1px, transparent 1.6px),
+    linear-gradient(180deg, rgba(244, 237, 222, .12), rgba(21, 16, 10, .12));
+  background-size: 108px 14px, 132px 14px, 150px 14px, 100% 100%;
+  background-repeat: repeat-x, repeat-x, repeat-x, no-repeat;
+  box-shadow: 0 1px 0 rgba(244, 237, 222, .14) inset;
+  pointer-events: none;
+}
 .category-card:hover { transform: translate(-1px, -2px); }
 .category-card__head { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .category-card__icon { width: 48px; height: 48px; border: 1px solid var(--color-ink); border-radius: 15px; background: var(--card-icon-bg, var(--card-accent, var(--color-surface-2))); display: grid; place-items: center; }
