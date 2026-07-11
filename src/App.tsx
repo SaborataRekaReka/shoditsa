@@ -35,14 +35,42 @@ import {
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
-import { compareTitles, dailyTitle, DIFFICULTIES, DIFFICULTY_ORDER, getMoscowDate, musicDifficultyPool, PERIODS, pickDailyVignette, poolFor, prettyDate, resultText, searchTitles } from './game'
+import {
+  canUseAsArtistPortrait,
+  canonicalMusicId,
+  compareTitles,
+  dailyTitle,
+  DIFFICULTIES,
+  DIFFICULTY_ORDER,
+  getMoscowDate,
+  localizeMusicCountry,
+  MUSIC_ID_REDIRECTS,
+  musicCareerStatusLabel,
+  musicDifficultyPool,
+  musicOriginLabel,
+  musicTierLabel,
+  musicTypeLabel,
+  PERIODS,
+  pickDailyVignette,
+  poolFor,
+  prettyDate,
+  resolveMusicRedirectId,
+  resultText,
+  searchTitles,
+} from './game'
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
 import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadPromoUsage, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, savePromoUsage, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 
-const normalizeTextMatch = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
+const normalizeTextMatch = (value: string) => value
+  .normalize('NFKD')
+  .toLocaleLowerCase('ru-RU')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/ё/g, 'е')
+  .replace(/[^a-zа-я0-9]+/gi, ' ')
+  .trim()
 const modeIcon = (mode: TitleMode) => mode === 'movie'
   ? <Film />
   : mode === 'series'
@@ -372,7 +400,9 @@ const progressOverlapHintKeys = new Set([
   'developer',
   'publisher',
 ])
+const nonScoringHintKeys = new Set(['similar_artists', 'top_track', 'top_album', 'listeners'])
 const hintProgressScore = (hint: Attempt['hints'][number]) => {
+  if (nonScoringHintKeys.has(hint.key)) return 0
   if (progressOverlapHintKeys.has(hint.key)) {
     const overlapCount = (hint.matchedValues ?? []).filter(Boolean).length
     if (overlapCount > 0) return overlapCount
@@ -752,10 +782,11 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
     const topTracksHint = cropHintText(cleanHintText((item.topTracks ?? []).slice(0, 3).map((track) => track.title).join(', ')))
     const topAlbumsHint = cropHintText(cleanHintText((item.topAlbums ?? []).slice(0, 3).map((album) => album.title).join(', ')))
     const profileFact = cropHintText(cleanHintText([
-      item.year ? `Дебют: ${item.year}` : '',
-      item.musicType ? `Тип: ${item.musicType}` : '',
+      item.year ? `Начало карьеры: ${item.year}` : '',
+      `Тип: ${musicTypeLabel(item.musicType)}`,
+      `Сцена: ${musicOriginLabel(item.musicOrigin ?? null)}`,
+      `Узнаваемость: ${musicTierLabel(item.gameTier ?? null)}`,
       item.votes?.gamesPlayed ? `Слушатели Last.fm: ${new Intl.NumberFormat('ru-RU').format(item.votes.gamesPlayed)}` : '',
-      item.topRank ? `Позиция в пуле: #${item.topRank}` : '',
     ].filter(Boolean).join(' · ')))
 
     return [
@@ -815,6 +846,105 @@ const buildAssistHints = (item: TitleItem): AssistHintView[] => {
       available: Boolean(fact),
     },
   ]
+}
+
+type MusicProgressiveHint = {
+  step: number
+  title: string
+  body: string
+}
+
+const plotHintIntro = (text: string) => {
+  const cleaned = cleanHintText(text)
+  if (!cleaned) return ''
+  const sentence = cleaned.split(/(?<=[.!?])\s+/).find(Boolean) ?? cleaned
+  return cropHintText(sentence, 150)
+}
+
+const artistInitials = (name: string) => name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => part[0])
+  .join('')
+  .toUpperCase()
+
+const buildMusicProgressiveHints = (answer: TitleItem, attempts: Attempt[]): MusicProgressiveHint[] => {
+  const attemptCount = attempts.length
+  if (!attemptCount) return []
+  const unlockedSteps = Math.min(10, attemptCount + 1)
+
+  const latestAttempt = attempts[attempts.length - 1]
+  const byKey = new Map((latestAttempt?.hints ?? []).map((hint) => [hint.key, hint]))
+  const yearDirection = byKey.get('year')?.direction === 'up'
+    ? 'направление года: позже'
+    : byKey.get('year')?.direction === 'down'
+      ? 'направление года: раньше'
+      : 'направление года: совпало или неизвестно'
+
+  const matchedGenres = (byKey.get('genres')?.matchedValues ?? []).filter(Boolean)
+  const countries = (answer.countries ?? []).map(localizeMusicCountry).filter(Boolean)
+  const decade = answer.year != null ? `${Math.floor(answer.year / 10) * 10}-е` : '—'
+  const mainPlot = resolvePlotHintText(answer)
+  const similarArtist = answer.similarArtists?.[0]?.name ?? ''
+  const topAlbum = answer.topAlbums?.[0]?.title ?? ''
+  const topTrack = answer.topTracks?.[0]?.title ?? ''
+  const initials = artistInitials(answer.titleRu || answer.titleOriginal || '')
+
+  const steps: MusicProgressiveHint[] = [
+    {
+      step: 1,
+      title: 'Тип и направление года',
+      body: `${musicTypeLabel(answer.musicType)} · ${yearDirection}`,
+    },
+    {
+      step: 2,
+      title: 'Страна',
+      body: countries.length ? countries.join(', ') : 'Страна уточняется',
+    },
+    {
+      step: 3,
+      title: 'Совпавшие жанры',
+      body: matchedGenres.length ? matchedGenres.join(', ') : 'Пока без пересечения по жанрам',
+    },
+    {
+      step: 4,
+      title: 'Статус и десятилетие',
+      body: `${musicCareerStatusLabel(answer.musicIsActive)} · ${decade}`,
+    },
+    {
+      step: 5,
+      title: 'Первая часть профайла',
+      body: plotHintIntro(mainPlot) || 'Пока нет описания',
+    },
+    {
+      step: 6,
+      title: 'Один похожий артист',
+      body: similarArtist || 'Похожий артист не указан',
+    },
+    {
+      step: 7,
+      title: 'Топ-альбом',
+      body: topAlbum || 'Топ-альбом не указан',
+    },
+    {
+      step: 8,
+      title: 'Топ-трек',
+      body: topTrack || 'Топ-трек не указан',
+    },
+    {
+      step: 9,
+      title: 'Полный профайл и инициалы',
+      body: `${cleanHintText(mainPlot) || 'Нет полного профайла'}${initials ? ` · Инициалы: ${initials}` : ''}`,
+    },
+    {
+      step: 10,
+      title: 'Последняя попытка',
+      body: 'Финальный ход: используйте все накопленные подсказки.',
+    },
+  ]
+
+  return steps.filter((hint) => hint.step <= unlockedSteps)
 }
 
 const dayNumber = (date: string) => {
@@ -906,11 +1036,23 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
 
 const Poster = ({ item, className = '' }: { item: TitleItem; className?: string }) => {
   const [failed, setFailed] = useState(false)
-  return item.posterUrl && !failed
-    ? <img className={className} src={item.posterUrl} alt={`Постер «${item.titleRu}»`} onError={() => setFailed(true)} />
+  const portraitSource = item.mode === 'music'
+    ? [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
+    : (item.posterUrl ?? null)
+  const initials = artistInitials(item.titleRu || item.titleOriginal || '')
+
+  return portraitSource && !failed
+    ? <img className={className} src={portraitSource} alt={`Постер «${item.titleRu}»`} onError={() => setFailed(true)} />
     : <div className={`${className} poster-fallback`}>
-      {item.mode !== 'diagnosis' ? modeIcon(item.mode) : null}
-      <span>{item.titleRu}</span>
+      {item.mode === 'music'
+        ? <>
+            <Music2 />
+            <span>{initials || '♪'}</span>
+          </>
+        : <>
+            {item.mode !== 'diagnosis' ? modeIcon(item.mode) : null}
+            <span>{item.titleRu}</span>
+          </>}
     </div>
 }
 
@@ -1463,7 +1605,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                       <small>21:45</small>
                     </div>
                   </div>
-                  <p className="concert-ticket__lead">Каждый день — новый артист. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает подсказки по стране, чартам и трекам.</p>
+                  <p className="concert-ticket__lead">Каждый ответ сравнит страну, эпоху, формат и жанры. По мере попыток откроются история артиста, похожие исполнители, альбом и главный хит.</p>
                   <div className="concert-ticket__meta" aria-hidden="true">
                     <span><i>GATE</i><b>10</b></span>
                     <span><i>SEAT</i><b>A15</b></span>
@@ -1684,9 +1826,12 @@ function MusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, onRevi
     }
 
     list.sort((a, b) => {
-      const aRank = a.item.topRank ?? Number.MAX_SAFE_INTEGER
-      const bRank = b.item.topRank ?? Number.MAX_SAFE_INTEGER
-      if (aRank !== bRank) return aRank - bRank
+      const tierOrder = ['core', 'popular', 'niche', 'discovery', 'experimental']
+      const aTier = tierOrder.indexOf(String(a.item.gameTier ?? '').toLocaleLowerCase('en-US'))
+      const bTier = tierOrder.indexOf(String(b.item.gameTier ?? '').toLocaleLowerCase('en-US'))
+      const aTierSafe = aTier === -1 ? Number.MAX_SAFE_INTEGER : aTier
+      const bTierSafe = bTier === -1 ? Number.MAX_SAFE_INTEGER : bTier
+      if (aTierSafe !== bTierSafe) return aTierSafe - bTierSafe
       return a.item.titleRu.localeCompare(b.item.titleRu, 'ru-RU')
     })
 
@@ -1780,7 +1925,7 @@ function MusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, onRevi
           <span className="review-card__number">{String(activeIndex + 1).padStart(3, '0')}</span>
           <Poster item={current.item} className="review-card__poster" />
           <div className="review-card__identity">
-            <span className="attempt-label">Ранк {current.item.topRank != null ? `#${current.item.topRank}` : '—'}</span>
+            <span className="attempt-label">Уровень: {musicTierLabel(current.item.gameTier ?? null)}</span>
             <h2>{current.item.titleRu}</h2>
             <p className="gm-head__sub">
               <span className="gm-head__orig">{current.item.titleOriginal || 'Оригинальное название не указано'}</span>
@@ -1845,8 +1990,8 @@ function MusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, onRevi
         </div>}
 
         <div className="review-card__meta">
-          <span><small>Тип артиста</small><strong>{current.item.musicType || '—'}</strong></span>
-          <span><small>Статус</small><strong>{current.item.musicIsActive == null ? '—' : current.item.musicIsActive ? 'Активен' : 'Неактивен'}</strong></span>
+          <span><small>Тип артиста</small><strong>{musicTypeLabel(current.item.musicType)}</strong></span>
+          <span><small>Статус</small><strong>{musicCareerStatusLabel(current.item.musicIsActive)}</strong></span>
           <span><small>Топ-трек</small><strong>{current.item.topTracks?.[0]?.title || '—'}</strong></span>
           <span><small>Топ-альбом</small><strong>{current.item.topAlbums?.[0]?.title || '—'}</strong></span>
         </div>
@@ -2167,7 +2312,7 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const listenersValue = item.votes?.gamesPlayed ?? null
-  const requestedHints = ['country', 'rank', 'music_type', 'music_active', 'top_track', 'top_album']
+  const requestedHints = ['country', 'year', 'decade', 'music_type', 'music_active', 'music_origin']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
@@ -2196,7 +2341,7 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
           })}
         </div>}
       </div>
-      <div className="rating-badge"><small>LFM</small><strong>{listenersValue != null ? new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listenersValue) : '—'}</strong></div>
+      {listenersValue != null && <div className="rating-badge"><small>LFM</small><strong>{new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listenersValue)}</strong></div>}
     </div>
 
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
@@ -2206,7 +2351,7 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
     </div>}
 
     <div className="dx-clouds">
-      <DxChipCloud label="Похожие артисты" hint={byKey.get('creator')} items={similarArtistNames} limit={6} wrap />
+      <DxChipCloud label="Похожие артисты" hint={byKey.get('similar_artists')} items={similarArtistNames} limit={6} wrap />
     </div>
   </article>
 }
@@ -2342,9 +2487,26 @@ function Game({
 
   useEffect(() => {
     const saved = loadGame(key)
-    const poolById = new Map(pool.map((item) => [item.id, item]))
-    const restoredAttemptIds = collectSavedAttemptIds(saved)
-    const answerChanged = Boolean(answer && saved && saved.answerId !== answer.id)
+    const poolById = new Map<string, TitleItem>()
+    if (mode === 'music') {
+      for (const item of pool) {
+        const canonicalId = canonicalMusicId(item)
+        poolById.set(item.id, item)
+        if (!poolById.has(canonicalId)) poolById.set(canonicalId, item)
+      }
+      for (const [fromId, toId] of Object.entries(MUSIC_ID_REDIRECTS)) {
+        const resolved = poolById.get(toId)
+        if (resolved) poolById.set(fromId, resolved)
+      }
+    } else {
+      for (const item of pool) poolById.set(item.id, item)
+    }
+
+    const restoredAttemptIds = collectSavedAttemptIds(saved).map((id) => mode === 'music' ? resolveMusicRedirectId(id) : id)
+    const savedAnswerId = mode === 'music'
+      ? (poolById.get(resolveMusicRedirectId(saved?.answerId ?? ''))?.id ?? resolveMusicRedirectId(saved?.answerId ?? ''))
+      : saved?.answerId
+    const answerChanged = Boolean(answer && saved && savedAnswerId !== answer.id)
     const shouldRebuildAttempts = Boolean(answer && saved && !answerChanged && restoredAttemptIds.length)
     const restoredAttempts = answerChanged
       ? []
@@ -2396,7 +2558,7 @@ function Game({
     setIsSearchDropdownOpen(false)
   }, [answer, availableAssistHintKeys, date, difficulty, effectivePeriod, key, mode, pool])
 
-  const used = useMemo(() => new Set(attempts.map((attempt) => attempt.titleId)), [attempts])
+  const used = useMemo(() => new Set(attempts.map((attempt) => mode === 'music' ? resolveMusicRedirectId(attempt.titleId) : attempt.titleId)), [attempts, mode])
   const suggestions = useMemo(() => {
     const startedAt = typeof performance !== 'undefined' ? performance.now() : 0
     const next = searchTitles(pool, debouncedQuery, used, searchIndex)
@@ -2426,6 +2588,10 @@ function Game({
     : '', [answer, mode, caseVignettes, date])
   const usedHintsSet = useMemo(() => new Set(hintChoices.map((choice) => choice.key)), [hintChoices])
   const revealedAssistHints = useMemo(() => assistHints.filter((hint) => usedHintsSet.has(hint.key)), [assistHints, usedHintsSet])
+  const progressiveMusicHints = useMemo(
+    () => mode === 'music' && answer ? buildMusicProgressiveHints(answer, attempts) : [],
+    [mode, answer, attempts],
+  )
   const currentRound = Math.min(attempts.length + 1, 10)
   const unlockedHintRounds: HintCheckpoint[] = []
   if (currentRound >= 5) unlockedHintRounds.push(5)
@@ -2496,7 +2662,7 @@ function Game({
   }, [hintModalRound, onBack, status])
 
   const updateStats = (won: boolean, count: number) => {
-    const stats = loadStats(mode)
+    const stats = loadStats(mode, mode === 'music' ? difficulty : undefined)
     const next: Stats = {
       ...stats,
       distribution: [...stats.distribution],
@@ -2506,7 +2672,7 @@ function Game({
       bestStreak: won ? Math.max(stats.bestStreak, stats.currentStreak + 1) : stats.bestStreak,
     }
     if (won) next.distribution[count - 1] += 1
-    saveStats(mode, next)
+    saveStats(mode, next, mode === 'music' ? difficulty : undefined)
   }
 
   const persistGame = (nextAttempts: Attempt[], nextStatus: GameStatus, nextHintChoices: HintChoice[], nextDismissedRounds = dismissedHintRounds) => {
@@ -2667,6 +2833,13 @@ function Game({
         </article>)}
       </section>}
 
+      {mode === 'music' && !!progressiveMusicHints.length && status === 'playing' && <section className="assist-revealed" aria-label="Постепенные музыкальные подсказки">
+        {progressiveMusicHints.map((hint) => <article key={`music-step-${hint.step}`} className="assist-reveal-card">
+          <span><Sparkles /> Шаг {hint.step}: {hint.title}</span>
+          <p>{hint.body}</p>
+        </article>)}
+      </section>}
+
       {status !== 'playing' && <section className={`result-card ${status}`}>
         <Poster item={answer} />
         <div className="result-card__copy">
@@ -2679,9 +2852,10 @@ function Game({
               : answer.mode === 'music'
                 ? [
                     answer.titleOriginal || 'Оригинальное название не указано',
-                    answer.year != null ? `дебют ${answer.year}` : null,
-                    answer.musicType ?? null,
-                    answer.topTracks?.[0]?.title ? `трек: ${answer.topTracks[0].title}` : null,
+                    answer.year != null ? `начало карьеры: ${answer.year}` : null,
+                    musicTypeLabel(answer.musicType),
+                    musicTierLabel(answer.gameTier ?? null),
+                    musicOriginLabel(answer.musicOrigin ?? null),
                   ].filter(Boolean).join(' · ')
               : `${answer.titleOriginal || 'Оригинальное название не указано'} · ${answer.year ?? '—'}`}</p>
           <div className="result-tags">{(answer.mode === 'diagnosis'
@@ -2689,7 +2863,11 @@ function Game({
             : answer.mode === 'game'
               ? [...(answer.genres ?? []).slice(0, 3), ...dedupeGameCategories(answer.steamCategories ?? [], true).slice(0, 2)]
               : answer.mode === 'music'
-                ? [...(answer.genres ?? []).slice(0, 3), ...((answer.topTracks ?? []).slice(0, 2).map((track) => track.title))]
+                ? [
+                    ...(answer.genres ?? []).slice(0, 2),
+                    ...(answer.topAlbums?.[0]?.title ? [answer.topAlbums[0].title] : []),
+                    ...(answer.topTracks?.[0]?.title ? [answer.topTracks[0].title] : []),
+                  ]
               : (answer.genres ?? [])
           ).map((tag) => <i key={tag}>{tag}</i>)}</div>
           <strong>{status === 'won' ? `${attempts.length}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
@@ -2769,8 +2947,8 @@ function Game({
                 : item.mode === 'music'
                   ? [
                       item.titleOriginal || 'Без оригинального названия',
-                      item.year != null ? `дебют ${item.year}` : '—',
-                      item.topTracks?.[0]?.title ? `трек: ${item.topTracks[0].title}` : null,
+                      item.year != null ? `начало карьеры: ${item.year}` : '—',
+                      musicTypeLabel(item.musicType),
                     ].filter(Boolean).join(' · ')
                 : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
             <em>{item.mode === 'diagnosis'
@@ -2785,9 +2963,9 @@ function Game({
               : item.mode === 'music'
                 ? (() => {
                     const listeners = item.votes?.gamesPlayed
-                    const listenersText = listeners != null ? `${new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listeners)} слуш.` : '—'
-                    const rankText = item.topRank != null ? `#${item.topRank}` : null
-                    return rankText ? `${listenersText} · ${rankText}` : listenersText
+                    return listeners != null
+                      ? `${new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listeners)} слуш.`
+                      : '—'
                   })()
               : item.mode === 'game'
                 ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
@@ -2828,7 +3006,7 @@ function Game({
           : mode === 'anime'
             ? 'После ответа появятся сравнения по формату, статусу, эпизодам, студии, сэйю и рейтингу Shikimori.'
           : mode === 'music'
-            ? 'После ответа появятся сравнения по дебюту, жанрам, топ-трекам, популярности и связям между артистами.'
+            ? 'После ответа появятся сравнения по стране, старту карьеры, десятилетию, типу артиста, сцене и жанрам.'
           : mode === 'game'
             ? 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.'
             : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
@@ -2945,8 +3123,8 @@ function AnamnesisModal({ text, dayNo, onClose, onStart }: {
 }
 
 
-function StatsView({ mode }: { mode: TitleMode }) {
-  const stats = loadStats(mode)
+function StatsView({ mode, difficulty }: { mode: TitleMode; difficulty?: DifficultyKey }) {
+  const stats = loadStats(mode, mode === 'music' ? difficulty : undefined)
   const attendance = loadAttendanceStats()
   const wallet = loadWallet()
   const rate = stats.played ? Math.round(stats.won / stats.played * 100) : 0
@@ -2959,6 +3137,7 @@ function StatsView({ mode }: { mode: TitleMode }) {
       <div><strong>{attendance.gracePasses}</strong><span>контрамарки</span></div>
     </div>
     <h3 className="subheading">Статистика темы</h3>
+    {mode === 'music' && difficulty && <p className="modal-lead">Сложность: <strong>{DIFFICULTIES[difficulty].label}</strong></p>}
     <div className="stats-grid">
       <div><strong>{stats.played}</strong><span>сеансов</span></div>
       <div><strong>{rate}%</strong><span>побед</span></div>
@@ -3107,7 +3286,8 @@ function RulesView() {
     <p>Перед 5-й и 8-й попытками можно открыть по одной из трёх дополнительных подсказок.</p>
     <p>В режиме «Аниме» сравниваются формат, статус, эпизоды, студия, сэйю и рейтинг Shikimori.</p>
     <p>В режиме «Игры» дополнительно сравниваются позиция в топе, метрики Steam и Metacritic.</p>
-    <p>В режиме «Музыка» сравниваются дебют, жанры, связи между артистами, топ-треки и популярность Last.fm.</p>
+    <p>В режиме «Музыка» сравниваются страна, старт карьеры, десятилетие, тип артиста, статус карьеры, сцена и жанры.</p>
+    <p>Топ-трек, топ-альбом и похожие артисты открываются как дополнительные подсказки и не увеличивают основной счетчик совпадений.</p>
     <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
     <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
     <div><i className="miss" /><span><strong>Мимо</strong> — значение не совпало.</span></div>
@@ -3173,6 +3353,10 @@ export default function App() {
       easy: musicDifficultyPool(base, 'easy').length,
       medium: musicDifficultyPool(base, 'medium').length,
       hard: musicDifficultyPool(base, 'hard').length,
+      expert: musicDifficultyPool(base, 'expert').length,
+      // Legacy property: DifficultyControl renders only DIFFICULTY_ORDER, where
+      // the separate experimental option is intentionally absent.
+      experimental: musicDifficultyPool(base, 'expert').length,
     }
   }, [data.music])
   const refreshEconomy = () => setEconomyVersion((version) => version + 1)
@@ -3557,7 +3741,7 @@ export default function App() {
         />)}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
-    {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} /></Modal>}
+    {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} difficulty={mode === 'music' ? difficulty : undefined} /></Modal>}
     {modal === 'resume' && <Modal title="Вернуться к игре" onClose={() => setModal(null)}><ResumeSessionsView sessions={activeGames} onOpen={(session) => openSavedSession(session, 'hub')} /></Modal>}
     {modal === 'anamnesis' && diagnosisAnamnesis && <AnamnesisModal text={diagnosisAnamnesis.text} dayNo={dayNumber(getMoscowDate())} onClose={() => setModal(null)} onStart={() => { setModal(null); playToday() }} />}
   </div>

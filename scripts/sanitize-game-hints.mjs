@@ -4,7 +4,7 @@ import { buildPlotHint, cleanText, normalize, redactSpoilers, titleTokens, title
 
 const root = resolve(import.meta.dirname, '..')
 const gamesPath = resolve(root, 'public', 'data', 'games.generated.json')
-const reportPath = resolve(root, 'docs', 'game-hints-redaction-report.json')
+const reportPath = resolve(root, 'archive', 'reports', 'game-hints-redaction-report.json')
 
 const cropText = (text, maxLength) => {
   const value = cleanText(text)

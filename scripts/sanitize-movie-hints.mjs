@@ -4,7 +4,7 @@ import { auditMovieRecord, sanitizeMovieRecord } from './movie-hint-sanitize.mjs
 
 const root = resolve(import.meta.dirname, '..')
 const moviesPath = resolve(root, 'public', 'data', 'movies.generated.json')
-const reportPath = resolve(root, 'docs', 'movie-hints-sanitization-report.json')
+const reportPath = resolve(root, 'archive', 'reports', 'movie-hints-sanitization-report.json')
 
 const before = JSON.parse(await readFile(moviesPath, 'utf8'))
 const changed = []

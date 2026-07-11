@@ -4,7 +4,7 @@ import { cleanText, normalize, sanitizeMovieRecord, titleTokens, titleVariants }
 
 const root = resolve(import.meta.dirname, '..')
 const moviesPath = resolve(root, 'public', 'data', 'movies.generated.json')
-const reportPath = resolve(root, 'docs', 'movie-title-overlap-report.json')
+const reportPath = resolve(root, 'archive', 'reports', 'movie-title-overlap-report.json')
 const WORD_CHAR_CLASS = 'A-Za-zА-Яа-яЁё0-9'
 
 const unique = (items) => [...new Set(items.filter(Boolean))]

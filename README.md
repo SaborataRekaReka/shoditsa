@@ -116,6 +116,8 @@ npm run deploy:quick:skip-build
 
 Готовая сборка не обращается к стороннему API: она читает локальные файлы из `public/data`.
 
+Возобновляемое агентное обогащение музыкальной базы запускается через `npm run data:agent:music`. Команда ищет новых артистов в веб-источниках, сохраняет provenance, собирает API-evidence и генерирует проверяемую антиспойлерную подсказку. Состояние хранится отдельно от production, публикация выполняется командой `npm run data:agent:music:publish`. Полный runbook и контракт адаптеров: [docs/08_AGENT_ENRICHMENT.md](docs/08_AGENT_ENRICHMENT.md).
+
 Сейчас включены:
 
 - 500 фильмов из списка [500 лучших фильмов Кинопоиска](https://www.kinopoisk.ru/lists/movies/top500/) по фиксированным ID в `data/top500-ids.json`;

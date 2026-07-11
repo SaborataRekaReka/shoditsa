@@ -4,7 +4,7 @@ import { auditMovieRecord as auditSeriesRecord, sanitizeMovieRecord as sanitizeS
 
 const root = resolve(import.meta.dirname, '..')
 const seriesPath = resolve(root, 'public', 'data', 'series.generated.json')
-const reportPath = resolve(root, 'docs', 'series-hints-sanitization-report.json')
+const reportPath = resolve(root, 'archive', 'reports', 'series-hints-sanitization-report.json')
 
 const before = JSON.parse(await readFile(seriesPath, 'utf8'))
 const changed = []

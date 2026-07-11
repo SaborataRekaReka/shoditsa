@@ -766,7 +766,11 @@
 .difficulty-bars--easy i:nth-child(1),
 .difficulty-bars--medium i:nth-child(1),
 .difficulty-bars--medium i:nth-child(2),
-.difficulty-bars--hard i { background: var(--mode-music-brand); }
+.difficulty-bars--hard i,
+.difficulty-bars--expert i { background: var(--mode-music-brand); }
+.difficulty-bars--experimental i:nth-child(1),
+.difficulty-bars--experimental i:nth-child(3) { background: var(--mode-music-brand); }
+.difficulty-bars--experimental i:nth-child(2) { background: var(--color-paper-muted-2); }
 
 .difficulty-menu {
   position: absolute;

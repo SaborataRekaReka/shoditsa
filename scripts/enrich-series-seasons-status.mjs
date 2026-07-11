@@ -24,7 +24,7 @@ const argValue = (name, fallback) => {
 
 const inputPath = resolve(root, argValue('--in', 'public/data/series.generated.json'))
 const outputPath = resolve(root, argValue('--out', 'public/data/series.generated.json'))
-const reportPath = resolve(root, argValue('--report', 'docs/series-meta-enrichment-report.json'))
+const reportPath = resolve(root, argValue('--report', 'archive/reports/series-meta-enrichment-report.json'))
 const force = args.includes('--force')
 const maxItemsArg = Number(argValue('--max-items', '0'))
 const maxItems = Number.isFinite(maxItemsArg) && maxItemsArg > 0 ? maxItemsArg : null

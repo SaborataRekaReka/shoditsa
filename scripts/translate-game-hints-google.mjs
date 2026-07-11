@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 const root = resolve(import.meta.dirname, '..')
 const gamesPath = resolve(root, 'public', 'data', 'games.generated.json')
 const cachePath = resolve(root, 'docs', 'game-translation-cache.json')
-const reportPath = resolve(root, 'docs', 'game-translation-report.json')
+const reportPath = resolve(root, 'archive', 'reports', 'game-translation-report.json')
 
 const FIELDS = ['description', 'shortDescription', 'plotHint']
 const TARGET = 'ru'

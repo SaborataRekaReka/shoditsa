@@ -43,7 +43,7 @@ const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 
 const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost']
 const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]
 const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards']
-const DIFFICULTY_KEYS: DifficultyKey[] = ['easy', 'medium', 'hard']
+const DIFFICULTY_KEYS: DifficultyKey[] = ['easy', 'medium', 'hard', 'expert', 'experimental']
 
 const isTitleMode = (value: unknown): value is TitleMode => typeof value === 'string' && TITLE_MODES.includes(value as TitleMode)
 const isPeriodKey = (value: unknown): value is PeriodKey => typeof value === 'string' && PERIOD_KEYS.includes(value as PeriodKey)
@@ -51,6 +51,8 @@ const isGameStatus = (value: unknown): value is GameStatus => typeof value === '
 const isHintCheckpoint = (value: unknown): value is HintCheckpoint => typeof value === 'number' && HINT_CHECKPOINTS.includes(value as HintCheckpoint)
 const isAssistHintKey = (value: unknown): value is AssistHintKey => typeof value === 'string' && ASSIST_HINT_KEYS.includes(value as AssistHintKey)
 const isDifficultyKey = (value: unknown): value is DifficultyKey => typeof value === 'string' && DIFFICULTY_KEYS.includes(value as DifficultyKey)
+const normalizeMusicDifficulty = (difficulty: DifficultyKey) => difficulty === 'experimental' ? 'expert' as const : difficulty
+const normalizeMusicGameKey = (key: string) => key.replace(/\|diff:experimental$/, '|diff:expert')
 
 const toSafeInteger = (value: unknown, fallback: number) => {
   const parsed = Math.trunc(Number(value))
@@ -132,7 +134,8 @@ const normalizeSavedGame = (value: unknown, fallbackKey?: string): SavedGame | n
     dismissedHintRounds?: unknown
     attempts?: unknown
   }
-  const key = typeof raw.key === 'string' && raw.key ? raw.key : fallbackKey
+  const rawKey = typeof raw.key === 'string' && raw.key ? raw.key : fallbackKey
+  const key = raw.mode === 'music' && rawKey ? normalizeMusicGameKey(rawKey) : rawKey
   if (!key || !isTitleMode(raw.mode)) return null
 
   const date = typeof raw.date === 'string' && raw.date ? raw.date : null
@@ -162,7 +165,7 @@ const normalizeSavedGame = (value: unknown, fallbackKey?: string): SavedGame | n
     dismissedHintRounds: normalizeDismissedHintRounds(raw.dismissedHintRounds, openedRounds),
     updatedAt: Math.max(0, toSafeInteger(raw.updatedAt, Date.now())),
     schemaVersion: Math.max(1, toSafeInteger(raw.schemaVersion, 1)),
-    ...(isDifficultyKey(raw.difficulty) ? { difficulty: raw.difficulty } : {}),
+    ...(isDifficultyKey(raw.difficulty) ? { difficulty: normalizeMusicDifficulty(raw.difficulty) } : {}),
   }
 }
 
@@ -190,9 +193,16 @@ export const gameKey = (mode: string, period: string, date: string) => `${mode}|
 
 export const loadGame = (key: string): SavedGame | null => {
   try {
+    const legacyKey = key.replace(/\|diff:expert$/, '|diff:experimental')
     const value = localStorage.getItem(GAME_PREFIX + key)
+      ?? (legacyKey !== key ? localStorage.getItem(GAME_PREFIX + legacyKey) : null)
     if (!value) return null
-    return normalizeSavedGame(JSON.parse(value), key)
+    const game = normalizeSavedGame(JSON.parse(value), key)
+    if (game && game.key !== key) {
+      localStorage.setItem(GAME_PREFIX + game.key, JSON.stringify(prepareSavedGameForStore(game)))
+      localStorage.removeItem(GAME_PREFIX + legacyKey)
+    }
+    return game
   } catch {
     return null
   }
@@ -205,16 +215,59 @@ export const allGames = (): SavedGame[] => Object.keys(localStorage).filter((key
       const key = storageKey.slice(GAME_PREFIX.length)
       const value = localStorage.getItem(storageKey)
       if (!value) return null
-      return normalizeSavedGame(JSON.parse(value), key)
+      const game = normalizeSavedGame(JSON.parse(value), key)
+      if (game && game.key !== key) {
+        localStorage.setItem(GAME_PREFIX + game.key, JSON.stringify(prepareSavedGameForStore(game)))
+        localStorage.removeItem(storageKey)
+      }
+      return game
     } catch {
       return null
     }
   })
   .filter((game): game is SavedGame => Boolean(game)).sort((a, b) => b.date.localeCompare(a.date))
-export const loadStats = (mode: TitleMode): Stats => {
-  try { const value = localStorage.getItem(STATS_PREFIX + mode); return value ? JSON.parse(value) : emptyStats() } catch { return emptyStats() }
+const statsKey = (mode: TitleMode, difficulty?: DifficultyKey) => mode === 'music' && difficulty ? `${mode}|${difficulty}` : mode
+
+const parseStats = (value: string | null): Stats => {
+  if (!value) return emptyStats()
+  try {
+    return JSON.parse(value) as Stats
+  } catch {
+    return emptyStats()
+  }
 }
-export const saveStats = (mode: TitleMode, stats: Stats) => localStorage.setItem(STATS_PREFIX + mode, JSON.stringify(stats))
+
+const mergeStats = (current: Stats, legacy: Stats): Stats => ({
+  played: current.played + legacy.played,
+  won: current.won + legacy.won,
+  currentStreak: Math.max(current.currentStreak, legacy.currentStreak),
+  bestStreak: Math.max(current.bestStreak, legacy.bestStreak),
+  distribution: current.distribution.map((value, index) => value + (legacy.distribution[index] ?? 0)),
+})
+
+export const loadStats = (mode: TitleMode, difficulty?: DifficultyKey): Stats => {
+  try {
+    const scoped = parseStats(localStorage.getItem(STATS_PREFIX + statsKey(mode, difficulty)))
+    if (mode === 'music' && difficulty === 'expert') {
+      const legacyKey = STATS_PREFIX + statsKey(mode, 'experimental')
+      const legacy = parseStats(localStorage.getItem(legacyKey))
+      if (legacy.played > 0) {
+        const merged = mergeStats(scoped, legacy)
+        localStorage.setItem(STATS_PREFIX + statsKey(mode, 'expert'), JSON.stringify(merged))
+        localStorage.removeItem(legacyKey)
+        return merged
+      }
+    }
+    if (mode === 'music' && difficulty) return scoped
+    return scoped
+  } catch {
+    return emptyStats()
+  }
+}
+
+export const saveStats = (mode: TitleMode, stats: Stats, difficulty?: DifficultyKey) => {
+  localStorage.setItem(STATS_PREFIX + statsKey(mode, difficulty), JSON.stringify(stats))
+}
 
 export const emptyWallet = (): Wallet => ({ tickets: 0, lifetimeTickets: 0 })
 export const loadWallet = (): Wallet => {
