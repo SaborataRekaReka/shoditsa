@@ -120,7 +120,7 @@ npm run deploy:quick:skip-build
 
 Сейчас включены:
 
-- 500 фильмов из списка [500 лучших фильмов Кинопоиска](https://www.kinopoisk.ru/lists/movies/top500/) по фиксированным ID в `data/top500-ids.json`;
+- 500 фильмов из списка [500 лучших фильмов Кинопоиска](https://www.kinopoisk.ru/lists/movies/top500/) по фиксированным ID в `data/reference/kinopoisk-top500-ids.json`;
 - 40 сериалов из `TOP_250_TV_SHOWS`.
 - 500 аниме из [Shikimori Popularity](https://shikimori.io/animes?order=popularity) в последовательном порядке.
 
@@ -197,8 +197,8 @@ npm run data:collect-ids -- --url "https://www.kinopoisk.ru/top/navigator/.../#r
 
 - открывает Chromium с постоянным профилем (`.tmp/kinopoisk-playwright-profile`);
 - проходит страницы и собирает все `film/<id>` ссылки;
-- пишет прогресс в `data/kinopoisk-navigator-state.json`;
-- пишет итоговый список в `data/kinopoisk-navigator-ids.json`.
+- пишет прогресс в `data/kinopoisk/navigator/movies/state.json`;
+- пишет итоговый список в `data/kinopoisk/navigator/movies/ids.json`.
 
 Продолжить после остановки:
 
@@ -218,7 +218,7 @@ npm run data:collect-ids -- --url "https://www.kinopoisk.ru/top/navigator/.../#r
 npm run data:refill
 ```
 
-Ключ используется только Node-скриптом `scripts/import-kinopoisk.ts` и никогда не попадает в клиентскую сборку. Сведения об источнике и времени генерации сохраняются в `public/data/source.json`.
+Ключ используется только Node-скриптом `scripts/kinopoisk/import-top500-movies.ts` и никогда не попадает в клиентскую сборку. Сведения об источнике и времени генерации сохраняются в `public/data/source.json`.
 
 ### Импорт аниме из Shikimori (по порядку популярности)
 
@@ -239,7 +239,7 @@ npm run data:build:anime:roles
 Полезные параметры:
 
 ```powershell
-node scripts/import-shikimori-animes.mjs --max-items 500 --page-start 1 --limit 50 --delay-ms 700
+node scripts/anime/import-shikimori.mjs --max-items 500 --page-start 1 --limit 50 --delay-ms 700
 ```
 
 Что важно:

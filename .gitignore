@@ -8,9 +8,11 @@ dist.zip
 .tmp/
 tmp/
 archive/local/
-data
-
-data/kinopoisk-navigator-*.json
+data/music/
+data/enrichment-agent/
+data/tmp/
+data/kinopoisk/navigator/*/state.json
+data/kinopoisk/navigator/*/skipped.json
 
 # Generated media assets (rebuild via scripts)
 public/data/libraries/movies/img/
@@ -31,11 +33,3 @@ docs/music-music-mbwd-retry.summary.json
 docs/music-remaining-cards.after-rules.json
 docs/music-hints-payload*.json
 docs/music-hints-output*.json
-scripts/build-music-factcheck-payload.mjs
-scripts/build-music-retry-input.mjs
-scripts/build-music-test-dataset.mjs
-scripts/enrich-music-artists-first10.mjs
-scripts/exclude-music-pending-review.mjs
-scripts/include-music-pending-review.mjs
-scripts/merge-music-enrichment-original-retry.mjs
-scripts/merge-music-retry-into-base.mjs

@@ -122,7 +122,7 @@ scripts/
 
 Достаточно:
 
-1. Взять `data/movies.seed.example.json` и `data/series.seed.example.json`.
+1. Взять `data/examples/movies.seed.json` и `data/examples/series.seed.json`.
 2. Расширить их до 50–100 тайтлов вручную или через API.
 3. Убедиться, что игра работает.
 4. Потом автоматизировать импорт 500–3000 тайтлов.

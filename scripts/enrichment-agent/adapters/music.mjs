@@ -282,7 +282,7 @@ export const musicAdapter = {
     writeJsonAtomic(inputPath, [queueItem.item])
     const runTag = `agent-${runId}-${queueItem.key}`
     const command = spawnSync(process.execPath, [
-      'scripts/enrich-music-artists-first10.mjs',
+      'scripts/music/enrich-artists.mjs',
       `--input=${inputPath}`,
       '--limit=1',
       `--run-tag=${runTag}`,

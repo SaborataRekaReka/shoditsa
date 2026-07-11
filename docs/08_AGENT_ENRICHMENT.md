@@ -27,13 +27,13 @@ npm run data:agent:music -- --max-items=5
 
 ```powershell
 npm run data:agent:music:discover -- --max-items=5
-node scripts/run-enrichment-agent.mjs music run --source=data/enrichment-agent/music/discovery/discovered-candidates.json --max-items=5 --max-ai-reviews=5
+node scripts/enrichment-agent/run.mjs music run --source=data/enrichment-agent/music/discovery/discovered-candidates.json --max-items=5 --max-ai-reviews=5
 ```
 
 Процесс автоматически импортирует текущий production baseline из 409 карточек. Legacy-файл `music_artists_merged_dedup.json` содержит 1925 имён, но не имеет сохранённого происхождения и не используется по умолчанию. Его можно исследовать только явно, в отдельном scope:
 
 ```powershell
-node scripts/run-enrichment-agent.mjs music plan --source=archive/local/music-pipeline/source/music_artists_merged_dedup.json
+node scripts/enrichment-agent/run.mjs music plan --source=archive/local/music-pipeline/source/music_artists_merged_dedup.json
 ```
 
 ## Источники и ключи
@@ -55,7 +55,7 @@ $env:OPENAI_API_KEY="..."     # обязателен для поиска и ге
 Metadata-only для заранее известного списка, без ИИ и без автопринятия:
 
 ```powershell
-node scripts/run-enrichment-agent.mjs music run --source=path/to/candidates.json --max-items=20 --ai=never
+node scripts/enrichment-agent/run.mjs music run --source=path/to/candidates.json --max-items=20 --ai=never
 ```
 
 Рекомендуемый: API для фактов, затем один вызов `gpt-5-mini` с веб-поиском для fact-check и подсказки каждой новой записи:
@@ -67,13 +67,13 @@ npm run data:agent:music -- --max-items=10 --ai=auto --max-ai-reviews=10
 Без AI web search на этапе обработки кандидатов, но с проверкой переданного API evidence; подсказка в этом режиме не считается исследованной в интернете:
 
 ```powershell
-node scripts/run-enrichment-agent.mjs music run --source=data/enrichment-agent/music/discovery/discovered-candidates.json --max-items=10 --max-ai-reviews=10 --no-ai-web-search
+node scripts/enrichment-agent/run.mjs music run --source=data/enrichment-agent/music/discovery/discovered-candidates.json --max-items=10 --max-ai-reviews=10 --no-ai-web-search
 ```
 
 Полная перепроверка записей из очереди review:
 
 ```powershell
-node scripts/run-enrichment-agent.mjs music run --source=data/enrichment-agent/music/discovery/discovered-candidates.json --retry-review --max-items=5 --ai=always
+node scripts/enrichment-agent/run.mjs music run --source=data/enrichment-agent/music/discovery/discovered-candidates.json --retry-review --max-items=5 --ai=always
 ```
 
 ## Память и восстановление
@@ -93,7 +93,7 @@ node scripts/run-enrichment-agent.mjs music run --source=data/enrichment-agent/m
 Пересобрать staging aggregate из отдельных records:
 
 ```powershell
-node scripts/run-enrichment-agent.mjs music rebuild --source=data/enrichment-agent/music/discovery/discovered-candidates.json
+node scripts/enrichment-agent/run.mjs music rebuild --source=data/enrichment-agent/music/discovery/discovered-candidates.json
 ```
 
 В aggregate попадают только записи с disposition `accepted`. Публикация использует существующий конвертер и обновляет `music.generated.json`, `items.json`, `search-index.json` и `source.json`:
@@ -119,6 +119,6 @@ npm run data:validate
 После этого общий CLI получает домен без изменений ядра:
 
 ```powershell
-node scripts/run-enrichment-agent.mjs games plan
-node scripts/run-enrichment-agent.mjs games run --max-items=10
+node scripts/enrichment-agent/run.mjs games plan
+node scripts/enrichment-agent/run.mjs games run --max-items=10
 ```
