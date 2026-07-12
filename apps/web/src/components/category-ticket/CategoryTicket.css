@@ -72,24 +72,16 @@
 .category-ticket__watermark {
   position: absolute;
   z-index: 0;
-  left: -5px;
-  bottom: -3px;
-  width: calc(100% + 10px);
-  height: 58px;
-  object-fit: contain;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   object-position: center bottom;
-  opacity: .18;
-  mix-blend-mode: multiply;
+  opacity: 1;
+  mix-blend-mode: normal;
   pointer-events: none;
   user-select: none;
 }
-
-.category-ticket--movie .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 68px; opacity: .22; }
-.category-ticket--series .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 70px; opacity: .22; }
-.category-ticket--anime .category-ticket__watermark { right: -6px; left: auto; bottom: -1px; width: calc(100% + 12px); height: 70px; opacity: .22; }
-.category-ticket--game .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 72px; opacity: .22; }
-.category-ticket--music .category-ticket__watermark { left: -6px; bottom: 0; width: calc(100% + 12px); height: 66px; opacity: .22; }
-.category-ticket--diagnosis .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 68px; opacity: .22; }
 
 .category-ticket__icon {
   position: absolute;
