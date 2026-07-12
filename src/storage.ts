@@ -16,6 +16,7 @@ import type {
   TitleMode,
   Wallet,
 } from './types'
+import type { DailyMilestone, DailyMilestoneClaims } from './features/daily-progress/daily-progress.types'
 
 const GAME_PREFIX = 'seans:v1:game:'
 const STATS_PREFIX = 'seans:v1:stats:'
@@ -26,6 +27,7 @@ const TICKET_LEDGER_KEY = 'seans:v1:ticket-ledger'
 const PROMO_USAGE_KEY = 'seans:v1:promo-usage'
 const PERIOD_UNLOCKS_KEY = 'seans:v1:period-unlocks'
 const FREE_PLAY_USAGE_PREFIX = 'seans:v1:free-play-usage:'
+const DAILY_MILESTONES_PREFIX = 'seans:v1:daily-milestones:'
 const MUSIC_REVIEW_APPROVALS_KEY = 'seans:v1:music-review-approvals'
 const MUSIC_REVIEW_CONFLICT_CHOICES_KEY = 'seans:v1:music-review-conflict-choices'
 const SAVED_GAME_SCHEMA_VERSION = 2
@@ -485,6 +487,30 @@ export const loadDailyAttendance = (date: string): DailyAttendance => {
   }
 }
 export const saveDailyAttendance = (attendance: DailyAttendance) => localStorage.setItem(ATTENDANCE_PREFIX + attendance.date, JSON.stringify(attendance))
+
+export const loadDailyMilestoneClaims = (date: string): DailyMilestoneClaims => {
+  try {
+    const value = localStorage.getItem(DAILY_MILESTONES_PREFIX + date)
+    if (!value) return { date, claimed: [] }
+    const parsed = JSON.parse(value) as Partial<DailyMilestoneClaims>
+    const claimed = Array.isArray(parsed.claimed)
+      ? parsed.claimed.filter((milestone): milestone is DailyMilestone => milestone === 3 || milestone === 6)
+      : []
+    return { date, claimed: [...new Set(claimed)] }
+  } catch {
+    return { date, claimed: [] }
+  }
+}
+
+export const claimDailyMilestones = (date: string, milestones: DailyMilestone[]): DailyMilestoneClaims => {
+  const current = loadDailyMilestoneClaims(date)
+  const next: DailyMilestoneClaims = {
+    date,
+    claimed: [...new Set([...current.claimed, ...milestones])].sort((left, right) => left - right) as DailyMilestone[],
+  }
+  localStorage.setItem(DAILY_MILESTONES_PREFIX + date, JSON.stringify(next))
+  return next
+}
 
 export const loadPeriodUnlocks = (): PeriodUnlocks => {
   try {

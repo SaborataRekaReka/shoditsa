@@ -5,7 +5,6 @@ import {
   ArrowDown,
   ArrowUp,
   BarChart3,
-  CalendarDays,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -17,7 +16,6 @@ import {
   HeartPulse,
   Lock,
   LockOpen,
-  MapPin,
   Music2,
   NotebookText,
   Play,
@@ -35,6 +33,9 @@ import {
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
+import { CategoryCard, type CategoryCardState } from './components/CategoryCard'
+import { DailyHero } from './features/daily-progress/DailyHero'
+import { buildDailyHubState } from './features/daily-progress/daily-progress'
 import {
   canUseAsArtistPortrait,
   canonicalMusicId,
@@ -61,7 +62,7 @@ import {
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
-import { addTicketLedgerEntry, allGames, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadPromoUsage, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, savePromoUsage, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
+import { addTicketLedgerEntry, allGames, claimDailyMilestones, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadDailyMilestoneClaims, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadPromoUsage, loadStats, loadTicketLedger, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, savePromoUsage, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 
 const normalizeTextMatch = (value: string) => value
@@ -113,6 +114,7 @@ type EconomyAward = {
   win: number
   speed: number
   firstDaily: number
+  milestoneBonus: number
   fullHouse: number
   newDailyStreak: number
   gracePasses: number
@@ -126,6 +128,7 @@ const emptyAward = (attendance: AttendanceStats): EconomyAward => ({
   win: 0,
   speed: 0,
   firstDaily: 0,
+  milestoneBonus: 0,
   fullHouse: 0,
   newDailyStreak: attendance.currentDailyStreak,
   gracePasses: attendance.gracePasses,
@@ -960,13 +963,16 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
 
   const previousStats = loadAttendanceStats()
   const firstCompletionForDay = attendance.completedSessions.length === 0
+  const previousCompletedCount = uniqueModes(attendance.completedModes).length
+  const nextCompletedModes = uniqueModes([...attendance.completedModes, mode])
+  const nextCompletedCount = nextCompletedModes.length
   const nextAttendance: DailyAttendance = {
     ...attendance,
-    completedModes: uniqueModes([...attendance.completedModes, mode]),
+    completedModes: nextCompletedModes,
     wonModes: won ? uniqueModes([...attendance.wonModes, mode]) : attendance.wonModes,
     completedSessions: [...attendance.completedSessions, sessionKey],
     firstCompletedAt: attendance.firstCompletedAt || Date.now(),
-    fullHouse: attendance.fullHouse || uniqueModes([...attendance.completedModes, mode]).length >= MODE_TABS.length,
+    fullHouse: attendance.fullHouse || nextCompletedCount >= MODE_TABS.length,
   }
 
   let nextStats = previousStats
@@ -999,8 +1005,23 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
   const win = won ? 10 : 0
   const speed = won ? Math.max(0, 10 - attemptsCount) : 0
   const firstDaily = firstCompletionForDay ? 5 : 0
-  const fullHouse = !attendance.fullHouse && nextAttendance.fullHouse ? 25 : 0
-  const base = completed + win + speed + firstDaily + fullHouse
+  const milestoneClaims = loadDailyMilestoneClaims(date)
+  const reachedThree = previousCompletedCount < 3 && nextCompletedCount >= 3 && !milestoneClaims.claimed.includes(3)
+  const reachedSix = previousCompletedCount < 6 && nextCompletedCount >= 6 && !milestoneClaims.claimed.includes(6)
+  const milestoneBonus = reachedThree ? 10 : 0
+  const fullHouse = reachedSix ? 25 : 0
+  const reachedMilestones = [reachedThree ? 3 : null, reachedSix ? 6 : null].filter((value): value is 3 | 6 => value !== null)
+  if (reachedMilestones.length) {
+    claimDailyMilestones(date, reachedMilestones)
+    for (const milestone of reachedMilestones) {
+      const reward = milestone === 3 ? 10 : 25
+      const analyticsParams = { mode, completedCount: nextCompletedCount, nextMilestone: milestone, reward, dateMoscow: date }
+      trackMetrikaGoal('daily_milestone_reached', analyticsParams)
+      trackMetrikaGoal('daily_milestone_claimed', analyticsParams)
+      if (milestone === 6) trackMetrikaGoal('full_house_reached', analyticsParams)
+    }
+  }
+  const base = completed + win + speed + firstDaily + milestoneBonus + fullHouse
   const multiplier = firstCompletionForDay ? streakMultiplier(nextStats.currentDailyStreak) : 1
   const total = Math.round(base * multiplier)
   const wallet = loadWallet()
@@ -1027,6 +1048,7 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
     win,
     speed,
     firstDaily,
+    milestoneBonus,
     fullHouse,
     newDailyStreak: nextStats.currentDailyStreak,
     gracePasses: nextStats.gracePasses,
@@ -1344,128 +1366,85 @@ function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: {
   </>
 }
 
-function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, titleCounts, todayAttendance }: {
+function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onOpenSaved, games, preferredMode, titleCounts, todayAttendance }: {
   onSelect: (mode: TitleMode) => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
   onReview: () => void
-  onResume: () => void
-  activeSessionsCount: number
-  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; music: number | null; diagnosis: number | null }
+  onOpenSaved: (game: SavedGame) => void
+  games: SavedGame[]
+  preferredMode: TitleMode
+  titleCounts: Record<TitleMode, number | null>
   todayAttendance: DailyAttendance
 }) {
-  const futureCategories = [
-    { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
+  const categories: Array<{ mode: TitleMode; title: string; description: string }> = [
+    { mode: 'movie', title: 'Кино', description: 'Угадайте фильм по актёрам, жанрам, году и рейтингам.' },
+    { mode: 'series', title: 'Сериалы', description: 'Найдите сериал, сравнивая создателей, каст и периоды.' },
+    { mode: 'anime', title: 'Аниме', description: 'Угадайте аниме по формату, эпизодам, студии, сэйю и рангу в популярности.' },
+    { mode: 'game', title: 'Игры', description: 'Угадайте игру по жанрам, рейтингу, месту в топе и метрикам Steam.' },
+    { mode: 'music', title: 'Музыка', description: 'Угадайте артиста по жанрам, связям, топ-трекам и метрикам Last.fm.' },
+    { mode: 'diagnosis', title: 'Диагнозы', description: 'Угадайте диагноз по симптомам, системе, факторам риска и МКБ-подсказкам.' },
   ]
-  const availableNowCount = MODE_TABS.length
-  const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const dailyState = useMemo(
+    () => buildDailyHubState(todayAttendance, games, preferredMode),
+    [games, preferredMode, todayAttendance],
+  )
+  const analyticsParams = {
+    completedCount: dailyState.completedCount,
+    activeMode: dailyState.activeGame?.mode ?? '',
+    attemptsCount: dailyState.activeGame?.attempts.length ?? 0,
+    nextMilestone: dailyState.reward.milestone,
+    reward: dailyState.reward.reward,
+    dateMoscow: todayAttendance.date,
+  }
+  const openPrimary = () => {
+    if (dailyState.activeGame) {
+      trackMetrikaGoal('hub_resume_click', { ...analyticsParams, mode: dailyState.activeGame.mode })
+      onOpenSaved(dailyState.activeGame)
+      return
+    }
+    trackMetrikaGoal('hub_next_mode_click', { ...analyticsParams, mode: dailyState.recommendedMode })
+    onSelect(dailyState.recommendedMode)
+  }
 
   return <>
     <AppHeader onHome={() => undefined} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="hub-screen">
-      <section className="hub-hero">
-        <div className="hub-hero__copy">
-          <div className="hub-hero__facts" aria-label="Об игре">
-            <span><CalendarDays /><strong>1 загадка в день</strong></span>
-            <span><Target /><strong>10 попыток</strong></span>
-          </div>
-          <h1>Все сойдется!</h1>
-          <p>Кино, сериалы, аниме, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
-          <div className="hub-hero__actions">
-            <ActionButton onClick={() => {
-              trackMetrikaGoal('hub_scroll_to_games')
-              scrollToGames()
-            }}><Play /> Играть сейчас</ActionButton>
-            {activeSessionsCount > 0
-              ? <ActionButton variant="secondary" onClick={() => {
-                trackMetrikaGoal('hub_resume_session', { activeSessionsCount })
-                onResume()
-              }}><RotateCcw /> {activeSessionsCount > 1 ? `Вернуться к игре (${activeSessionsCount})` : 'Вернуться к игре'}</ActionButton>
-              : <ActionButton variant="secondary" onClick={() => {
-                trackMetrikaGoal('hub_open_rules')
-                onRules()
-              }}><CircleHelp /> Как это работает</ActionButton>}
-          </div>
-        </div>
-        <div className="hub-hero__visual" aria-hidden="true">
-          <img src="./images/hero.webp" alt="" />
-        </div>
-      </section>
+      <DailyHero state={dailyState} onPrimary={openPrimary} />
 
-      <section className="category-section" id="available-games">
-        <div className="category-heading"><span>Доступно сейчас</span><small>{String(availableNowCount).padStart(2, '0')} игры</small></div>
+      <section className="category-section daily-games" id="available-games">
+        <div className="category-heading daily-games__heading"><span>Игры на сегодня</span></div>
         <div className="category-grid category-grid--active">
-          <button className="category-card category-card--movie" onClick={() => onSelect('movie')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Film /></span>
-              <span className="category-card__pool"><b>{titleCounts.movie ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('movie') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Кино</h2>
-            <p>Угадайте фильм по актёрам, жанрам, году и рейтингам.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--series" onClick={() => onSelect('series')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Tv /></span>
-              <span className="category-card__pool"><b>{titleCounts.series ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('series') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Сериалы</h2>
-            <p>Найдите сериал, сравнивая создателей, каст и периоды.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--anime" onClick={() => onSelect('anime')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Sparkles /></span>
-              <span className="category-card__pool"><b>{titleCounts.anime ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('anime') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Аниме</h2>
-            <p>Угадайте аниме по формату, эпизодам, студии, сэйю и рангу в популярности.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--game" onClick={() => onSelect('game')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Gamepad2 /></span>
-              <span className="category-card__pool"><b>{titleCounts.game ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('game') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Игры</h2>
-            <p>Угадайте игру по жанрам, рейтингу, месту в топе и метрикам Steam.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--music" onClick={() => onSelect('music')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Music2 /></span>
-              <span className="category-card__pool"><b>{titleCounts.music ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('music') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Музыка</h2>
-            <p>Угадайте артиста по жанрам, связям, топ-трекам и метрикам Last.fm.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--diagnosis" onClick={() => onSelect('diagnosis')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Stethoscope /></span>
-              <span className="category-card__pool"><b>{titleCounts.diagnosis ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('diagnosis') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Диагнозы</h2>
-            <p>Угадайте диагноз по симптомам, системе, факторам риска и МКБ-подсказкам.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-        </div>
-      </section>
-
-      <section className="category-section category-section--future">
-        <div className="category-heading"><span>Следующие темы</span><small>в разработке</small></div>
-        <div className="category-grid category-grid--future">
-          {futureCategories.map((category) => <article className="category-card category-card--locked" key={category.title}>
-            <span className="category-card__icon">{category.icon}</span><span className="category-card__lock"><Lock /> Скоро</span>
-            <h3>{category.title}</h3><p>{category.copy}</p>
-          </article>)}
+          {categories.map((category) => {
+            const activeGame = dailyState.activeGamesByMode[category.mode]
+            const finishedGame = dailyState.finishedGamesByMode[category.mode]
+            const isCompleted = dailyState.completedModes.includes(category.mode)
+            const cardState: CategoryCardState = activeGame ? 'active' : isCompleted ? 'completed' : 'pending'
+            const cardGame = activeGame ?? finishedGame
+            return <CategoryCard
+              key={category.mode}
+              mode={category.mode}
+              title={category.title}
+              description={category.description}
+              pool={titleCounts[category.mode]}
+              state={cardState}
+              attempts={cardGame?.attempts.length}
+              onClick={() => {
+                if (activeGame) {
+                  trackMetrikaGoal('active_card_resume', { ...analyticsParams, mode: category.mode })
+                  onOpenSaved(activeGame)
+                  return
+                }
+                if (isCompleted && finishedGame) {
+                  trackMetrikaGoal('completed_card_open', { ...analyticsParams, mode: category.mode })
+                  onOpenSaved(finishedGame)
+                  return
+                }
+                onSelect(category.mode)
+              }}
+            />
+          })}
         </div>
       </section>
     </main>
@@ -3710,7 +3689,7 @@ export default function App() {
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
 
   return <div className={`app app--${appTone}`}>
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
 
     {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
 
