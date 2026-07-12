@@ -16,4 +16,12 @@ for (const marker of ['profile', 'footer', 'yandexSdk']) {
   if (manifest.shell?.[marker] !== true) throw new Error(`Build manifest is missing shell marker: ${marker}`)
 }
 
+for (const library of ['movies', 'series', 'animes', 'games', 'music', 'diagnoses']) {
+  const items = JSON.parse(await fetchText(`/data/libraries/${library}/items.json?smoke=${Date.now()}`))
+  if (!Array.isArray(items) || items.length === 0) throw new Error(`Production library ${library} is empty or invalid`)
+
+  const searchIndex = JSON.parse(await fetchText(`/data/libraries/${library}/search-index.json?smoke=${Date.now()}`))
+  if (!searchIndex || typeof searchIndex.tokenToIds !== 'object') throw new Error(`Production search index ${library} is invalid`)
+}
+
 console.log(`Production smoke passed for ${baseUrl} at ${expectedSha}`)

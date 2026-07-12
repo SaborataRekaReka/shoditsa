@@ -1473,6 +1473,18 @@ function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => vo
   </footer>
 }
 
+function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: () => void }) {
+  return <main className="loading loading--error" role="alert">
+    <AlertTriangle />
+    <h1>Проектор не настроился</h1>
+    <p>Библиотека игры не загрузилась. Прогресс сохранён — попробуйте подключиться ещё раз.</p>
+    <div>
+      <button type="button" className="ui-button ui-button--primary" onClick={onRetry}>Повторить загрузку</button>
+      <button type="button" className="ui-button ui-button--secondary" onClick={onHome}>На главную</button>
+    </div>
+  </main>
+}
+
 function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onOpenSavedSession: (game: SavedGame) => void
@@ -3923,7 +3935,7 @@ export default function App() {
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
-  const { data, titleCounts, caseVignettes, loading, globalDailySalt, searchIndex } = useDataLoader(mode)
+  const { data, titleCounts, caseVignettes, loading, loadError, retryLoading, globalDailySalt, searchIndex } = useDataLoader(mode)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const [economyVersion, setEconomyVersion] = useState(0)
   const transitionTimerRef = useRef<number | null>(null)
@@ -4380,7 +4392,9 @@ export default function App() {
 
     {screen === 'game' && (loading
       ? <div className="loading"><Sparkles /> Настраиваем проектор…</div>
-      : <Game
+      : loadError
+        ? <GameDataLoadError onRetry={retryLoading} onHome={goHome} />
+        : <Game
           titles={data[mode]}
           mode={mode}
           period={period}
@@ -4400,7 +4414,7 @@ export default function App() {
           searchIndex={searchIndex}
           challenge={challengeAccepted ? challenge : null}
           onPlayNext={playNextDaily}
-        />)}
+          />)}
 
     {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => setScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
 

@@ -2359,6 +2359,12 @@
 .poster-fallback svg { width: 22px; margin-bottom: 5px; }
 .poster-fallback span { font: 12px Oswald, sans-serif; }
 .loading { min-height: 100vh; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--color-muted); font-size: 11px; }
+.loading--error { width: min(100%, 520px); min-height: calc(100vh - 72px); margin: 0 auto; padding: 32px 18px; flex-direction: column; color: var(--color-text); text-align: center; }
+.loading--error > svg { width: 36px; height: 36px; color: var(--color-accent); }
+.loading--error h1 { margin: 8px 0 0; font: 500 30px/1.05 Oswald, sans-serif; text-transform: uppercase; }
+.loading--error p { max-width: 410px; margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.55; }
+.loading--error > div { margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.loading--error .ui-button { min-height: 44px; }
 
 .modal-backdrop { padding-top: 70px; }
 .modal { width: min(100%, 540px); max-height: 90vh; overflow: auto; padding: 20px 16px 28px; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-paper-line); border-bottom: 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; animation: sheet .3s var(--ease) both; }

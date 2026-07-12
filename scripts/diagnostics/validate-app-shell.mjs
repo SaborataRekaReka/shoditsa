@@ -45,8 +45,17 @@ const sourceChecks = [
     required: [
       ['production web target', /\/opt\/repeto\/deploy\/shoditsa/],
       ['release archive upload', /release-web\.tar\.gz/],
+      ['staged atomic activation', /stage-\$\{GITHUB_SHA\}/],
+      ['index activated last', /for ENTRY in index\.html build-manifest\.json/],
       ['production SHA smoke', /smoke:production/],
       ['API smoke check', /\/api\/v1\/meta/],
+    ],
+  },
+  {
+    path: 'scripts/diagnostics/smoke-production-main.mjs',
+    required: [
+      ['all production game libraries', /\['movies', 'series', 'animes', 'games', 'music', 'diagnoses'\]/],
+      ['production search indexes', /search-index\.json/],
     ],
   },
 ]

@@ -15,6 +15,8 @@ const toIntegerOrNull = (value: unknown) => {
 }
 
 const requestCache = new Map<string, Promise<unknown>>()
+const DATA_FETCH_TIMEOUT_MS = 20_000
+const RETRY_DELAY_MS = 350
 const configuredMediaOrigin = String(import.meta.env.VITE_MEDIA_ORIGIN || '').trim().replace(/\/$/, '')
 const mediaOrigin = configuredMediaOrigin
 
@@ -65,34 +67,55 @@ const normalizeItemMediaUrls = (items: TitleItem[]) => {
   })
 }
 
-const fetchJsonCached = async <T,>(url: string): Promise<T> => {
+const fetchJson = async <T,>(url: string): Promise<T> => {
+  const controller = new AbortController()
+  const timeoutId = window.setTimeout(() => controller.abort(), DATA_FETCH_TIMEOUT_MS)
+  try {
+    const response = await fetch(url, { cache: 'no-store', signal: controller.signal })
+    if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.status}`)
+    return response.json() as Promise<T>
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') throw new Error(`Timed out while loading ${url}`)
+    throw error
+  } finally {
+    window.clearTimeout(timeoutId)
+  }
+}
+
+export const fetchJsonCached = async <T,>(url: string): Promise<T> => {
   if (!requestCache.has(url)) {
-    requestCache.set(url, fetch(url, { cache: 'no-store' }).then(async (response) => {
-      if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.status}`)
-      return response.json()
-    }))
+    let request: Promise<unknown>
+    request = fetchJson<T>(url).catch((error) => {
+      if (requestCache.get(url) === request) requestCache.delete(url)
+      throw error
+    })
+    requestCache.set(url, request)
   }
   return requestCache.get(url) as Promise<T>
 }
 
-const fetchJsonNoCache = async <T,>(url: string): Promise<T> => {
-  const response = await fetch(url, { cache: 'no-store' })
-  if (!response.ok) throw new Error(`Failed to fetch ${url}: ${response.status}`)
-  return response.json()
-}
+const fetchJsonNoCache = <T,>(url: string): Promise<T> => fetchJson<T>(url)
+const waitForRetry = () => new Promise<void>((resolve) => window.setTimeout(resolve, RETRY_DELAY_MS))
 
 const withCacheBuster = (url: string) => `${url}${url.includes('?') ? '&' : '?'}ts=${Date.now()}`
 
 const loadModeItems = async (dataFile: string) => {
+  const libraryUrl = `./data/libraries/${dataFile}/items.json`
   try {
-    return await fetchJsonCached<TitleItem[]>(`./data/libraries/${dataFile}/items.json`)
+    return await fetchJsonCached<TitleItem[]>(libraryUrl)
   } catch (primaryError) {
+    await waitForRetry()
     try {
-      return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
-    } catch (fallbackError) {
-      const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError)
-      const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
-      throw new Error(`Failed to load dataset "${dataFile}". Primary source error: ${primaryMessage}. Fallback source error: ${fallbackMessage}`)
+      return await fetchJsonNoCache<TitleItem[]>(withCacheBuster(libraryUrl))
+    } catch (retryError) {
+      try {
+        return await fetchJsonCached<TitleItem[]>(`./data/${dataFile}.generated.json`)
+      } catch (fallbackError) {
+        const primaryMessage = primaryError instanceof Error ? primaryError.message : String(primaryError)
+        const retryMessage = retryError instanceof Error ? retryError.message : String(retryError)
+        const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError)
+        throw new Error(`Failed to load dataset "${dataFile}". Primary: ${primaryMessage}. Retry: ${retryMessage}. Fallback: ${fallbackMessage}`)
+      }
     }
   }
 }
@@ -104,6 +127,8 @@ export const useDataLoader = (mode: TitleMode) => {
   const [caseVignettes, setCaseVignettes] = useState<CaseVignetteMap>({})
   const [globalDailySalt, setGlobalDailySalt] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [loadErrors, setLoadErrors] = useState<Partial<Record<TitleMode, string>>>({})
+  const [retryVersion, setRetryVersion] = useState(0)
 
   useEffect(() => {
     fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; musicCount?: number; diagnosisCount?: number }>('./data/source.json')
@@ -198,16 +223,37 @@ export const useDataLoader = (mode: TitleMode) => {
   }, [mode, searchIndexes])
 
   useEffect(() => {
-    if (data[mode].length) return
+    if (data[mode].length) {
+      setLoading(false)
+      return
+    }
+    let canceled = false
     setLoading(true)
+    setLoadErrors((current) => ({ ...current, [mode]: undefined }))
     loadModeItems(MODE_CONFIG[mode].dataFile)
       .then((items) => {
+        if (canceled) return
         const normalizedItems = normalizeItemMediaUrls(items)
         setData((current) => ({ ...current, [mode]: normalizedItems }))
         setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? normalizedItems.length }))
       })
-      .finally(() => setLoading(false))
-  }, [mode, data])
+      .catch((error) => {
+        if (canceled) return
+        const message = error instanceof Error ? error.message : String(error)
+        setLoadErrors((current) => ({ ...current, [mode]: message }))
+      })
+      .finally(() => {
+        if (!canceled) setLoading(false)
+      })
+    return () => { canceled = true }
+  }, [mode, data, retryVersion])
 
-  return { data, titleCounts, caseVignettes, loading, globalDailySalt, searchIndex: searchIndexes[mode] }
+  const retryLoading = () => {
+    const dataFile = MODE_CONFIG[mode].dataFile
+    requestCache.delete(`./data/libraries/${dataFile}/items.json`)
+    requestCache.delete(`./data/${dataFile}.generated.json`)
+    setRetryVersion((version) => version + 1)
+  }
+
+  return { data, titleCounts, caseVignettes, loading, loadError: loadErrors[mode] ?? null, retryLoading, globalDailySalt, searchIndex: searchIndexes[mode] }
 }

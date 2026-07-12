@@ -51,7 +51,31 @@ jobs:
           REMOTE_ARCHIVE="/tmp/shoditsa-web-${GITHUB_SHA}.tar.gz"
           ssh -p "$DEPLOY_PORT" "$REMOTE" "mkdir -p '$DEPLOY_TARGET_DIR'"
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "tar -xzf '$REMOTE_ARCHIVE' -C '$DEPLOY_TARGET_DIR' && chmod -R a+rX '$DEPLOY_TARGET_DIR' && rm -f '$REMOTE_ARCHIVE'"
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_TARGET_DIR='$DEPLOY_TARGET_DIR' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' bash -s" <<'REMOTE'
+          set -euo pipefail
+          STAGE="${DEPLOY_TARGET_DIR}.stage-${GITHUB_SHA}"
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE" "$DEPLOY_TARGET_DIR"
+          tar -xzf "$REMOTE_ARCHIVE" -C "$STAGE"
+
+          # Activate each file with rename(2), keeping multi-megabyte JSON valid throughout deploy.
+          # The HTML entrypoint is moved only after all of its assets and data are ready.
+          while IFS= read -r -d '' SOURCE; do
+            RELATIVE="${SOURCE#"$STAGE"/}"
+            DESTINATION="$DEPLOY_TARGET_DIR/$RELATIVE"
+            mkdir -p "$(dirname "$DESTINATION")"
+            mv -f "$SOURCE" "$DESTINATION"
+          done < <(find "$STAGE" -type f ! -name index.html ! -name build-manifest.json -print0)
+
+          for ENTRY in index.html build-manifest.json; do
+            if [ -f "$STAGE/$ENTRY" ]; then
+              mv -f "$STAGE/$ENTRY" "$DEPLOY_TARGET_DIR/$ENTRY"
+            fi
+          done
+
+          chmod -R a+rX "$DEPLOY_TARGET_DIR"
+          rm -rf "$STAGE" "$REMOTE_ARCHIVE"
+          REMOTE
       - name: External smoke
         env:
           EXPECTED_SHA: ${{ github.sha }}
