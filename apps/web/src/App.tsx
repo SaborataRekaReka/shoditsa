@@ -40,7 +40,7 @@ import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { ApiClientError, api } from './api/client'
 import { DailyProgressStub } from './features/daily-progress/DailyProgressStub'
-import { buildDailyHubState } from './features/daily-progress/daily-progress'
+import { buildDailyHubState, savedGameAttemptCount } from './features/daily-progress/daily-progress'
 import { ChallengeInvite } from './features/challenge/ChallengeInvite'
 import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
 import { nextDailyMode } from './features/daily-route/daily-route'
@@ -1473,7 +1473,7 @@ function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => vo
   </footer>
 }
 
-function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance }: {
+function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onOpenSavedSession: (game: SavedGame) => void
   onRewatch: () => void
@@ -1486,14 +1486,15 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
   preferredMode: TitleMode
   titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; music: number | null; diagnosis: number | null }
   todayAttendance: DailyAttendance
+  globalDailySalt: number
 }) {
   const futureCategories = [
     { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
   ]
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   const dailyState = useMemo(
-    () => buildDailyHubState(todayAttendance, games, preferredMode),
-    [games, preferredMode, todayAttendance],
+    () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt),
+    [games, globalDailySalt, preferredMode, todayAttendance],
   )
 
   return <>
@@ -1542,11 +1543,11 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
             const savedGame = activeGame ?? completedGame
             const handleClick = () => {
               const eventName = status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play'
-              trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGame?.attempts.length ?? 0, date: todayAttendance.date })
+              trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGameAttemptCount(savedGame), date: todayAttendance.date })
               if (savedGame) onOpenSavedSession(savedGame)
               else onSelect(config.mode)
             }
-            return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[config.mode]} status={status} attempts={savedGame?.attempts.length ?? null} onClick={handleClick} />
+            return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[config.mode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
         </div>
       </section>
@@ -4367,7 +4368,7 @@ export default function App() {
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
 
   return <div className={`app app--${appTone}`}>
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
 

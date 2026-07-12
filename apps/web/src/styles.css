@@ -32,6 +32,8 @@
 @media (max-width: 640px) { .server-hints { grid-template-columns: repeat(2,minmax(0,1fr)); }.server-game { padding-top: 16px; }.server-assist { align-items: stretch; }.server-assist select,.server-assist button { width: 100%; } }
 
 /* Category tickets: the hub keeps the same content width while showing the six daily modes as a compact archive grid. */
+#available-games.category-section { margin-top: 0; }
+.category-heading { margin-bottom: 13px; }
 .category-grid.category-grid--active { grid-template-columns: 1fr; gap: 12px; }
 @media (min-width: 720px) {
   .category-grid.category-grid--active { grid-template-columns: repeat(2, minmax(0, 1fr)); }

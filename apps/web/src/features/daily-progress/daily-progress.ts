@@ -16,7 +16,17 @@ const byMode = (games: SavedGame[]) => games.reduce<Partial<Record<TitleMode, Sa
   if (!result[game.mode]) result[game.mode] = game
   return result
 }, {})
-const isDailySession = (game: SavedGame, date: string) => game.date === date && !game.key.includes('|salt:')
+const isDailySession = (game: SavedGame, date: string, globalDailySalt: number) => {
+  if (game.date !== date) return false
+  const saltMatch = game.key.match(/\|salt:(-?\d+)$/)
+  if (globalDailySalt === 0) return !saltMatch
+  return Number(saltMatch?.[1]) === globalDailySalt
+}
+
+export const savedGameAttemptCount = (game: SavedGame | null | undefined) => {
+  const storedIds = Array.isArray(game?.attemptTitleIds) ? game.attemptTitleIds.length : 0
+  return storedIds || game?.attempts.length || 0
+}
 
 export const dailyCompletedCopy = (count: number) => {
   const suffix = count === 0 ? 'завершено' : count === 1 ? 'завершена' : 'завершены'
@@ -29,12 +39,12 @@ export const dailyRewardState = (completedCount: number): DailyRewardState => {
   return { fullHouse: false, remaining: 3 - completedCount, reward: 10, milestone: 3 }
 }
 
-export const buildDailyHubState = (attendance: DailyAttendance, games: SavedGame[], preferredMode: TitleMode): DailyHubState => {
+export const buildDailyHubState = (attendance: DailyAttendance, games: SavedGame[], preferredMode: TitleMode, globalDailySalt = 0): DailyHubState => {
   const completedSet = new Set(attendance.completedModes)
   const completedModes = DAILY_MODE_ORDER.filter((mode) => completedSet.has(mode))
-  const activeGames = games.filter((game) => game.status === 'playing' && game.attempts.length > 0 && isDailySession(game, attendance.date)).sort(newestFirst)
+  const activeGames = games.filter((game) => game.status === 'playing' && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)
   const finishedGames = games
-    .filter((game) => isDailySession(game, attendance.date) && (game.status === 'won' || game.status === 'lost'))
+    .filter((game) => isDailySession(game, attendance.date, globalDailySalt) && (game.status === 'won' || game.status === 'lost'))
     .sort(newestFirst)
   const activeGame = activeGames[0] ?? null
   const unfinishedModes = DAILY_MODE_ORDER.filter((mode) => !completedSet.has(mode))
@@ -49,7 +59,7 @@ export const buildDailyHubState = (attendance: DailyAttendance, games: SavedGame
     finishedGamesByMode: byMode(finishedGames),
     recommendedMode,
     primaryLabel: activeGame ? `Продолжить ${MODE_ACCUSATIVE[activeGame.mode]}` : 'Играть сейчас',
-    primaryMeta: activeGame ? `${activeGame.attempts.length} из 10 попыток` : null,
+    primaryMeta: activeGame ? `${savedGameAttemptCount(activeGame)} из 10 попыток` : null,
     punchesCaption: activeGame
       ? `${DAILY_MODE_LABELS[activeGame.mode]} в процессе`
       : completedCount === 0 ? 'Выберите первую игру' : completedCount < 6 ? 'Выберите следующую игру' : 'Все игры дня завершены',

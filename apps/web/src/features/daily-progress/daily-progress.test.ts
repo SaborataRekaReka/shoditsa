@@ -26,4 +26,12 @@ describe('daily hub ticket states', () => {
     expect(state.finishedGamesByMode.movie?.status).toBe('won')
     expect(state.completedCount).toBe(1)
   })
+
+  it('keeps the configured salted daily session and excludes a free-play salt', () => {
+    const state = buildDailyHubState({ ...attendance, completedModes: ['movie'] }, [
+      game({ key: 'movie|all|2026-07-12|salt:3', status: 'won', attempts: [{ titleId: 'answer', hints: [] }], updatedAt: 3 }),
+      game({ key: 'movie|all|2026-07-12|salt:4', status: 'won', attempts: [{ titleId: 'free', hints: [] }], updatedAt: 4 }),
+    ], 'series', 3)
+    expect(state.finishedGamesByMode.movie?.attempts[0]?.titleId).toBe('answer')
+  })
 })

@@ -49,22 +49,19 @@ export function GameResult(props: Props) {
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
       <strong>{props.won ? `${props.attempts}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
+      <div className="result-route">
+        <strong>Сегодня: {props.completedToday} из 6</strong>
+        <span>{props.nextRewardText}</span>
+      </div>
+      {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
+        <span>Вы — {props.attempts} · Друг — {props.opponentAttempts}</span>
+        <strong>{outcomeText}</strong>
+      </div>}
     </div>
-    <div className="result-route result-card__wide">
-      <strong>Сегодня: {props.completedToday} из 6</strong>
-      <span>{props.nextRewardText}</span>
-    </div>
-    {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score result-card__wide challenge-score--${props.challengeOutcome}`}>
-      <span>Вы — {props.attempts} · Друг — {props.opponentAttempts}</span>
-      <strong>{outcomeText}</strong>
-    </div>}
     <div className="result-actions">
       <button type="button" className="result-next" onClick={props.onNext}>{props.nextLabel}</button>
       <button type="button" onClick={props.onChallenge}>{props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'} <Share2 /></button>
-    </div>
-    <div className="result-share-channels result-card__wide">
-      <button type="button" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
-      <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Telegram</a>
+      <button type="button" className="result-copy" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
     </div>
     {props.award && <details className="reward-breakdown result-card__wide">
       <summary><span><Ticket /> {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билета`}</span><ChevronDown /></summary>
@@ -77,8 +74,11 @@ export function GameResult(props: Props) {
         {!!props.award.fullHouse && <li><span>Полный маршрут</span><strong>+{props.award.fullHouse}</strong></li>}
       </ul>}
     </details>}
-    <p className="result-streak result-card__wide">Серия: {props.streak} дней</p>
-    <div className="result-card__wide"><ContentReport onSubmit={props.onReport} /></div>
-    <button type="button" className="result-home result-card__wide" onClick={props.onHome}>На главную</button>
+    <div className="result-utility result-card__wide">
+      <span className="result-streak">Серия: {props.streak} дней</span>
+      <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Telegram</a>
+      <ContentReport onSubmit={props.onReport} />
+      <button type="button" className="result-home" onClick={props.onHome}>На главную</button>
+    </div>
   </section>
 }
