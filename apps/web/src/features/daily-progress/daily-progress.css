@@ -1,7 +1,7 @@
 .hub-hero-ticket { position: relative; overflow: hidden; margin: 0 0 20px; border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); }
 .hub-hero-ticket .hub-hero { margin: 0; border: 0; border-radius: 0; }
-.daily-progress-stub { position: relative; z-index: 3; min-height: 84px; padding: 0 46px; display: grid; grid-template-columns: minmax(220px, .8fr) minmax(330px, 1.2fr) minmax(260px, .85fr); align-items: center; gap: 32px; border-top: 1px dashed rgba(210, 192, 148, .28); background: var(--color-surface); box-shadow: inset 0 1px rgba(255,255,255,.018); }
-.daily-progress-stub::before, .daily-progress-stub::after { content: ''; position: absolute; top: -11px; width: 22px; height: 22px; border: 1px solid var(--color-line); border-radius: 50%; background: var(--color-bg); }
+.daily-progress-stub { position: relative; z-index: 3; min-height: 84px; padding: 0 46px; display: grid; grid-template-columns: minmax(220px, .8fr) minmax(330px, 1.2fr) minmax(260px, .85fr); align-items: center; gap: 32px; border-top: 1px solid var(--color-line); background: var(--color-surface); box-shadow: inset 0 1px rgba(255,255,255,.018); }
+.daily-progress-stub::before, .daily-progress-stub::after { content: ''; position: absolute; z-index: 4; top: -12px; width: 24px; height: 24px; border: 1px solid var(--color-line-strong); border-radius: 50%; background: var(--color-bg); box-shadow: 0 0 0 1px var(--color-surface); }
 .daily-progress-stub::before { left: -12px; }
 .daily-progress-stub::after { right: -12px; }
 .daily-progress-summary__label { display: block; margin-bottom: 7px; color: rgba(232,227,215,.52); font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
