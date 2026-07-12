@@ -30,3 +30,12 @@
 .auth-form { display: grid; gap: 16px; }.server-state { min-height: 60vh; display: grid; place-content: center; text-align: center; }
 .server-modal-content { display: grid; gap: 16px; }.server-list { display: grid; gap: 8px; max-height: 52vh; overflow: auto; }.server-list article,.server-list button { display: flex; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid rgba(0,0,0,.1); border-radius: 12px; background: #fff; text-align: left; }.server-list span { opacity: .7; }.server-promo,.server-archive-start { display: flex; gap: 8px; flex-wrap: wrap; }.server-promo input,.server-archive-start input,.server-archive-start select { min-height: 44px; flex: 1; border: 1px solid rgba(0,0,0,.18); border-radius: 12px; padding: 0 12px; }.server-promo button,.server-archive-start button { min-height: 44px; border: 0; border-radius: 12px; padding: 0 14px; background: #171717; color: #fff; font-weight: 800; }
 @media (max-width: 640px) { .server-hints { grid-template-columns: repeat(2,minmax(0,1fr)); }.server-game { padding-top: 16px; }.server-assist { align-items: stretch; }.server-assist select,.server-assist button { width: 100%; } }
+
+/* Category tickets: the hub keeps the same content width while showing the six daily modes as a compact archive grid. */
+.category-grid.category-grid--active { grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 720px) {
+  .category-grid.category-grid--active { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1080px) {
+  .category-grid.category-grid--active { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

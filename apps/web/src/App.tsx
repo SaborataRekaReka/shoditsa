@@ -47,6 +47,8 @@ import { nextDailyMode } from './features/daily-route/daily-route'
 import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion } from './features/economy/completion'
 import { GameResult } from './features/result/GameResult'
 import type { ContentReportReason } from './features/content-report/ContentReport'
+import { CategoryTicket } from './components/category-ticket/CategoryTicket'
+import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
 import {
   canUseAsArtistPortrait,
   canonicalMusicId,
@@ -1471,8 +1473,9 @@ function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => vo
   </footer>
 }
 
-function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance }: {
+function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance }: {
   onSelect: (mode: TitleMode) => void
+  onOpenSavedSession: (game: SavedGame) => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1487,7 +1490,6 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
   const futureCategories = [
     { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
   ]
-  const availableNowCount = MODE_TABS.length
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   const dailyState = useMemo(
     () => buildDailyHubState(todayAttendance, games, preferredMode),
@@ -1530,68 +1532,22 @@ function HubScreen({ onSelect, onRewatch, onStats, onRules, onReview, onResume, 
       </section>
 
       <section className="category-section" id="available-games">
-        <div className="category-heading"><span>Доступно сейчас</span><small>{String(availableNowCount).padStart(2, '0')} игры</small></div>
+        <div className="category-heading"><span>ИГРЫ НА СЕГОДНЯ</span></div>
         <div className="category-grid category-grid--active">
-          <button className="category-card category-card--movie" onClick={() => onSelect('movie')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Film /></span>
-              <span className="category-card__pool"><b>{titleCounts.movie ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('movie') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Кино</h2>
-            <p>Угадайте фильм по актёрам, жанрам, году и рейтингам.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--series" onClick={() => onSelect('series')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Tv /></span>
-              <span className="category-card__pool"><b>{titleCounts.series ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('series') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Сериалы</h2>
-            <p>Найдите сериал, сравнивая создателей, каст и периоды.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--anime" onClick={() => onSelect('anime')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Sparkles /></span>
-              <span className="category-card__pool"><b>{titleCounts.anime ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('anime') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Аниме</h2>
-            <p>Угадайте аниме по формату, эпизодам, студии, сэйю и рангу в популярности.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--game" onClick={() => onSelect('game')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Gamepad2 /></span>
-              <span className="category-card__pool"><b>{titleCounts.game ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('game') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Игры</h2>
-            <p>Угадайте игру по жанрам, рейтингу, месту в топе и метрикам Steam.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--music" onClick={() => onSelect('music')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Music2 /></span>
-              <span className="category-card__pool"><b>{titleCounts.music ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('music') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Музыка</h2>
-            <p>Угадайте артиста по жанрам, связям, топ-трекам и метрикам Last.fm.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
-          <button className="category-card category-card--diagnosis" onClick={() => onSelect('diagnosis')}>
-            <span className="category-card__grain" aria-hidden="true" />
-            <div className="category-card__head">
-              <span className="category-card__icon"><Stethoscope /></span>
-              <span className="category-card__pool"><b>{titleCounts.diagnosis ?? '—'}</b> в пуле</span>
-            </div>
-            <i>{todayAttendance.completedModes.includes('diagnosis') ? 'Штамп получен' : 'Ежедневная игра'}</i><h2>Диагнозы</h2>
-            <p>Угадайте диагноз по симптомам, системе, факторам риска и МКБ-подсказкам.</p>
-            <strong>Играть <ChevronRight /></strong>
-          </button>
+          {CATEGORY_TICKET_CONFIG.map((config) => {
+            const activeGame = dailyState.activeGamesByMode[config.mode] ?? null
+            const completedGame = dailyState.finishedGamesByMode[config.mode] ?? null
+            const completed = todayAttendance.completedModes.includes(config.mode) || Boolean(completedGame)
+            const status = activeGame ? 'active' : completed ? 'completed' : 'new'
+            const savedGame = activeGame ?? completedGame
+            const handleClick = () => {
+              const eventName = status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play'
+              trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGame?.attempts.length ?? 0, date: todayAttendance.date })
+              if (savedGame) onOpenSavedSession(savedGame)
+              else onSelect(config.mode)
+            }
+            return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[config.mode]} status={status} attempts={savedGame?.attempts.length ?? null} onClick={handleClick} />
+          })}
         </div>
       </section>
 
@@ -4411,7 +4367,7 @@ export default function App() {
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
 
   return <div className={`app app--${appTone}`}>
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} />}
 
     {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
 
