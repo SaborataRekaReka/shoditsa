@@ -31,7 +31,7 @@ const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number
   return `Играть: ${title}`
 }
 
-export function CategoryTicket({ mode, title, description, color, icon: Icon, watermarkUrl, poolCount, status, attempts, onClick }: Props) {
+export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
   const badge = status === 'active'
     ? `В ПРОЦЕССЕ · ${attempts ?? 0}/10`
@@ -48,7 +48,6 @@ export function CategoryTicket({ mode, title, description, color, icon: Icon, wa
   >
     <span className="category-ticket__stub" aria-hidden="true">
       <img className="category-ticket__watermark" src={watermarkUrl} alt="" aria-hidden="true" />
-      <Icon className="category-ticket__icon" aria-hidden="true" />
     </span>
     <span className="category-ticket__body">
       <span className="category-ticket__top">
