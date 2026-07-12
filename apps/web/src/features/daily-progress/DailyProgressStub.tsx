@@ -6,6 +6,8 @@ import { ProgressPunches } from './ProgressPunches'
 export function DailyProgressStub({ state }: { state: DailyHubState }) {
   const { completedCount, completedModes, punchesCaption, reward } = state
   return <div className="daily-progress-stub" aria-label="Прогресс игр за сегодня">
+    <svg className="daily-progress-notch daily-progress-notch--start" viewBox="0 0 16 32" aria-hidden="true"><path d="M0 0A16 16 0 0 1 16 16A16 16 0 0 1 0 32" /></svg>
+    <svg className="daily-progress-notch daily-progress-notch--end" viewBox="0 0 16 32" aria-hidden="true"><path d="M0 0A16 16 0 0 1 16 16A16 16 0 0 1 0 32" /></svg>
     <div className="daily-progress-summary">
       <span className="daily-progress-summary__label">{reward.fullHouse ? 'Полный зал' : 'Прогресс за сегодня'}</span>
       <strong className="daily-progress-summary__value">{dailyCompletedCopy(completedCount)}</strong>
