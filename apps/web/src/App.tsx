@@ -73,6 +73,7 @@ import {
   searchTitles,
 } from './game'
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
+import { freePlayAnswerSalt, freePlayGameKey, freePlayLaunchFromGameKey } from './game/free-play'
 import { copyText, shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
@@ -2563,6 +2564,7 @@ function Game({
   onEconomyChange,
   caseVignettes,
   dailySalt,
+  freePlayLaunch,
   isPracticeSession,
   searchIndex,
   challenge,
@@ -2583,6 +2585,7 @@ function Game({
   onEconomyChange: () => void
   caseVignettes: CaseVignetteMap
   dailySalt: number
+  freePlayLaunch: number | null
   isPracticeSession: boolean
   searchIndex: LibrarySearchIndex | null
   challenge: ChallengePayload | null
@@ -2592,9 +2595,12 @@ function Game({
   const difficultyVariant = mode === 'music' ? difficulty : ''
   const basePool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
   const pool = useMemo(() => mode === 'music' ? musicDifficultyPool(basePool, difficulty) : basePool, [basePool, mode, difficulty])
-  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, dailySalt, difficultyVariant) : null, [pool, mode, effectivePeriod, date, dailySalt, difficultyVariant])
+  const answerSalt = freePlayLaunch === null ? dailySalt : freePlayAnswerSalt(freePlayLaunch)
+  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, answerSalt, difficultyVariant) : null, [pool, mode, effectivePeriod, date, answerSalt, difficultyVariant])
   const baseKey = difficultyVariant ? `${gameKey(mode, effectivePeriod, date)}|diff:${difficultyVariant}` : gameKey(mode, effectivePeriod, date)
-  const key = dailySalt === 0 ? baseKey : `${baseKey}|salt:${dailySalt}`
+  const key = freePlayLaunch === null
+    ? dailySalt === 0 ? baseKey : `${baseKey}|salt:${dailySalt}`
+    : freePlayGameKey(baseKey, freePlayLaunch)
   const [sessionState, dispatchSession] = useReducer(gameSessionReducer, undefined, createInitialGameSessionState)
   const { attempts, status, query, selected, activeSuggestionIndex, message, hintChoices, dismissedHintRounds } = sessionState
   const debouncedQuery = useDebouncedValue(query, 100)
@@ -3933,6 +3939,7 @@ export default function App() {
   const [difficulty, setDifficulty] = useState<DifficultyKey>(() => challenge?.difficulty ?? 'medium')
   const [date, setDate] = useState(() => challenge?.date ?? getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
+  const [freePlayLaunch, setFreePlayLaunch] = useState<number | null>(null)
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
   const { data, titleCounts, caseVignettes, loading, loadError, retryLoading, globalDailySalt, searchIndex } = useDataLoader(mode)
@@ -4178,6 +4185,7 @@ export default function App() {
     clearTransitionTimer()
     setTransition('idle')
     setGameBackTarget(backTarget)
+    setFreePlayLaunch(freePlayLaunchFromGameKey(savedGame.key))
     setModeSafe(savedGame.mode)
     setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' || savedGame.mode === 'anime' ? savedGame.period : 'all')
     if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
@@ -4201,6 +4209,7 @@ export default function App() {
     trackMetrikaGoal('select_mode', { mode: nextMode })
     clearTransitionTimer()
     setTransition('idle')
+    setFreePlayLaunch(null)
     setModeSafe(nextMode)
     setDate(getMoscowDate())
     setScreen('title')
@@ -4213,6 +4222,7 @@ export default function App() {
     trackMetrikaGoal('challenge_accepted', { mode: challenge.mode, date: challenge.date, from: challenge.from })
     clearTransitionTimer()
     setTransition('idle')
+    setFreePlayLaunch(null)
     setModeSafe(challenge.mode)
     setPeriod(challenge.mode === 'movie' || challenge.mode === 'series' || challenge.mode === 'anime' ? challenge.period : 'all')
     if (challenge.difficulty) setDifficulty(challenge.difficulty)
@@ -4233,6 +4243,7 @@ export default function App() {
   const playNextDaily = (nextMode: TitleMode | null) => {
     setChallenge(null)
     setChallengeAccepted(false)
+    setFreePlayLaunch(null)
     if (!nextMode) {
       setDate(getMoscowDate())
       setScreen('rewatch')
@@ -4288,6 +4299,7 @@ export default function App() {
     trackMetrikaGoal('start_session', { mode, period })
     adminDailySaltRef.current = 0
     setAdminDailySalt(0)
+    setFreePlayLaunch(null)
     const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
     setGameBackTarget(backTarget)
     setDate(getMoscowDate())
@@ -4340,12 +4352,9 @@ export default function App() {
     setGameBackTarget(backTarget)
     setPeriod('all')
     setDate(today)
+    setFreePlayLaunch(nextLaunchNumber)
     setModal(null)
     window.scrollTo({ top: 0 })
-
-    const nextSalt = adminDailySaltRef.current + 1
-    adminDailySaltRef.current = nextSalt
-    setAdminDailySalt(nextSalt)
     refreshEconomy()
 
     if (screen !== 'title') {
@@ -4372,6 +4381,7 @@ export default function App() {
     clearTransitionTimer()
     setTransition('idle')
     setGameBackTarget('rewatch')
+    setFreePlayLaunch(null)
     setDate(archiveDate)
     setScreen('game')
     setModal(null)
@@ -4401,7 +4411,8 @@ export default function App() {
           difficulty={difficulty}
           date={date}
           dailySalt={effectiveDailySalt}
-          isPracticeSession={adminDailySalt !== 0}
+          freePlayLaunch={freePlayLaunch}
+          isPracticeSession={freePlayLaunch !== null || adminDailySalt !== 0}
           setDate={setDate}
           onHome={goHome}
           onBack={goBackFromGame}
