@@ -43,7 +43,9 @@ const sourceChecks = [
   {
     path: '.github/workflows/deploy-timeweb.yml',
     required: [
-      ['atomic deployment', /atomic-timeweb\.sh/],
+      ['production web target', /\/opt\/repeto\/deploy\/shoditsa/],
+      ['release archive upload', /release-web\.tar\.gz/],
+      ['production SHA smoke', /smoke:production/],
       ['API smoke check', /\/api\/v1\/meta/],
     ],
   },
@@ -70,4 +72,4 @@ if (missingFiles.length || failedChecks.length) {
   process.exit(1)
 }
 
-console.log('[app-shell] profile, footer, API and atomic deployment invariants: ok')
+console.log('[app-shell] profile, footer, API and production deployment invariants: ok')
