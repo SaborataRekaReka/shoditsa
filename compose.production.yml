@@ -1,0 +1,53 @@
+name: shoditsa
+services:
+  postgres:
+    image: postgres:18.4-alpine3.23
+    restart: unless-stopped
+    env_file: /opt/shoditsa/config/.env
+    environment:
+      POSTGRES_DB: shoditsa
+      POSTGRES_USER: shoditsa_app
+      TZ: UTC
+      PGDATA: /var/lib/postgresql/18/docker
+    volumes:
+      - /opt/shoditsa/volumes/postgres:/var/lib/postgresql
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shoditsa_app -d shoditsa"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  api:
+    image: ghcr.io/saboratarekareka/shoditsa-api:${APP_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    env_file: /opt/shoditsa/config/.env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3001
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - /opt/shoditsa/shared/media:/srv/shoditsa/media:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:3001/api/v1/health/ready >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+  migrate:
+    image: ghcr.io/saboratarekareka/shoditsa-api:${APP_IMAGE_TAG:-latest}
+    profiles: [migrate]
+    env_file: /opt/shoditsa/config/.env
+    command: ["node", "apps/api/dist/migrate.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [backend]
+networks:
+  backend:
+    internal: true

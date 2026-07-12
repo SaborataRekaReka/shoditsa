@@ -1,0 +1,45 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.4-alpine3.23
+        env:
+          POSTGRES_DB: shoditsa
+          POSTGRES_USER: shoditsa_app
+          POSTGRES_PASSWORD: shoditsa_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U shoditsa_app -d shoditsa"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgres://shoditsa_app:shoditsa_test@localhost:5432/shoditsa
+      BETTER_AUTH_SECRET: ci-only-secret-at-least-32-characters-long
+      BETTER_AUTH_URL: http://localhost:3001
+      TRUSTED_ORIGINS: http://localhost:5173
+      PROMO_CODE_PEPPER: ci-only-pepper-at-least-32-characters-long
+      AUTH_EMAIL_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "24.14.1", cache: npm }
+      - run: npm ci
+      - run: npm run validate:shell
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run db:migrate
+      - run: npm run db:check
+      - run: npm run content:import -- --dry-run
+      - run: npm run content:import -- --apply
+      - run: npm run content:activate -- --latest-ready
+      - run: npm run test:integration
+      - run: npm run build
+      - run: npm run build:api
+      - run: npm run yandex:bundle
+      - run: docker build -f infra/docker/Dockerfile.api .

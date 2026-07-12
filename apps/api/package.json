@@ -1,0 +1,12 @@
+{
+  "name": "@shoditsa/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@shoditsa/config": "*",
+    "@shoditsa/contracts": "*",
+    "@shoditsa/database": "*",
+    "@shoditsa/game-core": "*"
+  }
+}

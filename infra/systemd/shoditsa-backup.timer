@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Shoditsa backup at 03:00 Moscow time
+
+[Timer]
+OnCalendar=*-*-* 00:00:00 UTC
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

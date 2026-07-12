@@ -1,0 +1,32 @@
+FROM node:24.14.1-alpine3.23 AS builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/config/package.json packages/config/package.json
+COPY packages/contracts/package.json packages/contracts/package.json
+COPY packages/database/package.json packages/database/package.json
+COPY packages/game-core/package.json packages/game-core/package.json
+RUN npm ci
+COPY tsconfig.json tsup.config.ts ./
+COPY apps/api apps/api
+COPY packages packages
+RUN npm run build:api
+
+FROM node:24.14.1-alpine3.23 AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+RUN addgroup -S shoditsa && adduser -S -G shoditsa -u 10001 shoditsa
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/config/package.json packages/config/package.json
+COPY packages/contracts/package.json packages/contracts/package.json
+COPY packages/database/package.json packages/database/package.json
+COPY packages/game-core/package.json packages/game-core/package.json
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+COPY --from=builder --chown=shoditsa:shoditsa /app/apps/api/dist apps/api/dist
+COPY --from=builder --chown=shoditsa:shoditsa /app/packages/database/migrations packages/database/migrations
+USER shoditsa
+EXPOSE 3001
+CMD ["node", "apps/api/dist/server.js"]

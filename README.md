@@ -1,262 +1,70 @@
-# Сеанс
+# Сходится!
 
-Ежедневная браузерная игра: угадайте фильм или сериал за 10 попыток. После каждой попытки игра сравнивает год, страну, жанры, создателей, актёров, рейтинги, хронометраж, возраст и популярность.
+Серверная платформа ежедневных игр с шестью режимами. Веб-версия использует Fastify, PostgreSQL и server-authoritative игровые сессии; автономная сборка Яндекс Игр сохранена как отдельный режим.
 
-## Запуск
+## Локальный запуск
+
+Требования: Node.js 24.14.1+, npm 10+, Docker Compose v2.
 
 ```powershell
-npm install
+Copy-Item .env.example .env
+docker compose up -d --wait postgres mailpit
+npm ci
+npm run db:migrate
+npm run content:import -- --dry-run
+npm run content:import -- --apply
+npm run content:activate -- --latest-ready
+npm run content:materialize
 npm run dev
 ```
 
-Vite откроет приложение на `http://localhost:5173`.
+- Web: `http://localhost:5173`
+- API: `http://localhost:3001/api/v1`
+- OpenAPI UI в development: `http://localhost:3001/api/docs`
+- Mailpit: `http://localhost:8025`
+- PostgreSQL: `localhost:5434`
 
-Проверка production-сборки:
+## Проверки
 
 ```powershell
+npm run lint
+npm run typecheck
+npm test
+npm run test:integration
+npm run test:e2e
 npm run build
-npm run preview
-```
-
-## Сборка архива для Яндекс Игр / Build archive for Yandex Games
-
-Для Яндекс Игр `index.html` должен находиться в корне ZIP-архива (не внутри папки `dist/`).
-
-```bash
+npm run build:api
 npm run yandex:bundle
-```
-
-Команда делает production-сборку и автоматически упаковывает `dist.zip` с корректной структурой архива.
-
-Автоматическая сборка в CI выполняется workflow  
-`.github/workflows/build-yandex-games.yml`:
-
-- на каждый `push` в `main`;
-- вручную через `workflow_dispatch`;
-- при публикации релиза (`release: published`).
-
-После выполнения workflow публикуется версионированный артефакт `yandex-games-<version>` с файлом
-`dist-<version>.zip` (версия = тег релиза или `YYYYMMDD-<sha7>`).  
-Для `release: published` используется тег релиза, для `push`/`workflow_dispatch` — формат даты и SHA.
-Для релизов этот же архив добавляется в assets релиза.
-
-Базовая валидация перед и после рефакторинга:
-
-```powershell
 npm run data:validate
-npm run metrics:baseline
-npm run smoke
+docker build -f infra/docker/Dockerfile.api .
 ```
 
-## Быстрый деплой на сервер
+Integration/E2E требуют запущенного PostgreSQL с применённой migration и active content revision. `test:e2e` поднимает отдельные API/Web процессы на 3002/5174.
 
-Если нужно доставлять правки быстрее, чем через цикл commit -> GitHub Actions,
-используйте локальный прямой деплой:
+## Основные команды данных
 
 ```powershell
-npm run deploy:quick
+npm run db:generate
+npm run db:migrate
+npm run db:check
+npm run content:import -- --source ./public/data/libraries --dry-run
+npm run content:import -- --source ./public/data/libraries --apply
+npm run content:activate -- --revision <uuid>
+npm run content:export -- --revision <uuid> --output ./tmp/export
+npm run content:materialize -- --days-before 90 --days-after 30
+npm run content:media:migrate -- --target C:\path\to\media --apply
 ```
 
-Команда соберет `dist`, загрузит файлы на `72.56.240.222:/opt/repeto/deploy/shoditsa`
-и выставит права чтения.
-
-Если `dist` уже собран и нужно только залить изменения:
-
-```powershell
-npm run deploy:quick:skip-build
-```
-
-## Автодеплой на прод из GitHub
-
-В репозитории есть workflow `.github/workflows/deploy-timeweb.yml`, который выполняет деплой на прод при каждом `push` в `main`.
-
-Чтобы это работало стабильно, в GitHub нужно один раз добавить секрет:
-
-- `TIMEWEB_SSH_KEY` — приватный SSH-ключ пользователя сервера (для `root@72.56.240.222`).
-
-Путь деплоя в workflow:
-
-- `/opt/repeto/deploy/shoditsa`
-
-Проверка после пуша:
-
-- откройте вкладку `Actions`;
-- убедитесь, что workflow `Deploy To Timeweb` завершился статусом `success`.
-
-## Глобальная смена ежедневного ответа (для всех)
-
-Сдвиг для всех игроков задается в `public/data/daily-config.json` (`globalSalt`).
-
-Быстро обновить значение:
-
-```powershell
-npm run daily:salt -- 1
-```
-
-После изменения `globalSalt` выполните сборку и деплой, чтобы значение применилось у всех пользователей:
-
-```powershell
-npm run build
-npm run deploy:quick:skip-build
-```
-
-## Что работает
-
-- режимы «Фильм дня», «Сериал дня» и «Аниме дня»;
-- 7 временных периодов;
-- стабильный тайтл дня по московской дате;
-- поиск по русскому, оригинальному и альтернативным названиям, `е/ё` и базовым опечаткам;
-- 10 сравнительных подсказок после каждой попытки;
-- победа и поражение, шаринг результата без спойлера;
-- отдельный прогресс каждой комбинации даты, режима и периода;
-- статистика и архив в `localStorage`;
-- адаптивный mobile-first интерфейс.
-
-## Данные
-
-Готовая сборка не обращается к стороннему API: она читает локальные файлы из `public/data`.
-
-Возобновляемое агентное обогащение музыкальной базы запускается через `npm run data:agent:music`. Команда ищет новых артистов в веб-источниках, сохраняет provenance, собирает API-evidence и генерирует проверяемую антиспойлерную подсказку. Состояние хранится отдельно от production, публикация выполняется командой `npm run data:agent:music:publish`. Полный runbook и контракт адаптеров: [docs/08_AGENT_ENRICHMENT.md](docs/08_AGENT_ENRICHMENT.md).
-
-Сейчас включены:
-
-- 500 фильмов из списка [500 лучших фильмов Кинопоиска](https://www.kinopoisk.ru/lists/movies/top500/) по фиксированным ID в `data/reference/kinopoisk-top500-ids.json`;
-- 40 сериалов из `TOP_250_TV_SHOWS`.
-- 500 аниме из [Shikimori Popularity](https://shikimori.io/animes?order=popularity) в последовательном порядке.
-
-Для обновления данных создайте `.env.local`:
-
-```dotenv
-KINOPOISK_API_KEY=your_key_here
-```
-
-Затем выполните:
-
-```powershell
-npm run data:build
-```
-
-### Каталогизированная JSON-структура и search-index
-
-Чтобы разложить библиотеки по каталогам и построить индексы быстрого поиска:
-
-```powershell
-npm run data:catalogs
-```
-
-Скрипт создаёт структуру:
-
-- `public/data/libraries/index.json` — общий каталог библиотек;
-- `public/data/libraries/movies/items.json` + `search-index.json`;
-- `public/data/libraries/series/items.json` + `search-index.json`;
-- `public/data/libraries/animes/items.json` + `search-index.json`;
-- `public/data/libraries/games/items.json` + `search-index.json`;
-- `public/data/libraries/diagnoses/items.json` + `search-index.json` + `case-vignettes.by-id.json`.
-
-Текущие файлы в `public/data/*.generated.json` сохраняются для обратной совместимости.
-
-Для ключей с небольшим дневным лимитом используйте режим экономии квоты (только фильмы, без staff), чтобы уложиться в 500 запросов:
-
-```powershell
-$env:KINOPOISK_INCLUDE_SERIES=0
-$env:KINOPOISK_INCLUDE_STAFF=0
-npm run data:build
-```
-
-Если нужен полный набор подсказок (сюжет, слоган, основной/второстепенный каст, факты, награды), включите дополнительные запросы:
-
-```powershell
-$env:KINOPOISK_INCLUDE_SERIES=0
-$env:KINOPOISK_INCLUDE_STAFF=1
-$env:KINOPOISK_INCLUDE_FACTS=1
-$env:KINOPOISK_INCLUDE_AWARDS=1
-npm run data:build
-```
-
-На бесплатном тарифе удобнее дозаполнять подсказки батчами:
-
-```powershell
-$env:KINOPOISK_HINT_BATCH=60
-npm run data:hints
-```
-
-Скрипт `data:hints` обновляет только недостающие hint-поля и сохраняет прогресс в `public/data/source.json`.
-
-### Сбор ID из длинного списка Navigator
-
-Если нужно собрать несколько тысяч ID из страниц Navigator, используйте Playwright-скрипт
-с автопереходом и возобновлением после остановки:
-
-```powershell
-npm install -D playwright
-npx playwright install chromium
-npm run data:collect-ids -- --url "https://www.kinopoisk.ru/top/navigator/.../#results" --manual
-```
-
-Что делает скрипт:
-
-- открывает Chromium с постоянным профилем (`.tmp/kinopoisk-playwright-profile`);
-- проходит страницы и собирает все `film/<id>` ссылки;
-- пишет прогресс в `data/kinopoisk/navigator/movies/state.json`;
-- пишет итоговый список в `data/kinopoisk/navigator/movies/ids.json`.
-
-Продолжить после остановки:
-
-```powershell
-npm run data:collect-ids
-```
-
-Начать заново:
-
-```powershell
-npm run data:collect-ids -- --url "https://www.kinopoisk.ru/top/navigator/.../#results" --fresh
-```
-
-Если после сборки часть фильмов осталась с неполными полями (например, из-за лимита старого ключа), можно дозаполнить только пробелы без полного реимпорта:
-
-```powershell
-npm run data:refill
-```
-
-Ключ используется только Node-скриптом `scripts/kinopoisk/import-top500-movies.ts` и никогда не попадает в клиентскую сборку. Сведения об источнике и времени генерации сохраняются в `public/data/source.json`.
-
-### Импорт аниме из Shikimori (по порядку популярности)
-
-Импорт берется из каталога `https://shikimori.io/animes?order=popularity` строго по порядку: страница 1, затем 2, затем 3 и так далее.
-
-Базовый импорт (первые 500):
-
-```powershell
-npm run data:build:anime
-```
-
-С ролями (персонажи/люди из `/api/animes/:id/roles`):
-
-```powershell
-npm run data:build:anime:roles
-```
-
-Полезные параметры:
-
-```powershell
-node scripts/anime/import-shikimori.mjs --max-items 500 --page-start 1 --limit 50 --delay-ms 700
-```
-
-Что важно:
-
-- порядок не перемешивается: всегда от первого популярного к следующим;
-- в запросах выставляется `User-Agent` (можно задать через `SHIKIMORI_USER_AGENT` в `.env.local`);
-- антиспойлер для `plotHint` сейчас делает только явную маскировку названия, имен персонажей/людей (если включен `--fetch-roles`) и лор-ключей;
-- маскировка trigger-фраз намеренно не используется.
-
-## Структура
-
-```text
-src/App.tsx            интерфейс и пользовательские сценарии
-src/game.ts           выбор тайтла, поиск, сравнение и шаринг
-src/storage.ts        игры и статистика localStorage
-src/styles.css        визуальная система и адаптивность
-scripts/              сборка локального датасета
-public/data/          готовые данные приложения
-docs/                 исходная продуктовая документация
-```
+Старые JSON и upstream-скрипты остаются staging-источниками. Production runtime читает каталоги и игровое состояние только из PostgreSQL.
+
+## Архитектура и эксплуатация
+
+- [Архитектура](docs/backend/ARCHITECTURE.md)
+- [База данных](docs/backend/DATABASE.md)
+- [API](docs/backend/API.md)
+- [Импорт контента](docs/backend/CONTENT_IMPORT.md)
+- [Deploy на Timeweb](docs/backend/DEPLOY_TIMEWEB.md)
+- [Backup/restore](docs/backend/BACKUP_RESTORE.md)
+- [Безопасность](docs/backend/SECURITY.md)
+- [Rollback](docs/backend/ROLLBACK.md)
+- [Acceptance report](docs/backend/ACCEPTANCE_REPORT.md)

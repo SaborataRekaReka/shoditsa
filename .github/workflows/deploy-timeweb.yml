@@ -1,94 +1,60 @@
-name: Deploy To Timeweb
-
+name: Deploy production atomically
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
-
+  push:
+    branches: [main]
 concurrency:
-  group: deploy-timeweb-main
-  cancel-in-progress: true
-
+  group: shoditsa-production
+  cancel-in-progress: false
 permissions:
   contents: read
-
-env:
-  DEPLOY_HOST: 72.56.240.222
-  DEPLOY_USER: root
-  DEPLOY_PORT: 22
-  DEPLOY_TARGET_DIR: /opt/repeto/deploy/shoditsa
-
+  packages: write
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "24.14.1", cache: npm }
+      - run: npm ci
+      - run: npm run typecheck && npm test && npm run build && npm run build:api && npm run content:import -- --dry-run
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
         with:
-          node-version: "22"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Show dist summary
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/Dockerfile.api
+          push: true
+          tags: ghcr.io/saboratarekareka/shoditsa-api:${{ github.sha }}
+      - name: Package immutable web release
         run: |
-          set -euo pipefail
-          ls -la dist | head -n 40
-          if [ -d dist/data ]; then
-            ls -la dist/data | head -n 40
-          else
-            echo "::warning::dist/data is missing in this build; existing server data will be preserved"
-          fi
-
-      - name: Validate SSH secret exists
+          mkdir -p release/web
+          cp -a dist/. release/web/
+          cp compose.production.yml release/
+          cp -a infra release/
+          tar -czf release.tar.gz -C release .
+          sha256sum release.tar.gz > release.tar.gz.sha256
+      - name: Upload and activate
+        env:
+          SSH_KEY: ${{ secrets.TIMEWEB_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.TIMEWEB_DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.TIMEWEB_DEPLOY_USER }}
         run: |
-          if [ -z "${{ secrets.TIMEWEB_SSH_KEY }}" ]; then
-            echo "::error::TIMEWEB_SSH_KEY is missing or empty"
-            exit 1
-          fi
-
-      - name: Configure SSH key
-        run: |
-          set -euo pipefail
           install -m 700 -d ~/.ssh
-          KEY_CONTENT="${{ secrets.TIMEWEB_SSH_KEY }}"
-          # Support both real multiline secrets and one-line secrets with escaped \n.
-          KEY_CONTENT="${KEY_CONTENT//$'\r'/}"
-          KEY_CONTENT="${KEY_CONTENT//\\n/$'\n'}"
-          printf '%s\n' "$KEY_CONTENT" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          if ! ssh-keygen -y -f ~/.ssh/id_rsa >/dev/null 2>&1; then
-            echo "::error::TIMEWEB_SSH_KEY is not a valid private key. Save the full private key including BEGIN/END lines."
-            exit 1
-          fi
-          ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
-
-      - name: Validate SSH authentication
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /opt/shoditsa/releases/${GITHUB_SHA}.tmp"
+          scp release.tar.gz release.tar.gz.sha256 "$DEPLOY_USER@$DEPLOY_HOST:/opt/shoditsa/releases/${GITHUB_SHA}.tmp/"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" "RELEASE_SHA=$GITHUB_SHA /opt/shoditsa/app/scripts/deploy/atomic-timeweb.sh"
+      - name: External smoke
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+          PRODUCTION_URL: https://shoditsa.ru
         run: |
-          set -euo pipefail
-          ssh -o BatchMode=yes -o ConnectTimeout=10 -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "echo ssh-auth-ok"
-
-      - name: Ensure target directory exists
-        run: |
-          set -euo pipefail
-          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p $DEPLOY_TARGET_DIR"
-
-      - name: Upload dist to server
-        run: |
-          set -euo pipefail
-          scp -P "$DEPLOY_PORT" -r dist/* "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_TARGET_DIR"
-
-      - name: Set permissions and list deployed files
-        run: |
-          set -euo pipefail
-          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "chmod -R a+rX $DEPLOY_TARGET_DIR; ls -la $DEPLOY_TARGET_DIR | head -n 20"
+          npm run smoke:production
+          curl -fsS https://shoditsa.ru/api/v1/meta >/dev/null

@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-07-11T18:56:57.035Z",
+  "sourceRoot": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries",
+  "totalItems": 4586,
+  "modes": {
+    "movie": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\movies\\items.json",
+      "checksumSha256": "b4aede6ac1cec53f64148bf5c54b4d396957be60b180ee1726eac95587e694c4",
+      "count": 1246
+    },
+    "series": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\series\\items.json",
+      "checksumSha256": "c1a8b18ad2a61ace3855db46b9120da07634cbcd65f2b79bad3b36995761456c",
+      "count": 811
+    },
+    "anime": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\animes\\items.json",
+      "checksumSha256": "88976a9b58a5d6413aff586b68e465c7a686fb8cdfd5d7a0eaa2bc8135946a16",
+      "count": 1000
+    },
+    "game": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\games\\items.json",
+      "checksumSha256": "55a0b5d84f5fccc1ad48b79f84328232b66f09eda850cab1ee3f7dc586743396",
+      "count": 1000
+    },
+    "music": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\music\\items.json",
+      "checksumSha256": "2273fd821e43e5d3617825f392108712e3c21b429b04caafef93a8ae1c1bdf2f",
+      "count": 409
+    },
+    "diagnosis": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\diagnoses\\items.json",
+      "checksumSha256": "1a14e656e5cdfeab8d2f24e34228dff10e66d2a75ddf84a7c3222bb335607196",
+      "count": 120
+    }
+  },
+  "warnings": [],
+  "checksumSha256": "def79836c719e5d77d7c56b1b7fa2acdb0e92b7ddfdd72dc84f3b618c9f54a28",
+  "mode": "dry-run"
+}

@@ -1,0 +1,1282 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Сходится! API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {}
+  },
+  "paths": {
+    "/api/v1/health/live": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/meta": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/metrics": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/auth/{*}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "*",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "*",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/guest": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      },
+      "delete": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "confirmation"
+                ],
+                "properties": {
+                  "confirmation": {
+                    "type": "string",
+                    "enum": [
+                      "УДАЛИТЬ"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/profile": {
+      "patch": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "anyOf": [
+                      {
+                        "minLength": 1,
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "locale": {
+                    "minLength": 2,
+                    "maxLength": 12,
+                    "type": "string"
+                  },
+                  "timezone": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/legacy-import": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/catalog/search": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "movie"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "series"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "anime"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "game"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "music"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "diagnosis"
+                  ]
+                }
+              ]
+            },
+            "in": "query",
+            "name": "mode",
+            "required": true
+          },
+          {
+            "schema": {
+              "minLength": 1,
+              "maxLength": 100,
+              "type": "string"
+            },
+            "in": "query",
+            "name": "q",
+            "required": true
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "all"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "from_1960"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "from_1980"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "from_1990"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "from_2000"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "from_2010"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "from_2020"
+                  ]
+                }
+              ]
+            },
+            "in": "query",
+            "name": "period",
+            "required": false
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "easy"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "medium"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "hard"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "expert"
+                  ]
+                }
+              ]
+            },
+            "in": "query",
+            "name": "difficulty",
+            "required": false
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sessionId",
+            "required": false
+          },
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 20,
+              "default": 10,
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/catalog/items/{itemId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/games/start": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "kind",
+                  "mode"
+                ],
+                "properties": {
+                  "kind": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "daily"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "archive"
+                        ]
+                      }
+                    ]
+                  },
+                  "mode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "movie"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "series"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "anime"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "game"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "music"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "diagnosis"
+                        ]
+                      }
+                    ]
+                  },
+                  "period": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "all"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_1960"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_1980"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_1990"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_2000"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_2010"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_2020"
+                        ]
+                      }
+                    ]
+                  },
+                  "difficulty": {
+                    "anyOf": [
+                      {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "easy"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "medium"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "hard"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "expert"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "archiveDate": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/games/{sessionId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/games/{sessionId}/attempts": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "itemId"
+                ],
+                "properties": {
+                  "itemId": {
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/games/{sessionId}/hints": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "checkpoint",
+                  "hintKey"
+                ],
+                "properties": {
+                  "checkpoint": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "enum": [
+                          5
+                        ]
+                      },
+                      {
+                        "type": "number",
+                        "enum": [
+                          8
+                        ]
+                      }
+                    ]
+                  },
+                  "hintKey": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "plot"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "slogan"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "cast_main"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "cast_secondary"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "fact"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "awards"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/dashboard": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/stats": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/wallet/ledger": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/me/entitlements": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/economy/period-unlocks": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "mode",
+                  "period"
+                ],
+                "properties": {
+                  "mode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "movie"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "series"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "anime"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "game"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "music"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "diagnosis"
+                        ]
+                      }
+                    ]
+                  },
+                  "period": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "all"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_1960"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_1980"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_1990"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_2000"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_2010"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "from_2020"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/economy/free-play/start": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "mode"
+                ],
+                "properties": {
+                  "mode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "movie"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "series"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "anime"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "game"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "music"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "diagnosis"
+                        ]
+                      }
+                    ]
+                  },
+                  "difficulty": {
+                    "anyOf": [
+                      {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "easy"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "medium"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "hard"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "expert"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/promos/redeem": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "code"
+                ],
+                "properties": {
+                  "code": {
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/archive": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/archive/{date}/status": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "date",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/revisions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content/revisions/{id}/activate": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/settings/daily-salt": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      },
+      "put": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "value"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/promos": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/promos/{id}": {
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/wallet-adjustments": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content-review/{itemId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content-review/{itemId}/{field}": {
+      "put": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "itemId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "field",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    }
+  }
+}

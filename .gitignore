@@ -1,10 +1,13 @@
 node_modules
 dist
 dist.zip
+dist-yandex.zip
 *.tsbuildinfo
 .env
 .env.local
 *.log
+test-results/
+playwright-report/
 .tmp/
 tmp/
 archive/local/

@@ -1,0 +1,13 @@
+{
+  "name": "@shoditsa/database",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@shoditsa/config": "*",
+    "drizzle-orm": "0.45.2",
+    "postgres": "3.4.9"
+  }
+}

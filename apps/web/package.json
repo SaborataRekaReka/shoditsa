@@ -1,0 +1,10 @@
+{
+  "name": "@shoditsa/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@shoditsa/contracts": "*",
+    "@shoditsa/game-core": "*"
+  }
+}
