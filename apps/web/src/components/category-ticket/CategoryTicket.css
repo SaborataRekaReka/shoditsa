@@ -84,12 +84,12 @@
   user-select: none;
 }
 
-.category-ticket--movie .category-ticket__watermark { bottom: -2px; height: 55px; }
-.category-ticket--series .category-ticket__watermark { bottom: -3px; height: 58px; }
-.category-ticket--anime .category-ticket__watermark { right: -6px; left: auto; bottom: -2px; width: 86px; height: 60px; }
-.category-ticket--game .category-ticket__watermark { bottom: -2px; height: 55px; }
-.category-ticket--music .category-ticket__watermark { bottom: 0; height: 45px; }
-.category-ticket--diagnosis .category-ticket__watermark { bottom: -1px; height: 50px; }
+.category-ticket--movie .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 68px; opacity: .22; }
+.category-ticket--series .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 70px; opacity: .22; }
+.category-ticket--anime .category-ticket__watermark { right: -6px; left: auto; bottom: -1px; width: calc(100% + 12px); height: 70px; opacity: .22; }
+.category-ticket--game .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 72px; opacity: .22; }
+.category-ticket--music .category-ticket__watermark { left: -6px; bottom: 0; width: calc(100% + 12px); height: 66px; opacity: .22; }
+.category-ticket--diagnosis .category-ticket__watermark { left: -6px; bottom: -1px; width: calc(100% + 12px); height: 68px; opacity: .22; }
 
 .category-ticket__icon {
   position: absolute;

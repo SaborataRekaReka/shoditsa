@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128"><g fill="none" stroke="#171A17" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 122h86"/><path d="M9 116v-10M14 116v-15M19 116v-21M24 116v-28M29 116v-35M34 116v-27M39 116v-19M44 116v-12M49 116v-8M54 116v-12M59 116v-19M64 116v-28M69 116v-35M74 116v-26M79 116v-19M84 116v-13"/><path d="M8 105c12 8 22-8 32 1s18 5 27-8 16-6 25 0"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 78">
+  <g fill="none" stroke="#171A17" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="70" cy="33" r="22"/><circle cx="70" cy="33" r="14"/><circle cx="70" cy="33" r="4"/>
+    <path d="M70 11v7M88 20l-6 4M92 38l-7-1M82 51l-5-6M62 53l3-8M50 41l8-3M53 22l7 4"/>
+    <path d="M3 66h90M6 61V48m5 13V40m5 21V31m5 30V44m5 17V24m5 37V37m5 24V19m5 42V33m5 28V45"/>
+    <path d="M5 51c7-11 12 8 19-3s12-8 18 1 12 7 17-2 11-9 17 0 10 7 17-1"/>
+    <path d="M8 72h8v-6m4 6h8v-6m4 6h8v-6m4 6h8v-6m4 6h8v-6m4 6h8v-6m4 6h8v-6"/>
+    <path d="m14 13 13-4v24M14 13v13"/><ellipse cx="10" cy="27" rx="5" ry="3"/><ellipse cx="23" cy="34" rx="5" ry="3"/>
+  </g>
+</svg>
