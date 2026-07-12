@@ -42,7 +42,7 @@
   height: 100%;
   overflow: hidden;
   color: #171a17;
-  background: var(--ticket-color);
+  background: transparent;
   border-right: 0;
 }
 
@@ -58,25 +58,14 @@
   pointer-events: none;
 }
 
-.category-ticket__stub::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: .09;
-  mix-blend-mode: multiply;
-  background: url('/images/realistic-grain-paper-texture.webp') center / cover;
-  pointer-events: none;
-}
-
 .category-ticket__watermark {
   position: absolute;
   z-index: 0;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center bottom;
+  object-fit: fill;
+  object-position: center;
   opacity: 1;
   mix-blend-mode: normal;
   pointer-events: none;
