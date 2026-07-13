@@ -74,6 +74,19 @@
   user-select: none;
 }
 
+.category-ticket--diagnosis .category-ticket__watermark {
+  object-position: 44% 45%;
+}
+
+.category-ticket--diagnosis .category-ticket__stub::after {
+  content: '';
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  background: linear-gradient(to right, transparent 0 80%, rgba(233, 228, 215, .32) 100%);
+  pointer-events: none;
+}
+
 .category-ticket__body {
   min-width: 0;
   height: 100%;
