@@ -377,8 +377,69 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : 'Аниме-пайплайн запущен'); setStarting(false); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
     onError: (error) => notify('error', errorText(error)),
   })
-  const decide = useMutation({ mutationFn: ({ itemId, approved }: { itemId: string; approved: boolean }) => { const item = items.data?.items.find((entry) => entry.id === itemId); const before = record(item?.beforeJson); const proposed = record(item?.proposedJson); const fieldDecisions = Object.fromEntries([...new Set([...Object.keys(before), ...Object.keys(proposed)])].filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field])).map((field) => [field, { action: approved ? 'accept' : 'keep' }])); return adminApi.pipelineDecision(selectedId!, itemId, { approved, fieldDecisions }) }, onSuccess: () => { notify('success', 'Решение сохранено'); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] }) }, onError: (error) => notify('error', errorText(error)) })
-  const approve = useMutation({ mutationFn: (publish: boolean) => adminApi.approvePipeline(selectedId!, {}, publish), onSuccess: (_, publish) => { notify('success', publish ? 'Выбранные изменения опубликованы' : 'Изменения добавлены в рабочую версию'); void client.invalidateQueries({ queryKey: ['admin'] }) }, onError: (error) => notify('error', errorText(error)) })
+  const runItems = items.data?.items ?? []
+  const [selectedPipelineItems, setSelectedPipelineItems] = useState<Set<string>>(new Set())
+  const [activePipelineItemId, setActivePipelineItemId] = useState<string | null>(null)
+  useEffect(() => {
+    setSelectedPipelineItems(new Set())
+    setActivePipelineItemId(null)
+  }, [selectedId])
+
+  const isItemReviewable = (item: Record<string, any>) => !['staged', 'published'].includes(String(item.status))
+  const itemDiffFields = (item: Record<string, any>) => {
+    const before = record(item.beforeJson)
+    const proposed = record(item.proposedJson)
+    return [...new Set([...Object.keys(before), ...Object.keys(proposed)])].filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field]))
+  }
+  const itemFieldDecisions = (item: Record<string, any>, approved: boolean) => Object.fromEntries(itemDiffFields(item).map((field) => [field, { action: approved ? 'accept' : 'keep' }]))
+
+  const decide = useMutation({
+    mutationFn: ({ itemId, approved }: { itemId: string; approved: boolean }) => {
+      const item = runItems.find((entry) => entry.id === itemId)
+      if (!item) throw new Error('Результат пайплайна не найден')
+      return adminApi.pipelineDecision(selectedId!, itemId, { approved, fieldDecisions: itemFieldDecisions(record(item), approved) })
+    },
+    onSuccess: () => {
+      notify('success', 'Решение сохранено')
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const decideBulk = useMutation({
+    mutationFn: async ({ itemIds, approved }: { itemIds: string[]; approved: boolean }) => {
+      let success = 0
+      let failed = 0
+      for (const itemId of itemIds) {
+        const item = runItems.find((entry) => entry.id === itemId)
+        if (!item) {
+          failed += 1
+          continue
+        }
+        try {
+          await adminApi.pipelineDecision(selectedId!, itemId, { approved, fieldDecisions: itemFieldDecisions(record(item), approved) })
+          success += 1
+        } catch {
+          failed += 1
+        }
+      }
+      return { success, failed, approved }
+    },
+    onSuccess: (result) => {
+      notify(result.failed ? 'info' : 'success', `${result.approved ? 'Принято' : 'Отклонено'}: ${result.success}, ошибок: ${result.failed}`)
+      setSelectedPipelineItems(new Set())
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const approve = useMutation({
+    mutationFn: ({ publish, itemIds }: { publish: boolean; itemIds?: string[] }) => adminApi.approvePipeline(selectedId!, itemIds?.length ? { itemIds } : {}, publish),
+    onSuccess: (_, variables) => {
+      notify('success', variables.publish ? 'Выбранные изменения опубликованы' : 'Изменения добавлены в рабочую версию')
+      setSelectedPipelineItems(new Set())
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const cancel = useMutation({ mutationFn: () => adminApi.cancelPipeline(selectedId!), onSuccess: () => { notify('info', 'Остановка запрошена'); void runs.refetch() }, onError: (error) => notify('error', errorText(error)) })
   const removeRun = useMutation({
     mutationFn: () => adminApi.deletePipelineRun(selectedId!),
@@ -424,6 +485,11 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     : Math.min(100, Math.round(Number(selectedRun?.itemsProcessed ?? 0) / Math.max(1, Number(selectedRun?.itemsTotal ?? 1)) * 100))
   const stale = Boolean(events.stale)
   const lifecycleMessage = title(events.lifecycleMessage || (selectedRun ? pipelinePulseText(String(selectedRun.status)) : 'Ожидание'))
+  const selectedItemsData = useMemo(() => runItems.filter((entry) => selectedPipelineItems.has(String(entry.id))), [runItems, selectedPipelineItems])
+  const selectedReviewableIds = useMemo(() => selectedItemsData.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id)), [selectedItemsData])
+  const selectedApprovedIds = useMemo(() => selectedItemsData.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [selectedItemsData])
+  const approvedItemIds = useMemo(() => runItems.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [runItems])
+  const activePipelineItem = useMemo(() => runItems.find((entry) => String(entry.id) === activePipelineItemId) ?? null, [runItems, activePipelineItemId])
 
   const copyJson = async (payload: unknown, label: string) => {
     try {
@@ -476,10 +542,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
         <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div></div>
         <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
         <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
-        <div className="admin-pipeline-items">{items.isLoading ? <Loading /> : items.data?.items.length ? items.data.items.map((raw) => { const item = record(raw); const before = record(item.beforeJson); const proposed = record(item.proposedJson); const fields = [...new Set([...Object.keys(before), ...Object.keys(proposed)])].filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field])); const warnings = pipelineWarnings(item.warningsJson); return <article key={String(item.id)}><header><div><Status value={item.status} /><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>Изменено полей: {fields.length}</small></div><div><button onClick={() => decide.mutate({ itemId: String(item.id), approved: false })}>Отклонить</button><button className="is-primary" onClick={() => decide.mutate({ itemId: String(item.id), approved: true })}>Принять</button></div></header><div className="admin-diff">{fields.slice(0, 20).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(before[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(proposed[field], null, 2) ?? '—'}</pre></div>)}</div>{warnings.length > 0 && <footer><AlertTriangle />{warnings.join(' · ')}</footer>}</article> }) : <Empty title="Результатов пока нет" text={['queued', 'running'].includes(String(selectedRun.status)) ? 'Worker обрабатывает список партиями. Страница обновится автоматически.' : 'Запуск не создал проверяемых результатов.'} />}</div>
-        {items.data?.items.some((item) => item.status === 'approved') && <div className="admin-sticky-actions"><span>Одобренные результаты готовы к применению</span><button className="admin-btn admin-btn--secondary" onClick={() => approve.mutate(false)}>В рабочую версию</button><button className="admin-btn admin-btn--primary" onClick={() => approve.mutate(true)}>Одобрить и опубликовать</button></div>}
+        <div className="admin-pipeline-review">{items.isLoading ? <Loading /> : runItems.length ? <>
+          <header className="admin-pipeline-review__head"><div><h3>Результаты на проверке</h3><small>Таблица для массового согласования. Клик по строке открывает подробный diff справа.</small></div><div><button className="admin-btn admin-btn--secondary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: false })}><X />Отклонить выбранные</button><button className="admin-btn admin-btn--primary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: true })}><Check />Принять выбранные</button></div></header>
+          <div className="admin-table-wrap admin-table-wrap--pipeline"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все результаты" checked={selectedPipelineItems.size > 0 && selectedPipelineItems.size === runItems.filter((entry) => isItemReviewable(record(entry))).length} onChange={(event) => setSelectedPipelineItems(event.target.checked ? new Set(runItems.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id))) : new Set())} /></th><th>Карточка</th><th>Статус</th><th>Изменено</th><th>Предупреждения</th><th>Обновлено</th><th /></tr></thead><tbody>{runItems.map((raw) => { const item = record(raw); const proposed = record(item.proposedJson); const fields = itemDiffFields(item); const warnings = pipelineWarnings(item.warningsJson); const itemId = String(item.id); const reviewable = isItemReviewable(item); return <tr key={itemId} className={activePipelineItemId === itemId ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`} disabled={!reviewable} checked={selectedPipelineItems.has(itemId)} onChange={(event) => setSelectedPipelineItems((current) => { const next = new Set(current); event.target.checked ? next.add(itemId) : next.delete(itemId); return next })} /></td><td><button className="admin-title-cell" onClick={() => setActivePipelineItemId(itemId)}><span>{pipelineIcon(selectedRun.pipelineKey)}</span><span><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>{title(item.entityKey)}</small></span></button></td><td><Status value={item.status} /></td><td>{fields.length}</td><td>{warnings.length ? <span className="admin-count admin-count--warn">{warnings.length}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt || item.createdAt)}</td><td>{reviewable && <div className="admin-row-actions"><button className="admin-icon-btn" title="Отклонить" onClick={() => decide.mutate({ itemId, approved: false })}><X /></button><button className="admin-icon-btn" title="Принять" onClick={() => decide.mutate({ itemId, approved: true })}><Check /></button></div>}</td></tr> })}</tbody></table></div>
+        </> : <Empty title="Результатов пока нет" text={['queued', 'running'].includes(String(selectedRun.status)) ? 'Worker обрабатывает список партиями. Страница обновится автоматически.' : 'Запуск не создал проверяемых результатов.'} />}</div>
+        {approvedItemIds.length > 0 && <div className="admin-sticky-actions"><span>Одобрено: {approvedItemIds.length}. «В рабочую версию» только стаджит изменения, «Одобрить и опубликовать» сразу активирует новую ревизию.</span><button className="admin-btn admin-btn--secondary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: false, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>В рабочую версию{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button><button className="admin-btn admin-btn--primary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: true, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>Одобрить и опубликовать{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button></div>}
       </>}</section>
     </div>
+    {selectedRun && activePipelineItem && <div className="admin-drawer"><header className="admin-drawer__head"><div><small>{pipelineLabel(selectedRun.pipelineKey)} · {title(activePipelineItem.entityKey)}</small><h2>{title(record(activePipelineItem.proposedJson).titleRu || record(activePipelineItem.proposedJson).name || activePipelineItem.entityKey)}</h2></div><div><Status value={activePipelineItem.status} /><button onClick={() => setActivePipelineItemId(null)}><X /></button></div></header><div className="admin-drawer__body"><div className="admin-diff">{itemDiffFields(record(activePipelineItem)).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(record(activePipelineItem.beforeJson)[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(record(activePipelineItem.proposedJson)[field], null, 2) ?? '—'}</pre></div>)}</div>{pipelineWarnings(activePipelineItem.warningsJson).length > 0 && <div className="admin-pipeline-item-warnings"><AlertTriangle />{pipelineWarnings(activePipelineItem.warningsJson).join(' · ')}</div>}</div><footer className="admin-drawer__footer"><div><small>{title(activePipelineItem.entityKey)}</small></div><button className="admin-btn admin-btn--secondary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: false })}><X />Отклонить</button><button className="admin-btn admin-btn--primary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: true })}><Check />Принять</button></footer></div>}
     {starting && <div className="admin-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setStarting(false)}>
       <div className="admin-modal admin-modal--pipeline">
         <header><div><span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini</span><h2>Новый запуск</h2></div><button onClick={() => setStarting(false)}><X /></button></header>
