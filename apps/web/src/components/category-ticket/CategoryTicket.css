@@ -105,7 +105,7 @@
 .category-ticket__kicker {
   color: rgba(23, 26, 23, .56);
   font-family: Manrope, sans-serif;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: .14em;
@@ -120,7 +120,7 @@
   gap: 1px;
   color: rgba(23, 26, 23, .48);
   font-family: Oswald, sans-serif;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 500;
   line-height: .95;
   letter-spacing: .08em;
@@ -162,7 +162,7 @@
   overflow: hidden;
   color: rgba(23, 26, 23, .56);
   font-family: Manrope, sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.35;
   -webkit-line-clamp: 2;
@@ -182,7 +182,7 @@
 .category-ticket__action {
   color: #171a17;
   font-family: Oswald, sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1;
   letter-spacing: .11em;
@@ -229,7 +229,7 @@
 
 @media (max-width: 389px) {
   .category-ticket__meta { display: none !important; }
-  .category-ticket__badge { right: 10px; padding: 0 6px; font-size: 8px; }
+  .category-ticket__badge { right: 10px; padding: 0 6px; font-size: 12px; }
   .category-grid--active .category-ticket .category-ticket__title { font-size: 28px; }
 }
 

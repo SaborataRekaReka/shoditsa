@@ -26,7 +26,7 @@
 .server-results img { width: 42px; height: 58px; object-fit: cover; border-radius: 7px; }
 .server-results span { display: grid; gap: 2px; }.server-results small { opacity: .65; }
 .server-attempts { display: grid; gap: 16px; margin-top: 24px; }.server-hints { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 8px; padding: 12px; }
-.server-hints .hint { min-height: 72px; padding: 10px; border-radius: 12px; display: grid; gap: 5px; background: #ececec; }.server-hints .hint--match { background: #b8df72; }.server-hints .hint--close,.server-hints .hint--partial { background: #f5d86e; }.server-hints .hint span { font-size: .74rem; opacity: .7; }
+.server-hints .hint { min-height: 72px; padding: 10px; border-radius: 12px; display: grid; gap: 5px; background: #ececec; }.server-hints .hint--match { background: #b8df72; }.server-hints .hint--close,.server-hints .hint--partial { background: #f5d86e; }.server-hints .hint span { font-size: .75rem; opacity: .7; }
 .server-vignette,.server-assist,.server-result { margin: 18px 0; padding: 20px; border-radius: 18px; background: #fff; border: 1px solid rgba(0,0,0,.1); }.server-assist { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }.server-assist h3 { width: 100%; }
 .server-result { text-align: center; }.server-result img { width: min(220px,60vw); border-radius: 16px; }.server-error { color: #a22424; font-weight: 800; }.server-global-error { width: min(900px,calc(100% - 32px)); margin: 16px auto; }
 .auth-form { display: grid; gap: 16px; }.server-state { min-height: 60vh; display: grid; place-content: center; text-align: center; }

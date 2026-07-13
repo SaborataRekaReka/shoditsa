@@ -3,6 +3,7 @@ param(
   [string]$User = "root",
   [int]$Port = 22,
   [string]$DeployRoot = "/opt/shoditsa",
+  [string]$ReleaseId,
   [switch]$SkipBuild
 )
 
@@ -27,6 +28,8 @@ try {
 
   $commitSha = (git rev-parse HEAD).Trim()
   if ($LASTEXITCODE -ne 0 -or $commitSha -notmatch '^[0-9a-f]{40}$') { throw "Could not resolve the Git commit SHA." }
+  $releaseId = if ($ReleaseId) { $ReleaseId } else { $commitSha }
+  if ($releaseId -notmatch '^[0-9A-Za-z._-]+$') { throw "ReleaseId may contain only letters, numbers, dots, underscores, and hyphens." }
 
   New-Item -ItemType Directory -Force (Split-Path -Parent $archivePath) | Out-Null
   if (Test-Path $archivePath) { Remove-Item -LiteralPath $archivePath -Force }
@@ -34,7 +37,7 @@ try {
   if ($LASTEXITCODE -ne 0) { throw "Could not package dist." }
 
   $remote = "{0}@{1}" -f $User, $ServerHost
-  $remoteArchive = "/tmp/shoditsa-web-$commitSha.tar.gz"
+  $remoteArchive = "/tmp/shoditsa-web-$releaseId.tar.gz"
   ssh -p $Port $remote "mkdir -p '$DeployRoot/releases'"
   if ($LASTEXITCODE -ne 0) { throw "Could not prepare the release directory." }
   scp -P $Port $archivePath "${remote}:$remoteArchive"
@@ -56,10 +59,10 @@ ln -sfn "$RELEASE" "${DEPLOY_ROOT}/current.next"
 mv -Tf "${DEPLOY_ROOT}/current.next" "${DEPLOY_ROOT}/current"
 rm -f "$REMOTE_ARCHIVE"
 '@
-  $activationScript | ssh -p $Port $remote "DEPLOY_ROOT='$DeployRoot' GITHUB_SHA='$commitSha' REMOTE_ARCHIVE='$remoteArchive' bash -s"
+  $activationScript | ssh -p $Port $remote "DEPLOY_ROOT='$DeployRoot' GITHUB_SHA='$releaseId' REMOTE_ARCHIVE='$remoteArchive' bash -s"
   if ($LASTEXITCODE -ne 0) { throw "Atomic release activation failed." }
 
-  Write-Host "[deploy] Activated $DeployRoot/releases/$commitSha"
+  Write-Host "[deploy] Activated $DeployRoot/releases/$releaseId"
 }
 finally {
   if (Test-Path $archivePath) { Remove-Item -LiteralPath $archivePath -Force }
