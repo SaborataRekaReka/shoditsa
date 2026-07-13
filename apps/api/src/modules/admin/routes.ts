@@ -491,6 +491,35 @@ const registerReportRoutes = (app: FastifyInstance, deps: Deps) => {
 }
 
 const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
+  const confirmBodySchema = Type.Object({ confirmation: Type.Literal(true) }, { additionalProperties: false })
+  const cleanupBodySchema = Type.Object({
+    confirmation: Type.Literal(true),
+    keepLatest: Type.Optional(Type.Integer({ minimum: 0, maximum: 500 })),
+  }, { additionalProperties: false })
+
+  const lifecycleMessage = (status: string) => {
+    if (status === 'queued') return 'Запуск поставлен в очередь'
+    if (status === 'running') return 'Worker обрабатывает список'
+    if (status === 'review_required') return 'Результаты готовы к проверке'
+    if (status === 'partially_failed') return 'Запуск завершён частично с ошибками'
+    if (status === 'failed') return 'Запуск завершился ошибкой'
+    if (status === 'cancelled') return 'Запуск остановлен'
+    if (status === 'staged') return 'Одобренные изменения добавлены в рабочую версию'
+    if (status === 'published' || status === 'partially_published') return 'Изменения опубликованы'
+    return `Статус: ${status}`
+  }
+
+  const itemEventMessage = (item: { entityKey: string; status: string; safeErrorMessage: string | null }) => {
+    if (item.status === 'failed') return `${item.entityKey}: ошибка${item.safeErrorMessage ? ` — ${item.safeErrorMessage}` : ''}`
+    if (item.status === 'review_required') return `${item.entityKey}: готово к ручной проверке`
+    if (item.status === 'approved') return `${item.entityKey}: одобрено`
+    if (item.status === 'rejected') return `${item.entityKey}: отклонено`
+    if (item.status === 'staged') return `${item.entityKey}: добавлено в рабочую версию`
+    if (item.status === 'published') return `${item.entityKey}: опубликовано`
+    if (item.status === 'conflict') return `${item.entityKey}: конфликт рабочей версии`
+    return `${item.entityKey}: статус ${item.status}`
+  }
+
   app.get('/api/v1/admin/pipelines', async (request, reply) => {
     await admin(request, reply, deps)
     const last = await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(20)
@@ -632,7 +661,53 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     return reply.code(202).send({ runId: run.id, jobId: job.id })
   })
 
+  app.post('/api/v1/admin/pipeline-runs/cleanup', { schema: { body: cleanupBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const body = request.body as { keepLatest?: number }
+    const keepLatest = Math.max(0, Number(body.keepLatest ?? 30))
+    const completed = await deps.db.select({ id: pipelineRuns.id, status: pipelineRuns.status, createdAt: pipelineRuns.createdAt })
+      .from(pipelineRuns)
+      .where(sql`${pipelineRuns.status} not in ('queued','running')`)
+      .orderBy(desc(pipelineRuns.createdAt))
+    const toDelete = completed.slice(keepLatest)
+    if (!toDelete.length) return { deleted: 0, keepLatest, kept: completed.length }
+    const ids = toDelete.map((entry) => entry.id)
+    await deps.db.delete(pipelineRuns).where(inArray(pipelineRuns.id, ids))
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'pipeline.cleanup',
+      entityType: 'pipeline_run',
+      entityId: 'bulk',
+      before: { keepLatest, completed: completed.length },
+      after: { deleted: ids.length },
+      reason: `Очистка старых запусков, оставлено ${keepLatest}`,
+      requestId: request.id,
+    })
+    return { deleted: ids.length, keepLatest, kept: completed.length - ids.length }
+  })
+
   app.get('/api/v1/admin/pipeline-runs', async (request, reply) => ({ items: await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(100) , actor: (await admin(request, reply, deps)).id }))
+
+  app.delete('/api/v1/admin/pipeline-runs/:id', { schema: { params, body: confirmBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const id = (request.params as { id: string }).id
+    const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id)).limit(1)
+    if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+    if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Нельзя удалить запущенный пайплайн')
+    const items = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, id))
+    await deps.db.delete(pipelineRuns).where(eq(pipelineRuns.id, id))
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'pipeline.run.delete',
+      entityType: 'pipeline_run',
+      entityId: id,
+      before: run[0],
+      after: { deleted: true, items: items[0]?.count ?? 0 },
+      requestId: request.id,
+    })
+    return { deleted: true, runId: id, removedItems: items[0]?.count ?? 0 }
+  })
+
   app.get('/api/v1/admin/pipeline-runs/:id', { schema: { params } }, async (request, reply) => {
     await admin(request, reply, deps); const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, (request.params as { id: string }).id)).limit(1)
     if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
@@ -711,11 +786,59 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.cancel', entityType: 'pipeline_run', entityId: id, before: null, after: { cancelRequestedAt: run[0].cancelRequestedAt }, requestId: request.id })
     return run[0]
   })
+
   app.get('/api/v1/admin/pipeline-runs/:id/events', { schema: { params } }, async (request, reply) => {
-    await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    await admin(request, reply, deps)
+    const id = (request.params as { id: string }).id
     const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id)).limit(1)
     if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
-    return { run: run[0], pollAfterMs: ['queued', 'running'].includes(run[0].status) ? 2500 : null }
+    const [itemStatusRows, recentItems] = await Promise.all([
+      deps.db.select({ status: pipelineRunItems.status, count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, id)).groupBy(pipelineRunItems.status),
+      deps.db.select({ id: pipelineRunItems.id, entityKey: pipelineRunItems.entityKey, status: pipelineRunItems.status, safeErrorMessage: pipelineRunItems.safeErrorMessage, updatedAt: pipelineRunItems.updatedAt, createdAt: pipelineRunItems.createdAt })
+        .from(pipelineRunItems).where(eq(pipelineRunItems.runId, id)).orderBy(desc(pipelineRunItems.updatedAt)).limit(24),
+    ])
+    const statusCounts = Object.fromEntries(itemStatusRows.map((entry) => [entry.status, entry.count]))
+    const running = ['queued', 'running'].includes(run[0].status)
+    const heartbeatAgeMs = run[0].heartbeatAt ? Math.max(0, Date.now() - run[0].heartbeatAt.getTime()) : null
+    const staleAfterMs = Math.max(30_000, deps.config.workerStaleAfterMs)
+    const stale = running && heartbeatAgeMs != null && heartbeatAgeMs > staleAfterMs
+    const progressPercent = Math.min(100, Math.round((Number(run[0].itemsProcessed ?? 0) / Math.max(1, Number(run[0].itemsTotal ?? 1))) * 100))
+    const journalLines = String(run[0].logExcerpt ?? '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean).slice(-80)
+    const lifecycleEvents = [
+      { id: 'created', at: run[0].createdAt, type: 'lifecycle', message: 'Запуск создан' },
+      ...(run[0].startedAt ? [{ id: 'started', at: run[0].startedAt, type: 'lifecycle', message: 'Worker начал обработку' }] : []),
+      ...(run[0].cancelRequestedAt ? [{ id: 'cancel-requested', at: run[0].cancelRequestedAt, type: 'lifecycle', message: 'Запрошена остановка' }] : []),
+      ...(run[0].finishedAt ? [{ id: 'finished', at: run[0].finishedAt, type: 'lifecycle', message: lifecycleMessage(run[0].status) }] : []),
+      ...(run[0].heartbeatAt ? [{ id: 'heartbeat', at: run[0].heartbeatAt, type: 'heartbeat', message: stale ? 'Нет heartbeat дольше порога — проверьте worker' : 'Получен heartbeat от worker' }] : []),
+    ]
+    const itemEvents = recentItems.map((item) => ({
+      id: String(item.id),
+      at: item.updatedAt ?? item.createdAt,
+      type: 'item',
+      status: item.status,
+      message: itemEventMessage(item),
+    }))
+    const logEvents = journalLines.slice(-20).map((line, index) => ({
+      id: `log-${index}`,
+      at: run[0].heartbeatAt ?? run[0].startedAt ?? run[0].createdAt,
+      type: 'log',
+      message: line,
+    }))
+    const events = [...lifecycleEvents, ...itemEvents, ...logEvents]
+      .sort((left, right) => new Date(String(right.at)).getTime() - new Date(String(left.at)).getTime())
+      .slice(0, 120)
+    return {
+      run: run[0],
+      pollAfterMs: running ? 2500 : null,
+      stale,
+      staleAfterMs,
+      heartbeatAgeMs,
+      progressPercent,
+      lifecycleMessage: lifecycleMessage(run[0].status),
+      journalLines,
+      itemStats: { total: Object.values(statusCounts).reduce((sum, count) => sum + Number(count), 0), byStatus: statusCounts },
+      events,
+    }
   })
 }
 

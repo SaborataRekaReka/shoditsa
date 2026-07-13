@@ -100,12 +100,36 @@ const extractResponseText = (payload) => {
     .join('\n')
 }
 
+const asJsonObject = (value) => {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value
+  if (Array.isArray(value)) {
+    const firstObject = value.find((entry) => entry && typeof entry === 'object' && !Array.isArray(entry))
+    if (firstObject) return firstObject
+  }
+  return null
+}
+
 const parseJsonResponse = (value) => {
-  const text = String(value ?? '').trim().replace(/^```json\s*/i, '').replace(/```$/i, '').trim()
-  const start = text.indexOf('{')
-  const end = text.lastIndexOf('}')
-  if (start < 0 || end <= start) throw new Error('AI reviewer returned no JSON object')
-  return JSON.parse(text.slice(start, end + 1))
+  const raw = String(value ?? '').trim()
+  if (!raw) throw new Error('AI reviewer returned no JSON object')
+  const normalized = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```$/i, '').trim()
+  for (const candidate of [raw, normalized]) {
+    try {
+      const parsed = JSON.parse(candidate)
+      const object = asJsonObject(parsed)
+      if (object) return object
+    } catch {}
+  }
+  const blocks = [[normalized.indexOf('{'), normalized.lastIndexOf('}')], [normalized.indexOf('['), normalized.lastIndexOf(']')]]
+  for (const [start, end] of blocks) {
+    if (start < 0 || end <= start) continue
+    try {
+      const parsed = JSON.parse(normalized.slice(start, end + 1))
+      const object = asJsonObject(parsed)
+      if (object) return object
+    } catch {}
+  }
+  throw new Error('AI reviewer returned no JSON object')
 }
 
 const countWebSearchCalls = (payload) => (payload?.output ?? []).filter((item) => item?.type === 'web_search_call').length
@@ -133,6 +157,34 @@ const callAiReviewer = async ({ record, options }) => {
       model: options.model,
       input: prompt,
       max_output_tokens: 1200,
+      text: {
+        format: {
+          type: 'json_schema',
+          name: 'music_reviewer_response',
+          strict: false,
+          schema: {
+            type: 'object',
+            additionalProperties: true,
+            properties: {
+              decision: { type: 'string', enum: ['accept', 'review', 'reject'] },
+              confidence: { type: 'number' },
+              reasons: { type: 'array', items: { type: 'string' } },
+              resolved: { type: 'object', additionalProperties: true },
+              hint: {
+                type: 'object',
+                additionalProperties: true,
+                properties: {
+                  text: { type: 'string' },
+                  confidence: { type: 'number' },
+                  sourceUrls: { type: 'array', items: { type: 'string' } },
+                },
+                required: ['text', 'sourceUrls'],
+              },
+            },
+            required: ['decision'],
+          },
+        },
+      },
     }
     if (options.aiWebSearch) {
       request.tools = [{ type: 'web_search_preview', search_context_size: 'low' }]

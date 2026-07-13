@@ -28,7 +28,7 @@ const REPORT_REASON: Record<string, string> = {
 const STATUS_LABEL: Record<string, string> = {
   open: 'Новый', in_progress: 'В работе', resolved: 'Исправлен', dismissed: 'Отклонён', duplicate: 'Дубликат',
   queued: 'В очереди', running: 'Выполняется', completed: 'Готово', failed: 'Ошибка', review_required: 'Нужна проверка',
-  partially_failed: 'Частично с ошибками', approved: 'Одобрено', staged: 'В рабочей версии', published: 'Опубликовано', cancelled: 'Отменено',
+  partially_failed: 'Частично с ошибками', approved: 'Одобрено', staged: 'В рабочей версии', published: 'Опубликовано', partially_published: 'Частично опубликовано', cancelled: 'Отменено',
   create: 'Добавить', update: 'Изменить', unchanged: 'Без изменений', conflict: 'Конфликт', invalid: 'Ошибка',
 }
 
@@ -43,8 +43,11 @@ const pipelineWarnings = (value: unknown) => {
   const labels: string[] = []; const providers = new Set<string>()
   for (const raw of array(value).map(String)) {
     const provider = raw.startsWith('musicbrainz_') ? 'MusicBrainz' : raw.startsWith('lastfm_') ? 'Last.fm'
-      : raw.startsWith('theaudiodb_') ? 'TheAudioDB' : raw.startsWith('spotify_') || raw.includes('Country, region, or territory') ? 'Spotify' : null
+      : raw.startsWith('theaudiodb_') ? 'TheAudioDB'
+        : raw.startsWith('spotify_') ? 'Spotify'
+          : raw.startsWith('AI reviewer') || raw.startsWith('OpenAI') || raw.includes('Country, region, or territory') ? 'OpenAI' : null
     if (provider) { if (!providers.has(provider)) labels.push(`${provider} временно недоступен — использованы резервные источники`); providers.add(provider); continue }
+    if (raw === 'hint_answer_leak_risk') { labels.push('Подсказка может раскрывать ответ — требуется ручная правка'); continue }
     labels.push(raw === 'conflict_canonical_name' ? 'Найдены разные варианты имени — проверьте основное название'
       : raw === 'conflict_country' ? 'Источники расходятся по стране'
         : raw === 'conflict_begin_year' ? 'Источники расходятся по году начала карьеры' : raw)
@@ -350,7 +353,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const client = useQueryClient()
   const pipelines = useQuery({ queryKey: ['admin', 'pipelines'], queryFn: adminApi.pipelines })
   const runs = useQuery({ queryKey: ['admin', 'pipeline-runs'], queryFn: adminApi.pipelineRuns, refetchInterval: 5_000 })
+  const selectedRun = runs.data?.items.find((entry) => entry.id === selectedId)
   const items = useQuery({ queryKey: ['admin', 'pipeline-items', selectedId], queryFn: () => adminApi.pipelineItems(selectedId!), enabled: Boolean(selectedId), refetchInterval: selectedId ? 5_000 : false })
+  const runEvents = useQuery({
+    queryKey: ['admin', 'pipeline-events', selectedId],
+    queryFn: () => adminApi.pipelineRunEvents(selectedId!),
+    enabled: Boolean(selectedId),
+    refetchInterval: selectedRun && ['queued', 'running'].includes(String(selectedRun.status)) ? 2_500 : false,
+  })
   const [scenario, setScenario] = useState('manual'); const [maxItems, setMaxItems] = useState(5); const [starting, setStarting] = useState(false); const [pipelineKey, setPipelineKey] = useState<PipelineKey>('music')
   const [artistText, setArtistText] = useState(''); const artists = useMemo(() => parseArtistList(artistText), [artistText])
   const [movieText, setMovieText] = useState(''); const movies = useMemo(() => parseMovieList(movieText), [movieText])
@@ -370,27 +380,102 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const decide = useMutation({ mutationFn: ({ itemId, approved }: { itemId: string; approved: boolean }) => { const item = items.data?.items.find((entry) => entry.id === itemId); const before = record(item?.beforeJson); const proposed = record(item?.proposedJson); const fieldDecisions = Object.fromEntries([...new Set([...Object.keys(before), ...Object.keys(proposed)])].filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field])).map((field) => [field, { action: approved ? 'accept' : 'keep' }])); return adminApi.pipelineDecision(selectedId!, itemId, { approved, fieldDecisions }) }, onSuccess: () => { notify('success', 'Решение сохранено'); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] }) }, onError: (error) => notify('error', errorText(error)) })
   const approve = useMutation({ mutationFn: (publish: boolean) => adminApi.approvePipeline(selectedId!, {}, publish), onSuccess: (_, publish) => { notify('success', publish ? 'Выбранные изменения опубликованы' : 'Изменения добавлены в рабочую версию'); void client.invalidateQueries({ queryKey: ['admin'] }) }, onError: (error) => notify('error', errorText(error)) })
   const cancel = useMutation({ mutationFn: () => adminApi.cancelPipeline(selectedId!), onSuccess: () => { notify('info', 'Остановка запрошена'); void runs.refetch() }, onError: (error) => notify('error', errorText(error)) })
-  const selectedRun = runs.data?.items.find((entry) => entry.id === selectedId)
+  const removeRun = useMutation({
+    mutationFn: () => adminApi.deletePipelineRun(selectedId!),
+    onSuccess: () => {
+      notify('success', 'Запуск удалён')
+      navigate('pipelines')
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const cleanupRuns = useMutation({
+    mutationFn: (keepLatest: number) => adminApi.cleanupPipelineRuns(keepLatest),
+    onSuccess: (result) => {
+      notify('success', `Удалено старых запусков: ${String(record(result).deleted ?? 0)}`)
+      if (selectedId && !runs.data?.items.some((entry) => entry.id === selectedId)) navigate('pipelines')
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const previewSummary = record(preview.data?.summary); const readyItems = Number(previewSummary.ready ?? 0)
   const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : 'Пайплайн'
   const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : 'Контентный пайплайн'
   const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : <Bot />
+  const pipelinePulseText = (status: string) => status === 'queued' ? 'В очереди' : status === 'running' ? 'В работе' : 'Остановлен'
   const manualText = pipelineKey === 'music' ? artistText : pipelineKey === 'movie' ? movieText : animeText
   const setManualText = pipelineKey === 'music' ? setArtistText : pipelineKey === 'movie' ? setMovieText : setAnimeText
   const manualFieldLabel = pipelineKey === 'music' ? 'Исполнители' : pipelineKey === 'movie' ? 'Фильмы Кинопоиска' : 'Аниме Shikimori'
   const manualPlaceholder = pipelineKey === 'music' ? 'Кино\nDepeche Mode\nPhoenix,Франция,indie rock band' : pipelineKey === 'movie' ? 'В поисках Немо (Finding Nemo, 2003)\nЧёрная Пантера (Black Panther, 2018)\nБэтмен (The Batman, 2022)' : '16498\nhttps://shikimori.one/animes/5114\n9253,добавить аниме из списка'
   const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Один фильм на строку: «Название (Original title, год)» или просто название. Предпросмотр проверяет только нашу базу; ID Кинопоиска найдутся после запуска.' : 'Формат: только ID или ссылка Shikimori. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.'
   const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime') { setPipelineKey(key); setScenario('manual'); setStarting(true) } }
+  const events = record(runEvents.data)
+  const eventRows = array(events.events).map(record)
+  const journalLines = array(events.journalLines).map((line) => String(line))
+  const statsByStatus = record(record(events.itemStats).byStatus)
+  const heartbeatAgeMs = Number(events.heartbeatAgeMs)
+  const heartbeatAgeSec = Number.isFinite(heartbeatAgeMs) ? Math.round(heartbeatAgeMs / 1_000) : null
+  const progressPercent = Number.isFinite(Number(events.progressPercent))
+    ? Number(events.progressPercent)
+    : Math.min(100, Math.round(Number(selectedRun?.itemsProcessed ?? 0) / Math.max(1, Number(selectedRun?.itemsTotal ?? 1)) * 100))
+  const stale = Boolean(events.stale)
+  const lifecycleMessage = title(events.lifecycleMessage || (selectedRun ? pipelinePulseText(String(selectedRun.status)) : 'Ожидание'))
+
+  const copyJson = async (payload: unknown, label: string) => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
+      notify('success', `${label} скопирован`)
+    } catch {
+      notify('error', 'Не удалось скопировать в буфер обмена')
+    }
+  }
+
+  const requestCleanup = () => {
+    const raw = prompt('Сколько последних завершённых запусков оставить?', '30')
+    if (raw == null) return
+    const keepLatest = Number(raw)
+    if (!Number.isInteger(keepLatest) || keepLatest < 0) {
+      notify('error', 'Введите целое число 0 или больше')
+      return
+    }
+    cleanupRuns.mutate(keepLatest)
+  }
+
+  const requestDeleteRun = () => {
+    if (!selectedRun) return
+    if (!confirm('Удалить этот запуск и все его результаты? Действие необратимо.')) return
+    removeRun.mutate()
+  }
+
   return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button></>} />
     <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
     <div className="admin-split admin-split--pipeline">
       <section className="admin-list-panel">
-        <header className="admin-subhead"><h2>Запуски</h2><button onClick={() => void runs.refetch()}><RefreshCw /></button></header>
-        {runs.data?.items.map((raw) => { const run = record(raw); return <button key={String(run.id)} className={selectedId === run.id ? 'is-active' : ''} onClick={() => navigate('pipelines', String(run.id))}><span className="admin-list-icon">{pipelineIcon(run.pipelineKey)}</span><span><header><strong>{pipelineLabel(run.pipelineKey)} · {Number(run.itemsProcessed ?? 0)}/{Number(run.itemsTotal ?? 0)}</strong><time>{compactDate(run.createdAt)}</time></header><p>{title(record(run.inputDefinitionJson).scenario)}</p><small>{run.safeErrorMessage ? title(run.safeErrorMessage) : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0} · $${Number(run.actualCost ?? 0).toFixed(4)}`}</small></span><Status value={run.status} /></button>})}
+        <header className="admin-subhead"><h2>Запуски</h2><div className="admin-subhead__actions"><button onClick={requestCleanup} title="Удалить старые завершённые запуски"><Trash2 /></button><button onClick={() => void runs.refetch()} title="Обновить список"><RefreshCw /></button></div></header>
+        {runs.data?.items.map((raw) => {
+          const run = record(raw)
+          const live = ['queued', 'running'].includes(String(run.status))
+          const heartbeat = run.heartbeatAt ? Math.round((Date.now() - new Date(String(run.heartbeatAt)).getTime()) / 1_000) : null
+          const staleRun = live && heartbeat != null && heartbeat > 180
+          const summary = run.safeErrorMessage
+            ? title(run.safeErrorMessage)
+            : live
+              ? staleRun
+                ? `Нет heartbeat ${heartbeat}s`
+                : `${pipelinePulseText(String(run.status))}${heartbeat != null ? ` · heartbeat ${heartbeat}s назад` : ''}`
+              : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0} · $${Number(run.actualCost ?? 0).toFixed(4)}`
+          return <button key={String(run.id)} className={selectedId === run.id ? 'is-active' : ''} onClick={() => navigate('pipelines', String(run.id))}><span className="admin-list-icon">{pipelineIcon(run.pipelineKey)}</span><span><header><strong>{pipelineLabel(run.pipelineKey)} · {Number(run.itemsProcessed ?? 0)}/{Number(run.itemsTotal ?? 0)}</strong><time>{compactDate(run.createdAt)}</time></header><p>{title(record(run.inputDefinitionJson).scenario)}</p><small className={live ? 'is-live' : ''}>{summary}</small></span><Status value={run.status} /></button>
+        })}
       </section>
       <section className="admin-detail-panel">{!selectedRun ? <Empty title="Выберите запуск" text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям." icon={<WandSparkles />} /> : <>
-        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions">{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending}><X />Остановить</button>}<Status value={selectedRun.status} /></div></header>
-        <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${Math.min(100, Number(selectedRun.itemsProcessed ?? 0) / Math.max(1, Number(selectedRun.itemsTotal ?? 1)) * 100)}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div></div>
+        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending}><X />Остановить</button>}{!['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={requestDeleteRun} disabled={removeRun.isPending}><Trash2 />Удалить</button>}<Status value={selectedRun.status} /></div></header>
+        <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div></div>
+        <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
+        <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
         <div className="admin-pipeline-items">{items.isLoading ? <Loading /> : items.data?.items.length ? items.data.items.map((raw) => { const item = record(raw); const before = record(item.beforeJson); const proposed = record(item.proposedJson); const fields = [...new Set([...Object.keys(before), ...Object.keys(proposed)])].filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field])); const warnings = pipelineWarnings(item.warningsJson); return <article key={String(item.id)}><header><div><Status value={item.status} /><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>Изменено полей: {fields.length}</small></div><div><button onClick={() => decide.mutate({ itemId: String(item.id), approved: false })}>Отклонить</button><button className="is-primary" onClick={() => decide.mutate({ itemId: String(item.id), approved: true })}>Принять</button></div></header><div className="admin-diff">{fields.slice(0, 20).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(before[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(proposed[field], null, 2) ?? '—'}</pre></div>)}</div>{warnings.length > 0 && <footer><AlertTriangle />{warnings.join(' · ')}</footer>}</article> }) : <Empty title="Результатов пока нет" text={['queued', 'running'].includes(String(selectedRun.status)) ? 'Worker обрабатывает список партиями. Страница обновится автоматически.' : 'Запуск не создал проверяемых результатов.'} />}</div>
         {items.data?.items.some((item) => item.status === 'approved') && <div className="admin-sticky-actions"><span>Одобренные результаты готовы к применению</span><button className="admin-btn admin-btn--secondary" onClick={() => approve.mutate(false)}>В рабочую версию</button><button className="admin-btn admin-btn--primary" onClick={() => approve.mutate(true)}>Одобрить и опубликовать</button></div>}
       </>}</section>
