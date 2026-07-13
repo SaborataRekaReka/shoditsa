@@ -46,15 +46,22 @@ export const parseArtistList = (value: string): ManualArtist[] => value.split(/\
   return [{ artist: parts[0], ...(parts[1] ? { country: parts[1] } : {}), ...(parts.slice(2).join(' ').trim() ? { hint: parts.slice(2).join(' ').trim() } : {}) }]
 }).slice(0, 500)
 
-export const parseMovieList = (value: string): ManualMovie[] => value.split(/\r?\n/).flatMap((raw, index) => {
-  const line = raw.trim()
-  if (!line || (index === 0 && /^(kinopoisk|кинопоиск|id)([,;\t]|$)/i.test(line))) return []
-  const { rawId, hint } = parseIdAndHint(line)
-  const kinopoiskId = parseKinopoiskId(line, rawId)
-  if (kinopoiskId) return [{ kinopoiskId, ...(hint ? { hint } : {}) }]
-  const query = parseMovieQuery(line)
-  return query ? [query] : []
-}).slice(0, 500)
+export const parseMovieList = (value: string): ManualMovie[] => {
+  const movies: ManualMovie[] = []
+  for (const [index, raw] of value.split(/\r?\n/).entries()) {
+    const line = raw.trim()
+    if (!line || (index === 0 && /^(kinopoisk|кинопоиск|id)([,;\t]|$)/i.test(line))) continue
+    const { rawId, hint } = parseIdAndHint(line)
+    const kinopoiskId = parseKinopoiskId(line, rawId)
+    if (kinopoiskId) movies.push({ kinopoiskId, ...(hint ? { hint } : {}) })
+    else {
+      const query = parseMovieQuery(line)
+      if (query) movies.push(query)
+    }
+    if (movies.length === 500) break
+  }
+  return movies
+}
 
 export const parseAnimeList = (value: string): ManualAnime[] => value.split(/\r?\n/).flatMap((raw, index) => {
   const line = raw.trim()

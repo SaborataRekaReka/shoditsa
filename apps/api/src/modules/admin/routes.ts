@@ -566,7 +566,11 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (body.scenario === 'manual') {
       if (!body.movies?.length) throw new ApiError(422, 'PIPELINE_MOVIES_REQUIRED', 'Добавьте хотя бы один фильм')
       const preview = await previewManualMovies(deps.db, body.movies, integrations.KINOPOISK_API_KEYS)
-      manualMovies = preview.items.filter((entry) => entry.status === 'ready').map(({ kinopoiskId, hint }) => ({ kinopoiskId, ...(hint ? { hint } : {}) }))
+      for (const entry of preview.items) {
+        if (entry.status === 'ready' && typeof entry.kinopoiskId === 'number') {
+          manualMovies.push({ kinopoiskId: entry.kinopoiskId, ...(entry.hint ? { hint: entry.hint } : {}) })
+        }
+      }
       if (!manualMovies.length) throw new ApiError(409, 'PIPELINE_MOVIES_ALREADY_EXIST', 'В списке нет новых фильмов для обработки', preview.summary)
     }
     if (!integrations.KINOPOISK_API_KEYS) throw new ApiError(409, 'KINOPOISK_API_KEY_REQUIRED', 'Добавьте ключ Кинопоиск Unofficial API в разделе «API-интеграции»')
