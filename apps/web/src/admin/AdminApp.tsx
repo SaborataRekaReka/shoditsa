@@ -348,6 +348,50 @@ type ManualMovie = { kinopoiskId: number; hint?: string }
 type ManualAnime = { shikimoriId: number; hint?: string }
 type PipelineKey = 'music' | 'movie' | 'anime'
 
+const parseIdAndHint = (line: string) => {
+  const [rawId, ...rest] = line.split(/[;,\t]/).map((entry) => entry.trim().replace(/^"|"$/g, ''))
+  const hint = rest.join(' ').trim()
+  return { rawId, hint: hint || undefined }
+}
+
+const parseKinopoiskId = (line: string, rawId: string) => {
+  const urlMatch = line.match(/(?:https?:\/\/)?(?:www\.)?kinopoisk\.ru\/(?:film|series)\/(\d+)(?:[/?#]|$)/i)
+  if (urlMatch) {
+    const id = Number(urlMatch[1])
+    return Number.isInteger(id) && id > 0 ? id : null
+  }
+  const plainId = rawId.match(/^\d+$/)
+  if (plainId) {
+    const id = Number(plainId[0])
+    return Number.isInteger(id) && id > 0 ? id : null
+  }
+  const prefixed = rawId.match(/^(?:kp|kinopoisk)[_:-]?(\d+)$/i)
+  if (prefixed) {
+    const id = Number(prefixed[1])
+    return Number.isInteger(id) && id > 0 ? id : null
+  }
+  return null
+}
+
+const parseShikimoriId = (line: string, rawId: string) => {
+  const urlMatch = line.match(/(?:https?:\/\/)?(?:www\.)?shikimori\.(?:one|io)\/(?:animes?|anime)\/(\d+)(?:[/?#]|$)/i)
+  if (urlMatch) {
+    const id = Number(urlMatch[1])
+    return Number.isInteger(id) && id > 0 ? id : null
+  }
+  const plainId = rawId.match(/^\d+$/)
+  if (plainId) {
+    const id = Number(plainId[0])
+    return Number.isInteger(id) && id > 0 ? id : null
+  }
+  const prefixed = rawId.match(/^(?:shiki|shikimori)[_:-]?(\d+)$/i)
+  if (prefixed) {
+    const id = Number(prefixed[1])
+    return Number.isInteger(id) && id > 0 ? id : null
+  }
+  return null
+}
+
 const parseArtistList = (value: string): ManualArtist[] => value.split(/\r?\n/).flatMap((raw, index) => {
   const line = raw.trim()
   if (!line || (index === 0 && /^(artist|исполнитель)([,;\t]|$)/i.test(line))) return []
@@ -359,19 +403,17 @@ const parseArtistList = (value: string): ManualArtist[] => value.split(/\r?\n/).
 const parseMovieList = (value: string): ManualMovie[] => value.split(/\r?\n/).flatMap((raw, index) => {
   const line = raw.trim()
   if (!line || (index === 0 && /^(kinopoisk|кинопоиск|id)([,;\t]|$)/i.test(line))) return []
-  const [rawId, ...rest] = line.split(/[;,\t]/).map((entry) => entry.trim().replace(/^"|"$/g, ''))
-  const match = rawId.match(/(?:kinopoisk\.ru\/(?:film|series)\/|kp[_:-]?)?(\d+)/i)
-  const kinopoiskId = Number(match?.[1])
-  return Number.isInteger(kinopoiskId) && kinopoiskId > 0 ? [{ kinopoiskId, ...(rest.join(' ').trim() ? { hint: rest.join(' ').trim() } : {}) }] : []
+  const { rawId, hint } = parseIdAndHint(line)
+  const kinopoiskId = parseKinopoiskId(line, rawId)
+  return kinopoiskId ? [{ kinopoiskId, ...(hint ? { hint } : {}) }] : []
 }).slice(0, 500)
 
 const parseAnimeList = (value: string): ManualAnime[] => value.split(/\r?\n/).flatMap((raw, index) => {
   const line = raw.trim()
   if (!line || (index === 0 && /^(shikimori|шикимори|id)([,;\t]|$)/i.test(line))) return []
-  const [rawId, ...rest] = line.split(/[;,\t]/).map((entry) => entry.trim().replace(/^"|"$/g, ''))
-  const match = rawId.match(/(?:shikimori\.(?:one|io)\/(?:animes?|anime)\/|shiki[_:-]?)?(\d+)/i)
-  const shikimoriId = Number(match?.[1])
-  return Number.isInteger(shikimoriId) && shikimoriId > 0 ? [{ shikimoriId, ...(rest.join(' ').trim() ? { hint: rest.join(' ').trim() } : {}) }] : []
+  const { rawId, hint } = parseIdAndHint(line)
+  const shikimoriId = parseShikimoriId(line, rawId)
+  return shikimoriId ? [{ shikimoriId, ...(hint ? { hint } : {}) }] : []
 }).slice(0, 500)
 
 function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
@@ -407,7 +449,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const setManualText = pipelineKey === 'music' ? setArtistText : pipelineKey === 'movie' ? setMovieText : setAnimeText
   const manualFieldLabel = pipelineKey === 'music' ? 'Исполнители' : pipelineKey === 'movie' ? 'Фильмы Кинопоиска' : 'Аниме Shikimori'
   const manualPlaceholder = pipelineKey === 'music' ? 'Кино\nDepeche Mode\nPhoenix,Франция,indie rock band' : pipelineKey === 'movie' ? '326\nhttps://www.kinopoisk.ru/film/435/\n535341,добавить фильм из списка' : '16498\nhttps://shikimori.one/animes/5114\n9253,добавить аниме из списка'
-  const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Формат: ID или ссылка Кинопоиска. После запятой можно добавить внутреннее уточнение.' : 'Формат: ID или ссылка Shikimori. После запятой можно добавить внутреннее уточнение.'
+  const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Формат: только ID или ссылка Кинопоиска. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.' : 'Формат: только ID или ссылка Shikimori. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.'
   const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime') { setPipelineKey(key); setScenario('manual'); setStarting(true) } }
   return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button></>} />
     <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
