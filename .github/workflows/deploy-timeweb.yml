@@ -67,7 +67,7 @@ jobs:
           scp -P "$DEPLOY_PORT" release-api-image.tar.gz "$REMOTE:$REMOTE_API_IMAGE"
           ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE'
           set -euo pipefail
-          trap 'status=$?; echo "remote deploy failed at line ${LINENO}: ${BASH_COMMAND} (exit ${status})" >&2' ERR
+          trap 'status=$?; echo "remote deploy failed at line ${LINENO}: ${BASH_COMMAND} (exit ${status})" >&2; exit "$status"' ERR
           STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
           RELEASE="${DEPLOY_ROOT}/releases/${GITHUB_SHA}"
           rm -rf "$STAGE"
