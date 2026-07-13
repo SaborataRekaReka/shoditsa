@@ -19,8 +19,7 @@
   grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
 }
 
-.profile-hero::before,
-.profile-hero::after {
+.profile-hero::before {
   position: absolute;
   pointer-events: none;
   content: '';
@@ -32,16 +31,6 @@
   background-image: linear-gradient(rgba(237, 232, 216, .25) 1px, transparent 1px), linear-gradient(90deg, rgba(237, 232, 216, .25) 1px, transparent 1px);
   background-size: 26px 26px;
   mask-image: linear-gradient(90deg, #000, transparent 72%);
-}
-
-.profile-hero::after {
-  width: 330px;
-  height: 330px;
-  right: -150px;
-  bottom: -205px;
-  border: 1px solid rgba(231, 184, 66, .32);
-  border-radius: 50%;
-  box-shadow: 0 0 0 42px rgba(231, 184, 66, .045), 0 0 0 85px rgba(231, 184, 66, .03);
 }
 
 .profile-hero__identity,
@@ -108,21 +97,21 @@
 
 .profile-hero__dossier {
   min-height: 100%;
-  border-left: 1px solid rgba(237, 232, 216, .1);
-  background: linear-gradient(135deg, rgba(231, 184, 66, .09), transparent 55%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   overflow: hidden;
 }
 
 .profile-hero__illustration {
-  position: absolute;
+  position: relative;
   z-index: 1;
-  right: -7%;
-  bottom: -8%;
-  width: 116%;
+  right: auto;
+  bottom: auto;
+  width: min(690px, 116%);
   max-width: none;
   height: auto;
-  opacity: .96;
-  filter: saturate(.87) contrast(1.03);
+  margin: 0 -8% -5%;
   pointer-events: none;
 }
 
@@ -239,7 +228,7 @@
 
 .profile-achievement-placeholder { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 13px; align-items: center; }
 .profile-achievement-placeholder > span,
-.profile-achievement-placeholder__icon { width: 56px; height: 56px; border: 1px dashed rgba(237, 232, 216, .35); border-radius: 50%; color: var(--color-accent); background: rgba(231, 184, 66, .08); display: grid; place-items: center; }
+.profile-achievement-placeholder__icon { width: 56px; height: 56px; color: var(--color-accent); background: transparent; display: grid; place-items: center; }
 .profile-achievement-placeholder svg { width: 25px; height: 25px; stroke-width: 1.35; }
 .profile-achievement-placeholder img,
 .profile-achievement-placeholder__icon img { width: 100%; height: 100%; object-fit: contain; }
@@ -265,7 +254,7 @@
 .profile-achievements-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; }
 .profile-achievements-grid article { min-height: 154px; border: 1px dashed rgba(237, 232, 216, .22); border-radius: 15px; padding: 17px; color: var(--color-muted); background: var(--color-surface-2); display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; }
 .profile-achievements-grid article.is-unlocked { border-style: solid; border-color: rgba(105, 183, 121, .48); color: var(--color-text); background: linear-gradient(140deg, rgba(105, 183, 121, .11), var(--color-surface-2)); }
-.profile-achievements-grid article.is-unlocked .profile-achievement-placeholder__icon { border-color: var(--color-primary-border); color: var(--color-primary); background: rgba(105, 183, 121, .13); }
+.profile-achievements-grid article.is-unlocked .profile-achievement-placeholder__icon { color: var(--color-primary); background: transparent; }
 .profile-achievements-grid .profile-achievement-placeholder__icon { width: 52px; height: 52px; }
 .profile-achievements-grid strong { display: block; font-size: 13px; }
 .profile-achievements-grid p { margin: 4px 0 8px; font-size: 10px; line-height: 1.45; }
@@ -291,9 +280,9 @@
   .profile-screen--new { width: min(100% - 24px, 1440px); padding-top: 18px; }
   .profile-hero { grid-template-columns: 1fr; }
   .profile-hero__identity { min-height: 198px; padding: 24px; }
-  .profile-hero__dossier { min-height: 155px; border-top: 1px solid rgba(237, 232, 216, .1); border-left: 0; }
+  .profile-hero__dossier { min-height: 155px; }
   .profile-dossier__ticket { top: 47px; left: 28px; transform: rotate(-7deg); }
-  .profile-hero__illustration { right: -4%; bottom: -12%; width: 108%; }
+  .profile-hero__illustration { width: 108%; margin: 0 -4% -12%; }
   .profile-hero__dossier p { left: 27px; bottom: 12px; }
   .profile-overview--dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .profile-overview--dashboard article { border-bottom: 1px solid var(--color-paper-line); }
@@ -314,5 +303,5 @@
   .profile-daily-card__placeholder { grid-column: auto; grid-row: 1; }
   .profile-daily-card > svg { grid-column: 3; }
   .profile-dossier__ticket { left: 17px; }
-  .profile-hero__illustration { right: -10%; width: 120%; }
+  .profile-hero__illustration { width: 120%; margin: 0 -10% -12%; }
 }
