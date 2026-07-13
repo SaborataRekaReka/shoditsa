@@ -11,6 +11,13 @@ export class AdminApiError extends Error {
 
 export const idempotencyKey = () => crypto.randomUUID()
 
+const fileBase64 = (file: File) => new Promise<string>((resolve, reject) => {
+  const reader = new FileReader()
+  reader.onerror = () => reject(reader.error ?? new Error('File read failed'))
+  reader.onload = () => resolve(String(reader.result).split(',', 2)[1] ?? '')
+  reader.readAsDataURL(file)
+})
+
 const request = async <T>(path: string, init: RequestInit & { timeoutMs?: number } = {}) => {
   const controller = new AbortController(); const timeout = window.setTimeout(() => controller.abort(), init.timeoutMs ?? 30_000)
   try {
@@ -60,6 +67,7 @@ export const adminApi = {
   workspace: () => request<AdminWorkspaceSummary>('/admin/content/workspace'),
   saveItem: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/content/workspace/items/${encodeURIComponent(id)}`, { method: 'PUT', body: json(body) }),
   discardItem: (id: string) => request<{ discarded: boolean }>(`/admin/content/workspace/items/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+  uploadMedia: async (id: string, file: File, purpose: 'posterUrl' | 'headerUrl' | 'backdropUrl' | 'screenshot') => request<{ url: string; width: number; height: number; bytes: number }>(`/admin/content/items/${encodeURIComponent(id)}/media`, { method: 'POST', body: json({ fileName: file.name, contentType: file.type, base64: await fileBase64(file), purpose }), timeoutMs: 60_000 }),
   bulkContent: (body: Record<string, unknown>) => request<Record<string, unknown>>('/admin/content/workspace/bulk', { method: 'POST', body: json(body), timeoutMs: 60_000 }),
   validateWorkspace: () => request<Record<string, unknown>>('/admin/content/workspace/validate', { method: 'POST', body: '{}' }),
   buildWorkspace: () => request<{ job: Record<string, unknown> }>('/admin/content/workspace/build', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),

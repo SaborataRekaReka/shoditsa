@@ -217,6 +217,13 @@
 .admin-field--check input { accent-color: var(--a-green); }
 .admin-field--check span { display: flex; flex-direction: column; }
 .admin-field--check span small { color: var(--a-muted); font-weight: 500; }
+.admin-media-field { min-width: 0; }
+.admin-media-upload { margin-top: 5px; padding: 7px; border: 1px dashed #c9c4b7; border-radius: 8px; background: var(--a-paper-2); }
+.admin-media-upload input { display: none; }
+.admin-media-upload button { width: 100%; min-height: 31px; border: 0; border-radius: 6px; color: var(--a-ink); background: var(--a-paper); display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 9px; font-weight: 700; cursor: pointer; }
+.admin-media-upload button svg { width: 14px; }
+.admin-media-upload small { margin-top: 4px; color: var(--a-muted); display: block; font-size: 8px; text-align: center; }
+.admin-media-upload.is-loading svg { animation: admin-spin .8s linear infinite; }
 .admin-code-input, .admin-technical textarea { font: 11px/1.5 Consolas, monospace !important; }
 .admin-extra-fields { border: 1px solid var(--a-line); border-radius: 11px; }
 .admin-extra-fields summary { padding: 12px 13px; font-weight: 700; cursor: pointer; }

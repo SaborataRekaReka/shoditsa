@@ -141,6 +141,26 @@ function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode
   return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>Подсказка о сюжете</button><button>Интересный факт</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
 }
 
+function MediaUpload({ itemId, field, onUploaded, notify }: { itemId: string; field: string; onUploaded: (url: string) => void; notify: (tone: Notice['tone'], text: string) => void }) {
+  const input = useRef<HTMLInputElement>(null)
+  const purpose = field === 'screenshots' ? 'screenshot' : field as 'posterUrl' | 'headerUrl' | 'backdropUrl'
+  const upload = useMutation({
+    mutationFn: async (file: File) => {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new AdminApiError(422, 'MEDIA_FORMAT_UNSUPPORTED', 'Допустимы JPEG, PNG и WebP')
+      if (file.size > 5 * 1024 * 1024) throw new AdminApiError(413, 'MEDIA_TOO_LARGE', 'Размер изображения не должен превышать 5 МБ')
+      return adminApi.uploadMedia(itemId, file, purpose)
+    },
+    onSuccess: (result) => { onUploaded(result.url); notify('success', `Изображение загружено: ${result.width}×${result.height}`) },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const choose = (files: FileList | null) => { const file = files?.[0]; if (file) upload.mutate(file) }
+  return <div className={`admin-media-upload${upload.isPending ? ' is-loading' : ''}`} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); choose(event.dataTransfer.files) }}>
+    <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => choose(event.target.files)} />
+    <button type="button" onClick={() => input.current?.click()} disabled={upload.isPending}>{upload.isPending ? <LoaderCircle /> : <ImageIcon />}{upload.isPending ? 'Загрузка…' : 'Выбрать или перетащить изображение'}</button>
+    <small>JPEG, PNG или WebP · до 5 МБ · от 320×180</small>
+  </div>
+}
+
 function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const detail = useQuery({ queryKey: ['admin', 'item', itemId], queryFn: () => adminApi.contentItem(itemId) })
   const [tab, setTab] = useState<'data' | 'preview' | 'reports' | 'history' | 'technical'>('data')
@@ -177,7 +197,10 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
     {restored && <div className="admin-recovered"><FileClock />Восстановлен несохранённый текст из этого браузера.</div>}
     <nav className="admin-tabs">{([['data', 'Данные'], ['preview', 'Как в игре'], ['reports', `Баг-репорты ${data.reports.length || ''}`], ['history', 'История'], ['technical', 'Техническое']] as const).map(([key, label]) => <button key={key} className={tab === key ? 'is-active' : ''} onClick={() => setTab(key)}>{label}</button>)}</nav>
     <div className="admin-drawer__body">
-      {tab === 'data' && <>{data.schema.groups.map((group) => <section className="admin-form-section" key={group.key}><header><h3>{group.title}</h3><span>{group.fields.filter((field) => payload[field] != null && payload[field] !== '').length}/{group.fields.length}</span></header><div className="admin-form-grid">{group.fields.map((field) => <FieldEditor key={field} name={field} value={payload[field]} disabled={field === 'id' || field === 'mode'} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />)}</div></section>)}
+      {tab === 'data' && <>{data.schema.groups.map((group) => <section className="admin-form-section" key={group.key}><header><h3>{group.title}</h3><span>{group.fields.filter((field) => payload[field] != null && payload[field] !== '').length}/{group.fields.length}</span></header><div className="admin-form-grid">{group.fields.map((field) => {
+        if (!['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'].includes(field)) return <FieldEditor key={field} name={field} value={payload[field]} disabled={field === 'id' || field === 'mode'} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />
+        return <div className="admin-media-field" key={field}><FieldEditor name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} /><MediaUpload itemId={itemId} field={field} notify={notify} onUploaded={(url) => setPayload((current) => field === 'screenshots' ? { ...current, screenshots: [...array(current.screenshots), url] } : { ...current, [field]: url })} /></div>
+      })}</div></section>)}
         {[...Object.keys(payload).filter((field) => !known.has(field))].length > 0 && <details className="admin-extra-fields"><summary>Остальные поля payload <ChevronDown /></summary><div className="admin-form-grid">{Object.keys(payload).filter((field) => !known.has(field)).map((field) => <FieldEditor key={field} name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />)}</div></details>}</>}
       {tab === 'preview' && <PreviewCard payload={payload} mode={mode} />}
       {tab === 'reports' && <div className="admin-related-list">{data.reports.length ? data.reports.map((raw) => { const report = record(raw); return <article key={String(report.id)}><header><Status value={report.status} /><time>{formatDate(report.createdAt)}</time></header><strong>{REPORT_REASON[String(report.reason)] ?? title(report.reason)}</strong><p>{title(report.comment || 'Комментарий не добавлен')}</p></article> }) : <Empty title="Репортов нет" text="По этой карточке игроки пока ничего не сообщали." icon={<BadgeCheck />} />}</div>}
