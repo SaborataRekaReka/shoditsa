@@ -6,6 +6,7 @@ import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'd
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import {
   AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminDailyChallengeReplaceBodySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
+  AnimePipelineEstimateBodySchema, AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema,
   AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
   IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
@@ -14,7 +15,8 @@ import {
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
-  type AdminWorkspaceItemBody, type ClientEventsBatchBody, type IntegrationKey, type IntegrationSecretUpdateBody,
+  type AdminWorkspaceItemBody, type ClientEventsBatchBody, type ContentMode, type IntegrationKey, type IntegrationSecretUpdateBody,
+  type AnimePipelineEstimateBody, type AnimePipelineManualPreviewBody, type AnimePipelineRunBody,
   type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
   type MoviePipelineEstimateBody, type MoviePipelineManualPreviewBody, type MoviePipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
@@ -112,6 +114,34 @@ const previewManualMovies = async (db: Database, movies: MoviePipelineManualPrev
     const status = !Number.isInteger(kinopoiskId) || kinopoiskId <= 0 ? 'invalid' : seen.has(kinopoiskId) ? 'duplicate_input' : match ? 'existing_card' : 'ready'
     if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) seen.add(kinopoiskId)
     return { index, kinopoiskId, hint: entry.hint?.trim() || null, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
+  })
+  return {
+    items,
+    summary: {
+      total: items.length,
+      ready: items.filter((entry) => entry.status === 'ready').length,
+      duplicates: items.filter((entry) => entry.status === 'duplicate_input').length,
+      existing: items.filter((entry) => entry.status === 'existing_card').length,
+      invalid: items.filter((entry) => entry.status === 'invalid').length,
+    },
+  }
+}
+
+const previewManualAnime = async (db: Database, anime: AnimePipelineManualPreviewBody['anime']) => {
+  const activeAnime = await db.select({ itemId: contentItemVersions.itemId, titleRu: contentItemVersions.titleRu, payload: contentItemVersions.payload })
+    .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+    .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'anime')))
+  const existing = new Map<number, { itemId: string; title: string }>()
+  for (const card of activeAnime) {
+    const shikimoriId = Number(asRecord(card.payload).shikimoriId)
+    if (Number.isInteger(shikimoriId) && shikimoriId > 0) existing.set(shikimoriId, { itemId: card.itemId, title: card.titleRu })
+  }
+  const seen = new Set<number>()
+  const items = anime.map((entry, index) => {
+    const shikimoriId = Number(entry.shikimoriId); const match = existing.get(shikimoriId)
+    const status = !Number.isInteger(shikimoriId) || shikimoriId <= 0 ? 'invalid' : seen.has(shikimoriId) ? 'duplicate_input' : match ? 'existing_card' : 'ready'
+    if (Number.isInteger(shikimoriId) && shikimoriId > 0) seen.add(shikimoriId)
+    return { index, shikimoriId, hint: entry.hint?.trim() || null, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
   })
   return {
     items,
@@ -404,9 +434,11 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const last = await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(20)
     const music = last.filter((entry) => entry.pipelineKey === 'music')
     const movies = last.filter((entry) => entry.pipelineKey === 'movie')
+    const anime = last.filter((entry) => entry.pipelineKey === 'anime')
     return { items: [
       { key: 'music', title: 'Музыка', description: 'Поиск, проверка источников и подготовка музыкальных карточек', mode: 'music', state: 'connected', lastRun: music[0] ?? null, awaitingReview: music.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'movie', title: 'Кино · Кинопоиск', description: 'Поиск фильмов, данные Кинопоиска, фактчекинг и подготовка карточек', mode: 'movie', state: 'connected', lastRun: movies[0] ?? null, awaitingReview: movies.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
+      { key: 'anime', title: 'Аниме · Shikimori', description: 'Каталог Shikimori, роли, метаданные, фактчекинг и подготовка аниме-карточек', mode: 'anime', state: 'connected', lastRun: anime[0] ?? null, awaitingReview: anime.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'translation', title: 'Машинный перевод', description: 'Единый review-контур для переводов', mode: null, state: 'not_connected', lastRun: null, awaitingReview: 0 },
     ] }
   })
@@ -491,6 +523,46 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     return reply.code(202).send({ runId: run.id, jobId: job.id })
   })
 
+  app.post('/api/v1/admin/pipelines/anime/estimate', { schema: { body: AnimePipelineEstimateBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const body = request.body as AnimePipelineEstimateBody
+    const itemCount = body.scenario === 'manual' ? body.anime?.length ?? 0 : body.maxItems
+    const calls = body.aiMode === 'never' ? 0 : itemCount
+    return { items: itemCount, aiReviewCalls: calls, estimatedCost: Number((calls * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: deps.config.musicPipelineModel }
+  })
+
+  app.post('/api/v1/admin/pipelines/anime/manual/preview', { schema: { body: AnimePipelineManualPreviewBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    return previewManualAnime(deps.db, (request.body as AnimePipelineManualPreviewBody).anime)
+  })
+
+  app.post('/api/v1/admin/pipelines/anime/runs', { schema: { body: AnimePipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as AnimePipelineRunBody; const key = requireIdempotencyKey(request)
+    if (body.scenario === 'selected' && (!body.itemIds?.length || body.itemIds.length > body.maxItems)) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите аниме-карточки в пределах лимита')
+    let manualAnime: AnimePipelineManualPreviewBody['anime'] = []
+    if (body.scenario === 'manual') {
+      if (!body.anime?.length) throw new ApiError(422, 'PIPELINE_ANIME_REQUIRED', 'Добавьте хотя бы один ID Shikimori')
+      const preview = await previewManualAnime(deps.db, body.anime)
+      manualAnime = preview.items.filter((entry) => entry.status === 'ready').map(({ shikimoriId, hint }) => ({ shikimoriId, ...(hint ? { hint } : {}) }))
+      if (!manualAnime.length) throw new ApiError(409, 'PIPELINE_ANIME_ALREADY_EXIST', 'В списке нет новых аниме для обработки', preview.summary)
+    }
+    const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
+    if (!integrations.SHIKIMORI_USER_AGENT) throw new ApiError(409, 'SHIKIMORI_USER_AGENT_REQUIRED', 'Добавьте User-Agent приложения Shikimori в разделе «API-интеграции»')
+    if (body.aiMode !== 'never' && !integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
+    const itemCount = body.scenario === 'manual' ? manualAnime.length : body.maxItems
+    const estimatedCalls = body.aiMode === 'never' ? 0 : itemCount
+    const run = (await deps.db.insert(pipelineRuns).values({
+      pipelineKey: 'anime', pipelineVersion: 'shikimori-cli-v1', status: 'queued', createdBy: actor.id, itemsTotal: itemCount,
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], anime: manualAnime },
+      settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
+      estimatedCost: String((estimatedCalls * .02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+    }).returning())[0]
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'anime_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id, offset: 0 } }).returning())[0]
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.anime.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { scenario: body.scenario, maxItems: body.maxItems, jobId: job.id }, requestId: request.id })
+    return reply.code(202).send({ runId: run.id, jobId: job.id })
+  })
+
   app.get('/api/v1/admin/pipeline-runs', async (request, reply) => ({ items: await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(100) , actor: (await admin(request, reply, deps)).id }))
   app.get('/api/v1/admin/pipeline-runs/:id', { schema: { params } }, async (request, reply) => {
     await admin(request, reply, deps); const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, (request.params as { id: string }).id)).limit(1)
@@ -532,10 +604,11 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
         if (action === 'edit') payload[field] = decision.value
       }
       const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)
-      payload.id = itemId; payload.mode = 'music'
+      payload.id = itemId; payload.mode = String(proposed.mode || before.mode || '')
+      if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].includes(String(payload.mode))) throw new ApiError(422, 'PIPELINE_ITEM_MODE_INVALID', 'Результат пайплайна не содержит допустимый режим контента')
       try {
         if (item.inputItemVersionId && activeVersionByItem.get(itemId) !== item.inputItemVersionId) throw new ApiError(409, 'PIPELINE_INPUT_VERSION_CONFLICT', 'Карточка изменилась после запуска пайплайна', { itemId, inputItemVersionId: item.inputItemVersionId, activeItemVersionId: activeVersionByItem.get(itemId) ?? null })
-        const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode: 'music', payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
+        const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode: payload.mode as ContentMode, payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
         await deps.db.update(pipelineRunItems).set({ status: 'staged', workspaceChangeId: change.id, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
         results.push({ itemId: item.id, status: 'staged' })
       } catch (error) {
@@ -557,7 +630,9 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
     const failed = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
     if (!failed[0]?.count) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
-    const job = await deps.db.insert(backgroundJobs).values({ type: 'music_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId, payload: { runId, retryFailed: true } }).onConflictDoNothing().returning()
+    const pipeline = await deps.db.select({ key: pipelineRuns.pipelineKey }).from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+    const jobType = pipeline[0]?.key === 'movie' ? 'movie_pipeline' : pipeline[0]?.key === 'anime' ? 'anime_pipeline' : 'music_pipeline'
+    const job = await deps.db.insert(backgroundJobs).values({ type: jobType, idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId, payload: { runId, retryFailed: true } }).onConflictDoNothing().returning()
     return reply.code(202).send({ job: job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
   })
   app.post('/api/v1/admin/pipeline-runs/:id/cancel', { schema: { params } }, async (request, reply) => {

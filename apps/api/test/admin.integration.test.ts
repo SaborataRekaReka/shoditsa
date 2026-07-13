@@ -231,4 +231,15 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(preview.json().summary).toMatchObject({ total: 2, ready: 1, duplicates: 1 })
     expect(preview.json().items[1].status).toBe('duplicate_input')
   })
+
+  it('previews a manual Shikimori list and removes duplicate IDs', async () => {
+    const shikimoriId = 999_999_992
+    const preview = await app.inject({
+      method: 'POST', url: '/api/v1/admin/pipelines/anime/manual/preview',
+      payload: { anime: [{ shikimoriId }, { shikimoriId, hint: 'дубликат' }] },
+    })
+    expect(preview.statusCode, preview.body).toBe(200)
+    expect(preview.json().summary).toMatchObject({ total: 2, ready: 1, duplicates: 1 })
+    expect(preview.json().items[1].status).toBe('duplicate_input')
+  })
 })

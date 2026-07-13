@@ -2,7 +2,7 @@ import { Value } from '@sinclair/typebox/value'
 import { FormatRegistry } from '@sinclair/typebox'
 import { describe, expect, it } from 'vitest'
 import {
-  AttemptBodySchema, CatalogSearchQuerySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
+  AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
   LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
 } from '../src/index.js'
 
@@ -35,6 +35,12 @@ describe('API schemas', () => {
     expect(Value.Check(MoviePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, movies, confirmation: true })).toBe(true)
     expect(Value.Check(MoviePipelineManualPreviewBodySchema, { movies: [{ kinopoiskId: 0 }] })).toBe(false)
   })
+  it('accepts a bounded manual Shikimori anime queue', () => {
+    const anime = [{ shikimoriId: 16498 }, { shikimoriId: 5114, hint: 'проверить студию' }]
+    expect(Value.Check(AnimePipelineManualPreviewBodySchema, { anime })).toBe(true)
+    expect(Value.Check(AnimePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, anime, confirmation: true })).toBe(true)
+    expect(Value.Check(AnimePipelineManualPreviewBodySchema, { anime: [{ shikimoriId: 0 }] })).toBe(false)
+  })
   it('requires explicit confirmation when saving an integration credential', () => {
     expect(Value.Check(IntegrationSecretUpdateBodySchema, { value: 'secret' })).toBe(false)
     expect(Value.Check(IntegrationSecretUpdateBodySchema, { value: 'secret', confirmation: true })).toBe(true)
@@ -43,5 +49,7 @@ describe('API schemas', () => {
     expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_1')).toBe(true)
     expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_5')).toBe(true)
     expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_6')).toBe(false)
+    expect(Value.Check(IntegrationKeySchema, 'SHIKIMORI_USER_AGENT')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'SHIKIMORI_ACCESS_TOKEN')).toBe(true)
   })
 })

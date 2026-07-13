@@ -12,7 +12,7 @@ export const integrationRegistry: ReadonlyArray<{
   required: boolean
   secret: boolean
 }> = [
-  { key: 'OPENAI_API_KEY', title: 'OpenAI API key', provider: 'OpenAI', description: 'Поиск контента, фактчекинг и генерация игровых подсказок для музыки и кино.', required: true, secret: true },
+  { key: 'OPENAI_API_KEY', title: 'OpenAI API key', provider: 'OpenAI', description: 'Поиск контента, фактчекинг и генерация игровых подсказок для музыки, кино и аниме.', required: true, secret: true },
   { key: 'LASTFM_API_KEY', title: 'Last.fm API key', provider: 'Last.fm', description: 'Популярность, теги, похожие исполнители, треки и альбомы.', required: false, secret: true },
   { key: 'SPOTIFY_CLIENT_ID', title: 'Spotify Client ID', provider: 'Spotify', description: 'Идентификатор приложения Spotify Web API.', required: false, secret: false },
   { key: 'SPOTIFY_CLIENT_SECRET', title: 'Spotify Client Secret', provider: 'Spotify', description: 'Секрет приложения Spotify Web API.', required: false, secret: true },
@@ -23,6 +23,10 @@ export const integrationRegistry: ReadonlyArray<{
   { key: 'KINOPOISK_UNOFFICIAL_API_KEY_3', title: 'Ключ №3', provider: 'Кинопоиск Unofficial API', description: 'Третий ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
   { key: 'KINOPOISK_UNOFFICIAL_API_KEY_4', title: 'Ключ №4', provider: 'Кинопоиск Unofficial API', description: 'Четвёртый ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
   { key: 'KINOPOISK_UNOFFICIAL_API_KEY_5', title: 'Ключ №5', provider: 'Кинопоиск Unofficial API', description: 'Пятый ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
+  { key: 'SHIKIMORI_USER_AGENT', title: 'User-Agent приложения', provider: 'Shikimori API', description: 'Обязательное имя приложения и контакт для запросов публичного каталога Shikimori.', required: true, secret: false },
+  { key: 'SHIKIMORI_CLIENT_ID', title: 'OAuth Client ID', provider: 'Shikimori API', description: 'Идентификатор OAuth-приложения Shikimori; для публичного каталога не обязателен.', required: false, secret: false },
+  { key: 'SHIKIMORI_CLIENT_SECRET', title: 'OAuth Client Secret', provider: 'Shikimori API', description: 'Секрет OAuth-приложения Shikimori. Хранится зашифрованно и не возвращается в браузер.', required: false, secret: true },
+  { key: 'SHIKIMORI_ACCESS_TOKEN', title: 'OAuth Access Token', provider: 'Shikimori API', description: 'Необязательный Bearer-токен для авторизованных запросов. Публичный каталог работает без него.', required: false, secret: true },
 ]
 
 const registryByKey = new Map(integrationRegistry.map((entry) => [entry.key, entry]))

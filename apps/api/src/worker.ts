@@ -346,6 +346,127 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
   return { runId: run.id, items: selectedFresh.length, succeeded, failed, usage }
 }
 
+const mapAnimeRecord = (raw: Json) => {
+  const source = record(raw.record)
+  const shikimoriId = Number(source.shikimoriId)
+  if (!Number.isInteger(shikimoriId) || shikimoriId <= 0) throw new Error('Anime record has no valid shikimoriId')
+  return {
+    ...source,
+    id: text(source.id) || `shiki_${shikimoriId}`,
+    mode: 'anime',
+    titleRu: text(source.titleRu) || `Shikimori #${shikimoriId}`,
+    titleOriginal: typeof source.titleOriginal === 'string' ? source.titleOriginal : '',
+    alternativeTitles: Array.isArray(source.alternativeTitles) ? source.alternativeTitles : [],
+    allowedInGame: false,
+    contentStatus: 'review',
+  }
+}
+
+const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
+  if (!job.pipelineRunId) throw new Error('anime_pipeline job has no pipelineRunId')
+  const run = (await db.select().from(pipelineRuns).where(eq(pipelineRuns.id, job.pipelineRunId)).limit(1))[0]
+  if (!run) throw new Error('Pipeline run not found')
+  if (run.cancelRequestedAt) {
+    await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+    return { runId: run.id, cancelled: true }
+  }
+  const input = record(run.inputDefinitionJson); const settings = record(run.settingsJson); const jobPayload = record(job.payload)
+  const scenario = text(input.scenario) || 'discover'; const maxItems = Number(settings.maxItems) || run.itemsTotal || 5
+  await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }).where(eq(pipelineRuns.id, run.id))
+  const enrichmentRoot = resolve(config.enrichmentDataRoot)
+  await mkdir(join(enrichmentRoot, 'anime'), { recursive: true })
+  const integrationEnv = await loadIntegrationEnvironment(db, config)
+  if (!integrationEnv.SHIKIMORI_USER_AGENT) throw new Error('Shikimori User-Agent is not configured')
+  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`]
+  if (settings.webSearch === false) common.push('--no-ai-web-search')
+  let command: string[]; let manualBatchSize = 0; let manualNextOffset = 0
+  if (scenario === 'manual') {
+    const anime = Array.isArray(input.anime) ? input.anime.map(record).filter((entry) => Number.isInteger(Number(entry.shikimoriId))) : []
+    const offset = Math.max(0, Number(jobPayload.offset) || 0)
+    const batch = anime.slice(offset, offset + maxItems)
+    if (!batch.length) throw new Error('Manual anime pipeline has no titles left to process')
+    manualBatchSize = batch.length; manualNextOffset = offset + batch.length
+    const seed = batch.map((entry, index) => ({
+      shikimoriId: Number(entry.shikimoriId), rank: offset + index + 1,
+      ...(text(entry.hint) ? { hint: text(entry.hint) } : {}),
+    }))
+    const seedFile = join(enrichmentRoot, 'anime', `admin-${run.id}-batch-${offset}.json`)
+    await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
+    command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, ...common.filter((entry) => !entry.startsWith('--max-items='))]
+  } else if (scenario === 'discover') {
+    command = ['scripts/anime/run-agent-cycle.mjs', ...common]
+  } else if (scenario === 'review') {
+    command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${join(enrichmentRoot, 'anime', 'discovery', 'discovered-candidates.json')}`, '--retry-review', '--ai=always', ...common.filter((entry) => !entry.startsWith('--ai='))]
+  } else if (scenario === 'selected') {
+    const ids = Array.isArray(input.itemIds) ? input.itemIds.map(String) : []
+    const active = await db.select({ payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, ids)))
+    const seed = active.map((entry, index) => ({ shikimoriId: Number(record(entry.payload).shikimoriId), rank: index + 1 })).filter((entry) => Number.isInteger(entry.shikimoriId) && entry.shikimoriId > 0)
+    if (!seed.length) throw new Error('Selected cards have no Shikimori IDs')
+    const seedFile = join(enrichmentRoot, 'anime', `admin-${run.id}-seed.json`)
+    await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
+    command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${seedFile}`, ...common]
+  } else {
+    command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${join(enrichmentRoot, 'anime', 'discovery', 'discovered-candidates.json')}`, ...common]
+  }
+  const started = Date.now(); const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
+  const files = (await listFiles(join(enrichmentRoot, 'anime'))).filter((file) => file.includes(`${join('', 'records', '')}`) && file.endsWith('.json'))
+  const fresh: Array<{ file: string; raw: Json }> = []
+  for (const file of files) if ((await stat(file)).mtimeMs >= started - 2_000) fresh.push({ file, raw: JSON.parse(await readFile(file, 'utf8')) as Json })
+  const selectedFresh = fresh.slice(0, scenario === 'manual' ? manualBatchSize : maxItems)
+  const usage = collectMusicRecordUsage(selectedFresh.map((entry) => entry.raw))
+  let failed = 0; let succeeded = 0
+  for (const entry of selectedFresh) {
+    const warnings = [...(Array.isArray(record(entry.raw.assessment).reviewReasons) ? record(entry.raw.assessment).reviewReasons as unknown[] : []), ...(entry.raw.aiError ? [entry.raw.aiError] : [])]
+    const entityKey = text(entry.raw.entityKey) || basename(entry.file, '.json')
+    const rejected = entry.raw.disposition === 'rejected' || record(entry.raw.assessment).hardFailure === true
+    if (rejected) {
+      await db.insert(pipelineRunItems).values({
+        runId: run.id, entityKey, status: 'failed', proposedJson: null, warningsJson: warnings,
+        sourcesJson: record(record(entry.raw.record).dataQuality), confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
+        rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
+        errorCode: 'PIPELINE_ANIME_REJECTED', safeErrorMessage: 'Результат отклонён: тип, возрастной рейтинг или обязательные данные аниме не подтверждены',
+      }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: null, warningsJson: warnings, updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_ANIME_REJECTED' } })
+      failed += 1; continue
+    }
+    try {
+      const mapped = mapAnimeRecord(entry.raw); const itemId = text(mapped.id)
+      const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
+      const beforePayload = record(before[0]?.payload)
+      const proposed = before[0] ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame } : mapped
+      await db.insert(pipelineRunItems).values({
+        runId: run.id, entityKey, cardId: before[0] ? itemId : null, inputItemVersionId: before[0]?.id ?? null,
+        status: 'review_required', beforeJson: before[0]?.payload ?? null, proposedJson: proposed, warningsJson: warnings,
+        sourcesJson: record(record(entry.raw.record).dataQuality), confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
+        rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
+      }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: proposed, warningsJson: warnings, updatedAt: new Date(), status: 'review_required' } })
+      succeeded += 1
+    } catch { failed += 1 }
+  }
+  const missing = scenario === 'manual' ? Math.max(0, manualBatchSize - selectedFresh.length) : 0
+  failed += missing
+  const actualCost = Number((Number(run.actualCost ?? 0) + usage.costUsd).toFixed(8))
+  if (scenario === 'manual') {
+    const anime = Array.isArray(input.anime) ? input.anime : []
+    const itemsProcessed = run.itemsProcessed + manualBatchSize; const itemsSucceeded = run.itemsSucceeded + succeeded; const itemsFailed = run.itemsFailed + failed
+    const hasMore = manualNextOffset < anime.length
+    await db.update(pipelineRuns).set({
+      status: hasMore ? 'queued' : itemsSucceeded ? itemsFailed ? 'partially_failed' : 'review_required' : 'failed',
+      itemsProcessed, itemsSucceeded, itemsFailed, actualCost: String(actualCost), heartbeatAt: new Date(), ...(hasMore ? {} : { finishedAt: new Date() }),
+      logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
+      ...(!hasMore && !itemsSucceeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
+    }).where(eq(pipelineRuns.id, run.id))
+    if (hasMore) await db.insert(backgroundJobs).values({ type: 'anime_pipeline', idempotencyKey: `${run.id}:manual:${manualNextOffset}`, createdBy: run.createdBy, pipelineRunId: run.id, payload: { runId: run.id, offset: manualNextOffset } }).onConflictDoNothing()
+    return { runId: run.id, batch: manualBatchSize, offset: manualNextOffset, hasMore, succeeded, failed, usage }
+  }
+  await db.update(pipelineRuns).set({
+    status: succeeded ? failed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: selectedFresh.length || run.itemsTotal,
+    itemsProcessed: selectedFresh.length, itemsSucceeded: succeeded, itemsFailed: failed, actualCost: String(actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
+    logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
+    ...(!succeeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
+  }).where(eq(pipelineRuns.id, run.id))
+  return { runId: run.id, items: selectedFresh.length, succeeded, failed, usage }
+}
+
 const handleQuality = async () => {
   const active = (await db.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
   if (!active) throw new Error('Active revision not found')
@@ -394,6 +515,7 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   if (job.type === 'content_quality_check' || job.type === 'media_check') return handleQuality()
   if (job.type === 'music_pipeline') return handleMusic(job)
   if (job.type === 'movie_pipeline') return handleMovie(job)
+  if (job.type === 'anime_pipeline') return handleAnime(job)
   if (job.type === 'user_export') return handleUserExport(job)
   if (job.type === 'event_export') {
     const events = await loadAdminTimeline(db, { ...record(job.payload), limit: 10_000 } as AdminEventsQuery)

@@ -141,12 +141,40 @@ export const MoviePipelineManualPreviewBodySchema = Type.Object({
   movies: Type.Array(MoviePipelineItemSchema, { minItems: 1, maxItems: 500 }),
 }, { additionalProperties: false })
 
+const AnimePipelineItemSchema = Type.Object({
+  shikimoriId: Type.Integer({ minimum: 1 }),
+  hint: Type.Optional(Type.String({ maxLength: 500 })),
+}, { additionalProperties: false })
+
+const AnimePipelineRequestProperties = {
+  scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected'), Type.Literal('manual')]),
+  maxItems: Type.Integer({ minimum: 1, maximum: 20, default: 5 }),
+  aiMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('never')])),
+  model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
+  webSearch: Type.Optional(Type.Boolean()),
+  itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 20 })),
+  anime: Type.Optional(Type.Array(AnimePipelineItemSchema, { minItems: 1, maxItems: 500 })),
+}
+
+export const AnimePipelineEstimateBodySchema = Type.Object(AnimePipelineRequestProperties, { additionalProperties: false })
+
+export const AnimePipelineRunBodySchema = Type.Object({
+  ...AnimePipelineRequestProperties,
+  confirmation: Type.Literal(true),
+}, { additionalProperties: false })
+
+export const AnimePipelineManualPreviewBodySchema = Type.Object({
+  anime: Type.Array(AnimePipelineItemSchema, { minItems: 1, maxItems: 500 }),
+}, { additionalProperties: false })
+
 export const IntegrationKeySchema = Type.Union([
   Type.Literal('OPENAI_API_KEY'), Type.Literal('LASTFM_API_KEY'), Type.Literal('SPOTIFY_CLIENT_ID'),
   Type.Literal('SPOTIFY_CLIENT_SECRET'), Type.Literal('THEAUDIODB_API_KEY'), Type.Literal('MUSICBRAINZ_USER_AGENT'),
   Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_1'), Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_2'),
   Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_3'), Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_4'),
   Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_5'),
+  Type.Literal('SHIKIMORI_USER_AGENT'), Type.Literal('SHIKIMORI_CLIENT_ID'),
+  Type.Literal('SHIKIMORI_CLIENT_SECRET'), Type.Literal('SHIKIMORI_ACCESS_TOKEN'),
 ])
 
 export const IntegrationKeyParamsSchema = Type.Object({ key: IntegrationKeySchema }, { additionalProperties: false })
@@ -234,6 +262,9 @@ export type MusicPipelineManualPreviewBody = Static<typeof MusicPipelineManualPr
 export type MoviePipelineEstimateBody = Static<typeof MoviePipelineEstimateBodySchema>
 export type MoviePipelineRunBody = Static<typeof MoviePipelineRunBodySchema>
 export type MoviePipelineManualPreviewBody = Static<typeof MoviePipelineManualPreviewBodySchema>
+export type AnimePipelineEstimateBody = Static<typeof AnimePipelineEstimateBodySchema>
+export type AnimePipelineRunBody = Static<typeof AnimePipelineRunBodySchema>
+export type AnimePipelineManualPreviewBody = Static<typeof AnimePipelineManualPreviewBodySchema>
 export type IntegrationKey = Static<typeof IntegrationKeySchema>
 export type IntegrationSecretUpdateBody = Static<typeof IntegrationSecretUpdateBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>

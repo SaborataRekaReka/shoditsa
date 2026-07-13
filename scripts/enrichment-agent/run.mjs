@@ -158,7 +158,7 @@ const main = async () => {
         next: queue.filter(isRunnableQueueItem).slice(0, options.maxItems).map(({ key, reason, item }) => ({
           key,
           reason,
-          entity: item?.artist ?? item?.titleRu ?? item?.title ?? item?.kinopoiskId ?? null,
+          entity: item?.artist ?? item?.titleRu ?? item?.title ?? item?.kinopoiskId ?? item?.shikimoriId ?? null,
           rank: item?.rank ?? null,
         })),
       }, null, 2))
@@ -202,7 +202,7 @@ const main = async () => {
         total: result.total,
         output: path.relative(ROOT, result.outputPath).replace(/\\/g, '/'),
         candidates: result.additions.map((item) => ({
-          entity: item.artist ?? item.title ?? item.kinopoiskId ?? null,
+          entity: item.artist ?? item.title ?? item.kinopoiskId ?? item.shikimoriId ?? null,
           reason: item.provenance?.reason ?? item.provenance?.source ?? null,
           sourceUrls: item.provenance?.sourceUrls ?? [],
         })),

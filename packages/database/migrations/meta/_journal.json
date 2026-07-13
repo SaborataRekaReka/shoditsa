@@ -43,6 +43,13 @@
       "when": 1783945234078,
       "tag": "0005_awesome_infant_terrible",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783946692803,
+      "tag": "0006_far_rawhide_kid",
+      "breakpoints": true
     }
   ]
 }

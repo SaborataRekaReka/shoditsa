@@ -25,7 +25,7 @@ npm run admin:bootstrap -- --email=breneize@yandex.ru
 | Карточки шести режимов | `content_items`, `content_item_versions`, `content_aliases`, `diagnosis_vignettes` | Админ пишет в `content_workspace_changes` | Worker строит новую immutable revision; игра читает только `content_revisions.status = active` |
 | Рабочая версия | `content_workspaces`, `content_workspace_changes` | Optimistic lock через `expectedVersion` | Validate → build job → ready revision → явная activation |
 | Жалобы | `content_reports` | Игровой endpoint с `clientEventId`; админ меняет статус/связи | Очередь отчётов, карточка контента, timeline |
-| Музыкальный пайплайн | `pipeline_runs`, `pipeline_run_items`, `background_jobs` | API ставит job; отдельный worker запускает существующие scripts | Одобренные поля попадают в workspace, но не сразу в active revision |
+| Контентные пайплайны (музыка, кино, аниме) | `pipeline_runs`, `pipeline_run_items`, `background_jobs` | API ставит domain job; отдельный worker запускает enrichment scripts | Одобренные поля попадают в workspace в своём mode, но не сразу в active revision |
 | Пользователи | Better Auth `user/session/account`, `player_profiles`, wallet/stat tables | Block/unblock, session revoke, notes, wallet adjustment | Обычные API отклоняют активную блокировку кодом `ACCOUNT_BLOCKED` |
 | События | `game_sessions`, attempts/hints, `auth_events`, `client_events`, reports, wallet ledger | Серверные события и батч `/api/v1/client-events/batch` | Единая read-model timeline и export jobs |
 | Аудит | `audit_log` | Все опасные admin mutations | Раздел «Аудит»; значения секретов не сохраняются |
@@ -48,9 +48,9 @@ npm run admin:bootstrap -- --email=breneize@yandex.ru
 - Enrichment root: `ENRICHMENT_DATA_ROOT`; локально `./data/enrichment-agent`, в worker-контейнере `/app/data/enrichment-agent`.
 - Постоянный production volume: `/opt/shoditsa/shared/enrichment`.
 - Media root: `MEDIA_ROOT`; production volume `/opt/shoditsa/shared/media`, публичный prefix задаёт `PUBLIC_MEDIA_BASE_URL`.
-- Музыкальные adapters: `scripts/music/run-agent-cycle.mjs` и `scripts/enrichment-agent/run.mjs`.
+- Domain adapters: `scripts/music/run-agent-cycle.mjs`, `scripts/movies/run-agent-cycle.mjs`, `scripts/anime/run-agent-cycle.mjs` и общее ядро `scripts/enrichment-agent/run.mjs`.
 - Разрешённая AI-модель: `MUSIC_PIPELINE_MODEL=gpt-5-mini`.
-- Секреты Kinopoisk/OpenAI/LastFM/Spotify/TheAudioDB доступны только worker. API-контейнер принудительно получает пустые значения этих переменных.
+- Секреты Kinopoisk/Shikimori/OpenAI/LastFM/Spotify/TheAudioDB доступны только worker. API-контейнер принудительно получает пустые значения этих переменных.
 
 ## Переменные окружения
 

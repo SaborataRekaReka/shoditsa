@@ -2,7 +2,7 @@
 
 ## Задача
 
-Процесс обогащает сущности по одной, помнит результат каждого шага и безопасно продолжается после остановки. Музыка и кино используют одно общее ядро. Доменный адаптер кино получает структурированные данные через Kinopoisk Unofficial API, а результаты обоих доменов проходят одинаковый review-контур до рабочей ревизии. Доверенный источник по умолчанию — текущая production-библиотека `items.json`.
+Процесс обогащает сущности по одной, помнит результат каждого шага и безопасно продолжается после остановки. Музыка, кино и аниме используют одно общее ядро. Доменные адаптеры получают структурированные данные через профильные API, а результаты всех доменов проходят одинаковый review-контур до рабочей ревизии. Доверенный источник по умолчанию — текущая production-библиотека `items.json`.
 
 Основной принцип качества и цены: один AI-вызов на discovery-партию, затем структурированные API и один AI-вызов на нового артиста для fact-check и подсказки. Production-файлы не меняются во время поиска.
 
@@ -142,3 +142,23 @@ node scripts/enrichment-agent/run.mjs movie run --source=tmp/movie-ids.json --ma
 Нужен хотя бы один `KINOPOISK_UNOFFICIAL_API_KEY_1..5` (либо legacy `KINOPOISK_API_KEY(S)`). `OPENAI_API_KEY` обязателен для автоматического фактчекинга и генерации подсказки; с `--ai=never` метаданные всё равно собираются, но результат остаётся на ручной проверке. Сценарий discovery берёт отсутствующие фильмы из `TOP_250_MOVIES`, не полагаясь на HTML-парсинг Кинопоиска.
 
 В админке доступны `POST /api/v1/admin/pipelines/movie/estimate`, `/manual/preview` и `/runs`. Worker сохраняет результаты в `pipeline_run_items`; одобрение использует тот же diff и workspace flow, что и музыка.
+
+## Аниме · Shikimori
+
+Аниме-адаптер получает карточку и роли из Shikimori API, нормализует формат, статус, источник, студии, создателей и актёров. Discovery перебирает популярные TV, movie, OVA, ONA и special, исключает уже существующие карточки и материалы с возрастным рейтингом `rx`. Новая карточка создаётся с `allowedInGame: false` и попадает на ручное одобрение.
+
+```powershell
+npm run data:agent:anime:status
+npm run data:agent:anime:plan
+npm run data:agent:anime -- --max-items=5
+```
+
+Для ручной партии источник может содержать числа или объекты `{ "shikimoriId": 16498 }`:
+
+```powershell
+node scripts/enrichment-agent/run.mjs anime run --source=tmp/anime-ids.json --max-items=10
+```
+
+Для публичного каталога обязателен идентифицирующий `SHIKIMORI_USER_AGENT`. В настройках админки также доступны `SHIKIMORI_CLIENT_ID`, `SHIKIMORI_CLIENT_SECRET` и `SHIKIMORI_ACCESS_TOKEN`; Bearer-токен добавляется к запросам, если он задан. `OPENAI_API_KEY` нужен только для AI-фактчекинга и генерации подсказки — с `--ai=never` структурированные метаданные всё равно собираются.
+
+В админке доступны `POST /api/v1/admin/pipelines/anime/estimate`, `/manual/preview` и `/runs`. Worker ставит задачи типа `anime_pipeline`, пишет diff в `pipeline_run_items`, а одобренные карточки сохраняет в workspace с режимом `anime`.
