@@ -47,4 +47,25 @@ describe('public game card', () => {
     expect(card.keySymptoms).toEqual(['Лихорадка'])
     expect(card.posterUrl).toBe('/media/content/game/tgdb_10836/poster.webp')
   })
+
+  it('normalizes people photo urls to media path', () => {
+    const item = {
+      id: 'kp_251733',
+      mode: 'movie',
+      titleRu: 'Аватар',
+      titleOriginal: 'Avatar',
+      alternativeTitles: [],
+      popularityScore: 0,
+      cast: [
+        {
+          nameRu: 'Сэм Уортингтон',
+          nameOriginal: 'Sam Worthington',
+          photoUrl: './data/libraries/people/img/84/842c7705dac914e1a3765e58bb2ca6d50117a5eb20e833d38133af5ca19a9ab3.webp',
+        },
+      ],
+    } as TitleItem
+
+    const card = publicCard(item)
+    expect(card.cast?.[0]?.photoUrl).toBe('/media/people/84/842c7705dac914e1a3765e58bb2ca6d50117a5eb20e833d38133af5ca19a9ab3.webp')
+  })
 })

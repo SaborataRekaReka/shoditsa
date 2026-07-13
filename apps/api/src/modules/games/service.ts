@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import type { ApiDifficultyKey, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
+import type { ApiDifficultyKey, Hint, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
@@ -24,6 +24,23 @@ const legacyMediaUrl = (value: string | null | undefined, mode: TitleMode, itemI
   return content ? `/media/content/${mode}/${content[1]}` : value
 }
 
+const legacyPeoplePhotoUrl = (value: string | null | undefined) => {
+  if (!value) return null
+  if (/^\/?media\//.test(value) || /^https?:\/\//.test(value)) return value
+  const normalized = value.replace(/^\.\//, '/')
+  const people = normalized.match(/^\/data\/libraries\/people\/img\/(.+)$/)
+  return people ? `/media/people/${people[1]}` : value
+}
+
+const normalizePeoplePhotos = <T extends { photoUrl?: string | null }>(people?: T[]) =>
+  people?.map((person) => ({ ...person, photoUrl: legacyPeoplePhotoUrl(person.photoUrl) ?? undefined }))
+
+const normalizeHintPeople = (hints: Hint[]) => hints.map((hint) => (
+  hint.people?.length
+    ? { ...hint, people: hint.people.map((person) => ({ ...person, photoUrl: legacyPeoplePhotoUrl(person.photoUrl) ?? undefined })) }
+    : hint
+))
+
 export const publicCard = (item: TitleItem) => ({
   ...item,
   titleOriginal: item.titleOriginal ?? '',
@@ -40,6 +57,11 @@ export const publicCard = (item: TitleItem) => ({
   topTracks: item.topTracks ?? [],
   topAlbums: item.topAlbums ?? [],
   similarArtists: item.similarArtists ?? [],
+  directors: normalizePeoplePhotos(item.directors),
+  showrunners: normalizePeoplePhotos(item.showrunners),
+  writers: normalizePeoplePhotos(item.writers),
+  cast: normalizePeoplePhotos(item.cast),
+  supportingCast: normalizePeoplePhotos(item.supportingCast),
 })
 
 const progressiveMusicHints = (answer: TitleItem, attempts: number) => {
@@ -133,7 +155,11 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     id: session.id, kind: session.kind, mode: session.mode, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
-    attempts: attempts.map((entry) => ({ position: entry.position, item: publicCard(entry.item as TitleItem), hints: entry.hints })),
+    attempts: attempts.map((entry) => ({
+      position: entry.position,
+      item: publicCard(entry.item as TitleItem),
+      hints: normalizeHintPeople(entry.hints as Hint[]),
+    })),
     hintCheckpoints: [5, 8].map((round) => ({ round, state: choices.some((choice) => choice.checkpoint === round) ? 'opened' : session.attemptsCount >= round ? 'available' : 'locked' })),
     hintChoices: choices,
     progressiveHints: session.mode === 'music' && answer ? progressiveMusicHints(answer, session.attemptsCount) : [],
@@ -172,7 +198,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const isCorrect = guess.id === answer.id
   const position = session.attemptsCount + 1
   const status = isCorrect ? 'won' : position >= 10 ? 'lost' : 'playing'
-  const hints = compareTitles(guess, answer)
+  const hints = normalizeHintPeople(compareTitles(guess, answer) as Hint[])
   let reward: Awaited<ReturnType<typeof completeGame>> = null
   if (status !== 'playing') reward = await completeGame(tx, {
     sessionId, userId, kind: session.kind, mode: session.mode, difficulty: session.difficulty,

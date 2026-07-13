@@ -2083,10 +2083,17 @@ function PersonPortrait({ person }: { person: HintPerson }) {
   const [failed, setFailed] = useState(false)
   const name = person.nameRu || person.nameOriginal || 'Нет данных'
   const initials = name.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
+  const photoUrl = (() => {
+    if (!person.photoUrl) return null
+    if (/^\/?media\//.test(person.photoUrl) || /^https?:\/\//.test(person.photoUrl)) return person.photoUrl
+    const normalized = person.photoUrl.replace(/^\.\//, '/')
+    const match = normalized.match(/^\/data\/libraries\/people\/img\/(.+)$/)
+    return match ? `/media/people/${match[1]}` : person.photoUrl
+  })()
   return <div className={`hint-person ${person.matched ? 'matched' : ''}`}>
     <div className="hint-person__portrait">
-      {person.photoUrl && !failed
-        ? <img src={person.photoUrl} alt={name} onError={() => setFailed(true)} />
+      {photoUrl && !failed
+        ? <img src={photoUrl} alt={name} onError={() => setFailed(true)} />
         : <span>{initials || '—'}</span>}
     </div>
     <strong>{name}</strong>
