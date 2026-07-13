@@ -44,6 +44,7 @@ import { applyContentExchangeImport, describeContentExchangeSelection, exportCon
 import { loadAdminTimeline } from './timeline-service.js'
 import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
 import { normalizeMusicProxyUrl } from './music-proxy.js'
+import { normalizeMovieTitle, searchKinopoiskMovie } from './movie-search.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
@@ -70,6 +71,18 @@ const completionOf = (payload: unknown) => {
 
 const normalizeArtistName = (value: unknown) => String(value ?? '').normalize('NFKC').toLocaleLowerCase('ru-RU')
   .replaceAll('ё', 'е').replace(/[^a-zа-я0-9]+/gi, ' ').replace(/\s+/g, ' ').trim()
+
+const mapConcurrent = async <T, R>(items: T[], concurrency: number, callback: (item: T, index: number) => Promise<R>) => {
+  const output = new Array<R>(items.length)
+  let nextIndex = 0
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const index = nextIndex++
+      output[index] = await callback(items[index], index)
+    }
+  }))
+  return output
+}
 
 const previewManualArtists = async (db: Database, artists: MusicPipelineManualPreviewBody['artists']) => {
   const activeMusic = await db.select({ itemId: contentItemVersions.itemId, titleRu: contentItemVersions.titleRu, titleOriginal: contentItemVersions.titleOriginal, payload: contentItemVersions.payload })
@@ -103,7 +116,7 @@ const previewManualArtists = async (db: Database, artists: MusicPipelineManualPr
   }
 }
 
-const previewManualMovies = async (db: Database, movies: MoviePipelineManualPreviewBody['movies']) => {
+const previewManualMovies = async (db: Database, movies: MoviePipelineManualPreviewBody['movies'], kinopoiskKeys = '') => {
   const activeMovies = await db.select({ itemId: contentItemVersions.itemId, titleRu: contentItemVersions.titleRu, payload: contentItemVersions.payload })
     .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
     .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'movie')))
@@ -112,12 +125,26 @@ const previewManualMovies = async (db: Database, movies: MoviePipelineManualPrev
     const kinopoiskId = Number(asRecord(card.payload).kinopoiskId)
     if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) existing.set(kinopoiskId, { itemId: card.itemId, title: card.titleRu })
   }
+  const cache = new Map<string, ReturnType<typeof searchKinopoiskMovie>>()
+  const resolved = await mapConcurrent(movies, 4, async (entry) => {
+    const source = asRecord(entry)
+    const directId = Number(source.kinopoiskId)
+    if (Number.isSafeInteger(directId) && directId > 0) return { kinopoiskId: directId, hint: typeof source.hint === 'string' ? source.hint.trim() || null : null, query: null, requestedYear: null, resolvedTitle: null, resolvedYear: null }
+    const query = typeof source.query === 'string' ? source.query.trim() : ''
+    const requestedYear = Number.isInteger(source.year) ? Number(source.year) : null
+    if (!query) return { kinopoiskId: null, hint: null, query, requestedYear, resolvedTitle: null, resolvedYear: null }
+    const cacheKey = `${normalizeMovieTitle(query)}:${requestedYear ?? ''}`
+    let pending = cache.get(cacheKey)
+    if (!pending) { pending = searchKinopoiskMovie(query, requestedYear, kinopoiskKeys); cache.set(cacheKey, pending) }
+    const match = await pending
+    return { kinopoiskId: match?.kinopoiskId ?? null, hint: null, query, requestedYear, resolvedTitle: match?.title ?? null, resolvedYear: match?.year ?? null }
+  })
   const seen = new Set<number>()
-  const items = movies.map((entry, index) => {
+  const items = resolved.map((entry, index) => {
     const kinopoiskId = Number(entry.kinopoiskId); const match = existing.get(kinopoiskId)
     const status = !Number.isInteger(kinopoiskId) || kinopoiskId <= 0 ? 'invalid' : seen.has(kinopoiskId) ? 'duplicate_input' : match ? 'existing_card' : 'ready'
     if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) seen.add(kinopoiskId)
-    return { index, kinopoiskId, hint: entry.hint?.trim() || null, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
+    return { index, ...entry, kinopoiskId: Number.isInteger(kinopoiskId) && kinopoiskId > 0 ? kinopoiskId : null, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
   })
   return {
     items,
@@ -525,20 +552,23 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
   app.post('/api/v1/admin/pipelines/movie/manual/preview', { schema: { body: MoviePipelineManualPreviewBodySchema } }, async (request, reply) => {
     await admin(request, reply, deps)
-    return previewManualMovies(deps.db, (request.body as MoviePipelineManualPreviewBody).movies)
+    const movies = (request.body as MoviePipelineManualPreviewBody).movies
+    const needsSearch = movies.some((entry) => typeof asRecord(entry).query === 'string')
+    const integrations = needsSearch ? await loadIntegrationEnvironment(deps.db, deps.config) : null
+    return previewManualMovies(deps.db, movies, integrations?.KINOPOISK_API_KEYS)
   })
 
   app.post('/api/v1/admin/pipelines/movie/runs', { schema: { body: MoviePipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const body = request.body as MoviePipelineRunBody; const key = requireIdempotencyKey(request)
     if (body.scenario === 'selected' && (!body.itemIds?.length || body.itemIds.length > body.maxItems)) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите карточки фильмов в пределах лимита')
+    const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
     let manualMovies: MoviePipelineManualPreviewBody['movies'] = []
     if (body.scenario === 'manual') {
-      if (!body.movies?.length) throw new ApiError(422, 'PIPELINE_MOVIES_REQUIRED', 'Добавьте хотя бы один ID Кинопоиска')
-      const preview = await previewManualMovies(deps.db, body.movies)
+      if (!body.movies?.length) throw new ApiError(422, 'PIPELINE_MOVIES_REQUIRED', 'Добавьте хотя бы один фильм')
+      const preview = await previewManualMovies(deps.db, body.movies, integrations.KINOPOISK_API_KEYS)
       manualMovies = preview.items.filter((entry) => entry.status === 'ready').map(({ kinopoiskId, hint }) => ({ kinopoiskId, ...(hint ? { hint } : {}) }))
       if (!manualMovies.length) throw new ApiError(409, 'PIPELINE_MOVIES_ALREADY_EXIST', 'В списке нет новых фильмов для обработки', preview.summary)
     }
-    const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!integrations.KINOPOISK_API_KEYS) throw new ApiError(409, 'KINOPOISK_API_KEY_REQUIRED', 'Добавьте ключ Кинопоиск Unofficial API в разделе «API-интеграции»')
     if (body.aiMode !== 'never' && !integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
     const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)

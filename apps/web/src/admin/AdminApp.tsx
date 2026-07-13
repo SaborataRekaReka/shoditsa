@@ -10,6 +10,8 @@ import {
 } from 'lucide-react'
 import type { AdminContentListItem, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
+import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
+import { useDebouncedValue } from '../hooks/use-debounced-value'
 import './admin.css'
 
 type Section = 'dashboard' | 'content' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'integrations' | 'system' | 'audit'
@@ -343,78 +345,7 @@ function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | nu
     </div></>
 }
 
-type ManualArtist = { artist: string; country?: string; hint?: string }
-type ManualMovie = { kinopoiskId: number; hint?: string }
-type ManualAnime = { shikimoriId: number; hint?: string }
 type PipelineKey = 'music' | 'movie' | 'anime'
-
-const parseIdAndHint = (line: string) => {
-  const [rawId, ...rest] = line.split(/[;,\t]/).map((entry) => entry.trim().replace(/^"|"$/g, ''))
-  const hint = rest.join(' ').trim()
-  return { rawId, hint: hint || undefined }
-}
-
-const parseKinopoiskId = (line: string, rawId: string) => {
-  const urlMatch = line.match(/(?:https?:\/\/)?(?:www\.)?kinopoisk\.ru\/(?:film|series)\/(\d+)(?:[/?#]|$)/i)
-  if (urlMatch) {
-    const id = Number(urlMatch[1])
-    return Number.isInteger(id) && id > 0 ? id : null
-  }
-  const plainId = rawId.match(/^\d+$/)
-  if (plainId) {
-    const id = Number(plainId[0])
-    return Number.isInteger(id) && id > 0 ? id : null
-  }
-  const prefixed = rawId.match(/^(?:kp|kinopoisk)[_:-]?(\d+)$/i)
-  if (prefixed) {
-    const id = Number(prefixed[1])
-    return Number.isInteger(id) && id > 0 ? id : null
-  }
-  return null
-}
-
-const parseShikimoriId = (line: string, rawId: string) => {
-  const urlMatch = line.match(/(?:https?:\/\/)?(?:www\.)?shikimori\.(?:one|io)\/(?:animes?|anime)\/(\d+)(?:[/?#]|$)/i)
-  if (urlMatch) {
-    const id = Number(urlMatch[1])
-    return Number.isInteger(id) && id > 0 ? id : null
-  }
-  const plainId = rawId.match(/^\d+$/)
-  if (plainId) {
-    const id = Number(plainId[0])
-    return Number.isInteger(id) && id > 0 ? id : null
-  }
-  const prefixed = rawId.match(/^(?:shiki|shikimori)[_:-]?(\d+)$/i)
-  if (prefixed) {
-    const id = Number(prefixed[1])
-    return Number.isInteger(id) && id > 0 ? id : null
-  }
-  return null
-}
-
-const parseArtistList = (value: string): ManualArtist[] => value.split(/\r?\n/).flatMap((raw, index) => {
-  const line = raw.trim()
-  if (!line || (index === 0 && /^(artist|исполнитель)([,;\t]|$)/i.test(line))) return []
-  const separator = line.includes('\t') ? '\t' : line.includes(';') ? ';' : line.includes(',') ? ',' : null
-  const parts = separator ? line.split(separator).map((entry) => entry.trim().replace(/^"|"$/g, '')) : [line]
-  return [{ artist: parts[0], ...(parts[1] ? { country: parts[1] } : {}), ...(parts.slice(2).join(' ').trim() ? { hint: parts.slice(2).join(' ').trim() } : {}) }]
-}).slice(0, 500)
-
-const parseMovieList = (value: string): ManualMovie[] => value.split(/\r?\n/).flatMap((raw, index) => {
-  const line = raw.trim()
-  if (!line || (index === 0 && /^(kinopoisk|кинопоиск|id)([,;\t]|$)/i.test(line))) return []
-  const { rawId, hint } = parseIdAndHint(line)
-  const kinopoiskId = parseKinopoiskId(line, rawId)
-  return kinopoiskId ? [{ kinopoiskId, ...(hint ? { hint } : {}) }] : []
-}).slice(0, 500)
-
-const parseAnimeList = (value: string): ManualAnime[] => value.split(/\r?\n/).flatMap((raw, index) => {
-  const line = raw.trim()
-  if (!line || (index === 0 && /^(shikimori|шикимори|id)([,;\t]|$)/i.test(line))) return []
-  const { rawId, hint } = parseIdAndHint(line)
-  const shikimoriId = parseShikimoriId(line, rawId)
-  return shikimoriId ? [{ shikimoriId, ...(hint ? { hint } : {}) }] : []
-}).slice(0, 500)
 
 function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient()
@@ -424,10 +355,13 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const [scenario, setScenario] = useState('manual'); const [maxItems, setMaxItems] = useState(5); const [starting, setStarting] = useState(false); const [pipelineKey, setPipelineKey] = useState<PipelineKey>('music')
   const [artistText, setArtistText] = useState(''); const artists = useMemo(() => parseArtistList(artistText), [artistText])
   const [movieText, setMovieText] = useState(''); const movies = useMemo(() => parseMovieList(movieText), [movieText])
+  const debouncedMovies = useDebouncedValue(movies, 600)
   const [animeText, setAnimeText] = useState(''); const anime = useMemo(() => parseAnimeList(animeText), [animeText])
   const manualItems = pipelineKey === 'music' ? artists : pipelineKey === 'movie' ? movies : anime
+  const previewItems = pipelineKey === 'movie' ? debouncedMovies : manualItems
+  const previewIsSettling = pipelineKey === 'movie' && movies !== debouncedMovies
   const manualPayload = pipelineKey === 'music' ? { artists } : pipelineKey === 'movie' ? { movies } : { anime }
-  const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey, manualItems), enabled: starting && scenario === 'manual' && manualItems.length > 0 })
+  const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, previewItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey, previewItems), enabled: starting && scenario === 'manual' && previewItems.length > 0 })
   const estimate = useQuery({
     queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems], enabled: scenario !== 'manual' || manualItems.length > 0,
     queryFn: () => adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
@@ -441,15 +375,15 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const approve = useMutation({ mutationFn: (publish: boolean) => adminApi.approvePipeline(selectedId!, {}, publish), onSuccess: (_, publish) => { notify('success', publish ? 'Выбранные изменения опубликованы' : 'Изменения добавлены в рабочую версию'); void client.invalidateQueries({ queryKey: ['admin'] }) }, onError: (error) => notify('error', errorText(error)) })
   const cancel = useMutation({ mutationFn: () => adminApi.cancelPipeline(selectedId!), onSuccess: () => { notify('info', 'Остановка запрошена'); void runs.refetch() }, onError: (error) => notify('error', errorText(error)) })
   const selectedRun = runs.data?.items.find((entry) => entry.id === selectedId)
-  const previewSummary = record(preview.data?.summary); const readyItems = Number(previewSummary.ready ?? 0)
+  const previewSummary = record(preview.data?.summary); const readyItems = previewIsSettling ? 0 : Number(previewSummary.ready ?? 0)
   const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : 'Пайплайн'
   const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : 'Контентный пайплайн'
   const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : <Bot />
   const manualText = pipelineKey === 'music' ? artistText : pipelineKey === 'movie' ? movieText : animeText
   const setManualText = pipelineKey === 'music' ? setArtistText : pipelineKey === 'movie' ? setMovieText : setAnimeText
   const manualFieldLabel = pipelineKey === 'music' ? 'Исполнители' : pipelineKey === 'movie' ? 'Фильмы Кинопоиска' : 'Аниме Shikimori'
-  const manualPlaceholder = pipelineKey === 'music' ? 'Кино\nDepeche Mode\nPhoenix,Франция,indie rock band' : pipelineKey === 'movie' ? '326\nhttps://www.kinopoisk.ru/film/435/\n535341,добавить фильм из списка' : '16498\nhttps://shikimori.one/animes/5114\n9253,добавить аниме из списка'
-  const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Формат: только ID или ссылка Кинопоиска. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.' : 'Формат: только ID или ссылка Shikimori. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.'
+  const manualPlaceholder = pipelineKey === 'music' ? 'Кино\nDepeche Mode\nPhoenix,Франция,indie rock band' : pipelineKey === 'movie' ? 'В поисках Немо (Finding Nemo, 2003)\nЧёрная Пантера (Black Panther, 2018)\nБэтмен (The Batman, 2022)' : '16498\nhttps://shikimori.one/animes/5114\n9253,добавить аниме из списка'
+  const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Как в музыке: один фильм на строку. Можно указать «Название (Original title, год)», просто название, ID или ссылку Кинопоиска.' : 'Формат: только ID или ссылка Shikimori. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.'
   const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime') { setPipelineKey(key); setScenario('manual'); setStarting(true) } }
   return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button></>} />
     <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
@@ -472,7 +406,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
           <label className="admin-field admin-field--wide"><span>Сценарий</span><select value={scenario} onChange={(event) => setScenario(event.target.value)}><option value="manual">Создать карточки по моему списку</option><option value="discover">{pipelineKey === 'music' ? 'Найти и подготовить новых исполнителей' : pipelineKey === 'movie' ? 'Взять новые фильмы из топа Кинопоиска' : 'Взять новые аниме из топа Shikimori'}</option><option value="candidates">Обработать найденных кандидатов</option><option value="review">Перепроверить очередь ручной проверки</option></select></label>
           {scenario === 'manual' && <>
             <label className="admin-field admin-field--wide admin-artist-import"><span>{manualFieldLabel} <small>до 500 строк</small></span><textarea value={manualText} onChange={(event) => setManualText(event.target.value)} placeholder={manualPlaceholder} /><small>{manualHelp}</small><label className="admin-file-button"><Upload />Загрузить TXT или CSV<input type="file" accept=".txt,.csv,text/plain,text/csv" onChange={(event) => { const file = event.target.files?.[0]; if (file) void file.text().then(setManualText) }} /></label></label>
-            <div className="admin-import-preview"><header><strong>Предварительная проверка</strong><span>{preview.isFetching ? 'Проверяем…' : `${manualItems.length} строк`}</span></header>{preview.data && <><div className="admin-import-summary"><span><b>{readyItems}</b> новых</span><span><b>{String(previewSummary.existing ?? 0)}</b> уже есть</span><span><b>{String(previewSummary.duplicates ?? 0)}</b> дублей</span></div><div className="admin-import-list">{preview.data.items.slice(0, 100).map((raw) => { const item = record(raw); const identity = pipelineKey === 'music' ? title(item.artist) : pipelineKey === 'movie' ? `Кинопоиск #${String(item.kinopoiskId)}` : `Shikimori #${String(item.shikimoriId)}`; return <div key={`${item.index}-${item.artist ?? item.kinopoiskId ?? item.shikimoriId}`}><strong>{identity}</strong><small>{item.country || item.existingTitle || item.hint || '—'}</small><Status value={item.status}>{item.status === 'ready' ? 'Новый' : item.status === 'existing_card' ? 'Уже есть' : item.status === 'duplicate_input' ? 'Дубль' : 'Ошибка'}</Status></div> })}</div></>}</div>
+            <div className="admin-import-preview"><header><strong>Предварительная проверка</strong><span>{preview.isFetching || previewIsSettling ? 'Проверяем…' : `${manualItems.length} строк`}</span></header>{preview.error && !preview.isFetching && <ErrorState error={preview.error} />}{preview.data && !previewIsSettling && <><div className="admin-import-summary"><span><b>{readyItems}</b> новых</span><span><b>{String(previewSummary.existing ?? 0)}</b> уже есть</span><span><b>{String(previewSummary.duplicates ?? 0)}</b> дублей</span></div><div className="admin-import-list">{preview.data.items.slice(0, 100).map((raw) => { const item = record(raw); const identity = pipelineKey === 'music' ? title(item.artist) : pipelineKey === 'movie' ? title(item.resolvedTitle || item.query || (item.kinopoiskId ? `Кинопоиск #${String(item.kinopoiskId)}` : 'Фильм не распознан')) : `Shikimori #${String(item.shikimoriId)}`; const details = pipelineKey === 'movie' ? item.existingTitle || (item.kinopoiskId ? `Кинопоиск #${String(item.kinopoiskId)}${item.resolvedYear ? ` · ${String(item.resolvedYear)}` : ''}` : item.requestedYear ? `Не найден фильм ${String(item.requestedYear)} года` : 'Фильм не найден') : item.country || item.existingTitle || item.hint || '—'; return <div key={`${item.index}-${item.artist ?? item.query ?? item.kinopoiskId ?? item.shikimoriId}`}><strong>{identity}</strong><small>{title(details)}</small><Status value={item.status}>{item.status === 'ready' ? 'Новый' : item.status === 'existing_card' ? 'Уже есть' : item.status === 'duplicate_input' ? 'Дубль' : 'Ошибка'}</Status></div> })}</div></>}</div>
           </>}
           <label className="admin-field"><span>{scenario === 'manual' ? 'Размер партии' : 'Количество'} · {maxItems}</span><input type="range" min="1" max="20" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} /><small>{scenario === 'manual' ? 'После каждой партии прогресс и расход сохраняются в БД.' : 'Максимум элементов в текущем запуске.'}</small></label>
           <div className="admin-estimate"><CircleDollarSign /><div><span>Ориентировочная оценка</span><strong>${String(estimate.data?.estimatedCost ?? '—')}</strong><small>{String(estimate.data?.aiReviewCalls ?? '—')} AI-вызовов · фактическая сумма считается по usage и web search calls</small></div></div>

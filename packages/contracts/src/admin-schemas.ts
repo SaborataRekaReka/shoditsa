@@ -169,10 +169,17 @@ export const MusicPipelineManualPreviewBodySchema = Type.Object({
   artists: Type.Array(MusicPipelineArtistSchema, { minItems: 1, maxItems: 500 }),
 }, { additionalProperties: false })
 
-const MoviePipelineItemSchema = Type.Object({
+const MoviePipelineIdItemSchema = Type.Object({
   kinopoiskId: Type.Integer({ minimum: 1 }),
   hint: Type.Optional(Type.String({ maxLength: 500 })),
 }, { additionalProperties: false })
+
+const MoviePipelineQueryItemSchema = Type.Object({
+  query: Type.String({ minLength: 1, maxLength: 300 }),
+  year: Type.Optional(Type.Integer({ minimum: 1888, maximum: 2100 })),
+}, { additionalProperties: false })
+
+const MoviePipelineItemSchema = Type.Union([MoviePipelineIdItemSchema, MoviePipelineQueryItemSchema])
 
 const MoviePipelineRequestProperties = {
   scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected'), Type.Literal('manual')]),
