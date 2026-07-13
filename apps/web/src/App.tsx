@@ -4055,6 +4055,8 @@ function GameApp() {
   const [challengeAccepted, setChallengeAccepted] = useState(false)
   const [screen, setScreen] = useState<AppScreen>(() => resetPasswordTokenFromLocation()
     ? 'profile'
+    : typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('tab')
+      ? 'profile'
     : SERVER_RUNTIME && typeof window !== 'undefined' && window.sessionStorage.getItem('shoditsa:active-server-session')
       ? 'game'
       : 'hub')
@@ -4355,6 +4357,13 @@ function GameApp() {
   const moveToScreen = (target: 'hub' | 'title' | 'rewatch' | 'profile') => {
     clearTransitionTimer()
     setTransition('idle')
+    if (target !== 'profile' && typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (url.searchParams.has('tab')) {
+        url.searchParams.delete('tab')
+        window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+      }
+    }
     if (target === 'hub') {
       setDate(getMoscowDate())
     }
@@ -4445,6 +4454,13 @@ function GameApp() {
     trackMetrikaGoal('select_mode', { mode: nextMode })
     clearTransitionTimer()
     setTransition('idle')
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (url.searchParams.has('tab')) {
+        url.searchParams.delete('tab')
+        window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+      }
+    }
     setFreePlayLaunch(null)
     setModeSafe(nextMode)
     setDate(getMoscowDate())
@@ -4696,7 +4712,7 @@ function GameApp() {
 
     {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} onResumeActive={resumeActiveSession} />}
+    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} onResumeActive={resumeActiveSession} />}
 
     {screen === 'game' && (SERVER_RUNTIME
       ? serverSessionId
@@ -4739,7 +4755,7 @@ function GameApp() {
           onPlayNext={playNextDaily}
             />)}
 
-    {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => setScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
+    {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} difficulty={mode === 'music' ? difficulty : undefined} /></Modal>}
