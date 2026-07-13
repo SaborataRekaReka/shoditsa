@@ -2,7 +2,7 @@ import { Value } from '@sinclair/typebox/value'
 import { FormatRegistry } from '@sinclair/typebox'
 import { describe, expect, it } from 'vitest'
 import {
-  AttemptBodySchema, CatalogSearchQuerySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationSecretUpdateBodySchema,
+  AttemptBodySchema, CatalogSearchQuerySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
   LegacyImportBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
 } from '../src/index.js'
 
@@ -32,5 +32,10 @@ describe('API schemas', () => {
   it('requires explicit confirmation when saving an integration credential', () => {
     expect(Value.Check(IntegrationSecretUpdateBodySchema, { value: 'secret' })).toBe(false)
     expect(Value.Check(IntegrationSecretUpdateBodySchema, { value: 'secret', confirmation: true })).toBe(true)
+  })
+  it('accepts exactly five Kinopoisk Unofficial API key slots', () => {
+    expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_1')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_5')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_6')).toBe(false)
   })
 })

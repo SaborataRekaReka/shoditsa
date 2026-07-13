@@ -551,3 +551,13 @@
   .admin-import-list > div { grid-template-columns: minmax(0,1fr) auto; }
   .admin-import-list > div small { display: none; }
 }
+
+/* A disabled button is not necessarily loading: keep its action icon still. */
+.admin-btn:disabled svg { animation: none; }
+.admin-btn.is-loading svg { animation: admin-spin 1s linear infinite; }
+
+/* Long status labels such as "Необязательно" remain fully readable. */
+.admin-status { min-height: 22px; padding: 4px 7px; justify-content: center; line-height: 1.15; text-align: center; }
+.admin-status i { flex: 0 0 5px; }
+.admin-integration-card > header { grid-template-columns: 36px minmax(0,1fr) minmax(96px,auto); }
+.admin-integration-card > header .admin-status { justify-self: end; min-width: 96px; }

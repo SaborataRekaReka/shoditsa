@@ -118,6 +118,9 @@ export const MusicPipelineManualPreviewBodySchema = Type.Object({
 export const IntegrationKeySchema = Type.Union([
   Type.Literal('OPENAI_API_KEY'), Type.Literal('LASTFM_API_KEY'), Type.Literal('SPOTIFY_CLIENT_ID'),
   Type.Literal('SPOTIFY_CLIENT_SECRET'), Type.Literal('THEAUDIODB_API_KEY'), Type.Literal('MUSICBRAINZ_USER_AGENT'),
+  Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_1'), Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_2'),
+  Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_3'), Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_4'),
+  Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_5'),
 ])
 
 export const IntegrationKeyParamsSchema = Type.Object({ key: IntegrationKeySchema }, { additionalProperties: false })

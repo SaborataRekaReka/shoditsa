@@ -18,9 +18,18 @@ export const integrationRegistry: ReadonlyArray<{
   { key: 'SPOTIFY_CLIENT_SECRET', title: 'Spotify Client Secret', provider: 'Spotify', description: 'Секрет приложения Spotify Web API.', required: false, secret: true },
   { key: 'THEAUDIODB_API_KEY', title: 'TheAudioDB API key', provider: 'TheAudioDB', description: 'Дополнительные профили, изображения, релизы и видео.', required: false, secret: true },
   { key: 'MUSICBRAINZ_USER_AGENT', title: 'MusicBrainz User-Agent', provider: 'MusicBrainz', description: 'Контактный User-Agent для корректной работы с MusicBrainz API.', required: false, secret: false },
+  { key: 'KINOPOISK_UNOFFICIAL_API_KEY_1', title: 'Ключ №1', provider: 'Кинопоиск Unofficial API', description: 'Первый ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
+  { key: 'KINOPOISK_UNOFFICIAL_API_KEY_2', title: 'Ключ №2', provider: 'Кинопоиск Unofficial API', description: 'Второй ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
+  { key: 'KINOPOISK_UNOFFICIAL_API_KEY_3', title: 'Ключ №3', provider: 'Кинопоиск Unofficial API', description: 'Третий ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
+  { key: 'KINOPOISK_UNOFFICIAL_API_KEY_4', title: 'Ключ №4', provider: 'Кинопоиск Unofficial API', description: 'Четвёртый ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
+  { key: 'KINOPOISK_UNOFFICIAL_API_KEY_5', title: 'Ключ №5', provider: 'Кинопоиск Unofficial API', description: 'Пятый ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
 ]
 
 const registryByKey = new Map(integrationRegistry.map((entry) => [entry.key, entry]))
+const kinopoiskKeySlots = [
+  'KINOPOISK_UNOFFICIAL_API_KEY_1', 'KINOPOISK_UNOFFICIAL_API_KEY_2', 'KINOPOISK_UNOFFICIAL_API_KEY_3',
+  'KINOPOISK_UNOFFICIAL_API_KEY_4', 'KINOPOISK_UNOFFICIAL_API_KEY_5',
+] as const
 const encryptionKey = (config: AppConfig) => createHash('sha256').update(`shoditsa:pipeline-integrations:v1:${config.pipelineSecretsKey}`).digest()
 const suffix = (value: string) => value.trim().slice(-4)
 const masked = (value: string, secret: boolean) => secret ? `••••${suffix(value)}` : value.length > 12 ? `${value.slice(0, 8)}…${suffix(value)}` : value
@@ -46,12 +55,20 @@ export const decryptIntegrationValue = (row: Pick<typeof integrationSecrets.$inf
 export const loadIntegrationEnvironment = async (db: Database, config: AppConfig) => {
   const stored = await db.select().from(integrationSecrets)
   const byKey = new Map(stored.map((entry) => [entry.key, entry]))
-  return Object.fromEntries(integrationRegistry.flatMap((definition) => {
+  const environment = Object.fromEntries(integrationRegistry.flatMap((definition) => {
     const override = byKey.get(definition.key)
     if (override) return [[definition.key, decryptIntegrationValue(override, config)]]
     const environmentValue = process.env[definition.key]?.trim()
     return environmentValue ? [[definition.key, environmentValue]] : []
-  })) as Partial<Record<IntegrationKey, string>>
+  })) as Record<string, string>
+  const legacyKeys = [process.env.KINOPOISK_API_KEYS, process.env.KINOPOISK_API_KEY]
+    .flatMap((value) => String(value ?? '').split(/[\n,;\s]+/)).map((value) => value.trim()).filter(Boolean)
+  const pool = [...new Set([...kinopoiskKeySlots.map((key) => environment[key]).filter(Boolean), ...legacyKeys])]
+  if (pool.length) {
+    environment.KINOPOISK_API_KEYS = pool.join(',')
+    environment.KINOPOISK_API_KEY = pool[0]
+  }
+  return environment
 }
 
 export const integrationStatuses = async (db: Database) => {
