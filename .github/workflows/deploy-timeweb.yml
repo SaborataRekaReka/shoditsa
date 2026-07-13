@@ -133,9 +133,47 @@ jobs:
           fi
           chmod 600 "$DATABASE_BACKUP"
 
+          # Complete the one-time admin bootstrap from the existing Better Auth
+          # account. The exact email is a hard invariant; zero or duplicate
+          # matches stop the deployment before the new API is exposed.
+          mapfile -t API_ENV_FILES < <(grep -oE '/[^[:space:]]+\.env' "$API_COMPOSE_FILES" | sort -u)
+          if [ "${#API_ENV_FILES[@]}" -ne 1 ] || [ ! -f "${API_ENV_FILES[0]}" ]; then
+            echo "Expected exactly one Shoditsa API env file, found ${#API_ENV_FILES[@]}" >&2
+            rollback_api
+            exit 1
+          fi
+          API_ENV_FILE="${API_ENV_FILES[0]}"
+          cp -an "$API_ENV_FILE" "${API_ENV_FILE}.pre-admin-bootstrap"
+          mapfile -t ADMIN_USER_IDS < <(docker exec "$POSTGRES_CONTAINER" psql -U shoditsa_app -d shoditsa -At -c "select id from \"user\" where lower(trim(email)) = 'breneize@yandex.ru';")
+          if [ "${#ADMIN_USER_IDS[@]}" -ne 1 ] || [[ ! "${ADMIN_USER_IDS[0]}" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$ ]]; then
+            echo "Expected exactly one existing Better Auth user for the production admin" >&2
+            rollback_api
+            exit 1
+          fi
+          ADMIN_USER_ID="${ADMIN_USER_IDS[0]}"
+          ADMIN_ROLE="$(docker exec "$POSTGRES_CONTAINER" psql -U shoditsa_app -d shoditsa -At -c "select role from player_profiles where user_id = '${ADMIN_USER_ID}' limit 1;" || true)"
+          set_env_value() {
+            local key="$1"
+            local value="$2"
+            if grep -qE "^${key}=" "$API_ENV_FILE"; then
+              sed -Ei "s#^${key}=.*#${key}=${value}#" "$API_ENV_FILE"
+            else
+              printf '%s=%s\n' "$key" "$value" >> "$API_ENV_FILE"
+            fi
+          }
+          set_env_value ADMIN_EMAILS breneize@yandex.ru
+          set_env_value ADMIN_USER_IDS "$ADMIN_USER_ID"
+          chmod 600 "$API_ENV_FILE"
+
           if ! api_compose --profile migrate run --rm shoditsa-migrate; then
             rollback_api
             exit 1
+          fi
+          if [ "$ADMIN_ROLE" != 'admin' ]; then
+            if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/admin-bootstrap.js --email=breneize@yandex.ru; then
+              rollback_api
+              exit 1
+            fi
           fi
           if ! api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE"; then
             rollback_api
