@@ -9,6 +9,7 @@ import {
   AnimePipelineEstimateBodySchema, AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema,
   AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
+  ContentExchangeExportBodySchema, ContentExchangeImportApplyBodySchema, ContentExchangeImportPreviewBodySchema, ContentExchangeSelectionBodySchema,
   IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
   MusicPipelineRunBodySchema, MoviePipelineEstimateBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
@@ -16,6 +17,7 @@ import {
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type ContentMode, type IntegrationKey, type IntegrationSecretUpdateBody,
+  type ContentExchangeExportBody, type ContentExchangeImportApplyBody, type ContentExchangeImportPreviewBody, type ContentExchangeSelectionBody,
   type AnimePipelineEstimateBody, type AnimePipelineManualPreviewBody, type AnimePipelineRunBody,
   type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
   type MoviePipelineEstimateBody, type MoviePipelineManualPreviewBody, type MoviePipelineRunBody,
@@ -38,6 +40,7 @@ import {
   activateWorkspaceRevision, buildWorkspaceRevision, discardWorkspaceItem, getOrCreateWorkspace, loadWorkspaceChanges,
   saveWorkspaceItem, validateContentPayload, validateWorkspace, workspaceSummary,
 } from './content-service.js'
+import { applyContentExchangeImport, describeContentExchangeSelection, exportContentExchange, previewContentExchangeImport } from './content-exchange.js'
 import { loadAdminTimeline } from './timeline-service.js'
 import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
 
@@ -248,6 +251,35 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
   })
 
   app.get('/api/v1/admin/content/workspace', async (request, reply) => workspaceSummary(deps.db, await admin(request, reply, deps)))
+
+  app.post('/api/v1/admin/content/exchange/selection', { schema: { body: ContentExchangeSelectionBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    return describeContentExchangeSelection(deps.db, actor, (request.body as ContentExchangeSelectionBody).itemIds)
+  })
+
+  app.post('/api/v1/admin/content/exchange/export', { schema: { body: ContentExchangeExportBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as ContentExchangeExportBody
+    const document = await exportContentExchange(deps.db, actor, body)
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id, action: 'content.exchange.export', entityType: 'content_workspace', entityId: document.source.workspaceId ?? 'unknown',
+      before: null, after: { exportId: document.exportId, itemCount: document.items.length, fields: document.fields }, requestId: request.id,
+    })
+    return document
+  })
+
+  app.post('/api/v1/admin/content/exchange/import/preview', {
+    schema: { body: ContentExchangeImportPreviewBodySchema }, bodyLimit: 16 * 1024 * 1024,
+  }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    return previewContentExchangeImport(deps.db, actor, (request.body as ContentExchangeImportPreviewBody).document)
+  })
+
+  app.post('/api/v1/admin/content/exchange/import/apply', {
+    schema: { body: ContentExchangeImportApplyBodySchema }, bodyLimit: 16 * 1024 * 1024,
+  }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    return applyContentExchangeImport(deps.db, actor, request.body as ContentExchangeImportApplyBody, request.id)
+  })
 
   app.put('/api/v1/admin/content/workspace/items/:itemId', { schema: { params: AdminItemParamsSchema, body: AdminWorkspaceItemBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps)

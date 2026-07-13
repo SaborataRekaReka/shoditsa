@@ -13,7 +13,7 @@ type WorkspaceInput = {
   mode: ContentMode
   payload: Record<string, unknown>
   expectedVersion: number
-  source?: 'manual' | 'ai_pipeline' | 'bulk' | 'rollback' | 'report_fix'
+  source?: 'manual' | 'ai_pipeline' | 'bulk' | 'import' | 'rollback' | 'report_fix'
   reason?: string
   pipelineRunId?: string
   pipelineRunItemId?: string

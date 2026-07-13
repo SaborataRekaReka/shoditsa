@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { ArrowLeft, Eye, EyeOff, LoaderCircle, Mail, Target, Ticket } from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff, LoaderCircle, Target, Ticket } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ApiClientError, api } from '../../api/client'
 import { BrandLogo } from '../../components/app-shell/AppShell'
@@ -306,8 +306,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!resetMode && <div className="login-field">
                   <label htmlFor="login-email">Email</label>
                   <div className="login-input-wrap">
-                    <Mail aria-hidden="true" />
-                    <input id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="you@example.com" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
+                    <input id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
                   </div>
                   {fieldErrors.email && <small id="login-email-error" className="login-field-error">{fieldErrors.email}</small>}
                 </div>}
@@ -315,7 +314,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!resetMode && !forgotMode && <div className="login-field">
                   <label htmlFor="login-password">Пароль</label>
                   <div className="login-input-wrap">
-                    <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
                     <button className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </button>

@@ -57,6 +57,23 @@ export type AdminItemDetail = {
 
 export type ReportListResponse = { items: Array<{ report: Record<string, unknown>; userEmail: string; titleRu: string; sessionStatus: string }>; nextCursor: string | null }
 export type UserListResponse = { items: AdminUserListItem[]; nextCursor: string | null }
+export type ContentExchangeSelection = {
+  requested: number
+  found: number
+  missingItemIds: string[]
+  modes: Record<ContentMode, number>
+  fields: Array<{ field: string; count: number; modes: ContentMode[] }>
+}
+export type ContentExchangePreview = {
+  format: string
+  schemaVersion: number
+  exportId: string
+  documentHash: string
+  previewHash: string
+  fields: string[]
+  summary: { total: number; create: number; update: number; unchanged: number; conflict: number; invalid: number }
+  items: Array<{ id: string; mode: ContentMode; status: 'create' | 'update' | 'unchanged' | 'conflict' | 'invalid'; title: string; changedFields: string[]; conflicts: string[]; issues: Array<Record<string, unknown>>; message: string | null }>
+}
 
 export const adminApi = {
   me: () => request<MeResponse>('/me'),
@@ -69,6 +86,10 @@ export const adminApi = {
   discardItem: (id: string) => request<{ discarded: boolean }>(`/admin/content/workspace/items/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   uploadMedia: async (id: string, file: File, purpose: 'posterUrl' | 'headerUrl' | 'backdropUrl' | 'screenshot') => request<{ url: string; width: number; height: number; bytes: number }>(`/admin/content/items/${encodeURIComponent(id)}/media`, { method: 'POST', body: json({ fileName: file.name, contentType: file.type, base64: await fileBase64(file), purpose }), timeoutMs: 60_000 }),
   bulkContent: (body: Record<string, unknown>) => request<Record<string, unknown>>('/admin/content/workspace/bulk', { method: 'POST', body: json(body), timeoutMs: 60_000 }),
+  contentExchangeSelection: (itemIds: string[]) => request<ContentExchangeSelection>('/admin/content/exchange/selection', { method: 'POST', body: json({ itemIds }) }),
+  exportContentExchange: (itemIds: string[], fields: string[]) => request<Record<string, unknown>>('/admin/content/exchange/export', { method: 'POST', body: json({ itemIds, fields }), timeoutMs: 60_000 }),
+  previewContentExchangeImport: (document: Record<string, unknown>) => request<ContentExchangePreview>('/admin/content/exchange/import/preview', { method: 'POST', body: json({ document }), timeoutMs: 60_000 }),
+  applyContentExchangeImport: (body: Record<string, unknown>) => request<{ summary: { requested: number; staged: number; failed: number }; results: Array<Record<string, unknown>> }>('/admin/content/exchange/import/apply', { method: 'POST', body: json(body), timeoutMs: 120_000 }),
   validateWorkspace: () => request<Record<string, unknown>>('/admin/content/workspace/validate', { method: 'POST', body: '{}' }),
   buildWorkspace: () => request<{ job: Record<string, unknown> }>('/admin/content/workspace/build', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
   activateWorkspace: () => request<Record<string, unknown>>('/admin/content/workspace/activate', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),

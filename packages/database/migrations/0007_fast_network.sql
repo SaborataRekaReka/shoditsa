@@ -1,0 +1,2 @@
+ALTER TABLE "content_workspace_changes" DROP CONSTRAINT "content_workspace_source_check";--> statement-breakpoint
+ALTER TABLE "content_workspace_changes" ADD CONSTRAINT "content_workspace_source_check" CHECK ("content_workspace_changes"."source" in ('manual','ai_pipeline','bulk','import','rollback','report_fix'));

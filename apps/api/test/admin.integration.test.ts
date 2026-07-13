@@ -2,10 +2,10 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import sharp from 'sharp'
-import { eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
 import {
-  auditLog, clientEvents, contentItems, contentItemVersions, contentWorkspaceChanges, contentWorkspaces,
+  auditLog, clientEvents, contentItems, contentItemVersions, contentRevisions, contentWorkspaceChanges, contentWorkspaces,
   createDatabase, integrationSecrets, playerProfiles, user,
 } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
@@ -28,6 +28,7 @@ describe('admin API guard, workspace and telemetry', () => {
   let initialWorkspaceIds = new Set<string>()
   const forgedAdminId = crypto.randomUUID()
   const draftItemId = `admin-integration-${crypto.randomUUID()}`
+  const exchangeNewItemId = `exchange-integration-${crypto.randomUUID()}`
 
   beforeAll(async () => {
     process.env.BETTER_AUTH_SECRET ||= 'admin-integration-secret-at-least-32-characters'
@@ -74,10 +75,12 @@ describe('admin API guard, workspace and telemetry', () => {
       if (telemetryEventId) await database.db.delete(clientEvents).where(eq(clientEvents.eventId, telemetryEventId))
       await database.db.delete(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.actorUserId, adminId))
       await database.db.delete(auditLog).where(eq(auditLog.entityId, draftItemId))
+      await database.db.delete(auditLog).where(and(eq(auditLog.actorUserId, adminId), inArray(auditLog.action, ['content.exchange.export', 'content.exchange.import'])))
       await database.db.delete(auditLog).where(eq(auditLog.entityId, 'OPENAI_API_KEY'))
       await database.db.delete(integrationSecrets).where(eq(integrationSecrets.key, 'OPENAI_API_KEY'))
       if (createdWorkspaceId) await database.db.delete(contentWorkspaces).where(eq(contentWorkspaces.id, createdWorkspaceId))
       await database.db.delete(contentItems).where(eq(contentItems.id, draftItemId))
+      await database.db.delete(contentItems).where(eq(contentItems.id, exchangeNewItemId))
       if (uploadedMediaFile) await rm(uploadedMediaFile, { force: true })
       await database.db.delete(user).where(eq(user.id, forgedAdminId))
       if (adminCreated) await database.db.delete(user).where(eq(user.id, adminId))
@@ -241,5 +244,50 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(preview.statusCode, preview.body).toBe(200)
     expect(preview.json().summary).toMatchObject({ total: 2, ready: 1, duplicates: 1 })
     expect(preview.json().items[1].status).toBe('duplicate_input')
+  })
+
+  it('round-trips selected content fields and separates updates from new categorized cards', async () => {
+    const source = (await database.db.select({ itemId: contentItemVersions.itemId, mode: contentItemVersions.mode, payload: contentItemVersions.payload })
+      .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+      .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'movie'))).limit(1))[0]
+    expect(source).toBeTruthy()
+    const fields = ['titleRu', 'titleOriginal', 'alternativeTitles', 'allowedInGame', 'plotHint']
+    const exported = await app.inject({ method: 'POST', url: '/api/v1/admin/content/exchange/export', payload: { itemIds: [source.itemId], fields } })
+    expect(exported.statusCode, exported.body).toBe(200)
+    const document = exported.json()
+    expect(document).toMatchObject({ format: 'shoditsa-content-exchange', schemaVersion: 1, fields })
+    expect(Object.keys(document.items[0].data).every((field) => fields.includes(field))).toBe(true)
+    expect(document.items[0]).toMatchObject({ id: source.itemId, mode: source.mode })
+
+    document.items[0].data.titleRu = `${String((source.payload as Record<string, unknown>).titleRu)} · exchange test`
+    document.items.push({
+      id: exchangeNewItemId,
+      mode: source.mode,
+      base: null,
+      data: {
+        titleRu: 'Новая карточка из обменного JSON', titleOriginal: '', alternativeTitles: [], allowedInGame: false,
+        plotHint: 'Достаточно длинная тестовая подсказка без раскрытия названия ответа.',
+      },
+      unsetFields: [],
+    })
+    const preview = await app.inject({ method: 'POST', url: '/api/v1/admin/content/exchange/import/preview', payload: { document } })
+    expect(preview.statusCode, preview.body).toBe(200)
+    expect(preview.json().summary).toMatchObject({ total: 2, create: 1, update: 1, conflict: 0, invalid: 0 })
+    expect(preview.json().items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: source.itemId, mode: source.mode, status: 'update', changedFields: expect.arrayContaining(['titleRu']) }),
+      expect.objectContaining({ id: exchangeNewItemId, mode: source.mode, status: 'create' }),
+    ]))
+
+    const applied = await app.inject({
+      method: 'POST', url: '/api/v1/admin/content/exchange/import/apply',
+      payload: { document, previewHash: preview.json().previewHash, items: preview.json().items.map(({ id, mode }: { id: string; mode: string }) => ({ id, mode })), reason: 'Интеграционная проверка JSON-обмена', confirmation: true },
+    })
+    expect(applied.statusCode, applied.body).toBe(200)
+    expect(applied.json().summary).toEqual({ requested: 2, staged: 2, failed: 0 })
+    const staged = await database.db.select().from(contentWorkspaceChanges).where(inArray(contentWorkspaceChanges.itemId, [source.itemId, exchangeNewItemId]))
+    expect(staged).toEqual(expect.arrayContaining([
+      expect.objectContaining({ itemId: source.itemId, mode: source.mode, changeType: 'update', source: 'import' }),
+      expect.objectContaining({ itemId: exchangeNewItemId, mode: source.mode, changeType: 'create', source: 'import' }),
+    ]))
   })
 })

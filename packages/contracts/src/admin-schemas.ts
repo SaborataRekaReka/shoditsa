@@ -10,7 +10,7 @@ export const AdminContentItemsQuerySchema = Type.Object({
   publication: Type.Optional(Type.Union([Type.Literal('published'), Type.Literal('hidden'), Type.Literal('all')])),
   hasReports: Type.Optional(Type.Boolean()),
   hasIssues: Type.Optional(Type.Boolean()),
-  source: Type.Optional(Type.Union([Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('rollback'), Type.Literal('report_fix')])),
+  source: Type.Optional(Type.Union([Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('import'), Type.Literal('rollback'), Type.Literal('report_fix')])),
   sort: Type.Optional(Type.Union([Type.Literal('title'), Type.Literal('id'), Type.Literal('createdAt'), Type.Literal('updatedAt'), Type.Literal('reports'), Type.Literal('completeness')])),
   order: Type.Optional(Type.Union([Type.Literal('asc'), Type.Literal('desc')])),
   cursor: Type.Optional(Type.String({ maxLength: 512 })),
@@ -22,7 +22,7 @@ export const AdminWorkspaceItemBodySchema = Type.Object({
   payload: Type.Record(Type.String(), Type.Unknown()),
   expectedVersion: Type.Integer({ minimum: 0 }),
   source: Type.Optional(Type.Union([
-    Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('rollback'), Type.Literal('report_fix'),
+    Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('import'), Type.Literal('rollback'), Type.Literal('report_fix'),
   ])),
   reason: Type.Optional(Type.String({ minLength: 1, maxLength: 500 })),
 }, { additionalProperties: false })
@@ -32,6 +32,60 @@ export const AdminWorkspaceBulkBodySchema = Type.Object({
   operation: Type.Union([Type.Literal('allow'), Type.Literal('disallow'), Type.Literal('add_tag'), Type.Literal('remove_tag')]),
   value: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   reason: Type.String({ minLength: 3, maxLength: 500 }),
+}, { additionalProperties: false })
+
+const ContentExchangeFieldSchema = Type.String({ minLength: 1, maxLength: 80, pattern: '^[A-Za-z][A-Za-z0-9_]*$' })
+
+export const ContentExchangeSelectionBodySchema = Type.Object({
+  itemIds: Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { minItems: 1, maxItems: 5_000 }),
+}, { additionalProperties: false })
+
+export const ContentExchangeExportBodySchema = Type.Object({
+  itemIds: Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { minItems: 1, maxItems: 5_000 }),
+  fields: Type.Array(ContentExchangeFieldSchema, { minItems: 1, maxItems: 250, uniqueItems: true }),
+}, { additionalProperties: false })
+
+const ContentExchangeBaseSchema = Type.Object({
+  revisionId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
+  itemVersionId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
+  workspaceChangeVersion: Type.Optional(Type.Union([Type.Integer({ minimum: 1 }), Type.Null()])),
+  payloadHash: Type.String({ minLength: 64, maxLength: 64, pattern: '^[a-f0-9]{64}$' }),
+  fieldHashes: Type.Record(ContentExchangeFieldSchema, Type.String({ minLength: 64, maxLength: 64, pattern: '^[a-f0-9]{64}$' })),
+}, { additionalProperties: false })
+
+export const ContentExchangeItemSchema = Type.Object({
+  id: Type.String({ minLength: 1, maxLength: 255 }),
+  mode: ContentModeSchema,
+  base: Type.Optional(Type.Union([ContentExchangeBaseSchema, Type.Null()])),
+  data: Type.Record(ContentExchangeFieldSchema, Type.Unknown()),
+  unsetFields: Type.Optional(Type.Array(ContentExchangeFieldSchema, { maxItems: 250, uniqueItems: true })),
+}, { additionalProperties: false })
+
+export const ContentExchangeDocumentSchema = Type.Object({
+  format: Type.Literal('shoditsa-content-exchange'),
+  schemaVersion: Type.Literal(1),
+  exportId: UuidSchema,
+  exportedAt: DateTimeSchema,
+  source: Type.Object({
+    revisionId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
+    revisionVersion: Type.Optional(Type.Union([Type.String({ maxLength: 255 }), Type.Null()])),
+    workspaceId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
+    workspaceVersion: Type.Optional(Type.Union([Type.Integer({ minimum: 1 }), Type.Null()])),
+  }, { additionalProperties: false }),
+  fields: Type.Array(ContentExchangeFieldSchema, { minItems: 1, maxItems: 250, uniqueItems: true }),
+  items: Type.Array(ContentExchangeItemSchema, { minItems: 1, maxItems: 5_000 }),
+}, { additionalProperties: false })
+
+export const ContentExchangeImportPreviewBodySchema = Type.Object({
+  document: ContentExchangeDocumentSchema,
+}, { additionalProperties: false })
+
+export const ContentExchangeImportApplyBodySchema = Type.Object({
+  document: ContentExchangeDocumentSchema,
+  previewHash: Type.String({ minLength: 64, maxLength: 64, pattern: '^[a-f0-9]{64}$' }),
+  items: Type.Array(Type.Object({ id: Type.String({ minLength: 1, maxLength: 255 }), mode: ContentModeSchema }, { additionalProperties: false }), { minItems: 1, maxItems: 5_000 }),
+  reason: Type.String({ minLength: 3, maxLength: 500 }),
+  confirmation: Type.Literal(true),
 }, { additionalProperties: false })
 
 export const AdminMediaUploadBodySchema = Type.Object({
@@ -250,6 +304,11 @@ export const ClientEventsBatchBodySchema = Type.Object({ events: Type.Array(Clie
 export type AdminContentItemsQuery = Static<typeof AdminContentItemsQuerySchema>
 export type AdminWorkspaceItemBody = Static<typeof AdminWorkspaceItemBodySchema>
 export type AdminWorkspaceBulkBody = Static<typeof AdminWorkspaceBulkBodySchema>
+export type ContentExchangeSelectionBody = Static<typeof ContentExchangeSelectionBodySchema>
+export type ContentExchangeExportBody = Static<typeof ContentExchangeExportBodySchema>
+export type ContentExchangeDocument = Static<typeof ContentExchangeDocumentSchema>
+export type ContentExchangeImportPreviewBody = Static<typeof ContentExchangeImportPreviewBodySchema>
+export type ContentExchangeImportApplyBody = Static<typeof ContentExchangeImportApplyBodySchema>
 export type AdminMediaUploadBody = Static<typeof AdminMediaUploadBodySchema>
 export type AdminReportQuery = Static<typeof AdminReportQuerySchema>
 export type AdminReportPatchBody = Static<typeof AdminReportPatchBodySchema>

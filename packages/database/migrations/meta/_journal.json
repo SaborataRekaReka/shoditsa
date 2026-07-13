@@ -50,6 +50,13 @@
       "when": 1783946692803,
       "tag": "0006_far_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1783949009397,
+      "tag": "0007_fast_network",
+      "breakpoints": true
     }
   ]
 }

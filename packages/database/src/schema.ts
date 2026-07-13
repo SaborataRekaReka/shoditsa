@@ -279,7 +279,7 @@ export const contentWorkspaceChanges = pgTable('content_workspace_changes', {
   unique('content_workspace_item_unique').on(table.workspaceId, table.itemId),
   uniqueIndex('content_workspace_pipeline_item_unique').on(table.pipelineRunItemId).where(sql`${table.pipelineRunItemId} is not null`),
   check('content_workspace_change_type_check', sql`${table.changeType} in ('create','update','disable')`),
-  check('content_workspace_source_check', sql`${table.source} in ('manual','ai_pipeline','bulk','rollback','report_fix')`),
+  check('content_workspace_source_check', sql`${table.source} in ('manual','ai_pipeline','bulk','import','rollback','report_fix')`),
   index('content_workspace_change_workspace_idx').on(table.workspaceId, table.updatedAt),
 ])
 

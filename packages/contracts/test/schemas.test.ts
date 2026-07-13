@@ -2,12 +2,13 @@ import { Value } from '@sinclair/typebox/value'
 import { FormatRegistry } from '@sinclair/typebox'
 import { describe, expect, it } from 'vitest'
 import {
-  AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
+  AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentExchangeDocumentSchema, ContentExchangeExportBodySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
   LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
 } from '../src/index.js'
 
 FormatRegistry.Set('uuid', (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
 FormatRegistry.Set('date', (value) => /^\d{4}-\d{2}-\d{2}$/.test(value))
+FormatRegistry.Set('date-time', (value) => !Number.isNaN(Date.parse(value)))
 
 describe('API schemas', () => {
   it('rejects unknown start fields', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'movie', answerId: 'secret' })).toBe(false))
@@ -40,6 +41,18 @@ describe('API schemas', () => {
     expect(Value.Check(AnimePipelineManualPreviewBodySchema, { anime })).toBe(true)
     expect(Value.Check(AnimePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, anime, confirmation: true })).toBe(true)
     expect(Value.Check(AnimePipelineManualPreviewBodySchema, { anime: [{ shikimoriId: 0 }] })).toBe(false)
+  })
+  it('accepts a self-describing selective content exchange document', () => {
+    const document = {
+      format: 'shoditsa-content-exchange', schemaVersion: 1, exportId: crypto.randomUUID(), exportedAt: new Date().toISOString(),
+      source: { revisionId: crypto.randomUUID(), revisionVersion: 'test', workspaceId: crypto.randomUUID(), workspaceVersion: 1 },
+      fields: ['titleRu', 'year'],
+      items: [{ id: 'movie:test', mode: 'movie', base: null, data: { titleRu: 'Тест', year: 2026 }, unsetFields: [] }],
+    }
+    expect(Value.Check(ContentExchangeDocumentSchema, document)).toBe(true)
+    expect(Value.Check(ContentExchangeExportBodySchema, { itemIds: ['movie:test'], fields: ['titleRu', 'year'] })).toBe(true)
+    expect(Value.Check(ContentExchangeExportBodySchema, { itemIds: ['movie:test'], fields: ['titleRu', 'titleRu'] })).toBe(false)
+    expect(Value.Check(ContentExchangeDocumentSchema, { ...document, fields: ['bad-field'] })).toBe(false)
   })
   it('requires explicit confirmation when saving an integration credential', () => {
     expect(Value.Check(IntegrationSecretUpdateBodySchema, { value: 'secret' })).toBe(false)

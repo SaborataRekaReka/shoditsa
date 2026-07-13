@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
   Check, ChevronDown, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye,
-  FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
+  Download, FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
   LoaderCircle, LockKeyhole, Menu, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
@@ -28,6 +28,7 @@ const STATUS_LABEL: Record<string, string> = {
   open: 'Новый', in_progress: 'В работе', resolved: 'Исправлен', dismissed: 'Отклонён', duplicate: 'Дубликат',
   queued: 'В очереди', running: 'Выполняется', completed: 'Готово', failed: 'Ошибка', review_required: 'Нужна проверка',
   partially_failed: 'Частично с ошибками', approved: 'Одобрено', staged: 'В рабочей версии', published: 'Опубликовано', cancelled: 'Отменено',
+  create: 'Добавить', update: 'Изменить', unchanged: 'Без изменений', conflict: 'Конфликт', invalid: 'Ошибка',
 }
 
 const formatDate = (value: unknown) => value ? new Intl.DateTimeFormat('ru-RU', {
@@ -38,7 +39,7 @@ const record = (value: unknown): Record<string, any> => value && typeof value ==
 const array = (value: unknown) => Array.isArray(value) ? value : []
 const title = (value: unknown) => String(value ?? '').trim() || 'Без названия'
 const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.message}${error.code ? ` · ${error.code}` : ''}` : error instanceof Error ? error.message : 'Неизвестная ошибка'
-const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed'].includes(String(status)) ? 'danger'
+const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid'].includes(String(status)) ? 'danger'
   : ['running', 'in_progress', 'warning', 'partially_failed'].includes(String(status)) ? 'warning'
     : ['completed', 'published', 'resolved', 'active', 'ready'].includes(String(status)) ? 'success' : 'neutral'
 
@@ -217,22 +218,92 @@ function NewCardDialog({ close, done, notify }: { close: () => void; done: (id: 
   return <div className="admin-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && close()}><div className="admin-modal"><header><div><span>Новая identity</span><h2>Добавить карточку</h2></div><button onClick={close}><X /></button></header><div className="admin-modal__body"><label className="admin-field"><span>Категория</span><select value={mode} onChange={(event) => setMode(event.target.value as ContentMode)}>{MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></label><label className="admin-field"><span>Внутренний ID</span><input value={id} onChange={(event) => setId(event.target.value)} placeholder={`${mode}:...`} /><small>После первого сохранения ID и категория не меняются.</small></label><label className="admin-field"><span>Основное название</span><input value={titleRu} onChange={(event) => setTitleRu(event.target.value)} autoFocus /></label></div><footer><button className="admin-btn admin-btn--secondary" onClick={close}>Отмена</button><button className="admin-btn admin-btn--primary" disabled={!id.trim() || !titleRu.trim() || save.isPending} onClick={() => save.mutate()}><Plus />Добавить в рабочую версию</button></footer></div></div>
 }
 
+const exchangeItemKey = (mode: ContentMode, id: string) => JSON.stringify([mode, id])
+
+const downloadJson = (document: Record<string, unknown>) => {
+  const blob = new Blob([`${JSON.stringify(document, null, 2)}\n`], { type: 'application/json;charset=utf-8' })
+  const url = URL.createObjectURL(blob); const anchor = window.document.createElement('a')
+  anchor.href = url; anchor.download = `shoditsa-content-${new Date().toISOString().slice(0, 10)}-${String(document.exportId ?? 'export').slice(0, 8)}.json`
+  anchor.click(); URL.revokeObjectURL(url)
+}
+
+function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { initialTab: 'export' | 'import'; itemIds: string[]; close: () => void; notify: (tone: Notice['tone'], text: string) => void; done: () => void }) {
+  const [tab, setTab] = useState<'export' | 'import'>(initialTab)
+  const [fields, setFields] = useState<Set<string>>(new Set()); const fieldsInitialized = useRef(false)
+  const [document, setDocument] = useState<Record<string, unknown> | null>(null); const [fileName, setFileName] = useState('')
+  const [parseError, setParseError] = useState(''); const [importItems, setImportItems] = useState<Set<string>>(new Set()); const [reason, setReason] = useState('Импорт карточек из JSON')
+  const selection = useQuery({ queryKey: ['admin', 'content-exchange-selection', itemIds], queryFn: () => adminApi.contentExchangeSelection(itemIds), enabled: tab === 'export' && itemIds.length > 0 })
+  useEffect(() => {
+    if (!fieldsInitialized.current && selection.data) { setFields(new Set(selection.data.fields.map((entry) => entry.field))); fieldsInitialized.current = true }
+  }, [selection.data])
+  const exportMutation = useMutation({
+    mutationFn: () => adminApi.exportContentExchange(itemIds, [...fields]),
+    onSuccess: (result) => { downloadJson(result); notify('success', `Экспортировано карточек: ${itemIds.length}`) },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const preview = useMutation({
+    mutationFn: (value: Record<string, unknown>) => adminApi.previewContentExchangeImport(value),
+    onSuccess: (result) => setImportItems(new Set(result.items.filter((item) => item.status === 'create' || item.status === 'update').map((item) => exchangeItemKey(item.mode, item.id)))),
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const apply = useMutation({
+    mutationFn: () => adminApi.applyContentExchangeImport({
+      document, previewHash: preview.data!.previewHash,
+      items: preview.data!.items.filter((item) => importItems.has(exchangeItemKey(item.mode, item.id))).map(({ id, mode }) => ({ id, mode })),
+      reason, confirmation: true,
+    }),
+    onSuccess: (result) => { notify(result.summary.failed ? 'info' : 'success', `В рабочую версию добавлено: ${result.summary.staged}, ошибок: ${result.summary.failed}`); done() },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const loadFile = async (file: File) => {
+    setFileName(file.name); setParseError(''); setDocument(null); preview.reset(); setImportItems(new Set())
+    if (file.size > 15 * 1024 * 1024) { setParseError('Файл больше 15 МБ'); return }
+    try {
+      const parsed = JSON.parse(await file.text()) as unknown; const value = record(parsed)
+      if (value.format !== 'shoditsa-content-exchange' || value.schemaVersion !== 1) throw new Error('Это не файл обмена Shoditsa версии 1')
+      setDocument(value); preview.mutate(value)
+    } catch (error) { setParseError(error instanceof Error ? error.message : 'Не удалось прочитать JSON') }
+  }
+  const actionableCount = preview.data?.items.filter((item) => importItems.has(exchangeItemKey(item.mode, item.id))).length ?? 0
+  return <div className="admin-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && close()}><div className="admin-modal admin-modal--exchange">
+    <header><div><span>Версионированный JSON · schema v1</span><h2>Экспорт и импорт контента</h2></div><button onClick={close}><X /></button></header>
+    <div className="admin-exchange-tabs"><button className={tab === 'export' ? 'is-active' : ''} onClick={() => setTab('export')}><Download />Экспорт</button><button className={tab === 'import' ? 'is-active' : ''} onClick={() => setTab('import')}><Upload />Импорт</button></div>
+    <div className="admin-modal__body">
+      {tab === 'export' ? !itemIds.length ? <Empty title="Сначала выберите карточки" text="Закройте окно, отметьте нужные строки в таблице и снова откройте экспорт." icon={<FileJson />} /> : selection.isLoading ? <Loading /> : selection.error ? <ErrorState error={selection.error} /> : <>
+        <div className="admin-exchange-summary"><div><span>Выбрано карточек</span><strong>{selection.data?.found ?? 0}</strong></div><div><span>Доступно полей</span><strong>{selection.data?.fields.length ?? 0}</strong></div><div><span>Будет экспортировано</span><strong>{fields.size}</strong></div></div>
+        <div className="admin-exchange-mode-list">{MODES.filter((entry) => Number(selection.data?.modes[entry.value])).map((entry) => <span key={entry.value}>{entry.label}: <b>{selection.data?.modes[entry.value]}</b></span>)}</div>
+        <section className="admin-exchange-fields"><header><div><strong>Поля JSON</strong><small>ID и категория добавляются автоматически как служебная identity.</small></div><div><button onClick={() => setFields(new Set(selection.data?.fields.map((entry) => entry.field)))}>Выбрать всё</button><button onClick={() => setFields(new Set())}>Снять всё</button></div></header><div>{selection.data?.fields.map((entry) => <label key={entry.field}><input type="checkbox" checked={fields.has(entry.field)} onChange={(event) => setFields((current) => { const next = new Set(current); event.target.checked ? next.add(entry.field) : next.delete(entry.field); return next })} /><span><code>{entry.field}</code><small>есть у {entry.count} из {selection.data!.found}</small></span></label>)}</div></section>
+      </> : <>
+        <label className="admin-exchange-upload"><Upload /><span><strong>{fileName || 'Выберите JSON-файл'}</strong><small>Система сначала покажет, что будет создано или изменено. Прямой записи без preview нет.</small></span><input type="file" accept=".json,application/json" onChange={(event) => { const file = event.target.files?.[0]; if (file) void loadFile(file) }} /></label>
+        {parseError && <div className="admin-exchange-error"><AlertTriangle />{parseError}</div>}
+        {preview.isPending && <Loading />}
+        {preview.data && <><div className="admin-exchange-summary"><div><span>Новые</span><strong>{preview.data.summary.create}</strong></div><div><span>Изменить</span><strong>{preview.data.summary.update}</strong></div><div><span>Без изменений</span><strong>{preview.data.summary.unchanged}</strong></div><div><span>Конфликты</span><strong>{preview.data.summary.conflict}</strong></div><div><span>Ошибки</span><strong>{preview.data.summary.invalid}</strong></div></div>
+          <div className="admin-exchange-import-list">{preview.data.items.slice(0, 500).map((item) => { const actionable = item.status === 'create' || item.status === 'update'; const key = exchangeItemKey(item.mode, item.id); return <article key={key} className={`is-${item.status}`}><input type="checkbox" disabled={!actionable} checked={importItems.has(key)} onChange={(event) => setImportItems((current) => { const next = new Set(current); event.target.checked ? next.add(key) : next.delete(key); return next })} /><div><header><strong>{item.title}</strong><Status value={item.status} /></header><small>{MODE_LABEL[item.mode]} · <code>{item.id}</code></small><p>{item.message || (item.changedFields.length ? `Поля: ${item.changedFields.join(', ')}` : 'Изменений нет')}</p>{item.conflicts.length > 0 && <em>Конфликтуют: {item.conflicts.join(', ')}</em>}{item.issues.length > 0 && <em>{item.issues.map((issue) => String(issue.message ?? issue.code)).join(' · ')}</em>}</div></article> })}</div>
+          <label className="admin-field admin-field--wide"><span>Причина изменений</span><input value={reason} onChange={(event) => setReason(event.target.value)} /></label>
+        </>}
+      </>}
+    </div>
+    <footer><button className="admin-btn admin-btn--secondary" onClick={close}>Отмена</button>{tab === 'export' ? <button className="admin-btn admin-btn--primary" disabled={!itemIds.length || !fields.size || exportMutation.isPending} onClick={() => exportMutation.mutate()}><Download />Скачать JSON</button> : <button className="admin-btn admin-btn--primary" disabled={!document || !preview.data || !actionableCount || reason.trim().length < 3 || apply.isPending} onClick={() => apply.mutate()}><Check />Добавить {actionableCount} в рабочую версию</button>}</footer>
+  </div></div>
+}
+
 function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const params = new URLSearchParams(location.search)
-  const [q, setQ] = useState(params.get('q') ?? ''); const [mode, setMode] = useState(params.get('mode') ?? ''); const [publication, setPublication] = useState(params.get('publication') ?? 'all'); const [view, setView] = useState<'table' | 'grid' | 'review'>('table'); const [selected, setSelected] = useState<Set<string>>(new Set()); const [adding, setAdding] = useState(false)
+  const [q, setQ] = useState(params.get('q') ?? ''); const [mode, setMode] = useState(params.get('mode') ?? ''); const [publication, setPublication] = useState(params.get('publication') ?? 'all'); const [view, setView] = useState<'table' | 'grid' | 'review'>('table'); const [selected, setSelected] = useState<Set<string>>(new Set()); const [adding, setAdding] = useState(false); const [exchange, setExchange] = useState<'export' | 'import' | null>(null)
   useEffect(() => { const next = new URLSearchParams(); if (q) next.set('q', q); if (mode) next.set('mode', mode); if (publication !== 'all') next.set('publication', publication); history.replaceState({}, '', `${location.pathname}${next.size ? `?${next}` : ''}`) }, [q, mode, publication])
   const items = useQuery({ queryKey: ['admin', 'content', { q, mode, publication }], queryFn: () => adminApi.contentItems({ q, mode, publication, limit: 60 }) })
   const bulk = useMutation({ mutationFn: (operation: 'allow' | 'disallow') => adminApi.bulkContent({ itemIds: [...selected], operation, reason: operation === 'allow' ? 'Массовое включение в игру' : 'Массовое исключение из игры' }), onSuccess: (data) => { notify('success', `Обработано: ${data.succeeded ?? 0}, ошибок: ${data.failed ?? 0}`); setSelected(new Set()); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }, onError: (error) => notify('error', errorText(error)) })
   return <>
-    <PageHead eyebrow="Контент" title="Карточки" description="Поиск, проверка и публикация всех шести игровых библиотек." actions={<><div className="admin-view-switch"><button className={view === 'table' ? 'is-active' : ''} onClick={() => setView('table')}><Menu />Таблица</button><button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')}><Boxes />Карточки</button><button className={view === 'review' ? 'is-active' : ''} onClick={() => setView('review')}><Eye />Проверка</button></div><button className="admin-btn admin-btn--primary" onClick={() => setAdding(true)}><Plus />Добавить карточку</button></>} />
+    <PageHead eyebrow="Контент" title="Карточки" description="Поиск, проверка и публикация всех шести игровых библиотек." actions={<><div className="admin-view-switch"><button className={view === 'table' ? 'is-active' : ''} onClick={() => setView('table')}><Menu />Таблица</button><button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')}><Boxes />Карточки</button><button className={view === 'review' ? 'is-active' : ''} onClick={() => setView('review')}><Eye />Проверка</button></div><button className="admin-btn admin-btn--secondary" onClick={() => setExchange('import')}><Upload />Импорт JSON</button><button className="admin-btn admin-btn--secondary" disabled={!selected.size} onClick={() => setExchange('export')}><Download />Экспорт JSON{selected.size ? ` · ${selected.size}` : ''}</button><button className="admin-btn admin-btn--primary" onClick={() => setAdding(true)}><Plus />Добавить карточку</button></>} />
     <WorkspaceBar notify={notify} />
     <div className="admin-toolbar"><label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Название, альтернативное название или ID" />{q && <button onClick={() => setQ('')}><X /></button>}</label><label><Filter /><select value={mode} onChange={(event) => setMode(event.target.value)}><option value="">Все категории</option>{MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></label><label><Archive /><select value={publication} onChange={(event) => setPublication(event.target.value)}><option value="all">Все статусы</option><option value="published">Опубликованы</option><option value="hidden">Скрыты</option></select></label><button className="admin-btn admin-btn--secondary" onClick={() => void items.refetch()}><RefreshCw /></button></div>
-    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><button onClick={() => setSelected(new Set())}><X />Снять выбор</button></div>}
+    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => setExchange('export')}><Download />Экспорт JSON</button><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><button onClick={() => setSelected(new Set())}><X />Снять выбор</button></div>}
     {items.isLoading ? <Loading /> : items.error ? <ErrorState error={items.error} retry={() => void items.refetch()} /> : !items.data?.items.length ? <Empty title="Ничего не найдено" text="Измените запрос или сбросьте фильтры." icon={<Search />} action={<button className="admin-btn admin-btn--secondary" onClick={() => { setQ(''); setMode(''); setPublication('all') }}>Сбросить фильтры</button>} />
       : view === 'grid' ? <div className="admin-content-grid">{items.data.items.map((item) => <button key={item.id} onClick={() => navigate('content', item.id)}><div>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <ImageIcon />}{item.draftVersion && <span>Draft v{item.draftVersion}</span>}</div><small>{MODE_LABEL[item.mode]}</small><strong>{item.titleRu}</strong><p>{item.titleOriginal || item.id}</p><footer><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status><span>{item.completeness}%</span></footer></button>)}</div>
         : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все" checked={selected.size === items.data.items.length && selected.size > 0} onChange={(event) => setSelected(event.target.checked ? new Set(items.data!.items.map((item) => item.id)) : new Set())} /></th><th>Карточка</th><th>ID</th><th>Категория</th><th>Статус</th><th>Полнота</th><th>Репорты</th><th>Качество</th><th>Изменена</th><th /></tr></thead><tbody>{items.data.items.map((item) => <tr key={item.id} className={selectedId === item.id ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${item.titleRu}`} checked={selected.has(item.id)} onChange={(event) => setSelected((current) => { const next = new Set(current); event.target.checked ? next.add(item.id) : next.delete(item.id); return next })} /></td><td><button className="admin-title-cell" onClick={() => navigate('content', item.id)}>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <span><ImageIcon /></span>}<span><strong>{item.titleRu}</strong><small>{item.titleOriginal || 'Без оригинального названия'}{item.year ? ` · ${item.year}` : ''}</small></span></button></td><td><code>{item.id}</code></td><td>{MODE_LABEL[item.mode]}</td><td><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status>{item.draftVersion && <small className="admin-draft-label">Draft v{item.draftVersion}</small>}</td><td><div className="admin-completeness"><i style={{ width: `${item.completeness}%` }} /><span>{item.completeness}%</span></div></td><td>{item.reportsCount ? <button className="admin-count admin-count--warn" onClick={() => navigate('reports')}>{item.reportsCount}</button> : '—'}</td><td>{item.issuesCount ? <span className="admin-count admin-count--danger">{item.issuesCount}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt)}</td><td><button className="admin-icon-btn" onClick={() => navigate('content', item.id)}><ChevronRight /></button></td></tr>)}</tbody></table><footer className="admin-table-footer"><span>Показано {items.data.items.length} из {items.data.total.toLocaleString('ru-RU')}</span></footer></div>}
     {selectedId && <ItemEditor itemId={selectedId} onClose={() => navigate('content')} notify={notify} />}
     {adding && <NewCardDialog close={() => setAdding(false)} done={(id) => { setAdding(false); navigate('content', id); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} notify={notify} />}
+    {exchange && <ContentExchangeDialog initialTab={exchange} itemIds={[...selected]} close={() => setExchange(null)} notify={notify} done={() => { setExchange(null); setSelected(new Set()); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} />}
   </>
 }
 
