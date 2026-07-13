@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
 import {
   auditLog, clientEvents, contentItems, contentItemVersions, contentWorkspaceChanges, contentWorkspaces,
-  createDatabase, playerProfiles, user,
+  createDatabase, integrationSecrets, playerProfiles, user,
 } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
 import type { Auth } from '../src/modules/auth/auth.js'
@@ -74,6 +74,8 @@ describe('admin API guard, workspace and telemetry', () => {
       if (telemetryEventId) await database.db.delete(clientEvents).where(eq(clientEvents.eventId, telemetryEventId))
       await database.db.delete(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.actorUserId, adminId))
       await database.db.delete(auditLog).where(eq(auditLog.entityId, draftItemId))
+      await database.db.delete(auditLog).where(eq(auditLog.entityId, 'OPENAI_API_KEY'))
+      await database.db.delete(integrationSecrets).where(eq(integrationSecrets.key, 'OPENAI_API_KEY'))
       if (createdWorkspaceId) await database.db.delete(contentWorkspaces).where(eq(contentWorkspaces.id, createdWorkspaceId))
       await database.db.delete(contentItems).where(eq(contentItems.id, draftItemId))
       if (uploadedMediaFile) await rm(uploadedMediaFile, { force: true })
@@ -191,5 +193,31 @@ describe('admin API guard, workspace and telemetry', () => {
     })
     expect(selfBlock.statusCode).toBe(409)
     expect(selfBlock.json().error.code).toBe('ADMIN_SELF_ACTION_FORBIDDEN')
+  })
+
+  it('stores integration credentials as write-only encrypted values', async () => {
+    const value = `sk-integration-${crypto.randomUUID()}`
+    const saved = await app.inject({ method: 'PUT', url: '/api/v1/admin/integrations/OPENAI_API_KEY', payload: { value, confirmation: true } })
+    expect(saved.statusCode, saved.body).toBe(200)
+    expect(saved.body).not.toContain(value)
+    expect(saved.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'OPENAI_API_KEY', configured: true, source: 'admin' })]))
+    const stored = await database.db.select().from(integrationSecrets).where(eq(integrationSecrets.key, 'OPENAI_API_KEY')).limit(1)
+    expect(stored[0]?.encryptedValue).not.toContain(value)
+    expect(stored[0]?.lastFour).toBe(value.slice(-4))
+
+    const listed = await app.inject({ method: 'GET', url: '/api/v1/admin/integrations' })
+    expect(listed.body).not.toContain(value)
+    const removed = await app.inject({ method: 'DELETE', url: '/api/v1/admin/integrations/OPENAI_API_KEY', payload: { confirmation: true } })
+    expect(removed.statusCode, removed.body).toBe(200)
+  })
+
+  it('previews a manual artist list and removes normalized duplicates', async () => {
+    const preview = await app.inject({
+      method: 'POST', url: '/api/v1/admin/pipelines/music/manual/preview',
+      payload: { artists: [{ artist: 'Test Artist' }, { artist: '  TEST—ARTIST  ' }, { artist: 'Другой артист', country: 'Россия' }] },
+    })
+    expect(preview.statusCode, preview.body).toBe(200)
+    expect(preview.json().summary).toMatchObject({ total: 3, ready: 2, duplicates: 1 })
+    expect(preview.json().items[1].status).toBe('duplicate_input')
   })
 })

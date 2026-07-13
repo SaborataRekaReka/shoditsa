@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { spawn } from 'node:child_process'
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { and, eq, inArray, lt, sql } from 'drizzle-orm'
@@ -12,6 +12,8 @@ import {
 import { buildWorkspaceRevision, validateContentPayload } from './modules/admin/content-service.js'
 import { loadAdminTimeline } from './modules/admin/timeline-service.js'
 import type { AdminEventsQuery } from '@shoditsa/contracts'
+import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.js'
+import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -41,9 +43,10 @@ const claim = async () => {
   return id ? (await db.select().from(backgroundJobs).where(eq(backgroundJobs.id, id)).limit(1))[0] : null
 }
 
-const runCommand = async (args: string[], runId: string, jobId: string) => {
-  const allowed = ['PATH', 'Path', 'HOME', 'USERPROFILE', 'TEMP', 'TMP', 'NODE_ENV', 'OPENAI_API_KEY', 'LASTFM_API_KEY', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'THEAUDIODB_API_KEY', 'MUSICBRAINZ_USER_AGENT']
+const runCommand = async (args: string[], runId: string, jobId: string, integrationEnv: Record<string, string>) => {
+  const allowed = ['PATH', 'Path', 'HOME', 'USERPROFILE', 'TEMP', 'TMP', 'NODE_ENV']
   const env = Object.fromEntries(allowed.flatMap((key) => process.env[key] == null ? [] : [[key, process.env[key]!]]))
+  Object.assign(env, integrationEnv)
   env.ENRICHMENT_DATA_ROOT = resolve(config.enrichmentDataRoot)
   const child = spawn(process.execPath, args, { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true })
   let output = ''
@@ -106,13 +109,38 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
   if (!job.pipelineRunId) throw new Error('music_pipeline job has no pipelineRunId')
   const run = (await db.select().from(pipelineRuns).where(eq(pipelineRuns.id, job.pipelineRunId)).limit(1))[0]
   if (!run) throw new Error('Pipeline run not found')
-  const input = record(run.inputDefinitionJson); const settings = record(run.settingsJson); const scenario = text(input.scenario) || 'discover'; const maxItems = Number(settings.maxItems) || run.itemsTotal || 5
+  if (run.cancelRequestedAt) {
+    await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+    return { runId: run.id, cancelled: true }
+  }
+  const input = record(run.inputDefinitionJson); const settings = record(run.settingsJson); const jobPayload = record(job.payload)
+  const scenario = text(input.scenario) || 'discover'; const maxItems = Number(settings.maxItems) || run.itemsTotal || 5
   await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }).where(eq(pipelineRuns.id, run.id))
   const enrichmentRoot = resolve(config.enrichmentDataRoot)
+  await mkdir(join(enrichmentRoot, 'music'), { recursive: true })
+  const integrationEnv = await loadIntegrationEnvironment(db, config)
   const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`]
   if (settings.webSearch === false) common.push('--no-ai-web-search')
   let command: string[]
-  if (scenario === 'discover') command = ['scripts/music/run-agent-cycle.mjs', ...common]
+  let manualBatchSize = 0
+  let manualNextOffset = 0
+  if (scenario === 'manual') {
+    const artists = Array.isArray(input.artists) ? input.artists.map(record).filter((entry) => text(entry.artist)) : []
+    const offset = Math.max(0, Number(jobPayload.offset) || 0)
+    const batch = artists.slice(offset, offset + maxItems)
+    if (!batch.length) throw new Error('Manual music pipeline has no artists left to process')
+    manualBatchSize = batch.length
+    manualNextOffset = offset + batch.length
+    const seed = batch.map((entry, index) => ({
+      artist: text(entry.artist), rank: offset + index + 1,
+      ...(text(entry.country) ? { country: text(entry.country) } : {}),
+      ...(text(entry.hint) ? { provenance: { reason: text(entry.hint), source: 'admin_manual_list' } } : {}),
+    }))
+    const seedFile = join(enrichmentRoot, 'music', `admin-${run.id}-batch-${offset}.json`)
+    await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
+    command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, ...common.filter((entry) => !entry.startsWith('--max-items='))]
+  }
+  else if (scenario === 'discover') command = ['scripts/music/run-agent-cycle.mjs', ...common]
   else if (scenario === 'review') command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', '--retry-review', '--ai=always', ...common.filter((entry) => !entry.startsWith('--ai='))]
   else if (scenario === 'selected') {
     const ids = Array.isArray(input.itemIds) ? input.itemIds.map(String) : []
@@ -121,12 +149,14 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
     const seedFile = join(enrichmentRoot, 'music', `admin-${run.id}-seed.json`); await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
     command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${seedFile}`, ...common]
   } else command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${join(enrichmentRoot, 'music', 'discovery', 'discovered-candidates.json')}`, ...common]
-  const started = Date.now(); const output = await runCommand(command, run.id, job.id)
+  const started = Date.now(); const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
   const files = (await listFiles(join(enrichmentRoot, 'music'))).filter((file) => file.includes(`${join('', 'records', '')}`) && file.endsWith('.json'))
   const fresh: Array<{ file: string; raw: Json }> = []
   for (const file of files) if ((await stat(file)).mtimeMs >= started - 2_000) fresh.push({ file, raw: JSON.parse(await readFile(file, 'utf8')) as Json })
+  const selectedFresh = fresh.slice(0, scenario === 'manual' ? manualBatchSize : maxItems)
+  const usage = collectMusicRecordUsage(selectedFresh.map((entry) => entry.raw))
   let failed = 0
-  for (const entry of fresh.slice(0, maxItems)) {
+  for (const entry of selectedFresh) {
     const mapped = mapMusicRecord(entry.raw); const itemId = text(mapped.id)
     const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
     const beforePayload = record(before[0]?.payload)
@@ -139,19 +169,44 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
         runId: run.id, entityKey: text(entry.raw.entityKey) || basename(entry.file, '.json'), cardId: before[0] ? itemId : null,
         inputItemVersionId: before[0]?.id ?? null, status: 'review_required', beforeJson: before[0]?.payload ?? null, proposedJson: proposed,
         warningsJson: warnings, sourcesJson: record(record(entry.raw.record).pipeline).sourceStatus ?? null,
-        confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation },
+        confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
         rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${text(entry.raw.entityKey) || basename(entry.file)}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: proposed, warningsJson: warnings, updatedAt: new Date(), status: 'review_required' } })
     } catch { failed += 1 }
   }
-  const succeeded = Math.max(0, fresh.length - failed)
+  const missing = scenario === 'manual' ? Math.max(0, manualBatchSize - selectedFresh.length) : 0
+  failed += missing
+  const succeeded = Math.max(0, selectedFresh.length - (failed - missing))
+  const previousCost = Number(run.actualCost ?? 0)
+  const actualCost = Number((previousCost + usage.costUsd).toFixed(8))
+  if (scenario === 'manual') {
+    const artists = Array.isArray(input.artists) ? input.artists : []
+    const itemsProcessed = run.itemsProcessed + manualBatchSize
+    const itemsSucceeded = run.itemsSucceeded + succeeded
+    const itemsFailed = run.itemsFailed + failed
+    const hasMore = manualNextOffset < artists.length
+    await db.update(pipelineRuns).set({
+      status: hasMore ? 'queued' : itemsSucceeded ? itemsFailed ? 'partially_failed' : 'review_required' : 'failed',
+      itemsProcessed, itemsSucceeded, itemsFailed, actualCost: String(actualCost), heartbeatAt: new Date(),
+      ...(hasMore ? {} : { finishedAt: new Date() }),
+      logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
+      ...(!hasMore && !itemsSucceeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
+    }).where(eq(pipelineRuns.id, run.id))
+    if (hasMore) {
+      await db.insert(backgroundJobs).values({
+        type: 'music_pipeline', idempotencyKey: `${run.id}:manual:${manualNextOffset}`, createdBy: run.createdBy,
+        pipelineRunId: run.id, payload: { runId: run.id, offset: manualNextOffset },
+      }).onConflictDoNothing()
+    }
+    return { runId: run.id, batch: manualBatchSize, offset: manualNextOffset, hasMore, succeeded, failed, usage }
+  }
   await db.update(pipelineRuns).set({
-    status: succeeded ? failed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: fresh.length || run.itemsTotal,
-    itemsProcessed: fresh.length, itemsSucceeded: succeeded, itemsFailed: failed, finishedAt: new Date(), heartbeatAt: new Date(),
+    status: succeeded ? failed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: selectedFresh.length || run.itemsTotal,
+    itemsProcessed: selectedFresh.length, itemsSucceeded: succeeded, itemsFailed: failed, actualCost: String(actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
     logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
     ...(!succeeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
   }).where(eq(pipelineRuns.id, run.id))
-  return { runId: run.id, items: fresh.length, succeeded, failed }
+  return { runId: run.id, items: selectedFresh.length, succeeded, failed, usage }
 }
 
 const handleQuality = async () => {
@@ -221,7 +276,7 @@ const work = async () => {
       const result = await handleJob(job)
       await db.update(backgroundJobs).set({ status: 'completed', result, progress: { percent: 100 }, finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(backgroundJobs.id, job.id))
     } catch (error) {
-      const message = safeError(error); const exhausted = job.attempts + 1 >= job.maxAttempts
+      const message = safeError(error); const exhausted = job.attempts >= job.maxAttempts
       await db.update(backgroundJobs).set({
         status: exhausted ? 'failed' : 'queued', errorCode: 'JOB_HANDLER_FAILED', safeErrorMessage: message,
         finishedAt: exhausted ? new Date() : null, nextRetryAt: exhausted ? null : new Date(Date.now() + Math.min(60_000, 2 ** job.attempts * 2_000)), heartbeatAt: new Date(),

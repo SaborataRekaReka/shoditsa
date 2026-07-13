@@ -86,6 +86,17 @@ export const appSettings = pgTable('app_settings', {
   updatedAt: now(),
 })
 
+export const integrationSecrets = pgTable('integration_secrets', {
+  key: text().primaryKey(),
+  encryptedValue: text('encrypted_value').notNull(),
+  iv: text().notNull(),
+  authTag: text('auth_tag').notNull(),
+  lastFour: text('last_four').notNull(),
+  updatedBy: uuid('updated_by').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: now(),
+  updatedAt: now(),
+})
+
 export const contentRevisions = pgTable('content_revisions', {
   id: uuid().primaryKey().defaultRandom(),
   version: text().notNull().unique(),

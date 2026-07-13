@@ -94,6 +94,8 @@ const parseJsonResponse = (value) => {
   return JSON.parse(text.slice(start, end + 1))
 }
 
+const countWebSearchCalls = (payload) => (payload?.output ?? []).filter((item) => item?.type === 'web_search_call').length
+
 const callAiReviewer = async ({ record, options }) => {
   const apiKey = process.env[options.apiKeyEnv]
   if (!apiKey) throw new Error(`${options.apiKeyEnv} is not configured`)
@@ -142,6 +144,7 @@ const callAiReviewer = async ({ record, options }) => {
       model: options.model,
       reviewedAt: new Date().toISOString(),
       usage: payload?.usage ?? null,
+      webSearchCalls: countWebSearchCalls(payload),
       responseId: payload?.id ?? null,
     }
   } finally {
@@ -413,6 +416,8 @@ export const musicAdapter = {
             reason: String(candidate?.reason ?? '').trim(),
             sourceUrls,
             responseId: payload?.id ?? null,
+            usage: payload?.usage ?? null,
+            webSearchCalls: countWebSearchCalls(payload),
           },
         })
         if (additions.length >= count) break

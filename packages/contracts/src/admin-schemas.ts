@@ -88,19 +88,42 @@ export const AdminDailyChallengeReplaceBodySchema = Type.Object({
   confirmation: Type.Literal(true),
 }, { additionalProperties: false })
 
+const MusicPipelineArtistSchema = Type.Object({
+  artist: Type.String({ minLength: 1, maxLength: 200 }),
+  country: Type.Optional(Type.String({ maxLength: 120 })),
+  hint: Type.Optional(Type.String({ maxLength: 500 })),
+}, { additionalProperties: false })
+
 const MusicPipelineRequestProperties = {
-  scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected')]),
+  scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected'), Type.Literal('manual')]),
   maxItems: Type.Integer({ minimum: 1, maximum: 20, default: 5 }),
   aiMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('never')])),
   model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
   webSearch: Type.Optional(Type.Boolean()),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 20 })),
+  artists: Type.Optional(Type.Array(MusicPipelineArtistSchema, { minItems: 1, maxItems: 500 })),
 }
 
 export const MusicPipelineEstimateBodySchema = Type.Object(MusicPipelineRequestProperties, { additionalProperties: false })
 
 export const MusicPipelineRunBodySchema = Type.Object({
   ...MusicPipelineRequestProperties,
+  confirmation: Type.Literal(true),
+}, { additionalProperties: false })
+
+export const MusicPipelineManualPreviewBodySchema = Type.Object({
+  artists: Type.Array(MusicPipelineArtistSchema, { minItems: 1, maxItems: 500 }),
+}, { additionalProperties: false })
+
+export const IntegrationKeySchema = Type.Union([
+  Type.Literal('OPENAI_API_KEY'), Type.Literal('LASTFM_API_KEY'), Type.Literal('SPOTIFY_CLIENT_ID'),
+  Type.Literal('SPOTIFY_CLIENT_SECRET'), Type.Literal('THEAUDIODB_API_KEY'), Type.Literal('MUSICBRAINZ_USER_AGENT'),
+])
+
+export const IntegrationKeyParamsSchema = Type.Object({ key: IntegrationKeySchema }, { additionalProperties: false })
+
+export const IntegrationSecretUpdateBodySchema = Type.Object({
+  value: Type.String({ minLength: 1, maxLength: 4_096 }),
   confirmation: Type.Literal(true),
 }, { additionalProperties: false })
 
@@ -178,6 +201,9 @@ export type AdminQualityIssuePatchBody = Static<typeof AdminQualityIssuePatchBod
 export type AdminDailyChallengeReplaceBody = Static<typeof AdminDailyChallengeReplaceBodySchema>
 export type MusicPipelineEstimateBody = Static<typeof MusicPipelineEstimateBodySchema>
 export type MusicPipelineRunBody = Static<typeof MusicPipelineRunBodySchema>
+export type MusicPipelineManualPreviewBody = Static<typeof MusicPipelineManualPreviewBodySchema>
+export type IntegrationKey = Static<typeof IntegrationKeySchema>
+export type IntegrationSecretUpdateBody = Static<typeof IntegrationSecretUpdateBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>
 export type PipelineApprovalBody = Static<typeof PipelineApprovalBodySchema>
 export type AdminUsersQuery = Static<typeof AdminUsersQuerySchema>

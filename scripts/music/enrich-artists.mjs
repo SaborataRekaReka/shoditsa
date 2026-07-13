@@ -3,7 +3,7 @@ import path from 'node:path'
 
 const ROOT = process.cwd()
 const SOURCE_PRIORITY = ['musicbrainz', 'lastfm', 'wikidata', 'theaudiodb', 'spotify']
-const MUSICBRAINZ_USER_AGENT = 'seans-starter-pack-music-enricher/1.0 (local-dev)'
+const MUSICBRAINZ_USER_AGENT = process.env.MUSICBRAINZ_USER_AGENT?.trim() || 'seans-starter-pack-music-enricher/1.0 (local-dev)'
 const AUDIODB_DEMO_KEY = '2'
 const SOCIAL_HOST_MARKERS = [
   'facebook.com',

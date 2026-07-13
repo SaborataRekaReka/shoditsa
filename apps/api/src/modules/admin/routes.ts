@@ -8,11 +8,13 @@ import {
   AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminDailyChallengeReplaceBodySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
   AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
-  MusicPipelineEstimateBodySchema, MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
+  IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
+  MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
-  type AdminWorkspaceItemBody, type ClientEventsBatchBody, type MusicPipelineEstimateBody, type MusicPipelineRunBody,
+  type AdminWorkspaceItemBody, type ClientEventsBatchBody, type IntegrationKey, type IntegrationSecretUpdateBody,
+  type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
 import { Type } from '@sinclair/typebox'
@@ -33,6 +35,7 @@ import {
   saveWorkspaceItem, validateContentPayload, validateWorkspace, workspaceSummary,
 } from './content-service.js'
 import { loadAdminTimeline } from './timeline-service.js'
+import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
@@ -55,6 +58,41 @@ const completionOf = (payload: unknown) => {
   const record = asRecord(payload)
   const fields = ['titleRu', 'titleOriginal', 'alternativeTitles', 'plotHint', 'posterUrl', 'genres']
   return Math.round(fields.filter((field) => record[field] != null && record[field] !== '' && (!Array.isArray(record[field]) || (record[field] as unknown[]).length > 0)).length / fields.length * 100)
+}
+
+const normalizeArtistName = (value: unknown) => String(value ?? '').normalize('NFKC').toLocaleLowerCase('ru-RU')
+  .replaceAll('ё', 'е').replace(/[^a-zа-я0-9]+/gi, ' ').replace(/\s+/g, ' ').trim()
+
+const previewManualArtists = async (db: Database, artists: MusicPipelineManualPreviewBody['artists']) => {
+  const activeMusic = await db.select({ itemId: contentItemVersions.itemId, titleRu: contentItemVersions.titleRu, titleOriginal: contentItemVersions.titleOriginal, payload: contentItemVersions.payload })
+    .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+    .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'music')))
+  const existing = new Map<string, { itemId: string; title: string }>()
+  for (const card of activeMusic) {
+    const payload = asRecord(card.payload)
+    const names = [card.titleRu, card.titleOriginal, ...(['aliases', 'alternativeTitles'].flatMap((field) => Array.isArray(payload[field]) ? payload[field] as unknown[] : []))]
+    for (const name of names) {
+      const normalized = normalizeArtistName(name)
+      if (normalized && !existing.has(normalized)) existing.set(normalized, { itemId: card.itemId, title: card.titleRu })
+    }
+  }
+  const seen = new Set<string>()
+  const items = artists.map((entry, index) => {
+    const artist = entry.artist.trim(); const normalized = normalizeArtistName(artist); const match = existing.get(normalized)
+    const status = !normalized ? 'invalid' : seen.has(normalized) ? 'duplicate_input' : match ? 'existing_card' : 'ready'
+    if (normalized) seen.add(normalized)
+    return { index, artist, country: entry.country?.trim() || null, hint: entry.hint?.trim() || null, normalized, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
+  })
+  return {
+    items,
+    summary: {
+      total: items.length,
+      ready: items.filter((entry) => entry.status === 'ready').length,
+      duplicates: items.filter((entry) => entry.status === 'duplicate_input').length,
+      existing: items.filter((entry) => entry.status === 'existing_card').length,
+      invalid: items.filter((entry) => entry.status === 'invalid').length,
+    },
+  }
 }
 
 const itemSchema = (mode: string) => ({
@@ -343,22 +381,40 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
   app.post('/api/v1/admin/pipelines/music/estimate', { schema: { body: MusicPipelineEstimateBodySchema } }, async (request, reply) => {
     await admin(request, reply, deps); const body = request.body as MusicPipelineEstimateBody
-    const calls = body.aiMode === 'never' ? 0 : body.maxItems * 2
-    return { items: body.maxItems, aiReviewCalls: calls, estimatedCost: Number((calls * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: deps.config.musicPipelineModel }
+    const itemCount = body.scenario === 'manual' ? body.artists?.length ?? 0 : body.maxItems
+    const calls = body.aiMode === 'never' ? 0 : itemCount * (body.scenario === 'discover' ? 2 : 1)
+    return { items: itemCount, aiReviewCalls: calls, estimatedCost: Number((calls * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: deps.config.musicPipelineModel }
+  })
+
+  app.post('/api/v1/admin/pipelines/music/manual/preview', { schema: { body: MusicPipelineManualPreviewBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    return previewManualArtists(deps.db, (request.body as MusicPipelineManualPreviewBody).artists)
   })
 
   app.post('/api/v1/admin/pipelines/music/runs', { schema: { body: MusicPipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const body = request.body as MusicPipelineRunBody; const key = requireIdempotencyKey(request)
     if (body.scenario === 'selected' && (!body.itemIds?.length || body.itemIds.length > body.maxItems)) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите музыкальные карточки в пределах лимита')
+    let manualArtists: MusicPipelineManualPreviewBody['artists'] = []
+    if (body.scenario === 'manual') {
+      if (!body.artists?.length) throw new ApiError(422, 'PIPELINE_ARTISTS_REQUIRED', 'Добавьте хотя бы одного исполнителя')
+      const preview = await previewManualArtists(deps.db, body.artists)
+      manualArtists = preview.items.filter((entry) => entry.status === 'ready').map(({ artist, country, hint }) => ({ artist, ...(country ? { country } : {}), ...(hint ? { hint } : {}) }))
+      if (!manualArtists.length) throw new ApiError(409, 'PIPELINE_ARTISTS_ALREADY_EXIST', 'В списке нет новых исполнителей для обработки', preview.summary)
+    }
+    if (body.scenario === 'discover' || body.aiMode !== 'never') {
+      const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
+      if (!integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    }
     const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
     if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
+    const estimatedCalls = body.aiMode === 'never' ? 0 : body.scenario === 'manual' ? manualArtists.length : body.scenario === 'discover' ? body.maxItems * 2 : body.maxItems
     const run = (await deps.db.insert(pipelineRuns).values({
-      pipelineKey: 'music', pipelineVersion: 'music-cli-v1', status: 'queued', createdBy: actor.id, itemsTotal: body.maxItems,
-      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [] },
+      pipelineKey: 'music', pipelineVersion: 'music-cli-v2', status: 'queued', createdBy: actor.id, itemsTotal: body.scenario === 'manual' ? manualArtists.length : body.maxItems,
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], artists: manualArtists },
       settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
-      estimatedCost: String((body.aiMode === 'never' ? 0 : body.maxItems * .04).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+      estimatedCost: String((estimatedCalls * .02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]
-    const job = (await deps.db.insert(backgroundJobs).values({ type: 'music_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id } }).returning())[0]
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'music_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id, offset: 0 } }).returning())[0]
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.music.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { scenario: body.scenario, maxItems: body.maxItems, jobId: job.id }, requestId: request.id })
     return reply.code(202).send({ runId: run.id, jobId: job.id })
   })
@@ -444,6 +500,25 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id)).limit(1)
     if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
     return { run: run[0], pollAfterMs: ['queued', 'running'].includes(run[0].status) ? 2500 : null }
+  })
+}
+
+const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
+  app.get('/api/v1/admin/integrations', async (request, reply) => {
+    await admin(request, reply, deps)
+    return { items: await integrationStatuses(deps.db) }
+  })
+  app.put('/api/v1/admin/integrations/:key', { schema: { params: IntegrationKeyParamsSchema, body: IntegrationSecretUpdateBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const key = (request.params as { key: IntegrationKey }).key; const body = request.body as IntegrationSecretUpdateBody
+    await saveIntegrationSecret(deps.db, deps.config, actor.id, key, body.value)
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'integration.secret.update', entityType: 'integration_secret', entityId: key, before: null, after: { configured: true }, requestId: request.id })
+    return { items: await integrationStatuses(deps.db) }
+  })
+  app.delete('/api/v1/admin/integrations/:key', { schema: { params: IntegrationKeyParamsSchema, body: Type.Object({ confirmation: Type.Literal(true) }, { additionalProperties: false }) } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const key = (request.params as { key: IntegrationKey }).key
+    const removed = await deleteIntegrationSecret(deps.db, key)
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'integration.secret.delete', entityType: 'integration_secret', entityId: key, before: { configured: Boolean(removed.length) }, after: { configured: false }, requestId: request.id })
+    return { items: await integrationStatuses(deps.db) }
   })
 }
 
@@ -640,6 +715,7 @@ export const registerAdminRoutes = async (app: FastifyInstance, deps: Deps) => {
   registerContentRoutes(app, deps)
   registerReportRoutes(app, deps)
   registerPipelineRoutes(app, deps)
+  registerIntegrationRoutes(app, deps)
   registerUserRoutes(app, deps)
   registerSystemRoutes(app, deps)
 }
