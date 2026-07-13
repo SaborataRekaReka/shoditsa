@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { isNonArtistType, namesReferToSameArtist } from '../../music/artist-identity.mjs'
 import { openAiFetch } from '../../shared/openai-fetch.mjs'
+import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError } from '../../shared/openai-web-search.mjs'
 
 const normalizeKeyPart = (value) => String(value ?? '')
   .normalize('NFKD')
@@ -186,21 +187,24 @@ const callAiReviewer = async ({ record, options }) => {
         },
       },
     }
-    if (options.aiWebSearch) {
-      request.tools = [{ type: 'web_search_preview', search_context_size: 'low' }]
+    const requestResponse = async (cacheOnly = false) => {
+      const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...request, ...(options.aiWebSearch ? { tools: [createOpenAiWebSearchTool({ cacheOnly })] } : {}) }),
+        signal: controller.signal,
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
+      return payload
     }
-
-    const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-      signal: controller.signal,
+    const payload = await requestResponse().catch(async (error) => {
+      if (!options.aiWebSearch || !isOpenAiWebSearchRegionalError(error)) throw error
+      return requestResponse(true)
     })
-    const payload = await response.json()
-    if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
     const review = parseJsonResponse(extractResponseText(payload))
     if (!['accept', 'review', 'reject'].includes(review?.decision)) {
       throw new Error('AI reviewer returned an invalid decision')
@@ -475,22 +479,29 @@ export const musicAdapter = {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), options.aiTimeoutMs)
     try {
-      const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: options.model,
-          input: prompt,
-          max_output_tokens: 4000,
-          tools: [{ type: 'web_search_preview', search_context_size: 'low' }],
-        }),
-        signal: controller.signal,
+      const requestResponse = async (cacheOnly = false) => {
+        const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: options.model,
+            input: prompt,
+            max_output_tokens: 4000,
+            tools: [createOpenAiWebSearchTool({ cacheOnly })],
+          }),
+          signal: controller.signal,
+        })
+        const payload = await response.json()
+        if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
+        return payload
+      }
+      const payload = await requestResponse().catch(async (error) => {
+        if (!isOpenAiWebSearchRegionalError(error)) throw error
+        return requestResponse(true)
       })
-      const payload = await response.json()
-      if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
       const parsed = parseJsonResponse(extractResponseText(payload))
       const discoveredAt = new Date().toISOString()
       const additions = []

@@ -3,6 +3,7 @@ import path from 'node:path'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { buildPlotHint, cleanText, titleTokens, titleVariants } from '../../shared/plot-hint.mjs'
 import { openAiFetch } from '../../shared/openai-fetch.mjs'
+import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError } from '../../shared/openai-web-search.mjs'
 
 const API_BASE = 'https://shikimori.one'
 const ALLOWED_KINDS = new Set(['tv', 'movie', 'ova', 'ona', 'special', 'tv_special'])
@@ -183,13 +184,20 @@ const callAiReviewer = async ({ anime, options }) => {
         },
       },
     }
-    if (options.aiWebSearch) request.tools = [{ type: 'web_search_preview', search_context_size: 'low' }]
-    const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
-      method: 'POST', signal: controller.signal,
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify(request),
+    const requestResponse = async (cacheOnly = false) => {
+      const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
+        method: 'POST', signal: controller.signal,
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...request, ...(options.aiWebSearch ? { tools: [createOpenAiWebSearchTool({ cacheOnly })] } : {}) }),
+      })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
+      return payload
+    }
+    const payload = await requestResponse().catch(async (error) => {
+      if (!options.aiWebSearch || !isOpenAiWebSearchRegionalError(error)) throw error
+      return requestResponse(true)
     })
-    const payload = await response.json()
-    if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
     const review = parseJsonResponse(extractResponseText(payload))
     if (!['accept', 'review', 'reject'].includes(review?.decision)) throw new Error('AI reviewer returned an invalid decision')
     return {

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createOpenAiProxyTransport, normalizeOpenAiProxyUrl } from './openai-fetch.mjs'
+import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError } from './openai-web-search.mjs'
 
 test('OpenAI proxy accepts authenticated HTTP URLs and rejects unsupported protocols', () => {
   assert.equal(normalizeOpenAiProxyUrl('http://user:password@proxy.example:12321'), 'http://user:password@proxy.example:12321/')
@@ -27,4 +28,11 @@ test('OpenAI transport sends requests through the configured dispatcher', async 
 
 test('OpenAI transport stays direct when no proxy is configured', () => {
   assert.equal(createOpenAiProxyTransport(''), null)
+})
+
+test('OpenAI web search retries safely with cache-only search after a regional refusal', () => {
+  assert.deepEqual(createOpenAiWebSearchTool(), { type: 'web_search', search_context_size: 'low' })
+  assert.deepEqual(createOpenAiWebSearchTool({ cacheOnly: true }), { type: 'web_search', search_context_size: 'low', external_web_access: false })
+  assert.equal(isOpenAiWebSearchRegionalError(new Error('Country, region, or territory is not supported')), true)
+  assert.equal(isOpenAiWebSearchRegionalError(new Error('OpenAI HTTP 429')), false)
 })
