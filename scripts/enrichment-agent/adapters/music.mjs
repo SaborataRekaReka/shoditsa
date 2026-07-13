@@ -51,6 +51,15 @@ const normalizeText = (value) => String(value ?? '')
   .replace(/\s+/g, ' ')
   .trim()
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const hintWordPattern = (word) => {
+  if (/^[а-яё]{5,}$/u.test(word) && /[аяоеийь]$/u.test(word)) {
+    return `${escapeRegex(word.slice(0, -1))}[а-яё]*`
+  }
+  return escapeRegex(word)
+}
+const hintPhrasePattern = (phrase, separator) => phrase.split(' ').map(hintWordPattern).join(separator)
+
 const hintForbiddenPhrases = (record) => {
   const fieldValues = [
     record?.input?.artist,
@@ -67,7 +76,10 @@ const hintForbiddenPhrases = (record) => {
 export const validateMusicHint = (hint, record) => {
   const text = String(hint?.text ?? '').replace(/\s+/g, ' ').trim()
   const normalized = normalizeText(text)
-  const forbiddenMatches = hintForbiddenPhrases(record).filter((phrase) => normalized.includes(phrase))
+  const forbiddenMatches = hintForbiddenPhrases(record).filter((phrase) => new RegExp(
+    `(?:^|\\s)${hintPhrasePattern(phrase, '\\s+')}(?=\\s|$)`,
+    'iu',
+  ).test(normalized))
   const errors = [
     text.length < 80 ? 'hint_too_short' : null,
     text.length > 280 ? 'hint_too_long' : null,
@@ -197,10 +209,8 @@ export const buildFallbackMusicHint = (record) => {
   if (!text) return null
   const forbidden = hintForbiddenPhrases(record)
   for (const phrase of forbidden) {
-    const pattern = phrase.split(' ')
-      .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-      .join('[\\s\\p{P}\\p{S}]*')
-    text = text.replace(new RegExp(pattern, 'giu'), '')
+    const pattern = hintPhrasePattern(phrase, '[\\s\\p{P}\\p{S}]*')
+    text = text.replace(new RegExp(`(?<![\\p{L}\\p{N}])${pattern}(?![\\p{L}\\p{N}])`, 'giu'), '')
   }
   text = text
     .replace(/[«“"']\s*[»”"']/g, '')

@@ -48,14 +48,34 @@ test('fallback hint removes the artist without deleting genre words from a compo
     aliases: field(['Алиса (рок-группа)', 'АлисА']),
     topTracks: field([]),
     topAlbums: field([]),
-    biography: field('«Алиса» — советская и российская рок-группа, образованная в 1983 году в Ленинграде. Одна из самых популярных групп русского рока, известная многолетней работой Константина Кинчева.'),
+    biography: field('«Алиса» — советская и российская рок-группа, образованная в 1983 году в Ленинграде. Одна из самых популярных групп русского рока. Лидер и автор большинства песен «Алисы» — Константин Кинчев.'),
     officialLinks: field(['https://ru.wikipedia.org/wiki/Алиса_(группа)']),
   }
 
   const hint = buildFallbackMusicHint(alisa)
   assert.ok(hint)
   assert.equal(hint.text.includes('Алиса'), false)
+  assert.equal(hint.text.includes('Алисы'), false)
   assert.equal(hint.text.includes('рок-группа'), true)
   assert.equal(hint.text.includes('русского рока'), true)
   assert.equal(validateMusicHint(hint, alisa).valid, true)
+})
+
+test('music hint rejects an inflected Russian artist name', () => {
+  const alisa = {
+    input: { artist: 'Алиса' },
+    canonicalName: field('Alisa'),
+    displayNameRu: field('Алиса'),
+    displayNameEn: field('Alisa'),
+    aliases: field([]),
+    topTracks: field([]),
+    topAlbums: field([]),
+  }
+  const result = validateMusicHint({
+    text: 'Лидер и автор большинства песен «Алисы» сформировал узнаваемое звучание коллектива, которое менялось от новой волны к более тяжёлому року.',
+    sourceUrls: ['https://example.com/profile'],
+  }, alisa)
+
+  assert.equal(result.valid, false)
+  assert.ok(result.errors.includes('hint_contains_answer_or_title'))
 })
