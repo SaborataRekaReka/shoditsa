@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { openAiFetch } from '../shared/openai-fetch.mjs'
 
 const ROOT = process.cwd()
 
@@ -314,7 +315,7 @@ const requestDecisionsFromModel = async ({
       const controller = new AbortController()
       const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
-      const response = await fetch(`${apiBaseUrl}/responses`, {
+      const response = await openAiFetch(`${apiBaseUrl}/responses`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,

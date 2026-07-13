@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { auditMovieRecord, cleanText, normalize, sanitizeMovieRecord } from '../../shared/movie-hint-sanitize.mjs'
+import { openAiFetch } from '../../shared/openai-fetch.mjs'
 
 const API_BASE = 'https://kinopoiskapiunofficial.tech'
 const MOVIE_TYPES = new Set(['FILM', 'VIDEO', 'TV_MOVIE'])
@@ -112,7 +113,7 @@ const callAiReviewer = async ({ movie, evidence, options }) => {
   try {
     const request = { model: options.model, input: prompt, max_output_tokens: 1_200 }
     if (options.aiWebSearch) request.tools = [{ type: 'web_search_preview', search_context_size: 'low' }]
-    const response = await fetch(`${options.apiBaseUrl}/responses`, {
+    const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
       method: 'POST', signal: controller.signal,
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(request),

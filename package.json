@@ -76,7 +76,7 @@
     "data:agent:anime:discover": "node scripts/enrichment-agent/run.mjs anime discover",
     "data:agent:anime:plan": "node scripts/enrichment-agent/run.mjs anime plan",
     "data:agent:anime:status": "node scripts/enrichment-agent/run.mjs anime status",
-    "data:agent:test": "node --test scripts/enrichment-agent/core.test.mjs scripts/enrichment-agent/music-hint.test.mjs scripts/enrichment-agent/music-identity.test.mjs scripts/enrichment-agent/movie-hint.test.mjs scripts/enrichment-agent/anime-hint.test.mjs",
+    "data:agent:test": "node --test scripts/enrichment-agent/core.test.mjs scripts/enrichment-agent/music-hint.test.mjs scripts/enrichment-agent/music-identity.test.mjs scripts/enrichment-agent/movie-hint.test.mjs scripts/enrichment-agent/anime-hint.test.mjs scripts/shared/openai-fetch.test.mjs",
     "data:refill": "node scripts/movies/refill-missing.mjs",
     "data:hints": "node scripts/movies/enrich-hints.mjs",
     "data:sanitize:movies": "node scripts/movies/sanitize-hints.mjs",

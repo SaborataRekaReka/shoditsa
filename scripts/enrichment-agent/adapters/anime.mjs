@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { buildPlotHint, cleanText, titleTokens, titleVariants } from '../../shared/plot-hint.mjs'
+import { openAiFetch } from '../../shared/openai-fetch.mjs'
 
 const API_BASE = 'https://shikimori.one'
 const ALLOWED_KINDS = new Set(['tv', 'movie', 'ova', 'ona', 'special', 'tv_special'])
@@ -127,7 +128,7 @@ const callAiReviewer = async ({ anime, options }) => {
   try {
     const request = { model: options.model, input: prompt, max_output_tokens: 1_200 }
     if (options.aiWebSearch) request.tools = [{ type: 'web_search_preview', search_context_size: 'low' }]
-    const response = await fetch(`${options.apiBaseUrl}/responses`, {
+    const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
       method: 'POST', signal: controller.signal,
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify(request),
     })

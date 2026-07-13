@@ -3,6 +3,7 @@ import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { isNonArtistType, namesReferToSameArtist } from '../../music/artist-identity.mjs'
+import { openAiFetch } from '../../shared/openai-fetch.mjs'
 
 const normalizeKeyPart = (value) => String(value ?? '')
   .normalize('NFKD')
@@ -137,7 +138,7 @@ const callAiReviewer = async ({ record, options }) => {
       request.tools = [{ type: 'web_search_preview', search_context_size: 'low' }]
     }
 
-    const response = await fetch(`${options.apiBaseUrl}/responses`, {
+    const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -422,7 +423,7 @@ export const musicAdapter = {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), options.aiTimeoutMs)
     try {
-      const response = await fetch(`${options.apiBaseUrl}/responses`, {
+      const response = await openAiFetch(`${options.apiBaseUrl}/responses`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,

@@ -19,7 +19,7 @@ export const integrationRegistry: ReadonlyArray<{
   { key: 'SPOTIFY_CLIENT_SECRET', title: 'Spotify Client Secret', provider: 'Spotify', description: 'Секрет приложения Spotify Web API.', required: false, secret: true },
   { key: 'THEAUDIODB_API_KEY', title: 'TheAudioDB API key', provider: 'TheAudioDB', description: 'Дополнительные профили, изображения, релизы и видео.', required: false, secret: true },
   { key: 'MUSICBRAINZ_USER_AGENT', title: 'MusicBrainz User-Agent', provider: 'MusicBrainz', description: 'Контактный User-Agent для корректной работы с MusicBrainz API.', required: false, secret: false },
-  { key: 'MUSIC_OUTBOUND_PROXY_URL', title: 'Outbound proxy URL', provider: 'Музыкальные API', description: 'Доверенный HTTP/HTTPS proxy для MusicBrainz, Last.fm, Spotify и TheAudioDB. Поддерживает авторизацию в URL.', required: false, secret: true },
+  { key: 'MUSIC_OUTBOUND_PROXY_URL', title: 'Outbound proxy URL', provider: 'Внешние API', description: 'Доверенный HTTP/HTTPS proxy для OpenAI, MusicBrainz, Last.fm, Spotify и TheAudioDB. Поддерживает авторизацию в URL.', required: false, secret: true },
   { key: 'KINOPOISK_UNOFFICIAL_API_KEY_1', title: 'Ключ №1', provider: 'Кинопоиск Unofficial API', description: 'Первый ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
   { key: 'KINOPOISK_UNOFFICIAL_API_KEY_2', title: 'Ключ №2', provider: 'Кинопоиск Unofficial API', description: 'Второй ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
   { key: 'KINOPOISK_UNOFFICIAL_API_KEY_3', title: 'Ключ №3', provider: 'Кинопоиск Unofficial API', description: 'Третий ключ из пула для импорта и обогащения фильмов и сериалов.', required: false, secret: true },
