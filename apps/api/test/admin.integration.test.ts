@@ -165,13 +165,15 @@ describe('admin API guard, workspace and telemetry', () => {
       occurredAt: new Date().toISOString(),
       route: '/admin',
       appVersion: 'integration',
-      properties: { surface: 'admin' },
+      properties: { surface: 'admin', accessToken: 'must-not-be-stored' },
     }
     const first = await app.inject({ method: 'POST', url: '/api/v1/client-events/batch', payload: { events: [event] } })
     const replay = await app.inject({ method: 'POST', url: '/api/v1/client-events/batch', payload: { events: [event] } })
     expect(first.statusCode, first.body).toBe(200)
     expect(first.json()).toEqual({ accepted: 1, duplicates: 0 })
     expect(replay.json()).toEqual({ accepted: 0, duplicates: 1 })
+    const storedEvent = await database.db.select({ properties: clientEvents.properties }).from(clientEvents).where(eq(clientEvents.eventId, telemetryEventId)).limit(1)
+    expect(storedEvent[0]?.properties).toEqual({ surface: 'admin' })
 
     const timeline = await app.inject({
       method: 'GET',

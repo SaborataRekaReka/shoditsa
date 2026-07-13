@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
 import type { ContentMode, TitleItem } from '@shoditsa/contracts'
 import {
-  auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
+  appSettings, auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   contentWorkspaceChanges, contentWorkspaces, diagnosisVignettes, type Database,
 } from '@shoditsa/database'
 import { normalize } from '@shoditsa/game-core'
@@ -24,6 +24,7 @@ export type ValidationIssue = { level: 'error' | 'warning'; field: string; code:
 const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : ''
 const number = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : null
+const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
 
 export const validateContentPayload = (payload: Record<string, unknown>, mode: ContentMode): ValidationIssue[] => {
   const issues: ValidationIssue[] = []
@@ -49,6 +50,7 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   if (!hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
   if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
   if (hint && text(payload.titleRu) && normalize(hint).includes(normalize(text(payload.titleRu)))) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')
+  if (hint && /(?:json|undefined|null|nan|stack trace|exception|http(?:s)?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) error('plotHint', 'technical_leak', 'Подсказка содержит технический текст')
   return issues
 }
 
@@ -190,7 +192,18 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
       for (const change of changes) if (!baseByItem.has(change.itemId)) merged.push({ base: null as never, change, payload: asRecord(change.afterPayload) })
       const allIssues = merged.flatMap((entry) => validateContentPayload(entry.payload, (entry.change?.mode ?? entry.base.mode) as ContentMode).map((issue) => ({ ...issue, itemId: text(entry.payload.id) })))
       if (allIssues.some((issue) => issue.level === 'error')) throw new ApiError(422, 'WORKSPACE_VALIDATION_FAILED', 'Сборка остановлена из-за ошибок карточек', { fieldErrors: allIssues.slice(0, 200) })
-      if (merged.length < Math.floor(baseRows.length * .95)) throw new ApiError(409, 'CONTENT_COUNT_DROP_GUARD', 'Защита от потери данных: количество карточек уменьшилось более чем на 5%')
+      const baseModeCounts = new Map<ContentMode, number>()
+      const nextModeCounts = new Map<ContentMode, number>()
+      for (const row of baseRows) baseModeCounts.set(row.mode, (baseModeCounts.get(row.mode) ?? 0) + 1)
+      for (const entry of merged) {
+        const mode = (entry.change?.mode ?? entry.base.mode) as ContentMode
+        nextModeCounts.set(mode, (nextModeCounts.get(mode) ?? 0) + 1)
+      }
+      for (const mode of contentModes) {
+        const before = baseModeCounts.get(mode) ?? 0; const after = nextModeCounts.get(mode) ?? 0
+        if (before > 0 && after < Math.ceil(before * .95)) throw new ApiError(409, 'CONTENT_MODE_COUNT_DROP_GUARD', `Защита от потери данных: в режиме ${mode} количество карточек уменьшилось более чем на 5%`, { mode, before, after })
+        if (before > 0 && after === 0) throw new ApiError(409, 'CONTENT_MODE_EMPTY_GUARD', `Режим ${mode} не может стать пустым`, { mode, before, after })
+      }
       const checksum = sha256(merged.map((entry) => entry.payload))
       const existing = await tx.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.checksumSha256, checksum)).limit(1)
       if (existing[0]) throw new ApiError(409, 'REVISION_CHECKSUM_EXISTS', 'Ревизия с таким содержимым уже существует')
@@ -239,7 +252,7 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
   } catch (error) {
     const code = error instanceof ApiError ? error.code : 'REVISION_BUILD_FAILED'
     const message = error instanceof ApiError ? error.message : 'Не удалось собрать ревизию'
-    await db.update(contentWorkspaces).set({ status: 'failed', failureCode: code, safeFailureMessage: message, updatedAt: new Date() }).where(eq(contentWorkspaces.id, workspaceId))
+    await db.update(contentWorkspaces).set({ status: error instanceof ApiError ? 'open' : 'failed', lockedAt: null, failureCode: code, safeFailureMessage: message, updatedAt: new Date() }).where(eq(contentWorkspaces.id, workspaceId))
     throw error
   }
 }
@@ -251,10 +264,24 @@ export const activateWorkspaceRevision = async (db: Database, actor: Actor, work
   if (!revision || revision.status !== 'ready') throw new ApiError(409, 'REVISION_NOT_READY', 'Собранная ревизия не готова к активации')
   await tx.update(contentRevisions).set({ status: 'retired' }).where(eq(contentRevisions.status, 'active'))
   await tx.update(contentRevisions).set({ status: 'active', activatedAt: new Date() }).where(eq(contentRevisions.id, revision.id))
+  await tx.insert(appSettings).values({ key: 'active_content_revision_id', value: revision.id, updatedBy: actor.id }).onConflictDoUpdate({ target: appSettings.key, set: { value: revision.id, updatedBy: actor.id, updatedAt: new Date(), version: sql`${appSettings.version} + 1` } })
   await tx.update(contentWorkspaces).set({ status: 'published', publishedAt: new Date(), updatedAt: new Date() }).where(eq(contentWorkspaces.id, workspace.id))
   const next = (await tx.insert(contentWorkspaces).values({ baseRevisionId: revision.id, createdBy: actor.id }).returning())[0]
   await tx.insert(auditLog).values({ actorUserId: actor.id, action: 'content.workspace.activate', entityType: 'content_revision', entityId: revision.id, before: { workspaceId }, after: { status: 'active', nextWorkspaceId: next.id }, requestId })
   return { revision, workspace: next }
+})
+
+export const activateContentRevision = async (db: Database, actor: Actor, revisionId: string, requestId: string, reason?: string) => db.transaction(async (tx) => {
+  const target = (await tx.select().from(contentRevisions).where(eq(contentRevisions.id, revisionId)).for('update').limit(1))[0]
+  if (!target || !['ready', 'retired', 'active'].includes(target.status)) throw new ApiError(422, 'REVISION_NOT_ACTIVATABLE', 'Ревизия не готова к активации или откату')
+  const current = (await tx.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).for('update').limit(1))[0]
+  if (current?.id !== revisionId) {
+    await tx.update(contentRevisions).set({ status: 'retired' }).where(eq(contentRevisions.status, 'active'))
+    await tx.update(contentRevisions).set({ status: 'active', activatedAt: new Date() }).where(eq(contentRevisions.id, revisionId))
+  }
+  await tx.insert(appSettings).values({ key: 'active_content_revision_id', value: revisionId, updatedBy: actor.id }).onConflictDoUpdate({ target: appSettings.key, set: { value: revisionId, updatedBy: actor.id, updatedAt: new Date(), version: sql`${appSettings.version} + 1` } })
+  await tx.insert(auditLog).values({ actorUserId: actor.id, action: current?.id === revisionId ? 'content.revision.activate.noop' : target.status === 'retired' ? 'content.revision.rollback' : 'content.revision.activate', entityType: 'content_revision', entityId: revisionId, before: current ?? null, after: { ...target, status: 'active' }, reason, requestId })
+  return { activated: revisionId, previousRevisionId: current?.id ?? null, rollback: target.status === 'retired' }
 })
 
 export const loadWorkspaceChanges = (db: Database, workspaceId: string, itemIds?: string[]) => {

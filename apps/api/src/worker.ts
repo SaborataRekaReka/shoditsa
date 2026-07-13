@@ -3,13 +3,15 @@ import { spawn } from 'node:child_process'
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { and, desc, eq, inArray, lt, sql } from 'drizzle-orm'
+import { and, eq, inArray, lt, sql } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import {
   backgroundJobs, clientEvents, contentItemVersions, contentQualityIssues, contentRevisions, createDatabase,
   pipelineRunItems, pipelineRuns, playerProfiles, session, user, walletAccounts,
 } from '@shoditsa/database'
 import { buildWorkspaceRevision, validateContentPayload } from './modules/admin/content-service.js'
+import { loadAdminTimeline } from './modules/admin/timeline-service.js'
+import type { AdminEventsQuery } from '@shoditsa/contracts'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -201,7 +203,7 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   if (job.type === 'music_pipeline') return handleMusic(job)
   if (job.type === 'user_export') return handleUserExport(job)
   if (job.type === 'event_export') {
-    const events = await db.select().from(clientEvents).orderBy(desc(clientEvents.occurredAt)).limit(1_000)
+    const events = await loadAdminTimeline(db, { ...record(job.payload), limit: 10_000 } as AdminEventsQuery)
     return { exportedAt: new Date().toISOString(), items: events }
   }
   if (job.type === 'client_event_retention') {

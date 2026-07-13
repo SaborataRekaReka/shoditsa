@@ -103,7 +103,9 @@ export const adminApi = {
   createPromo: (body: Record<string, unknown>) => request<Record<string, unknown>>('/admin/promos', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json(body) }),
   patchPromo: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/promos/${id}`, { method: 'PATCH', body: json(body) }),
   revisions: () => request<{ items: Array<Record<string, unknown>> }>('/admin/content/revisions'),
-  activateRevision: (id: string) => request<Record<string, unknown>>(`/admin/content/revisions/${id}/activate`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
+  activateRevision: (id: string, reason?: string) => request<Record<string, unknown>>(`/admin/content/revisions/${id}/activate`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ ...(reason ? { reason } : {}) }) }),
+  dailyChallenges: () => request<{ today: string; items: Array<Record<string, unknown>> }>('/admin/daily-challenges'),
+  replaceDailyChallenge: (id: string, itemId: string, reason: string) => request<Record<string, unknown>>(`/admin/daily-challenges/${id}/replace`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ itemId, reason, confirmation: true }) }),
   dailySalt: () => request<Record<string, unknown>>('/admin/settings/daily-salt'),
   updateDailySalt: (currentValue: number, value: number, reason: string) => request<Record<string, unknown>>('/admin/settings/daily-salt', { method: 'PUT', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ currentValue, value, reason }) }),
 }

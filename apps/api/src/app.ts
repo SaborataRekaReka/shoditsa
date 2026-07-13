@@ -22,7 +22,7 @@ import {
 } from '@shoditsa/contracts'
 import {
   account, appSettings, auditLog, authEvents, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
-  createDatabase, gameSessions, playerProfiles, promoCodes, userModeStats, walletAccounts, walletLedger,
+  createDatabase, gameSessions, playerProfiles, promoCodes, user, userModeStats, walletAccounts, walletLedger,
   type Database,
 } from '@shoditsa/database'
 import { createAuth, type Auth } from './modules/auth/auth.js'
@@ -33,6 +33,7 @@ import { chooseHint, getOwnedSession, publicCard, searchCatalog, startGame, subm
 import { dashboard, ledgerPage, normalizePromoCode, promoHash, redeemPromo, startFreePlay, unlockPeriod } from './modules/economy/service.js'
 import { importLegacy } from './modules/users/legacy-import.js'
 import { registerAdminRoutes, registerClientEventRoutes } from './modules/admin/routes.js'
+import { activateContentRevision } from './modules/admin/content-service.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -165,13 +166,12 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       method: request.method, headers: fromNodeHeaders(request.headers),
       body: request.method === 'GET' || request.method === 'HEAD' ? undefined : JSON.stringify(request.body ?? {}),
     }))
-    if (eventName && response.ok) {
-      let eventUserId = priorUser?.id ?? null
-      if (!eventUserId) {
-        const payload = await response.clone().json().catch(() => null) as { user?: { id?: string } } | null
-        eventUserId = payload?.user?.id ?? null
-      }
-      if (eventUserId) await db.insert(authEvents).values({ userId: eventUserId, authSessionId: priorUser?.authSessionId ?? null, eventName, result: 'success', requestId: request.id })
+    if (eventName) {
+      const payload = await response.clone().json().catch(() => null) as { user?: { id?: string } } | null
+      const responseUserId = payload?.user?.id ?? null
+      const candidateUserId = responseUserId ?? priorUser?.id ?? null
+      const eventUser = candidateUserId ? await db.select({ id: user.id }).from(user).where(eq(user.id, candidateUserId)).limit(1) : []
+      if (eventUser[0]) await db.insert(authEvents).values({ userId: eventUser[0].id, authSessionId: null, eventName, result: response.ok ? 'success' : 'failure', requestId: request.id })
     }
     return forwardAuthResponse(reply, response)
   } })
@@ -328,16 +328,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   await registerAdminRoutes(app, { db, auth, config })
 
   app.get('/api/v1/admin/content/revisions', async (request) => { await requireAdmin(request, auth, db, config); return { items: await db.select().from(contentRevisions).orderBy(desc(contentRevisions.createdAt)) } })
-  app.post('/api/v1/admin/content/revisions/:id/activate', { schema: { params: Type.Object({ id: UuidSchema }), headers: idempotencyHeaders } }, async (request) => {
-    const actor = await requireAdmin(request, auth, db, config); const id = (request.params as { id: string }).id
-    await db.transaction(async (tx) => {
-      const target = await tx.select().from(contentRevisions).where(eq(contentRevisions.id, id)).for('update').limit(1)
-      if (!target[0] || !['ready', 'active'].includes(target[0].status)) throw new ApiError(422, 'REVISION_NOT_READY', 'Ревизия не готова к активации')
-      await tx.update(contentRevisions).set({ status: 'retired' }).where(eq(contentRevisions.status, 'active'))
-      await tx.update(contentRevisions).set({ status: 'active', activatedAt: new Date() }).where(eq(contentRevisions.id, id))
-      await tx.insert(appSettings).values({ key: 'active_content_revision_id', value: id, updatedBy: actor.id }).onConflictDoUpdate({ target: appSettings.key, set: { value: id, updatedBy: actor.id, updatedAt: new Date(), version: sql`${appSettings.version} + 1` } })
-      await tx.insert(auditLog).values({ actorUserId: actor.id, action: 'content.revision.activate', entityType: 'content_revision', entityId: id, after: target[0], requestId: request.id })
-    }); return { activated: id }
+  app.post('/api/v1/admin/content/revisions/:id/activate', { schema: { params: Type.Object({ id: UuidSchema }), headers: idempotencyHeaders, body: Type.Object({ reason: Type.Optional(Type.String({ minLength: 3, maxLength: 500 })) }, { additionalProperties: false }) } }, async (request) => {
+    const actor = await requireAdmin(request, auth, db, config); const id = (request.params as { id: string }).id; const body = request.body as { reason?: string }
+    return activateContentRevision(db, actor, id, request.id, body.reason)
   })
   app.get('/api/v1/admin/settings/daily-salt', async (request) => { await requireAdmin(request, auth, db, config); return (await db.select().from(appSettings).where(eq(appSettings.key, 'daily_global_salt')).limit(1))[0] })
   app.put('/api/v1/admin/settings/daily-salt', { schema: { body: Type.Object({ currentValue: Type.Integer(), value: Type.Integer(), reason: Type.String({ minLength: 3, maxLength: 500 }) }, { additionalProperties: false }), headers: idempotencyHeaders } }, async (request) => {

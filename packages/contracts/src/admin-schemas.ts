@@ -82,6 +82,12 @@ export const AdminQualityIssuePatchBodySchema = Type.Object({
   acceptedUntil: Type.Optional(Type.Union([DateTimeSchema, Type.Null()])),
 }, { additionalProperties: false })
 
+export const AdminDailyChallengeReplaceBodySchema = Type.Object({
+  itemId: Type.String({ minLength: 1, maxLength: 255 }),
+  reason: Type.String({ minLength: 3, maxLength: 500 }),
+  confirmation: Type.Literal(true),
+}, { additionalProperties: false })
+
 const MusicPipelineRequestProperties = {
   scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected')]),
   maxItems: Type.Integer({ minimum: 1, maximum: 20, default: 5 }),
@@ -169,6 +175,7 @@ export type AdminReportQuery = Static<typeof AdminReportQuerySchema>
 export type AdminReportPatchBody = Static<typeof AdminReportPatchBodySchema>
 export type AdminReportBulkResolveBody = Static<typeof AdminReportBulkResolveBodySchema>
 export type AdminQualityIssuePatchBody = Static<typeof AdminQualityIssuePatchBodySchema>
+export type AdminDailyChallengeReplaceBody = Static<typeof AdminDailyChallengeReplaceBodySchema>
 export type MusicPipelineEstimateBody = Static<typeof MusicPipelineEstimateBodySchema>
 export type MusicPipelineRunBody = Static<typeof MusicPipelineRunBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>

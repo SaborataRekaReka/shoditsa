@@ -35,6 +35,6 @@
 
 ### Система и аудит
 
-В «Системе» контролируются jobs, health, revisions и настройки. Failed job можно повторить с новым idempotency key. Stuck означает, что heartbeat старше допустимого интервала; сначала проверьте worker, затем retry.
+В «Системе» контролируются jobs, health, revisions, будущие materialized загадки и настройки. Failed job можно повторить с новым idempotency key. Stuck означает, что heartbeat старше допустимого интервала; сначала проверьте worker, затем retry. Предыдущую retired revision можно вернуть кнопкой «Откатить» с обязательной причиной.
 
-Изменение daily salt требует текущего значения, нового значения и причины. Промокоды и wallet adjustments также являются аудируемыми опасными операциями. В «Аудите» сверяйте actor, action, entity, reason, request ID и before/after.
+Изменение daily salt требует текущего значения, нового значения и причины. «Заменить будущую загадку» работает только для будущей московской даты и challenge без начатых сессий. Промокоды и wallet adjustments также являются аудируемыми опасными операциями. В «Аудите» сверяйте actor, action, entity, reason, request ID и before/after.

@@ -5,12 +5,12 @@ import sharp from 'sharp'
 import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm'
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import {
-  AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
+  AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminDailyChallengeReplaceBodySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
   AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
   MusicPipelineEstimateBodySchema, MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
-  type AdminBlockUserBody, type AdminContentItemsQuery, type AdminEventsQuery, type AdminReportPatchBody,
+  type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type MusicPipelineEstimateBody, type MusicPipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
@@ -20,17 +20,19 @@ import type { AppConfig } from '@shoditsa/config'
 import {
   account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
   contentAliases, contentItems, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes,
-  contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, gameAttempts, gameHintChoices,
+  contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, dailyChallenges, gameAttempts, gameHintChoices,
   gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
   promoRedemptions, session, user, userModeStats, walletAccounts, walletLedger, type Database,
 } from '@shoditsa/database'
 import type { Auth } from '../auth/auth.js'
 import { getRequestUser, requireAdmin } from '../auth/session.js'
 import { ApiError, requireIdempotencyKey } from '../../lib/errors.js'
+import { getMoscowDate } from '../../lib/time.js'
 import {
   activateWorkspaceRevision, buildWorkspaceRevision, discardWorkspaceItem, getOrCreateWorkspace, loadWorkspaceChanges,
   saveWorkspaceItem, validateContentPayload, validateWorkspace, workspaceSummary,
 } from './content-service.js'
+import { loadAdminTimeline } from './timeline-service.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
@@ -309,6 +311,7 @@ const registerReportRoutes = (app: FastifyInstance, deps: Deps) => {
     const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as AdminReportPatchBody
     if (body.status === 'duplicate' && !body.duplicateOfReportId) throw new ApiError(422, 'DUPLICATE_TARGET_REQUIRED', 'Выберите основной отчёт')
     if (['resolved', 'dismissed', 'duplicate'].includes(body.status) && !body.resolutionType) throw new ApiError(422, 'RESOLUTION_REQUIRED', 'Выберите итог обработки')
+    if (['resolved', 'dismissed', 'duplicate'].includes(body.status) && !body.resolutionComment?.trim()) throw new ApiError(422, 'RESOLUTION_COMMENT_REQUIRED', 'Добавьте комментарий к итогу обработки')
     const before = await deps.db.select().from(contentReports).where(eq(contentReports.id, id)).limit(1)
     if (!before[0]) throw new ApiError(404, 'REPORT_NOT_FOUND', 'Баг-репорт не найден')
     if (body.duplicateOfReportId === id) throw new ApiError(422, 'SELF_DUPLICATE', 'Отчёт не может быть дубликатом самого себя')
@@ -383,6 +386,12 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const filters = [eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'approved')]
     if (body.itemIds?.length) filters.push(inArray(pipelineRunItems.id, body.itemIds))
     const items = await deps.db.select().from(pipelineRunItems).where(and(...filters)); const workspace = await getOrCreateWorkspace(deps.db, actor)
+    if (!items.length) throw new ApiError(409, 'PIPELINE_ITEMS_NOT_APPROVED', 'Нет одобренных результатов для применения')
+    if (body.expectedWorkspaceVersion !== undefined && workspace.version !== body.expectedWorkspaceVersion) throw new ApiError(409, 'WORKSPACE_VERSION_CONFLICT', 'Рабочая версия уже изменилась; обновите данные перед применением', { expectedVersion: body.expectedWorkspaceVersion, currentVersion: workspace.version })
+    const targetIds = items.map((item) => item.cardId ?? String(asRecord(item.proposedJson).id ?? item.entityKey))
+    const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id }).from(contentItemVersions)
+      .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, targetIds))) : []
+    const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry.versionId]))
     const existingChanges = await loadWorkspaceChanges(deps.db, workspace.id, items.map((entry) => entry.cardId).filter((entry): entry is string => Boolean(entry)))
     const changeByItem = new Map(existingChanges.map((entry) => [entry.itemId, entry]))
     const results: Array<{ itemId: string; status: string; message?: string }> = []
@@ -397,6 +406,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)
       payload.id = itemId; payload.mode = 'music'
       try {
+        if (item.inputItemVersionId && activeVersionByItem.get(itemId) !== item.inputItemVersionId) throw new ApiError(409, 'PIPELINE_INPUT_VERSION_CONFLICT', 'Карточка изменилась после запуска пайплайна', { itemId, inputItemVersionId: item.inputItemVersionId, activeItemVersionId: activeVersionByItem.get(itemId) ?? null })
         const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode: 'music', payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
         await deps.db.update(pipelineRunItems).set({ status: 'staged', workspaceChangeId: change.id, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
         results.push({ itemId: item.id, status: 'staged' })
@@ -521,55 +531,6 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
   })
 }
 
-const timelineSql = async (deps: Deps, query: AdminEventsQuery) => {
-  const userFilter = query.userId ? sql`and e."userId" = ${query.userId}::uuid` : sql``
-  const gameSessionFilter = query.gameSessionId ? sql`and e."gameSessionId" = ${query.gameSessionId}::uuid` : sql``
-  const authSessionFilter = query.sessionId ? sql`and e."authSessionId" = ${query.sessionId}::uuid` : sql``
-  const itemFilter = query.itemId ? sql`and e."itemId" = ${query.itemId}` : sql``
-  const modeFilter = query.mode ? sql`and e.mode = ${query.mode}` : sql``
-  const from = (query.from ? new Date(query.from) : new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()
-  const to = (query.to ? new Date(query.to) : new Date()).toISOString()
-  const limit = query.limit ?? 50
-  const result = await deps.db.execute(sql`
-    select * from (
-      select 'game:' || gs.id::text id, 'game_started' type, gs."startedAt" "occurredAt", gs.user_id "userId", gs.auth_session_id "authSessionId", gs.id "gameSessionId", civ.item_id "itemId", gs.answer_item_version_id "itemVersionId", gs.mode::text mode,
-        'Игра начата' title, concat(gs.mode, ' · ', gs.kind) summary, jsonb_build_object('kind', gs.kind, 'period', gs.period, 'difficulty', gs.difficulty, 'status', gs.status) details, null::text "requestId", 'game_sessions' "sourceTable"
-      from game_sessions gs join content_item_versions civ on civ.id = gs.answer_item_version_id
-      union all
-      select 'attempt:' || ga.id::text, 'attempt', ga."createdAt", gs.user_id, gs.auth_session_id, gs.id, civ.item_id, ga.guessed_item_version_id, gs.mode::text,
-        'Сделана попытка', concat('Попытка ', ga.position, case when ga.is_correct then ' · верно' else ' · неверно' end), jsonb_build_object('position', ga.position, 'isCorrect', ga.is_correct, 'hints', ga.hints_snapshot), null::text, 'game_attempts'
-      from game_attempts ga join game_sessions gs on gs.id = ga.session_id join content_item_versions civ on civ.id = ga.guessed_item_version_id
-      union all
-      select 'hint:' || gh.id::text, 'hint_opened', gh."createdAt", gs.user_id, gs.auth_session_id, gs.id, civ.item_id, gs.answer_item_version_id, gs.mode::text,
-        'Открыта подсказка', concat('Раунд ', gh.checkpoint, ' · ', gh.hint_key), jsonb_build_object('checkpoint', gh.checkpoint, 'hintKey', gh.hint_key), null::text, 'game_hint_choices'
-      from game_hint_choices gh join game_sessions gs on gs.id = gh.session_id join content_item_versions civ on civ.id = gs.answer_item_version_id
-      union all
-      select 'report:' || cr.id::text, 'content_report', cr."createdAt", cr.user_id, gs.auth_session_id, cr.session_id, cr.item_id, gs.answer_item_version_id, cr.mode::text,
-        'Отправлен баг-репорт', concat(cr.reason, coalesce(' · ' || cr.comment, '')), jsonb_build_object('reason', cr.reason, 'status', cr.status), cr.request_id, 'content_reports'
-      from content_reports cr join game_sessions gs on gs.id = cr.session_id
-      union all
-      select 'wallet:' || wl.id::text, 'wallet', wl."createdAt", wl.user_id, null::uuid, null::uuid, null::text, null::uuid, null::text,
-        'Изменился баланс', concat(case when wl.amount >= 0 then '+' else '' end, wl.amount, ' · ', wl.reason), jsonb_build_object('type', wl.type, 'amount', wl.amount, 'balanceAfter', wl.balance_after), null::text, 'wallet_ledger'
-      from wallet_ledger wl
-      union all
-      select 'client:' || ce.id::text, ce.event_name, ce.occurred_at, ce.user_id, ce.auth_session_id, ce.game_session_id, null::text, null::uuid, null::text,
-        'Клиентское событие', concat_ws(' · ', ce.route, ce.error_code), ce.properties, ce.request_id, 'client_events'
-      from client_events ce
-      union all
-      select 'auth:' || ae.id::text, ae.event_name, ae.occurred_at, ae.user_id, ae.auth_session_id, null::uuid, null::text, null::uuid, null::text,
-        'Авторизация', concat(ae.event_name, ' · ', ae.result), jsonb_build_object('browser', ae.browser, 'os', ae.os, 'device', ae.device), ae.request_id, 'auth_events'
-      from auth_events ae
-    ) e where e."occurredAt" between ${from}::timestamptz and ${to}::timestamptz
-    ${userFilter} ${gameSessionFilter} ${authSessionFilter} ${itemFilter} ${modeFilter}
-    ${query.type ? sql`and e.type = ${query.type}` : sql``}
-    ${query.requestId ? sql`and e."requestId" = ${query.requestId}` : sql``}
-    ${query.errorsOnly ? sql`and e.type in ('client_error','api_error')` : sql``}
-    ${query.cursor ? sql`and e."occurredAt" < ${new Date(query.cursor).toISOString()}::timestamptz` : sql``}
-    order by e."occurredAt" desc limit ${limit + 1}
-  `)
-  return rows<Record<string, unknown>>(result)
-}
-
 const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
   app.get('/api/v1/admin/dashboard', async (request, reply) => {
     const actor = await admin(request, reply, deps); const since24h = new Date(Date.now() - 86_400_000); const since7d = new Date(Date.now() - 7 * 86_400_000); const stale = new Date(Date.now() - deps.config.workerStaleAfterMs)
@@ -594,11 +555,11 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     return { activeRevision: revision ? { id: revision.id, version: revision.version, createdAt: revision.createdAt, counts } : null, workspace: await workspaceSummary(deps.db, actor), counters: rows<Record<string, number>>(counters)[0], recentReports, recentChanges, recentRuns }
   })
   app.get('/api/v1/admin/events', { schema: { querystring: AdminEventsQuerySchema } }, async (request, reply) => {
-    await admin(request, reply, deps); const query = request.query as AdminEventsQuery; const items = await timelineSql(deps, query); const limit = query.limit ?? 50
+    await admin(request, reply, deps); const query = request.query as AdminEventsQuery; const items = await loadAdminTimeline(deps.db, query); const limit = query.limit ?? 50
     return { items: items.slice(0, limit), nextCursor: items.length > limit ? items[limit - 1].occurredAt : null }
   })
   app.get('/api/v1/admin/game-sessions/:id/timeline', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
-    await admin(request, reply, deps); return { items: await timelineSql(deps, { gameSessionId: (request.params as { id: string }).id, limit: 200 } as AdminEventsQuery) }
+    await admin(request, reply, deps); return { items: await loadAdminTimeline(deps.db, { gameSessionId: (request.params as { id: string }).id, limit: 200 } as AdminEventsQuery) }
   })
   app.post('/api/v1/admin/events/export', { schema: { body: AdminEventsQuerySchema, headers: idempotencyHeaders } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const key = requireIdempotencyKey(request)
@@ -649,6 +610,30 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'content_quality.acceptance', entityType: 'content_quality_issue', entityId: id, before: before[0], after: updated[0], reason: body.comment ?? undefined, requestId: request.id })
     return updated[0]
   })
+  app.get('/api/v1/admin/daily-challenges', async (request, reply) => {
+    await admin(request, reply, deps); const today = getMoscowDate()
+    return { today, items: await deps.db.select({ challenge: dailyChallenges, titleRu: contentItemVersions.titleRu, itemId: contentItemVersions.itemId })
+      .from(dailyChallenges).innerJoin(contentItemVersions, eq(contentItemVersions.id, dailyChallenges.answerItemVersionId))
+      .where(gt(dailyChallenges.puzzleDate, today)).orderBy(asc(dailyChallenges.puzzleDate), asc(dailyChallenges.mode)).limit(250) }
+  })
+  app.post('/api/v1/admin/daily-challenges/:id/replace', { schema: { params: AdminIdParamsSchema, body: AdminDailyChallengeReplaceBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as AdminDailyChallengeReplaceBody; const today = getMoscowDate()
+    return deps.db.transaction(async (tx) => {
+      const challenge = (await tx.select().from(dailyChallenges).where(eq(dailyChallenges.id, id)).for('update').limit(1))[0]
+      if (!challenge) throw new ApiError(404, 'DAILY_CHALLENGE_NOT_FOUND', 'Загадка не найдена')
+      if (challenge.puzzleDate <= today) throw new ApiError(409, 'DAILY_CHALLENGE_CURRENT_LOCKED', 'Текущую или прошедшую загадку заменять нельзя')
+      const started = await tx.select({ id: gameSessions.id }).from(gameSessions).where(eq(gameSessions.challengeId, id)).limit(1)
+      if (started[0]) throw new ApiError(409, 'DAILY_CHALLENGE_ALREADY_STARTED', 'Для этой загадки уже есть игровая сессия')
+      const replacement = (await tx.select({ id: contentItemVersions.id, itemId: contentItemVersions.itemId, mode: contentItemVersions.mode, revisionId: contentItemVersions.revisionId })
+        .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+        .where(and(eq(contentItemVersions.itemId, body.itemId), eq(contentItemVersions.mode, challenge.mode), eq(contentItemVersions.allowedInGame, true), eq(contentRevisions.status, 'active'))).limit(1))[0]
+      if (!replacement) throw new ApiError(422, 'DAILY_REPLACEMENT_NOT_ELIGIBLE', 'Новая карточка должна быть разрешена в active revision и совпадать по режиму')
+      if (replacement.id === challenge.answerItemVersionId) throw new ApiError(409, 'DAILY_REPLACEMENT_UNCHANGED', 'Эта карточка уже выбрана для загадки')
+      const updated = (await tx.update(dailyChallenges).set({ revisionId: replacement.revisionId, answerItemVersionId: replacement.id }).where(eq(dailyChallenges.id, id)).returning())[0]
+      await tx.insert(auditLog).values({ actorUserId: actor.id, action: 'daily_challenge.replace_future', entityType: 'daily_challenge', entityId: id, before: challenge, after: updated, reason: body.reason, requestId: request.id })
+      return { challenge: updated, previousItemVersionId: challenge.answerItemVersionId, itemId: replacement.itemId }
+    })
+  })
 }
 
 export const registerAdminRoutes = async (app: FastifyInstance, deps: Deps) => {
@@ -666,7 +651,8 @@ export const registerClientEventRoutes = async (app: FastifyInstance, deps: Deps
     const values = body.events.map((event) => {
       const occurredAt = new Date(event.occurredAt)
       if (occurredAt.getTime() > cutoff || occurredAt.getTime() < Date.now() - 7 * 86_400_000) throw new ApiError(422, 'EVENT_TIME_INVALID', 'Время события вне допустимого диапазона')
-      return { ...event, occurredAt, userId: actor!.id, authSessionId: actor!.authSessionId, properties: event.properties ?? {}, gameSessionId: event.gameSessionId ?? null }
+      const properties = Object.fromEntries(Object.entries(event.properties ?? {}).filter(([key]) => !/(?:token|password|secret|authorization|cookie|api[_-]?key|session[_-]?id)/i.test(key)))
+      return { ...event, occurredAt, userId: actor!.id, authSessionId: actor!.authSessionId, properties, gameSessionId: event.gameSessionId ?? null }
     })
     const inserted = await deps.db.insert(clientEvents).values(values).onConflictDoNothing().returning({ id: clientEvents.id })
     return { accepted: inserted.length, duplicates: values.length - inserted.length }
