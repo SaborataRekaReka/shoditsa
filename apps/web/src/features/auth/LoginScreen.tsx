@@ -205,8 +205,10 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     clearMessages()
     setPending(true)
     try {
+      const registrationCallback = new URL(window.location.pathname, window.location.origin)
+      if (returnUrl !== '/') registrationCallback.searchParams.set('returnUrl', returnUrl)
       const authResult = register
-        ? await api.signUp(name.trim(), email.trim(), password, `${window.location.origin}${window.location.pathname}`)
+        ? await api.signUp(name.trim(), email.trim(), password, registrationCallback.toString())
         : await api.signIn(email.trim(), password)
 
       if (register && !authResult.token) {
@@ -361,7 +363,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
           </div>
         </div>
         <div className="login-art-column" aria-hidden="true">
-          <img className="login-art" src="/images/login_illustration.webp" alt="" width="1536" height="1024" fetchPriority="high" />
+          <img className="login-art" src="/images/login_illustration.webp" srcSet="/images/login_illustration.webp 1536w" sizes="(max-width: 767px) 120vw, 860px" alt="" width="1536" height="1024" fetchPriority="high" />
         </div>
       </section>
     </main>

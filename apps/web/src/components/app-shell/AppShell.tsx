@@ -48,6 +48,15 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: App
   const profileLabel = session && !session.isAnonymous
     ? session.name || session.email?.split('@')[0] || 'Профиль'
     : 'Войти'
+  const openProfile = () => {
+    trackMetrikaGoal('open_profile')
+    if (SERVER_RUNTIME && (!session || session.isAnonymous)) {
+      const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
+      window.location.assign(returnUrl === '/' ? '/login' : `/login?returnUrl=${encodeURIComponent(returnUrl)}`)
+      return
+    }
+    window.dispatchEvent(new Event(PROFILE_OPEN_EVENT))
+  }
 
   return <>
     <header className="app-header">
@@ -62,7 +71,7 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: App
           <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
           {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
-          <button onClick={() => { trackMetrikaGoal('open_profile'); window.dispatchEvent(new Event(PROFILE_OPEN_EVENT)) }} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''}`} aria-label="Профиль" title="Профиль">
+          <button onClick={openProfile} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''}`} aria-label="Профиль" title="Профиль">
             <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>
           </button>
         </nav>
