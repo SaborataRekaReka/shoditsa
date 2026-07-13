@@ -3799,12 +3799,20 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
       isFullHouse: index === mondayOffset && today.fullHouse,
     }))
   }, [today.completedModes.length, today.fullHouse, todayDate])
+  const bullseyeUnlocked = wonGames.some((game) => game.attempts.length === 1)
+  const fullHouseProgress = today.fullHouse ? MODE_TABS.length : today.completedModes.length
   const achievementCards = [
-    { key: 'first-game', title: 'Первый сеанс', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, progress: `${Math.min(completedGames.length, 1)}/1`, image: './images/badges/first-game.webp' },
-    { key: 'bullseye', title: 'Точное попадание', description: 'Выиграйте с первой попытки.', unlocked: wonGames.some((game) => game.attempts.length === 1), progress: wonGames.some((game) => game.attempts.length === 1) ? '1/1' : '0/1', image: './images/badges/bullseye.webp' },
-    { key: 'full-house', title: 'Полный зал', description: 'Закончите все шесть игр за день.', unlocked: attendance.fullHouseDays > 0 || today.fullHouse, progress: `${attendance.fullHouseDays > 0 || today.fullHouse ? 1 : 0}/1`, image: './images/badges/full-house.webp' },
+    { key: 'first-game', title: 'Первая игра', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, current: Math.min(completedGames.length, 1), target: 1, image: './images/badges/first-game.webp' },
+    { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: './images/badges/bullseye.webp' },
+    { key: 'full-house', title: 'Полный зал', description: 'Закончите все шесть игр за день.', unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: './images/badges/full-house.webp' },
   ]
   const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
+  const nearestProgress = `${nearestAchievement.current}/${nearestAchievement.target}`
+  const nearestProgressPercent = Math.min(100, Math.round(nearestAchievement.current / nearestAchievement.target * 100))
+  const nextDailyCategory = CATEGORY_TICKET_CONFIG.find((category) => category.mode === activeSession?.mode)
+    ?? CATEGORY_TICKET_CONFIG.find((category) => !today.completedModes.includes(category.mode))
+    ?? CATEGORY_TICKET_CONFIG[0]
+  const openDailyMode = (mode: TitleMode) => activeSession?.mode === mode ? onResumeActive() : onSelectMode(mode)
 
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} profileActive />
@@ -3814,19 +3822,22 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
       <section className="profile-hero">
         <div className="profile-hero__identity">
           <div className="profile-avatar profile-avatar--large" aria-hidden="true">{loading ? <UserRound /> : initials || <UserRound />}</div>
-          <div>
-            <span className="profile-eyebrow">{session && !session.isAnonymous ? 'Профиль игрока' : 'Гостевой профиль'}</span>
+          <div className="profile-hero__copy">
+            <span className="profile-eyebrow">{session && !session.isAnonymous ? 'Игровой профиль' : 'Гостевой профиль'}</span>
             <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
-            <p>{session && !session.isAnonymous ? session.email : 'Ваш прогресс сохранён в текущем браузере.'}</p>
-            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>PLAYER {publicPlayerNumber(session?.id)}</i></div>
+            <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
+            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>Игрок «Сходится!»</i></div>
           </div>
-          <button className="profile-hero__settings" type="button" onClick={() => selectTab('settings')}>Настройки</button>
+          <button className="profile-hero__settings" type="button" onClick={() => selectTab('settings')}><UserRound /> Настройки профиля</button>
         </div>
         <div className="profile-hero__dossier" aria-label="Иллюстрация игрового профиля">
           <img className="profile-hero__illustration" src="./images/profile-hero-collage.webp" alt="" />
-          <div className="profile-dossier__stamp">ДОСЬЕ<br />ИГРОКА</div>
+          <div className="profile-dossier__stamp">PLAYER {publicPlayerNumber(session?.id)}</div>
           <div className="profile-dossier__ticket"><Ticket /><strong>{wallet.tickets}</strong><span>билетов</span></div>
-          <p><Trophy /> Ближайшее: {nearestAchievement.title}</p>
+          <div className="profile-hero__reward">
+            <div><span>До первой награды — {nearestAchievement.title}</span><strong>{nearestProgress}</strong></div>
+            <i><span style={{ width: `${nearestProgressPercent}%` }} /></i>
+          </div>
         </div>
       </section>
 
@@ -3836,35 +3847,47 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
 
       {activeTab === 'overview' && <>
         <section className="profile-overview profile-overview--dashboard" aria-label="Общая статистика">
-          <article><span>Сыграно</span><strong>{completedGames.length}</strong><small>завершённых сеансов</small></article>
-          <article><span>Точность</span><strong>{winRate}%</strong><small>{wonGames.length} побед</small></article>
-          <article><span>Серия</span><strong>{attendance.currentDailyStreak}</strong><small>лучший результат {attendance.bestDailyStreak}</small></article>
-          <article><span>Билеты</span><strong>{wallet.tickets}</strong><small>на вашем счёте</small></article>
+          <article><i aria-hidden="true"><Film /></i><span>Сыграно</span><strong>{completedGames.length}</strong><small>игр завершено</small></article>
+          <article><i aria-hidden="true"><Target /></i><span>Точность</span><strong>{completedGames.length ? `${winRate}%` : '—'}</strong><small>{completedGames.length ? `${wonGames.length} побед` : 'появится после игры'}</small></article>
+          <article><i aria-hidden="true"><Trophy /></i><span>Серия</span><strong>{attendance.currentDailyStreak}<em> дн.</em></strong><small>лучший результат: {attendance.bestDailyStreak}</small></article>
+          <article><i aria-hidden="true"><Ticket /></i><span>Билеты</span><strong>{wallet.tickets}</strong><small>доступно сейчас</small></article>
         </section>
 
-        <section className="profile-section">
-          <div className="profile-section__head"><div><span>Маршрут дня</span><h2>Сегодня в афише</h2></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
-          <div className="profile-daily-grid">{CATEGORY_TICKET_CONFIG.map((category) => {
-            const isComplete = today.completedModes.includes(category.mode)
-            const isActive = activeSession?.mode === category.mode
-            const Icon = category.icon
-            return <button className={`profile-daily-card${isComplete ? ' is-complete' : ''}${isActive ? ' is-active' : ''}`} onClick={() => isActive ? onResumeActive() : onSelectMode(category.mode)} key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}>
-              <span className="profile-daily-card__placeholder"><Icon /></span><span className="profile-daily-card__copy"><strong>{category.title}</strong><small>{isComplete ? 'Результат готов' : isActive ? 'Продолжить сеанс' : 'Начать игру'}</small></span>{isComplete ? <Check /> : <Play />}
-            </button>
-          })}</div>
-        </section>
+        <div className="profile-overview-layout">
+          <section className="profile-section profile-route">
+            <div className="profile-section__head"><div><span>Сегодня</span><h2>Ваш игровой маршрут</h2><p>Выберите любую категорию и начните первую серию</p></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
+            <div className="profile-route__grid">{CATEGORY_TICKET_CONFIG.map((category) => {
+              const isComplete = today.completedModes.includes(category.mode)
+              const isActive = activeSession?.mode === category.mode
+              const Icon = category.icon
+              return <button className={`profile-route-card${isComplete ? ' is-complete' : ''}${isActive ? ' is-active' : ''}`} onClick={() => openDailyMode(category.mode)} key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}>
+                <span className="profile-route-card__visual"><img src={category.watermarkUrl} alt="" /><i><Icon /></i></span>
+                <strong>{category.title}</strong>
+                <em>{isComplete ? 'Сыграно' : isActive ? 'В игре' : 'Не сыграно'}</em>
+                {isComplete ? <Check /> : <ChevronRight />}
+              </button>
+            })}</div>
+            <button className="profile-route__cta" type="button" onClick={() => openDailyMode(nextDailyCategory.mode)}><Play /> {activeSession ? 'Продолжить игру' : 'Выбрать игру'}</button>
+          </section>
 
-        <div className="profile-dashboard-grid">
-          <section className="profile-section profile-week">
-            <div className="profile-section__head"><div><span>Абонемент</span><h2>Игровая неделя</h2></div><strong>{attendance.currentDailyStreak} дн.</strong></div>
-            <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? '6' : day.hasActivity ? '•' : ''}</i></div>)}</div>
-            <p className="profile-section__note">Полный зал отмечается, когда пройдены все шесть игр дня.</p>
-          </section>
-          <section className="profile-section profile-nearest-achievement">
-            <div className="profile-section__head"><div><span>Достижения</span><h2>Ближайшая цель</h2></div><Trophy /></div>
-            <div className="profile-achievement-placeholder"><span><img src={nearestAchievement.image} alt="" /></span><div><strong>{nearestAchievement.title}</strong><p>{nearestAchievement.description}</p><small>Прогресс: {nearestAchievement.progress}</small></div></div>
-            <button className="profile-link-button" onClick={() => selectTab('achievements')}>Все достижения <ChevronRight /></button>
-          </section>
+          <div className="profile-overview-side">
+            <section className="profile-section profile-week">
+              <div className="profile-week__main">
+                <div className="profile-section__head"><div><span>Серия</span><h2>Неделя в игре</h2></div></div>
+                <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? '6' : day.hasActivity ? '•' : ''}</i></div>)}</div>
+              </div>
+              <aside className="profile-week__streak"><Trophy /><strong>{attendance.currentDailyStreak}</strong><span>дней подряд</span><p>{attendance.currentDailyStreak ? 'Серия продолжается' : 'Сыграйте сегодня, чтобы начать серию'}</p></aside>
+            </section>
+
+            <section className="profile-section profile-rewards">
+              <div className="profile-section__head"><div><span>Первые шаги</span><h2>Ближайшие награды</h2></div></div>
+              <div className="profile-rewards__grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}>
+                <img src={achievement.image} alt="" />
+                <div><strong>{achievement.title}</strong><b>{achievement.current}/{achievement.target}</b><i><span style={{ width: `${Math.min(100, Math.round(achievement.current / achievement.target * 100))}%` }} /></i></div>
+                <small>{achievement.unlocked ? <Check /> : <Lock />}</small>
+              </article>)}</div>
+            </section>
+          </div>
         </div>
 
         <section className="profile-section profile-history profile-history--new">
@@ -3886,7 +3909,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
 
       {activeTab === 'achievements' && <section className="profile-section profile-achievements-tab">
         <div className="profile-section__head"><div><span>Коллекция</span><h2>Достижения</h2></div><strong>{achievementCards.filter((achievement) => achievement.unlocked).length}/{achievementCards.length}</strong></div>
-        <div className="profile-achievements-grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}><span className="profile-achievement-placeholder__icon"><img src={achievement.image} alt="" /></span><div><strong>{achievement.title}</strong><p>{achievement.description}</p><small>{achievement.unlocked ? 'Открыто' : `Прогресс: ${achievement.progress}`}</small></div></article>)}</div>
+        <div className="profile-achievements-grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}><span className="profile-achievement-placeholder__icon"><img src={achievement.image} alt="" /></span><div><strong>{achievement.title}</strong><p>{achievement.description}</p><small>{achievement.unlocked ? 'Открыто' : `Прогресс: ${achievement.current}/${achievement.target}`}</small></div></article>)}</div>
         <p className="profile-section__note">Новые достижения появятся здесь после завершённых игр.</p>
       </section>}
 
