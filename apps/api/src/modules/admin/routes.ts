@@ -385,7 +385,7 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
     const items = await deps.db.select({
       id: user.id, email: user.email, name: user.name, displayName: playerProfiles.displayName, isAnonymous: user.isAnonymous,
       accountStatus: playerProfiles.accountStatus, role: playerProfiles.role, createdAt: user.createdAt,
-      lastActivityAt: sql<Date | null>`(select max(gs.started_at) from game_sessions gs where gs.user_id = ${user.id})`,
+      lastActivityAt: sql<Date | null>`(select max(gs."startedAt") from game_sessions gs where gs.user_id = ${user.id})`,
       sessionsCount: sql<number>`(select count(*)::int from game_sessions gs where gs.user_id = ${user.id})`,
       completedCount: sql<number>`(select count(*)::int from game_sessions gs where gs.user_id = ${user.id} and gs.status in ('won','lost'))`,
       reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.user_id = ${user.id})`,
@@ -466,7 +466,7 @@ const timelineSql = async (deps: Deps, query: AdminEventsQuery) => {
   const limit = query.limit ?? 50
   const result = await deps.db.execute(sql`
     select * from (
-      select 'game:' || gs.id::text id, 'game_started' type, gs.started_at "occurredAt", gs.user_id "userId", gs.auth_session_id "authSessionId", gs.id "gameSessionId", civ.item_id "itemId", gs.answer_item_version_id "itemVersionId", gs.mode::text mode,
+      select 'game:' || gs.id::text id, 'game_started' type, gs."startedAt" "occurredAt", gs.user_id "userId", gs.auth_session_id "authSessionId", gs.id "gameSessionId", civ.item_id "itemId", gs.answer_item_version_id "itemVersionId", gs.mode::text mode,
         'Игра начата' title, concat(gs.mode, ' · ', gs.kind) summary, jsonb_build_object('kind', gs.kind, 'period', gs.period, 'difficulty', gs.difficulty, 'status', gs.status) details, null::text "requestId", 'game_sessions' "sourceTable"
       from game_sessions gs join content_item_versions civ on civ.id = gs.answer_item_version_id
       union all
@@ -512,12 +512,12 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
         (select count(*)::int from content_reports where status = 'open') "newReports",
         (select count(*)::int from content_quality_issues where status = 'open' and severity = 'critical') "criticalIssues",
         (select count(*)::int from background_jobs where status in ('queued','running')) "activeJobs",
-        (select count(*)::int from background_jobs where status = 'running' and heartbeat_at < ${stale}) "stuckJobs",
+        (select count(*)::int from background_jobs where status = 'running' and heartbeat_at < ${stale.toISOString()}::timestamptz) "stuckJobs",
         (select count(*)::int from pipeline_runs where status in ('review_required','partially_failed')) "pipelineReview",
-        (select count(distinct user_id)::int from game_sessions where started_at >= ${since24h}) "activeUsers24h",
-        (select count(distinct user_id)::int from game_sessions where started_at >= ${since7d}) "activeUsers7d",
-        (select count(*)::int from game_sessions where started_at >= ${since24h}) "sessionsStarted24h",
-        (select count(*)::int from game_sessions where completed_at >= ${since24h}) "sessionsCompleted24h"`),
+        (select count(distinct user_id)::int from game_sessions where "startedAt" >= ${since24h.toISOString()}::timestamptz) "activeUsers24h",
+        (select count(distinct user_id)::int from game_sessions where "startedAt" >= ${since7d.toISOString()}::timestamptz) "activeUsers7d",
+        (select count(*)::int from game_sessions where "startedAt" >= ${since24h.toISOString()}::timestamptz) "sessionsStarted24h",
+        (select count(*)::int from game_sessions where completed_at >= ${since24h.toISOString()}::timestamptz) "sessionsCompleted24h"`),
       deps.db.select().from(contentReports).where(eq(contentReports.status, 'open')).orderBy(desc(contentReports.createdAt)).limit(6),
       deps.db.select().from(contentWorkspaceChanges).orderBy(desc(contentWorkspaceChanges.updatedAt)).limit(8),
       deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(6),
