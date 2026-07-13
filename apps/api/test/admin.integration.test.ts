@@ -148,6 +148,15 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(first.json()).toEqual({ accepted: 1, duplicates: 0 })
     expect(replay.json()).toEqual({ accepted: 0, duplicates: 1 })
 
+    const timeline = await app.inject({
+      method: 'GET',
+      url: `/api/v1/admin/events?userId=${adminId}&from=${encodeURIComponent(new Date(Date.now() - 60_000).toISOString())}&to=${encodeURIComponent(new Date(Date.now() + 60_000).toISOString())}`,
+    })
+    expect(timeline.statusCode, timeline.body).toBe(200)
+    expect(timeline.json().items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ type: 'page_view', userId: adminId, sourceTable: 'client_events' }),
+    ]))
+
     const selfBlock = await app.inject({
       method: 'POST',
       url: `/api/v1/admin/users/${adminId}/block`,

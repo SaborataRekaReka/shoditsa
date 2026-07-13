@@ -32,7 +32,7 @@ const claim = async () => {
     where id = (
       select id from background_jobs
       where status = 'queued' and (next_retry_at is null or next_retry_at <= now())
-      order by created_at for update skip locked limit 1
+      order by "createdAt" for update skip locked limit 1
     ) returning id
   `)
   const id = Array.from(claimed as Iterable<{ id: string }>)[0]?.id

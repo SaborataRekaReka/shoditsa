@@ -2,12 +2,12 @@ import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'd
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import {
   AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
-  AdminItemParamsSchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
+  AdminItemParamsSchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
   MusicPipelineEstimateBodySchema, MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminEventsQuery, type AdminReportPatchBody,
-  type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
+  type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type MusicPipelineEstimateBody, type MusicPipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
@@ -459,10 +459,13 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
 }
 
 const timelineSql = async (deps: Deps, query: AdminEventsQuery) => {
-  const userFilter = query.userId ? sql`and e.user_id = ${query.userId}::uuid` : sql``
-  const sessionFilter = query.gameSessionId ? sql`and e.game_session_id = ${query.gameSessionId}::uuid` : sql``
-  const from = query.from ? new Date(query.from) : new Date(Date.now() - 24 * 60 * 60 * 1000)
-  const to = query.to ? new Date(query.to) : new Date()
+  const userFilter = query.userId ? sql`and e."userId" = ${query.userId}::uuid` : sql``
+  const gameSessionFilter = query.gameSessionId ? sql`and e."gameSessionId" = ${query.gameSessionId}::uuid` : sql``
+  const authSessionFilter = query.sessionId ? sql`and e."authSessionId" = ${query.sessionId}::uuid` : sql``
+  const itemFilter = query.itemId ? sql`and e."itemId" = ${query.itemId}` : sql``
+  const modeFilter = query.mode ? sql`and e.mode = ${query.mode}` : sql``
+  const from = (query.from ? new Date(query.from) : new Date(Date.now() - 24 * 60 * 60 * 1000)).toISOString()
+  const to = (query.to ? new Date(query.to) : new Date()).toISOString()
   const limit = query.limit ?? 50
   const result = await deps.db.execute(sql`
     select * from (
@@ -493,11 +496,12 @@ const timelineSql = async (deps: Deps, query: AdminEventsQuery) => {
       select 'auth:' || ae.id::text, ae.event_name, ae.occurred_at, ae.user_id, ae.auth_session_id, null::uuid, null::text, null::uuid, null::text,
         'Авторизация', concat(ae.event_name, ' · ', ae.result), jsonb_build_object('browser', ae.browser, 'os', ae.os, 'device', ae.device), ae.request_id, 'auth_events'
       from auth_events ae
-    ) e where e."occurredAt" between ${from} and ${to} ${userFilter} ${sessionFilter}
+    ) e where e."occurredAt" between ${from}::timestamptz and ${to}::timestamptz
+    ${userFilter} ${gameSessionFilter} ${authSessionFilter} ${itemFilter} ${modeFilter}
     ${query.type ? sql`and e.type = ${query.type}` : sql``}
     ${query.requestId ? sql`and e."requestId" = ${query.requestId}` : sql``}
     ${query.errorsOnly ? sql`and e.type in ('client_error','api_error')` : sql``}
-    ${query.cursor ? sql`and e."occurredAt" < ${new Date(query.cursor)}` : sql``}
+    ${query.cursor ? sql`and e."occurredAt" < ${new Date(query.cursor).toISOString()}::timestamptz` : sql``}
     order by e."occurredAt" desc limit ${limit + 1}
   `)
   return rows<Record<string, unknown>>(result)

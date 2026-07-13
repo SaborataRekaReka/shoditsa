@@ -58,6 +58,23 @@ export const AdminReportPatchBodySchema = Type.Object({
   duplicateOfReportId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
 }, { additionalProperties: false })
 
+export const AdminReportBulkResolveBodySchema = Type.Object({
+  reportIds: Type.Array(UuidSchema, { minItems: 1, maxItems: 500 }),
+  status: Type.Union([Type.Literal('resolved'), Type.Literal('dismissed')]),
+  resolutionType: Type.Union([
+    Type.Literal('fixed_by_revision'), Type.Literal('already_fixed'), Type.Literal('expected_behavior'),
+    Type.Literal('insufficient_data'), Type.Literal('other'),
+  ]),
+  resolutionComment: Type.String({ minLength: 3, maxLength: 1_000 }),
+  linkedRevisionId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
+}, { additionalProperties: false })
+
+export const AdminQualityIssuePatchBodySchema = Type.Object({
+  status: Type.Union([Type.Literal('open'), Type.Literal('accepted')]),
+  comment: Type.Optional(Type.Union([Type.String({ minLength: 3, maxLength: 1_000 }), Type.Null()])),
+  acceptedUntil: Type.Optional(Type.Union([DateTimeSchema, Type.Null()])),
+}, { additionalProperties: false })
+
 const MusicPipelineRequestProperties = {
   scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected')]),
   maxItems: Type.Integer({ minimum: 1, maximum: 20, default: 5 }),
@@ -142,6 +159,8 @@ export type AdminWorkspaceItemBody = Static<typeof AdminWorkspaceItemBodySchema>
 export type AdminWorkspaceBulkBody = Static<typeof AdminWorkspaceBulkBodySchema>
 export type AdminReportQuery = Static<typeof AdminReportQuerySchema>
 export type AdminReportPatchBody = Static<typeof AdminReportPatchBodySchema>
+export type AdminReportBulkResolveBody = Static<typeof AdminReportBulkResolveBodySchema>
+export type AdminQualityIssuePatchBody = Static<typeof AdminQualityIssuePatchBodySchema>
 export type MusicPipelineEstimateBody = Static<typeof MusicPipelineEstimateBodySchema>
 export type MusicPipelineRunBody = Static<typeof MusicPipelineRunBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>
