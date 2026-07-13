@@ -44,14 +44,28 @@ const TITLE_MODES: TitleMode[] = ['movie', 'series', 'anime', 'game', 'music', '
 const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020']
 const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost']
 const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]
-const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards']
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['info', 'fact']
+const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
+  info: 'info',
+  fact: 'fact',
+  plot: 'info',
+  slogan: 'info',
+  cast_main: 'info',
+  cast_secondary: 'info',
+  awards: 'info',
+}
 const DIFFICULTY_KEYS: DifficultyKey[] = ['easy', 'medium', 'hard', 'expert', 'experimental']
 
 const isTitleMode = (value: unknown): value is TitleMode => typeof value === 'string' && TITLE_MODES.includes(value as TitleMode)
 const isPeriodKey = (value: unknown): value is PeriodKey => typeof value === 'string' && PERIOD_KEYS.includes(value as PeriodKey)
 const isGameStatus = (value: unknown): value is GameStatus => typeof value === 'string' && GAME_STATUSES.includes(value as GameStatus)
 const isHintCheckpoint = (value: unknown): value is HintCheckpoint => typeof value === 'number' && HINT_CHECKPOINTS.includes(value as HintCheckpoint)
-const isAssistHintKey = (value: unknown): value is AssistHintKey => typeof value === 'string' && ASSIST_HINT_KEYS.includes(value as AssistHintKey)
+const normalizeAssistHintKey = (value: unknown): AssistHintKey | null => {
+  if (typeof value !== 'string') return null
+  const normalized = value.trim()
+  if (ASSIST_HINT_KEYS.includes(normalized as AssistHintKey)) return normalized as AssistHintKey
+  return LEGACY_ASSIST_HINT_MAP[normalized] ?? null
+}
 const isDifficultyKey = (value: unknown): value is DifficultyKey => typeof value === 'string' && DIFFICULTY_KEYS.includes(value as DifficultyKey)
 const normalizeMusicDifficulty = (difficulty: DifficultyKey) => difficulty === 'experimental' ? 'expert' as const : difficulty
 const normalizeMusicGameKey = (key: string) => key.replace(/\|diff:experimental$/, '|diff:expert')
@@ -82,8 +96,8 @@ const normalizeHintChoices = (value: unknown): HintChoice[] => {
   for (const rawChoice of value) {
     if (!rawChoice || typeof rawChoice !== 'object') continue
     const round = (rawChoice as { round?: unknown }).round
-    const key = (rawChoice as { key?: unknown }).key
-    if (!isHintCheckpoint(round) || !isAssistHintKey(key) || seenRounds.has(round)) continue
+    const key = normalizeAssistHintKey((rawChoice as { key?: unknown }).key)
+    if (!isHintCheckpoint(round) || !key || seenRounds.has(round)) continue
     seenRounds.add(round)
     choices.push({ round, key })
   }
@@ -94,7 +108,8 @@ const normalizeUsedHints = (value: unknown): AssistHintKey[] => {
   if (!Array.isArray(value)) return []
   const unique = new Set<AssistHintKey>()
   for (const item of value) {
-    if (isAssistHintKey(item)) unique.add(item)
+    const key = normalizeAssistHintKey(item)
+    if (key) unique.add(key)
   }
   return [...unique]
 }

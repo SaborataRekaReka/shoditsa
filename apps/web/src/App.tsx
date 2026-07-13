@@ -257,19 +257,6 @@ type AssistHintView = {
   available: boolean
 }
 
-const comparedAnimeFactLabels = new Set([
-  'формат',
-  'статус',
-  'эпизоды',
-  'вышло эпизодов',
-  'вышло серий',
-  'первоисточник',
-])
-const animeAssistFact = (facts: string[]) => facts.find((fact) => {
-  const label = normalizeTextMatch(fact.split(':')[0] ?? '')
-  return label && !comparedAnimeFactLabels.has(label)
-}) ?? ''
-
 type AppScreen = 'hub' | 'title' | 'game' | 'rewatch' | 'review' | 'profile'
 const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch' || value === 'review' || value === 'profile'
 type AdminWindow = Window & {
@@ -281,8 +268,22 @@ type AdminWindow = Window & {
   SEANS_ADMIN_GET_DAILY_SALT?: () => number
 }
 
-const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards']
-const isAssistHintKeyValue = (value: unknown): value is AssistHintKey => typeof value === 'string' && ASSIST_HINT_KEYS.includes(value as AssistHintKey)
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['info', 'fact']
+const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
+  info: 'info',
+  fact: 'fact',
+  plot: 'info',
+  slogan: 'info',
+  cast_main: 'info',
+  cast_secondary: 'info',
+  awards: 'info',
+}
+const normalizeAssistHintKeyValue = (value: unknown): AssistHintKey | null => {
+  if (typeof value !== 'string') return null
+  const normalized = value.trim()
+  if (ASSIST_HINT_KEYS.includes(normalized as AssistHintKey)) return normalized as AssistHintKey
+  return LEGACY_ASSIST_HINT_MAP[normalized] ?? null
+}
 const isHintCheckpointValue = (value: unknown): value is HintCheckpoint => value === 5 || value === 8
 
 const collectSavedAttemptIds = (saved: SavedGame | null): string[] => {
@@ -297,7 +298,7 @@ const collectSavedAttemptIds = (saved: SavedGame | null): string[] => {
 const sanitizeStoredHintChoices = (saved: SavedGame | null, allowedHintKeys: Set<AssistHintKey>): HintChoice[] => {
   if (!saved) return []
 
-  const fallbackChoices = (saved.usedHints ?? []).filter(isAssistHintKeyValue).slice(0, 2).map((key, index) => ({
+  const fallbackChoices = (saved.usedHints ?? []).map(normalizeAssistHintKeyValue).filter((key): key is AssistHintKey => Boolean(key)).slice(0, 2).map((key, index) => ({
     round: (index === 0 ? 5 : 8) as HintCheckpoint,
     key,
   }))
@@ -308,8 +309,8 @@ const sanitizeStoredHintChoices = (saved: SavedGame | null, allowedHintKeys: Set
   for (const rawChoice of rawChoices) {
     if (!rawChoice || typeof rawChoice !== 'object') continue
     const round = (rawChoice as { round?: unknown }).round
-    const key = (rawChoice as { key?: unknown }).key
-    if (!isHintCheckpointValue(round) || !isAssistHintKeyValue(key)) continue
+    const key = normalizeAssistHintKeyValue((rawChoice as { key?: unknown }).key)
+    if (!isHintCheckpointValue(round) || !key) continue
     if (allowedHintKeys.size > 0 && !allowedHintKeys.has(key)) continue
     if (seenRounds.has(round)) continue
     seenRounds.add(round)
@@ -391,6 +392,13 @@ const renderHintBody = (value: string): ReactNode => {
 
   return nodes
 }
+const artistInitials = (name: string) => name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => part[0])
+  .join('')
+  .toUpperCase()
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
 const titlePrimaryScore = (item: TitleItem) => {
   if (item.mode === 'anime') return item.shikimoriScore ?? item.ratings?.recognizability ?? null
@@ -713,263 +721,139 @@ const collectMatchedTags = (attempts: Attempt[]) => {
   return tags
 }
 
-const buildAssistHints = (item: TitleItem): AssistHintView[] => {
-  const plotBase = resolvePlotHintText(item)
-  const plot = item.mode === 'movie' || item.mode === 'series' || item.mode === 'anime' ? plotBase : cropHintText(plotBase)
-  const facts = (item.facts ?? []).map(cleanHintText).filter(Boolean)
-  const sloganHint = cleanHintText(item.slogan || '')
-  const fact = facts[0]
+const compactAssistList = (label: string, values: Array<string | null | undefined>, limit = 3) => {
+  const normalized = values.map((value) => cleanHintText(String(value ?? ''))).filter(Boolean)
+  if (!normalized.length) return ''
+  return `${label}: ${normalized.slice(0, limit).join(', ')}`
+}
 
-  if (item.mode === 'anime') {
-    const factHint = animeAssistFact(facts)
+const buildInfoHintCandidates = (item: TitleItem) => {
+  if (item.mode === 'music') {
     return [
-      {
-        key: 'plot',
-        title: 'Сюжет',
-        subtitle: 'Фрагмент описания без спойлеров',
-        body: plot,
-        available: Boolean(plot),
-      },
-      {
-        key: 'fact',
-        title: 'Факт',
-        subtitle: 'Дополнительная деталь вне обычных признаков',
-        body: factHint,
-        available: Boolean(factHint),
-      },
-    ]
-  }
-
-  if (item.mode === 'diagnosis') {
-    const diagnosticsHint = cropHintText(cleanHintText((item.diagnostics ?? []).slice(0, 4).join(', ')))
-    return [
-      {
-        key: 'plot',
-        title: 'Описание',
-        subtitle: 'Короткое описание состояния',
-        body: plot,
-        available: Boolean(plot),
-      },
-      {
-        key: 'slogan',
-        title: 'Диагностика',
-        subtitle: 'Что обычно назначают для проверки',
-        body: diagnosticsHint,
-        available: Boolean(diagnosticsHint),
-      },
-      {
-        key: 'fact',
-        title: 'Факт',
-        subtitle: 'Дополнительная деталь по состоянию',
-        body: fact,
-        available: Boolean(fact),
-      },
-    ]
+      compactAssistList('Страна', (item.countries ?? []).map(localizeMusicCountry), 2),
+      item.year ? `Начало карьеры: ${item.year}` : '',
+      `Тип: ${musicTypeLabel(item.musicType)}`,
+      item.musicOrigin ? `Сцена: ${musicOriginLabel(item.musicOrigin)}` : '',
+      compactAssistList('Жанры', item.genres ?? [], 3),
+      compactAssistList('Топ-треки', (item.topTracks ?? []).map((track) => track.title), 2),
+    ].filter(Boolean)
   }
 
   if (item.mode === 'game') {
-    const dedupedGameCategories = dedupeGameCategories(item.steamCategories ?? [], true)
-    const tagsHint = cropHintText(cleanHintText([
-      ...(item.genres ?? []).slice(0, 3),
-      ...dedupedGameCategories.slice(0, 3),
-    ].join(', ')))
-    const gameFact = cropHintText(cleanHintText([
+    return [
       item.year ? `Год релиза: ${item.year}` : '',
+      compactAssistList('Жанры', item.genres ?? [], 3),
+      compactAssistList('Платформы', item.platforms ?? [], 3),
+      compactAssistList('Разработчики', item.developers ?? [], 2),
       item.topRank ? `Позиция в топе: #${item.topRank}` : '',
-      item.ratings?.metacritic ?? item.metacritic ? `Metacritic: ${item.ratings?.metacritic ?? item.metacritic}` : '',
-    ].filter(Boolean).join(' · ')))
-    return [
-      {
-        key: 'plot',
-        title: 'Описание',
-        subtitle: 'Фрагмент карточки игры без спойлеров',
-        body: plot,
-        available: Boolean(plot),
-      },
-      {
-        key: 'slogan',
-        title: 'Жанры и категории',
-        subtitle: 'Подсказка по жанрам и тегам Steam',
-        body: tagsHint,
-        available: Boolean(tagsHint),
-      },
-      {
-        key: 'fact',
-        title: 'Релизный факт',
-        subtitle: 'Год, место в топе или оценка Metacritic',
-        body: gameFact,
-        available: Boolean(gameFact),
-      },
-    ]
+      item.ratings?.metacritic != null || item.metacritic != null ? `Metacritic: ${item.ratings?.metacritic ?? item.metacritic}` : '',
+    ].filter(Boolean)
   }
 
-  if (item.mode === 'music') {
-    const topTracksHint = cropHintText(cleanHintText((item.topTracks ?? []).slice(0, 3).map((track) => track.title).join(', ')))
-    const topAlbumsHint = cropHintText(cleanHintText((item.topAlbums ?? []).slice(0, 3).map((album) => album.title).join(', ')))
-    const profileFact = cropHintText(cleanHintText([
-      item.year ? `Начало карьеры: ${item.year}` : '',
-      `Тип: ${musicTypeLabel(item.musicType)}`,
-      `Сцена: ${musicOriginLabel(item.musicOrigin ?? null)}`,
-      `Узнаваемость: ${musicTierLabel(item.gameTier ?? null)}`,
-      item.votes?.gamesPlayed ? `Слушатели Last.fm: ${new Intl.NumberFormat('ru-RU').format(item.votes.gamesPlayed)}` : '',
-    ].filter(Boolean).join(' · ')))
-
+  if (item.mode === 'diagnosis') {
     return [
-      {
-        key: 'plot',
-        title: 'Профайл',
-        subtitle: 'Короткий профиль артиста',
-        body: plot,
-        available: Boolean(plot),
-      },
-      {
-        key: 'slogan',
-        title: 'Треки и альбомы',
-        subtitle: 'Топовые релизы артиста',
-        body: [topTracksHint, topAlbumsHint].filter(Boolean).join(' · '),
-        available: Boolean(topTracksHint || topAlbumsHint),
-      },
-      {
-        key: 'fact',
-        title: 'Факт',
-        subtitle: 'Дебют, тип и метрики популярности',
-        body: profileFact,
-        available: Boolean(profileFact),
-      },
-    ]
+      compactAssistList('Системы организма', item.bodySystems ?? [], 3),
+      compactAssistList('Ключевые симптомы', item.keySymptoms ?? [], 3),
+      compactAssistList('Диагностика', item.diagnostics ?? [], 3),
+      compactAssistList('МКБ-10', item.icd10 ?? [], 3),
+      item.icdGroup ? `Группа: ${item.icdGroup}` : '',
+    ].filter(Boolean)
   }
 
-  const mainCast = (item.cast ?? []).filter((person) => personName(person) !== 'Без имени').slice(0, 5)
+  if (item.mode === 'anime') {
+    return [
+      item.animeKind ? `Формат: ${item.animeKind}` : '',
+      item.animeStatus ? `Статус: ${item.animeStatus}` : '',
+      item.episodes ? `Эпизоды: ${item.episodes}` : '',
+      compactAssistList('Студии', item.studios ?? [], 2),
+      compactAssistList('Жанры', item.genres ?? [], 3),
+      item.year ? `Год релиза: ${item.year}` : '',
+    ].filter(Boolean)
+  }
 
   return [
-    {
-      key: 'plot',
-      title: 'Сюжет',
-      subtitle: 'Короткое описание истории',
-      body: plot,
-      available: Boolean(plot),
-    },
-    {
-      key: 'slogan',
-      title: 'Слоган',
-      subtitle: 'Официальный рекламный слоган релиза',
-      body: sloganHint,
-      available: Boolean(sloganHint),
-    },
-    {
-      key: 'cast_main',
-      title: 'Актёрский состав',
-      subtitle: 'Пять портретов из основного каста',
-      people: mainCast,
-      available: mainCast.length > 0,
-    },
-    {
+    item.year ? `Год релиза: ${item.year}` : '',
+    compactAssistList('Страны', item.countries ?? [], 2),
+    compactAssistList('Жанры', item.genres ?? [], 3),
+    compactAssistList('Режиссёры', (item.directors ?? []).map((person) => personName(person)), 2),
+    compactAssistList('Каст', (item.cast ?? []).map((person) => personName(person)), 3),
+  ].filter(Boolean)
+}
+
+const buildFactHintValue = (item: TitleItem) => {
+  const fact = cleanHintText((item.facts ?? [])[0] ?? '')
+  if (fact) return cropHintText(fact)
+  const fallback = cleanHintText(resolvePlotHintText(item))
+  return fallback ? cropHintText(fallback) : ''
+}
+
+const buildAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {
+  const out: AssistHintView[] = []
+
+  const infoCandidates = buildInfoHintCandidates(item)
+  const infoIndex = choices.filter((choice) => choice.key === 'info').length
+  const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
+  if (infoBody) {
+    out.push({
+      key: 'info',
+      title: 'Неоткрытая информация',
+      subtitle: 'Деталь о правильном ответе, которая ещё не открывалась',
+      body: infoBody,
+      available: true,
+    })
+  }
+
+  const factAlreadyOpened = choices.some((choice) => choice.key === 'fact')
+  const factBody = factAlreadyOpened ? '' : buildFactHintValue(item)
+  if (factBody) {
+    out.push({
       key: 'fact',
-      title: 'Факт',
-      subtitle: 'Интересный факт без спойлеров',
-      body: fact,
-      available: Boolean(fact),
-    },
-  ]
+      title: 'Интересный факт',
+      subtitle: 'Факт из карточки или поле подсказки без спойлеров',
+      body: factBody,
+      available: true,
+    })
+  }
+
+  return out
 }
 
-type MusicProgressiveHint = {
-  step: number
-  title: string
-  body: string
-}
+const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {
+  const out: AssistHintView[] = []
+  const infoCandidates = buildInfoHintCandidates(item)
+  const factBody = buildFactHintValue(item)
+  let infoIndex = 0
+  let factOpened = false
 
-const plotHintIntro = (text: string) => {
-  const cleaned = cleanHintText(text)
-  if (!cleaned) return ''
-  const sentence = cleaned.split(/(?<=[.!?])\s+/).find(Boolean) ?? cleaned
-  return cropHintText(sentence, 150)
-}
+  for (const choice of [...choices].sort((a, b) => a.round - b.round)) {
+    if (choice.key === 'info') {
+      const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
+      infoIndex += 1
+      if (!infoBody) continue
+      out.push({
+        key: 'info',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: 'Неоткрытая информация',
+        body: infoBody,
+        available: true,
+      })
+      continue
+    }
 
-const artistInitials = (name: string) => name
-  .split(/\s+/)
-  .filter(Boolean)
-  .slice(0, 2)
-  .map((part) => part[0])
-  .join('')
-  .toUpperCase()
+    if (choice.key === 'fact') {
+      if (factOpened || !factBody) continue
+      factOpened = true
+      out.push({
+        key: 'fact',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: 'Интересный факт',
+        body: factBody,
+        available: true,
+      })
+    }
+  }
 
-const buildMusicProgressiveHints = (answer: TitleItem, attempts: Attempt[]): MusicProgressiveHint[] => {
-  const attemptCount = attempts.length
-  if (!attemptCount) return []
-  const unlockedSteps = Math.min(10, attemptCount + 1)
-
-  const latestAttempt = attempts[attempts.length - 1]
-  const byKey = new Map((latestAttempt?.hints ?? []).map((hint) => [hint.key, hint]))
-  const yearDirection = byKey.get('year')?.direction === 'up'
-    ? 'направление года: позже'
-    : byKey.get('year')?.direction === 'down'
-      ? 'направление года: раньше'
-      : 'направление года: совпало или неизвестно'
-
-  const matchedGenres = (byKey.get('genres')?.matchedValues ?? []).filter(Boolean)
-  const countries = (answer.countries ?? []).map(localizeMusicCountry).filter(Boolean)
-  const decade = answer.year != null ? `${Math.floor(answer.year / 10) * 10}-е` : '—'
-  const mainPlot = resolvePlotHintText(answer)
-  const similarArtist = answer.similarArtists?.[0]?.name ?? ''
-  const topAlbum = answer.topAlbums?.[0]?.title ?? ''
-  const topTrack = answer.topTracks?.[0]?.title ?? ''
-  const initials = artistInitials(answer.titleRu || answer.titleOriginal || '')
-
-  const steps: MusicProgressiveHint[] = [
-    {
-      step: 1,
-      title: 'Тип и направление года',
-      body: `${musicTypeLabel(answer.musicType)} · ${yearDirection}`,
-    },
-    {
-      step: 2,
-      title: 'Страна',
-      body: countries.length ? countries.join(', ') : 'Страна уточняется',
-    },
-    {
-      step: 3,
-      title: 'Совпавшие жанры',
-      body: matchedGenres.length ? matchedGenres.join(', ') : 'Пока без пересечения по жанрам',
-    },
-    {
-      step: 4,
-      title: 'Статус и десятилетие',
-      body: `${musicCareerStatusLabel(answer.musicIsActive)} · ${decade}`,
-    },
-    {
-      step: 5,
-      title: 'Первая часть профайла',
-      body: plotHintIntro(mainPlot) || 'Пока нет описания',
-    },
-    {
-      step: 6,
-      title: 'Один похожий артист',
-      body: similarArtist || 'Похожий артист не указан',
-    },
-    {
-      step: 7,
-      title: 'Топ-альбом',
-      body: topAlbum || 'Топ-альбом не указан',
-    },
-    {
-      step: 8,
-      title: 'Топ-трек',
-      body: topTrack || 'Топ-трек не указан',
-    },
-    {
-      step: 9,
-      title: 'Полный профайл и инициалы',
-      body: `${cleanHintText(mainPlot) || 'Нет полного профайла'}${initials ? ` · Инициалы: ${initials}` : ''}`,
-    },
-    {
-      step: 10,
-      title: 'Последняя попытка',
-      body: 'Финальный ход: используйте все накопленные подсказки.',
-    },
-  ]
-
-  return steps.filter((hint) => hint.step <= unlockedSteps)
+  return out
 }
 
 const dayNumber = (date: string) => {
@@ -2554,10 +2438,11 @@ function Game({
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false)
   const searchPickerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const assistHints = useMemo(() => answer ? buildAssistHints(answer) : [], [answer])
+  const assistHintCatalog = useMemo(() => answer ? buildAssistHints(answer, []) : [], [answer])
+  const assistHints = useMemo(() => answer ? buildAssistHints(answer, hintChoices) : [], [answer, hintChoices])
   const availableAssistHintKeys = useMemo(
-    () => new Set<AssistHintKey>(assistHints.filter((hint) => hint.available).map((hint) => hint.key)),
-    [assistHints],
+    () => new Set<AssistHintKey>(assistHintCatalog.filter((hint) => hint.available).map((hint) => hint.key)),
+    [assistHintCatalog],
   )
 
   useEffect(() => {
@@ -2662,12 +2547,7 @@ function Game({
   const anamnesisText = useMemo(() => answer && mode === 'diagnosis'
     ? (pickDailyVignette(caseVignettes[answer.id] ?? [], answer.id, date)?.text ?? '')
     : '', [answer, mode, caseVignettes, date])
-  const usedHintsSet = useMemo(() => new Set(hintChoices.map((choice) => choice.key)), [hintChoices])
-  const revealedAssistHints = useMemo(() => assistHints.filter((hint) => usedHintsSet.has(hint.key)), [assistHints, usedHintsSet])
-  const progressiveMusicHints = useMemo(
-    () => mode === 'music' && answer ? buildMusicProgressiveHints(answer, attempts) : [],
-    [mode, answer, attempts],
-  )
+  const revealedAssistHints = useMemo(() => answer ? buildRevealedAssistHints(answer, hintChoices) : [], [answer, hintChoices])
   const currentRound = Math.min(attempts.length + 1, 10)
   const unlockedHintRounds: HintCheckpoint[] = []
   if (currentRound >= 5) unlockedHintRounds.push(5)
@@ -2677,7 +2557,7 @@ function Game({
   const nextHintRound = pendingHintRounds[0] ?? null
   const nextUndismissedHintRound = pendingHintRounds.find((round) => !dismissedHintRounds.includes(round)) ?? null
   const preferredHintRound = nextUndismissedHintRound ?? nextHintRound
-  const canUseHint = status === 'playing' && pendingHintRounds.length > 0
+  const canUseHint = status === 'playing' && pendingHintRounds.length > 0 && assistHints.some((hint) => hint.available)
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
   const showTodayLink = date !== getMoscowDate()
   const closeSearchDropdown = useCallback(() => setIsSearchDropdownOpen(false), [])
@@ -2771,7 +2651,6 @@ function Game({
 
   const revealAssistHint = (hintKey: AssistHintKey) => {
     if (!answer || status !== 'playing') return
-    if (usedHintsSet.has(hintKey)) return
     const targetRound = hintModalRound ?? preferredHintRound
     if (!targetRound) return
 
@@ -2948,19 +2827,12 @@ function Game({
       </div>
 
       {!!revealedAssistHints.length && <section className="assist-revealed" aria-label="Открытые подсказки">
-        {revealedAssistHints.map((hint) => <article key={hint.key} className="assist-reveal-card">
+        {revealedAssistHints.map((hint, index) => <article key={`${hint.key}-${index}`} className="assist-reveal-card">
           <span><Sparkles /> {hint.title}</span>
           {hint.body && <p>{renderHintBody(hint.body)}</p>}
           {!!hint.people?.length && <div className="assist-people-row">
             {hint.people.map((person, index) => <PersonPortrait key={`${personName(person)}-${index}`} person={person} />)}
           </div>}
-        </article>)}
-      </section>}
-
-      {mode === 'music' && !!progressiveMusicHints.length && status === 'playing' && <section className="assist-revealed" aria-label="Постепенные музыкальные подсказки">
-        {progressiveMusicHints.map((hint) => <article key={`music-step-${hint.step}`} className="assist-reveal-card">
-          <span><Sparkles /> Шаг {hint.step}: {hint.title}</span>
-          <p>{hint.body}</p>
         </article>)}
       </section>}
 
@@ -3154,12 +3026,9 @@ function Game({
         <h2 id="hint-modal-title">Выберите подсказку</h2>
         <p>{hintModalRound === 5 ? 'Это первая возможность. Если пропустить её сейчас, она всё равно останется доступной до конца сеанса.' : 'Это вторая возможность. Её также можно открыть в любой момент до конца сеанса.'}</p>
         <div className="hint-modal__options">
-          {assistHints.map((hint, index) => {
-            const isOpen = usedHintsSet.has(hint.key)
-            return <button key={hint.key} disabled={isOpen || !hint.available} onClick={() => revealAssistHint(hint.key)}>
-              <i>0{index + 1}</i><span><strong>{hint.title}</strong><small>{isOpen ? 'Уже открыта' : !hint.available ? 'Нет данных' : hint.subtitle}</small></span><ChevronRight />
-            </button>
-          })}
+          {assistHints.filter((hint) => hint.available).map((hint, index) => <button key={`${hint.key}-${index}`} onClick={() => revealAssistHint(hint.key)}>
+            <i>0{index + 1}</i><span><strong>{hint.title}</strong><small>{hint.subtitle}</small></span><ChevronRight />
+          </button>)}
         </div>
         <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
       </section>
@@ -3271,6 +3140,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
+  const hintOptions = session.hintOptions ?? []
   const availableHint = session.hintCheckpoints.find((checkpoint) => checkpoint.state === 'available')
   const submit = (item: PublicContentItem) => {
     if (attempt.isPending || session.status !== 'playing') return
@@ -3320,9 +3190,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       <div className="screen-back-row"><button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}</span></div><h1>{modeMeta(session.mode).daily} дня</h1><p>{prettyDate(session.puzzleDate)} · серверная сессия</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      <div className="progress-row"><Progress attempts={session.attemptsCount} />{availableHint && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHint.round)}><Sparkles /> Подсказка</ActionButton>}</div>
-      {!!session.progressiveHints.length && session.status === 'playing' && <section className="assist-revealed" aria-label="Постепенные музыкальные подсказки">{session.progressiveHints.map((entry, index) => <article key={entry.key} className="assist-reveal-card"><span><Sparkles /> Шаг {index + 1}</span><p>{Array.isArray(entry.value) ? entry.value.join(', ') : String(entry.value ?? '—')}</p></article>)}</section>}
-      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> Подсказка после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
+      <div className="progress-row"><Progress attempts={session.attemptsCount} />{availableHint && hintOptions.length > 0 && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHint.round)}><Sparkles /> Подсказка</ActionButton>}</div>
+      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => onPlayNext(nextMode)} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky"><div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div><div className="search-picker"><div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>{query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}</div>{message && <div className="search-meta"><strong>{message}</strong></div>}</section>}
       {!attempts.length && session.status === 'playing' && <section className="empty-card"><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>Начните с первой попытки</h2><p>После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.</p></div></section>}
@@ -3333,7 +3202,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         return item.mode === 'diagnosis' ? <DiagnosisAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'game' ? <GameAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'music' ? <MusicAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : <AttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
       })}</section>}
     </main>
-    {hintModalRound && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setHintModalRound(null)}><section className="hint-modal" role="dialog" aria-modal="true"><div className="hint-modal__head"><span><Sparkles /> Возможность · попытка {hintModalRound}</span><button onClick={() => setHintModalRound(null)} aria-label="Закрыть"><X /></button></div><h2>Выберите подсказку</h2><div className="hint-modal__options">{ASSIST_HINT_KEYS.map((key, index) => <button key={key} onClick={() => revealHint(key)} disabled={hint.isPending}><i>0{index + 1}</i><span><strong>{key === 'plot' ? 'Сюжет' : key === 'slogan' ? 'Слоган' : key === 'cast_main' ? 'Главные роли' : key === 'cast_secondary' ? 'Второстепенные роли' : key === 'fact' ? 'Факт' : 'Награды'}</strong><small>Открыть серверную подсказку</small></span><ChevronRight /></button>)}</div><button className="hint-modal__later" onClick={() => setHintModalRound(null)}>Не сейчас</button></section></div>}
+    {hintModalRound && hintOptions.length > 0 && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setHintModalRound(null)}><section className="hint-modal" role="dialog" aria-modal="true"><div className="hint-modal__head"><span><Sparkles /> Возможность · попытка {hintModalRound}</span><button onClick={() => setHintModalRound(null)} aria-label="Закрыть"><X /></button></div><h2>Выберите подсказку</h2><div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)} disabled={hint.isPending}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div><button className="hint-modal__later" onClick={() => setHintModalRound(null)}>Не сейчас</button></section></div>}
   </>
 }
 

@@ -58,7 +58,7 @@ export const AttemptBodySchema = Type.Object({
 
 export const HintChoiceBodySchema = Type.Object({
   checkpoint: Type.Union([Type.Literal(5), Type.Literal(8)]),
-  hintKey: Type.Union(['plot', 'slogan', 'cast_main', 'cast_secondary', 'fact', 'awards'].map((value) => Type.Literal(value))),
+  hintKey: Type.Union(['info', 'fact'].map((value) => Type.Literal(value))),
 }, { additionalProperties: false })
 
 export const ProfilePatchSchema = Type.Partial(Type.Object({

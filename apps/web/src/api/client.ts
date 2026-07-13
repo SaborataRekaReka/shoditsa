@@ -1,6 +1,6 @@
 import type {
   AdminContentReviewDecision, AdminReviewDecisionResponse, AdminReviewQueueResponse, ApiDifficultyKey,
-  ApiPeriodKey, ArchiveResponse, AttemptResponse, CatalogSearchResponse, ContentMode, ContentReportBody,
+  ApiPeriodKey, ArchiveResponse, AssistHintKey, AttemptResponse, CatalogSearchResponse, ContentMode, ContentReportBody,
   ContentReportResponse, DashboardResponse, FreePlayResponse, GameResponse, GameStartBody,
   GameStartResponse, GuestResponse, HintResponse, LedgerResponse, LegacyImportBody, LegacyImportResponse,
   MeResponse, MetaResponse, PeriodUnlockResponse, PromoRedeemResponse, WalletResponse, AuthActionResponse,
@@ -62,7 +62,7 @@ export const api = {
   game: (id: string) => request<GameResponse>(`${API_BASE}/games/${id}`),
   search: (params: URLSearchParams) => request<CatalogSearchResponse>(`${API_BASE}/catalog/search?${params}`),
   attempt: (id: string, itemId: string, idempotencyKey: string) => request<AttemptResponse>(`${API_BASE}/games/${id}/attempts`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ itemId }), timeoutMs: 15_000 }),
-  hint: (id: string, checkpoint: 5 | 8, hintKey: string, idempotencyKey: string) => request<HintResponse>(`${API_BASE}/games/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ checkpoint, hintKey }) }),
+  hint: (id: string, checkpoint: 5 | 8, hintKey: AssistHintKey, idempotencyKey: string) => request<HintResponse>(`${API_BASE}/games/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ checkpoint, hintKey }) }),
   unlock: (mode: ContentMode, period: ApiPeriodKey, key: string) => request<PeriodUnlockResponse>(`${API_BASE}/economy/period-unlocks`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ mode, period }) }),
   freePlay: (mode: ContentMode, difficulty: ApiDifficultyKey | null, key: string) => request<FreePlayResponse>(`${API_BASE}/economy/free-play/start`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ mode, difficulty }) }),
   redeem: (code: string, key: string) => request<PromoRedeemResponse>(`${API_BASE}/promos/redeem`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ code }) }),

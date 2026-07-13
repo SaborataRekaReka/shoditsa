@@ -1,4 +1,4 @@
-import type { Hint, TitleItem } from './legacy-types.js'
+import type { AssistHintKey, Hint, TitleItem } from './legacy-types.js'
 import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason } from './schemas.js'
 
 export type ApiRole = 'player' | 'admin'
@@ -123,7 +123,8 @@ export type GameAttemptSnapshot = {
 }
 
 export type HintCheckpointSnapshot = { round: 5 | 8; state: 'locked' | 'available' | 'opened' }
-export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: string; response: { checkpoint: 5 | 8; hintKey: string; value: unknown } }
+export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; response: { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown } }
+export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: string }
 
 export type GameSessionSnapshot = {
   id: string
@@ -138,6 +139,7 @@ export type GameSessionSnapshot = {
   attempts: GameAttemptSnapshot[]
   hintCheckpoints: HintCheckpointSnapshot[]
   hintChoices: HintChoiceSnapshot[]
+  hintOptions: HintOptionSnapshot[]
   progressiveHints: Array<{ key: string; value: unknown }>
   diagnosisVignette: { id: string; text: string } | null
   serverTime: string
@@ -160,7 +162,7 @@ export type AttemptResponse = {
     components: { completion: number; win: number; speed: number; firstCompletion: number; fullHouse: number }
   }
 }
-export type HintResponse = { checkpoint: 5 | 8; hintKey: string; value: unknown }
+export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown }
 export type GuestResponse = { user?: ApiUser; session?: unknown }
 export type PeriodUnlockResponse = { entitlement: PeriodEntitlement; balanceAfter?: number; alreadyUnlocked: boolean }
 export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string }

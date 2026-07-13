@@ -17,7 +17,7 @@ import {
   PromoRedeemBodySchema, UuidSchema,
   type AdminContentReviewDecision, type AdminContentReviewQuery, type AdminPromoCreateBody,
   type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveQuery, type AttemptBody,
-  type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
+  type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
 } from '@shoditsa/contracts'
 import {
@@ -253,7 +253,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.post('/api/v1/games/:sessionId/hints', { schema: { params: paramsId, headers: idempotencyHeaders, body: HintChoiceBodySchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
     const body = request.body as HintChoiceBody
-    return chooseHint(db, user!.id, (request.params as { sessionId: string }).sessionId, body.checkpoint, body.hintKey, requireIdempotencyKey(request))
+    return chooseHint(db, user!.id, (request.params as { sessionId: string }).sessionId, body.checkpoint, body.hintKey as AssistHintKey, requireIdempotencyKey(request))
   })
 
   app.post('/api/v1/content-reports', { schema: { body: ContentReportBodySchema }, config: { rateLimit: { max: 10, timeWindow: '1 hour' } } }, async (request) => {

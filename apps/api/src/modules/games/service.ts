@@ -1,11 +1,20 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import type { ApiDifficultyKey, Hint, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
+import type { ApiDifficultyKey, AssistHintKey, Hint, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
   periodEntitlements,
 } from '@shoditsa/database'
-import { compareTitles, dailyTitle, musicDifficultyPool, pickDailyVignette, poolFor } from '@shoditsa/game-core'
+import {
+  compareTitles,
+  dailyTitle,
+  localizeMusicCountry,
+  musicDifficultyPool,
+  musicOriginLabel,
+  musicTypeLabel,
+  pickDailyVignette,
+  poolFor,
+} from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
@@ -41,6 +50,110 @@ const normalizeHintPeople = (hints: Hint[]) => hints.map((hint) => (
     : hint
 ))
 
+const cleanHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
+const cropHintText = (value: string, max = 190) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
+const compactList = (label: string, values: Array<string | null | undefined>, limit = 3) => {
+  const normalized = values.map((value) => cleanHintText(value)).filter(Boolean)
+  if (!normalized.length) return ''
+  return `${label}: ${normalized.slice(0, limit).join(', ')}`
+}
+
+const infoHintCandidates = (answer: TitleItem) => {
+  if (answer.mode === 'music') {
+    return [
+      compactList('Страна', (answer.countries ?? []).map(localizeMusicCountry), 2),
+      answer.year ? `Начало карьеры: ${answer.year}` : '',
+      `Тип: ${musicTypeLabel(answer.musicType)}`,
+      answer.musicOrigin ? `Сцена: ${musicOriginLabel(answer.musicOrigin)}` : '',
+      compactList('Жанры', answer.genres ?? [], 3),
+      compactList('Топ-треки', (answer.topTracks ?? []).map((track) => track.title), 2),
+    ].filter(Boolean)
+  }
+
+  if (answer.mode === 'game') {
+    return [
+      answer.year ? `Год релиза: ${answer.year}` : '',
+      compactList('Жанры', answer.genres ?? [], 3),
+      compactList('Платформы', answer.platforms ?? [], 3),
+      compactList('Разработчики', answer.developers ?? [], 2),
+      answer.topRank ? `Позиция в топе: #${answer.topRank}` : '',
+      answer.ratings?.metacritic != null || answer.metacritic != null ? `Metacritic: ${answer.ratings?.metacritic ?? answer.metacritic}` : '',
+    ].filter(Boolean)
+  }
+
+  if (answer.mode === 'diagnosis') {
+    return [
+      compactList('Системы организма', answer.bodySystems ?? [], 3),
+      compactList('Ключевые симптомы', answer.keySymptoms ?? [], 3),
+      compactList('Диагностика', answer.diagnostics ?? [], 3),
+      compactList('МКБ-10', answer.icd10 ?? [], 3),
+      answer.icdGroup ? `Группа: ${answer.icdGroup}` : '',
+    ].filter(Boolean)
+  }
+
+  if (answer.mode === 'anime') {
+    return [
+      answer.animeKind ? `Формат: ${answer.animeKind}` : '',
+      answer.animeStatus ? `Статус: ${answer.animeStatus}` : '',
+      answer.episodes ? `Эпизоды: ${answer.episodes}` : '',
+      compactList('Студии', answer.studios ?? [], 2),
+      compactList('Жанры', answer.genres ?? [], 3),
+      answer.year ? `Год релиза: ${answer.year}` : '',
+    ].filter(Boolean)
+  }
+
+  return [
+    answer.year ? `Год релиза: ${answer.year}` : '',
+    compactList('Страны', answer.countries ?? [], 2),
+    compactList('Жанры', answer.genres ?? [], 3),
+    compactList('Режиссёры', (answer.directors ?? []).map((person) => person.nameRu || person.nameOriginal), 2),
+    compactList('Каст', (answer.cast ?? []).map((person) => person.nameRu || person.nameOriginal), 3),
+  ].filter(Boolean)
+}
+
+const factHintValue = (answer: TitleItem) => {
+  const fact = cleanHintText((answer.facts ?? [])[0] ?? '')
+  if (fact) return cropHintText(fact)
+
+  const fallback = cleanHintText(answer.plotHint ?? answer.shortDescription ?? answer.description ?? '')
+  return fallback ? cropHintText(fallback) : ''
+}
+
+type BuiltHintOption = {
+  key: AssistHintKey
+  title: string
+  subtitle: string
+  value: string
+}
+
+const buildHintOptions = (answer: TitleItem, choices: Array<{ hintKey: string }>): BuiltHintOption[] => {
+  const options: BuiltHintOption[] = []
+
+  const infoUsedCount = choices.filter((choice) => choice.hintKey === 'info').length
+  const infoValue = cleanHintText(infoHintCandidates(answer)[infoUsedCount] ?? '')
+  if (infoValue) {
+    options.push({
+      key: 'info',
+      title: 'Неоткрытая информация',
+      subtitle: 'Деталь о правильном ответе, которая ещё не показывалась',
+      value: infoValue,
+    })
+  }
+
+  const factAlreadyOpened = choices.some((choice) => choice.hintKey === 'fact')
+  const factValue = factAlreadyOpened ? '' : factHintValue(answer)
+  if (factValue) {
+    options.push({
+      key: 'fact',
+      title: 'Интересный факт',
+      subtitle: 'Факт из карточки или поле подсказки без спойлеров',
+      value: factValue,
+    })
+  }
+
+  return options
+}
+
 export const publicCard = (item: TitleItem) => ({
   ...item,
   titleOriginal: item.titleOriginal ?? '',
@@ -63,15 +176,6 @@ export const publicCard = (item: TitleItem) => ({
   cast: normalizePeoplePhotos(item.cast),
   supportingCast: normalizePeoplePhotos(item.supportingCast),
 })
-
-const progressiveMusicHints = (answer: TitleItem, attempts: number) => {
-  const result: Array<{ key: string; value: unknown }> = []
-  if (attempts >= 2 && answer.topTracks?.[0]) result.push({ key: 'top_track', value: answer.topTracks[0].title })
-  if (attempts >= 4 && answer.topAlbums?.[0]) result.push({ key: 'top_album', value: answer.topAlbums[0].title })
-  if (attempts >= 6 && answer.similarArtists?.length) result.push({ key: 'similar_artists', value: answer.similarArtists.slice(0, 3).map((entry) => entry.name) })
-  if (attempts >= 8 && answer.year) result.push({ key: 'career_start', value: answer.year })
-  return result
-}
 
 export const answerPool = async (tx: ReadDatabase, revisionId: string, mode: TitleMode, period: PeriodKey, difficulty: ApiDifficultyKey | null) => {
   const rows = await tx.select({ id: contentItemVersions.id, payload: contentItemVersions.payload })
@@ -147,10 +251,9 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
       .where(eq(diagnosisVignettes.itemVersionId, session.answerItemVersionId)).orderBy(asc(diagnosisVignettes.sortOrder))
     diagnosisVignette = pickDailyVignette(rows, session.answerItemVersionId, session.puzzleDate)
   }
-  const answerRows = session.mode === 'music' || session.status !== 'playing'
-    ? await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
-    : []
+  const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
+  const hintOptions = answer ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey) }))) : []
   const result: Record<string, unknown> = {
     id: session.id, kind: session.kind, mode: session.mode, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
@@ -160,13 +263,21 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
       item: publicCard(entry.item as TitleItem),
       hints: normalizeHintPeople(entry.hints as Hint[]),
     })),
-    hintCheckpoints: [5, 8].map((round) => ({ round, state: choices.some((choice) => choice.checkpoint === round) ? 'opened' : session.attemptsCount >= round ? 'available' : 'locked' })),
+    hintCheckpoints: [5, 8].map((round) => ({
+      round,
+      state: choices.some((choice) => choice.checkpoint === round)
+        ? 'opened'
+        : session.attemptsCount >= round && hintOptions.length > 0
+          ? 'available'
+          : 'locked',
+    })),
     hintChoices: choices,
-    progressiveHints: session.mode === 'music' && answer ? progressiveMusicHints(answer, session.attemptsCount) : [],
+    hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
+    progressiveHints: [],
     diagnosisVignette,
     serverTime: new Date().toISOString(),
   }
-  if (session.status !== 'playing' && answer) result.answer = publicCard(answer)
+  if ((session.mode === 'music' || session.status !== 'playing') && answer) result.answer = publicCard(answer)
   return result
 }
 
@@ -211,7 +322,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const response: Record<string, unknown> = {
     attempt: { position, item: publicCard(guess), hints },
     session: { status, attemptsCount: position, attemptsRemaining: 10 - position },
-    progressiveHints: session.mode === 'music' ? progressiveMusicHints(answer, position) : [],
+    progressiveHints: [],
   }
   if (status !== 'playing') { response.answer = publicCard(answer); response.reward = reward }
   await tx.insert(gameAttempts).values({
@@ -220,17 +331,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   return response
 })
 
-const assistValue = (answer: TitleItem, key: string) => {
-  if (key === 'plot') return answer.plotHint ?? answer.shortDescription ?? null
-  if (key === 'slogan') return answer.slogan ?? null
-  if (key === 'cast_main') return (answer.cast ?? []).slice(0, 5).map((person) => person.nameRu || person.nameOriginal)
-  if (key === 'cast_secondary') return (answer.supportingCast ?? []).slice(0, 5).map((person) => person.nameRu || person.nameOriginal)
-  if (key === 'fact') return answer.facts?.[0] ?? null
-  if (key === 'awards') return answer.awards ?? null
-  return null
-}
-
-export const chooseHint = async (db: Database, userId: string, sessionId: string, checkpoint: 5 | 8, hintKey: string, idempotencyKey: string) => db.transaction(async (tx) => {
+export const chooseHint = async (db: Database, userId: string, sessionId: string, checkpoint: 5 | 8, hintKey: AssistHintKey, idempotencyKey: string) => db.transaction(async (tx) => {
   const replay = await tx.select({ response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(and(eq(gameHintChoices.sessionId, sessionId), eq(gameHintChoices.idempotencyKey, idempotencyKey))).limit(1)
   if (replay[0]) return replay[0].response
   const sessions = await tx.select().from(gameSessions).where(and(eq(gameSessions.id, sessionId), eq(gameSessions.userId, userId))).for('update').limit(1)
@@ -239,12 +340,13 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   const lockedReplay = await tx.select({ response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(and(eq(gameHintChoices.sessionId, sessionId), eq(gameHintChoices.idempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return lockedReplay[0].response
   if (session.attemptsCount < checkpoint) throw new ApiError(422, 'HINT_CHECKPOINT_LOCKED', 'Эта подсказка пока недоступна')
-  const existing = await tx.select().from(gameHintChoices).where(and(eq(gameHintChoices.sessionId, sessionId), eq(gameHintChoices.checkpoint, checkpoint))).limit(1)
-  if (existing[0]) throw new ApiError(409, 'HINT_ALREADY_CHOSEN', 'Подсказка на этом этапе уже выбрана')
+  const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))
+  if (existingChoices.some((choice) => choice.checkpoint === checkpoint)) throw new ApiError(409, 'HINT_ALREADY_CHOSEN', 'Подсказка на этом этапе уже выбрана')
   const answers = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
-  const value = assistValue(answers[0].payload as TitleItem, hintKey)
-  if (value == null || (Array.isArray(value) && !value.length)) throw new ApiError(422, 'HINT_NOT_AVAILABLE', 'У ответа нет выбранной подсказки')
-  const response = { checkpoint, hintKey, value }
+  const options = buildHintOptions(answers[0].payload as TitleItem, existingChoices.map((choice) => ({ hintKey: String(choice.hintKey) })))
+  const selectedOption = options.find((option) => option.key === hintKey)
+  if (!selectedOption) throw new ApiError(422, 'HINT_NOT_AVAILABLE', 'Для этого этапа нет доступных вариантов подсказки')
+  const response = { checkpoint, hintKey: selectedOption.key, value: selectedOption.value }
   await tx.insert(gameHintChoices).values({ sessionId, checkpoint, hintKey, responseSnapshot: response, idempotencyKey })
   return response
 })
