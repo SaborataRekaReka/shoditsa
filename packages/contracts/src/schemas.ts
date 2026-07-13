@@ -29,7 +29,7 @@ export const PublicContentItemSchema = Type.Object({
   year: Type.Union([Type.Integer(), Type.Null()]),
   genres: Type.Optional(Type.Array(Type.String())),
   posterUrl: Type.Union([Type.String(), Type.Null()]),
-}, { additionalProperties: false })
+}, { additionalProperties: true })
 
 export const CatalogSearchQuerySchema = Type.Object({
   mode: ContentModeSchema,

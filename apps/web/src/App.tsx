@@ -3162,17 +3162,21 @@ function Game({
   </>
 }
 
-const publicItemToTitle = (item: PublicContentItem): TitleItem => ({
-  id: item.id,
-  mode: item.mode,
-  titleRu: item.titleRu,
-  titleOriginal: item.titleOriginal,
-  alternativeTitles: [],
-  year: item.year ?? undefined,
-  genres: item.genres ?? [],
-  popularityScore: 0,
-  posterUrl: item.posterUrl,
-})
+const publicItemToTitle = (item: PublicContentItem): TitleItem => {
+  const extended = item as Partial<TitleItem>
+  return {
+    ...extended,
+    id: item.id,
+    mode: item.mode,
+    titleRu: item.titleRu,
+    titleOriginal: item.titleOriginal,
+    alternativeTitles: extended.alternativeTitles ?? [],
+    year: item.year ?? undefined,
+    genres: item.genres ?? [],
+    popularityScore: extended.popularityScore ?? 0,
+    posterUrl: item.posterUrl,
+  }
+}
 
 const serverAttemptToLegacy = (entry: GameAttemptSnapshot): Attempt => ({ titleId: entry.item.id, hints: entry.hints })
 

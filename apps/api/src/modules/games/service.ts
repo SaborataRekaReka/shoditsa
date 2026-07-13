@@ -25,8 +25,21 @@ const legacyMediaUrl = (value: string | null | undefined, mode: TitleMode, itemI
 }
 
 export const publicCard = (item: TitleItem) => ({
-  id: item.id, mode: item.mode, titleRu: item.titleRu, titleOriginal: item.titleOriginal ?? '',
-  year: item.year ?? null, genres: item.genres ?? [], posterUrl: legacyMediaUrl(item.posterUrl, item.mode, item.id),
+  ...item,
+  titleOriginal: item.titleOriginal ?? '',
+  year: item.year ?? null,
+  genres: item.genres ?? [],
+  posterUrl: legacyMediaUrl(item.posterUrl, item.mode, item.id),
+  developers: item.developers ?? [],
+  publishers: item.publishers ?? [],
+  platforms: item.platforms ?? [],
+  steamCategories: item.steamCategories ?? [],
+  keySymptoms: item.keySymptoms ?? [],
+  diagnostics: item.diagnostics ?? [],
+  riskFactors: item.riskFactors ?? [],
+  topTracks: item.topTracks ?? [],
+  topAlbums: item.topAlbums ?? [],
+  similarArtists: item.similarArtists ?? [],
 })
 
 const progressiveMusicHints = (answer: TitleItem, attempts: number) => {

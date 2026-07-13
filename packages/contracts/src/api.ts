@@ -1,4 +1,4 @@
-import type { Hint } from './legacy-types.js'
+import type { Hint, TitleItem } from './legacy-types.js'
 import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason } from './schemas.js'
 
 export type ApiRole = 'player' | 'admin'
@@ -29,7 +29,7 @@ export type PublicContentItem = {
   year: number | null
   genres?: string[]
   posterUrl: string | null
-}
+} & Partial<Omit<TitleItem, 'id' | 'mode' | 'titleRu' | 'titleOriginal' | 'year' | 'genres' | 'posterUrl'>>
 
 export type MetaResponse = {
   serverTime: string
