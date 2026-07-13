@@ -17,6 +17,7 @@ import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
+import { ApiError } from './lib/errors.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -38,6 +39,8 @@ const redactSecrets = (value: string) => value
   .replace(/(?:sk-[A-Za-z0-9_-]{12,}|Bearer\s+[A-Za-z0-9._-]+)/gi, '[redacted]')
   .replace(/(https?:\/\/)[^\s/@:]+:[^\s/@]+@/gi, '$1[redacted]@')
 const safeError = (error: unknown) => redactSecrets(error instanceof Error ? error.message : String(error)).slice(0, 1_000)
+const isRetryableJobError = (error: unknown) => !(error instanceof ApiError) || error.statusCode >= 500
+const jobErrorCode = (error: unknown) => error instanceof ApiError ? error.code : 'JOB_HANDLER_FAILED'
 
 const addMusicSourceHealth = async (environment: Record<string, string>) => {
   environment.MUSICBRAINZ_USER_AGENT ||= 'Shoditsa/1.0 (https://shoditsa.ru; mailto:breneize@yandex.ru)'
@@ -642,12 +645,20 @@ const work = async () => {
       const result = await handleJob(job)
       await db.update(backgroundJobs).set({ status: 'completed', result, progress: { percent: 100 }, finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(backgroundJobs.id, job.id))
     } catch (error) {
-      const message = safeError(error); const exhausted = job.attempts >= job.maxAttempts
+      const message = safeError(error)
+      const retryable = isRetryableJobError(error)
+      const exhausted = !retryable || job.attempts >= job.maxAttempts
+      const errorCode = jobErrorCode(error)
       await db.update(backgroundJobs).set({
-        status: exhausted ? 'failed' : 'queued', errorCode: 'JOB_HANDLER_FAILED', safeErrorMessage: message,
+        status: exhausted ? 'failed' : 'queued', errorCode, safeErrorMessage: message,
         finishedAt: exhausted ? new Date() : null, nextRetryAt: exhausted ? null : new Date(Date.now() + Math.min(60_000, 2 ** job.attempts * 2_000)), heartbeatAt: new Date(),
       }).where(eq(backgroundJobs.id, job.id))
-      if (job.pipelineRunId) await db.update(pipelineRuns).set({ status: exhausted ? 'failed' : 'queued', errorCode: 'PIPELINE_WORKER_FAILED', safeErrorMessage: message, finishedAt: exhausted ? new Date() : null }).where(eq(pipelineRuns.id, job.pipelineRunId))
+      if (job.pipelineRunId) await db.update(pipelineRuns).set({
+        status: exhausted ? 'failed' : 'queued',
+        errorCode: error instanceof ApiError ? error.code : 'PIPELINE_WORKER_FAILED',
+        safeErrorMessage: message,
+        finishedAt: exhausted ? new Date() : null,
+      }).where(eq(pipelineRuns.id, job.pipelineRunId))
     }
   }
 }
