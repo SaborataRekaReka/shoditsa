@@ -402,12 +402,13 @@
 .admin-quality section > header svg { width: 17px; color: var(--a-orange); }
 .admin-quality section > header span { display: flex; flex-direction: column; }
 .admin-quality section > header small { color: var(--a-muted); font-size: 8px; }
-.admin-quality section > button { width: 100%; min-height: 55px; padding: 8px 12px; border: 0; border-bottom: 1px solid var(--a-line); background: transparent; display: grid; grid-template-columns: 150px minmax(0,1fr) 16px; gap: 10px; align-items: center; text-align: left; cursor: pointer; }
-.admin-quality section > button:hover { background: var(--a-paper-2); }
-.admin-quality section > button span { min-width: 0; display: flex; flex-direction: column; }
-.admin-quality section > button small { color: var(--a-muted); font-size: 8px; }
-.admin-quality section > button p { margin: 0; overflow: hidden; color: var(--a-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-.admin-quality section > button svg { width: 13px; }
+.admin-quality-row { min-height: 55px; padding-right: 10px; border-bottom: 1px solid var(--a-line); display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; }
+.admin-quality-row > button:first-child { min-height: 54px; padding: 8px 12px; border: 0; background: transparent; display: grid; grid-template-columns: 150px minmax(0,1fr) 16px; gap: 10px; align-items: center; text-align: left; cursor: pointer; }
+.admin-quality-row > button:first-child:hover { background: var(--a-paper-2); }
+.admin-quality-row > button:first-child span { min-width: 0; display: flex; flex-direction: column; }
+.admin-quality-row > button:first-child small { color: var(--a-muted); font-size: 8px; }
+.admin-quality-row > button:first-child p { margin: 0; overflow: hidden; color: var(--a-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.admin-quality-row > button:first-child svg { width: 13px; }
 .admin-economy-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px; }
 .admin-promo-list { padding: 6px; }
 .admin-promo-list article { min-height: 64px; padding: 8px; border-bottom: 1px solid var(--a-line); display: grid; grid-template-columns: 34px minmax(0,1fr) auto; gap: 9px; align-items: center; }

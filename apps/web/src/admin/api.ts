@@ -85,6 +85,7 @@ export const adminApi = {
   adjustWallet: (userId: string, amount: number, reason: string) => request<Record<string, unknown>>('/admin/wallet-adjustments', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ userId, amount, reason }) }),
   events: (filters: Record<string, unknown>) => request<{ items: AdminTimelineEvent[]; nextCursor: string | null }>(`/admin/events${query(filters)}`),
   qualityIssues: () => request<{ items: Array<Record<string, unknown>> }>('/admin/quality-issues'),
+  patchQualityIssue: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/quality-issues/${id}`, { method: 'PATCH', body: json(body) }),
   runQuality: () => request<{ job: Record<string, unknown> }>('/admin/content/quality-checks', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
   jobs: () => request<{ items: Array<Record<string, unknown>> }>('/admin/jobs'),
   retryJob: (id: string) => request<{ job: Record<string, unknown> }>(`/admin/jobs/${id}/retry`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),

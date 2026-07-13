@@ -1,13 +1,17 @@
+import { createHash } from 'node:crypto'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { extname, join } from 'node:path'
+import sharp from 'sharp'
 import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm'
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import {
   AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
-  AdminItemParamsSchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
+  AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
   MusicPipelineEstimateBodySchema, MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminEventsQuery, type AdminReportPatchBody,
-  type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
+  type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type MusicPipelineEstimateBody, type MusicPipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
@@ -15,7 +19,7 @@ import { Type } from '@sinclair/typebox'
 import type { AppConfig } from '@shoditsa/config'
 import {
   account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
-  contentAliases, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes,
+  contentAliases, contentItems, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes,
   contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, gameAttempts, gameHintChoices,
   gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
   promoRedemptions, session, user, userModeStats, walletAccounts, walletLedger, type Database,
@@ -154,6 +158,38 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     deps.db, await admin(request, reply, deps), (request.params as { itemId: string }).itemId, request.id,
   ))
 
+  app.post('/api/v1/admin/content/items/:itemId/media', {
+    schema: { params: AdminItemParamsSchema, body: AdminMediaUploadBodySchema },
+    bodyLimit: 8 * 1024 * 1024,
+  }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const itemId = (request.params as { itemId: string }).itemId; const body = request.body as AdminMediaUploadBody
+    const identity = await deps.db.select({ id: contentItems.id }).from(contentItems).where(eq(contentItems.id, itemId)).limit(1)
+    if (!identity[0]) throw new ApiError(404, 'CONTENT_ITEM_NOT_FOUND', 'Карточка не найдена')
+    if (!/^[A-Za-z0-9+/]+={0,2}$/.test(body.base64) || body.base64.length % 4 !== 0) throw new ApiError(422, 'MEDIA_BASE64_INVALID', 'Файл изображения повреждён')
+    const input = Buffer.from(body.base64, 'base64')
+    if (!input.length || input.length > 5 * 1024 * 1024) throw new ApiError(413, 'MEDIA_TOO_LARGE', 'Размер изображения не должен превышать 5 МБ')
+    const image = sharp(input, { failOn: 'warning', limitInputPixels: 40_000_000 }).rotate()
+    const metadata = await image.metadata().catch(() => null)
+    if (!metadata?.width || !metadata.height || metadata.width < 320 || metadata.height < 180) throw new ApiError(422, 'MEDIA_RESOLUTION_TOO_SMALL', 'Минимальное разрешение изображения — 320×180')
+    if (!['jpeg', 'png', 'webp'].includes(metadata.format ?? '')) throw new ApiError(422, 'MEDIA_FORMAT_UNSUPPORTED', 'Допустимы JPEG, PNG и WebP')
+    const output = await image.webp({ quality: 88, effort: 4 }).toBuffer()
+    const digest = createHash('sha256').update(output).digest('hex'); const directory = join(deps.config.mediaRoot, 'admin', digest.slice(0, 2)); const file = join(directory, `${digest}.webp`)
+    await mkdir(directory, { recursive: true })
+    await writeFile(file, output, { flag: 'wx' }).catch((error: NodeJS.ErrnoException) => { if (error.code !== 'EEXIST') throw error })
+    const base = deps.config.publicMediaBaseUrl.replace(/\/$/, ''); const url = `${base}/admin/${digest.slice(0, 2)}/${digest}.webp`
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'content.media.upload',
+      entityType: 'content_item',
+      entityId: itemId,
+      before: null,
+      after: { purpose: body.purpose, url, width: metadata.width, height: metadata.height, bytes: output.length, sourceExtension: extname(body.fileName).toLocaleLowerCase('en-US') },
+      reason: `Upload ${body.purpose}`,
+      requestId: request.id,
+    })
+    return reply.code(201).send({ url, purpose: body.purpose, width: metadata.width, height: metadata.height, bytes: output.length })
+  })
+
   app.post('/api/v1/admin/content/workspace/bulk', { schema: { body: AdminWorkspaceBulkBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const body = request.body as AdminWorkspaceBulkBody
     const workspace = await getOrCreateWorkspace(deps.db, actor)
@@ -216,6 +252,33 @@ const registerReportRoutes = (app: FastifyInstance, deps: Deps) => {
       .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameSessions.answerItemVersionId))
       .where(filters.length ? and(...filters) : undefined).orderBy(desc(contentReports.createdAt)).limit(limit + 1)
     return { items: list.slice(0, limit), nextCursor: list.length > limit ? list[limit - 1].report.createdAt.toISOString() : null }
+  })
+
+  app.post('/api/v1/admin/content-reports/bulk-resolve', { schema: { body: AdminReportBulkResolveBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as AdminReportBulkResolveBody
+    const key = requireIdempotencyKey(request)
+    const before = await deps.db.select().from(contentReports).where(inArray(contentReports.id, body.reportIds))
+    if (before.length !== new Set(body.reportIds).size) throw new ApiError(404, 'REPORT_NOT_FOUND', 'Один или несколько баг-репортов не найдены')
+    const updated = await deps.db.update(contentReports).set({
+      status: body.status,
+      resolutionType: body.resolutionType,
+      resolutionComment: body.resolutionComment,
+      linkedRevisionId: body.linkedRevisionId ?? null,
+      resolvedAt: new Date(),
+      resolvedBy: actor.id,
+      updatedAt: new Date(),
+    }).where(inArray(contentReports.id, body.reportIds)).returning({ id: contentReports.id, status: contentReports.status })
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'content_report.bulk_resolve',
+      entityType: 'content_report_batch',
+      entityId: key,
+      before: before.map((entry) => ({ id: entry.id, status: entry.status })),
+      after: { reports: updated, resolutionType: body.resolutionType, linkedRevisionId: body.linkedRevisionId ?? null },
+      reason: body.resolutionComment,
+      requestId: request.id,
+    })
+    return { requested: body.reportIds.length, updated: updated.length, items: updated }
   })
 
   app.get('/api/v1/admin/content-reports/:id', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
@@ -566,7 +629,26 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     await admin(request, reply, deps); return { items: await deps.db.select({ promo: promoCodes, redemptions: sql<number>`(select count(*)::int from promo_redemptions pr where pr.promo_id = ${promoCodes.id})` }).from(promoCodes).orderBy(desc(promoCodes.createdAt)) }
   })
   app.get('/api/v1/admin/settings', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(appSettings).orderBy(asc(appSettings.key)) } })
-  app.get('/api/v1/admin/quality-issues', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(contentQualityIssues).orderBy(desc(contentQualityIssues.createdAt)).limit(250) } })
+  app.get('/api/v1/admin/quality-issues', async (request, reply) => {
+    await admin(request, reply, deps)
+    await deps.db.update(contentQualityIssues).set({ status: 'open', acceptedUntil: null, acceptedComment: null })
+      .where(and(eq(contentQualityIssues.status, 'accepted'), lt(contentQualityIssues.acceptedUntil, new Date())))
+    return { items: await deps.db.select().from(contentQualityIssues).where(sql`${contentQualityIssues.status} <> 'resolved'`).orderBy(desc(contentQualityIssues.createdAt)).limit(250) }
+  })
+  app.patch('/api/v1/admin/quality-issues/:id', { schema: { params: AdminIdParamsSchema, body: AdminQualityIssuePatchBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as AdminQualityIssuePatchBody
+    if (body.status === 'accepted' && !body.comment?.trim()) throw new ApiError(422, 'QUALITY_ACCEPT_COMMENT_REQUIRED', 'Укажите причину допустимого исключения')
+    if (body.status === 'accepted' && body.acceptedUntil && new Date(body.acceptedUntil) <= new Date()) throw new ApiError(422, 'QUALITY_ACCEPT_UNTIL_INVALID', 'Срок исключения должен быть в будущем')
+    const before = await deps.db.select().from(contentQualityIssues).where(eq(contentQualityIssues.id, id)).limit(1)
+    if (!before[0]) throw new ApiError(404, 'QUALITY_ISSUE_NOT_FOUND', 'Проблема качества не найдена')
+    const updated = await deps.db.update(contentQualityIssues).set({
+      status: body.status,
+      acceptedComment: body.status === 'accepted' ? body.comment!.trim() : null,
+      acceptedUntil: body.status === 'accepted' && body.acceptedUntil ? new Date(body.acceptedUntil) : null,
+    }).where(eq(contentQualityIssues.id, id)).returning()
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'content_quality.acceptance', entityType: 'content_quality_issue', entityId: id, before: before[0], after: updated[0], reason: body.comment ?? undefined, requestId: request.id })
+    return updated[0]
+  })
 }
 
 export const registerAdminRoutes = async (app: FastifyInstance, deps: Deps) => {

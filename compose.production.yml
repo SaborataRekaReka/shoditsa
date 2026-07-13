@@ -33,7 +33,7 @@ services:
     ports:
       - "127.0.0.1:3001:3001"
     volumes:
-      - /opt/shoditsa/shared/media:/srv/shoditsa/media:ro
+      - /opt/shoditsa/shared/media:/srv/shoditsa/media
     depends_on:
       postgres:
         condition: service_healthy

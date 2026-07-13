@@ -34,6 +34,13 @@ export const AdminWorkspaceBulkBodySchema = Type.Object({
   reason: Type.String({ minLength: 3, maxLength: 500 }),
 }, { additionalProperties: false })
 
+export const AdminMediaUploadBodySchema = Type.Object({
+  fileName: Type.String({ minLength: 1, maxLength: 255 }),
+  contentType: Type.Union([Type.Literal('image/jpeg'), Type.Literal('image/png'), Type.Literal('image/webp')]),
+  base64: Type.String({ minLength: 4, maxLength: 7_500_000 }),
+  purpose: Type.Union([Type.Literal('posterUrl'), Type.Literal('headerUrl'), Type.Literal('backdropUrl'), Type.Literal('screenshot')]),
+}, { additionalProperties: false })
+
 export const AdminReportQuerySchema = Type.Object({
   status: Type.Optional(Type.Union(['open', 'in_progress', 'resolved', 'dismissed', 'duplicate'].map((value) => Type.Literal(value)))),
   reason: Type.Optional(Type.String({ maxLength: 80 })),
@@ -157,6 +164,7 @@ export const ClientEventsBatchBodySchema = Type.Object({ events: Type.Array(Clie
 export type AdminContentItemsQuery = Static<typeof AdminContentItemsQuerySchema>
 export type AdminWorkspaceItemBody = Static<typeof AdminWorkspaceItemBodySchema>
 export type AdminWorkspaceBulkBody = Static<typeof AdminWorkspaceBulkBodySchema>
+export type AdminMediaUploadBody = Static<typeof AdminMediaUploadBodySchema>
 export type AdminReportQuery = Static<typeof AdminReportQuerySchema>
 export type AdminReportPatchBody = Static<typeof AdminReportPatchBodySchema>
 export type AdminReportBulkResolveBody = Static<typeof AdminReportBulkResolveBodySchema>

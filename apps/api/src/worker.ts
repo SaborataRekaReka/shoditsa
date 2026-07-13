@@ -162,7 +162,10 @@ const handleQuality = async () => {
     for (const issue of validateContentPayload(record(item.payload), item.mode)) {
       const fingerprint = hash(`${item.id}:${issue.code}:${issue.field}`)
       await db.insert(contentQualityIssues).values({ ruleKey: issue.code, severity: issue.level === 'error' ? 'critical' : 'warning', mode: item.mode, itemId: item.itemId, itemVersionId: item.id, field: issue.field, message: issue.message, fingerprint })
-        .onConflictDoUpdate({ target: contentQualityIssues.fingerprint, set: { status: 'open', resolvedAt: null, message: issue.message, severity: issue.level === 'error' ? 'critical' : 'warning' } })
+        .onConflictDoUpdate({ target: contentQualityIssues.fingerprint, set: {
+          status: sql`case when ${contentQualityIssues.status} = 'accepted' and (${contentQualityIssues.acceptedUntil} is null or ${contentQualityIssues.acceptedUntil} > now()) then 'accepted' else 'open' end`,
+          resolvedAt: null, message: issue.message, severity: issue.level === 'error' ? 'critical' : 'warning',
+        } })
       created += 1
     }
   }
