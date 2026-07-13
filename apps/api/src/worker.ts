@@ -16,6 +16,7 @@ import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.
 import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
+import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -302,6 +303,46 @@ const mapMovieRecord = (raw: Json) => {
   }
 }
 
+const resolveManualMovies = async (run: typeof pipelineRuns.$inferSelect, input: Json, kinopoiskKeys: string) => {
+  const movies = Array.isArray(input.movies) ? input.movies.map(record) : []
+  if (text(record(input.movieResolution).completedAt) && movies.every((entry) => Number.isSafeInteger(Number(entry.kinopoiskId)) && Number(entry.kinopoiskId) > 0)) return movies
+  let failed = 0
+  for (const [index, entry] of movies.entries()) {
+    const directId = Number(entry.kinopoiskId)
+    if (Number.isSafeInteger(directId) && directId > 0) continue
+    const query = text(entry.query); const requestedYear = Number.isInteger(entry.year) ? Number(entry.year) : null
+    const entityKey = `movie-search-${hash(`${normalizeMovieTitle(query)}:${requestedYear ?? ''}`).slice(0, 20)}`
+    let resolutionError = text(entry.resolutionError)
+    if (!resolutionError) {
+      if (!query) resolutionError = 'Не указано название фильма'
+      else {
+        const match = await searchKinopoiskMovie(query, requestedYear, kinopoiskKeys)
+        if (match) {
+          movies[index] = {
+            kinopoiskId: match.kinopoiskId,
+            requestedQuery: query,
+            requestedYear,
+            resolvedTitle: match.title,
+            resolvedYear: match.year,
+          }
+        } else resolutionError = requestedYear ? `Кинопоиск не нашёл фильм «${query}» ${requestedYear} года` : `Кинопоиск не нашёл фильм «${query}»`
+      }
+      if (resolutionError) movies[index] = { query, year: requestedYear, resolutionError }
+      input.movies = movies
+      await db.update(pipelineRuns).set({ inputDefinitionJson: input, heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+    }
+    if (resolutionError) {
+      failed += 1
+      await saveProcessingFailure(run.id, entityKey, resolutionError)
+    }
+  }
+  const resolved = movies.filter((entry) => Number.isSafeInteger(Number(entry.kinopoiskId)) && Number(entry.kinopoiskId) > 0)
+  input.movies = resolved
+  input.movieResolution = { requested: movies.length, resolved: resolved.length, failed, completedAt: new Date().toISOString() }
+  await db.update(pipelineRuns).set({ inputDefinitionJson: input, heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+  return resolved
+}
+
 const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
   if (!job.pipelineRunId) throw new Error('movie_pipeline job has no pipelineRunId')
   const run = (await db.select().from(pipelineRuns).where(eq(pipelineRuns.id, job.pipelineRunId)).limit(1))[0]
@@ -320,12 +361,20 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
   const manifestFile = await manifestFileFor(enrichmentRoot, 'movie', run.id, job.id)
   const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`, `--result-manifest=${manifestFile}`]
   if (settings.webSearch === false) common.push('--no-ai-web-search')
-  let command: string[]; let manualBatchSize = 0; let manualNextOffset = 0
+  let command: string[]; let manualBatchSize = 0; let manualNextOffset = 0; let resolvedManualMovies: Json[] | null = null
   if (scenario === 'manual') {
-    const movies = Array.isArray(input.movies) ? input.movies.map(record).filter((entry) => Number.isInteger(Number(entry.kinopoiskId))) : []
+    const movies = await resolveManualMovies(run, input, integrationEnv.KINOPOISK_API_KEYS)
+    resolvedManualMovies = movies
     const offset = Math.max(0, Number(jobPayload.offset) || 0)
     const batch = movies.slice(offset, offset + maxItems)
-    if (!batch.length) throw new Error('Manual movie pipeline has no movies left to process')
+    if (!batch.length) {
+      const metrics = await loadRunMetrics(run.id)
+      await db.update(pipelineRuns).set({
+        status: 'failed', ...metrics, actualCost: String(metrics.actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
+        errorCode: 'NO_MOVIES_RESOLVED', safeErrorMessage: 'Кинопоиск не нашёл фильмы из списка',
+      }).where(eq(pipelineRuns.id, run.id))
+      return { runId: run.id, resolved: 0, failed: metrics.itemsFailed }
+    }
     manualBatchSize = batch.length; manualNextOffset = offset + batch.length
     const seed = batch.map((entry, index) => ({
       kinopoiskId: Number(entry.kinopoiskId), rank: offset + index + 1,
@@ -384,7 +433,7 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
   }
   const metrics = await loadRunMetrics(run.id)
   if (scenario === 'manual') {
-    const movies = Array.isArray(input.movies) ? input.movies : []
+    const movies = resolvedManualMovies ?? []
     const { itemsProcessed, itemsSucceeded, itemsFailed, actualCost } = metrics
     const hasMore = manualNextOffset < movies.length
     await db.update(pipelineRuns).set({
