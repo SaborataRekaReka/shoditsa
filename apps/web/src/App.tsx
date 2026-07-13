@@ -3800,9 +3800,9 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
     }))
   }, [today.completedModes.length, today.fullHouse, todayDate])
   const achievementCards = [
-    { key: 'first-game', title: 'Первый сеанс', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, progress: `${Math.min(completedGames.length, 1)}/1`, icon: <Play /> },
-    { key: 'bullseye', title: 'Точное попадание', description: 'Выиграйте с первой попытки.', unlocked: wonGames.some((game) => game.attempts.length === 1), progress: wonGames.some((game) => game.attempts.length === 1) ? '1/1' : '0/1', icon: <Target /> },
-    { key: 'full-house', title: 'Полный зал', description: 'Закончите все шесть игр за день.', unlocked: attendance.fullHouseDays > 0 || today.fullHouse, progress: `${attendance.fullHouseDays > 0 || today.fullHouse ? 1 : 0}/1`, icon: <Trophy /> },
+    { key: 'first-game', title: 'Первый сеанс', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, progress: `${Math.min(completedGames.length, 1)}/1`, image: './images/badges/first-game.webp' },
+    { key: 'bullseye', title: 'Точное попадание', description: 'Выиграйте с первой попытки.', unlocked: wonGames.some((game) => game.attempts.length === 1), progress: wonGames.some((game) => game.attempts.length === 1) ? '1/1' : '0/1', image: './images/badges/bullseye.webp' },
+    { key: 'full-house', title: 'Полный зал', description: 'Закончите все шесть игр за день.', unlocked: attendance.fullHouseDays > 0 || today.fullHouse, progress: `${attendance.fullHouseDays > 0 || today.fullHouse ? 1 : 0}/1`, image: './images/badges/full-house.webp' },
   ]
   const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
 
@@ -3822,13 +3822,10 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
           </div>
           <button className="profile-hero__settings" type="button" onClick={() => selectTab('settings')}>Настройки</button>
         </div>
-        <div className="profile-hero__dossier" aria-label="Карточки игрового профиля">
+        <div className="profile-hero__dossier" aria-label="Иллюстрация игрового профиля">
+          <img className="profile-hero__illustration" src="./images/profile-hero-collage.webp" alt="" />
           <div className="profile-dossier__stamp">ДОСЬЕ<br />ИГРОКА</div>
           <div className="profile-dossier__ticket"><Ticket /><strong>{wallet.tickets}</strong><span>билетов</span></div>
-          <div className="profile-dossier__cards" aria-hidden="true">{CATEGORY_TICKET_CONFIG.slice(0, 3).map((category, index) => {
-            const Icon = category.icon
-            return <span key={category.mode} style={{ '--profile-card-color': category.color, '--profile-card-index': index } as CSSProperties}><Icon /></span>
-          })}</div>
           <p><Trophy /> Ближайшее: {nearestAchievement.title}</p>
         </div>
       </section>
@@ -3865,7 +3862,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
           </section>
           <section className="profile-section profile-nearest-achievement">
             <div className="profile-section__head"><div><span>Достижения</span><h2>Ближайшая цель</h2></div><Trophy /></div>
-            <div className="profile-achievement-placeholder"><span>{nearestAchievement.icon}</span><div><strong>{nearestAchievement.title}</strong><p>{nearestAchievement.description}</p><small>Прогресс: {nearestAchievement.progress}</small></div></div>
+            <div className="profile-achievement-placeholder"><span><img src={nearestAchievement.image} alt="" /></span><div><strong>{nearestAchievement.title}</strong><p>{nearestAchievement.description}</p><small>Прогресс: {nearestAchievement.progress}</small></div></div>
             <button className="profile-link-button" onClick={() => selectTab('achievements')}>Все достижения <ChevronRight /></button>
           </section>
         </div>
@@ -3889,8 +3886,8 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
 
       {activeTab === 'achievements' && <section className="profile-section profile-achievements-tab">
         <div className="profile-section__head"><div><span>Коллекция</span><h2>Достижения</h2></div><strong>{achievementCards.filter((achievement) => achievement.unlocked).length}/{achievementCards.length}</strong></div>
-        <div className="profile-achievements-grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}><span className="profile-achievement-placeholder__icon">{achievement.icon}</span><div><strong>{achievement.title}</strong><p>{achievement.description}</p><small>{achievement.unlocked ? 'Открыто' : `Прогресс: ${achievement.progress}`}</small></div></article>)}</div>
-        <p className="profile-section__note">Это визуальные карточки кабинета: постоянная серверная коллекция будет подключена отдельным этапом.</p>
+        <div className="profile-achievements-grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}><span className="profile-achievement-placeholder__icon"><img src={achievement.image} alt="" /></span><div><strong>{achievement.title}</strong><p>{achievement.description}</p><small>{achievement.unlocked ? 'Открыто' : `Прогресс: ${achievement.progress}`}</small></div></article>)}</div>
+        <p className="profile-section__note">Новые достижения появятся здесь после завершённых игр.</p>
       </section>}
 
       {activeTab === 'settings' && <section className="profile-settings-grid">

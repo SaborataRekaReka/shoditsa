@@ -113,6 +113,19 @@
   overflow: hidden;
 }
 
+.profile-hero__illustration {
+  position: absolute;
+  z-index: 1;
+  right: -7%;
+  bottom: -8%;
+  width: 116%;
+  max-width: none;
+  height: auto;
+  opacity: .96;
+  filter: saturate(.87) contrast(1.03);
+  pointer-events: none;
+}
+
 .profile-dossier__stamp {
   position: absolute;
   top: 26px;
@@ -150,25 +163,6 @@
 .profile-dossier__ticket strong { font: 600 29px/.9 Oswald, sans-serif; }
 .profile-dossier__ticket span { font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 
-.profile-dossier__cards { position: absolute; inset: 0; }
-.profile-dossier__cards span {
-  --card-angle: 7deg;
-  position: absolute;
-  width: 114px;
-  height: 135px;
-  border: 1px solid rgba(23, 28, 24, .25);
-  border-radius: 5px;
-  color: #1b211b;
-  background: color-mix(in srgb, var(--profile-card-color) 62%, #eee8d8);
-  box-shadow: 8px 9px 0 rgba(0, 0, 0, .19);
-  transform: rotate(var(--card-angle));
-  display: grid;
-  place-items: center;
-}
-.profile-dossier__cards span:nth-child(1) { right: 177px; top: 32px; --card-angle: 12deg; }
-.profile-dossier__cards span:nth-child(2) { right: 58px; top: 72px; --card-angle: -10deg; }
-.profile-dossier__cards span:nth-child(3) { right: 177px; top: 137px; --card-angle: -5deg; }
-.profile-dossier__cards svg { width: 38px; height: 38px; stroke-width: 1.4; }
 .profile-hero__dossier p { position: absolute; left: 30px; bottom: 18px; z-index: 3; margin: 0; color: var(--color-muted); font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 .profile-hero__dossier p svg { width: 14px; color: var(--color-accent); }
 
@@ -247,6 +241,8 @@
 .profile-achievement-placeholder > span,
 .profile-achievement-placeholder__icon { width: 56px; height: 56px; border: 1px dashed rgba(237, 232, 216, .35); border-radius: 50%; color: var(--color-accent); background: rgba(231, 184, 66, .08); display: grid; place-items: center; }
 .profile-achievement-placeholder svg { width: 25px; height: 25px; stroke-width: 1.35; }
+.profile-achievement-placeholder img,
+.profile-achievement-placeholder__icon img { width: 100%; height: 100%; object-fit: contain; }
 .profile-achievement-placeholder strong { display: block; font-size: 13px; }
 .profile-achievement-placeholder p { margin: 4px 0; color: var(--color-muted); font-size: 11px; line-height: 1.4; }
 .profile-achievement-placeholder small { color: var(--color-accent); font-size: 10px; font-weight: 800; }
@@ -297,9 +293,7 @@
   .profile-hero__identity { min-height: 198px; padding: 24px; }
   .profile-hero__dossier { min-height: 155px; border-top: 1px solid rgba(237, 232, 216, .1); border-left: 0; }
   .profile-dossier__ticket { top: 47px; left: 28px; transform: rotate(-7deg); }
-  .profile-dossier__cards span:nth-child(1) { right: 139px; top: 17px; }
-  .profile-dossier__cards span:nth-child(2) { right: 28px; top: 39px; }
-  .profile-dossier__cards span:nth-child(3) { display: none; }
+  .profile-hero__illustration { right: -4%; bottom: -12%; width: 108%; }
   .profile-hero__dossier p { left: 27px; bottom: 12px; }
   .profile-overview--dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .profile-overview--dashboard article { border-bottom: 1px solid var(--color-paper-line); }
@@ -320,6 +314,5 @@
   .profile-daily-card__placeholder { grid-column: auto; grid-row: 1; }
   .profile-daily-card > svg { grid-column: 3; }
   .profile-dossier__ticket { left: 17px; }
-  .profile-dossier__cards span:nth-child(1) { right: 110px; }
-  .profile-dossier__cards span:nth-child(2) { right: 12px; }
+  .profile-hero__illustration { right: -10%; width: 120%; }
 }
