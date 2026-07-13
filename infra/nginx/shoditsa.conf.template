@@ -10,7 +10,7 @@ server {
 
     root /opt/shoditsa/current/web;
     index index.html;
-    client_max_body_size 1m;
+    client_max_body_size 25m;
 
     location ^~ /api/ {
         proxy_pass http://127.0.0.1:3001;
