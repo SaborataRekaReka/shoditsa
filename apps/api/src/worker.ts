@@ -26,6 +26,8 @@ const record = (value: unknown): Json => value && typeof value === 'object' && !
 const primary = (value: unknown) => record(value).primaryValue
 const strings = (value: unknown) => Array.isArray(value) ? value.flatMap((entry) => typeof entry === 'string' ? [entry.trim()] : []).filter(Boolean) : []
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : ''
+const objectValues = (value: unknown, key: string) => Array.isArray(value) ? value.map((entry) => text(record(entry)[key])).filter(Boolean) : []
+const fieldStrings = (value: unknown) => Array.isArray(value) ? strings(value) : [text(value)].filter(Boolean)
 const hash = (value: string) => createHash('sha256').update(value).digest('hex')
 const sleep = (ms: number) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms))
 const safeError = (error: unknown) => (error instanceof Error ? error.message : String(error)).replace(/(?:sk-[A-Za-z0-9_-]{12,}|Bearer\s+[A-Za-z0-9._-]+)/gi, '[redacted]').slice(0, 1_000)
@@ -81,26 +83,26 @@ const mapMusicRecord = (raw: Json) => {
   const source = record(raw.record)
   const artistKey = text(source.artistKey) || text(raw.entityKey)
   const canonical = text(primary(source.canonicalName)) || text(record(source.input).artist) || artistKey
-  const titleRu = text(primary(source.displayNameRu)) || canonical
+  const titleRu = /[а-яё]/i.test(canonical) ? canonical : text(primary(source.displayNameRu)) || canonical
   const titleOriginal = text(primary(source.displayNameEn)) || canonical
   const aliases = strings(primary(source.aliases)).filter((entry) => entry !== titleRu && entry !== titleOriginal)
   const genres = [...new Set([...strings(primary(source.genres)), ...strings(primary(source.styles)), ...strings(primary(source.moods))])]
-  const imageCandidates = strings(primary(source.imageCandidates))
+  const imageCandidates = [...strings(primary(source.imageCandidates)), ...objectValues(primary(source.imageCandidates), 'url')]
   const topTracks = Array.isArray(primary(source.topTracks)) ? primary(source.topTracks) as unknown[] : []
   const topAlbums = Array.isArray(primary(source.topAlbums)) ? primary(source.topAlbums) as unknown[] : []
   const hint = text(record(source.agentHint).text)
   return {
     id: `music:${artistKey}`, mode: 'music', titleRu, titleOriginal, alternativeTitles: aliases,
     year: Number(primary(source.beginYear)) || undefined, endYear: Number(primary(source.endYear)) || undefined,
-    countries: [primary(source.country), primary(source.area), primary(source.city)].flatMap(strings), genres,
+    countries: [...fieldStrings(primary(source.country)), ...fieldStrings(primary(source.area))], genres,
     popularityScore: Number(primary(record(source.popularityMetrics).listeners)) || 0,
     posterUrl: imageCandidates[0] ?? null, headerUrl: imageCandidates[1] ?? null, backdropUrl: imageCandidates[2] ?? null,
-    screenshots: imageCandidates.slice(0, 6), description: `Музыкальный артист: ${canonical}${genres.length ? ` · жанры: ${genres.slice(0, 3).join(', ')}` : ''}`,
-    plotHint: hint || `Музыкальный артист: ${canonical}`, slogan: text(record(topTracks[0]).title) || null,
+    screenshots: imageCandidates.slice(0, 6), description: text(primary(source.biography)) || `Музыкальный исполнитель${genres.length ? ` · жанры: ${genres.slice(0, 3).join(', ')}` : ''}`,
+    plotHint: hint || null, slogan: text(record(topTracks[0]).title) || null,
     facts: [...topTracks.slice(0, 3).map((entry) => `Трек: ${text(record(entry).title)}`).filter(Boolean), ...topAlbums.slice(0, 2).map((entry) => `Альбом: ${text(record(entry).title)}`).filter(Boolean)],
     aliases, artistType: primary(source.artistType) ?? null, activeState: primary(source.isActive) ?? null,
     topTracks, topAlbums, members: primary(source.members) ?? [], associatedActs: primary(source.associatedActs) ?? [],
-    musicLinks: [...strings(primary(source.officialLinks)), ...strings(primary(source.socialLinks))],
+    musicLinks: [...strings(primary(source.officialLinks)), ...objectValues(primary(source.officialLinks), 'url'), ...strings(primary(source.socialLinks)), ...objectValues(primary(source.socialLinks), 'url')],
     allowedInGame: false, contentStatus: 'review', dataQuality: { assessment: raw.assessment, hintValidation: raw.hintValidation, sourceStatus: record(source.pipeline).sourceStatus },
   }
 }
@@ -156,27 +158,41 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
   const selectedFresh = fresh.slice(0, scenario === 'manual' ? manualBatchSize : maxItems)
   const usage = collectMusicRecordUsage(selectedFresh.map((entry) => entry.raw))
   let failed = 0
+  let succeeded = 0
   for (const entry of selectedFresh) {
-    const mapped = mapMusicRecord(entry.raw); const itemId = text(mapped.id)
-    const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
-    const beforePayload = record(before[0]?.payload)
-    const proposed = before[0]
-      ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame }
-      : mapped
     const warnings = [...(Array.isArray(record(entry.raw.assessment).reviewReasons) ? record(entry.raw.assessment).reviewReasons as unknown[] : []), ...(entry.raw.aiError ? [entry.raw.aiError] : [])]
+    const entityKey = text(entry.raw.entityKey) || basename(entry.file, '.json')
+    const rejected = entry.raw.disposition === 'rejected' || record(entry.raw.assessment).hardFailure === true
+    if (rejected) {
+      try {
+        await db.insert(pipelineRunItems).values({
+          runId: run.id, entityKey, status: 'failed', proposedJson: null, warningsJson: warnings,
+          sourcesJson: record(record(entry.raw.record).pipeline).sourceStatus ?? null,
+          confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
+          rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
+          errorCode: 'PIPELINE_IDENTITY_REJECTED', safeErrorMessage: 'Результат отклонён: личность исполнителя или обязательные данные не подтверждены',
+        }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: null, warningsJson: warnings, updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_IDENTITY_REJECTED' } })
+      } catch { /* the rejected item still counts as failed even if its audit row cannot be written */ }
+      failed += 1
+      continue
+    }
     try {
+      const mapped = mapMusicRecord(entry.raw); const itemId = text(mapped.id)
+      const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
+      const beforePayload = record(before[0]?.payload)
+      const proposed = before[0] ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame } : mapped
       await db.insert(pipelineRunItems).values({
-        runId: run.id, entityKey: text(entry.raw.entityKey) || basename(entry.file, '.json'), cardId: before[0] ? itemId : null,
+        runId: run.id, entityKey, cardId: before[0] ? itemId : null,
         inputItemVersionId: before[0]?.id ?? null, status: 'review_required', beforeJson: before[0]?.payload ?? null, proposedJson: proposed,
         warningsJson: warnings, sourcesJson: record(record(entry.raw.record).pipeline).sourceStatus ?? null,
         confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
         rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${text(entry.raw.entityKey) || basename(entry.file)}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: proposed, warningsJson: warnings, updatedAt: new Date(), status: 'review_required' } })
+      succeeded += 1
     } catch { failed += 1 }
   }
   const missing = scenario === 'manual' ? Math.max(0, manualBatchSize - selectedFresh.length) : 0
   failed += missing
-  const succeeded = Math.max(0, selectedFresh.length - (failed - missing))
   const previousCost = Number(run.actualCost ?? 0)
   const actualCost = Number((previousCost + usage.costUsd).toFixed(8))
   if (scenario === 'manual') {

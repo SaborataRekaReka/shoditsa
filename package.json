@@ -66,7 +66,7 @@
     "data:agent:music:plan": "node scripts/enrichment-agent/run.mjs music plan",
     "data:agent:music:status": "node scripts/enrichment-agent/run.mjs music status",
     "data:agent:music:publish": "node scripts/enrichment-agent/run.mjs music publish --source=data/enrichment-agent/music/discovery/discovered-candidates.json",
-    "data:agent:test": "node --test scripts/enrichment-agent/core.test.mjs scripts/enrichment-agent/music-hint.test.mjs",
+    "data:agent:test": "node --test scripts/enrichment-agent/core.test.mjs scripts/enrichment-agent/music-hint.test.mjs scripts/enrichment-agent/music-identity.test.mjs",
     "data:refill": "node scripts/movies/refill-missing.mjs",
     "data:hints": "node scripts/movies/enrich-hints.mjs",
     "data:sanitize:movies": "node scripts/movies/sanitize-hints.mjs",

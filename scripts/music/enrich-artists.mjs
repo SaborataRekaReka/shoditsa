@@ -1,8 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { namesReferToSameArtist, scoreWikidataArtistCandidate, validateWikidataArtistIdentity } from './artist-identity.mjs'
 
 const ROOT = process.cwd()
-const SOURCE_PRIORITY = ['musicbrainz', 'lastfm', 'wikidata', 'theaudiodb', 'spotify']
+const SOURCE_PRIORITY = ['musicbrainz', 'wikidata', 'deezer', 'itunes', 'lastfm', 'theaudiodb', 'spotify']
 const MUSICBRAINZ_USER_AGENT = process.env.MUSICBRAINZ_USER_AGENT?.trim() || 'seans-starter-pack-music-enricher/1.0 (local-dev)'
 const AUDIODB_DEMO_KEY = '2'
 const SOCIAL_HOST_MARKERS = [
@@ -285,18 +286,29 @@ const pickBestWikidataCandidate = (searchJson, artistName) => {
   let best = null
   let bestScore = -Infinity
   for (const item of list) {
-    const confidence = computeNameConfidence(artistName, item?.label, 0.35)
-    const exactBoost = normalizeName(item?.label) === normalizeName(artistName) ? 0.25 : 0
-    const score = confidence + exactBoost
-    if (score > bestScore) {
-      bestScore = score
-      best = {
-        item,
-        confidence: Math.max(0, Math.min(1, score)),
-      }
+    const scored = scoreWikidataArtistCandidate(item, artistName)
+    if (scored && scored.score > bestScore) {
+      bestScore = scored.score
+      best = { item: scored.item, confidence: scored.confidence }
     }
   }
 
+  return best
+}
+
+const pickNamedCandidate = (items, artistName, getName) => {
+  let best = null
+  let bestScore = -Infinity
+  for (const item of asArray(items)) {
+    const name = getName(item)
+    const confidence = computeNameConfidence(artistName, name, 0)
+    if (confidence < 0.75) continue
+    const score = confidence + (normalizeName(name) === normalizeName(artistName) ? 0.25 : 0)
+    if (score > bestScore) {
+      bestScore = score
+      best = { item, confidence }
+    }
+  }
   return best
 }
 
@@ -678,7 +690,7 @@ const buildWikidataTypeLabels = (wikidataData) => {
   if (!entity) return []
 
   const labelsResponse = wikidataData?.labels
-  const typeIds = getWikidataClaimList(entity, 'P31')
+  const typeIds = [...getWikidataClaimList(entity, 'P106'), ...getWikidataClaimList(entity, 'P31')]
     .map((claim) => getWikidataClaimEntityId(claim))
     .filter(Boolean)
 
@@ -905,7 +917,7 @@ const fetchWikidataStage = async ({ artistName, artistKey, notes, mbStage }) => 
     const searchParams = new URLSearchParams({
       action: 'wbsearchentities',
       search: artistName,
-      language: 'en',
+      language: 'ru',
       type: 'item',
       limit: '5',
       format: 'json',
@@ -961,7 +973,7 @@ const fetchWikidataStage = async ({ artistName, artistKey, notes, mbStage }) => 
   const entity = entityResponse.json?.entities?.[qid]
   const labelIds = new Set()
   if (entity) {
-    for (const property of ['P31', 'P136', 'P27', 'P17', 'P159', 'P19']) {
+    for (const property of ['P31', 'P106', 'P136', 'P27', 'P17', 'P159', 'P19']) {
       for (const claim of getWikidataClaimList(entity, property)) {
         const id = getWikidataClaimEntityId(claim)
         if (id) labelIds.add(id)
@@ -990,6 +1002,28 @@ const fetchWikidataStage = async ({ artistName, artistKey, notes, mbStage }) => 
         payload: labelsResponseJson,
       }))
     }
+  }
+
+  const typeLabels = getWikidataClaimList(entity, 'P31')
+    .map((claim) => getWikidataClaimEntityId(claim))
+    .map((id) => getWikidataLabel(labelsResponseJson, id))
+    .filter(Boolean)
+  const identity = validateWikidataArtistIdentity({
+    artistName,
+    names: uniqueStrings([
+      entity?.labels?.ru?.value,
+      entity?.labels?.en?.value,
+      ...asArray(entity?.aliases?.ru).map((item) => item?.value),
+      ...asArray(entity?.aliases?.en).map((item) => item?.value),
+    ]),
+    typeLabels,
+  })
+  if (!identity.valid) {
+    stage.status = 'not_found'
+    stage.error = identity.reason
+    notes.push(`wikidata_identity_rejected:${identity.reason}`)
+    stage.data = { qid: null, search: searchJson, entity: null, labels: labelsResponseJson, wikipediaRu: null, wikipediaEn: null }
+    return stage
   }
 
   const wikiRuTitle = entity?.sitelinks?.ruwiki?.title
@@ -1040,6 +1074,53 @@ const fetchWikidataStage = async ({ artistName, artistKey, notes, mbStage }) => 
     wikipediaEn,
   }
 
+  return stage
+}
+
+const fetchDeezerStage = async ({ artistName, artistKey, notes }) => {
+  const source = 'deezer'
+  const stage = { source, status: 'not_found', rawFiles: [], data: null, confidence: null, error: null }
+  const response = await fetchJson(`https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}&limit=5`, { timeoutMs: 12000 })
+  if (!response.ok || !response.json) {
+    stage.status = 'error'; stage.error = response.error || 'Deezer search failed'; notes.push(`deezer_search_failed:${stage.error}`); return stage
+  }
+  stage.rawFiles.push(saveRawJson({ source, artistKey, endpoint: 'search', payload: response.json }))
+  const picked = pickNamedCandidate(response.json?.data, artistName, (item) => item?.name)
+  if (!picked?.item?.id) { notes.push('deezer_no_match'); return stage }
+  const [tracksResponse, albumsResponse] = await Promise.all([
+    fetchJson(`https://api.deezer.com/artist/${picked.item.id}/top?limit=10`, { timeoutMs: 12000 }),
+    fetchJson(`https://api.deezer.com/artist/${picked.item.id}/albums?limit=5`, { timeoutMs: 12000 }),
+  ])
+  const topTracks = tracksResponse.ok ? tracksResponse.json : null
+  const albums = albumsResponse.ok ? albumsResponse.json : null
+  if (topTracks) stage.rawFiles.push(saveRawJson({ source, artistKey, endpoint: 'top_tracks', payload: topTracks }))
+  if (albums) stage.rawFiles.push(saveRawJson({ source, artistKey, endpoint: 'albums', payload: albums }))
+  stage.status = 'ok'; stage.confidence = picked.confidence
+  stage.data = { selectedArtist: picked.item, topTracks, albums }
+  return stage
+}
+
+const fetchItunesStage = async ({ artistName, artistKey, notes }) => {
+  const source = 'itunes'
+  const stage = { source, status: 'not_found', rawFiles: [], data: null, confidence: null, error: null }
+  const params = new URLSearchParams({ term: artistName, entity: 'musicArtist', limit: '5', country: 'RU' })
+  const response = await fetchJson(`https://itunes.apple.com/search?${params}`, { timeoutMs: 12000 })
+  if (!response.ok || !response.json) {
+    stage.status = 'error'; stage.error = response.error || 'iTunes search failed'; notes.push(`itunes_search_failed:${stage.error}`); return stage
+  }
+  stage.rawFiles.push(saveRawJson({ source, artistKey, endpoint: 'search', payload: response.json }))
+  const picked = pickNamedCandidate(response.json?.results, artistName, (item) => item?.artistName)
+  if (!picked?.item?.artistId) { notes.push('itunes_no_match'); return stage }
+  const [tracksResponse, albumsResponse] = await Promise.all([
+    fetchJson(`https://itunes.apple.com/lookup?id=${picked.item.artistId}&entity=song&limit=10&country=RU`, { timeoutMs: 12000 }),
+    fetchJson(`https://itunes.apple.com/lookup?id=${picked.item.artistId}&entity=album&limit=5&country=RU`, { timeoutMs: 12000 }),
+  ])
+  const topTracks = tracksResponse.ok ? tracksResponse.json : null
+  const albums = albumsResponse.ok ? albumsResponse.json : null
+  if (topTracks) stage.rawFiles.push(saveRawJson({ source, artistKey, endpoint: 'top_tracks', payload: topTracks }))
+  if (albums) stage.rawFiles.push(saveRawJson({ source, artistKey, endpoint: 'albums', payload: albums }))
+  stage.status = 'ok'; stage.confidence = picked.confidence
+  stage.data = { selectedArtist: picked.item, topTracks, albums }
   return stage
 }
 
@@ -1291,6 +1372,9 @@ const fetchStageForArtist = async ({ item, index }) => {
     mbStage: sourceStages.musicbrainz,
   })
 
+  sourceStages.deezer = await fetchDeezerStage({ artistName, artistKey, notes })
+  sourceStages.itunes = await fetchItunesStage({ artistName, artistKey, notes })
+
   sourceStages.theaudiodb = await fetchAudioDbStage({
     artistName,
     artistKey,
@@ -1328,17 +1412,23 @@ const extractStageForArtist = (entry) => {
   const wd = entry.sources?.wikidata?.data ?? {}
   const adb = entry.sources?.theaudiodb?.data ?? {}
   const sp = entry.sources?.spotify?.data ?? {}
+  const dz = entry.sources?.deezer?.data ?? {}
+  const it = entry.sources?.itunes?.data ?? {}
 
   const mbArtist = mb?.artist
   const lfArtist = lf?.getinfo?.artist
   const wdEntity = wd?.entity?.entity
   const adbArtist = adb?.selectedArtist
   const spArtist = sp?.selectedArtist
+  const dzArtist = dz?.selectedArtist
+  const itArtist = it?.selectedArtist
 
   const canonicalNameEvidence = []
   pushEvidence(canonicalNameEvidence, 'musicbrainz', mbArtist?.name)
   pushEvidence(canonicalNameEvidence, 'lastfm', lfArtist?.name)
   pushEvidence(canonicalNameEvidence, 'wikidata', wdEntity?.labels?.en?.value || wdEntity?.labels?.ru?.value)
+  pushEvidence(canonicalNameEvidence, 'deezer', dzArtist?.name)
+  pushEvidence(canonicalNameEvidence, 'itunes', itArtist?.artistName)
   pushEvidence(canonicalNameEvidence, 'theaudiodb', adbArtist?.strArtist)
   pushEvidence(canonicalNameEvidence, 'spotify', spArtist?.name)
   pushEvidence(canonicalNameEvidence, 'input', input?.artist)
@@ -1351,6 +1441,8 @@ const extractStageForArtist = (entry) => {
   const displayNameEnEvidence = []
   pushEvidence(displayNameEnEvidence, 'musicbrainz', mbArtist?.name)
   pushEvidence(displayNameEnEvidence, 'wikidata', wdEntity?.labels?.en?.value)
+  pushEvidence(displayNameEnEvidence, 'deezer', dzArtist?.name)
+  pushEvidence(displayNameEnEvidence, 'itunes', itArtist?.artistName)
   pushEvidence(displayNameEnEvidence, 'lastfm', lfArtist?.name)
   pushEvidence(displayNameEnEvidence, 'theaudiodb', adbArtist?.strArtist)
   pushEvidence(displayNameEnEvidence, 'spotify', spArtist?.name)
@@ -1366,6 +1458,8 @@ const extractStageForArtist = (entry) => {
   const artistTypeEvidence = []
   pushEvidence(artistTypeEvidence, 'musicbrainz', mbArtist?.type)
   pushEvidence(artistTypeEvidence, 'wikidata', buildWikidataTypeLabels(wd))
+  pushEvidence(artistTypeEvidence, 'deezer', 'музыкальный исполнитель')
+  pushEvidence(artistTypeEvidence, 'itunes', 'музыкальный исполнитель')
   pushEvidence(artistTypeEvidence, 'theaudiodb', adbArtist?.strStyle)
 
   const countryEvidence = []
@@ -1417,6 +1511,7 @@ const extractStageForArtist = (entry) => {
   pushEvidence(genresEvidence, 'lastfm', buildLastfmTags(lf))
   pushEvidence(genresEvidence, 'wikidata', buildWikidataGenreLabels(wd))
   pushEvidence(genresEvidence, 'theaudiodb', uniqueStrings(splitList(adbArtist?.strGenre)))
+  pushEvidence(genresEvidence, 'itunes', uniqueStrings([itArtist?.primaryGenreName]))
   pushEvidence(genresEvidence, 'input', uniqueStrings(asArray(input?.genres)))
 
   const tagsEvidence = []
@@ -1432,16 +1527,24 @@ const extractStageForArtist = (entry) => {
   const lastfmTracks = buildLastfmTopTracks(lf)
   const audioDbTracks = buildAudioDbTopTracks(adb)
   const spotifyTracks = buildSpotifyTopTracks(sp)
+  const deezerTracks = asArray(dz?.topTracks?.data).map((track) => ({ title: track?.title, url: track?.link ?? null, source: 'deezer' })).filter((track) => track.title)
+  const itunesTracks = asArray(it?.topTracks?.results).filter((track) => track?.wrapperType === 'track').map((track) => ({ title: track?.trackName, album: track?.collectionName ?? null, url: track?.trackViewUrl ?? null, source: 'itunes' })).filter((track) => track.title)
   const topTracksEvidence = []
   pushEvidence(topTracksEvidence, 'lastfm', lastfmTracks)
   pushEvidence(topTracksEvidence, 'theaudiodb', audioDbTracks)
   pushEvidence(topTracksEvidence, 'spotify', spotifyTracks)
+  pushEvidence(topTracksEvidence, 'deezer', deezerTracks)
+  pushEvidence(topTracksEvidence, 'itunes', itunesTracks)
 
   const lastfmAlbums = buildLastfmTopAlbums(lf)
   const audioDbAlbums = buildAudioDbTopAlbums(adb)
+  const deezerAlbums = asArray(dz?.albums?.data).map((album) => ({ title: album?.title, year: yearFromDateLike(album?.release_date), url: album?.link ?? null, source: 'deezer' })).filter((album) => album.title)
+  const itunesAlbums = asArray(it?.albums?.results).filter((album) => album?.collectionType === 'Album').map((album) => ({ title: album?.collectionName, year: yearFromDateLike(album?.releaseDate), url: album?.collectionViewUrl ?? null, source: 'itunes' })).filter((album) => album.title)
   const topAlbumsEvidence = []
   pushEvidence(topAlbumsEvidence, 'lastfm', lastfmAlbums)
   pushEvidence(topAlbumsEvidence, 'theaudiodb', audioDbAlbums)
+  pushEvidence(topAlbumsEvidence, 'deezer', deezerAlbums)
+  pushEvidence(topAlbumsEvidence, 'itunes', itunesAlbums)
 
   const similarEvidence = []
   pushEvidence(similarEvidence, 'lastfm', buildLastfmSimilarArtists(lf))
@@ -1467,6 +1570,8 @@ const extractStageForArtist = (entry) => {
   pushEvidence(officialLinksEvidence, 'spotify', uniqueByJson([
     normalizeUrl(spArtist?.external_urls?.spotify),
   ].filter(Boolean).map((url) => ({ url, source: 'spotify' }))))
+  pushEvidence(officialLinksEvidence, 'deezer', uniqueByJson([normalizeUrl(dzArtist?.link)].filter(Boolean).map((url) => ({ url, source: 'deezer' }))))
+  pushEvidence(officialLinksEvidence, 'itunes', uniqueByJson([normalizeUrl(itArtist?.artistLinkUrl)].filter(Boolean).map((url) => ({ url, source: 'itunes' }))))
 
   const socialLinksEvidence = []
   pushEvidence(socialLinksEvidence, 'musicbrainz', mbLinks.socialLinks)
@@ -1502,9 +1607,16 @@ const extractStageForArtist = (entry) => {
     theaudiodb: null,
     spotify: sp,
   }))
+  pushEvidence(imageCandidatesEvidence, 'deezer', uniqueByJson([
+    dzArtist?.picture_xl, dzArtist?.picture_big, dzArtist?.picture_medium,
+  ].filter(Boolean).map((url) => ({ url, source: 'deezer', license: null, attribution: 'Deezer' }))))
+  pushEvidence(imageCandidatesEvidence, 'itunes', uniqueByJson(asArray(it?.albums?.results)
+    .map((album) => album?.artworkUrl100?.replace(/100x100bb/, '600x600bb')).filter(Boolean)
+    .map((url) => ({ url, source: 'itunes', license: null, attribution: 'Apple Music' }))))
 
   const listenersEvidence = []
   pushEvidence(listenersEvidence, 'lastfm', toInt(lfArtist?.stats?.listeners))
+  pushEvidence(listenersEvidence, 'deezer', toInt(dzArtist?.nb_fan))
 
   const playcountEvidence = []
   pushEvidence(playcountEvidence, 'lastfm', toInt(lfArtist?.stats?.playcount))
@@ -1515,12 +1627,21 @@ const extractStageForArtist = (entry) => {
   pushEvidence(matchConfidenceEvidence, 'wikidata', entry.sources?.wikidata?.confidence)
   pushEvidence(matchConfidenceEvidence, 'theaudiodb', entry.sources?.theaudiodb?.confidence)
   pushEvidence(matchConfidenceEvidence, 'spotify', entry.sources?.spotify?.confidence)
+  pushEvidence(matchConfidenceEvidence, 'deezer', entry.sources?.deezer?.confidence)
+  pushEvidence(matchConfidenceEvidence, 'itunes', entry.sources?.itunes?.confidence)
+
+  const biographyEvidence = []
+  pushEvidence(biographyEvidence, 'wikidata', wd?.wikipediaRu?.extract || wd?.wikipediaEn?.extract)
+  pushEvidence(biographyEvidence, 'theaudiodb', adbArtist?.strBiographyRU || adbArtist?.strBiographyEN)
 
   const canonicalName = makeField(canonicalNameEvidence, null)
   const displayNameRu = makeField(displayNameRuEvidence, null)
   const displayNameEn = makeField(displayNameEnEvidence, null)
   const aliases = makeField(aliasesEvidence, [])
   const artistType = makeField(artistTypeEvidence, null)
+  if (/^(?:person|human|человек)$/i.test(String(artistType.primaryValue ?? ''))) {
+    artistType.primaryValue = artistType.sourceEvidence.find((entry) => entry.source === 'wikidata')?.value ?? artistType.primaryValue
+  }
   const country = makeField(countryEvidence, null)
   const area = makeField(areaEvidence, null)
   const city = makeField(cityEvidence, null)
@@ -1542,6 +1663,7 @@ const extractStageForArtist = (entry) => {
   const listeners = makeField(listenersEvidence, null)
   const playcount = makeField(playcountEvidence, null)
   const matchConfidence = makeField(matchConfidenceEvidence, null)
+  const biography = makeField(biographyEvidence, null)
 
   const reviewReasons = [...entry.notes]
   if (!isNonEmpty(canonicalName.primaryValue)) reviewReasons.push('canonical_name_missing')
@@ -1550,7 +1672,7 @@ const extractStageForArtist = (entry) => {
   if (typeof matchConfidence.primaryValue === 'number' && matchConfidence.primaryValue < 0.65) {
     reviewReasons.push('low_match_confidence')
   }
-  if (hasConflict(canonicalName)) reviewReasons.push('conflict_canonical_name')
+  if (canonicalName.sourceEvidence.some((entry) => !namesReferToSameArtist(entry.artist ?? entry.value, input?.artist))) reviewReasons.push('conflict_canonical_name')
   if (hasConflict(country)) reviewReasons.push('conflict_country')
   if (hasConflict(beginYear)) reviewReasons.push('conflict_begin_year')
 
@@ -1581,6 +1703,7 @@ const extractStageForArtist = (entry) => {
     listeners: listeners.sourceEvidence,
     playcount: playcount.sourceEvidence,
     matchConfidence: matchConfidence.sourceEvidence,
+    biography: biography.sourceEvidence,
   }
 
   return {
@@ -1625,6 +1748,7 @@ const extractStageForArtist = (entry) => {
       playcount,
     },
     matchConfidence,
+    biography,
     manualReviewReason: uniqueStrings(reviewReasons),
     sourceEvidence,
   }

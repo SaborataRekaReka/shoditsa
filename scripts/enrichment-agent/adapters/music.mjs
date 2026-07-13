@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { readJson, writeJsonAtomic } from '../core.mjs'
+import { isNonArtistType, namesReferToSameArtist } from '../../music/artist-identity.mjs'
 
 const normalizeKeyPart = (value) => String(value ?? '')
   .normalize('NFKD')
@@ -22,7 +23,7 @@ const compactEvidence = (record) => ({
   fields: Object.fromEntries([
     'canonicalName', 'displayNameRu', 'displayNameEn', 'artistType', 'country', 'city',
     'beginYear', 'endYear', 'isActive', 'genres', 'topTracks', 'topAlbums', 'members',
-    'popularityMetrics', 'matchConfidence',
+    'popularityMetrics', 'matchConfidence', 'biography',
   ].map((field) => [field, record?.[field]]).filter(([, value]) => value !== undefined)),
   reviewReasons: record?.manualReviewReason ?? [],
 })
@@ -152,17 +153,17 @@ const callAiReviewer = async ({ record, options }) => {
   }
 }
 
-const assessRecord = (record, confidenceThreshold) => {
+export const assessMusicRecord = (record, confidenceThreshold) => {
   const statuses = Object.values(record?.pipeline?.sourceStatus ?? {})
   const okSources = statuses.filter((status) => status === 'ok').length
   const confidence = Number(primaryValue(record?.matchConfidence))
   const reviewReasons = Array.isArray(record?.manualReviewReason) ? record.manualReviewReason : []
-  const identityConflict = reviewReasons.some((reason) => [
-    'conflict_canonical_name',
-    'conflict_country',
-    'conflict_begin_year',
-    'canonical_name_missing',
-  ].includes(reason))
+  const canonical = primaryValue(record?.canonicalName)
+  const inputArtist = record?.input?.artist
+  const artistTypes = Array.isArray(primaryValue(record?.artistType)) ? primaryValue(record?.artistType) : [primaryValue(record?.artistType)]
+  const identityConflict = !namesReferToSameArtist(inputArtist, canonical)
+    || artistTypes.some(isNonArtistType)
+    || reviewReasons.includes('canonical_name_missing')
   const requiredFieldsPresent = hasValue(primaryValue(record?.canonicalName))
     && hasValue(primaryValue(record?.topTracks))
 
@@ -178,7 +179,35 @@ const assessRecord = (record, confidenceThreshold) => {
     requiredFieldsPresent,
     identityConflict,
     reviewReasons,
+    hardFailure: identityConflict || okSources < 2 || !requiredFieldsPresent,
   }
+}
+
+const evidenceUrls = (record) => {
+  const field = record?.officialLinks
+  const values = [primaryValue(field), ...(field?.sourceEvidence ?? []).map((entry) => entry?.value)]
+  const urls = values.flatMap((value) => Array.isArray(value) ? value : [])
+    .map((entry) => typeof entry === 'string' ? entry : entry?.url)
+    .filter((url) => /^https:\/\//i.test(String(url)))
+  return [...new Set(urls)].sort((left, right) => Number(/wikipedia\.org/i.test(right)) - Number(/wikipedia\.org/i.test(left)))
+}
+
+export const buildFallbackMusicHint = (record) => {
+  let text = String(primaryValue(record?.biography) ?? '').normalize('NFKD').replace(/\u0301/g, '').normalize('NFC').replace(/\s+/g, ' ').trim()
+  if (!text) return null
+  const forbidden = hintForbiddenPhrases(record)
+  for (const phrase of forbidden) {
+    const words = phrase.split(' ').filter((word) => word.length >= 3)
+    for (const word of [phrase, ...words]) text = text.replace(new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'giu'), '')
+  }
+  text = text.replace(/^[\s,.;:—–-]+/, '').replace(/\s+/g, ' ').trim()
+  text = text ? `${text[0].toUpperCase()}${text.slice(1)}` : text
+  if (text.length > 280) {
+    const cut = text.slice(0, 280)
+    text = cut.slice(0, Math.max(cut.lastIndexOf('. ') + 1, cut.lastIndexOf(', '), cut.lastIndexOf(' '))).trim()
+  }
+  const hint = { text, confidence: 0.7, sourceUrls: evidenceUrls(record).slice(0, 3) }
+  return validateMusicHint(hint, record).valid ? hint : null
 }
 
 export const musicAdapter = {
@@ -245,7 +274,7 @@ export const musicAdapter = {
           : itemByName.get(recordName))
       if (!sourceItem) continue
       const key = this.entityKey(sourceItem.item, sourceItem.index)
-      const assessment = assessRecord(record, 0.75)
+      const assessment = assessMusicRecord(record, 0.75)
       const accepted = runtimeIds.has(`music:${record?.artistKey}`)
       const status = accepted ? 'completed' : 'review'
       const output = {
@@ -304,7 +333,7 @@ export const musicAdapter = {
     const record = normalized?.items?.[0]
     if (!record) throw new Error('Music enricher produced no normalized record')
 
-    const assessment = assessRecord(record, options.confidenceThreshold)
+    const assessment = assessMusicRecord(record, options.confidenceThreshold)
     const shouldUseAi = options.ai !== 'never'
     let aiReview = null
     let aiError = null
@@ -317,24 +346,26 @@ export const musicAdapter = {
       }
     }
 
-    const hintValidation = validateMusicHint(aiReview?.hint, record)
+    const fallbackHint = !assessment.hardFailure ? buildFallbackMusicHint(record) : null
+    const selectedHint = aiReview?.hint ?? fallbackHint
+    const hintValidation = validateMusicHint(selectedHint, record)
     if (hintValidation.valid) {
       record.agentHint = {
         text: hintValidation.text,
-        confidence: Number(aiReview?.hint?.confidence) || null,
-        sourceUrls: aiReview.hint.sourceUrls,
-        generatedAt: aiReview.reviewedAt,
-        model: aiReview.model,
+        confidence: Number(selectedHint?.confidence) || null,
+        sourceUrls: selectedHint.sourceUrls,
+        generatedAt: aiReview?.reviewedAt ?? new Date().toISOString(),
+        model: aiReview?.model ?? 'deterministic-biography-fallback',
       }
     }
 
     const accepted = aiReview?.decision === 'accept'
       && assessment.accepted
       && hintValidation.valid
-    const rejected = aiReview?.decision === 'reject'
+    const rejected = assessment.hardFailure || aiReview?.decision === 'reject'
 
     return {
-      status: accepted ? 'completed' : 'review',
+      status: accepted ? 'completed' : rejected ? 'failed' : 'review',
       usedAi: Boolean(aiReview),
       output: {
         schemaVersion: 1,
