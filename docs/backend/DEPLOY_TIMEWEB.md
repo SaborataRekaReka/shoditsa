@@ -12,7 +12,7 @@ Workflow `.github/workflows/deploy-timeweb.yml`:
 4. загружает `.tmp` release;
 5. делает backup;
 6. применяет migration one-shot container;
-7. поднимает API и ждёт readiness;
+7. переводит API и worker на один SHA-образ, ждёт readiness API и проверяет, что worker запущен на том же SHA;
 8. атомарно переключает `current` symlink;
 9. проверяет/reload Nginx;
 10. выполняет внешний smoke и оставляет пять releases.

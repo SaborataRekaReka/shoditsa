@@ -97,9 +97,12 @@ jobs:
             echo "Shoditsa API is missing a supported single-file Compose configuration" >&2
             exit 1
           fi
+          # API, worker and one-shot migrate must move as one release. The
+          # worker was added after this guard was introduced, so accepting two
+          # declarations would silently leave background jobs on the old code.
           API_IMAGE_LINES="$(grep -Ec '^[[:space:]]*image:[[:space:]]+shoditsa-api:[^[:space:]]+' "$API_COMPOSE_FILES" || true)"
-          if [ "$API_IMAGE_LINES" -ne 2 ]; then
-            echo "Expected exactly two Shoditsa API image declarations, found ${API_IMAGE_LINES}" >&2
+          if [ "$API_IMAGE_LINES" -ne 3 ]; then
+            echo "Expected exactly three Shoditsa API image declarations (API, worker, migrate), found ${API_IMAGE_LINES}" >&2
             exit 1
           fi
           API_COMPOSE_BACKUP="${API_COMPOSE_FILES}.pre-${GITHUB_SHA}"
@@ -109,10 +112,17 @@ jobs:
           api_compose() {
             docker compose --project-directory "$API_COMPOSE_DIR" --project-name "$API_COMPOSE_PROJECT" -f "$API_COMPOSE_FILES" "$@"
           }
+          mapfile -t API_WORKER_SERVICES < <(api_compose config --services | grep -E '(^|-)worker$' || true)
+          if [ "${#API_WORKER_SERVICES[@]}" -ne 1 ]; then
+            echo "Expected exactly one Shoditsa worker service, found ${#API_WORKER_SERVICES[@]}" >&2
+            cp -a "$API_COMPOSE_BACKUP" "$API_COMPOSE_FILES"
+            exit 1
+          fi
+          API_WORKER_SERVICE="${API_WORKER_SERVICES[0]}"
           rollback_api() {
             cp -a "$API_COMPOSE_BACKUP" "$API_COMPOSE_FILES"
             api_compose config --quiet
-            api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" || true
+            api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" "$API_WORKER_SERVICE" || true
           }
           api_compose config --quiet
           api_compose --profile migrate config --services | grep -Fxq 'shoditsa-migrate'
@@ -175,11 +185,25 @@ jobs:
               exit 1
             fi
           fi
-          if ! api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE"; then
+          if ! api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" "$API_WORKER_SERVICE"; then
             rollback_api
             exit 1
           fi
           API_CONTAINER="$(api_compose ps -q "$API_COMPOSE_SERVICE")"
+          API_WORKER_CONTAINER="$(api_compose ps -q "$API_WORKER_SERVICE")"
+          if [ -z "$API_WORKER_CONTAINER" ]; then
+            echo "Shoditsa worker container was not created" >&2
+            rollback_api
+            exit 1
+          fi
+          API_WORKER_STATE="$(docker inspect --format '{{.State.Status}}' "$API_WORKER_CONTAINER")"
+          API_WORKER_IMAGE="$(docker inspect --format '{{.Config.Image}}' "$API_WORKER_CONTAINER")"
+          if [ "$API_WORKER_STATE" != 'running' ] || [ "$API_WORKER_IMAGE" != "shoditsa-api:${GITHUB_SHA}" ]; then
+            echo "Shoditsa worker did not start on release ${GITHUB_SHA} (state: ${API_WORKER_STATE}, image: ${API_WORKER_IMAGE})" >&2
+            docker logs --tail 100 "$API_WORKER_CONTAINER" >&2 || true
+            rollback_api
+            exit 1
+          fi
           for attempt in {1..24}; do
             API_HEALTH="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$API_CONTAINER")"
             [ "$API_HEALTH" = 'healthy' ] && break
