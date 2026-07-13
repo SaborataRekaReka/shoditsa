@@ -2,8 +2,9 @@ import 'dotenv/config'
 import { eq, sql } from 'drizzle-orm'
 import { auditLog, createDatabase, playerProfiles, user } from '@shoditsa/database'
 
+const emailIndex = process.argv.indexOf('--email')
 const emailArg = process.argv.find((value) => value.startsWith('--email='))?.slice('--email='.length)
-  ?? process.argv[process.argv.indexOf('--email') + 1]
+  ?? (emailIndex >= 0 ? process.argv[emailIndex + 1] : undefined)
 const email = String(emailArg ?? '').trim().toLocaleLowerCase('en-US')
 if (email !== 'breneize@yandex.ru') throw new Error('Bootstrap разрешён только для breneize@yandex.ru')
 

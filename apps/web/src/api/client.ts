@@ -5,6 +5,7 @@ import type {
   GameStartResponse, GuestResponse, HintResponse, LedgerResponse, LegacyImportBody, LegacyImportResponse,
   MeResponse, MetaResponse, PeriodUnlockResponse, PromoRedeemResponse, WalletResponse, AuthActionResponse,
 } from '@shoditsa/contracts'
+import { trackClientEvent } from '../app/client-events'
 
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
 const AUTH_BASE = String(import.meta.env.VITE_AUTH_BASE_URL || '/api/auth').replace(/\/$/, '')
@@ -38,6 +39,7 @@ const request = async <T>(path: string, options: RequestInit & { timeoutMs?: num
           ? payload.requestId
           : response.headers.get('x-request-id') ?? undefined
       const details = asRecord(nestedError?.details ?? payload?.details) ?? {}
+      trackClientEvent('api_error', { status: response.status, path: path.split('?')[0] }, { errorCode: code, requestId })
       throw new ApiClientError(response.status, code, message, requestId, details)
     }
     return data as T

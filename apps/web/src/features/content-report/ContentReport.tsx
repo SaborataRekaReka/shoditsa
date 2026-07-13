@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { trackClientEvent } from '../../app/client-events'
 
 export const CONTENT_REPORT_REASONS = [
   ['wrong_fact', 'Неправильный факт'],
@@ -24,7 +25,7 @@ export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportRe
 
   if (sent) return <p className="content-report__thanks" role="status">Спасибо, проверим подсказку.</p>
   return <div className="content-report">
-    <button type="button" className="content-report__toggle" onClick={() => setOpen((value) => !value)} aria-expanded={open}>Нашли ошибку в подсказке?</button>
+    <button type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>Нашли ошибку в подсказке?</button>
     {open && <form onSubmit={async (event) => {
       event.preventDefault()
       if (sending) return
@@ -34,6 +35,7 @@ export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportRe
         await onSubmit(reason, comment.trim())
         setSent(true)
       } catch (value) {
+        trackClientEvent('report_submit_failed', { reason, message: value instanceof Error ? value.message.slice(0, 500) : 'unknown' })
         setError(value instanceof Error ? value.message : 'Не удалось отправить отчёт.')
       } finally {
         setSending(false)

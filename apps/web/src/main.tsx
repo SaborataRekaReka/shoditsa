@@ -5,10 +5,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { initMetrikaDataLayer, initWebVitalsObservers, markAppBootStart } from './app/metrics'
 import { AppErrorBoundary } from './components/app-shell/AppErrorBoundary'
 import './styles.css'
+import { initClientEvents } from './app/client-events'
 
 markAppBootStart()
 initMetrikaDataLayer()
 initWebVitalsObservers()
+initClientEvents()
 
 // Initialize Yandex Games SDK before mounting the app.
 // YaGames is injected globally by /sdk.js loaded in index.html.

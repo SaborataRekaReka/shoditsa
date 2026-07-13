@@ -21,7 +21,7 @@ import {
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
 } from '@shoditsa/contracts'
 import {
-  account, appSettings, auditLog, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
+  account, appSettings, auditLog, authEvents, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
   createDatabase, gameSessions, playerProfiles, promoCodes, userModeStats, walletAccounts, walletLedger,
   type Database,
 } from '@shoditsa/database'
@@ -154,11 +154,25 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     if (!config.authEmailEnabled && /^\/api\/auth\/(sign-in|sign-up)\/email\/?$/i.test(authPath)) {
       throw new ApiError(503, 'AUTH_EMAIL_DISABLED', 'Вход по email временно отключен на этом окружении')
     }
+    const eventName = /\/sign-up\//i.test(authPath) ? 'sign_up'
+      : /\/sign-in\//i.test(authPath) ? 'sign_in'
+        : /\/sign-out\/?$/i.test(authPath) ? 'sign_out'
+          : /\/request-password-reset\/?$/i.test(authPath) ? 'password_reset_requested'
+            : /\/change-password\/?$/i.test(authPath) ? 'password_changed' : null
+    const priorUser = eventName ? await getRequestUser(request, auth, db, false, config, true) : null
     const url = new URL(request.url, config.authUrl)
     const response = await auth.handler(new Request(url, {
       method: request.method, headers: fromNodeHeaders(request.headers),
       body: request.method === 'GET' || request.method === 'HEAD' ? undefined : JSON.stringify(request.body ?? {}),
     }))
+    if (eventName && response.ok) {
+      let eventUserId = priorUser?.id ?? null
+      if (!eventUserId) {
+        const payload = await response.clone().json().catch(() => null) as { user?: { id?: string } } | null
+        eventUserId = payload?.user?.id ?? null
+      }
+      if (eventUserId) await db.insert(authEvents).values({ userId: eventUserId, authSessionId: priorUser?.authSessionId ?? null, eventName, result: 'success', requestId: request.id })
+    }
     return forwardAuthResponse(reply, response)
   } })
   app.post('/api/v1/auth/guest', { config: { rateLimit: { max: config.production ? 10 : 100, timeWindow: '1 hour' } } }, async (request, reply) => {
