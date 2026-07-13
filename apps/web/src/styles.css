@@ -39,7 +39,7 @@
 .category-grid.category-grid--active {
   grid-template-columns: 1fr;
   column-gap: 12px;
-  row-gap: 16px;
+  row-gap: 26px;
 }
 @media (min-width: 720px) {
   .category-grid.category-grid--active { grid-template-columns: repeat(2, minmax(0, 1fr)); }
