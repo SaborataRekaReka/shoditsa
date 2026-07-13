@@ -3,6 +3,8 @@ import { Check, ChevronDown, Copy, Send, Share2, Ticket } from 'lucide-react'
 import type { ChallengeOutcome } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 
+const diagnosisSystemRewardIcon = './images/diagnosis-systems/nervous.svg'
+
 export type ResultAward = {
   total: number
   base: number
@@ -17,6 +19,7 @@ export type ResultAward = {
 }
 
 type Props = {
+  mode: 'movie' | 'series' | 'anime' | 'game' | 'music' | 'diagnosis'
   won: boolean
   attempts: number
   poster: ReactNode
@@ -41,6 +44,9 @@ type Props = {
 
 export function GameResult(props: Props) {
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
+  const rewardIcon = props.mode === 'diagnosis'
+    ? <img className="result-dx-icon" src={diagnosisSystemRewardIcon} alt="" aria-hidden="true" loading="lazy" />
+    : <Ticket />
   return <section className={`result-card ${props.won ? 'won' : 'lost'}`}>
     {props.poster}
     <div className="result-card__copy">
@@ -64,7 +70,7 @@ export function GameResult(props: Props) {
       <button type="button" className="result-copy" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
     </div>
     {props.award && <details className="reward-breakdown result-card__wide">
-      <summary><span><Ticket /> {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билета`}</span><ChevronDown /></summary>
+      <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билета`}</span><ChevronDown /></summary>
       {!props.award.alreadyClaimed && <ul>
         <li><span>За завершение</span><strong>+{props.award.completed}</strong></li>
         {!!props.award.win && <li><span>За победу</span><strong>+{props.award.win}</strong></li>}
