@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { ProxyAgent, fetch as undiciFetch } from 'undici'
 import { namesReferToSameArtist, scoreWikidataArtistCandidate, validateWikidataArtistIdentity } from './artist-identity.mjs'
 
 const ROOT = process.cwd()
@@ -7,6 +8,19 @@ const SOURCE_PRIORITY = ['musicbrainz', 'wikidata', 'deezer', 'itunes', 'lastfm'
 const MUSICBRAINZ_USER_AGENT = process.env.MUSICBRAINZ_USER_AGENT?.trim() || 'Shoditsa/1.0 (https://shoditsa.ru; mailto:breneize@yandex.ru)'
 const AUDIODB_DEMO_KEY = '2'
 const DISABLED_SOURCES = new Set(String(process.env.MUSIC_PIPELINE_DISABLED_SOURCES ?? '').split(',').map((value) => value.trim()).filter(Boolean))
+const MUSIC_PROXY_HOSTS = new Set(['musicbrainz.org', 'ws.audioscrobbler.com', 'www.theaudiodb.com', 'accounts.spotify.com', 'api.spotify.com'])
+const proxyInput = process.env.MUSIC_OUTBOUND_PROXY_URL?.trim() || ''
+let musicProxy = null
+let musicProxyError = null
+if (proxyInput) {
+  try {
+    const parsed = new URL(proxyInput)
+    if (!['http:', 'https:'].includes(parsed.protocol) || !parsed.hostname) throw new Error('unsupported proxy URL')
+    musicProxy = new ProxyAgent(parsed.toString())
+  } catch {
+    musicProxyError = 'proxy_configuration_invalid'
+  }
+}
 let SOURCE_HEALTH = {}
 try { SOURCE_HEALTH = JSON.parse(process.env.MUSIC_PIPELINE_SOURCE_HEALTH || '{}') } catch {}
 const SOCIAL_HOST_MARKERS = [
@@ -63,6 +77,12 @@ const writeJson = (filePath, value) => {
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'))
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const redactNetworkError = (value) => String(value ?? 'request_failed')
+  .replace(/(https?:\/\/)[^\s/@:]+:[^\s/@]+@/gi, '$1[redacted]@')
+const shouldUseMusicProxy = (url) => {
+  try { return MUSIC_PROXY_HOSTS.has(new URL(String(url)).hostname.toLowerCase()) }
+  catch { return false }
+}
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -189,12 +209,16 @@ const fetchJson = async (url, options = {}) => {
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
-    const response = await fetch(url, {
+    if (proxyInput && shouldUseMusicProxy(url) && musicProxyError) throw new Error(musicProxyError)
+    const requestOptions = {
       method: options.method ?? 'GET',
       headers: options.headers,
       body: options.body,
       signal: controller.signal,
-    })
+    }
+    const response = musicProxy && shouldUseMusicProxy(url)
+      ? await undiciFetch(url, { ...requestOptions, dispatcher: musicProxy })
+      : await fetch(url, requestOptions)
 
     const text = await response.text()
     let json = null
@@ -219,7 +243,7 @@ const fetchJson = async (url, options = {}) => {
     return {
       ok: false,
       status: null,
-      error: error instanceof Error ? error.message : String(error),
+      error: redactNetworkError(error instanceof Error ? error.message : error),
       json: null,
     }
   } finally {

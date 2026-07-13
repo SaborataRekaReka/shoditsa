@@ -48,9 +48,10 @@ $env:SPOTIFY_CLIENT_ID="..."
 $env:SPOTIFY_CLIENT_SECRET="..."
 $env:THEAUDIODB_API_KEY="..." # необязательно, вместо demo-доступа
 $env:OPENAI_API_KEY="..."     # обязателен для поиска и генерации новых подсказок
+$env:MUSIC_OUTBOUND_PROXY_URL="http://user:password@proxy.example:3128" # необязательный доверенный HTTP/HTTPS proxy
 ```
 
-Секреты можно установить в PowerShell или сохранить в `.env.local`; файл уже исключён из Git. Они читаются только Node-процессом и не записываются в output. В частности, ответ Spotify token endpoint не сохраняется. Ответы контентных endpoint сохраняются в `data/music/raw`, нормализованные результаты — в `data/music/normalized`.
+Секреты можно установить в PowerShell, сохранить в `.env.local` или через зашифрованный раздел админки «API-интеграции»; локальный файл уже исключён из Git. Они читаются только Node-процессом и не записываются в output. В частности, ответ Spotify token endpoint не сохраняется, а лог скрывает авторизацию proxy URL. Ответы контентных endpoint сохраняются в `data/music/raw`, нормализованные результаты — в `data/music/normalized`.
 
 ## Профили стоимости
 

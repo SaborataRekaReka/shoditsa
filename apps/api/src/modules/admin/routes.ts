@@ -43,6 +43,7 @@ import {
 import { applyContentExchangeImport, describeContentExchangeSelection, exportContentExchange, previewContentExchangeImport } from './content-exchange.js'
 import { loadAdminTimeline } from './timeline-service.js'
 import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
+import { normalizeMusicProxyUrl } from './music-proxy.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
@@ -689,6 +690,10 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
   })
   app.put('/api/v1/admin/integrations/:key', { schema: { params: IntegrationKeyParamsSchema, body: IntegrationSecretUpdateBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const key = (request.params as { key: IntegrationKey }).key; const body = request.body as IntegrationSecretUpdateBody
+    if (key === 'MUSIC_OUTBOUND_PROXY_URL') {
+      try { normalizeMusicProxyUrl(body.value) }
+      catch { throw new ApiError(422, 'MUSIC_PROXY_URL_INVALID', 'Proxy URL должен использовать http:// или https:// и содержать адрес сервера') }
+    }
     await saveIntegrationSecret(deps.db, deps.config, actor.id, key, body.value)
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'integration.secret.update', entityType: 'integration_secret', entityId: key, before: null, after: { configured: true }, requestId: request.id })
     return { items: await integrationStatuses(deps.db) }

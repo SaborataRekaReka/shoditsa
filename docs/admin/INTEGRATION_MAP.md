@@ -50,7 +50,7 @@ npm run admin:bootstrap -- --email=breneize@yandex.ru
 - Media root: `MEDIA_ROOT`; production volume `/opt/shoditsa/shared/media`, публичный prefix задаёт `PUBLIC_MEDIA_BASE_URL`.
 - Domain adapters: `scripts/music/run-agent-cycle.mjs`, `scripts/movies/run-agent-cycle.mjs`, `scripts/anime/run-agent-cycle.mjs` и общее ядро `scripts/enrichment-agent/run.mjs`.
 - Разрешённая AI-модель: `MUSIC_PIPELINE_MODEL=gpt-5-mini`.
-- Секреты Kinopoisk/Shikimori/OpenAI/LastFM/Spotify/TheAudioDB доступны только worker. API-контейнер принудительно получает пустые значения этих переменных.
+- Секреты Kinopoisk/Shikimori/OpenAI/LastFM/Spotify/TheAudioDB и музыкальный proxy URL передаются дочернему процессу worker только на время запуска. Сохранённые через админку значения зашифрованы и возвращаются в браузер только маской.
 
 ## Переменные окружения
 

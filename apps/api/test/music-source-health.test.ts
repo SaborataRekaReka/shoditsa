@@ -32,5 +32,15 @@ describe('music source health probe', () => {
     }) as unknown as typeof fetch
     const result = await probeMusicSourceHealth({ LASTFM_API_KEY: 'key', THEAUDIODB_API_KEY: 'key', SPOTIFY_CLIENT_ID: 'id', SPOTIFY_CLIENT_SECRET: 'secret' }, fetchImpl)
     expect(result.disabledSources).toEqual([])
+    expect(result.transport).toBe('direct')
+  })
+
+  it('fails closed when a configured proxy URL is invalid', async () => {
+    const fetchImpl = vi.fn() as unknown as typeof fetch
+    const result = await probeMusicSourceHealth({ MUSIC_OUTBOUND_PROXY_URL: 'socks5://untrusted.invalid:1080' }, fetchImpl)
+    expect(fetchImpl).not.toHaveBeenCalled()
+    expect(result.transport).toBe('proxy_invalid')
+    expect(result.disabledSources).toEqual(['musicbrainz', 'lastfm', 'theaudiodb', 'spotify'])
+    expect(JSON.stringify(result)).not.toContain('untrusted.invalid')
   })
 })

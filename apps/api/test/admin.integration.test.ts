@@ -77,7 +77,9 @@ describe('admin API guard, workspace and telemetry', () => {
       await database.db.delete(auditLog).where(eq(auditLog.entityId, draftItemId))
       await database.db.delete(auditLog).where(and(eq(auditLog.actorUserId, adminId), inArray(auditLog.action, ['content.exchange.export', 'content.exchange.import'])))
       await database.db.delete(auditLog).where(eq(auditLog.entityId, 'OPENAI_API_KEY'))
+      await database.db.delete(auditLog).where(eq(auditLog.entityId, 'MUSIC_OUTBOUND_PROXY_URL'))
       await database.db.delete(integrationSecrets).where(eq(integrationSecrets.key, 'OPENAI_API_KEY'))
+      await database.db.delete(integrationSecrets).where(eq(integrationSecrets.key, 'MUSIC_OUTBOUND_PROXY_URL'))
       if (createdWorkspaceId) await database.db.delete(contentWorkspaces).where(eq(contentWorkspaces.id, createdWorkspaceId))
       await database.db.delete(contentItems).where(eq(contentItems.id, draftItemId))
       await database.db.delete(contentItems).where(eq(contentItems.id, exchangeNewItemId))
@@ -215,6 +217,18 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(listed.body).not.toContain(value)
     const removed = await app.inject({ method: 'DELETE', url: '/api/v1/admin/integrations/OPENAI_API_KEY', payload: { confirmation: true } })
     expect(removed.statusCode, removed.body).toBe(200)
+
+    const proxyValue = 'http://proxy-user:proxy-password@proxy.example:3128'
+    const proxySaved = await app.inject({ method: 'PUT', url: '/api/v1/admin/integrations/MUSIC_OUTBOUND_PROXY_URL', payload: { value: proxyValue, confirmation: true } })
+    expect(proxySaved.statusCode, proxySaved.body).toBe(200)
+    expect(proxySaved.body).not.toContain(proxyValue)
+    expect(proxySaved.body).not.toContain('proxy-password')
+    expect(proxySaved.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'MUSIC_OUTBOUND_PROXY_URL', configured: true, source: 'admin' })]))
+    const invalidProxy = await app.inject({ method: 'PUT', url: '/api/v1/admin/integrations/MUSIC_OUTBOUND_PROXY_URL', payload: { value: 'socks5://proxy.example:1080', confirmation: true } })
+    expect(invalidProxy.statusCode, invalidProxy.body).toBe(422)
+    expect(invalidProxy.json().error.code).toBe('MUSIC_PROXY_URL_INVALID')
+    const proxyRemoved = await app.inject({ method: 'DELETE', url: '/api/v1/admin/integrations/MUSIC_OUTBOUND_PROXY_URL', payload: { confirmation: true } })
+    expect(proxyRemoved.statusCode, proxyRemoved.body).toBe(200)
   })
 
   it('previews a manual artist list and removes normalized duplicates', async () => {

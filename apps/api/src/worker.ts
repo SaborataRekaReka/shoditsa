@@ -33,11 +33,14 @@ const objectValues = (value: unknown, key: string) => Array.isArray(value) ? val
 const fieldStrings = (value: unknown) => Array.isArray(value) ? strings(value) : [text(value)].filter(Boolean)
 const hash = (value: string) => createHash('sha256').update(value).digest('hex')
 const sleep = (ms: number) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms))
-const safeError = (error: unknown) => (error instanceof Error ? error.message : String(error)).replace(/(?:sk-[A-Za-z0-9_-]{12,}|Bearer\s+[A-Za-z0-9._-]+)/gi, '[redacted]').slice(0, 1_000)
+const redactSecrets = (value: string) => value
+  .replace(/(?:sk-[A-Za-z0-9_-]{12,}|Bearer\s+[A-Za-z0-9._-]+)/gi, '[redacted]')
+  .replace(/(https?:\/\/)[^\s/@:]+:[^\s/@]+@/gi, '$1[redacted]@')
+const safeError = (error: unknown) => redactSecrets(error instanceof Error ? error.message : String(error)).slice(0, 1_000)
 
 const addMusicSourceHealth = async (environment: Record<string, string>) => {
   environment.MUSICBRAINZ_USER_AGENT ||= 'Shoditsa/1.0 (https://shoditsa.ru; mailto:breneize@yandex.ru)'
-  const signature = hash(['LASTFM_API_KEY', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'THEAUDIODB_API_KEY', 'MUSICBRAINZ_USER_AGENT'].map((key) => `${key}:${environment[key] ?? ''}`).join('|'))
+  const signature = hash(['LASTFM_API_KEY', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'THEAUDIODB_API_KEY', 'MUSICBRAINZ_USER_AGENT', 'MUSIC_OUTBOUND_PROXY_URL'].map((key) => `${key}:${environment[key] ?? ''}`).join('|'))
   if (!musicHealthCache || musicHealthCache.signature !== signature || musicHealthCache.expiresAt <= Date.now()) {
     musicHealthCache = { signature, expiresAt: Date.now() + 15 * 60_000, result: await probeMusicSourceHealth(environment) }
   }
@@ -73,7 +76,7 @@ const runCommand = async (args: string[], runId: string, jobId: string, integrat
     if (cancellation[0]?.cancelRequestedAt) child.kill('SIGTERM')
     await Promise.all([
       db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { message: output.split(/\r?\n/).filter(Boolean).at(-1) ?? 'Выполняется' } }).where(eq(backgroundJobs.id, jobId)),
-      db.update(pipelineRuns).set({ heartbeatAt: new Date(), logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]') }).where(eq(pipelineRuns.id, runId)),
+      db.update(pipelineRuns).set({ heartbeatAt: new Date(), logExcerpt: redactSecrets(output) }).where(eq(pipelineRuns.id, runId)),
     ])
   }, config.workerHeartbeatIntervalMs)
   try {
