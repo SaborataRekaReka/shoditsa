@@ -3212,6 +3212,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         client.invalidateQueries({ queryKey: queryKeys.game(sessionId) }),
         client.invalidateQueries({ queryKey: queryKeys.dashboard }),
         client.invalidateQueries({ queryKey: queryKeys.ledger }),
+        client.invalidateQueries({ queryKey: ['archive'] }),
       ])
     },
     onError: async (error) => {
@@ -3410,6 +3411,7 @@ function AccountAccessPanel({ session, loadingSession, refreshSession }: {
         : await api.signIn(nextEmail, nextPassword)
       if (register) {
         if (!authResult.token) {
+          trackMetrikaGoal('auth_success', { action: 'sign_up_pending_verification' })
           setPassword('')
           setRegister(false)
           setNotice(`Аккаунт создан. Подтвердите ${nextEmail} по ссылке из письма. До подтверждения вы продолжаете как гость: ${formatTickets(guestDashboard?.wallet.balance ?? 0)} и все сеансы останутся здесь, а после подтверждения автоматически перейдут в аккаунт.`)
@@ -3464,7 +3466,7 @@ function AccountAccessPanel({ session, loadingSession, refreshSession }: {
   const submitResetPassword = async () => {
     if (pending) return
     const token = resetToken.trim()
-    const nextPassword = resetPasswordValue.trim()
+    const nextPassword = resetPasswordValue
     if (!token) {
       setError('Не найден токен сброса. Запросите новую ссылку.')
       return
@@ -3494,8 +3496,8 @@ function AccountAccessPanel({ session, loadingSession, refreshSession }: {
 
   const submitChangePassword = async () => {
     if (pending) return
-    const current = currentPassword.trim()
-    const next = newPassword.trim()
+    const current = currentPassword
+    const next = newPassword
     if (!current || !next) {
       setError('Заполните текущий и новый пароль.')
       return
@@ -3663,6 +3665,7 @@ function AccountAccessPanel({ session, loadingSession, refreshSession }: {
               {register && <label className="account-access__label">Имя<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" /></label>}
               <label className="account-access__label">Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
               <label className="account-access__label">Пароль<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={register ? 'new-password' : 'current-password'} /></label>
+              {register && authCapabilities?.emailVerification && <p className="modal-lead">После регистрации нужно открыть письмо на этом устройстве и подтвердить email. До подтверждения вы останетесь гостем, а затем текущие билеты и игры автоматически перейдут в аккаунт.</p>}
               <ActionButton onClick={submitEmail} disabled={pending}>{pending ? 'Отправляем...' : register ? 'Создать аккаунт' : 'Войти'}</ActionButton>
               <button className="account-access__toggle" type="button" onClick={() => {
                 setRegister((current) => !current)
@@ -3906,6 +3909,11 @@ function ResumeSessionsView({ sessions, onOpen }: {
 export default function App() {
   const queryClient = useQueryClient()
   const serverRuntime = useServerRuntime()
+  const serverArchive = useQuery({
+    queryKey: queryKeys.archive({ app: true }),
+    queryFn: () => api.archive(),
+    enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
+  })
   const [challenge, setChallenge] = useState<ChallengePayload | null>(() => typeof window === 'undefined' ? null : parseChallengeUrl(window.location.href))
   const [challengeAccepted, setChallengeAccepted] = useState(false)
   const [screen, setScreen] = useState<AppScreen>(() => resetPasswordTokenFromLocation()
@@ -4220,8 +4228,11 @@ export default function App() {
 
   const games = useMemo<SavedGame[]>(() => {
     if (!SERVER_RUNTIME) return allGames()
-    return (serverRuntime.dashboard?.activeSessions ?? []).map(activeSessionToSavedGame)
-  }, [screen, serverRuntime.dashboard])
+    return [
+      ...(serverRuntime.dashboard?.activeSessions ?? []).map(activeSessionToSavedGame),
+      ...(serverArchive.data?.items ?? []).map(archiveItemToSavedGame),
+    ]
+  }, [serverArchive.data, serverRuntime.dashboard])
   const currentCompletedPeriods = useMemo(() => {
     if (!canUnlockPeriods(mode)) return [] as PeriodKey[]
     const completed = new Set<PeriodKey>()

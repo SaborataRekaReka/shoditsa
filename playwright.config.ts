@@ -7,7 +7,11 @@ const apiEnv = {
   BETTER_AUTH_URL: 'http://127.0.0.1:5174',
   TRUSTED_ORIGINS: 'http://127.0.0.1:5174',
   PROMO_CODE_PEPPER: process.env.PROMO_CODE_PEPPER ?? 'playwright-pepper-at-least-32-characters',
-  AUTH_EMAIL_ENABLED: 'false',
+  AUTH_EMAIL_ENABLED: 'true',
+  AUTH_YANDEX_ENABLED: 'false',
+  SMTP_HOST: process.env.SMTP_HOST ?? '127.0.0.1',
+  SMTP_PORT: process.env.SMTP_PORT ?? '1025',
+  SMTP_FROM: process.env.SMTP_FROM ?? 'e2e@shoditsa.local',
   PORT: '3002',
   LOG_LEVEL: 'warn',
 } as Record<string, string>

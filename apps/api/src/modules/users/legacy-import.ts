@@ -96,8 +96,6 @@ export const importLegacy = async (db: Database, config: AppConfig, userId: stri
           select mode, difficulty_key, max(current_streak)::int as current_streak, max(best_streak)::int as best_streak
           from ${userModeStats} where user_id = ${userId}::uuid
           group by mode, difficulty_key
-        ), deleted as (
-          delete from ${userModeStats} where user_id = ${userId}::uuid
         )
         insert into ${userModeStats} (user_id, mode, difficulty_key, played, won, current_streak, best_streak, distribution, "updatedAt")
         select ${userId}::uuid, sessions.mode,
@@ -122,7 +120,14 @@ export const importLegacy = async (db: Database, config: AppConfig, userId: stri
         left join prior_stats prior on prior.mode = sessions.mode
           and prior.difficulty_key = case when sessions.mode = 'music' then coalesce(sessions.difficulty::text, '-') else '-' end
         where sessions.user_id = ${userId}::uuid and sessions.kind in ('daily', 'archive') and sessions.status in ('won', 'lost')
-        group by sessions.mode, case when sessions.mode = 'music' then coalesce(sessions.difficulty::text, '-') else '-' end`)
+        group by sessions.mode, case when sessions.mode = 'music' then coalesce(sessions.difficulty::text, '-') else '-' end
+        on conflict (user_id, mode, difficulty_key) do update set
+          played = excluded.played,
+          won = excluded.won,
+          current_streak = excluded.current_streak,
+          best_streak = excluded.best_streak,
+          distribution = excluded.distribution,
+          "updatedAt" = excluded."updatedAt"`)
     }
     const result = await tx.insert(legacyImports).values({ userId, deviceId, schemaVersion, payloadChecksum: checksum, importedGames, importedWallet, warnings }).returning()
     await tx.update(playerProfiles).set({ legacyImportedAt: new Date(), updatedAt: new Date() }).where(eq(playerProfiles.userId, userId))

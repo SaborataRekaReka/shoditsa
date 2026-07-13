@@ -6,6 +6,17 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
   await db.transaction(async (tx) => {
     await tx.execute(sql`select set_config('shoditsa.account_merge', 'on', true)`)
     // Keep the more advanced session for each challenge before moving ownership.
+    // Reports belong to the surviving session too; otherwise the session/user
+    // cascade would silently erase guest feedback during account linking.
+    await tx.execute(sql`
+      update content_reports report set user_id = ${targetUserId}::uuid, session_id = target.id
+      from game_sessions old, game_sessions target
+      where report.user_id = ${anonymousUserId}::uuid and report.session_id = old.id
+        and old.user_id = ${anonymousUserId}::uuid and target.user_id = ${targetUserId}::uuid
+        and old.challenge_id is not null and old.challenge_id = target.challenge_id
+        and ((case target.status when 'won' then 3 when 'lost' then 2 else 1 end) > (case old.status when 'won' then 3 when 'lost' then 2 else 1 end)
+          or ((case target.status when 'won' then 3 when 'lost' then 2 else 1 end) = (case old.status when 'won' then 3 when 'lost' then 2 else 1 end)
+            and case when target.status = 'won' then target.attempts_count <= old.attempts_count else target.attempts_count >= old.attempts_count end))`)
     await tx.execute(sql`
       delete from game_sessions old
       using game_sessions target
@@ -15,11 +26,18 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
           or ((case target.status when 'won' then 3 when 'lost' then 2 else 1 end) = (case old.status when 'won' then 3 when 'lost' then 2 else 1 end)
             and case when target.status = 'won' then target.attempts_count <= old.attempts_count else target.attempts_count >= old.attempts_count end))`)
     await tx.execute(sql`
+      update content_reports report set session_id = old.id
+      from game_sessions old, game_sessions target
+      where report.session_id = target.id
+        and old.user_id = ${anonymousUserId}::uuid and target.user_id = ${targetUserId}::uuid
+        and old.challenge_id is not null and old.challenge_id = target.challenge_id`)
+    await tx.execute(sql`
       delete from game_sessions target
       using game_sessions old
       where old.user_id = ${anonymousUserId}::uuid and target.user_id = ${targetUserId}::uuid
         and old.challenge_id is not null and old.challenge_id = target.challenge_id`)
     await tx.execute(sql`update game_sessions set user_id = ${targetUserId}::uuid where user_id = ${anonymousUserId}::uuid`)
+    await tx.execute(sql`update content_reports set user_id = ${targetUserId}::uuid where user_id = ${anonymousUserId}::uuid`)
 
     await tx.execute(sql`insert into wallet_accounts (user_id) values (${targetUserId}::uuid) on conflict do nothing`)
     await tx.execute(sql`
