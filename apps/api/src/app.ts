@@ -326,11 +326,12 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     }); return { activated: id }
   })
   app.get('/api/v1/admin/settings/daily-salt', async (request) => { await requireAdmin(request, auth, db, config); return (await db.select().from(appSettings).where(eq(appSettings.key, 'daily_global_salt')).limit(1))[0] })
-  app.put('/api/v1/admin/settings/daily-salt', { schema: { body: Type.Object({ value: Type.Integer() }), headers: idempotencyHeaders } }, async (request) => {
-    const actor = await requireAdmin(request, auth, db, config); const value = (request.body as { value: number }).value
+  app.put('/api/v1/admin/settings/daily-salt', { schema: { body: Type.Object({ currentValue: Type.Integer(), value: Type.Integer(), reason: Type.String({ minLength: 3, maxLength: 500 }) }, { additionalProperties: false }), headers: idempotencyHeaders } }, async (request) => {
+    const actor = await requireAdmin(request, auth, db, config); const body = request.body as { currentValue: number; value: number; reason: string }; const value = body.value
     const before = await db.select().from(appSettings).where(eq(appSettings.key, 'daily_global_salt')).limit(1)
+    if (Number(before[0]?.value ?? 0) !== body.currentValue) throw new ApiError(409, 'DAILY_SALT_CONFLICT', 'Текущее значение изменилось; обновите страницу')
     const updated = await db.insert(appSettings).values({ key: 'daily_global_salt', value, updatedBy: actor.id }).onConflictDoUpdate({ target: appSettings.key, set: { value, updatedBy: actor.id, updatedAt: new Date(), version: sql`${appSettings.version} + 1` } }).returning()
-    await db.insert(auditLog).values({ actorUserId: actor.id, action: 'settings.daily-salt.update', entityType: 'app_setting', entityId: 'daily_global_salt', before: before[0] ?? null, after: updated[0], requestId: request.id })
+    await db.insert(auditLog).values({ actorUserId: actor.id, action: 'settings.daily-salt.update', entityType: 'app_setting', entityId: 'daily_global_salt', before: before[0] ?? null, after: updated[0], reason: body.reason, requestId: request.id })
     return updated[0]
   })
   app.post('/api/v1/admin/promos', { schema: { headers: idempotencyHeaders, body: AdminPromoCreateBodySchema } }, async (request) => {

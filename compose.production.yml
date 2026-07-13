@@ -25,6 +25,11 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3001
+      OPENAI_API_KEY: ""
+      LASTFM_API_KEY: ""
+      SPOTIFY_CLIENT_ID: ""
+      SPOTIFY_CLIENT_SECRET: ""
+      THEAUDIODB_API_KEY: ""
     ports:
       - "127.0.0.1:3001:3001"
     volumes:
@@ -39,6 +44,22 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+  worker:
+    image: ghcr.io/saboratarekareka/shoditsa-api:${APP_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    env_file: /opt/shoditsa/config/.env
+    command: ["node", "apps/api/dist/worker.js"]
+    environment:
+      NODE_ENV: production
+      ENRICHMENT_DATA_ROOT: /app/data/enrichment-agent
+      WORKER_ID: production-worker-1
+    volumes:
+      - /opt/shoditsa/shared/enrichment:/app/data/enrichment-agent
+      - /opt/shoditsa/shared/media:/srv/shoditsa/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [backend]
   migrate:
     image: ghcr.io/saboratarekareka/shoditsa-api:${APP_IMAGE_TAG:-latest}
     profiles: [migrate]

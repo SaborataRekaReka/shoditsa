@@ -108,7 +108,7 @@ export const saveWorkspaceItem = async (db: Database, actor: Actor, itemId: stri
     if (identity[0]?.mode !== input.mode) throw new ApiError(409, 'CONTENT_ID_TAKEN', 'Этот ID уже занят карточкой другой категории')
   }
   const fields = changedFields(beforePayload, payload)
-  const changeType = !base[0] ? 'create' : payload.allowedInGame === false && base[0].allowedInGame ? 'disable' : 'update'
+  const changeType = !base[0] ? 'create' : input.payload['allowedInGame'] === false && beforePayload?.allowedInGame !== false ? 'disable' : 'update'
   const values = {
     workspaceId: workspace.id, itemId, mode: input.mode, changeType,
     baseItemVersionId: base[0]?.id ?? null, beforePayload, afterPayload: payload, changedFields: fields,
@@ -226,7 +226,7 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
           const fromPayload = Array.isArray(entry.payload.caseVignettes) ? entry.payload.caseVignettes : null
           const values = fromPayload?.map((value, index) => ({ id: text(asRecord(value).id) || `${text(entry.payload.id)}:${index + 1}`, text: text(asRecord(value).text), sortOrder: index }))
             ?? (entry.base ? baseVignettesByVersion.get(entry.base.id) ?? [] : [])
-          return values.filter((value) => value.text).map((value) => ({ id: value.id, itemVersionId: insertedByItem.get(text(entry.payload.id))!, text: value.text, sortOrder: value.sortOrder }))
+          return values.filter((value) => value.text).map((value) => ({ id: `${revision.id.slice(0, 8)}:${value.id}`, itemVersionId: insertedByItem.get(text(entry.payload.id))!, text: value.text, sortOrder: value.sortOrder }))
         })
         if (vignetteRows.length) await tx.insert(diagnosisVignettes).values(vignetteRows)
       }

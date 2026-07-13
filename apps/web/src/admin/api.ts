@@ -96,5 +96,5 @@ export const adminApi = {
   revisions: () => request<{ items: Array<Record<string, unknown>> }>('/admin/content/revisions'),
   activateRevision: (id: string) => request<Record<string, unknown>>(`/admin/content/revisions/${id}/activate`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
   dailySalt: () => request<Record<string, unknown>>('/admin/settings/daily-salt'),
-  updateDailySalt: (value: number) => request<Record<string, unknown>>('/admin/settings/daily-salt', { method: 'PUT', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ value }) }),
+  updateDailySalt: (currentValue: number, value: number, reason: string) => request<Record<string, unknown>>('/admin/settings/daily-salt', { method: 'PUT', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ currentValue, value, reason }) }),
 }

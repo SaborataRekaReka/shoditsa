@@ -7,14 +7,12 @@ dist.zip
 test-results
 playwright-report
 archive
-data
 docs
 public
 test
 apps/web/src
 apps/web/index.html
 apps/web/vite.config.ts
-scripts
 *.log
 .env
 .env.*

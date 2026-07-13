@@ -118,7 +118,10 @@ const main = async () => {
   const options = parseArgs()
   const adapter = await loadAdapter(options.domain)
   const { items, sourcePath, scope = 'default' } = adapter.loadItems(ROOT, options.source)
-  const baseDir = path.join(ROOT, 'data', 'enrichment-agent', options.domain, scope)
+  const enrichmentRoot = process.env.ENRICHMENT_DATA_ROOT
+    ? path.resolve(process.env.ENRICHMENT_DATA_ROOT)
+    : path.join(ROOT, 'data', 'enrichment-agent')
+  const baseDir = path.join(enrichmentRoot, options.domain, scope)
   const paths = {
     statePath: path.join(baseDir, 'state.json'),
     lockPath: path.join(baseDir, 'run.lock'),
@@ -192,7 +195,7 @@ const main = async () => {
 
     if (options.action === 'discover') {
       if (typeof adapter.discover !== 'function') throw new Error(`${options.domain} adapter does not support discovery`)
-      const outputPath = path.join(ROOT, 'data', 'enrichment-agent', options.domain, 'discovery', 'discovered-candidates.json')
+    const outputPath = path.join(enrichmentRoot, options.domain, 'discovery', 'discovered-candidates.json')
       const result = await adapter.discover({ items, options, outputPath, count: options.maxItems })
       console.log(JSON.stringify({
         added: result.added,

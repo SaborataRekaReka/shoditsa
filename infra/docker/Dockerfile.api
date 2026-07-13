@@ -11,6 +11,8 @@ RUN npm ci
 COPY tsconfig.json tsup.config.ts ./
 COPY apps/api apps/api
 COPY packages packages
+COPY scripts scripts
+COPY data data
 RUN npm run build:api
 
 FROM node:24.14.1-alpine3.23 AS runtime
@@ -27,6 +29,8 @@ COPY packages/game-core/package.json packages/game-core/package.json
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY --from=builder --chown=shoditsa:shoditsa /app/apps/api/dist apps/api/dist
 COPY --from=builder --chown=shoditsa:shoditsa /app/packages/database/migrations packages/database/migrations
+COPY --from=builder --chown=shoditsa:shoditsa /app/scripts scripts
+COPY --from=builder --chown=shoditsa:shoditsa /app/data data
 USER shoditsa
 EXPOSE 3001
 CMD ["node", "apps/api/dist/server.js"]

@@ -16,9 +16,11 @@
     }
   },
   "scripts": {
-    "dev": "npm-run-all --parallel dev:web dev:api",
+    "dev": "npm-run-all --parallel dev:web dev:api dev:worker",
     "dev:web": "vite apps/web",
     "dev:api": "tsx watch apps/api/src/server.ts",
+    "dev:worker": "tsx watch apps/api/src/worker.ts",
+    "worker": "node apps/api/dist/worker.js",
     "validate:shell": "node scripts/diagnostics/validate-app-shell.mjs",
     "typecheck": "tsc -b",
     "lint": "npm run validate:shell && npm run typecheck",

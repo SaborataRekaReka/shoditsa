@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameSessionSnapshot, GameStartBody, PublicContentItem } from '@shoditsa/contracts'
 import {
@@ -88,6 +88,8 @@ import { useDebouncedValue } from './hooks/use-debounced-value'
 import { ensureServerSession, SERVER_RUNTIME, useServerRuntime } from './hooks/use-server-runtime'
 import { addTicketLedgerEntry, allGames, claimDailyMilestones, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadDailyMilestoneClaims, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadStats, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
+
+const AdminApp = import.meta.env.VITE_YANDEX_GAMES === 'true' ? null : lazy(() => import('./admin/AdminApp'))
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -3906,7 +3908,7 @@ function ResumeSessionsView({ sessions, onOpen }: {
   </>
 }
 
-export default function App() {
+function GameApp() {
   const queryClient = useQueryClient()
   const serverRuntime = useServerRuntime()
   const serverArchive = useQuery({
@@ -4610,4 +4612,12 @@ export default function App() {
     {modal === 'anamnesis' && diagnosisAnamnesis && <AnamnesisModal text={diagnosisAnamnesis.text} dayNo={dayNumber(getMoscowDate())} onClose={() => setModal(null)} onStart={() => { setModal(null); playToday() }} />}
     {challenge && !challengeAccepted && <ChallengeInvite challenge={challenge} onAccept={acceptChallenge} onDismiss={dismissChallenge} />}
   </div>
+}
+
+export default function App() {
+  if (window.location.pathname.startsWith('/admin')) {
+    if (!AdminApp) return <main className="loading loading--error" role="alert"><AlertTriangle /><h1>Раздел недоступен</h1><p>Административная панель не включается в сборку Яндекс Игр.</p><a href="/">Вернуться в игру</a></main>
+    return <Suspense fallback={<main className="loading"><Sparkles /> Загружаем административную панель…</main>}><AdminApp /></Suspense>
+  }
+  return <GameApp />
 }
