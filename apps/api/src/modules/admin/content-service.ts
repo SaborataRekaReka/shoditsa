@@ -39,7 +39,7 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   if (payload.year != null && (year == null || !Number.isInteger(year) || year < 1800 || year > 2200)) error('year', 'invalid_range', 'Год должен быть от 1800 до 2200')
   const media = [payload.posterUrl, payload.headerUrl, payload.backdropUrl, ...(Array.isArray(payload.screenshots) ? payload.screenshots : [])]
   for (const value of media) {
-    if (value != null && value !== '' && (typeof value !== 'string' || !/^(https?:\/\/|\/?(?:data|media|images)\/)/.test(value))) {
+    if (value != null && value !== '' && (typeof value !== 'string' || !/^(https?:\/\/|(?:\.\/)?\/?(?:data|media|images)\/)/.test(value))) {
       error('media', 'invalid_url', 'Медиа должно использовать HTTPS или разрешённый внутренний путь')
       break
     }
@@ -190,8 +190,11 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
       const baseByItem = new Map(baseRows.map((row) => [row.itemId, row]))
       const merged = baseRows.map((row) => ({ base: row, change: changesByItem.get(row.itemId), payload: asRecord(changesByItem.get(row.itemId)?.afterPayload ?? row.payload) }))
       for (const change of changes) if (!baseByItem.has(change.itemId)) merged.push({ base: null as never, change, payload: asRecord(change.afterPayload) })
-      const allIssues = merged.flatMap((entry) => validateContentPayload(entry.payload, (entry.change?.mode ?? entry.base.mode) as ContentMode).map((issue) => ({ ...issue, itemId: text(entry.payload.id) })))
-      if (allIssues.some((issue) => issue.level === 'error')) throw new ApiError(422, 'WORKSPACE_VALIDATION_FAILED', 'Сборка остановлена из-за ошибок карточек', { fieldErrors: allIssues.slice(0, 200) })
+      // The active revision can contain legacy records created before a newer validation rule.
+      // A workspace build must block regressions in changed cards, not unrelated unchanged records.
+      const changedIssues = merged.filter((entry) => entry.change).flatMap((entry) => validateContentPayload(entry.payload, entry.change!.mode as ContentMode).map((issue) => ({ ...issue, itemId: text(entry.payload.id) })))
+      if (changedIssues.some((issue) => issue.level === 'error')) throw new ApiError(422, 'WORKSPACE_VALIDATION_FAILED', 'Сборка остановлена из-за ошибок карточек', { fieldErrors: changedIssues.slice(0, 200) })
+      const changedWarnings = changedIssues.filter((issue) => issue.level === 'warning')
       const baseModeCounts = new Map<ContentMode, number>()
       const nextModeCounts = new Map<ContentMode, number>()
       for (const row of baseRows) baseModeCounts.set(row.mode, (baseModeCounts.get(row.mode) ?? 0) + 1)
@@ -245,9 +248,9 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
       }
       await tx.insert(contentRevisionModes).values([...modeCounts].map(([mode, itemsCount]) => ({ revisionId: revision.id, mode, itemsCount, sourceChecksum: sha256(merged.filter((entry) => (entry.change?.mode ?? entry.base.mode) === mode).map((entry) => entry.payload)) })))
       await tx.update(contentRevisions).set({ status: 'ready' }).where(eq(contentRevisions.id, revision.id))
-      await tx.update(contentWorkspaces).set({ status: 'ready', builtRevisionId: revision.id, updatedAt: new Date(), lastValidationSummary: { errors: 0, warnings: allIssues.length, issues: allIssues.slice(0, 200) } }).where(eq(contentWorkspaces.id, workspace.id))
+      await tx.update(contentWorkspaces).set({ status: 'ready', builtRevisionId: revision.id, updatedAt: new Date(), lastValidationSummary: { errors: 0, warnings: changedWarnings.length, issues: changedWarnings.slice(0, 200) } }).where(eq(contentWorkspaces.id, workspace.id))
       await tx.insert(auditLog).values({ actorUserId: actor.id, action: 'content.workspace.build', entityType: 'content_workspace', entityId: workspace.id, before: { baseRevisionId: workspace.baseRevisionId }, after: { builtRevisionId: revision.id, checksum, counts: Object.fromEntries(modeCounts) }, requestId })
-      return { workspaceId: workspace.id, revisionId: revision.id, version, checksum, counts: Object.fromEntries(modeCounts), warnings: allIssues }
+      return { workspaceId: workspace.id, revisionId: revision.id, version, checksum, counts: Object.fromEntries(modeCounts), warnings: changedWarnings }
     })
   } catch (error) {
     const code = error instanceof ApiError ? error.code : 'REVISION_BUILD_FAILED'

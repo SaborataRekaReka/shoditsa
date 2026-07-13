@@ -3,7 +3,7 @@ import { FormatRegistry } from '@sinclair/typebox'
 import { describe, expect, it } from 'vitest'
 import {
   AttemptBodySchema, CatalogSearchQuerySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
-  LegacyImportBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
+  LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
 } from '../src/index.js'
 
 FormatRegistry.Set('uuid', (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
@@ -28,6 +28,12 @@ describe('API schemas', () => {
     expect(Value.Check(MusicPipelineManualPreviewBodySchema, { artists })).toBe(true)
     expect(Value.Check(MusicPipelineRunBodySchema, { scenario: 'manual', maxItems: 5, artists, confirmation: true })).toBe(true)
     expect(Value.Check(MusicPipelineManualPreviewBodySchema, { artists: Array.from({ length: 501 }, (_, index) => ({ artist: `Artist ${index}` })) })).toBe(false)
+  })
+  it('accepts a bounded manual Kinopoisk movie queue', () => {
+    const movies = [{ kinopoiskId: 326 }, { kinopoiskId: 435, hint: 'проверить награды' }]
+    expect(Value.Check(MoviePipelineManualPreviewBodySchema, { movies })).toBe(true)
+    expect(Value.Check(MoviePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, movies, confirmation: true })).toBe(true)
+    expect(Value.Check(MoviePipelineManualPreviewBodySchema, { movies: [{ kinopoiskId: 0 }] })).toBe(false)
   })
   it('requires explicit confirmation when saving an integration credential', () => {
     expect(Value.Check(IntegrationSecretUpdateBodySchema, { value: 'secret' })).toBe(false)

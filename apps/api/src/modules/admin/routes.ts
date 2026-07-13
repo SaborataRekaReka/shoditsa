@@ -9,12 +9,14 @@ import {
   AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
   IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
-  MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
+  MusicPipelineRunBodySchema, MoviePipelineEstimateBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema,
+  PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type IntegrationKey, type IntegrationSecretUpdateBody,
   type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
+  type MoviePipelineEstimateBody, type MoviePipelineManualPreviewBody, type MoviePipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
 import { Type } from '@sinclair/typebox'
@@ -82,6 +84,34 @@ const previewManualArtists = async (db: Database, artists: MusicPipelineManualPr
     const status = !normalized ? 'invalid' : seen.has(normalized) ? 'duplicate_input' : match ? 'existing_card' : 'ready'
     if (normalized) seen.add(normalized)
     return { index, artist, country: entry.country?.trim() || null, hint: entry.hint?.trim() || null, normalized, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
+  })
+  return {
+    items,
+    summary: {
+      total: items.length,
+      ready: items.filter((entry) => entry.status === 'ready').length,
+      duplicates: items.filter((entry) => entry.status === 'duplicate_input').length,
+      existing: items.filter((entry) => entry.status === 'existing_card').length,
+      invalid: items.filter((entry) => entry.status === 'invalid').length,
+    },
+  }
+}
+
+const previewManualMovies = async (db: Database, movies: MoviePipelineManualPreviewBody['movies']) => {
+  const activeMovies = await db.select({ itemId: contentItemVersions.itemId, titleRu: contentItemVersions.titleRu, payload: contentItemVersions.payload })
+    .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+    .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'movie')))
+  const existing = new Map<number, { itemId: string; title: string }>()
+  for (const card of activeMovies) {
+    const kinopoiskId = Number(asRecord(card.payload).kinopoiskId)
+    if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) existing.set(kinopoiskId, { itemId: card.itemId, title: card.titleRu })
+  }
+  const seen = new Set<number>()
+  const items = movies.map((entry, index) => {
+    const kinopoiskId = Number(entry.kinopoiskId); const match = existing.get(kinopoiskId)
+    const status = !Number.isInteger(kinopoiskId) || kinopoiskId <= 0 ? 'invalid' : seen.has(kinopoiskId) ? 'duplicate_input' : match ? 'existing_card' : 'ready'
+    if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) seen.add(kinopoiskId)
+    return { index, kinopoiskId, hint: entry.hint?.trim() || null, status, existingItemId: match?.itemId ?? null, existingTitle: match?.title ?? null }
   })
   return {
     items,
@@ -373,8 +403,10 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     await admin(request, reply, deps)
     const last = await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(20)
     const music = last.filter((entry) => entry.pipelineKey === 'music')
+    const movies = last.filter((entry) => entry.pipelineKey === 'movie')
     return { items: [
       { key: 'music', title: 'Музыка', description: 'Поиск, проверка источников и подготовка музыкальных карточек', mode: 'music', state: 'connected', lastRun: music[0] ?? null, awaitingReview: music.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
+      { key: 'movie', title: 'Кино · Кинопоиск', description: 'Поиск фильмов, данные Кинопоиска, фактчекинг и подготовка карточек', mode: 'movie', state: 'connected', lastRun: movies[0] ?? null, awaitingReview: movies.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'translation', title: 'Машинный перевод', description: 'Единый review-контур для переводов', mode: null, state: 'not_connected', lastRun: null, awaitingReview: 0 },
     ] }
   })
@@ -416,6 +448,46 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     }).returning())[0]
     const job = (await deps.db.insert(backgroundJobs).values({ type: 'music_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id, offset: 0 } }).returning())[0]
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.music.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { scenario: body.scenario, maxItems: body.maxItems, jobId: job.id }, requestId: request.id })
+    return reply.code(202).send({ runId: run.id, jobId: job.id })
+  })
+
+  app.post('/api/v1/admin/pipelines/movie/estimate', { schema: { body: MoviePipelineEstimateBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const body = request.body as MoviePipelineEstimateBody
+    const itemCount = body.scenario === 'manual' ? body.movies?.length ?? 0 : body.maxItems
+    const calls = body.aiMode === 'never' ? 0 : itemCount
+    return { items: itemCount, aiReviewCalls: calls, estimatedCost: Number((calls * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: deps.config.musicPipelineModel }
+  })
+
+  app.post('/api/v1/admin/pipelines/movie/manual/preview', { schema: { body: MoviePipelineManualPreviewBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    return previewManualMovies(deps.db, (request.body as MoviePipelineManualPreviewBody).movies)
+  })
+
+  app.post('/api/v1/admin/pipelines/movie/runs', { schema: { body: MoviePipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as MoviePipelineRunBody; const key = requireIdempotencyKey(request)
+    if (body.scenario === 'selected' && (!body.itemIds?.length || body.itemIds.length > body.maxItems)) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите карточки фильмов в пределах лимита')
+    let manualMovies: MoviePipelineManualPreviewBody['movies'] = []
+    if (body.scenario === 'manual') {
+      if (!body.movies?.length) throw new ApiError(422, 'PIPELINE_MOVIES_REQUIRED', 'Добавьте хотя бы один ID Кинопоиска')
+      const preview = await previewManualMovies(deps.db, body.movies)
+      manualMovies = preview.items.filter((entry) => entry.status === 'ready').map(({ kinopoiskId, hint }) => ({ kinopoiskId, ...(hint ? { hint } : {}) }))
+      if (!manualMovies.length) throw new ApiError(409, 'PIPELINE_MOVIES_ALREADY_EXIST', 'В списке нет новых фильмов для обработки', preview.summary)
+    }
+    const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
+    if (!integrations.KINOPOISK_API_KEYS) throw new ApiError(409, 'KINOPOISK_API_KEY_REQUIRED', 'Добавьте ключ Кинопоиск Unofficial API в разделе «API-интеграции»')
+    if (body.aiMode !== 'never' && !integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
+    const itemCount = body.scenario === 'manual' ? manualMovies.length : body.maxItems
+    const estimatedCalls = body.aiMode === 'never' ? 0 : itemCount
+    const run = (await deps.db.insert(pipelineRuns).values({
+      pipelineKey: 'movie', pipelineVersion: 'kinopoisk-cli-v1', status: 'queued', createdBy: actor.id, itemsTotal: itemCount,
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], movies: manualMovies },
+      settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
+      estimatedCost: String((estimatedCalls * .02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+    }).returning())[0]
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'movie_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id, offset: 0 } }).returning())[0]
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.movie.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { scenario: body.scenario, maxItems: body.maxItems, jobId: job.id }, requestId: request.id })
     return reply.code(202).send({ runId: run.id, jobId: job.id })
   })
 

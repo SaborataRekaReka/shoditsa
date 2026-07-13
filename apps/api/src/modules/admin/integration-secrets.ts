@@ -12,7 +12,7 @@ export const integrationRegistry: ReadonlyArray<{
   required: boolean
   secret: boolean
 }> = [
-  { key: 'OPENAI_API_KEY', title: 'OpenAI API key', provider: 'OpenAI', description: 'Поиск исполнителей, фактчекинг и генерация игровых подсказок.', required: true, secret: true },
+  { key: 'OPENAI_API_KEY', title: 'OpenAI API key', provider: 'OpenAI', description: 'Поиск контента, фактчекинг и генерация игровых подсказок для музыки и кино.', required: true, secret: true },
   { key: 'LASTFM_API_KEY', title: 'Last.fm API key', provider: 'Last.fm', description: 'Популярность, теги, похожие исполнители, треки и альбомы.', required: false, secret: true },
   { key: 'SPOTIFY_CLIENT_ID', title: 'Spotify Client ID', provider: 'Spotify', description: 'Идентификатор приложения Spotify Web API.', required: false, secret: false },
   { key: 'SPOTIFY_CLIENT_SECRET', title: 'Spotify Client Secret', provider: 'Spotify', description: 'Секрет приложения Spotify Web API.', required: false, secret: true },

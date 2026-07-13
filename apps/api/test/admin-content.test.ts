@@ -29,6 +29,15 @@ describe('admin content validation', () => {
     ]))
   })
 
+  it('accepts legacy internal media paths rooted with dot slash', () => {
+    const issues = validateContentPayload({
+      ...base,
+      posterUrl: './data/libraries/movies/img/admin-test-card/poster.webp',
+      screenshots: ['./images/admin-test-card/frame.webp'],
+    }, 'movie')
+    expect(issues.filter((issue) => issue.level === 'error')).toEqual([])
+  })
+
   it('enforces mode-specific music and diagnosis fields', () => {
     const musicIssues = validateContentPayload({ ...base, mode: 'music', allowedInGame: undefined }, 'music')
     const diagnosisIssues = validateContentPayload({ ...base, mode: 'diagnosis' }, 'diagnosis')

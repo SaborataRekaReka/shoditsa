@@ -220,4 +220,15 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(preview.json().summary).toMatchObject({ total: 3, ready: 2, duplicates: 1 })
     expect(preview.json().items[1].status).toBe('duplicate_input')
   })
+
+  it('previews a manual Kinopoisk list and removes duplicate IDs', async () => {
+    const kinopoiskId = 999_999_991
+    const preview = await app.inject({
+      method: 'POST', url: '/api/v1/admin/pipelines/movie/manual/preview',
+      payload: { movies: [{ kinopoiskId }, { kinopoiskId, hint: 'дубликат' }] },
+    })
+    expect(preview.statusCode, preview.body).toBe(200)
+    expect(preview.json().summary).toMatchObject({ total: 2, ready: 1, duplicates: 1 })
+    expect(preview.json().items[1].status).toBe('duplicate_input')
+  })
 })

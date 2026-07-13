@@ -2,7 +2,7 @@
 
 ## Задача
 
-Процесс обогащает сущности по одной, помнит результат каждого шага и безопасно продолжается после остановки. Музыка — первый адаптер; общее ядро не зависит от музыкальной схемы и рассчитано на последующие библиотеки. Доверенный источник по умолчанию — текущая production-библиотека `items.json`.
+Процесс обогащает сущности по одной, помнит результат каждого шага и безопасно продолжается после остановки. Музыка и кино используют одно общее ядро. Доменный адаптер кино получает структурированные данные через Kinopoisk Unofficial API, а результаты обоих доменов проходят одинаковый review-контур до рабочей ревизии. Доверенный источник по умолчанию — текущая production-библиотека `items.json`.
 
 Основной принцип качества и цены: один AI-вызов на discovery-партию, затем структурированные API и один AI-вызов на нового артиста для fact-check и подсказки. Production-файлы не меняются во время поиска.
 
@@ -108,7 +108,7 @@ npm run data:validate
 
 ## Новый домен
 
-Для фильмов, игр или диагнозов нужен модуль `scripts/enrichment-agent/adapters/<domain>.mjs`, экспортирующий `<domain>Adapter` с методами:
+Для игр, диагнозов и других следующих доменов нужен модуль `scripts/enrichment-agent/adapters/<domain>.mjs`, экспортирующий `<domain>Adapter` с методами:
 
 - `loadItems` — загрузить seed;
 - `entityKey` и `fingerprintInput` — задать стабильную идентичность;
@@ -122,3 +122,23 @@ npm run data:validate
 node scripts/enrichment-agent/run.mjs games plan
 node scripts/enrichment-agent/run.mjs games run --max-items=10
 ```
+
+## Кино · Кинопоиск
+
+Кино-адаптер работает с полнометражными фильмами. Он вращает пул из пяти ключей Kinopoisk Unofficial API, получает карточку, съёмочную группу, факты и награды, затем при включённом ИИ фактчекает материал и создаёт безопасную русскую подсказку. Новые записи всегда создаются с `allowedInGame: false` и должны быть вручную одобрены в админке.
+
+```powershell
+npm run data:agent:movie:status
+npm run data:agent:movie:plan
+npm run data:agent:movie -- --max-items=5
+```
+
+Для ручной партии источник может содержать числа или объекты `{ "kinopoiskId": 326 }`:
+
+```powershell
+node scripts/enrichment-agent/run.mjs movie run --source=tmp/movie-ids.json --max-items=10
+```
+
+Нужен хотя бы один `KINOPOISK_UNOFFICIAL_API_KEY_1..5` (либо legacy `KINOPOISK_API_KEY(S)`). `OPENAI_API_KEY` обязателен для автоматического фактчекинга и генерации подсказки; с `--ai=never` метаданные всё равно собираются, но результат остаётся на ручной проверке. Сценарий discovery берёт отсутствующие фильмы из `TOP_250_MOVIES`, не полагаясь на HTML-парсинг Кинопоиска.
+
+В админке доступны `POST /api/v1/admin/pipelines/movie/estimate`, `/manual/preview` и `/runs`. Worker сохраняет результаты в `pipeline_run_items`; одобрение использует тот же diff и workspace flow, что и музыка.

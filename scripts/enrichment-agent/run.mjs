@@ -158,7 +158,7 @@ const main = async () => {
         next: queue.filter(isRunnableQueueItem).slice(0, options.maxItems).map(({ key, reason, item }) => ({
           key,
           reason,
-          artist: item?.artist ?? null,
+          entity: item?.artist ?? item?.titleRu ?? item?.title ?? item?.kinopoiskId ?? null,
           rank: item?.rank ?? null,
         })),
       }, null, 2))
@@ -173,7 +173,7 @@ const main = async () => {
       + 'Configure it before run, or use --ai=never for metadata-only collection without auto-acceptance.'
     )
   }
-  if (options.action === 'discover' && !process.env[options.apiKeyEnv]) {
+  if (options.action === 'discover' && adapter.discoveryRequiresAi !== false && !process.env[options.apiKeyEnv]) {
     throw new Error(`${options.apiKeyEnv} is required for web research and artist discovery.`)
   }
 
@@ -202,9 +202,9 @@ const main = async () => {
         total: result.total,
         output: path.relative(ROOT, result.outputPath).replace(/\\/g, '/'),
         candidates: result.additions.map((item) => ({
-          artist: item.artist,
-          reason: item.provenance.reason,
-          sourceUrls: item.provenance.sourceUrls,
+          entity: item.artist ?? item.title ?? item.kinopoiskId ?? null,
+          reason: item.provenance?.reason ?? item.provenance?.source ?? null,
+          sourceUrls: item.provenance?.sourceUrls ?? [],
         })),
       }, null, 2))
       return
