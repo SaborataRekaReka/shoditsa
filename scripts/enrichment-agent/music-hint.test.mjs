@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { validateMusicHint } from './adapters/music.mjs'
+import { buildFallbackMusicHint, validateMusicHint } from './adapters/music.mjs'
 
 const field = (primaryValue) => ({ primaryValue })
 const record = {
@@ -37,4 +37,25 @@ test('music hint rejects artist and release title spoilers', () => {
   assert.equal(trackLeak.valid, false)
   assert.ok(artistLeak.errors.includes('hint_contains_answer_or_title'))
   assert.ok(trackLeak.errors.includes('hint_contains_answer_or_title'))
+})
+
+test('fallback hint removes the artist without deleting genre words from a compound alias', () => {
+  const alisa = {
+    input: { artist: 'Алиса' },
+    canonicalName: field('Alisa'),
+    displayNameRu: field('Алиса'),
+    displayNameEn: field('Alisa'),
+    aliases: field(['Алиса (рок-группа)', 'АлисА']),
+    topTracks: field([]),
+    topAlbums: field([]),
+    biography: field('«Алиса» — советская и российская рок-группа, образованная в 1983 году в Ленинграде. Одна из самых популярных групп русского рока, известная многолетней работой Константина Кинчева.'),
+    officialLinks: field(['https://ru.wikipedia.org/wiki/Алиса_(группа)']),
+  }
+
+  const hint = buildFallbackMusicHint(alisa)
+  assert.ok(hint)
+  assert.equal(hint.text.includes('Алиса'), false)
+  assert.equal(hint.text.includes('рок-группа'), true)
+  assert.equal(hint.text.includes('русского рока'), true)
+  assert.equal(validateMusicHint(hint, alisa).valid, true)
 })

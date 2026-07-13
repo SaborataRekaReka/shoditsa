@@ -197,10 +197,16 @@ export const buildFallbackMusicHint = (record) => {
   if (!text) return null
   const forbidden = hintForbiddenPhrases(record)
   for (const phrase of forbidden) {
-    const words = phrase.split(' ').filter((word) => word.length >= 3)
-    for (const word of [phrase, ...words]) text = text.replace(new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'giu'), '')
+    const pattern = phrase.split(' ')
+      .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('[\\s\\p{P}\\p{S}]*')
+    text = text.replace(new RegExp(pattern, 'giu'), '')
   }
-  text = text.replace(/^[\s,.;:—–-]+/, '').replace(/\s+/g, ' ').trim()
+  text = text
+    .replace(/[«“"']\s*[»”"']/g, '')
+    .replace(/^[\s,.;:—–-]+/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
   text = text ? `${text[0].toUpperCase()}${text.slice(1)}` : text
   if (text.length > 280) {
     const cut = text.slice(0, 280)
