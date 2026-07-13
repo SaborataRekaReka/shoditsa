@@ -175,6 +175,15 @@ describe('guest to permanent account lifecycle', () => {
     expect(movedLedger.filter((entry) => entry.reason === 'game-completion')).toHaveLength(2)
     expect(movedLedger.reduce((sum, entry) => sum + entry.amount, 0)).toBe(afterExistingAccountMerge.wallet.balance)
 
+    const challengeSeedGuest = await createGuest()
+    const seriesChallenge = await app.inject({
+      method: 'POST',
+      url: '/api/v1/games/start',
+      headers: { cookie: challengeSeedGuest.cookie },
+      payload: { kind: 'daily', mode: 'series', period: 'all', difficulty: null, archiveDate: null },
+    })
+    expect(seriesChallenge.statusCode, seriesChallenge.body).toBe(200)
+
     const legacySeries = await database.db
       .select({ itemId: contentItemVersions.itemId })
       .from(dailyChallenges)
