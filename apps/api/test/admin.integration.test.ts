@@ -83,7 +83,10 @@ describe('admin API guard, workspace and telemetry', () => {
       await database.db.delete(contentItems).where(eq(contentItems.id, exchangeNewItemId))
       if (uploadedMediaFile) await rm(uploadedMediaFile, { force: true })
       await database.db.delete(user).where(eq(user.id, forgedAdminId))
-      if (adminCreated) await database.db.delete(user).where(eq(user.id, adminId))
+      if (adminCreated) {
+        await database.db.delete(auditLog).where(eq(auditLog.actorUserId, adminId))
+        await database.db.delete(user).where(eq(user.id, adminId))
+      }
       else if (adminProfileCreated) await database.db.delete(playerProfiles).where(eq(playerProfiles.userId, adminId))
       else if (originalAdminRole && originalAdminRole !== 'admin') await database.db.update(playerProfiles).set({ role: originalAdminRole }).where(eq(playerProfiles.userId, adminId))
       await database.client.end()
