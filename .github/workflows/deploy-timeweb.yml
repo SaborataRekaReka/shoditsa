@@ -165,12 +165,12 @@ jobs:
           set_env_value ADMIN_USER_IDS "$ADMIN_USER_ID"
           chmod 600 "$API_ENV_FILE"
 
-          if ! api_compose --profile migrate run --rm shoditsa-migrate; then
+          if ! api_compose --profile migrate run --rm shoditsa-migrate </dev/null; then
             rollback_api
             exit 1
           fi
           if [ "$ADMIN_ROLE" != 'admin' ]; then
-            if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/admin-bootstrap.js --email=breneize@yandex.ru; then
+            if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/admin-bootstrap.js --email=breneize@yandex.ru </dev/null; then
               rollback_api
               exit 1
             fi
