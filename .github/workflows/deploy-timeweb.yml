@@ -21,7 +21,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,6 +29,13 @@ jobs:
       - run: npm ci
       - name: Validate and build web release
         run: npm run typecheck && npm test && npm run build
+      - name: Build API image
+        run: |
+          set -euo pipefail
+          docker build --build-arg GIT_SHA="$GITHUB_SHA" -f infra/docker/Dockerfile.api -t "shoditsa-api:${GITHUB_SHA}" .
+          docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/server.js
+          docker save "shoditsa-api:${GITHUB_SHA}" | gzip -1 > release-api-image.tar.gz
+          test -s release-api-image.tar.gz
       - name: Package web release
         run: |
           set -euo pipefail
@@ -54,9 +61,11 @@ jobs:
           set -euo pipefail
           REMOTE="$DEPLOY_USER@$DEPLOY_HOST"
           REMOTE_ARCHIVE="/tmp/shoditsa-web-${GITHUB_SHA}.tar.gz"
+          REMOTE_API_IMAGE="/tmp/shoditsa-api-${GITHUB_SHA}.tar.gz"
           ssh -p "$DEPLOY_PORT" "$REMOTE" "mkdir -p '$DEPLOY_ROOT/releases'"
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' bash -s" <<'REMOTE'
+          scp -P "$DEPLOY_PORT" release-api-image.tar.gz "$REMOTE:$REMOTE_API_IMAGE"
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE'
           set -euo pipefail
           trap 'status=$?; echo "remote deploy failed at line ${LINENO}: ${BASH_COMMAND} (exit ${status})" >&2' ERR
           STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
@@ -68,6 +77,94 @@ jobs:
           test -f "$STAGE/web/build-manifest.json"
           test ! -e "$STAGE/web/data"
           chmod -R a+rX "$STAGE"
+
+          # The web and API are one release. Load the API image first and only
+          # expose the new web after the matching API has passed migrations and
+          # readiness checks.
+          docker load --input "$REMOTE_API_IMAGE"
+          mapfile -t API_CONTAINERS < <(docker ps --filter 'label=com.docker.compose.service=shoditsa-api' -q)
+          if [ "${#API_CONTAINERS[@]}" -ne 1 ]; then
+            echo "Expected exactly one running Shoditsa API container, found ${#API_CONTAINERS[@]}" >&2
+            exit 1
+          fi
+          API_CONTAINER="${API_CONTAINERS[0]}"
+          PREVIOUS_API_IMAGE="$(docker inspect --format '{{.Config.Image}}' "$API_CONTAINER")"
+          API_COMPOSE_FILES="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.config_files"}}' "$API_CONTAINER")"
+          API_COMPOSE_DIR="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' "$API_CONTAINER")"
+          API_COMPOSE_PROJECT="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "$API_CONTAINER")"
+          API_COMPOSE_SERVICE="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.service"}}' "$API_CONTAINER")"
+          if [ -z "$API_COMPOSE_FILES" ] || [[ "$API_COMPOSE_FILES" == *,* ]] || [ ! -f "$API_COMPOSE_FILES" ] || [ -z "$API_COMPOSE_DIR" ] || [ -z "$API_COMPOSE_PROJECT" ] || [ -z "$API_COMPOSE_SERVICE" ]; then
+            echo "Shoditsa API is missing a supported single-file Compose configuration" >&2
+            exit 1
+          fi
+          API_IMAGE_LINES="$(grep -Ec '^[[:space:]]*image:[[:space:]]+shoditsa-api:[^[:space:]]+' "$API_COMPOSE_FILES" || true)"
+          if [ "$API_IMAGE_LINES" -ne 2 ]; then
+            echo "Expected exactly two Shoditsa API image declarations, found ${API_IMAGE_LINES}" >&2
+            exit 1
+          fi
+          API_COMPOSE_BACKUP="${API_COMPOSE_FILES}.pre-${GITHUB_SHA}"
+          cp -a "$API_COMPOSE_FILES" "$API_COMPOSE_BACKUP"
+          sed -Ei "s#^([[:space:]]*image:[[:space:]]*)shoditsa-api:[^[:space:]]+#\1shoditsa-api:${GITHUB_SHA}#" "$API_COMPOSE_FILES"
+
+          api_compose() {
+            docker compose --project-directory "$API_COMPOSE_DIR" --project-name "$API_COMPOSE_PROJECT" -f "$API_COMPOSE_FILES" "$@"
+          }
+          rollback_api() {
+            cp -a "$API_COMPOSE_BACKUP" "$API_COMPOSE_FILES"
+            api_compose config --quiet
+            api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" || true
+          }
+          api_compose config --quiet
+          api_compose --profile migrate config --services | grep -Fxq 'shoditsa-migrate'
+          api_compose config --services | grep -Fxq 'shoditsa-postgres'
+
+          POSTGRES_CONTAINER="$(api_compose ps -q shoditsa-postgres)"
+          if [ -z "$POSTGRES_CONTAINER" ]; then
+            echo "Shoditsa PostgreSQL container is not running" >&2
+            rollback_api
+            exit 1
+          fi
+          mkdir -p "${DEPLOY_ROOT}/backups"
+          DATABASE_BACKUP="${DEPLOY_ROOT}/backups/pre-deploy-${GITHUB_SHA}.dump"
+          if ! docker exec "$POSTGRES_CONTAINER" pg_dump -U shoditsa_app -d shoditsa -Fc > "$DATABASE_BACKUP" || [ ! -s "$DATABASE_BACKUP" ]; then
+            echo "Failed to create the pre-deploy PostgreSQL backup" >&2
+            rollback_api
+            exit 1
+          fi
+          chmod 600 "$DATABASE_BACKUP"
+
+          if ! api_compose --profile migrate run --rm shoditsa-migrate; then
+            rollback_api
+            exit 1
+          fi
+          if ! api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE"; then
+            rollback_api
+            exit 1
+          fi
+          API_CONTAINER="$(api_compose ps -q "$API_COMPOSE_SERVICE")"
+          for attempt in {1..24}; do
+            API_HEALTH="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$API_CONTAINER")"
+            [ "$API_HEALTH" = 'healthy' ] && break
+            sleep 5
+          done
+          if [ "$API_HEALTH" != 'healthy' ]; then
+            echo "Shoditsa API did not become healthy (status: ${API_HEALTH})" >&2
+            docker logs --tail 100 "$API_CONTAINER" >&2 || true
+            rollback_api
+            exit 1
+          fi
+          API_META="$(docker exec "$API_CONTAINER" wget -q -O - http://127.0.0.1:3001/api/v1/meta)"
+          if ! grep -Fq "\"buildSha\":\"${GITHUB_SHA}\"" <<<"$API_META"; then
+            echo "Shoditsa API does not report release ${GITHUB_SHA}" >&2
+            rollback_api
+            exit 1
+          fi
+          if ! grep -Fq '"yandex":true' <<<"$API_META"; then
+            echo "Shoditsa API does not advertise Yandex OAuth" >&2
+            rollback_api
+            exit 1
+          fi
+          rm -f "$API_COMPOSE_BACKUP"
 
           # Releases are immutable. A retry of the same SHA reuses the already
           # validated release; activation itself is one atomic symlink rename.
@@ -169,7 +266,12 @@ jobs:
           fi
 
           test "$(readlink -f "$CURRENT_ROOT")" = "$(readlink -f "$RELEASE/web")"
-          rm -f "$REMOTE_ARCHIVE"
+          rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE"
+          while IFS= read -r image; do
+            if [ "$image" != "shoditsa-api:${GITHUB_SHA}" ] && [ "$image" != "$PREVIOUS_API_IMAGE" ]; then
+              docker image rm "$image" >/dev/null 2>&1 || true
+            fi
+          done < <(docker images --format '{{.Repository}}:{{.Tag}}' shoditsa-api)
           REMOTE
       - name: External smoke
         env:

@@ -38,6 +38,7 @@ export type MetaResponse = {
   activeRevision: { id: string; version: string } | null
   modes: Array<{ mode: ContentMode; count: number }>
   minimumFrontendVersion: string
+  buildSha: string
   auth: {
     emailPassword: boolean
     emailVerification: boolean

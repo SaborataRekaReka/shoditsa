@@ -45,6 +45,7 @@ import { DailyProgressStub } from './features/daily-progress/DailyProgressStub'
 import { buildDailyHubState, savedGameAttemptCount } from './features/daily-progress/daily-progress'
 import { buildLegacyImport, legacyImportCompleted, markLegacyImportCompleted } from './features/auth/legacy-import'
 import { notifyAuthSessionChanged, useAuthSession, type AuthSession } from './features/auth/use-auth-session'
+import { localizeYandexOAuthUrl } from './features/auth/yandex-oauth'
 import { ChallengeInvite } from './features/challenge/ChallengeInvite'
 import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
 import { nextDailyMode } from './features/daily-route/daily-route'
@@ -3536,7 +3537,7 @@ function AccountAccessPanel({ session, loadingSession, refreshSession }: {
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
       redirected = true
-      window.location.assign(oauthUrl)
+      window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {
       trackMetrikaGoal('auth_error', { action: 'oauth_yandex' })
       if (value instanceof ApiClientError && value.status === 404) {

@@ -16,7 +16,9 @@ COPY data data
 RUN npm run build:api
 
 FROM node:24.14.1-alpine3.23 AS runtime
+ARG GIT_SHA=dev
 ENV NODE_ENV=production
+ENV GIT_SHA=${GIT_SHA}
 WORKDIR /app
 RUN addgroup -S shoditsa && adduser -S -G shoditsa -u 10001 shoditsa
 COPY package.json package-lock.json ./

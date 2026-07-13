@@ -5,6 +5,7 @@ import { ApiClientError, api } from '../../api/client'
 import { BrandLogo } from '../../components/app-shell/AppShell'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { notifyAuthSessionChanged } from './use-auth-session'
+import { localizeYandexOAuthUrl } from './yandex-oauth'
 
 type AuthPageMode = 'login' | 'register'
 
@@ -241,7 +242,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
       redirected = true
-      window.location.assign(oauthUrl)
+      window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {
       trackMetrikaGoal('auth_error', { action: 'oauth_yandex' })
       setError(value instanceof ApiClientError && value.status === 404

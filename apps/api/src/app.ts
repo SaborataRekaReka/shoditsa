@@ -123,6 +123,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       activeRevision: active[0] ?? null,
       modes: counts,
       minimumFrontendVersion: '0.1.0',
+      buildSha: config.gitSha,
       auth: {
         emailPassword: config.authEmailEnabled,
         emailVerification: config.authEmailEnabled && emailInfrastructureReady,
