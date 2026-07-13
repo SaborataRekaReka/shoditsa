@@ -4,28 +4,31 @@ import type { AppConfig } from '@shoditsa/config'
 import type { PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
 import {
   contentItemVersions, dailyChallenges, gameAttempts, gameSessions, legacyImports, periodEntitlements,
-  playerProfiles, type Database, walletAccounts, walletLedger,
+  playerProfiles, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { compareTitles } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 
 type LegacyGame = { mode?: unknown; period?: unknown; date?: unknown; difficulty?: unknown; attempts?: unknown; attemptTitleIds?: unknown }
-type LegacyPayload = { deviceId?: unknown; schemaVersion?: unknown; games?: unknown; wallet?: unknown; periodUnlocks?: unknown }
+type LegacyPayload = { consent?: unknown; deviceId?: unknown; schemaVersion?: unknown; games?: unknown; wallet?: unknown; periodUnlocks?: unknown }
 const modes = new Set<TitleMode>(['movie', 'series', 'anime', 'game', 'music', 'diagnosis'])
 const periods = new Set<PeriodKey>(['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'])
 
 export const importLegacy = async (db: Database, config: AppConfig, userId: string, payload: LegacyPayload) => {
   if (!config.legacyImportEnabled) throw new ApiError(410, 'LEGACY_IMPORT_DISABLED', 'Перенос локального прогресса завершён')
+  if (payload.consent !== true) throw new ApiError(422, 'LEGACY_IMPORT_CONSENT_REQUIRED', 'Нужно явно подтвердить перенос локального прогресса')
   const serialized = JSON.stringify(payload)
   if (Buffer.byteLength(serialized) > 1_000_000) throw new ApiError(413, 'LEGACY_IMPORT_TOO_LARGE', 'Данные переноса превышают 1 МБ')
-  const deviceId = typeof payload.deviceId === 'string' && /^[0-9a-f-]{36}$/i.test(payload.deviceId) ? payload.deviceId : null
+  const deviceId = typeof payload.deviceId === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payload.deviceId) ? payload.deviceId : null
   const schemaVersion = Number.isInteger(payload.schemaVersion) ? Number(payload.schemaVersion) : 1
   if (!deviceId) throw new ApiError(422, 'LEGACY_DEVICE_ID_INVALID', 'Нужен корректный deviceId')
   const checksum = createHash('sha256').update(serialized).digest('hex')
 
   return db.transaction(async (tx) => {
-    const existing = await tx.select().from(legacyImports).where(and(eq(legacyImports.userId, userId), eq(legacyImports.deviceId, deviceId), eq(legacyImports.schemaVersion, schemaVersion))).limit(1)
+    const existing = await tx.select().from(legacyImports).where(and(eq(legacyImports.userId, userId), eq(legacyImports.schemaVersion, schemaVersion))).limit(1)
     if (existing[0]) return { ...existing[0], alreadyImported: true }
+    const importedDevice = await tx.select().from(legacyImports).where(and(eq(legacyImports.deviceId, deviceId), eq(legacyImports.schemaVersion, schemaVersion))).limit(1)
+    if (importedDevice[0]) throw new ApiError(409, 'LEGACY_DEVICE_ALREADY_IMPORTED', 'Прогресс с этого устройства уже перенесён в другой аккаунт')
     const warnings: string[] = []
     let importedGames = 0
     const games = Array.isArray(payload.games) ? payload.games.slice(0, 500) as LegacyGame[] : []
@@ -87,6 +90,39 @@ export const importLegacy = async (db: Database, config: AppConfig, userId: stri
           await tx.insert(periodEntitlements).values({ userId, mode: mode as TitleMode, period: period as PeriodKey, source: 'legacy-import' }).onConflictDoNothing()
         }
       }
+    }
+    if (importedGames > 0) {
+      await tx.execute(sql`with prior_stats as (
+          select mode, difficulty_key, max(current_streak)::int as current_streak, max(best_streak)::int as best_streak
+          from ${userModeStats} where user_id = ${userId}::uuid
+          group by mode, difficulty_key
+        ), deleted as (
+          delete from ${userModeStats} where user_id = ${userId}::uuid
+        )
+        insert into ${userModeStats} (user_id, mode, difficulty_key, played, won, current_streak, best_streak, distribution, "updatedAt")
+        select ${userId}::uuid, sessions.mode,
+          case when sessions.mode = 'music' then coalesce(sessions.difficulty::text, '-') else '-' end,
+          count(*)::int,
+          count(*) filter (where sessions.status = 'won')::int,
+          coalesce(max(prior.current_streak), 0),
+          greatest(coalesce(max(prior.best_streak), 0), case when count(*) filter (where sessions.status = 'won') > 0 then 1 else 0 end),
+          ARRAY[
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 1)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 2)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 3)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 4)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 5)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 6)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 7)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 8)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 9)::int,
+            count(*) filter (where sessions.status = 'won' and sessions.attempts_count = 10)::int
+          ], now()
+        from ${gameSessions} sessions
+        left join prior_stats prior on prior.mode = sessions.mode
+          and prior.difficulty_key = case when sessions.mode = 'music' then coalesce(sessions.difficulty::text, '-') else '-' end
+        where sessions.user_id = ${userId}::uuid and sessions.kind in ('daily', 'archive') and sessions.status in ('won', 'lost')
+        group by sessions.mode, case when sessions.mode = 'music' then coalesce(sessions.difficulty::text, '-') else '-' end`)
     }
     const result = await tx.insert(legacyImports).values({ userId, deviceId, schemaVersion, payloadChecksum: checksum, importedGames, importedWallet, warnings }).returning()
     await tx.update(playerProfiles).set({ legacyImportedAt: new Date(), updatedAt: new Date() }).where(eq(playerProfiles.userId, userId))

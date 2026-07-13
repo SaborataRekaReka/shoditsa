@@ -112,18 +112,22 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
       .where(eq(diagnosisVignettes.itemVersionId, session.answerItemVersionId)).orderBy(asc(diagnosisVignettes.sortOrder))
     diagnosisVignette = pickDailyVignette(rows, session.answerItemVersionId, session.puzzleDate)
   }
+  const answerRows = session.mode === 'music' || session.status !== 'playing'
+    ? await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
+    : []
+  const answer = answerRows[0]?.payload as TitleItem | undefined
   const result: Record<string, unknown> = {
     id: session.id, kind: session.kind, mode: session.mode, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
     attempts: attempts.map((entry) => ({ position: entry.position, item: publicCard(entry.item as TitleItem), hints: entry.hints })),
     hintCheckpoints: [5, 8].map((round) => ({ round, state: choices.some((choice) => choice.checkpoint === round) ? 'opened' : session.attemptsCount >= round ? 'available' : 'locked' })),
-    hintChoices: choices, diagnosisVignette, serverTime: new Date().toISOString(),
+    hintChoices: choices,
+    progressiveHints: session.mode === 'music' && answer ? progressiveMusicHints(answer, session.attemptsCount) : [],
+    diagnosisVignette,
+    serverTime: new Date().toISOString(),
   }
-  if (session.status !== 'playing') {
-    const answer = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
-    result.answer = publicCard(answer[0].payload as TitleItem)
-  }
+  if (session.status !== 'playing' && answer) result.answer = publicCard(answer)
   return result
 }
 

@@ -67,7 +67,7 @@ export const loadConfig = () => {
     promoPepper,
     mediaRoot: process.env.MEDIA_ROOT?.trim() || './.tmp/media',
     publicMediaBaseUrl: process.env.PUBLIC_MEDIA_BASE_URL?.trim() || '/media',
-    legacyImportEnabled: bool('LEGACY_IMPORT_ENABLED', true),
+    legacyImportEnabled: bool('LEGACY_IMPORT_ENABLED', !production),
     legacyImportTicketCap: integer('LEGACY_IMPORT_TICKET_CAP', 500, 0),
     appVersion: process.env.APP_VERSION?.trim() || '0.1.0',
     gitSha: process.env.GIT_SHA?.trim() || 'dev',

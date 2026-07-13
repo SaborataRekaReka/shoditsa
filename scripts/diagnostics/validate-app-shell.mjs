@@ -4,6 +4,8 @@ import { resolve } from 'node:path'
 const root = process.cwd()
 const requiredFiles = [
   'apps/web/src/App.tsx',
+  'apps/web/src/components/app-shell/AppShell.tsx',
+  'apps/web/src/features/economy/EconomyView.tsx',
   'apps/web/src/api/client.ts',
   'apps/api/src/server.ts',
   'compose.production.yml',
@@ -27,9 +29,15 @@ const sourceChecks = [
     required: [
       ['profile route', /type AppScreen[^\n]*'profile'/],
       ['profile screen', /function ProfileScreen\s*\(/],
+      ['footer render', /screen !== 'game'\s*&&\s*<AppFooter/],
+    ],
+  },
+  {
+    path: 'apps/web/src/components/app-shell/AppShell.tsx',
+    required: [
       ['profile header control', /className=\{`header-profile/],
       ['footer component', /function AppFooter\s*\(/],
-      ['footer render', /screen !== 'game'\s*&&\s*<AppFooter/],
+      ['current economy view', /<EconomyView\s*\/>/],
     ],
   },
   {
@@ -43,10 +51,10 @@ const sourceChecks = [
   {
     path: '.github/workflows/deploy-timeweb.yml',
     required: [
-      ['production web target', /\/opt\/repeto\/deploy\/shoditsa/],
+      ['immutable release root', /DEPLOY_ROOT:\s*\/opt\/shoditsa/],
       ['release archive upload', /release-web\.tar\.gz/],
-      ['staged atomic activation', /stage-\$\{GITHUB_SHA\}/],
-      ['index activated last', /for ENTRY in index\.html build-manifest\.json/],
+      ['staged atomic activation', /releases\/\.stage-\$\{GITHUB_SHA\}/],
+      ['atomic current symlink', /current\.next["']?\s+"?\$\{DEPLOY_ROOT\}\/current/],
       ['production SHA smoke', /smoke:production/],
       ['API smoke check', /\/api\/v1\/meta/],
     ],
@@ -54,8 +62,8 @@ const sourceChecks = [
   {
     path: 'scripts/diagnostics/smoke-production-main.mjs',
     required: [
-      ['all production game libraries', /\['movies', 'series', 'animes', 'games', 'music', 'diagnoses'\]/],
-      ['production search indexes', /search-index\.json/],
+      ['all production API modes', /\['movie', 'series', 'anime', 'game', 'music', 'diagnosis'\]/],
+      ['legacy answer data blocked', /Legacy answer dataset is publicly reachable/],
     ],
   },
 ]

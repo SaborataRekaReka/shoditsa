@@ -70,6 +70,88 @@ export const PeriodUnlockBodySchema = Type.Object({ mode: ContentModeSchema, per
 export const FreePlayBodySchema = Type.Object({ mode: ContentModeSchema, difficulty: Type.Optional(NullableDifficultySchema) }, { additionalProperties: false })
 export const PromoRedeemBodySchema = Type.Object({ code: Type.String({ minLength: 1, maxLength: 64 }) }, { additionalProperties: false })
 
+export const ArchiveQuerySchema = Type.Object({
+  mode: Type.Optional(ContentModeSchema),
+  cursor: Type.Optional(DateTimeSchema),
+  limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 30 })),
+}, { additionalProperties: false })
+
+export const LedgerQuerySchema = Type.Object({
+  cursor: Type.Optional(DateTimeSchema),
+  limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 30 })),
+}, { additionalProperties: false })
+
+export const ArchiveDateParamsSchema = Type.Object({ date: DateSchema }, { additionalProperties: false })
+
+export const ContentReportReasonSchema = Type.Union([
+  Type.Literal('wrong_fact'),
+  Type.Literal('disputed_comparison'),
+  Type.Literal('title_not_found'),
+  Type.Literal('bad_hint'),
+  Type.Literal('other'),
+])
+
+export const ContentReportBodySchema = Type.Object({
+  sessionId: UuidSchema,
+  reason: ContentReportReasonSchema,
+  comment: Type.Optional(Type.String({ maxLength: 500 })),
+}, { additionalProperties: false })
+
+export const LegacyImportBodySchema = Type.Object({
+  consent: Type.Literal(true),
+  deviceId: UuidSchema,
+  schemaVersion: Type.Integer({ minimum: 1, maximum: 100 }),
+  games: Type.Array(Type.Object({
+    mode: ContentModeSchema,
+    period: PeriodKeySchema,
+    date: DateSchema,
+    difficulty: Type.Optional(Type.Union([DifficultyKeySchema, Type.Null()])),
+    attemptTitleIds: Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 10 }),
+    attempts: Type.Optional(Type.Array(Type.Object({ titleId: Type.String({ minLength: 1, maxLength: 255 }) }, { additionalProperties: false }), { maxItems: 10 })),
+  }, { additionalProperties: false }), { maxItems: 500 }),
+  wallet: Type.Object({ tickets: Type.Integer({ minimum: 0 }) }, { additionalProperties: false }),
+  periodUnlocks: Type.Record(Type.String(), Type.Array(PeriodKeySchema)),
+}, { additionalProperties: false })
+
+export const AdminPromoCreateBodySchema = Type.Object({
+  code: Type.String({ minLength: 1, maxLength: 64 }),
+  title: Type.String({ minLength: 1, maxLength: 120 }),
+  rewardType: Type.Optional(Type.Literal('tickets')),
+  rewardValue: Type.Integer({ minimum: 1, maximum: 1_000_000 }),
+  perUserLimit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100 })),
+  globalLimit: Type.Optional(Type.Union([Type.Integer({ minimum: 1 }), Type.Null()])),
+}, { additionalProperties: false })
+
+export const AdminPromoPatchBodySchema = Type.Partial(Type.Object({
+  enabled: Type.Boolean(),
+  endsAt: Type.Union([DateTimeSchema, Type.Null()]),
+}, { additionalProperties: false }))
+
+export const AdminWalletAdjustmentBodySchema = Type.Object({
+  userId: UuidSchema,
+  amount: Type.Integer({ minimum: -1_000_000, maximum: 1_000_000 }),
+  reason: Type.String({ minLength: 3, maxLength: 500 }),
+}, { additionalProperties: false })
+
+export const AdminContentReviewQuerySchema = Type.Object({
+  mode: Type.Optional(ContentModeSchema),
+  cursor: Type.Optional(Type.String({ minLength: 1, maxLength: 255 })),
+  limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 30 })),
+  pendingOnly: Type.Optional(Type.Boolean({ default: true })),
+}, { additionalProperties: false })
+
+export const AdminContentReviewParamsSchema = Type.Object({
+  itemId: Type.String({ minLength: 1, maxLength: 255 }),
+  field: Type.String({ minLength: 1, maxLength: 120 }),
+}, { additionalProperties: false })
+
+export const AdminContentReviewDecisionSchema = Type.Object({
+  option: Type.Optional(Type.Union([Type.Literal('A'), Type.Literal('B')])),
+  value: Type.Optional(Type.String({ maxLength: 1_000 })),
+  approved: Type.Optional(Type.Boolean()),
+  note: Type.Optional(Type.String({ maxLength: 1_000 })),
+}, { additionalProperties: false, minProperties: 1 })
+
 export type ContentMode = Static<typeof ContentModeSchema>
 export type ApiPeriodKey = Static<typeof PeriodKeySchema>
 export type ApiDifficultyKey = Static<typeof DifficultyKeySchema>
@@ -78,6 +160,19 @@ export type GameStartBody = Static<typeof GameStartBodySchema>
 export type AttemptBody = Static<typeof AttemptBodySchema>
 export type HintChoiceBody = Static<typeof HintChoiceBodySchema>
 export type ProfilePatch = Static<typeof ProfilePatchSchema>
+export type PeriodUnlockBody = Static<typeof PeriodUnlockBodySchema>
+export type FreePlayBody = Static<typeof FreePlayBodySchema>
+export type PromoRedeemBody = Static<typeof PromoRedeemBodySchema>
+export type ArchiveQuery = Static<typeof ArchiveQuerySchema>
+export type LedgerQuery = Static<typeof LedgerQuerySchema>
+export type ContentReportBody = Static<typeof ContentReportBodySchema>
+export type ContentReportReason = Static<typeof ContentReportReasonSchema>
+export type LegacyImportBody = Static<typeof LegacyImportBodySchema>
+export type AdminPromoCreateBody = Static<typeof AdminPromoCreateBodySchema>
+export type AdminPromoPatchBody = Static<typeof AdminPromoPatchBodySchema>
+export type AdminWalletAdjustmentBody = Static<typeof AdminWalletAdjustmentBodySchema>
+export type AdminContentReviewQuery = Static<typeof AdminContentReviewQuerySchema>
+export type AdminContentReviewDecision = Static<typeof AdminContentReviewDecisionSchema>
 
 export type RouteSchema = {
   body?: TSchema

@@ -69,7 +69,11 @@ describe('server-authoritative game API', () => {
 
       const freeKey = crypto.randomUUID()
       const freeRequests = [1, 2].map(() => app.inject({ method: 'POST', url: '/api/v1/economy/free-play/start', headers: { cookie, 'idempotency-key': freeKey }, payload: { mode: 'movie', difficulty: null } }))
-      expect((await Promise.all(freeRequests)).every((response) => response.statusCode === 200)).toBe(true)
+      const freeResponses = await Promise.all(freeRequests)
+      expect(freeResponses.every((response) => response.statusCode === 200)).toBe(true)
+      expect(freeResponses[1].json()).toMatchObject({ id: freeResponses[0].json().id, cost: 45, balanceAfter: 30, ledgerId: freeResponses[0].json().ledgerId })
+      expect(freeResponses[0].json()).toMatchObject({ cost: 45, balanceAfter: 30 })
+      expect(freeResponses[0].json().ledgerId).toMatch(/^[0-9a-f-]{36}$/i)
       expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(30)
 
       const code = `TEST-${crypto.randomUUID()}`

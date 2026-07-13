@@ -6,16 +6,13 @@ import { playerProfiles, type Database } from '@shoditsa/database'
 import type { Auth } from './auth.js'
 import { ApiError } from '../../lib/errors.js'
 
-export const getRequestUser = async (request: FastifyRequest, auth: Auth, db: Database, required = true, config?: AppConfig) => {
+export const getRequestUser = async (request: FastifyRequest, auth: Auth, db: Database, required = true, _config?: AppConfig) => {
   const authSession = await auth.api.getSession({ headers: fromNodeHeaders(request.headers) })
   if (!authSession) {
     if (!required) return null
     throw new ApiError(401, 'AUTH_REQUIRED', 'Требуется пользовательская сессия')
   }
   await db.insert(playerProfiles).values({ userId: authSession.user.id }).onConflictDoNothing()
-  if (config?.adminEmails.includes(authSession.user.email.toLocaleLowerCase('en-US'))) {
-    await db.update(playerProfiles).set({ role: 'admin', updatedAt: new Date() }).where(eq(playerProfiles.userId, authSession.user.id))
-  }
   const profile = await db.select({ role: playerProfiles.role }).from(playerProfiles).where(eq(playerProfiles.userId, authSession.user.id)).limit(1)
   return {
     id: authSession.user.id,

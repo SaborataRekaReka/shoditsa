@@ -19,6 +19,19 @@ const lockedWallet = async (tx: Transaction, userId: string) => {
   return (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).for('update').limit(1))[0]
 }
 
+const replayFreePlay = async (tx: Transaction, userId: string, session: typeof gameSessions.$inferSelect, idempotencyKey: string) => {
+  const operationKey = `free-play:${userId}:${idempotencyKey}`
+  const ledger = await tx.select({ id: walletLedger.id, amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter })
+    .from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1)
+  if (!ledger[0]) throw new ApiError(500, 'FREE_PLAY_LEDGER_MISSING', 'Не удалось восстановить операцию свободной игры')
+  return {
+    ...(await buildSessionSnapshot(tx, session)),
+    cost: Math.abs(ledger[0].amount),
+    balanceAfter: ledger[0].balanceAfter,
+    ledgerId: ledger[0].id,
+  }
+}
+
 export const unlockPeriod = async (db: Database, userId: string, mode: ContentMode, period: PeriodKey, idempotencyKey: string) => db.transaction(async (tx) => {
   if (!UNLOCKABLE.includes(mode) || period === 'all') throw new ApiError(422, 'PERIOD_NOT_UNLOCKABLE', 'Этот период нельзя разблокировать')
   const existing = await tx.select().from(periodEntitlements).where(and(eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, mode), eq(periodEntitlements.period, period))).limit(1)
@@ -40,12 +53,12 @@ export const unlockPeriod = async (db: Database, userId: string, mode: ContentMo
 export const startFreePlay = async (db: Database, userId: string, mode: ContentMode, difficulty: ApiDifficultyKey | null, idempotencyKey: string) => db.transaction(async (tx) => {
   if (!FREE_PLAY.includes(mode)) throw new ApiError(422, 'FREE_PLAY_MODE_NOT_ALLOWED', 'Свободная игра недоступна для этого режима')
   const replay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
-  if (replay[0]) return buildSessionSnapshot(tx, replay[0])
+  if (replay[0]) return replayFreePlay(tx, userId, replay[0], idempotencyKey)
   const date = getMoscowDate()
   await tx.insert(freePlayUsage).values({ userId, activityDate: date, launches: 0 }).onConflictDoNothing()
   const usage = (await tx.select().from(freePlayUsage).where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, date))).for('update').limit(1))[0]
   const lockedReplay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
-  if (lockedReplay[0]) return buildSessionSnapshot(tx, lockedReplay[0])
+  if (lockedReplay[0]) return replayFreePlay(tx, userId, lockedReplay[0], idempotencyKey)
   const cost = 45 + usage.launches * 15
   const wallet = await lockedWallet(tx, userId)
   if (wallet.balance < cost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', { required: cost, balance: wallet.balance })
@@ -102,16 +115,37 @@ export const redeemPromo = async (db: Database, config: AppConfig, userId: strin
 })
 
 export const dashboard = async (db: Database, userId: string) => {
-  const [wallet, attendance, today, stats, entitlements, activeSessions] = await Promise.all([
+  const activityDate = getMoscowDate()
+  const [wallet, attendance, today, stats, entitlements, activeSessions, freePlay] = await Promise.all([
     db.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).limit(1),
     db.select().from(attendanceStats).where(eq(attendanceStats.userId, userId)).limit(1),
-    db.select().from(dailyAttendance).where(and(eq(dailyAttendance.userId, userId), eq(dailyAttendance.activityDate, getMoscowDate()))).limit(1),
+    db.select().from(dailyAttendance).where(and(eq(dailyAttendance.userId, userId), eq(dailyAttendance.activityDate, activityDate))).limit(1),
     db.select().from(userModeStats).where(eq(userModeStats.userId, userId)),
     db.select().from(periodEntitlements).where(eq(periodEntitlements.userId, userId)),
-    db.select({ id: gameSessions.id, mode: gameSessions.mode, kind: gameSessions.kind, status: gameSessions.status, puzzleDate: gameSessions.puzzleDate })
+    db.select({
+      id: gameSessions.id,
+      mode: gameSessions.mode,
+      kind: gameSessions.kind,
+      status: gameSessions.status,
+      period: gameSessions.period,
+      difficulty: gameSessions.difficulty,
+      puzzleDate: gameSessions.puzzleDate,
+      attemptsCount: gameSessions.attemptsCount,
+      updatedAt: gameSessions.updatedAt,
+    })
       .from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.status, 'playing'))).orderBy(desc(gameSessions.updatedAt)),
+    db.select({ launches: freePlayUsage.launches }).from(freePlayUsage)
+      .where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, activityDate))).limit(1),
   ])
-  return { wallet: wallet[0] ?? { balance: 0, lifetimeEarned: 0 }, attendance: attendance[0] ?? null, today: today[0] ?? null, stats, entitlements, activeSessions }
+  return {
+    wallet: wallet[0] ?? { balance: 0, lifetimeEarned: 0 },
+    attendance: attendance[0] ?? null,
+    today: today[0] ?? null,
+    stats,
+    entitlements,
+    activeSessions,
+    freePlayLaunchesToday: freePlay[0]?.launches ?? 0,
+  }
 }
 
 export const ledgerPage = async (db: Database, userId: string, cursor?: string, limit = 30) => {

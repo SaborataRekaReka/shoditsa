@@ -1,0 +1,83 @@
+import { useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { Archive, BarChart3, CircleHelp, NotebookText, Ticket, Trophy, UserRound, X } from 'lucide-react'
+import { trackMetrikaGoal } from '../../app/metrics'
+import { EconomyView } from '../../features/economy/EconomyView'
+import { useAuthSession } from '../../features/auth/use-auth-session'
+import { toLegacyAttendance, toLegacyWallet } from '../../features/server-runtime/adapters'
+import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
+import { loadAttendanceStats, loadWallet } from '../../storage'
+
+export const PROFILE_OPEN_EVENT = 'seans:open-profile'
+
+export function BrandLogo({ className = '' }: { className?: string }) {
+  return <picture className={className}>
+    <source media="(max-width: 719px)" srcSet="./images/symbol.svg" />
+    <img src="./images/logo.svg" alt="Сходится!" />
+  </picture>
+}
+
+export function ActionButton({ variant = 'primary', className = '', children, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'hint'
+}) {
+  return <button className={`ui-button ui-button--${variant} ${className}`.trim()} {...props}>{children}</button>
+}
+
+export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div className="modal" role="dialog" aria-modal="true" aria-label={title}>
+      <div className="modal-head"><h2>{title}</h2><button onClick={onClose} aria-label="Закрыть"><X /></button></div>
+      {children}
+    </div>
+  </div>
+}
+
+export type AppHeaderProps = {
+  onHome: () => void
+  onArchive: () => void
+  onStats: () => void
+  onRules: () => void
+  onReview: () => void
+}
+
+export function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: AppHeaderProps) {
+  const [economyOpen, setEconomyOpen] = useState(false)
+  const { session } = useAuthSession()
+  const serverRuntime = useServerRuntime()
+  const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
+  const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
+  const profileLabel = session && !session.isAnonymous
+    ? session.name || session.email?.split('@')[0] || 'Профиль'
+    : 'Войти'
+
+  return <>
+    <header className="app-header">
+      <div className="app-header__inner">
+        <button className="brand" aria-label="На главный экран" onClick={() => { trackMetrikaGoal('header_home_click'); onHome() }}><BrandLogo /></button>
+        <button className="header-economy" aria-label="Билеты и абонемент" onClick={() => { trackMetrikaGoal('open_economy_modal'); setEconomyOpen(true) }}>
+          <span><Ticket /> <strong>{wallet.tickets}</strong></span>
+          <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
+        </button>
+        <nav aria-label="Навигация">
+          <button onClick={() => { trackMetrikaGoal('open_rules'); onRules() }} aria-label="Как играть"><CircleHelp /></button>
+          <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
+          <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
+          {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_music_review_screen'); onReview() }} aria-label="Модерация контента"><NotebookText /></button>}
+          <button onClick={() => { trackMetrikaGoal('open_profile'); window.dispatchEvent(new Event(PROFILE_OPEN_EVENT)) }} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''}`} aria-label="Профиль" title="Профиль">
+            <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>
+          </button>
+        </nav>
+      </div>
+    </header>
+    {economyOpen && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
+  </>
+}
+
+export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => void; onArchive: () => void; onRules: () => void; onProfile: () => void }) {
+  return <footer className="app-footer">
+    <div className="app-footer__inner">
+      <div className="app-footer__brand"><BrandLogo /><p>Ежедневные загадки, в которых всё сходится.</p></div>
+      <nav aria-label="Навигация в подвале"><button onClick={onHome}>Игры</button><button onClick={onArchive}>Архив</button><button onClick={onProfile}>Профиль</button><button onClick={onRules}>Как играть</button></nav>
+      <small>© {new Date().getFullYear()} Сходится!</small>
+    </div>
+  </footer>
+}

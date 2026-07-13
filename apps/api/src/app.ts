@@ -1,4 +1,4 @@
-import Fastify, { type FastifyInstance } from 'fastify'
+import Fastify, { type FastifyReply } from 'fastify'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
@@ -6,16 +6,22 @@ import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
 import { Type } from '@sinclair/typebox'
 import { fromNodeHeaders } from 'better-auth/node'
-import { and, asc, desc, eq, lt, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, gt, lt, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import {
-  AttemptBodySchema, CatalogSearchQuerySchema, ContentModeSchema, FreePlayBodySchema,
-  GameStartBodySchema, HintChoiceBodySchema, PeriodUnlockBodySchema, ProfilePatchSchema,
+  AdminContentReviewDecisionSchema, AdminContentReviewParamsSchema, AdminContentReviewQuerySchema,
+  AdminPromoCreateBodySchema, AdminPromoPatchBodySchema, AdminWalletAdjustmentBodySchema,
+  ArchiveDateParamsSchema, ArchiveQuerySchema, AttemptBodySchema, CatalogSearchQuerySchema,
+  ContentReportBodySchema, FreePlayBodySchema, GameStartBodySchema, HintChoiceBodySchema,
+  LedgerQuerySchema, LegacyImportBodySchema, PeriodUnlockBodySchema, ProfilePatchSchema,
   PromoRedeemBodySchema, UuidSchema,
-  type AttemptBody, type CatalogSearchQuery, type GameStartBody, type HintChoiceBody, type ProfilePatch,
+  type AdminContentReviewDecision, type AdminContentReviewQuery, type AdminPromoCreateBody,
+  type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveQuery, type AttemptBody,
+  type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
+  type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
 } from '@shoditsa/contracts'
 import {
-  appSettings, auditLog, contentItemVersions, contentReviewDecisions, contentRevisionModes, contentRevisions,
+  account, appSettings, auditLog, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
   createDatabase, gameSessions, playerProfiles, promoCodes, userModeStats, walletAccounts, walletLedger,
   type Database,
 } from '@shoditsa/database'
@@ -32,9 +38,13 @@ type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 const paramsId = Type.Object({ sessionId: UuidSchema }, { additionalProperties: false })
 const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
 
-const forwardAuthResponse = async (reply: Parameters<FastifyInstance['route']>[0] extends never ? never : any, response: Response) => {
+const forwardAuthResponse = async (reply: FastifyReply, response: Response) => {
   reply.status(response.status)
-  response.headers.forEach((value, key) => reply.header(key, value))
+  response.headers.forEach((value, key) => {
+    if (key.toLocaleLowerCase('en-US') !== 'set-cookie') reply.header(key, value)
+  })
+  const setCookies = (response.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.() ?? []
+  if (setCookies.length) reply.header('set-cookie', setCookies)
   const body = response.body ? Buffer.from(await response.arrayBuffer()) : null
   return reply.send(body)
 }
@@ -59,7 +69,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   await app.register(cors, { origin: config.trustedOrigins, credentials: true })
   await app.register(helmet, {
     contentSecurityPolicy: {
-      reportOnly: true,
+      reportOnly: !config.production,
       directives: {
         defaultSrc: ["'self'"], imgSrc: ["'self'", 'data:', 'https:'], scriptSrc: ["'self'", 'https://mc.yandex.ru', 'https://yandex.ru'],
         connectSrc: ["'self'", 'https://mc.yandex.ru'], frameAncestors: ["'self'", 'https://*.yandex.ru'],
@@ -68,7 +78,12 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     strictTransportSecurity: config.production ? { maxAge: 15552000, includeSubDomains: false } : false,
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   })
-  await app.register(rateLimit, { global: true, max: 120, timeWindow: '1 minute', keyGenerator: (request) => request.ip })
+  await app.register(rateLimit, {
+    global: true,
+    max: config.production ? 120 : 1000,
+    timeWindow: '1 minute',
+    keyGenerator: (request) => request.ip,
+  })
   await app.register(swagger, { openapi: { info: { title: 'Сходится! API', version: '1.0.0' }, openapi: '3.1.0' } })
   if (!config.production) await app.register(swaggerUi, { routePrefix: '/api/docs' })
 
@@ -94,7 +109,22 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.get('/api/v1/meta', async () => {
     const active = await db.select({ id: contentRevisions.id, version: contentRevisions.version }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1)
     const counts = active[0] ? await db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, active[0].id)) : []
-    return { serverTime: new Date().toISOString(), moscowDate: getMoscowDate(), apiVersion: 'v1', rulesVersion: 1, activeRevision: active[0] ?? null, modes: counts, minimumFrontendVersion: '0.1.0' }
+    const emailInfrastructureReady = Boolean(config.smtp.host && config.smtp.from)
+    return {
+      serverTime: new Date().toISOString(),
+      moscowDate: getMoscowDate(),
+      apiVersion: 'v1',
+      rulesVersion: 1,
+      activeRevision: active[0] ?? null,
+      modes: counts,
+      minimumFrontendVersion: '0.1.0',
+      auth: {
+        emailPassword: config.authEmailEnabled,
+        emailVerification: config.authEmailEnabled && emailInfrastructureReady,
+        passwordReset: config.authEmailEnabled && emailInfrastructureReady,
+        yandex: config.authYandexEnabled,
+      },
+    }
   })
   app.get('/api/v1/metrics', async (request, reply) => {
     const authorization = request.headers.authorization
@@ -127,7 +157,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     }))
     return forwardAuthResponse(reply, response)
   } })
-  app.post('/api/v1/auth/guest', { config: { rateLimit: { max: 10, timeWindow: '1 hour' } } }, async (request, reply) => {
+  app.post('/api/v1/auth/guest', { config: { rateLimit: { max: config.production ? 10 : 100, timeWindow: '1 hour' } } }, async (request, reply) => {
     const existing = await getRequestUser(request, auth, db, false, config)
     if (existing) return existing
     const guestHeaders = fromNodeHeaders(request.headers)
@@ -140,8 +170,18 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
 
   app.get('/api/v1/me', async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    const profile = await db.select().from(playerProfiles).where(eq(playerProfiles.userId, user!.id)).limit(1)
-    return { user, profile: profile[0] }
+    const [profile, linkedAccounts] = await Promise.all([
+      db.select().from(playerProfiles).where(eq(playerProfiles.userId, user!.id)).limit(1),
+      db.select({ providerId: account.providerId, password: account.password }).from(account).where(eq(account.userId, user!.id)),
+    ])
+    return {
+      user,
+      profile: profile[0],
+      auth: {
+        hasPassword: linkedAccounts.some((entry) => entry.providerId === 'credential' && Boolean(entry.password)),
+        providers: [...new Set(linkedAccounts.map((entry) => entry.providerId))],
+      },
+    }
   })
   app.patch('/api/v1/me/profile', { schema: { body: ProfilePatchSchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -153,8 +193,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     }).where(eq(playerProfiles.userId, user!.id)).returning()
     return rows[0]
   })
-  app.post('/api/v1/me/legacy-import', { config: { rateLimit: { max: 3, timeWindow: '1 day' } }, bodyLimit: 1024 * 1024 }, async (request) => {
+  app.post('/api/v1/me/legacy-import', { schema: { body: LegacyImportBodySchema }, config: { rateLimit: { max: 3, timeWindow: '1 day' } }, bodyLimit: 1024 * 1024 }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
+    if (user!.isAnonymous) throw new ApiError(403, 'LEGACY_IMPORT_ACCOUNT_REQUIRED', 'Сначала войдите в постоянный аккаунт')
     return importLegacy(db, config, user!.id, request.body as Record<string, unknown>)
   })
   app.delete('/api/v1/me', { schema: { body: Type.Object({ confirmation: Type.Literal('УДАЛИТЬ') }) } }, async (request, reply) => {
@@ -196,30 +237,53 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     return chooseHint(db, user!.id, (request.params as { sessionId: string }).sessionId, body.checkpoint, body.hintKey, requireIdempotencyKey(request))
   })
 
+  app.post('/api/v1/content-reports', { schema: { body: ContentReportBodySchema }, config: { rateLimit: { max: 10, timeWindow: '1 hour' } } }, async (request) => {
+    const user = await getRequestUser(request, auth, db, true, config)
+    const body = request.body as ContentReportBody
+    const sessions = await db.select({
+      id: gameSessions.id,
+      mode: gameSessions.mode,
+      itemId: contentItemVersions.itemId,
+    }).from(gameSessions)
+      .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameSessions.answerItemVersionId))
+      .where(and(eq(gameSessions.id, body.sessionId), eq(gameSessions.userId, user!.id)))
+      .limit(1)
+    if (!sessions[0]) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
+    const rows = await db.insert(contentReports).values({
+      userId: user!.id,
+      sessionId: sessions[0].id,
+      itemId: sessions[0].itemId,
+      mode: sessions[0].mode,
+      reason: body.reason,
+      comment: body.comment?.trim() || null,
+    }).returning({ id: contentReports.id, reason: contentReports.reason, createdAt: contentReports.createdAt })
+    return rows[0]
+  })
+
   app.get('/api/v1/me/dashboard', async (request) => dashboard(db, (await getRequestUser(request, auth, db, true, config))!.id))
   app.get('/api/v1/me/stats', async (request) => ({ items: await db.select().from(userModeStats).where(eq(userModeStats.userId, (await getRequestUser(request, auth, db, true, config))!.id)) }))
   app.get('/api/v1/me/wallet', async (request) => ({ wallet: (await db.select().from(walletAccounts).where(eq(walletAccounts.userId, (await getRequestUser(request, auth, db, true, config))!.id)).limit(1))[0] ?? { balance: 0, lifetimeEarned: 0 } }))
-  app.get('/api/v1/me/wallet/ledger', async (request) => {
-    const user = await getRequestUser(request, auth, db, true, config); const query = request.query as { cursor?: string; limit?: string }
-    return ledgerPage(db, user!.id, query.cursor, Number(query.limit ?? 30))
+  app.get('/api/v1/me/wallet/ledger', { schema: { querystring: LedgerQuerySchema } }, async (request) => {
+    const user = await getRequestUser(request, auth, db, true, config); const query = request.query as LedgerQuery
+    return ledgerPage(db, user!.id, query.cursor, query.limit ?? 30)
   })
   app.get('/api/v1/me/entitlements', async (request) => ({ entitlements: (await dashboard(db, (await getRequestUser(request, auth, db, true, config))!.id)).entitlements }))
   app.post('/api/v1/economy/period-unlocks', { schema: { body: PeriodUnlockBodySchema, headers: idempotencyHeaders } }, async (request) => {
-    const user = await getRequestUser(request, auth, db, true, config); const body = request.body as { mode: any; period: any }
+    const user = await getRequestUser(request, auth, db, true, config); const body = request.body as PeriodUnlockBody
     return unlockPeriod(db, user!.id, body.mode, body.period, requireIdempotencyKey(request))
   })
   app.post('/api/v1/economy/free-play/start', { schema: { body: FreePlayBodySchema, headers: idempotencyHeaders } }, async (request) => {
-    const user = await getRequestUser(request, auth, db, true, config); const body = request.body as { mode: any; difficulty?: any }
+    const user = await getRequestUser(request, auth, db, true, config); const body = request.body as FreePlayBody
     return startFreePlay(db, user!.id, body.mode, body.difficulty ?? null, requireIdempotencyKey(request))
   })
   app.post('/api/v1/promos/redeem', { schema: { body: PromoRedeemBodySchema, headers: idempotencyHeaders }, config: { rateLimit: { max: 5, timeWindow: '1 hour' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    return redeemPromo(db, config, user!.id, (request.body as { code: string }).code, requireIdempotencyKey(request))
+    return redeemPromo(db, config, user!.id, (request.body as PromoRedeemBody).code, requireIdempotencyKey(request))
   })
 
-  app.get('/api/v1/archive', async (request) => {
-    const user = await getRequestUser(request, auth, db, true, config); const query = request.query as { mode?: any; cursor?: string; limit?: string }
-    const limit = Math.min(100, Math.max(1, Number(query.limit ?? 30)))
+  app.get('/api/v1/archive', { schema: { querystring: ArchiveQuerySchema } }, async (request) => {
+    const user = await getRequestUser(request, auth, db, true, config); const query = request.query as ArchiveQuery
+    const limit = query.limit ?? 30
     const filters = [eq(gameSessions.userId, user!.id), sql`${gameSessions.status} <> 'playing'`]
     if (query.mode) filters.push(eq(gameSessions.mode, query.mode))
     if (query.cursor) filters.push(lt(gameSessions.completedAt, new Date(query.cursor)))
@@ -227,7 +291,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       .from(gameSessions).where(and(...filters)).orderBy(desc(gameSessions.completedAt)).limit(limit + 1)
     return { items: rows.slice(0, limit), nextCursor: rows.length > limit ? rows[limit - 1].completedAt?.toISOString() ?? null : null }
   })
-  app.get('/api/v1/archive/:date/status', async (request) => {
+  app.get('/api/v1/archive/:date/status', { schema: { params: ArchiveDateParamsSchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const { date } = request.params as { date: string }
     return { items: await db.select({ mode: gameSessions.mode, status: gameSessions.status, id: gameSessions.id }).from(gameSessions).where(and(eq(gameSessions.userId, user!.id), eq(gameSessions.puzzleDate, date))) }
   })
@@ -252,22 +316,22 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     await db.insert(auditLog).values({ actorUserId: actor.id, action: 'settings.daily-salt.update', entityType: 'app_setting', entityId: 'daily_global_salt', before: before[0] ?? null, after: updated[0], requestId: request.id })
     return updated[0]
   })
-  app.post('/api/v1/admin/promos', { schema: { headers: idempotencyHeaders } }, async (request) => {
-    const actor = await requireAdmin(request, auth, db, config); const body = request.body as { code: string; title: string; rewardType?: string; rewardValue: unknown; perUserLimit?: number; globalLimit?: number }
+  app.post('/api/v1/admin/promos', { schema: { headers: idempotencyHeaders, body: AdminPromoCreateBodySchema } }, async (request) => {
+    const actor = await requireAdmin(request, auth, db, config); const body = request.body as AdminPromoCreateBody
     if (!body.code || normalizePromoCode(body.code) === 'СОСО') throw new ApiError(422, 'PROMO_CODE_INVALID', 'Недопустимый промокод')
     const rows = await db.insert(promoCodes).values({ codeHash: promoHash(body.code, config.promoPepper), title: body.title, rewardType: body.rewardType ?? 'tickets', rewardValue: body.rewardValue, perUserLimit: body.perUserLimit ?? 1, globalLimit: body.globalLimit ?? null, createdBy: actor.id }).returning()
     await db.insert(auditLog).values({ actorUserId: actor.id, action: 'promo.create', entityType: 'promo', entityId: rows[0].id, after: { ...rows[0], codeHash: '[redacted]' }, requestId: request.id })
     return { ...rows[0], codeHash: undefined }
   })
-  app.patch('/api/v1/admin/promos/:id', async (request) => {
-    const actor = await requireAdmin(request, auth, db, config); const id = (request.params as { id: string }).id; const body = request.body as { enabled?: boolean; endsAt?: string | null }
+  app.patch('/api/v1/admin/promos/:id', { schema: { params: Type.Object({ id: UuidSchema }, { additionalProperties: false }), body: AdminPromoPatchBodySchema } }, async (request) => {
+    const actor = await requireAdmin(request, auth, db, config); const id = (request.params as { id: string }).id; const body = request.body as AdminPromoPatchBody
     const rows = await db.update(promoCodes).set({ ...(body.enabled !== undefined ? { enabled: body.enabled } : {}), ...(body.endsAt !== undefined ? { endsAt: body.endsAt ? new Date(body.endsAt) : null } : {}) }).where(eq(promoCodes.id, id)).returning()
     if (!rows[0]) throw new ApiError(404, 'PROMO_NOT_FOUND', 'Промокод не найден')
     await db.insert(auditLog).values({ actorUserId: actor.id, action: 'promo.update', entityType: 'promo', entityId: id, after: { ...rows[0], codeHash: '[redacted]' }, requestId: request.id })
     return { ...rows[0], codeHash: undefined }
   })
-  app.post('/api/v1/admin/wallet-adjustments', { schema: { headers: idempotencyHeaders } }, async (request) => {
-    const actor = await requireAdmin(request, auth, db, config); const body = request.body as { userId: string; amount: number; reason: string }; const key = requireIdempotencyKey(request)
+  app.post('/api/v1/admin/wallet-adjustments', { schema: { headers: idempotencyHeaders, body: AdminWalletAdjustmentBodySchema } }, async (request) => {
+    const actor = await requireAdmin(request, auth, db, config); const body = request.body as AdminWalletAdjustmentBody; const key = requireIdempotencyKey(request)
     return db.transaction(async (tx) => {
       await tx.insert(walletAccounts).values({ userId: body.userId }).onConflictDoNothing()
       const wallet = (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, body.userId)).for('update').limit(1))[0]
@@ -279,10 +343,44 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       return { ledger: ledger[0], balanceAfter }
     })
   })
-  app.get('/api/v1/admin/content-review/:itemId', async (request) => { await requireAdmin(request, auth, db, config); return { items: await db.select().from(contentReviewDecisions).where(eq(contentReviewDecisions.itemId, (request.params as { itemId: string }).itemId)) } })
-  app.put('/api/v1/admin/content-review/:itemId/:field', { schema: { headers: idempotencyHeaders } }, async (request) => {
+  app.get('/api/v1/admin/content-review', { schema: { querystring: AdminContentReviewQuerySchema } }, async (request) => {
+    await requireAdmin(request, auth, db, config)
+    const query = request.query as AdminContentReviewQuery
+    const active = await db.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1)
+    if (!active[0]) throw new ApiError(503, 'CONTENT_NOT_READY', 'Активная ревизия контента не настроена')
+    const limit = query.limit ?? 30
+    const filters = [eq(contentItemVersions.revisionId, active[0].id)]
+    if (query.mode) filters.push(eq(contentItemVersions.mode, query.mode))
+    if (query.cursor) filters.push(gt(contentItemVersions.itemId, query.cursor))
+    const candidates = await db.select({
+      id: contentItemVersions.itemId,
+      mode: contentItemVersions.mode,
+      titleRu: contentItemVersions.titleRu,
+      titleOriginal: contentItemVersions.titleOriginal,
+      contentStatus: contentItemVersions.contentStatus,
+      payload: contentItemVersions.payload,
+    }).from(contentItemVersions).where(and(...filters)).orderBy(asc(contentItemVersions.itemId)).limit(limit + 1)
+    const enriched = await Promise.all(candidates.slice(0, limit).map(async (item) => {
+      const decisions = await db.select({
+        field: contentReviewDecisions.field,
+        decision: contentReviewDecisions.decision,
+        reviewerUserId: contentReviewDecisions.reviewerUserId,
+        updatedAt: contentReviewDecisions.updatedAt,
+      }).from(contentReviewDecisions).where(eq(contentReviewDecisions.itemId, item.id))
+      const payload = item.payload as Record<string, unknown>
+      const reviewReasons = Array.isArray(payload.reviewReasons)
+        ? payload.reviewReasons.filter((value): value is string => typeof value === 'string')
+        : []
+      return { ...item, payload, reviewReasons, decisions }
+    }))
+    const items = query.pendingOnly === false ? enriched : enriched.filter((item) => !item.decisions.some((decision) => decision.field === '__approval__'))
+    return { items, nextCursor: candidates.length > limit ? candidates[limit - 1].id : null }
+  })
+  app.get('/api/v1/admin/content-review/:itemId', { schema: { params: Type.Object({ itemId: Type.String({ minLength: 1, maxLength: 255 }) }, { additionalProperties: false }) } }, async (request) => { await requireAdmin(request, auth, db, config); return { items: await db.select().from(contentReviewDecisions).where(eq(contentReviewDecisions.itemId, (request.params as { itemId: string }).itemId)) } })
+  app.put('/api/v1/admin/content-review/:itemId/:field', { schema: { headers: idempotencyHeaders, params: AdminContentReviewParamsSchema, body: AdminContentReviewDecisionSchema } }, async (request) => {
     const actor = await requireAdmin(request, auth, db, config); const params = request.params as { itemId: string; field: string }
-    const rows = await db.insert(contentReviewDecisions).values({ itemId: params.itemId, field: params.field, decision: request.body, reviewerUserId: actor.id }).onConflictDoUpdate({ target: [contentReviewDecisions.itemId, contentReviewDecisions.field, contentReviewDecisions.reviewerUserId], set: { decision: request.body, updatedAt: new Date() } }).returning()
+    const decision = request.body as AdminContentReviewDecision
+    const rows = await db.insert(contentReviewDecisions).values({ itemId: params.itemId, field: params.field, decision, reviewerUserId: actor.id }).onConflictDoUpdate({ target: [contentReviewDecisions.itemId, contentReviewDecisions.field, contentReviewDecisions.reviewerUserId], set: { decision, updatedAt: new Date() } }).returning()
     await db.insert(auditLog).values({ actorUserId: actor.id, action: 'content.review', entityType: 'content_item', entityId: params.itemId, after: rows[0], requestId: request.id })
     return rows[0]
   })

@@ -10,16 +10,31 @@ export const CONTENT_REPORT_REASONS = [
 
 export type ContentReportReason = typeof CONTENT_REPORT_REASONS[number][0]
 
-export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportReason, comment: string) => void }) {
+export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportReason, comment: string) => void | Promise<void> }) {
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState<ContentReportReason>('wrong_fact')
   const [comment, setComment] = useState('')
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
 
   if (sent) return <p className="content-report__thanks" role="status">Спасибо, проверим подсказку.</p>
   return <div className="content-report">
     <button type="button" className="content-report__toggle" onClick={() => setOpen((value) => !value)} aria-expanded={open}>Нашли ошибку в подсказке?</button>
-    {open && <form onSubmit={(event) => { event.preventDefault(); onSubmit(reason, comment.trim()); setSent(true) }}>
+    {open && <form onSubmit={async (event) => {
+      event.preventDefault()
+      if (sending) return
+      setSending(true)
+      setError('')
+      try {
+        await onSubmit(reason, comment.trim())
+        setSent(true)
+      } catch (value) {
+        setError(value instanceof Error ? value.message : 'Не удалось отправить отчёт.')
+      } finally {
+        setSending(false)
+      }
+    }}>
       <fieldset>
         <legend>Что случилось?</legend>
         {CONTENT_REPORT_REASONS.map(([value, label]) => <label key={value}>
@@ -28,7 +43,8 @@ export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportRe
         </label>)}
       </fieldset>
       <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Комментарий — необязательно" maxLength={500} />
-      <button type="submit">Отправить</button>
+      {error && <p className="server-error" role="alert">{error}</p>}
+      <button type="submit" disabled={sending}>{sending ? 'Отправляем…' : 'Отправить'}</button>
     </form>}
   </div>
 }

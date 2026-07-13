@@ -795,7 +795,7 @@
 }
 .app--transition-game .app-header { opacity: 0; transform: translateY(-8px); pointer-events: none; }
 .app--transition-game .title-screen, .title-screen.is-leaving { opacity: 0; transform: translateY(14px); pointer-events: none; }
-.title-stage { width: min(100%, 560px); text-align: center; animation: screenIn .55s .06s var(--ease) both; }
+.title-stage { width: min(100%, 560px); min-width: 0; text-align: center; animation: screenIn .55s .06s var(--ease) both; }
 .title-game-mark { width: max-content; max-width: 100%; margin: 0 auto; display: grid; grid-template-columns: 48px auto; grid-template-rows: auto auto; column-gap: 12px; align-items: center; text-align: left; }
 .title-game-mark > span { grid-row: 1/3; width: 48px; height: 48px; border-radius: 15px; background: var(--color-primary); color: var(--color-ink); display: grid; place-items: center; box-shadow: 3px 3px 0 var(--color-shadow); }
 .title-game-mark > span svg { width: 23px; }
@@ -814,7 +814,7 @@
   border: 1px solid var(--color-paper-line);
   border-radius: var(--radius-md);
   display: grid;
-  grid-template-columns: 86px 1fr;
+  grid-template-columns: 86px minmax(0, 1fr);
   box-shadow: var(--shadow-paper);
   position: relative;
   z-index: 30;
@@ -851,7 +851,7 @@
 .admit-ticket__stub em { margin-top: 8px; font-size: 12px; font-style: normal; }
 .admit-ticket__stub i { width: 48px; height: 24px; margin-top: auto; background: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 3px, var(--color-ink) 3px 5px, transparent 5px 7px); }
 .admit-ticket__body { min-width: 0; padding: 16px; text-align: left; }
-.ticket-kicker { display: flex; align-items: center; gap: 8px; color: var(--color-paper-muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+.ticket-kicker { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; color: var(--color-paper-muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
 .ticket-kicker span { padding: 4px 7px; border: 1px solid var(--color-paper-line); border-radius: 999px; white-space: nowrap; }
 .ticket-kicker small { white-space: nowrap; }
 .ticket-kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
@@ -2459,6 +2459,7 @@
   .title-play-row .difficulty-trigger {
     width: 100%;
   }
+  .ticket-kicker i { display: none; }
   .brand { width: 36px; }
   .app-header__inner { padding: 0 10px; }
   .header-economy { gap: 4px; margin-right: 6px; }

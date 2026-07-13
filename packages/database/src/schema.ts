@@ -197,6 +197,25 @@ export const gameSessions = pgTable('game_sessions', {
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
 ])
 
+export const contentReports = pgTable('content_reports', {
+  id: uuid().primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  itemId: text('item_id').notNull().references(() => contentItems.id),
+  mode: contentMode().notNull(),
+  reason: text().notNull(),
+  comment: text(),
+  status: text().notNull().default('open'),
+  createdAt: now(),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+  resolvedBy: uuid('resolved_by').references(() => user.id, { onDelete: 'set null' }),
+}, (table) => [
+  index('content_report_status_created_idx').on(table.status, table.createdAt),
+  index('content_report_item_idx').on(table.itemId),
+  check('content_report_reason_check', sql`${table.reason} in ('wrong_fact','disputed_comparison','title_not_found','bad_hint','other')`),
+  check('content_report_status_check', sql`${table.status} in ('open','resolved','dismissed')`),
+])
+
 export const gameAttempts = pgTable('game_attempts', {
   id: uuid().primaryKey().defaultRandom(),
   sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
@@ -294,7 +313,10 @@ export const promoRedemptions = pgTable('promo_redemptions', {
 export const legacyImports = pgTable('legacy_imports', {
   id: uuid().primaryKey().defaultRandom(), userId: uuid('user_id').notNull().references(() => user.id), deviceId: uuid('device_id').notNull(), schemaVersion: integer('schema_version').notNull(),
   payloadChecksum: text('payload_checksum').notNull(), importedGames: integer('imported_games').notNull(), importedWallet: integer('imported_wallet').notNull(), warnings: jsonb().notNull(), createdAt: now(),
-}, (table) => [unique('legacy_import_device_unique').on(table.userId, table.deviceId, table.schemaVersion)])
+}, (table) => [
+  unique('legacy_import_user_schema_unique').on(table.userId, table.schemaVersion),
+  unique('legacy_import_device_schema_unique').on(table.deviceId, table.schemaVersion),
+])
 
 export const auditLog = pgTable('audit_log', {
   id: uuid().primaryKey().defaultRandom(), actorUserId: uuid('actor_user_id').references(() => user.id), action: text().notNull(), entityType: text('entity_type').notNull(),

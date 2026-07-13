@@ -16,7 +16,7 @@ env:
   DEPLOY_HOST: 72.56.240.222
   DEPLOY_USER: root
   DEPLOY_PORT: 22
-  DEPLOY_TARGET_DIR: /opt/repeto/deploy/shoditsa
+  DEPLOY_ROOT: /opt/shoditsa
 
 jobs:
   deploy:
@@ -49,32 +49,30 @@ jobs:
           set -euo pipefail
           REMOTE="$DEPLOY_USER@$DEPLOY_HOST"
           REMOTE_ARCHIVE="/tmp/shoditsa-web-${GITHUB_SHA}.tar.gz"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "mkdir -p '$DEPLOY_TARGET_DIR'"
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "mkdir -p '$DEPLOY_ROOT/releases'"
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_TARGET_DIR='$DEPLOY_TARGET_DIR' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' bash -s" <<'REMOTE'
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' bash -s" <<'REMOTE'
           set -euo pipefail
-          STAGE="${DEPLOY_TARGET_DIR}.stage-${GITHUB_SHA}"
+          STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
+          RELEASE="${DEPLOY_ROOT}/releases/${GITHUB_SHA}"
           rm -rf "$STAGE"
-          mkdir -p "$STAGE" "$DEPLOY_TARGET_DIR"
-          tar -xzf "$REMOTE_ARCHIVE" -C "$STAGE"
+          mkdir -p "$STAGE/web"
+          tar -xzf "$REMOTE_ARCHIVE" -C "$STAGE/web"
+          test -f "$STAGE/web/index.html"
+          test -f "$STAGE/web/build-manifest.json"
+          test ! -e "$STAGE/web/data"
+          chmod -R a+rX "$STAGE"
 
-          # Activate each file with rename(2), keeping multi-megabyte JSON valid throughout deploy.
-          # The HTML entrypoint is moved only after all of its assets and data are ready.
-          while IFS= read -r -d '' SOURCE; do
-            RELATIVE="${SOURCE#"$STAGE"/}"
-            DESTINATION="$DEPLOY_TARGET_DIR/$RELATIVE"
-            mkdir -p "$(dirname "$DESTINATION")"
-            mv -f "$SOURCE" "$DESTINATION"
-          done < <(find "$STAGE" -type f ! -name index.html ! -name build-manifest.json -print0)
-
-          for ENTRY in index.html build-manifest.json; do
-            if [ -f "$STAGE/$ENTRY" ]; then
-              mv -f "$STAGE/$ENTRY" "$DEPLOY_TARGET_DIR/$ENTRY"
-            fi
-          done
-
-          chmod -R a+rX "$DEPLOY_TARGET_DIR"
-          rm -rf "$STAGE" "$REMOTE_ARCHIVE"
+          # Releases are immutable. A retry of the same SHA reuses the already
+          # validated release; activation itself is one atomic symlink rename.
+          if [ -e "$RELEASE" ]; then
+            rm -rf "$STAGE"
+          else
+            mv "$STAGE" "$RELEASE"
+          fi
+          ln -sfn "$RELEASE" "${DEPLOY_ROOT}/current.next"
+          mv -Tf "${DEPLOY_ROOT}/current.next" "${DEPLOY_ROOT}/current"
+          rm -f "$REMOTE_ARCHIVE"
           REMOTE
       - name: External smoke
         env:

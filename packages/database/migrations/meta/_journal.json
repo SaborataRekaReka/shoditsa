@@ -15,6 +15,13 @@
       "when": 1783794889900,
       "tag": "0001_account-merge-ledger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783884514774,
+      "tag": "0002_violet_impossible_man",
+      "breakpoints": true
     }
   ]
 }

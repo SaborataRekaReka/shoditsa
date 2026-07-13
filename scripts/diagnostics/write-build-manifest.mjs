@@ -6,7 +6,7 @@ const commitSha = process.env.GITHUB_SHA || execFileSync('git', ['rev-parse', 'H
 const manifest = {
   commitSha,
   builtAt: new Date().toISOString(),
-  shell: { profile: true, footer: true, yandexSdk: true },
+  shell: { profile: true, footer: true, yandexSdk: false, serverAuthoritative: true, noPublicAnswerData: true },
 }
 
 await writeFile(resolve('dist/build-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')

@@ -12,7 +12,8 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
       where old.user_id = ${anonymousUserId}::uuid and target.user_id = ${targetUserId}::uuid
         and old.challenge_id is not null and old.challenge_id = target.challenge_id
         and ((case target.status when 'won' then 3 when 'lost' then 2 else 1 end) > (case old.status when 'won' then 3 when 'lost' then 2 else 1 end)
-          or ((case target.status when 'won' then 3 when 'lost' then 2 else 1 end) = (case old.status when 'won' then 3 when 'lost' then 2 else 1 end) and target.attempts_count >= old.attempts_count))`)
+          or ((case target.status when 'won' then 3 when 'lost' then 2 else 1 end) = (case old.status when 'won' then 3 when 'lost' then 2 else 1 end)
+            and case when target.status = 'won' then target.attempts_count <= old.attempts_count else target.attempts_count >= old.attempts_count end))`)
     await tx.execute(sql`
       delete from game_sessions target
       using game_sessions old
@@ -60,20 +61,37 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
         full_house_days = (select count(*) from daily_attendance where user_id = ${targetUserId}::uuid and full_house), "updatedAt" = now()`)
     await tx.execute(sql`delete from attendance_stats where user_id = ${anonymousUserId}::uuid`)
 
-    // Stats are rebuilt from authoritative terminal sessions instead of blindly summed.
-    await tx.execute(sql`delete from user_mode_stats where user_id in (${anonymousUserId}::uuid, ${targetUserId}::uuid)`)
-    await tx.execute(sql`insert into user_mode_stats (user_id, mode, difficulty_key, played, won, current_streak, best_streak, distribution, "updatedAt")
-      select ${targetUserId}::uuid, mode, case when mode = 'music' then coalesce(difficulty::text, '-') else '-' end,
-        count(*)::int, count(*) filter (where status = 'won')::int, 0, 0,
+    // Rebuild counters from authoritative terminal sessions while preserving the
+    // strongest known streak values. A full historical streak reconstruction is
+    // impossible when older imports do not contain completion ordering.
+    await tx.execute(sql`with prior_stats as (
+        select mode, difficulty_key, max(current_streak)::int as current_streak, max(best_streak)::int as best_streak
+        from user_mode_stats where user_id in (${anonymousUserId}::uuid, ${targetUserId}::uuid)
+        group by mode, difficulty_key
+      )
+      insert into user_mode_stats (user_id, mode, difficulty_key, played, won, current_streak, best_streak, distribution, "updatedAt")
+      select ${targetUserId}::uuid, gs.mode, case when gs.mode = 'music' then coalesce(gs.difficulty::text, '-') else '-' end,
+        count(*)::int, count(*) filter (where gs.status = 'won')::int,
+        coalesce(max(ps.current_streak), 0), coalesce(max(ps.best_streak), 0),
         ARRAY[
-          count(*) filter (where status = 'won' and attempts_count = 1)::int, count(*) filter (where status = 'won' and attempts_count = 2)::int,
-          count(*) filter (where status = 'won' and attempts_count = 3)::int, count(*) filter (where status = 'won' and attempts_count = 4)::int,
-          count(*) filter (where status = 'won' and attempts_count = 5)::int, count(*) filter (where status = 'won' and attempts_count = 6)::int,
-          count(*) filter (where status = 'won' and attempts_count = 7)::int, count(*) filter (where status = 'won' and attempts_count = 8)::int,
-          count(*) filter (where status = 'won' and attempts_count = 9)::int, count(*) filter (where status = 'won' and attempts_count = 10)::int
+          count(*) filter (where gs.status = 'won' and gs.attempts_count = 1)::int, count(*) filter (where gs.status = 'won' and gs.attempts_count = 2)::int,
+          count(*) filter (where gs.status = 'won' and gs.attempts_count = 3)::int, count(*) filter (where gs.status = 'won' and gs.attempts_count = 4)::int,
+          count(*) filter (where gs.status = 'won' and gs.attempts_count = 5)::int, count(*) filter (where gs.status = 'won' and gs.attempts_count = 6)::int,
+          count(*) filter (where gs.status = 'won' and gs.attempts_count = 7)::int, count(*) filter (where gs.status = 'won' and gs.attempts_count = 8)::int,
+          count(*) filter (where gs.status = 'won' and gs.attempts_count = 9)::int, count(*) filter (where gs.status = 'won' and gs.attempts_count = 10)::int
         ], now()
-      from game_sessions gs where user_id = ${targetUserId}::uuid and kind in ('daily','archive') and status in ('won','lost')
-      group by mode, case when mode = 'music' then coalesce(difficulty::text, '-') else '-' end`)
+      from game_sessions gs
+      left join prior_stats ps on ps.mode = gs.mode and ps.difficulty_key = case when gs.mode = 'music' then coalesce(gs.difficulty::text, '-') else '-' end
+      where gs.user_id = ${targetUserId}::uuid and gs.kind in ('daily','archive') and gs.status in ('won','lost')
+      group by gs.mode, case when gs.mode = 'music' then coalesce(gs.difficulty::text, '-') else '-' end
+      on conflict (user_id, mode, difficulty_key) do update set
+        played = excluded.played,
+        won = excluded.won,
+        current_streak = excluded.current_streak,
+        best_streak = excluded.best_streak,
+        distribution = excluded.distribution,
+        "updatedAt" = excluded."updatedAt"`)
+    await tx.execute(sql`delete from user_mode_stats where user_id = ${anonymousUserId}::uuid`)
 
     await tx.execute(sql`delete from promo_redemptions old using promo_redemptions target
       where old.user_id = ${anonymousUserId}::uuid and target.user_id = ${targetUserId}::uuid and old.promo_id = target.promo_id and old.redemption_number = target.redemption_number`)

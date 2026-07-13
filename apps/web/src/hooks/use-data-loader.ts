@@ -120,7 +120,7 @@ const loadModeItems = async (dataFile: string) => {
   }
 }
 
-export const useDataLoader = (mode: TitleMode) => {
+export const useDataLoader = (mode: TitleMode, enabled = true) => {
   const [data, setData] = useState<ModeData>(initialData)
   const [titleCounts, setTitleCounts] = useState<ModeCounts>(initialCounts)
   const [searchIndexes, setSearchIndexes] = useState<ModeSearchIndexes>(initialSearchIndexes)
@@ -131,6 +131,7 @@ export const useDataLoader = (mode: TitleMode) => {
   const [retryVersion, setRetryVersion] = useState(0)
 
   useEffect(() => {
+    if (!enabled) return
     fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; musicCount?: number; diagnosisCount?: number }>('./data/source.json')
       .then((source) => {
         setTitleCounts((current) => ({
@@ -180,9 +181,10 @@ export const useDataLoader = (mode: TitleMode) => {
     fetchJsonCached<TitleItem[]>('./data/music.generated.json')
       .then((items) => setTitleCounts((current) => ({ ...current, music: current.music ?? items.length })))
       .catch(() => undefined)
-  }, [])
+  }, [enabled])
 
   useEffect(() => {
+    if (!enabled) return
     let canceled = false
 
     const syncGlobalDailySalt = () => {
@@ -209,9 +211,10 @@ export const useDataLoader = (mode: TitleMode) => {
       window.removeEventListener('focus', syncGlobalDailySalt)
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-  }, [])
+  }, [enabled])
 
   useEffect(() => {
+    if (!enabled) return
     if (searchIndexes[mode]) return
     const libraryKey = MODE_CONFIG[mode].dataFile
     fetchJsonCached<LibrarySearchIndex>(`./data/libraries/${libraryKey}/search-index.json`)
@@ -220,9 +223,13 @@ export const useDataLoader = (mode: TitleMode) => {
         setSearchIndexes((current) => ({ ...current, [mode]: index }))
       })
       .catch(() => undefined)
-  }, [mode, searchIndexes])
+  }, [enabled, mode, searchIndexes])
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false)
+      return
+    }
     if (data[mode].length) {
       setLoading(false)
       return
@@ -246,7 +253,7 @@ export const useDataLoader = (mode: TitleMode) => {
         if (!canceled) setLoading(false)
       })
     return () => { canceled = true }
-  }, [mode, data, retryVersion])
+  }, [enabled, mode, data, retryVersion])
 
   const retryLoading = () => {
     const dataFile = MODE_CONFIG[mode].dataFile
