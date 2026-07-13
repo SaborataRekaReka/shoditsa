@@ -36,6 +36,8 @@ Smoke доказывает SHA, обязательные shell markers, отсу
 
 Jobs хранятся в `background_jobs`. Worker забирает их через `FOR UPDATE SKIP LOCKED`, ставит heartbeat, повторяет временные ошибки с backoff и завершает job терминальным статусом. Музыкальная concurrency намеренно равна одному процессу.
 
+Перед музыкальной партией worker проверяет MusicBrainz, Last.fm, TheAudioDB и Spotify. Недоступные источники временно пропускаются, а карточка собирается из оставшихся структурированных источников и AI fact-check. Счётчики запуска должны совпадать с количеством `pipeline_run_items`; каждая server-партия связывается с результатами через отдельный manifest, а не через общий `mtime` файлов.
+
 При stuck/failed job:
 
 1. проверьте, что worker-контейнер запущен и видит PostgreSQL;

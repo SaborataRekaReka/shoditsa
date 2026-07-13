@@ -38,7 +38,9 @@ node scripts/enrichment-agent/run.mjs music plan --source=archive/local/music-pi
 
 ## Источники и ключи
 
-Без настройки используются MusicBrainz, Wikidata и demo-доступ TheAudioDB. Дополнительное покрытие дают:
+Без настройки локальный CLI использует MusicBrainz, Wikidata и demo-доступ TheAudioDB. Production-worker перед партией выполняет короткий health-check: недоступный или не настроенный источник переводится в `skipped` на 15 минут, а партия продолжает работу через Wikidata, Deezer и iTunes. Это защищает очередь от региональных `403`, Cloudflare HTML и сетевых timeout.
+
+Дополнительное покрытие дают:
 
 ```powershell
 $env:LASTFM_API_KEY="..."
@@ -48,7 +50,7 @@ $env:THEAUDIODB_API_KEY="..." # необязательно, вместо demo-д
 $env:OPENAI_API_KEY="..."     # обязателен для поиска и генерации новых подсказок
 ```
 
-Секреты можно установить в PowerShell или сохранить в `.env.local`; файл уже исключён из Git. Они читаются только Node-процессом и не записываются в output. Ответы источников сохраняются в `data/music/raw`, нормализованные результаты — в `data/music/normalized`.
+Секреты можно установить в PowerShell или сохранить в `.env.local`; файл уже исключён из Git. Они читаются только Node-процессом и не записываются в output. В частности, ответ Spotify token endpoint не сохраняется. Ответы контентных endpoint сохраняются в `data/music/raw`, нормализованные результаты — в `data/music/normalized`.
 
 ## Профили стоимости
 
@@ -85,6 +87,8 @@ node scripts/enrichment-agent/run.mjs music run --source=data/enrichment-agent/m
 Изменение исходной seed-записи меняет SHA-256 fingerprint и автоматически возвращает только эту сущность в очередь. Принятые записи планово освежаются раз в 90 дней; период задаётся через `--refresh-days=N`, значение `0` отключает refresh.
 
 Одновременный запуск двух процессов блокируется `run.lock`.
+
+При запуске через server worker агент дополнительно пишет versioned result manifest с точным списком обработанных entity и путями их records. Worker принимает только manifest внутри `ENRICHMENT_DATA_ROOT`, отклоняет дубли и path traversal. Результаты больше не определяются по времени изменения файлов, поэтому повтор запуска и соседние батчи не могут подмешать старую карточку или потерять новую.
 
 ## Контроль качества и публикация
 

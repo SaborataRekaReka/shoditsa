@@ -50,6 +50,8 @@ const parseArgs = () => {
     aiTimeoutMs: 90000,
     aiWebSearch: true,
     confidenceThreshold: 0.75,
+    resultManifest: null,
+    includeExistingResults: false,
   }
 
   for (const arg of args) {
@@ -65,6 +67,8 @@ const parseArgs = () => {
     else if (arg.startsWith('--api-base-url=')) options.apiBaseUrl = arg.slice(15).replace(/\/+$/, '')
     else if (arg === '--no-ai-web-search') options.aiWebSearch = false
     else if (arg.startsWith('--confidence-threshold=')) options.confidenceThreshold = Number.parseFloat(arg.slice(23))
+    else if (arg.startsWith('--result-manifest=')) options.resultManifest = arg.slice(18).trim() || null
+    else if (arg === '--include-existing-results') options.includeExistingResults = true
   }
 
   if (!['status', 'plan', 'run', 'discover', 'rebuild', 'publish'].includes(options.action)) {
@@ -128,6 +132,18 @@ const main = async () => {
     recordsDir: path.join(baseDir, 'records'),
     runsDir: path.join(baseDir, 'runs'),
     aggregatePath: path.join(baseDir, `${options.domain}.enriched.json`),
+  }
+  const manifestRecords = []
+  const writeResultManifest = (runId = null) => {
+    if (!options.resultManifest) return
+    writeJsonAtomic(path.resolve(options.resultManifest), {
+      schemaVersion: 1,
+      domain: options.domain,
+      runId,
+      source: path.relative(enrichmentRoot, sourcePath).replace(/\\/g, '/'),
+      generatedAt: new Date().toISOString(),
+      records: manifestRecords,
+    })
   }
   const state = loadState(paths.statePath, options.domain)
   const isNewState = Object.keys(state.entities).length === 0
@@ -228,14 +244,31 @@ const main = async () => {
     const recovered = recoverInterruptedEntities(state)
     if (recovered) saveState(paths.statePath, state)
     const freshQueue = buildQueue(queueOptions)
-    const runnable = freshQueue
+    const candidates = options.includeExistingResults
+      ? freshQueue.slice(0, options.maxItems)
+      : freshQueue.filter(isRunnableQueueItem).slice(0, options.maxItems)
+    const runnable = candidates
       .filter(isRunnableQueueItem)
       .filter((item) => (item.previous?.attempts ?? 0) < options.maxAttempts || item.reason === 'input_changed')
-      .slice(0, options.maxItems)
+    if (options.includeExistingResults) {
+      const runnableKeys = new Set(runnable.map((item) => item.key))
+      for (const queueItem of candidates.filter((item) => !runnableKeys.has(item.key))) {
+        const previousStatus = queueItem.previous?.status
+        const previousOutput = queueItem.previous?.output
+        const outputPath = previousOutput ? path.resolve(ROOT, previousOutput) : null
+        manifestRecords.push({
+          key: queueItem.key,
+          status: previousStatus === 'completed' ? 'completed' : previousStatus === 'review' ? 'review' : 'failed',
+          path: outputPath ? path.relative(enrichmentRoot, outputPath).replace(/\\/g, '/') : null,
+          error: outputPath ? null : String(queueItem.previous?.lastError ?? `Existing result is unavailable (${queueItem.reason})`).slice(0, 1000),
+        })
+      }
+    }
     printSummary({ options, sourcePath, paths, queue: freshQueue, recovered })
 
     if (!runnable.length) {
       console.log('Nothing to process')
+      writeResultManifest()
       return
     }
 
@@ -281,6 +314,12 @@ const main = async () => {
         })
         const outputPath = path.join(paths.recordsDir, `${queueItem.key}.json`)
         writeJsonAtomic(outputPath, result.output)
+        manifestRecords.push({
+          key: queueItem.key,
+          status: result.status,
+          path: path.relative(enrichmentRoot, outputPath).replace(/\\/g, '/'),
+          error: null,
+        })
         const completedAt = new Date().toISOString()
         state.entities[queueItem.key] = {
           ...state.entities[queueItem.key],
@@ -297,6 +336,12 @@ const main = async () => {
         entity.lastError = error instanceof Error ? error.message : String(error)
         entity.nextRetryAt = retryAt(entity.attempts)
         run.failed += 1
+        manifestRecords.push({
+          key: queueItem.key,
+          status: 'failed',
+          path: null,
+          error: entity.lastError.slice(0, 1000),
+        })
         console.error(`Failed ${queueItem.key}: ${entity.lastError}`)
       }
       saveState(paths.statePath, state)
@@ -306,6 +351,8 @@ const main = async () => {
     run.finishedAt = new Date().toISOString()
     rebuildAggregate({ adapter, recordsDir: paths.recordsDir, aggregatePath: paths.aggregatePath })
     saveState(paths.statePath, state)
+    manifestRecords.sort((left, right) => left.key.localeCompare(right.key))
+    writeResultManifest(runId)
     console.log(JSON.stringify(run, null, 2))
   } finally {
     releaseLock()

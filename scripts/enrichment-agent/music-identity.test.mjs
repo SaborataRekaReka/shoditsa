@@ -10,6 +10,9 @@ test('rejects a same-name album from Wikidata', () => {
 
 test('matches Cyrillic and Latin spellings of the same artist', () => {
   assert.equal(namesReferToSameArtist('София Ротару', 'Sofia Rotaru'), true)
+  assert.equal(namesReferToSameArtist('Владимир Высоцкий', 'Vladimir Vysotsky'), true)
+  assert.equal(namesReferToSameArtist('Ласковый май', 'Laskoviy May'), true)
+  assert.equal(namesReferToSameArtist('Юрий Шатунов', 'Yuri Shatunov'), true)
 })
 
 test('builds a sourced fallback hint without revealing the artist name', () => {

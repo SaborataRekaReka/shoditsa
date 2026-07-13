@@ -22,8 +22,16 @@ const transliterate = (value) => normalize(value).replace(/[а-я]/g, (letter) =
   ы: 'y', э: 'e', ю: 'yu', я: 'ya', ь: '', ъ: '',
 }[letter] ?? letter)).replace(/iya\b/g, 'ia').replace(/iy\b/g, 'i').replace(/\s+/g, ' ').trim()
 
+const foldTransliteration = (value) => transliterate(value)
+  .replace(/y/g, 'i')
+  .replace(/i+/g, 'i')
+  .replace(/kh/g, 'h')
+  .replace(/\s+/g, ' ')
+  .trim()
+
 export const namesReferToSameArtist = (target, candidate) => nameMatches(target, candidate)
   || nameMatches(transliterate(target), transliterate(candidate))
+  || nameMatches(foldTransliteration(target), foldTransliteration(candidate))
 
 export const scoreWikidataArtistCandidate = (item, artistName) => {
   const names = [item?.label, item?.match?.text, ...(Array.isArray(item?.aliases) ? item.aliases : [])].filter(Boolean)

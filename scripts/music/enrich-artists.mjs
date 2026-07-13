@@ -4,8 +4,11 @@ import { namesReferToSameArtist, scoreWikidataArtistCandidate, validateWikidataA
 
 const ROOT = process.cwd()
 const SOURCE_PRIORITY = ['musicbrainz', 'wikidata', 'deezer', 'itunes', 'lastfm', 'theaudiodb', 'spotify']
-const MUSICBRAINZ_USER_AGENT = process.env.MUSICBRAINZ_USER_AGENT?.trim() || 'seans-starter-pack-music-enricher/1.0 (local-dev)'
+const MUSICBRAINZ_USER_AGENT = process.env.MUSICBRAINZ_USER_AGENT?.trim() || 'Shoditsa/1.0 (https://shoditsa.ru; mailto:breneize@yandex.ru)'
 const AUDIODB_DEMO_KEY = '2'
+const DISABLED_SOURCES = new Set(String(process.env.MUSIC_PIPELINE_DISABLED_SOURCES ?? '').split(',').map((value) => value.trim()).filter(Boolean))
+let SOURCE_HEALTH = {}
+try { SOURCE_HEALTH = JSON.parse(process.env.MUSIC_PIPELINE_SOURCE_HEALTH || '{}') } catch {}
 const SOCIAL_HOST_MARKERS = [
   'facebook.com',
   'instagram.com',
@@ -294,6 +297,13 @@ const pickBestWikidataCandidate = (searchJson, artistName) => {
   }
 
   return best
+}
+
+const runSourceStage = async (source, notes, fetchStage) => {
+  if (!DISABLED_SOURCES.has(source)) return fetchStage()
+  const reason = String(SOURCE_HEALTH?.[source]?.reason ?? SOURCE_HEALTH?.[source]?.state ?? 'healthcheck').replace(/\s+/g, ' ').slice(0, 160)
+  notes.push(`${source}_temporarily_unavailable:${reason}`)
+  return { source, status: 'skipped', rawFiles: [], data: null, confidence: null, error: reason }
 }
 
 const pickNamedCandidate = (items, artistName, getName) => {
@@ -1263,13 +1273,6 @@ const fetchSpotifyStage = async ({ artistName, artistKey, notes }) => {
     return stage
   }
 
-  stage.rawFiles.push(saveRawJson({
-    source,
-    artistKey,
-    endpoint: 'token',
-    payload: tokenResponse.json,
-  }))
-
   const accessToken = tokenResponse.json.access_token
   const baseHeaders = {
     Authorization: `Bearer ${accessToken}`,
@@ -1353,17 +1356,17 @@ const fetchStageForArtist = async ({ item, index }) => {
 
   const sourceStages = {}
 
-  sourceStages.musicbrainz = await fetchMusicBrainzStage({
+  sourceStages.musicbrainz = await runSourceStage('musicbrainz', notes, () => fetchMusicBrainzStage({
     artistName,
     artistKey,
     notes,
-  })
+  }))
 
-  sourceStages.lastfm = await fetchLastfmStage({
+  sourceStages.lastfm = await runSourceStage('lastfm', notes, () => fetchLastfmStage({
     artistName,
     artistKey,
     notes,
-  })
+  }))
 
   sourceStages.wikidata = await fetchWikidataStage({
     artistName,
@@ -1375,17 +1378,17 @@ const fetchStageForArtist = async ({ item, index }) => {
   sourceStages.deezer = await fetchDeezerStage({ artistName, artistKey, notes })
   sourceStages.itunes = await fetchItunesStage({ artistName, artistKey, notes })
 
-  sourceStages.theaudiodb = await fetchAudioDbStage({
+  sourceStages.theaudiodb = await runSourceStage('theaudiodb', notes, () => fetchAudioDbStage({
     artistName,
     artistKey,
     notes,
-  })
+  }))
 
-  sourceStages.spotify = await fetchSpotifyStage({
+  sourceStages.spotify = await runSourceStage('spotify', notes, () => fetchSpotifyStage({
     artistName,
     artistKey,
     notes,
-  })
+  }))
 
   const rawFiles = uniqueStrings(Object.values(sourceStages).flatMap((stage) => asArray(stage?.rawFiles)))
   const sourceStatus = Object.fromEntries(
@@ -1426,7 +1429,9 @@ const extractStageForArtist = (entry) => {
   const canonicalNameEvidence = []
   pushEvidence(canonicalNameEvidence, 'musicbrainz', mbArtist?.name)
   pushEvidence(canonicalNameEvidence, 'lastfm', lfArtist?.name)
-  pushEvidence(canonicalNameEvidence, 'wikidata', wdEntity?.labels?.en?.value || wdEntity?.labels?.ru?.value)
+  pushEvidence(canonicalNameEvidence, 'wikidata', /[а-яё]/i.test(input?.artist ?? '')
+    ? wdEntity?.labels?.ru?.value || wdEntity?.labels?.en?.value
+    : wdEntity?.labels?.en?.value || wdEntity?.labels?.ru?.value)
   pushEvidence(canonicalNameEvidence, 'deezer', dzArtist?.name)
   pushEvidence(canonicalNameEvidence, 'itunes', itArtist?.artistName)
   pushEvidence(canonicalNameEvidence, 'theaudiodb', adbArtist?.strArtist)
@@ -1634,7 +1639,9 @@ const extractStageForArtist = (entry) => {
   pushEvidence(biographyEvidence, 'wikidata', wd?.wikipediaRu?.extract || wd?.wikipediaEn?.extract)
   pushEvidence(biographyEvidence, 'theaudiodb', adbArtist?.strBiographyRU || adbArtist?.strBiographyEN)
 
-  const canonicalName = makeField(canonicalNameEvidence, null)
+  const incompatibleCanonicalEvidence = canonicalNameEvidence.filter((entry) => entry.source !== 'input' && !namesReferToSameArtist(entry.value, input?.artist))
+  const compatibleCanonicalEvidence = canonicalNameEvidence.filter((entry) => entry.source === 'input' || namesReferToSameArtist(entry.value, input?.artist))
+  const canonicalName = makeField(compatibleCanonicalEvidence.length ? compatibleCanonicalEvidence : canonicalNameEvidence, null)
   const displayNameRu = makeField(displayNameRuEvidence, null)
   const displayNameEn = makeField(displayNameEnEvidence, null)
   const aliases = makeField(aliasesEvidence, [])
@@ -1672,7 +1679,7 @@ const extractStageForArtist = (entry) => {
   if (typeof matchConfidence.primaryValue === 'number' && matchConfidence.primaryValue < 0.65) {
     reviewReasons.push('low_match_confidence')
   }
-  if (canonicalName.sourceEvidence.some((entry) => !namesReferToSameArtist(entry.artist ?? entry.value, input?.artist))) reviewReasons.push('conflict_canonical_name')
+  if (incompatibleCanonicalEvidence.length) reviewReasons.push('conflict_canonical_name')
   if (hasConflict(country)) reviewReasons.push('conflict_country')
   if (hasConflict(beginYear)) reviewReasons.push('conflict_begin_year')
 

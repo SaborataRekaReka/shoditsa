@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { spawn } from 'node:child_process'
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { and, eq, inArray, lt, sql } from 'drizzle-orm'
@@ -14,6 +14,8 @@ import { loadAdminTimeline } from './modules/admin/timeline-service.js'
 import type { AdminEventsQuery } from '@shoditsa/contracts'
 import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.js'
 import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
+import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
+import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -21,6 +23,7 @@ const database = createDatabase(config)
 const db = database.db
 const root = process.cwd()
 let stopping = false
+let musicHealthCache: { signature: string; expiresAt: number; result: Awaited<ReturnType<typeof probeMusicSourceHealth>> } | null = null
 
 const record = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
 const primary = (value: unknown) => record(value).primaryValue
@@ -31,6 +34,17 @@ const fieldStrings = (value: unknown) => Array.isArray(value) ? strings(value) :
 const hash = (value: string) => createHash('sha256').update(value).digest('hex')
 const sleep = (ms: number) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms))
 const safeError = (error: unknown) => (error instanceof Error ? error.message : String(error)).replace(/(?:sk-[A-Za-z0-9_-]{12,}|Bearer\s+[A-Za-z0-9._-]+)/gi, '[redacted]').slice(0, 1_000)
+
+const addMusicSourceHealth = async (environment: Record<string, string>) => {
+  environment.MUSICBRAINZ_USER_AGENT ||= 'Shoditsa/1.0 (https://shoditsa.ru; mailto:breneize@yandex.ru)'
+  const signature = hash(['LASTFM_API_KEY', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'THEAUDIODB_API_KEY', 'MUSICBRAINZ_USER_AGENT'].map((key) => `${key}:${environment[key] ?? ''}`).join('|'))
+  if (!musicHealthCache || musicHealthCache.signature !== signature || musicHealthCache.expiresAt <= Date.now()) {
+    musicHealthCache = { signature, expiresAt: Date.now() + 15 * 60_000, result: await probeMusicSourceHealth(environment) }
+  }
+  environment.MUSIC_PIPELINE_DISABLED_SOURCES = musicHealthCache.result.disabledSources.join(',')
+  environment.MUSIC_PIPELINE_SOURCE_HEALTH = JSON.stringify(musicHealthCache.result.sources)
+  return musicHealthCache.result
+}
 
 const claim = async () => {
   const claimed = await db.execute(sql`
@@ -69,14 +83,64 @@ const runCommand = async (args: string[], runId: string, jobId: string, integrat
   } finally { clearInterval(heartbeat) }
 }
 
-const listFiles = async (directory: string): Promise<string[]> => {
-  const result: string[] = []
-  for (const entry of await readdir(directory, { withFileTypes: true }).catch(() => [])) {
-    const file = join(directory, entry.name)
-    if (entry.isDirectory()) result.push(...await listFiles(file))
-    else result.push(file)
+const manifestFileFor = async (enrichmentRoot: string, domain: string, runId: string, jobId: string) => {
+  const directory = join(enrichmentRoot, domain, 'worker-manifests')
+  await mkdir(directory, { recursive: true })
+  return join(directory, `${runId}-${jobId}.json`)
+}
+
+const loadManifestOutputs = async (enrichmentRoot: string, manifestFile: string, domain: string, expectedItems: number | null) => {
+  const manifest = await loadPipelineResultManifest(enrichmentRoot, manifestFile, domain)
+  if (expectedItems != null && manifest.length !== expectedItems) {
+    throw new Error(`${domain} pipeline manifest has ${manifest.length} records, expected ${expectedItems}`)
   }
-  return result
+  const outputs: Array<{ file: string; raw: Json }> = []
+  const failures: Array<{ key: string; error: string }> = []
+  for (const entry of manifest) {
+    if (!entry.file) failures.push({ key: entry.key, error: entry.error ?? 'Pipeline item failed' })
+    else outputs.push({ file: entry.file, raw: JSON.parse(await readFile(entry.file, 'utf8')) as Json })
+  }
+  return { outputs, failures }
+}
+
+const saveManifestFailures = async (runId: string, failures: Array<{ key: string; error: string }>) => {
+  for (const failure of failures) {
+    await db.insert(pipelineRunItems).values({
+      runId, entityKey: failure.key, status: 'failed', proposedJson: null, warningsJson: [failure.error],
+      idempotencyKey: `${runId}:${failure.key}`, errorCode: 'PIPELINE_ITEM_PROCESSING_FAILED', safeErrorMessage: safeError(failure.error),
+    }).onConflictDoUpdate({
+      target: pipelineRunItems.idempotencyKey,
+      set: { proposedJson: null, warningsJson: [failure.error], updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_ITEM_PROCESSING_FAILED', safeErrorMessage: safeError(failure.error) },
+    })
+  }
+}
+
+const saveProcessingFailure = async (runId: string, entityKey: string, error: unknown, warnings: unknown[] = []) => {
+  const message = safeError(error)
+  await db.insert(pipelineRunItems).values({
+    runId, entityKey, status: 'failed', proposedJson: null, warningsJson: [...warnings, message],
+    idempotencyKey: `${runId}:${entityKey}`, errorCode: 'PIPELINE_ITEM_MAPPING_FAILED', safeErrorMessage: message,
+  }).onConflictDoUpdate({
+    target: pipelineRunItems.idempotencyKey,
+    set: { proposedJson: null, warningsJson: [...warnings, message], updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_ITEM_MAPPING_FAILED', safeErrorMessage: message },
+  })
+}
+
+const loadRunMetrics = async (runId: string) => {
+  const rows = await db.select({ status: pipelineRunItems.status, confidence: pipelineRunItems.confidenceJson }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, runId))
+  const failedStatuses = new Set(['failed', 'rejected', 'conflict'])
+  const responses = new Map<string, Json>()
+  for (const row of rows) {
+    const usage = record(record(row.confidence).usage)
+    for (const raw of Array.isArray(usage.responses) ? usage.responses : []) {
+      const response = record(raw)
+      const identity = text(response.responseId) || hash(JSON.stringify(response))
+      if (!responses.has(identity)) responses.set(identity, response)
+    }
+  }
+  const actualCost = Number([...responses.values()].reduce((sum, response) => sum + Number(response.costUsd ?? 0), 0).toFixed(8))
+  const itemsFailed = rows.filter((row) => failedStatuses.has(row.status)).length
+  return { itemsProcessed: rows.length, itemsSucceeded: rows.length - itemsFailed, itemsFailed, actualCost }
 }
 
 const mapMusicRecord = (raw: Json) => {
@@ -121,7 +185,9 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
   const enrichmentRoot = resolve(config.enrichmentDataRoot)
   await mkdir(join(enrichmentRoot, 'music'), { recursive: true })
   const integrationEnv = await loadIntegrationEnvironment(db, config)
-  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`]
+  await addMusicSourceHealth(integrationEnv)
+  const manifestFile = await manifestFileFor(enrichmentRoot, 'music', run.id, job.id)
+  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`, `--result-manifest=${manifestFile}`]
   if (settings.webSearch === false) common.push('--no-ai-web-search')
   let command: string[]
   let manualBatchSize = 0
@@ -140,7 +206,7 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
     }))
     const seedFile = join(enrichmentRoot, 'music', `admin-${run.id}-batch-${offset}.json`)
     await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
-    command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, ...common.filter((entry) => !entry.startsWith('--max-items='))]
+    command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, '--include-existing-results', ...common.filter((entry) => !entry.startsWith('--max-items='))]
   }
   else if (scenario === 'discover') command = ['scripts/music/run-agent-cycle.mjs', ...common]
   else if (scenario === 'review') command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', '--retry-review', '--ai=always', ...common.filter((entry) => !entry.startsWith('--ai='))]
@@ -151,28 +217,25 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
     const seedFile = join(enrichmentRoot, 'music', `admin-${run.id}-seed.json`); await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
     command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${seedFile}`, ...common]
   } else command = ['scripts/enrichment-agent/run.mjs', 'music', 'run', `--source=${join(enrichmentRoot, 'music', 'discovery', 'discovered-candidates.json')}`, ...common]
-  const started = Date.now(); const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
-  const files = (await listFiles(join(enrichmentRoot, 'music'))).filter((file) => file.includes(`${join('', 'records', '')}`) && file.endsWith('.json'))
-  const fresh: Array<{ file: string; raw: Json }> = []
-  for (const file of files) if ((await stat(file)).mtimeMs >= started - 2_000) fresh.push({ file, raw: JSON.parse(await readFile(file, 'utf8')) as Json })
-  const selectedFresh = fresh.slice(0, scenario === 'manual' ? manualBatchSize : maxItems)
+  const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
+  const manifest = await loadManifestOutputs(enrichmentRoot, manifestFile, 'music', scenario === 'manual' ? manualBatchSize : null)
+  const selectedFresh = manifest.outputs
   const usage = collectMusicRecordUsage(selectedFresh.map((entry) => entry.raw))
-  let failed = 0
+  await saveManifestFailures(run.id, manifest.failures)
+  let failed = manifest.failures.length
   let succeeded = 0
   for (const entry of selectedFresh) {
     const warnings = [...(Array.isArray(record(entry.raw.assessment).reviewReasons) ? record(entry.raw.assessment).reviewReasons as unknown[] : []), ...(entry.raw.aiError ? [entry.raw.aiError] : [])]
     const entityKey = text(entry.raw.entityKey) || basename(entry.file, '.json')
     const rejected = entry.raw.disposition === 'rejected' || record(entry.raw.assessment).hardFailure === true
     if (rejected) {
-      try {
-        await db.insert(pipelineRunItems).values({
-          runId: run.id, entityKey, status: 'failed', proposedJson: null, warningsJson: warnings,
-          sourcesJson: record(record(entry.raw.record).pipeline).sourceStatus ?? null,
-          confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
-          rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
-          errorCode: 'PIPELINE_IDENTITY_REJECTED', safeErrorMessage: 'Результат отклонён: личность исполнителя или обязательные данные не подтверждены',
-        }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: null, warningsJson: warnings, updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_IDENTITY_REJECTED' } })
-      } catch { /* the rejected item still counts as failed even if its audit row cannot be written */ }
+      await db.insert(pipelineRunItems).values({
+        runId: run.id, entityKey, status: 'failed', proposedJson: null, warningsJson: warnings,
+        sourcesJson: record(record(entry.raw.record).pipeline).sourceStatus ?? null,
+        confidenceJson: { assessment: entry.raw.assessment, aiReview: entry.raw.aiReview, hintValidation: entry.raw.hintValidation, usage },
+        rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
+        errorCode: 'PIPELINE_IDENTITY_REJECTED', safeErrorMessage: 'Результат отклонён: личность исполнителя или обязательные данные не подтверждены',
+      }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: null, warningsJson: warnings, updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_IDENTITY_REJECTED' } })
       failed += 1
       continue
     }
@@ -189,17 +252,12 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
         rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${text(entry.raw.entityKey) || basename(entry.file)}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: proposed, warningsJson: warnings, updatedAt: new Date(), status: 'review_required' } })
       succeeded += 1
-    } catch { failed += 1 }
+    } catch (error) { await saveProcessingFailure(run.id, entityKey, error, warnings); failed += 1 }
   }
-  const missing = scenario === 'manual' ? Math.max(0, manualBatchSize - selectedFresh.length) : 0
-  failed += missing
-  const previousCost = Number(run.actualCost ?? 0)
-  const actualCost = Number((previousCost + usage.costUsd).toFixed(8))
+  const metrics = await loadRunMetrics(run.id)
   if (scenario === 'manual') {
     const artists = Array.isArray(input.artists) ? input.artists : []
-    const itemsProcessed = run.itemsProcessed + manualBatchSize
-    const itemsSucceeded = run.itemsSucceeded + succeeded
-    const itemsFailed = run.itemsFailed + failed
+    const { itemsProcessed, itemsSucceeded, itemsFailed, actualCost } = metrics
     const hasMore = manualNextOffset < artists.length
     await db.update(pipelineRuns).set({
       status: hasMore ? 'queued' : itemsSucceeded ? itemsFailed ? 'partially_failed' : 'review_required' : 'failed',
@@ -217,10 +275,10 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
     return { runId: run.id, batch: manualBatchSize, offset: manualNextOffset, hasMore, succeeded, failed, usage }
   }
   await db.update(pipelineRuns).set({
-    status: succeeded ? failed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: selectedFresh.length || run.itemsTotal,
-    itemsProcessed: selectedFresh.length, itemsSucceeded: succeeded, itemsFailed: failed, actualCost: String(actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
+    status: metrics.itemsSucceeded ? metrics.itemsFailed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: metrics.itemsProcessed || run.itemsTotal,
+    ...metrics, actualCost: String(metrics.actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
     logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
-    ...(!succeeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
+    ...(!metrics.itemsSucceeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
   }).where(eq(pipelineRuns.id, run.id))
   return { runId: run.id, items: selectedFresh.length, succeeded, failed, usage }
 }
@@ -256,7 +314,8 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
   await mkdir(join(enrichmentRoot, 'movie'), { recursive: true })
   const integrationEnv = await loadIntegrationEnvironment(db, config)
   if (!integrationEnv.KINOPOISK_API_KEYS) throw new Error('Kinopoisk API key is not configured')
-  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`]
+  const manifestFile = await manifestFileFor(enrichmentRoot, 'movie', run.id, job.id)
+  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`, `--result-manifest=${manifestFile}`]
   if (settings.webSearch === false) common.push('--no-ai-web-search')
   let command: string[]; let manualBatchSize = 0; let manualNextOffset = 0
   if (scenario === 'manual') {
@@ -271,7 +330,7 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
     }))
     const seedFile = join(enrichmentRoot, 'movie', `admin-${run.id}-batch-${offset}.json`)
     await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
-    command = ['scripts/enrichment-agent/run.mjs', 'movie', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, ...common.filter((entry) => !entry.startsWith('--max-items='))]
+    command = ['scripts/enrichment-agent/run.mjs', 'movie', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, '--include-existing-results', ...common.filter((entry) => !entry.startsWith('--max-items='))]
   } else if (scenario === 'discover') {
     command = ['scripts/movies/run-agent-cycle.mjs', ...common]
   } else if (scenario === 'review') {
@@ -287,13 +346,12 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
   } else {
     command = ['scripts/enrichment-agent/run.mjs', 'movie', 'run', `--source=${join(enrichmentRoot, 'movie', 'discovery', 'discovered-candidates.json')}`, ...common]
   }
-  const started = Date.now(); const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
-  const files = (await listFiles(join(enrichmentRoot, 'movie'))).filter((file) => file.includes(`${join('', 'records', '')}`) && file.endsWith('.json'))
-  const fresh: Array<{ file: string; raw: Json }> = []
-  for (const file of files) if ((await stat(file)).mtimeMs >= started - 2_000) fresh.push({ file, raw: JSON.parse(await readFile(file, 'utf8')) as Json })
-  const selectedFresh = fresh.slice(0, scenario === 'manual' ? manualBatchSize : maxItems)
+  const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
+  const manifest = await loadManifestOutputs(enrichmentRoot, manifestFile, 'movie', scenario === 'manual' ? manualBatchSize : null)
+  const selectedFresh = manifest.outputs
   const usage = collectMusicRecordUsage(selectedFresh.map((entry) => entry.raw))
-  let failed = 0; let succeeded = 0
+  await saveManifestFailures(run.id, manifest.failures)
+  let failed = manifest.failures.length; let succeeded = 0
   for (const entry of selectedFresh) {
     const warnings = [...(Array.isArray(record(entry.raw.assessment).reviewReasons) ? record(entry.raw.assessment).reviewReasons as unknown[] : []), ...(entry.raw.aiError ? [entry.raw.aiError] : [])]
     const entityKey = text(entry.raw.entityKey) || basename(entry.file, '.json')
@@ -319,14 +377,12 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
         rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: proposed, warningsJson: warnings, updatedAt: new Date(), status: 'review_required' } })
       succeeded += 1
-    } catch { failed += 1 }
+    } catch (error) { await saveProcessingFailure(run.id, entityKey, error, warnings); failed += 1 }
   }
-  const missing = scenario === 'manual' ? Math.max(0, manualBatchSize - selectedFresh.length) : 0
-  failed += missing
-  const actualCost = Number((Number(run.actualCost ?? 0) + usage.costUsd).toFixed(8))
+  const metrics = await loadRunMetrics(run.id)
   if (scenario === 'manual') {
     const movies = Array.isArray(input.movies) ? input.movies : []
-    const itemsProcessed = run.itemsProcessed + manualBatchSize; const itemsSucceeded = run.itemsSucceeded + succeeded; const itemsFailed = run.itemsFailed + failed
+    const { itemsProcessed, itemsSucceeded, itemsFailed, actualCost } = metrics
     const hasMore = manualNextOffset < movies.length
     await db.update(pipelineRuns).set({
       status: hasMore ? 'queued' : itemsSucceeded ? itemsFailed ? 'partially_failed' : 'review_required' : 'failed',
@@ -338,10 +394,10 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
     return { runId: run.id, batch: manualBatchSize, offset: manualNextOffset, hasMore, succeeded, failed, usage }
   }
   await db.update(pipelineRuns).set({
-    status: succeeded ? failed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: selectedFresh.length || run.itemsTotal,
-    itemsProcessed: selectedFresh.length, itemsSucceeded: succeeded, itemsFailed: failed, actualCost: String(actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
+    status: metrics.itemsSucceeded ? metrics.itemsFailed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: metrics.itemsProcessed || run.itemsTotal,
+    ...metrics, actualCost: String(metrics.actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
     logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
-    ...(!succeeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
+    ...(!metrics.itemsSucceeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
   }).where(eq(pipelineRuns.id, run.id))
   return { runId: run.id, items: selectedFresh.length, succeeded, failed, usage }
 }
@@ -377,7 +433,8 @@ const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
   await mkdir(join(enrichmentRoot, 'anime'), { recursive: true })
   const integrationEnv = await loadIntegrationEnvironment(db, config)
   if (!integrationEnv.SHIKIMORI_USER_AGENT) throw new Error('Shikimori User-Agent is not configured')
-  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`]
+  const manifestFile = await manifestFileFor(enrichmentRoot, 'anime', run.id, job.id)
+  const common = [`--max-items=${maxItems}`, `--ai=${text(settings.aiMode) || 'auto'}`, `--model=${text(settings.model) || config.musicPipelineModel}`, `--result-manifest=${manifestFile}`]
   if (settings.webSearch === false) common.push('--no-ai-web-search')
   let command: string[]; let manualBatchSize = 0; let manualNextOffset = 0
   if (scenario === 'manual') {
@@ -392,7 +449,7 @@ const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
     }))
     const seedFile = join(enrichmentRoot, 'anime', `admin-${run.id}-batch-${offset}.json`)
     await writeFile(seedFile, JSON.stringify(seed, null, 2), 'utf8')
-    command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, ...common.filter((entry) => !entry.startsWith('--max-items='))]
+    command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${seedFile}`, `--max-items=${batch.length}`, '--include-existing-results', ...common.filter((entry) => !entry.startsWith('--max-items='))]
   } else if (scenario === 'discover') {
     command = ['scripts/anime/run-agent-cycle.mjs', ...common]
   } else if (scenario === 'review') {
@@ -408,13 +465,12 @@ const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
   } else {
     command = ['scripts/enrichment-agent/run.mjs', 'anime', 'run', `--source=${join(enrichmentRoot, 'anime', 'discovery', 'discovered-candidates.json')}`, ...common]
   }
-  const started = Date.now(); const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
-  const files = (await listFiles(join(enrichmentRoot, 'anime'))).filter((file) => file.includes(`${join('', 'records', '')}`) && file.endsWith('.json'))
-  const fresh: Array<{ file: string; raw: Json }> = []
-  for (const file of files) if ((await stat(file)).mtimeMs >= started - 2_000) fresh.push({ file, raw: JSON.parse(await readFile(file, 'utf8')) as Json })
-  const selectedFresh = fresh.slice(0, scenario === 'manual' ? manualBatchSize : maxItems)
+  const output = await runCommand(command, run.id, job.id, integrationEnv as Record<string, string>)
+  const manifest = await loadManifestOutputs(enrichmentRoot, manifestFile, 'anime', scenario === 'manual' ? manualBatchSize : null)
+  const selectedFresh = manifest.outputs
   const usage = collectMusicRecordUsage(selectedFresh.map((entry) => entry.raw))
-  let failed = 0; let succeeded = 0
+  await saveManifestFailures(run.id, manifest.failures)
+  let failed = manifest.failures.length; let succeeded = 0
   for (const entry of selectedFresh) {
     const warnings = [...(Array.isArray(record(entry.raw.assessment).reviewReasons) ? record(entry.raw.assessment).reviewReasons as unknown[] : []), ...(entry.raw.aiError ? [entry.raw.aiError] : [])]
     const entityKey = text(entry.raw.entityKey) || basename(entry.file, '.json')
@@ -440,14 +496,12 @@ const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
         rawResultRef: relative(enrichmentRoot, entry.file).replaceAll('\\', '/'), idempotencyKey: `${run.id}:${entityKey}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { proposedJson: proposed, warningsJson: warnings, updatedAt: new Date(), status: 'review_required' } })
       succeeded += 1
-    } catch { failed += 1 }
+    } catch (error) { await saveProcessingFailure(run.id, entityKey, error, warnings); failed += 1 }
   }
-  const missing = scenario === 'manual' ? Math.max(0, manualBatchSize - selectedFresh.length) : 0
-  failed += missing
-  const actualCost = Number((Number(run.actualCost ?? 0) + usage.costUsd).toFixed(8))
+  const metrics = await loadRunMetrics(run.id)
   if (scenario === 'manual') {
     const anime = Array.isArray(input.anime) ? input.anime : []
-    const itemsProcessed = run.itemsProcessed + manualBatchSize; const itemsSucceeded = run.itemsSucceeded + succeeded; const itemsFailed = run.itemsFailed + failed
+    const { itemsProcessed, itemsSucceeded, itemsFailed, actualCost } = metrics
     const hasMore = manualNextOffset < anime.length
     await db.update(pipelineRuns).set({
       status: hasMore ? 'queued' : itemsSucceeded ? itemsFailed ? 'partially_failed' : 'review_required' : 'failed',
@@ -459,10 +513,10 @@ const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
     return { runId: run.id, batch: manualBatchSize, offset: manualNextOffset, hasMore, succeeded, failed, usage }
   }
   await db.update(pipelineRuns).set({
-    status: succeeded ? failed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: selectedFresh.length || run.itemsTotal,
-    itemsProcessed: selectedFresh.length, itemsSucceeded: succeeded, itemsFailed: failed, actualCost: String(actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
+    status: metrics.itemsSucceeded ? metrics.itemsFailed ? 'partially_failed' : 'review_required' : 'failed', itemsTotal: metrics.itemsProcessed || run.itemsTotal,
+    ...metrics, actualCost: String(metrics.actualCost), finishedAt: new Date(), heartbeatAt: new Date(),
     logExcerpt: output.replace(/sk-[A-Za-z0-9_-]{12,}/g, '[redacted]').slice(-8_000),
-    ...(!succeeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
+    ...(!metrics.itemsSucceeded ? { errorCode: 'NO_REVIEWABLE_RESULTS', safeErrorMessage: 'Пайплайн не создал результатов для проверки' } : {}),
   }).where(eq(pipelineRuns.id, run.id))
   return { runId: run.id, items: selectedFresh.length, succeeded, failed, usage }
 }
