@@ -140,7 +140,8 @@ const callAiReviewer = async ({ movie, evidence, options }) => {
     const request = {
       model: options.model,
       input: prompt,
-      max_output_tokens: 1_200,
+      reasoning: { effort: 'low' },
+      max_output_tokens: 2_400,
       text: {
         format: {
           type: 'json_schema',
@@ -183,7 +184,12 @@ const callAiReviewer = async ({ movie, evidence, options }) => {
       if (!options.aiWebSearch || !isOpenAiWebSearchRegionalError(error)) throw error
       return requestResponse(true)
     })
-    const review = parseJsonResponse(extractResponseText(payload))
+    const responseText = extractResponseText(payload)
+    if (!String(responseText).trim()) {
+      const incompleteReason = payload?.incomplete_details?.reason
+      throw new Error(incompleteReason ? `OpenAI response incomplete: ${incompleteReason}` : `OpenAI returned no text output (status: ${payload?.status ?? 'unknown'})`)
+    }
+    const review = parseJsonResponse(responseText)
     if (!['accept', 'review', 'reject'].includes(review?.decision)) throw new Error('AI reviewer returned an invalid decision')
     return {
       ...review, model: options.model, reviewedAt: new Date().toISOString(), usage: payload?.usage ?? null,
