@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameSessionSnapshot, GameStartBody, PublicContentItem } from '@shoditsa/contracts'
 import {
@@ -3686,15 +3686,57 @@ function AccountAccessPanel({ session, loadingSession, refreshSession }: {
   </div>
 }
 
-function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview }: { onHome: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }) {
+type ProfileTab = 'overview' | 'stats' | 'achievements' | 'settings'
+
+const PROFILE_TABS: Array<{ id: ProfileTab; label: string }> = [
+  { id: 'overview', label: 'Обзор' },
+  { id: 'stats', label: 'Статистика' },
+  { id: 'achievements', label: 'Достижения' },
+  { id: 'settings', label: 'Настройки' },
+]
+
+const profileTabFromLocation = (): ProfileTab => {
+  if (typeof window === 'undefined') return 'overview'
+  const value = new URLSearchParams(window.location.search).get('tab')
+  return PROFILE_TABS.some((tab) => tab.id === value) ? value as ProfileTab : 'overview'
+}
+
+const publicPlayerNumber = (id: string | null | undefined) => {
+  let hash = 17
+  for (const char of id ?? 'guest') hash = (hash * 31 + char.charCodeAt(0)) % 9999
+  return String(hash + 1).padStart(4, '0')
+}
+
+const profileStatus = (completedGames: number) => completedGames >= 80
+  ? 'Мастер экрана'
+  : completedGames >= 30
+    ? 'Опытный игрок'
+    : completedGames >= 5
+      ? 'Игрок'
+      : 'Новичок'
+
+function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode, onResumeActive }: {
+  onHome: () => void
+  onArchive: () => void
+  onStats: () => void
+  onRules: () => void
+  onReview: () => void
+  onSelectMode: (mode: TitleMode) => void
+  onResumeActive: () => void
+}) {
   const { session, loading, refresh: refreshSession } = useAuthSession()
   const serverRuntime = useServerRuntime()
+  const queryClient = useQueryClient()
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ profile: true }),
     queryFn: () => api.archive(),
     enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
   })
   const [economyOpen, setEconomyOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<ProfileTab>(profileTabFromLocation)
+  const [profileName, setProfileName] = useState('')
+  const [profileNotice, setProfileNotice] = useState('')
+  const [profileError, setProfileError] = useState('')
   const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
   const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
   const today = SERVER_RUNTIME
@@ -3706,67 +3748,160 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview }: { onHo
   const wonGames = completedGames.filter((game) => game.status === 'won')
   const winRate = completedGames.length ? Math.round(wonGames.length / completedGames.length * 100) : 0
   const recentGames = completedGames.slice(0, 4)
+  const profile = serverRuntime.me?.profile
   const displayName = session && !session.isAnonymous
-    ? session.name || session.email?.split('@')[0] || 'Игрок'
+    ? profile?.displayName || session.name || session.email?.split('@')[0] || 'Игрок'
     : 'Гость кинозала'
   const initials = displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU')
-  const scrollToAccountAccess = () => document.getElementById('profile-account-access')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const todayDate = serverRuntime.meta?.moscowDate ?? getMoscowDate()
+  const activeSession = serverRuntime.dashboard?.activeSessions.find((entry) => entry.kind === 'daily' && entry.puzzleDate === todayDate)
+  const selectTab = (tab: ProfileTab) => {
+    setActiveTab(tab)
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    if (tab === 'overview') url.searchParams.delete('tab')
+    else url.searchParams.set('tab', tab)
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+  }
+  const saveProfileName = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!SERVER_RUNTIME || !session || session.isAnonymous) return
+    setProfileNotice('')
+    setProfileError('')
+    try {
+      await api.updateProfile({ displayName: profileName.trim() || null })
+      await queryClient.invalidateQueries({ queryKey: queryKeys.me })
+      await refreshSession()
+      setProfileNotice('Имя профиля сохранено.')
+    } catch (error) {
+      setProfileError(authErrorMessage(error))
+    }
+  }
+
+  useEffect(() => {
+    setProfileName(profile?.displayName || session?.name || '')
+  }, [profile?.displayName, session?.name])
+
+  useEffect(() => {
+    const syncTab = () => setActiveTab(profileTabFromLocation())
+    window.addEventListener('popstate', syncTab)
+    return () => window.removeEventListener('popstate', syncTab)
+  }, [])
+
+  const weeklyAttendance = useMemo(() => {
+    const date = new Date(`${todayDate}T12:00:00+03:00`)
+    const mondayOffset = (date.getUTCDay() + 6) % 7
+    return ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((label, index) => ({
+      label,
+      isToday: index === mondayOffset,
+      hasActivity: index === mondayOffset && today.completedModes.length > 0,
+      isFullHouse: index === mondayOffset && today.fullHouse,
+    }))
+  }, [today.completedModes.length, today.fullHouse, todayDate])
+  const achievementCards = [
+    { key: 'first-game', title: 'Первый сеанс', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, progress: `${Math.min(completedGames.length, 1)}/1`, icon: <Play /> },
+    { key: 'bullseye', title: 'Точное попадание', description: 'Выиграйте с первой попытки.', unlocked: wonGames.some((game) => game.attempts.length === 1), progress: wonGames.some((game) => game.attempts.length === 1) ? '1/1' : '0/1', icon: <Target /> },
+    { key: 'full-house', title: 'Полный зал', description: 'Закончите все шесть игр за день.', unlocked: attendance.fullHouseDays > 0 || today.fullHouse, progress: `${attendance.fullHouseDays > 0 || today.fullHouse ? 1 : 0}/1`, icon: <Trophy /> },
+  ]
+  const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
 
   return <>
-    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="profile-screen">
+    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} profileActive />
+    <main className="profile-screen profile-screen--new">
       <div className="screen-back-row"><button className="screen-back" onClick={onHome} aria-label="На главную"><ChevronLeft /></button><span>Личный кабинет</span></div>
 
-      <section className="profile-identity">
-        <div className="profile-avatar" aria-hidden="true">{loading ? <UserRound /> : initials || <UserRound />}</div>
-        <div className="profile-identity__copy">
-          <span>{session && !session.isAnonymous ? 'Аккаунт подключён' : 'Локальный профиль'}</span>
-          <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
-          <p>{session && !session.isAnonymous
-            ? SERVER_RUNTIME ? 'Вы вошли в аккаунт. Сеансы, билеты и статистика синхронизируются с сервером.' : 'Вы вошли в аккаунт. Игровая статистика хранится в этом браузере.'
-            : SERVER_RUNTIME ? 'Вы играете в серверном гостевом профиле. При регистрации или входе все гостевые сеансы, билеты и открытые периоды автоматически перейдут в аккаунт.' : 'Сеансы, билеты и серии хранятся только в этом браузере. В автономной версии серверная авторизация недоступна.'}</p>
-          {session && !session.isAnonymous && session.email && <a href={`mailto:${session.email}`}><Mail /> {session.email}</a>}
+      <section className="profile-hero">
+        <div className="profile-hero__identity">
+          <div className="profile-avatar profile-avatar--large" aria-hidden="true">{loading ? <UserRound /> : initials || <UserRound />}</div>
+          <div>
+            <span className="profile-eyebrow">{session && !session.isAnonymous ? 'Профиль игрока' : 'Гостевой профиль'}</span>
+            <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
+            <p>{session && !session.isAnonymous ? session.email : 'Ваш прогресс сохранён в текущем браузере.'}</p>
+            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>PLAYER {publicPlayerNumber(session?.id)}</i></div>
+          </div>
+          <button className="profile-hero__settings" type="button" onClick={() => selectTab('settings')}>Настройки</button>
         </div>
-        {SERVER_RUNTIME && <ActionButton variant={session && !session.isAnonymous ? 'secondary' : 'primary'} onClick={scrollToAccountAccess}>
-          {session && !session.isAnonymous ? <><UserRound /> Управление аккаунтом</> : <><LogIn /> Подключить аккаунт</>}
-        </ActionButton>}
+        <div className="profile-hero__dossier" aria-label="Карточки игрового профиля">
+          <div className="profile-dossier__stamp">ДОСЬЕ<br />ИГРОКА</div>
+          <div className="profile-dossier__ticket"><Ticket /><strong>{wallet.tickets}</strong><span>билетов</span></div>
+          <div className="profile-dossier__cards" aria-hidden="true">{CATEGORY_TICKET_CONFIG.slice(0, 3).map((category, index) => {
+            const Icon = category.icon
+            return <span key={category.mode} style={{ '--profile-card-color': category.color, '--profile-card-index': index } as CSSProperties}><Icon /></span>
+          })}</div>
+          <p><Trophy /> Ближайшее: {nearestAchievement.title}</p>
+        </div>
       </section>
 
-      {SERVER_RUNTIME
-        ? <section className="profile-panel profile-auth" id="profile-account-access">
-          <div className="profile-panel__head"><div><span>Аккаунт</span><h2>Вход и безопасность</h2></div><UserRound /></div>
-          <AccountAccessPanel session={session} loadingSession={loading} refreshSession={refreshSession} />
-        </section>
-        : <section className="profile-panel profile-auth">
-          <div className="profile-panel__head"><div><span>Автономный режим</span><h2>Данные этого устройства</h2></div><UserRound /></div>
-          <p className="modal-lead">Эта сборка работает без серверного аккаунта. Кнопки входа скрыты, чтобы не обещать недоступную синхронизацию.</p>
-        </section>}
+      <nav className="profile-tabs" aria-label="Разделы личного кабинета" role="tablist">
+        {PROFILE_TABS.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} className={activeTab === tab.id ? 'is-active' : ''} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}
+      </nav>
 
-      <section className="profile-overview" aria-label="Общая статистика">
-        <article><span>Сеансы</span><strong>{completedGames.length}</strong><small>всего сыграно</small></article>
-        <article><span>Победы</span><strong>{winRate}%</strong><small>{wonGames.length} верных ответов</small></article>
-        <article><span>Абонемент</span><strong>{attendance.currentDailyStreak}</strong><small>дней подряд</small></article>
-        <article><span>Билеты</span><strong>{wallet.tickets}</strong><small>доступно сейчас</small></article>
-      </section>
-
-      <div className="profile-grid">
-        <section className="profile-panel profile-today">
-          <div className="profile-panel__head"><div><span>Сегодня</span><h2>Зал ждёт</h2></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
-          <div className="profile-mode-list">{MODE_TABS.map((entry) => <div className={today.completedModes.includes(entry) ? 'is-complete' : ''} key={entry}><i>{modeIcon(entry)}</i><span>{modeMeta(entry).title}</span>{today.completedModes.includes(entry) ? <Check /> : <small>Не сыграно</small>}</div>)}</div>
-          <ActionButton onClick={onHome}><Play /> Выбрать игру</ActionButton>
+      {activeTab === 'overview' && <>
+        <section className="profile-overview profile-overview--dashboard" aria-label="Общая статистика">
+          <article><span>Сыграно</span><strong>{completedGames.length}</strong><small>завершённых сеансов</small></article>
+          <article><span>Точность</span><strong>{winRate}%</strong><small>{wonGames.length} побед</small></article>
+          <article><span>Серия</span><strong>{attendance.currentDailyStreak}</strong><small>лучший результат {attendance.bestDailyStreak}</small></article>
+          <article><span>Билеты</span><strong>{wallet.tickets}</strong><small>на вашем счёте</small></article>
         </section>
 
-        <section className="profile-panel profile-progress">
-          <div className="profile-panel__head"><div><span>Посещаемость</span><h2>Ваш прогресс</h2></div><Trophy /></div>
-          <dl><div><dt>Лучший абонемент</dt><dd>{attendance.bestDailyStreak} дн.</dd></div><div><dt>Активных дней</dt><dd>{attendance.totalActiveDays}</dd></div><div><dt>Полных залов</dt><dd>{attendance.fullHouseDays}</dd></div><div><dt>Контрамарок</dt><dd>{attendance.gracePasses}</dd></div></dl>
-          <div className="profile-panel__actions"><button onClick={onStats}><BarChart3 /> Вся статистика</button><button onClick={() => setEconomyOpen(true)}><Ticket /> История билетов</button></div>
+        <section className="profile-section">
+          <div className="profile-section__head"><div><span>Маршрут дня</span><h2>Сегодня в афише</h2></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
+          <div className="profile-daily-grid">{CATEGORY_TICKET_CONFIG.map((category) => {
+            const isComplete = today.completedModes.includes(category.mode)
+            const isActive = activeSession?.mode === category.mode
+            const Icon = category.icon
+            return <button className={`profile-daily-card${isComplete ? ' is-complete' : ''}${isActive ? ' is-active' : ''}`} onClick={() => isActive ? onResumeActive() : onSelectMode(category.mode)} key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}>
+              <span className="profile-daily-card__placeholder"><Icon /></span><span className="profile-daily-card__copy"><strong>{category.title}</strong><small>{isComplete ? 'Результат готов' : isActive ? 'Продолжить сеанс' : 'Начать игру'}</small></span>{isComplete ? <Check /> : <Play />}
+            </button>
+          })}</div>
         </section>
-      </div>
 
-      <section className="profile-panel profile-history">
-        <div className="profile-panel__head"><div><span>Недавнее</span><h2>Последние сеансы</h2></div><button onClick={onArchive}>Весь архив <ChevronRight /></button></div>
-        {recentGames.length ? <div className="profile-history__list">{recentGames.map((game) => <article key={game.key}><i>{modeIcon(game.mode)}</i><div><strong>{modeMeta(game.mode).title}</strong><small>{prettyDate(game.date)} · {game.attempts.length}/10 попыток</small></div><span className={game.status === 'won' ? 'is-won' : ''}>{game.status === 'won' ? 'Сошлось' : 'Не сошлось'}</span></article>)}</div> : <p className="profile-empty">Здесь появятся завершённые игры. Самое время открыть первый сеанс.</p>}
-      </section>
+        <div className="profile-dashboard-grid">
+          <section className="profile-section profile-week">
+            <div className="profile-section__head"><div><span>Абонемент</span><h2>Игровая неделя</h2></div><strong>{attendance.currentDailyStreak} дн.</strong></div>
+            <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? '6' : day.hasActivity ? '•' : ''}</i></div>)}</div>
+            <p className="profile-section__note">Полный зал отмечается, когда пройдены все шесть игр дня.</p>
+          </section>
+          <section className="profile-section profile-nearest-achievement">
+            <div className="profile-section__head"><div><span>Достижения</span><h2>Ближайшая цель</h2></div><Trophy /></div>
+            <div className="profile-achievement-placeholder"><span>{nearestAchievement.icon}</span><div><strong>{nearestAchievement.title}</strong><p>{nearestAchievement.description}</p><small>Прогресс: {nearestAchievement.progress}</small></div></div>
+            <button className="profile-link-button" onClick={() => selectTab('achievements')}>Все достижения <ChevronRight /></button>
+          </section>
+        </div>
+
+        <section className="profile-section profile-history profile-history--new">
+          <div className="profile-section__head"><div><span>Недавнее</span><h2>Последние сеансы</h2></div><button onClick={onArchive}>Весь архив <ChevronRight /></button></div>
+          {recentGames.length ? <div className="profile-history__list">{recentGames.map((game) => <article key={game.key}><i>{modeIcon(game.mode)}</i><div><strong>{modeMeta(game.mode).title}</strong><small>{prettyDate(game.date)} · {game.attempts.length}/10 попыток</small></div><span className={game.status === 'won' ? 'is-won' : ''}>{game.status === 'won' ? 'Сошлось' : 'Не сошлось'}</span></article>)}</div> : <p className="profile-empty">Здесь появятся завершённые игры. Откройте первую карточку из афиши.</p>}
+        </section>
+      </>}
+
+      {activeTab === 'stats' && <section className="profile-section profile-stats-tab">
+        <div className="profile-section__head"><div><span>Статистика</span><h2>По категориям</h2></div><button onClick={onStats}>Подробный отчёт <BarChart3 /></button></div>
+        <div className="profile-stats-grid">{CATEGORY_TICKET_CONFIG.map((category) => {
+          const stats = (serverRuntime.dashboard?.stats ?? []).filter((entry) => entry.mode === category.mode)
+          const played = stats.reduce((sum, entry) => sum + entry.played, 0)
+          const won = stats.reduce((sum, entry) => sum + entry.won, 0)
+          const Icon = category.icon
+          return <article key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}><span><Icon /></span><strong>{category.title}</strong><b>{played}</b><small>{won ? `побед: ${won}` : 'сеансов пока нет'}</small></article>
+        })}</div>
+      </section>}
+
+      {activeTab === 'achievements' && <section className="profile-section profile-achievements-tab">
+        <div className="profile-section__head"><div><span>Коллекция</span><h2>Достижения</h2></div><strong>{achievementCards.filter((achievement) => achievement.unlocked).length}/{achievementCards.length}</strong></div>
+        <div className="profile-achievements-grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}><span className="profile-achievement-placeholder__icon">{achievement.icon}</span><div><strong>{achievement.title}</strong><p>{achievement.description}</p><small>{achievement.unlocked ? 'Открыто' : `Прогресс: ${achievement.progress}`}</small></div></article>)}</div>
+        <p className="profile-section__note">Это визуальные карточки кабинета: постоянная серверная коллекция будет подключена отдельным этапом.</p>
+      </section>}
+
+      {activeTab === 'settings' && <section className="profile-settings-grid">
+        <section className="profile-section">
+          <div className="profile-section__head"><div><span>Профиль</span><h2>Основные данные</h2></div><UserRound /></div>
+          {session && !session.isAnonymous && SERVER_RUNTIME ? <form className="profile-settings-form" onSubmit={saveProfileName}><label>Имя игрока<input value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={80} /></label><label>Email<input value={session.email ?? ''} readOnly /></label><ActionButton type="submit">Сохранить имя</ActionButton>{profileNotice && <p className="account-access__notice">{profileNotice}</p>}{profileError && <p className="server-error">{profileError}</p>}</form> : <p className="modal-lead">Войдите в аккаунт, чтобы синхронизировать имя, билеты и игровой прогресс.</p>}
+        </section>
+        <section className="profile-section profile-auth" id="profile-account-access">
+          <div className="profile-section__head"><div><span>Безопасность</span><h2>Вход и пароль</h2></div><Lock /></div>
+          {SERVER_RUNTIME ? <AccountAccessPanel session={session} loadingSession={loading} refreshSession={refreshSession} /> : <p className="modal-lead">Эта сборка работает автономно, поэтому управление серверным аккаунтом недоступно.</p>}
+        </section>
+      </section>}
     </main>
     {economyOpen && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
   </>
@@ -4561,7 +4696,7 @@ function GameApp() {
 
     {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} onResumeActive={resumeActiveSession} />}
 
     {screen === 'game' && (SERVER_RUNTIME
       ? serverSessionId

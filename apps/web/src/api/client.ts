@@ -4,6 +4,7 @@ import type {
   ContentReportResponse, DashboardResponse, FreePlayResponse, GameResponse, GameStartBody,
   GameStartResponse, GuestResponse, HintResponse, LedgerResponse, LegacyImportBody, LegacyImportResponse,
   MeResponse, MetaResponse, PeriodUnlockResponse, PromoRedeemResponse, WalletResponse, AuthActionResponse,
+  PlayerProfile, ProfilePatch,
 } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
@@ -56,6 +57,7 @@ export const api = {
   me: () => request<MeResponse>(`${API_BASE}/me`),
   guest: () => request<GuestResponse>(`${API_BASE}/auth/guest`, { method: 'POST', body: '{}' }),
   dashboard: () => request<DashboardResponse>(`${API_BASE}/me/dashboard`),
+  updateProfile: (body: ProfilePatch) => request<PlayerProfile>(`${API_BASE}/me/profile`, { method: 'PATCH', body: JSON.stringify(body) }),
   start: (body: GameStartBody) => request<GameStartResponse>(`${API_BASE}/games/start`, { method: 'POST', body: JSON.stringify(body) }),
   game: (id: string) => request<GameResponse>(`${API_BASE}/games/${id}`),
   search: (params: URLSearchParams) => request<CatalogSearchResponse>(`${API_BASE}/catalog/search?${params}`),

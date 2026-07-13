@@ -37,9 +37,10 @@ export type AppHeaderProps = {
   onStats: () => void
   onRules: () => void
   onReview: () => void
+  profileActive?: boolean
 }
 
-export function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: AppHeaderProps) {
+export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profileActive = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const { session } = useAuthSession()
   const serverRuntime = useServerRuntime()
@@ -71,7 +72,7 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: App
           <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
           {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
-          <button onClick={openProfile} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''}`} aria-label="Профиль" title="Профиль">
+          <button onClick={openProfile} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''} ${profileActive ? 'is-active' : ''}`} aria-label="Профиль" title="Профиль">
             <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>
           </button>
         </nav>
