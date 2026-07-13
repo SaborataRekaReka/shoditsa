@@ -30,7 +30,12 @@ jobs:
       - name: Validate and build web release
         run: npm run typecheck && npm test && npm run build
       - name: Package web release
-        run: tar -czf release-web.tar.gz -C dist .
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+          test -f dist/build-manifest.json
+          ! grep -Fq '<script src="/sdk.js"></script>' dist/index.html
+          tar -czf release-web.tar.gz -C dist .
       - name: Configure SSH
         env:
           SSH_KEY: ${{ secrets.TIMEWEB_SSH_KEY }}
@@ -72,6 +77,28 @@ jobs:
           fi
           ln -sfn "$RELEASE" "${DEPLOY_ROOT}/current.next"
           mv -Tf "${DEPLOY_ROOT}/current.next" "${DEPLOY_ROOT}/current"
+
+          # The previous deployment layout served this directory directly.
+          # Migrate the installed Nginx vhost to the immutable release symlink
+          # without replacing the vhost (and its TLS certificate settings).
+          LEGACY_ROOT="/opt/repeto/deploy/shoditsa"
+          CURRENT_ROOT="${DEPLOY_ROOT}/current/web"
+          if ! nginx -T 2>&1 | grep -Eq "root[[:space:]]+${CURRENT_ROOT//\//\\/}/?;"; then
+            mapfile -t NGINX_CONFIGS < <(grep -RIlE "root[[:space:]]+${LEGACY_ROOT//\//\\/}/?;" /etc/nginx 2>/dev/null || true)
+            test "${#NGINX_CONFIGS[@]}" -eq 1
+            NGINX_CONFIG="${NGINX_CONFIGS[0]}"
+            NGINX_BACKUP="${NGINX_CONFIG}.pre-shoditsa-release-root"
+            cp -a "$NGINX_CONFIG" "$NGINX_BACKUP"
+            sed -Ei "s#root[[:space:]]+${LEGACY_ROOT}/?;#root ${CURRENT_ROOT};#" "$NGINX_CONFIG"
+            if ! nginx -t; then
+              cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+              nginx -t
+              exit 1
+            fi
+            systemctl reload nginx
+          fi
+
+          test "$(readlink -f "$CURRENT_ROOT")" = "$(readlink -f "$RELEASE/web")"
           rm -f "$REMOTE_ARCHIVE"
           REMOTE
       - name: External smoke

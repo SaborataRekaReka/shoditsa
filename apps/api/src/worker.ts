@@ -125,8 +125,12 @@ const handleMusic = async (job: typeof backgroundJobs.$inferSelect) => {
   for (const file of files) if ((await stat(file)).mtimeMs >= started - 2_000) fresh.push({ file, raw: JSON.parse(await readFile(file, 'utf8')) as Json })
   let failed = 0
   for (const entry of fresh.slice(0, maxItems)) {
-    const proposed = mapMusicRecord(entry.raw); const itemId = text(proposed.id)
+    const mapped = mapMusicRecord(entry.raw); const itemId = text(mapped.id)
     const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
+    const beforePayload = record(before[0]?.payload)
+    const proposed = before[0]
+      ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame }
+      : mapped
     const warnings = [...(Array.isArray(record(entry.raw.assessment).reviewReasons) ? record(entry.raw.assessment).reviewReasons as unknown[] : []), ...(entry.raw.aiError ? [entry.raw.aiError] : [])]
     try {
       await db.insert(pipelineRunItems).values({

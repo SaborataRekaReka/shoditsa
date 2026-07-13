@@ -10,13 +10,14 @@ const fetchText = async (path) => {
 
 const fetchResponse = (path) => fetch(`${baseUrl}${path}`, { headers: { 'cache-control': 'no-cache' }, redirect: 'manual' })
 
-const html = await fetchText(`/?smoke=${Date.now()}`)
-if (html.includes('<script src="/sdk.js"></script>')) throw new Error('Server production HTML unexpectedly loads the Yandex Games SDK')
 const manifest = JSON.parse(await fetchText(`/build-manifest.json?smoke=${Date.now()}`))
 if (manifest.commitSha !== expectedSha) throw new Error(`Production SHA ${manifest.commitSha} does not match expected main SHA ${expectedSha}`)
 for (const marker of ['profile', 'footer', 'serverAuthoritative', 'noPublicAnswerData']) {
   if (manifest.shell?.[marker] !== true) throw new Error(`Build manifest is missing shell marker: ${marker}`)
 }
+
+const html = await fetchText(`/?smoke=${Date.now()}`)
+if (html.includes('<script src="/sdk.js"></script>')) throw new Error('Server production HTML unexpectedly loads the Yandex Games SDK')
 
 const meta = JSON.parse(await fetchText(`/api/v1/meta?smoke=${Date.now()}`))
 const modes = new Map((meta.modes ?? []).map((entry) => [entry.mode, entry.count]))

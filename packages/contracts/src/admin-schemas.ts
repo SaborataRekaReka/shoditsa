@@ -58,19 +58,21 @@ export const AdminReportPatchBodySchema = Type.Object({
   duplicateOfReportId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),
 }, { additionalProperties: false })
 
-export const MusicPipelineEstimateBodySchema = Type.Object({
+const MusicPipelineRequestProperties = {
   scenario: Type.Union([Type.Literal('discover'), Type.Literal('candidates'), Type.Literal('review'), Type.Literal('selected')]),
   maxItems: Type.Integer({ minimum: 1, maximum: 20, default: 5 }),
   aiMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('never')])),
   model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
   webSearch: Type.Optional(Type.Boolean()),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 20 })),
-}, { additionalProperties: false })
+}
 
-export const MusicPipelineRunBodySchema = Type.Intersect([
-  MusicPipelineEstimateBodySchema,
-  Type.Object({ confirmation: Type.Literal(true) }, { additionalProperties: false }),
-])
+export const MusicPipelineEstimateBodySchema = Type.Object(MusicPipelineRequestProperties, { additionalProperties: false })
+
+export const MusicPipelineRunBodySchema = Type.Object({
+  ...MusicPipelineRequestProperties,
+  confirmation: Type.Literal(true),
+}, { additionalProperties: false })
 
 export const PipelineItemDecisionBodySchema = Type.Object({
   approved: Type.Boolean(),
