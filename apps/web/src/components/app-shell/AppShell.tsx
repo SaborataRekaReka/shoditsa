@@ -85,9 +85,12 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profi
 export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => void; onArchive: () => void; onRules: () => void; onProfile: () => void }) {
   return <footer className="app-footer">
     <div className="app-footer__inner">
-      <div className="app-footer__brand"><BrandLogo /><p>Ежедневные загадки, в которых всё сходится.</p></div>
-      <nav aria-label="Навигация в подвале"><button onClick={onHome}>Игры</button><button onClick={onArchive}>Архив</button><button onClick={onProfile}>Профиль</button><button onClick={onRules}>Как играть</button></nav>
-      <small>© {new Date().getFullYear()} Сходится!</small>
+      <div className="app-footer__brand">
+        <button className="app-footer__home" onClick={onHome} aria-label="На главный экран"><BrandLogo /></button>
+        <p>Неспешная игра на каждый день</p>
+      </div>
+      <nav className="app-footer__nav" aria-label="Навигация в подвале"><button onClick={onHome}>Игры</button><button onClick={onArchive}>Архив</button><button onClick={onProfile}>Профиль</button><button onClick={onRules}>Правила</button></nav>
+      <small className="app-footer__copy">© {new Date().getFullYear()} Сходится!</small>
     </div>
   </footer>
 }

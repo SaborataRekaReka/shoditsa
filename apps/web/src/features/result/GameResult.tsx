@@ -36,6 +36,8 @@ type Props = {
   challengeOutcome?: ChallengeOutcome
   opponentAttempts?: number
   onNext: () => void
+  configureLabel: string
+  onConfigure: () => void
   onChallenge: () => void
   onCopy: () => void
   onHome: () => void
@@ -66,6 +68,7 @@ export function GameResult(props: Props) {
     </div>
     <div className="result-actions">
       <button type="button" className="result-next" onClick={props.onNext}>{props.nextLabel}</button>
+      <button type="button" className="result-config" onClick={props.onConfigure}>{props.configureLabel}</button>
       <button type="button" onClick={props.onChallenge}>{props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'} <Share2 /></button>
       <button type="button" className="result-copy" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
     </div>

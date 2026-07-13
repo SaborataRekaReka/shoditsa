@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameSessionSnapshot, GameStartBody, PublicContentItem } from '@shoditsa/contracts'
 import {
   AlertTriangle,
@@ -187,6 +187,11 @@ const resetPasswordTokenFromLocation = () => {
 }
 const periodUnlockCost = (period: PeriodKey) => PERIOD_UNLOCK_COSTS[period] ?? 0
 const canUnlockPeriods = (mode: TitleMode) => UNLOCKABLE_PERIOD_MODES.has(mode)
+const resultConfigureLabel = (mode: TitleMode) => mode === 'music'
+  ? 'Сложность / свободная игра'
+  : canUnlockPeriods(mode)
+    ? 'Период / свободная игра'
+    : 'Выбор режима'
 const toInteger = (value: number | string | undefined, fallback: number) => {
   const parsed = Math.trunc(Number(value))
   return Number.isFinite(parsed) ? parsed : fallback
@@ -948,7 +953,10 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
   const [failed, setFailed] = useState(false)
   const portraitSource = item.mode === 'music'
     ? [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
-    : (item.posterUrl ?? null)
+    : [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => Boolean(url)) ?? null
+  const diagnosisIcon = item.mode === 'diagnosis'
+    ? diagnosisSystemIconByKey.get(normalizeSystemKey(item.bodySystems?.[0] ?? '')) ?? defaultDiagnosisSystemIcon
+    : ''
   const initials = artistInitials(item.titleRu || item.titleOriginal || '')
 
   return portraitSource && !failed
@@ -959,10 +967,15 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
             <Music2 />
             <span>{initials || '♪'}</span>
           </>
-        : <>
-            {item.mode !== 'diagnosis' ? modeIcon(item.mode) : null}
-            <span>{item.titleRu}</span>
-          </>}
+        : item.mode === 'diagnosis'
+          ? <>
+              <img className="poster-fallback__dx" src={diagnosisIcon} alt="" aria-hidden="true" loading="lazy" />
+              <span>{item.titleRu}</span>
+            </>
+          : <>
+              {modeIcon(item.mode)}
+              <span>{item.titleRu}</span>
+            </>}
     </div>
 }
 
@@ -1512,11 +1525,43 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
     const active = (serverRuntime.dashboard?.activeSessions ?? []).filter((game) => game.mode === mode).map(activeSessionToSavedGame)
     return [...active, ...completed]
   }, [archive.data, mode, serverRuntime.dashboard])
-  const latestForDay = (date: string) => {
-    const sameDay = sessions.filter((game) => game.date === date && game.mode === mode)
-    const selectedPeriod = sameDay.find((game) => game.period === period)
-    return selectedPeriod ?? sameDay.sort((left, right) => right.updatedAt - left.updatedAt)[0] ?? null
-  }
+  const latestByDate = useMemo(() => {
+    const byDate = new Map<string, SavedGame | null>()
+    for (const itemDate of dates) {
+      const sameDay = sessions.filter((game) => game.date === itemDate && game.mode === mode)
+      const selectedPeriod = sameDay.find((game) => game.period === period)
+      byDate.set(itemDate, selectedPeriod ?? sameDay.sort((left, right) => right.updatedAt - left.updatedAt)[0] ?? null)
+    }
+    return byDate
+  }, [dates, mode, period, sessions])
+  const sessionPreviewIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const played of latestByDate.values()) {
+      if (!played?.key.startsWith('server:')) continue
+      ids.add(played.key.slice('server:'.length))
+    }
+    return [...ids]
+  }, [latestByDate])
+  const sessionPreviewQueries = useQueries({
+    queries: sessionPreviewIds.map((id) => ({
+      queryKey: queryKeys.game(id),
+      queryFn: () => api.game(id),
+      enabled: Boolean(serverRuntime.me),
+      staleTime: 30_000,
+    })),
+  })
+  const posterBySessionId = useMemo(() => {
+    const map = new Map<string, TitleItem>()
+    for (const query of sessionPreviewQueries) {
+      const session = query.data?.session
+      if (!session) continue
+      const previewItem = session.status === 'playing'
+        ? session.attempts.at(-1)?.item ?? null
+        : session.answer ?? session.attempts.at(-1)?.item ?? null
+      if (previewItem) map.set(session.id, publicItemToTitle(previewItem))
+    }
+    return map
+  }, [sessionPreviewQueries])
 
   return <>
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
@@ -1525,9 +1570,11 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
       <div className="rewatch-toolbar"><div className="mode-tabs">{MODE_TABS.map((tabMode) => <button className={mode === tabMode ? 'active' : ''} key={tabMode} onClick={() => setMode(tabMode)}>{modeMeta(tabMode).plural}</button>)}</div></div>
       {archive.isError && <p className="server-error">{apiErrorMessage(archive.error)}</p>}
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
-        const played = latestForDay(itemDate)
+        const played = latestByDate.get(itemDate) ?? null
+        const sessionId = played?.key.startsWith('server:') ? played.key.slice('server:'.length) : null
+        const posterItem = sessionId ? posterBySessionId.get(sessionId) : undefined
         return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)} disabled={archive.isLoading}>
-          <div className="rewatch-poster"><span className="rewatch-poster__fallback-day">#{dayNumber(itemDate)}</span><i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' ? `${played.attempts.length}/10` : ''}</i></div>
+          <div className="rewatch-poster">{posterItem ? <><Poster item={posterItem} className="rewatch-poster__media" /><small className="rewatch-poster__day">#{dayNumber(itemDate)}</small></> : <span className="rewatch-poster__fallback-day">#{dayNumber(itemDate)}</span>}<i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' ? `${played.attempts.length}/10` : ''}</i></div>
           <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
           <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : 'Не сыгран'}</small>
         </button>
@@ -1561,9 +1608,11 @@ function LocalRewatchScreen({ mode, setMode, period, dates, games, titles, onOpe
         const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
         const playedInCurrentPeriod = dayGames.find((game) => game.period === period)
         const played = playedInCurrentPeriod ?? latestByUpdatedAt(dayGames)
+        const normalizedAnswerId = played?.mode === 'music' ? resolveMusicRedirectId(played.answerId) : played?.answerId
         const latestAttemptId = played?.attempts.at(-1)?.titleId
+        const normalizedLatestAttemptId = played?.mode === 'music' && latestAttemptId ? resolveMusicRedirectId(latestAttemptId) : latestAttemptId
         const posterItem = played
-          ? titleById.get(played.answerId) ?? (latestAttemptId ? titleById.get(latestAttemptId) : undefined)
+          ? titleById.get(normalizedAnswerId ?? '') ?? (normalizedLatestAttemptId ? titleById.get(normalizedLatestAttemptId) : undefined)
           : undefined
         return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)}>
           <div className="rewatch-poster">
@@ -2395,6 +2444,7 @@ function Game({
   searchIndex,
   challenge,
   onPlayNext,
+  onConfigureMode,
 }: {
   titles: TitleItem[]
   mode: TitleMode
@@ -2416,6 +2466,7 @@ function Game({
   searchIndex: LibrarySearchIndex | null
   challenge: ChallengePayload | null
   onPlayNext: (mode: TitleMode | null) => void
+  onConfigureMode: () => void
 }) {
   const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' || mode === 'music' ? 'all' : period
   const difficultyVariant = mode === 'music' ? difficulty : ''
@@ -2734,6 +2785,7 @@ function Game({
   const completedToday = new Set(attendance.completedModes).size
   const nextMode = nextDailyMode(mode, attendance.completedModes)
   const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Свободная игра или архив'
+  const configureLabel = resultConfigureLabel(mode)
   const challengeLink = buildChallengeUrl(location.href, {
     mode,
     date,
@@ -2854,6 +2906,8 @@ function Game({
         challengeOutcome={challenge ? challengeOutcome(attempts.length, challenge.opponentAttempts) : undefined}
         opponentAttempts={challenge?.opponentAttempts}
         onNext={() => onPlayNext(nextMode)}
+        configureLabel={configureLabel}
+        onConfigure={onConfigureMode}
         onChallenge={shareChallenge}
         onCopy={copyResult}
         onHome={onHome}
@@ -3057,7 +3111,7 @@ const publicItemToTitle = (item: PublicContentItem): TitleItem => {
 
 const serverAttemptToLegacy = (entry: GameAttemptSnapshot): Attempt => ({ titleId: entry.item.id, hints: entry.hints })
 
-function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onSessionLoaded }: {
+function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onConfigureMode, onSessionLoaded }: {
   sessionId: string
   onHome: () => void
   onBack: () => void
@@ -3066,6 +3120,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   onRules: () => void
   onReview: () => void
   onPlayNext: (mode: TitleMode | null) => void
+  onConfigureMode: () => void
   onSessionLoaded: (session: GameSessionSnapshot) => void
 }) {
   const client = useQueryClient()
@@ -3074,6 +3129,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
   const [hintModalRound, setHintModalRound] = useState<5 | 8 | null>(null)
+  const [dismissedHintRounds, setDismissedHintRounds] = useState<Array<5 | 8>>([])
   const [lastAward, setLastAward] = useState<AttemptResponse['reward'] | null>(null)
   const attemptKeyRef = useRef<string | null>(null)
   const hintKeyRef = useRef<string | null>(null)
@@ -3121,14 +3177,54 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   })
 
   useEffect(() => {
+    setHintModalRound(null)
+    setDismissedHintRounds([])
+  }, [sessionId])
+
+  const hintOptions = session?.hintOptions ?? []
+  const usedHintRounds = useMemo(() => new Set((session?.hintChoices ?? []).map((choice) => choice.checkpoint)), [session?.hintChoices])
+  const pendingHintRounds = useMemo(() => (session?.hintCheckpoints ?? [])
+    .filter((checkpoint) => checkpoint.state === 'available')
+    .map((checkpoint) => checkpoint.round)
+    .filter((round) => !usedHintRounds.has(round)), [session?.hintCheckpoints, usedHintRounds])
+  const nextUndismissedHintRound = useMemo(() => pendingHintRounds.find((round) => !dismissedHintRounds.includes(round)) ?? null, [pendingHintRounds, dismissedHintRounds])
+  const canUseHint = session?.status === 'playing' && hintOptions.length > 0 && pendingHintRounds.length > 0
+  const availableHintRound = pendingHintRounds[0] ?? null
+  const dismissHintModal = useCallback(() => {
+    if (hintModalRound) {
+      setDismissedHintRounds((current) => current.includes(hintModalRound) ? current : [...current, hintModalRound])
+    }
+    setHintModalRound(null)
+  }, [hintModalRound])
+
+  useEffect(() => {
+    if (!canUseHint) {
+      if (hintModalRound) setHintModalRound(null)
+      return
+    }
+    if (hintModalRound && !pendingHintRounds.includes(hintModalRound)) {
+      setHintModalRound(null)
+      return
+    }
+    if (!hintModalRound && nextUndismissedHintRound) {
+      setHintModalRound(nextUndismissedHintRound)
+    }
+  }, [canUseHint, hintModalRound, nextUndismissedHintRound, pendingHintRounds])
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || hintModalRound) return
+      if (event.key !== 'Escape') return
       if (isEditableTarget(event.target)) return
+      event.preventDefault()
+      if (hintModalRound) {
+        dismissHintModal()
+        return
+      }
       onBack()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [hintModalRound, onBack])
+  }, [dismissHintModal, hintModalRound, onBack])
 
   useEffect(() => {
     if (session) onSessionLoaded(session)
@@ -3141,8 +3237,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
-  const hintOptions = session.hintOptions ?? []
-  const availableHint = session.hintCheckpoints.find((checkpoint) => checkpoint.state === 'available')
   const submit = (item: PublicContentItem) => {
     if (attempt.isPending || session.status !== 'playing') return
     const key = attemptKeyRef.current ?? crypto.randomUUID()
@@ -3159,6 +3253,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const completedToday = new Set(completedModes).size
   const nextMode = nextDailyMode(session.mode, completedModes)
   const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Свободная игра или архив'
+  const configureLabel = resultConfigureLabel(session.mode)
   const shareText = resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won')
   const challengeLink = buildChallengeUrl(location.href, { mode: session.mode, date: session.puzzleDate, period: session.period, ...(session.difficulty ? { difficulty: session.difficulty } : {}), opponentAttempts: Math.max(1, attempts.length), from: getInstallationId() })
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
@@ -3191,9 +3286,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       <div className="screen-back-row"><button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}</span></div><h1>{modeMeta(session.mode).daily} дня</h1><p>{prettyDate(session.puzzleDate)} · серверная сессия</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      <div className="progress-row"><Progress attempts={session.attemptsCount} />{availableHint && hintOptions.length > 0 && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHint.round)}><Sparkles /> Подсказка</ActionButton>}</div>
+      <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHintRound)}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
-      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => onPlayNext(nextMode)} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => onPlayNext(nextMode)} onConfigure={onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky"><div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div><div className="search-picker"><div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>{query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}</div>{message && <div className="search-meta"><strong>{message}</strong></div>}</section>}
       {!attempts.length && session.status === 'playing' && <section className="empty-card"><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>Начните с первой попытки</h2><p>После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.</p></div></section>}
       {!!session.attempts.length && <section className="attempt-list"><div className="section-title"><span>Ваши попытки</span><strong>{session.attempts.length}/10</strong></div>{[...session.attempts].reverse().map((entry) => {
@@ -3203,7 +3298,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         return item.mode === 'diagnosis' ? <DiagnosisAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'game' ? <GameAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'music' ? <MusicAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : <AttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
       })}</section>}
     </main>
-    {hintModalRound && hintOptions.length > 0 && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setHintModalRound(null)}><section className="hint-modal" role="dialog" aria-modal="true"><div className="hint-modal__head"><span><Sparkles /> Возможность · попытка {hintModalRound}</span><button onClick={() => setHintModalRound(null)} aria-label="Закрыть"><X /></button></div><h2>Выберите подсказку</h2><div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)} disabled={hint.isPending}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div><button className="hint-modal__later" onClick={() => setHintModalRound(null)}>Не сейчас</button></section></div>}
+    {hintModalRound && hintOptions.length > 0 && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}><section className="hint-modal" role="dialog" aria-modal="true"><div className="hint-modal__head"><span><Sparkles /> Возможность · попытка {hintModalRound}</span><button onClick={dismissHintModal} aria-label="Закрыть"><X /></button></div><h2>Выберите подсказку</h2><div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)} disabled={hint.isPending}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div><button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button></section></div>}
   </>
 }
 
@@ -4628,6 +4723,7 @@ function GameApp() {
             onRules={() => setModal('rules')}
             onReview={openMusicReview}
             onPlayNext={playNextDaily}
+            onConfigureMode={() => moveToScreen('title')}
             onSessionLoaded={syncServerSessionContext}
           />
         : <GameDataLoadError onRetry={goHome} onHome={goHome} />
@@ -4656,6 +4752,7 @@ function GameApp() {
           searchIndex={searchIndex}
           challenge={challengeAccepted ? challenge : null}
           onPlayNext={playNextDaily}
+          onConfigureMode={() => moveToScreen('title')}
             />)}
 
     {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
