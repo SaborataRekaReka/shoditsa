@@ -3169,6 +3169,7 @@ const publicItemToTitle = (item: PublicContentItem): TitleItem => ({
   titleOriginal: item.titleOriginal,
   alternativeTitles: [],
   year: item.year ?? undefined,
+  genres: item.genres ?? [],
   popularityScore: 0,
   posterUrl: item.posterUrl,
 })

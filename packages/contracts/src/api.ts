@@ -27,6 +27,7 @@ export type PublicContentItem = {
   titleRu: string
   titleOriginal: string
   year: number | null
+  genres?: string[]
   posterUrl: string | null
 }
 
