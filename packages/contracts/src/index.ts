@@ -1,3 +1,5 @@
 export * from './legacy-types.js'
 export * from './schemas.js'
 export * from './api.js'
+export * from './admin-schemas.js'
+export * from './admin-api.js'

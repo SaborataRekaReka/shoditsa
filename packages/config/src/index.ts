@@ -39,6 +39,17 @@ export const loadConfig = () => {
   const authUrl = required('BETTER_AUTH_URL', production ? undefined : 'http://localhost:3001')
   const trustedOrigins = required('TRUSTED_ORIGINS', production ? undefined : 'http://localhost:5173,http://localhost:3001')
     .split(',').map((origin) => origin.trim()).filter(Boolean)
+  const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',')
+    .map((email) => email.trim().toLocaleLowerCase('en-US')).filter(Boolean)
+  const adminUserIds = (process.env.ADMIN_USER_IDS ?? '').split(',').map((id) => id.trim().toLocaleLowerCase('en-US')).filter(Boolean)
+  if (production) {
+    if (adminEmails.length !== 1 || adminEmails[0] !== 'breneize@yandex.ru') {
+      throw new Error('ADMIN_EMAILS must contain only breneize@yandex.ru in production')
+    }
+    if (adminUserIds.length !== 1 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(adminUserIds[0])) {
+      throw new Error('ADMIN_USER_IDS must contain exactly one valid UUID in production')
+    }
+  }
 
   return Object.freeze({
     nodeEnv: process.env.NODE_ENV ?? 'development',
@@ -63,7 +74,8 @@ export const loadConfig = () => {
       password: process.env.SMTP_PASSWORD || '',
       from: process.env.SMTP_FROM?.trim() || '',
     },
-    adminEmails: (process.env.ADMIN_EMAILS ?? '').split(',').map((email) => email.trim().toLocaleLowerCase('en-US')).filter(Boolean),
+    adminEmails,
+    adminUserIds,
     promoPepper,
     mediaRoot: process.env.MEDIA_ROOT?.trim() || './.tmp/media',
     publicMediaBaseUrl: process.env.PUBLIC_MEDIA_BASE_URL?.trim() || '/media',
@@ -72,5 +84,11 @@ export const loadConfig = () => {
     appVersion: process.env.APP_VERSION?.trim() || '0.1.0',
     gitSha: process.env.GIT_SHA?.trim() || 'dev',
     metricsToken: process.env.METRICS_TOKEN?.trim() || '',
+    enrichmentDataRoot: process.env.ENRICHMENT_DATA_ROOT?.trim() || './data/enrichment-agent',
+    workerId: process.env.WORKER_ID?.trim() || `worker-${process.pid}`,
+    workerPollIntervalMs: integer('WORKER_POLL_INTERVAL_MS', 2_000, 250),
+    workerHeartbeatIntervalMs: integer('WORKER_HEARTBEAT_INTERVAL_MS', 5_000, 1_000),
+    workerStaleAfterMs: integer('WORKER_STALE_AFTER_MS', 60_000, 5_000),
+    musicPipelineModel: process.env.MUSIC_PIPELINE_MODEL?.trim() || 'gpt-5-mini',
   })
 }

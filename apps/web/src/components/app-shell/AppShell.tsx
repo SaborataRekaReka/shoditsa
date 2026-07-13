@@ -1,5 +1,5 @@
 import { useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, CircleHelp, NotebookText, Ticket, Trophy, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, CircleHelp, ShieldCheck, Ticket, Trophy, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { EconomyView } from '../../features/economy/EconomyView'
 import { useAuthSession } from '../../features/auth/use-auth-session'
@@ -61,7 +61,7 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview }: App
           <button onClick={() => { trackMetrikaGoal('open_rules'); onRules() }} aria-label="Как играть"><CircleHelp /></button>
           <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
-          {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_music_review_screen'); onReview() }} aria-label="Модерация контента"><NotebookText /></button>}
+          {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
           <button onClick={() => { trackMetrikaGoal('open_profile'); window.dispatchEvent(new Event(PROFILE_OPEN_EVENT)) }} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''}`} aria-label="Профиль" title="Профиль">
             <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>
           </button>

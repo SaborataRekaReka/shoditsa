@@ -5,6 +5,10 @@ export const CONTENT_REPORT_REASONS = [
   ['disputed_comparison', 'Спорное сравнение'],
   ['title_not_found', 'Не находится название'],
   ['bad_hint', 'Плохая или слишком явная подсказка'],
+  ['bad_image', 'Неверное или битое изображение'],
+  ['duplicate_card', 'Дубликат карточки'],
+  ['typo_or_translation', 'Опечатка или плохой перевод'],
+  ['technical_error', 'Техническая ошибка'],
   ['other', 'Другое'],
 ] as const
 

@@ -50,7 +50,7 @@ export const unlockPeriod = async (db: Database, userId: string, mode: ContentMo
   return { entitlement: entitlement[0], balanceAfter, alreadyUnlocked: false }
 })
 
-export const startFreePlay = async (db: Database, userId: string, mode: ContentMode, difficulty: ApiDifficultyKey | null, idempotencyKey: string) => db.transaction(async (tx) => {
+export const startFreePlay = async (db: Database, userId: string, mode: ContentMode, difficulty: ApiDifficultyKey | null, idempotencyKey: string, authSessionId: string | null = null) => db.transaction(async (tx) => {
   if (!FREE_PLAY.includes(mode)) throw new ApiError(422, 'FREE_PLAY_MODE_NOT_ALLOWED', 'Свободная игра недоступна для этого режима')
   const replay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
   if (replay[0]) return replayFreePlay(tx, userId, replay[0], idempotencyKey)
@@ -72,7 +72,7 @@ export const startFreePlay = async (db: Database, userId: string, mode: ContentM
     metadata: { mode, launch: usage.launches + 1 },
   }).returning({ id: walletLedger.id })
   const sessions = await tx.insert(gameSessions).values({
-    userId, kind: 'free_play', mode, period: 'all', difficulty: mode === 'music' ? difficulty ?? 'medium' : null,
+    userId, authSessionId, kind: 'free_play', mode, period: 'all', difficulty: mode === 'music' ? difficulty ?? 'medium' : null,
     puzzleDate: date, revisionId, answerItemVersionId: pool.byItemId.get(answer.id)!, rulesVersion: 1, startIdempotencyKey: idempotencyKey,
   }).returning()
   await tx.update(walletAccounts).set({ balance: balanceAfter, version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, userId))

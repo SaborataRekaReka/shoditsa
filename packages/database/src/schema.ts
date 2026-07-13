@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 import {
   boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
-  real, smallint, text, timestamp, unique, uniqueIndex, uuid,
+  numeric, real, smallint, text, timestamp, unique, uniqueIndex, uuid,
 } from 'drizzle-orm/pg-core'
 
 const now = () => timestamp({ withTimezone: true }).notNull().defaultNow()
@@ -64,10 +64,19 @@ export const playerProfiles = pgTable('player_profiles', {
   displayName: text('display_name'),
   locale: text().notNull().default('ru'),
   timezone: text().notNull().default('Europe/Moscow'),
+  accountStatus: text('account_status').notNull().default('active'),
+  blockedAt: timestamp('blocked_at', { withTimezone: true }),
+  blockedUntil: timestamp('blocked_until', { withTimezone: true }),
+  blockedReason: text('blocked_reason'),
+  blockedBy: uuid('blocked_by').references(() => user.id, { onDelete: 'set null' }),
   legacyImportedAt: timestamp('legacy_imported_at', { withTimezone: true }),
   createdAt: now(),
   updatedAt: now(),
-}, (table) => [check('player_profiles_role_check', sql`${table.role} in ('player','admin')`)])
+}, (table) => [
+  check('player_profiles_role_check', sql`${table.role} in ('player','admin')`),
+  check('player_profiles_account_status_check', sql`${table.accountStatus} in ('active','blocked')`),
+  index('player_profiles_status_until_idx').on(table.accountStatus, table.blockedUntil),
+])
 
 export const appSettings = pgTable('app_settings', {
   key: text().primaryKey(),
@@ -154,6 +163,166 @@ export const contentReviewDecisions = pgTable('content_review_decisions', {
   updatedAt: now(),
 }, (table) => [unique('content_review_reviewer_unique').on(table.itemId, table.field, table.reviewerUserId)])
 
+export const contentWorkspaces = pgTable('content_workspaces', {
+  id: uuid().primaryKey().defaultRandom(),
+  title: text().notNull().default('Рабочая версия'),
+  status: text().notNull().default('open'),
+  baseRevisionId: uuid('base_revision_id').notNull().references(() => contentRevisions.id),
+  builtRevisionId: uuid('built_revision_id').references(() => contentRevisions.id, { onDelete: 'set null' }),
+  createdBy: uuid('created_by').notNull().references(() => user.id),
+  createdAt: now(),
+  updatedAt: now(),
+  lockedAt: timestamp('locked_at', { withTimezone: true }),
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  version: integer().notNull().default(1),
+  lastValidationSummary: jsonb('last_validation_summary'),
+  failureCode: text('failure_code'),
+  safeFailureMessage: text('safe_failure_message'),
+}, (table) => [
+  check('content_workspace_status_check', sql`${table.status} in ('open','building','ready','published','failed','abandoned')`),
+  uniqueIndex('content_workspace_single_active_idx').on(sql`(true)`).where(sql`${table.status} in ('open','building','ready')`),
+  index('content_workspace_base_idx').on(table.baseRevisionId),
+])
+
+export const pipelineRuns = pgTable('pipeline_runs', {
+  id: uuid().primaryKey().defaultRandom(),
+  pipelineKey: text('pipeline_key').notNull(),
+  pipelineVersion: text('pipeline_version').notNull(),
+  status: text().notNull().default('queued'),
+  inputDefinitionJson: jsonb('input_definition_json').notNull().default({}),
+  settingsJson: jsonb('settings_json').notNull().default({}),
+  itemsTotal: integer('items_total').notNull().default(0),
+  itemsProcessed: integer('items_processed').notNull().default(0),
+  itemsSucceeded: integer('items_succeeded').notNull().default(0),
+  itemsFailed: integer('items_failed').notNull().default(0),
+  estimatedCost: numeric('estimated_cost', { precision: 12, scale: 6 }),
+  actualCost: numeric('actual_cost', { precision: 12, scale: 6 }),
+  createdBy: uuid('created_by').notNull().references(() => user.id),
+  createdAt: now(),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  finishedAt: timestamp('finished_at', { withTimezone: true }),
+  errorCode: text('error_code'),
+  safeErrorMessage: text('safe_error_message'),
+  cancelRequestedAt: timestamp('cancel_requested_at', { withTimezone: true }),
+  heartbeatAt: timestamp('heartbeat_at', { withTimezone: true }),
+  workerId: text('worker_id'),
+  filesystemScope: text('filesystem_scope'),
+  logExcerpt: text('log_excerpt'),
+  resultExpiresAt: timestamp('result_expires_at', { withTimezone: true }),
+}, (table) => [
+  check('pipeline_run_status_check', sql`${table.status} in ('queued','running','review_required','partially_failed','approved','staged','published','partially_published','failed','cancelled')`),
+  index('pipeline_run_status_created_idx').on(table.status, table.createdAt),
+  index('pipeline_run_pipeline_created_idx').on(table.pipelineKey, table.createdAt),
+])
+
+export const pipelineRunItems = pgTable('pipeline_run_items', {
+  id: uuid().primaryKey().defaultRandom(),
+  runId: uuid('run_id').notNull().references(() => pipelineRuns.id, { onDelete: 'cascade' }),
+  entityKey: text('entity_key').notNull(),
+  cardId: text('card_id').references(() => contentItems.id, { onDelete: 'set null' }),
+  inputItemVersionId: uuid('input_item_version_id').references(() => contentItemVersions.id, { onDelete: 'set null' }),
+  status: text().notNull().default('pending'),
+  beforeJson: jsonb('before_json'),
+  proposedJson: jsonb('proposed_json'),
+  fieldDecisionsJson: jsonb('field_decisions_json').notNull().default({}),
+  warningsJson: jsonb('warnings_json').notNull().default([]),
+  sourcesJson: jsonb('sources_json'),
+  confidenceJson: jsonb('confidence_json'),
+  rawResultRef: text('raw_result_ref'),
+  approvedBy: uuid('approved_by').references(() => user.id, { onDelete: 'set null' }),
+  approvedAt: timestamp('approved_at', { withTimezone: true }),
+  workspaceChangeId: uuid('workspace_change_id'),
+  appliedRevisionId: uuid('applied_revision_id').references(() => contentRevisions.id, { onDelete: 'set null' }),
+  idempotencyKey: text('idempotency_key').notNull(),
+  errorCode: text('error_code'),
+  safeErrorMessage: text('safe_error_message'),
+  createdAt: now(),
+  updatedAt: now(),
+}, (table) => [
+  unique('pipeline_run_entity_unique').on(table.runId, table.entityKey),
+  unique('pipeline_run_item_idempotency_unique').on(table.idempotencyKey),
+  check('pipeline_run_item_status_check', sql`${table.status} in ('pending','running','review_required','approved','staged','published','failed','rejected','conflict')`),
+  index('pipeline_run_item_run_status_idx').on(table.runId, table.status),
+])
+
+export const contentWorkspaceChanges = pgTable('content_workspace_changes', {
+  id: uuid().primaryKey().defaultRandom(),
+  workspaceId: uuid('workspace_id').notNull().references(() => contentWorkspaces.id, { onDelete: 'cascade' }),
+  itemId: text('item_id').notNull().references(() => contentItems.id),
+  mode: contentMode().notNull(),
+  changeType: text('change_type').notNull(),
+  baseItemVersionId: uuid('base_item_version_id').references(() => contentItemVersions.id, { onDelete: 'set null' }),
+  beforePayload: jsonb('before_payload'),
+  afterPayload: jsonb('after_payload').notNull(),
+  changedFields: text('changed_fields').array().notNull().default(sql`ARRAY[]::text[]`),
+  source: text().notNull(),
+  actorUserId: uuid('actor_user_id').notNull().references(() => user.id),
+  pipelineRunId: uuid('pipeline_run_id').references(() => pipelineRuns.id, { onDelete: 'set null' }),
+  pipelineRunItemId: uuid('pipeline_run_item_id').references(() => pipelineRunItems.id, { onDelete: 'set null' }),
+  reason: text(),
+  version: integer().notNull().default(1),
+  validationIssues: jsonb('validation_issues').notNull().default([]),
+  createdAt: now(),
+  updatedAt: now(),
+}, (table) => [
+  unique('content_workspace_item_unique').on(table.workspaceId, table.itemId),
+  uniqueIndex('content_workspace_pipeline_item_unique').on(table.pipelineRunItemId).where(sql`${table.pipelineRunItemId} is not null`),
+  check('content_workspace_change_type_check', sql`${table.changeType} in ('create','update','disable')`),
+  check('content_workspace_source_check', sql`${table.source} in ('manual','ai_pipeline','bulk','rollback','report_fix')`),
+  index('content_workspace_change_workspace_idx').on(table.workspaceId, table.updatedAt),
+])
+
+export const backgroundJobs = pgTable('background_jobs', {
+  id: uuid().primaryKey().defaultRandom(),
+  type: text().notNull(),
+  status: text().notNull().default('queued'),
+  payload: jsonb().notNull().default({}),
+  progress: jsonb().notNull().default({}),
+  result: jsonb(),
+  idempotencyKey: text('idempotency_key').notNull().unique(),
+  createdBy: uuid('created_by').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: now(),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  heartbeatAt: timestamp('heartbeat_at', { withTimezone: true }),
+  finishedAt: timestamp('finished_at', { withTimezone: true }),
+  attempts: integer().notNull().default(0),
+  maxAttempts: integer('max_attempts').notNull().default(3),
+  nextRetryAt: timestamp('next_retry_at', { withTimezone: true }),
+  errorCode: text('error_code'),
+  safeErrorMessage: text('safe_error_message'),
+  workerId: text('worker_id'),
+  pipelineRunId: uuid('pipeline_run_id').references(() => pipelineRuns.id, { onDelete: 'set null' }),
+}, (table) => [
+  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_quality_check','music_pipeline','event_export','user_export','media_check','client_event_retention')`),
+  check('background_job_status_check', sql`${table.status} in ('queued','running','completed','failed','cancelled')`),
+  index('background_job_claim_idx').on(table.status, table.nextRetryAt, table.createdAt),
+  index('background_job_pipeline_idx').on(table.pipelineRunId),
+])
+
+export const contentQualityIssues = pgTable('content_quality_issues', {
+  id: uuid().primaryKey().defaultRandom(),
+  ruleKey: text('rule_key').notNull(),
+  severity: text().notNull(),
+  mode: contentMode().notNull(),
+  itemId: text('item_id').notNull().references(() => contentItems.id, { onDelete: 'cascade' }),
+  itemVersionId: uuid('item_version_id').references(() => contentItemVersions.id, { onDelete: 'cascade' }),
+  workspaceChangeId: uuid('workspace_change_id').references(() => contentWorkspaceChanges.id, { onDelete: 'cascade' }),
+  field: text(),
+  message: text().notNull(),
+  fingerprint: text().notNull(),
+  status: text().notNull().default('open'),
+  acceptedUntil: timestamp('accepted_until', { withTimezone: true }),
+  acceptedComment: text('accepted_comment'),
+  createdAt: now(),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+}, (table) => [
+  unique('content_quality_fingerprint_unique').on(table.fingerprint),
+  check('content_quality_severity_check', sql`${table.severity} in ('critical','warning','info')`),
+  check('content_quality_status_check', sql`${table.status} in ('open','accepted','resolved')`),
+  index('content_quality_status_severity_idx').on(table.status, table.severity, table.mode),
+  index('content_quality_item_idx').on(table.itemId),
+])
+
 export const dailyChallenges = pgTable('daily_challenges', {
   id: uuid().primaryKey().defaultRandom(),
   challengeKey: text('challenge_key').notNull().unique(),
@@ -172,6 +341,7 @@ export const dailyChallenges = pgTable('daily_challenges', {
 export const gameSessions = pgTable('game_sessions', {
   id: uuid().primaryKey().defaultRandom(),
   userId: uuid('user_id').notNull().references(() => user.id),
+  authSessionId: uuid('auth_session_id').references(() => session.id, { onDelete: 'set null' }),
   challengeId: uuid('challenge_id').references(() => dailyChallenges.id),
   kind: text().notNull(),
   mode: contentMode().notNull(),
@@ -192,6 +362,7 @@ export const gameSessions = pgTable('game_sessions', {
   uniqueIndex('game_session_challenge_user_unique').on(table.userId, table.challengeId).where(sql`${table.challengeId} is not null`),
   uniqueIndex('game_session_start_idempotency_unique').on(table.userId, table.startIdempotencyKey).where(sql`${table.startIdempotencyKey} is not null`),
   index('game_session_user_status_idx').on(table.userId, table.status),
+  index('game_session_auth_session_idx').on(table.authSessionId),
   check('game_session_kind_check', sql`${table.kind} in ('daily','archive','free_play')`),
   check('game_session_status_check', sql`${table.status} in ('playing','won','lost')`),
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
@@ -207,13 +378,28 @@ export const contentReports = pgTable('content_reports', {
   comment: text(),
   status: text().notNull().default('open'),
   createdAt: now(),
+  updatedAt: now(),
   resolvedAt: timestamp('resolved_at', { withTimezone: true }),
   resolvedBy: uuid('resolved_by').references(() => user.id, { onDelete: 'set null' }),
+  assignedTo: uuid('assigned_to').references(() => user.id, { onDelete: 'set null' }),
+  resolutionType: text('resolution_type'),
+  resolutionComment: text('resolution_comment'),
+  linkedWorkspaceChangeId: uuid('linked_workspace_change_id').references(() => contentWorkspaceChanges.id, { onDelete: 'set null' }),
+  linkedRevisionId: uuid('linked_revision_id').references(() => contentRevisions.id, { onDelete: 'set null' }),
+  duplicateOfReportId: uuid('duplicate_of_report_id'),
+  clientEventId: uuid('client_event_id'),
+  appVersion: text('app_version'),
+  pageUrl: text('page_url'),
+  clientErrorId: text('client_error_id'),
+  requestId: text('request_id'),
 }, (table) => [
   index('content_report_status_created_idx').on(table.status, table.createdAt),
   index('content_report_item_idx').on(table.itemId),
-  check('content_report_reason_check', sql`${table.reason} in ('wrong_fact','disputed_comparison','title_not_found','bad_hint','other')`),
-  check('content_report_status_check', sql`${table.status} in ('open','resolved','dismissed')`),
+  uniqueIndex('content_report_user_client_event_unique').on(table.userId, table.clientEventId).where(sql`${table.clientEventId} is not null`),
+  check('content_report_reason_check', sql`${table.reason} in ('wrong_fact','disputed_comparison','title_not_found','bad_hint','bad_image','duplicate_card','typo_or_translation','technical_error','other')`),
+  check('content_report_status_check', sql`${table.status} in ('open','in_progress','resolved','dismissed','duplicate')`),
+  check('content_report_resolution_type_check', sql`${table.resolutionType} is null or ${table.resolutionType} in ('fixed_by_revision','already_fixed','expected_behavior','insufficient_data','duplicate','other')`),
+  check('content_report_not_self_duplicate_check', sql`${table.duplicateOfReportId} is null or ${table.duplicateOfReportId} <> ${table.id}`),
 ])
 
 export const gameAttempts = pgTable('game_attempts', {
@@ -318,7 +504,65 @@ export const legacyImports = pgTable('legacy_imports', {
   unique('legacy_import_device_schema_unique').on(table.deviceId, table.schemaVersion),
 ])
 
+export const clientEvents = pgTable('client_events', {
+  id: uuid().primaryKey().defaultRandom(),
+  eventId: uuid('event_id').notNull().unique(),
+  eventName: text('event_name').notNull(),
+  occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull(),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  authSessionId: uuid('auth_session_id').references(() => session.id, { onDelete: 'set null' }),
+  gameSessionId: uuid('game_session_id').references(() => gameSessions.id, { onDelete: 'set null' }),
+  route: text(),
+  appVersion: text('app_version'),
+  browser: text(),
+  os: text(),
+  device: text(),
+  requestId: text('request_id'),
+  errorCode: text('error_code'),
+  stackFingerprint: text('stack_fingerprint'),
+  properties: jsonb().notNull().default({}),
+  createdAt: now(),
+}, (table) => [
+  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed')`),
+  index('client_event_occurred_idx').on(table.occurredAt),
+  index('client_event_user_occurred_idx').on(table.userId, table.occurredAt),
+  index('client_event_game_session_idx').on(table.gameSessionId),
+  index('client_event_request_idx').on(table.requestId),
+  index('client_event_name_idx').on(table.eventName),
+])
+
+export const authEvents = pgTable('auth_events', {
+  id: uuid().primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  authSessionId: uuid('auth_session_id'),
+  eventName: text('event_name').notNull(),
+  result: text().notNull(),
+  occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull().defaultNow(),
+  requestId: text('request_id'),
+  browser: text(),
+  os: text(),
+  device: text(),
+}, (table) => [
+  check('auth_event_name_check', sql`${table.eventName} in ('sign_up','sign_in','sign_out','email_verified','password_reset_requested','password_changed','sessions_revoked')`),
+  check('auth_event_result_check', sql`${table.result} in ('success','failure')`),
+  index('auth_event_user_occurred_idx').on(table.userId, table.occurredAt),
+])
+
+export const adminUserNotes = pgTable('admin_user_notes', {
+  id: uuid().primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  text: text().notNull(),
+  createdBy: uuid('created_by').notNull().references(() => user.id),
+  createdAt: now(),
+  updatedAt: now(),
+}, (table) => [index('admin_user_note_user_idx').on(table.userId, table.createdAt)])
+
 export const auditLog = pgTable('audit_log', {
   id: uuid().primaryKey().defaultRandom(), actorUserId: uuid('actor_user_id').references(() => user.id), action: text().notNull(), entityType: text('entity_type').notNull(),
-  entityId: text('entity_id').notNull(), before: jsonb(), after: jsonb(), requestId: text('request_id').notNull(), createdAt: now(),
-}, (table) => [index('audit_log_entity_idx').on(table.entityType, table.entityId), index('audit_log_created_idx').on(table.createdAt)])
+  entityId: text('entity_id').notNull(), before: jsonb(), after: jsonb(), reason: text(), result: text().notNull().default('success'), requestId: text('request_id').notNull(), createdAt: now(),
+}, (table) => [
+  index('audit_log_entity_idx').on(table.entityType, table.entityId),
+  index('audit_log_created_idx').on(table.createdAt),
+  index('audit_log_action_created_idx').on(table.action, table.createdAt),
+  check('audit_log_result_check', sql`${table.result} in ('success','failure')`),
+])

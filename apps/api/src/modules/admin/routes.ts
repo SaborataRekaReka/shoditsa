@@ -1,0 +1,588 @@
+import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm'
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
+import {
+  AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
+  AdminItemParamsSchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
+  AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
+  MusicPipelineEstimateBodySchema, MusicPipelineRunBodySchema, PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
+  UuidSchema,
+  type AdminBlockUserBody, type AdminContentItemsQuery, type AdminEventsQuery, type AdminReportPatchBody,
+  type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
+  type AdminWorkspaceItemBody, type ClientEventsBatchBody, type MusicPipelineEstimateBody, type MusicPipelineRunBody,
+  type PipelineApprovalBody, type PipelineItemDecisionBody,
+} from '@shoditsa/contracts'
+import { Type } from '@sinclair/typebox'
+import type { AppConfig } from '@shoditsa/config'
+import {
+  account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
+  contentAliases, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes,
+  contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, gameAttempts, gameHintChoices,
+  gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
+  promoRedemptions, session, user, userModeStats, walletAccounts, walletLedger, type Database,
+} from '@shoditsa/database'
+import type { Auth } from '../auth/auth.js'
+import { getRequestUser, requireAdmin } from '../auth/session.js'
+import { ApiError, requireIdempotencyKey } from '../../lib/errors.js'
+import {
+  activateWorkspaceRevision, buildWorkspaceRevision, discardWorkspaceItem, getOrCreateWorkspace, loadWorkspaceChanges,
+  saveWorkspaceItem, validateContentPayload, validateWorkspace, workspaceSummary,
+} from './content-service.js'
+
+type Deps = { db: Database; auth: Auth; config: AppConfig }
+type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
+
+const admin = async (request: FastifyRequest, reply: FastifyReply, deps: Deps) => {
+  reply.header('Cache-Control', 'no-store')
+  return requireAdmin(request, deps.auth, deps.db, deps.config)
+}
+const params = Type.Object({ id: UuidSchema }, { additionalProperties: false })
+const itemParams = Type.Object({ itemId: Type.String({ minLength: 1, maxLength: 255 }) }, { additionalProperties: false })
+const runItemParams = Type.Object({ id: UuidSchema, itemId: UuidSchema }, { additionalProperties: false })
+const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
+const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
+const rows = <T>(value: unknown) => Array.from(value as Iterable<T>)
+const posterOf = (payload: unknown) => {
+  const record = asRecord(payload)
+  return typeof record.posterUrl === 'string' ? record.posterUrl : typeof record.headerUrl === 'string' ? record.headerUrl : null
+}
+const completionOf = (payload: unknown) => {
+  const record = asRecord(payload)
+  const fields = ['titleRu', 'titleOriginal', 'alternativeTitles', 'plotHint', 'posterUrl', 'genres']
+  return Math.round(fields.filter((field) => record[field] != null && record[field] !== '' && (!Array.isArray(record[field]) || (record[field] as unknown[]).length > 0)).length / fields.length * 100)
+}
+
+const itemSchema = (mode: string) => ({
+  mode,
+  groups: [
+    { key: 'identity', title: 'Идентификация и названия', fields: ['id', 'mode', 'titleRu', 'titleOriginal', 'alternativeTitles'] },
+    { key: 'game', title: 'Игровые данные и подсказки', fields: ['year', 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame'] },
+    { key: 'media', title: 'Медиа', fields: ['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'] },
+    ...(mode === 'movie' ? [{ key: 'movie', title: 'Кино', fields: ['runtime', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'kinopoiskId', 'imdbId', 'ratings', 'awards'] }] : []),
+    ...(mode === 'series' ? [{ key: 'series', title: 'Сериал', fields: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'kinopoiskId', 'imdbId'] }] : []),
+    ...(mode === 'anime' ? [{ key: 'anime', title: 'Аниме', fields: ['kind', 'status', 'episodes', 'episodesAired', 'source', 'studios', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'] }] : []),
+    ...(mode === 'game' ? [{ key: 'gameMeta', title: 'Игра', fields: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic'] }] : []),
+    ...(mode === 'music' ? [{ key: 'music', title: 'Музыка', fields: ['canonicalId', 'aliases', 'gameTier', 'contentStatus', 'activeState', 'origin', 'artistType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
+    ...(mode === 'diagnosis' ? [{ key: 'diagnosis', title: 'Диагноз', fields: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'] }] : []),
+  ],
+})
+
+const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
+  app.get('/api/v1/admin/content/items', { schema: { querystring: AdminContentItemsQuerySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const query = request.query as AdminContentItemsQuery
+    const active = (await deps.db.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
+    if (!active) return { items: [], nextCursor: null, total: 0, filters: query }
+    const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const filters = [eq(contentItemVersions.revisionId, active.id)]
+    if (query.mode) filters.push(eq(contentItemVersions.mode, query.mode))
+    if (query.publication === 'published') filters.push(eq(contentItemVersions.allowedInGame, true))
+    if (query.publication === 'hidden') filters.push(eq(contentItemVersions.allowedInGame, false))
+    if (query.hasReports) filters.push(sql`exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
+    if (query.hasIssues) filters.push(sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
+    if (query.q?.trim()) {
+      const raw = query.q.trim(); const exact = raw.length > 1 && raw.startsWith('"') && raw.endsWith('"')
+      const needle = raw.replace(/^"|"$/g, '').replaceAll('ё', 'е').replaceAll('Ё', 'Е')
+      filters.push(exact
+        ? sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or ${contentItemVersions.itemId} = ${needle})`
+        : sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or ${contentItemVersions.itemId} ilike ${`%${needle}%`} or exists (select 1 from content_aliases ca where ca.item_version_id = ${contentItemVersions.id} and replace(lower(ca.alias), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`}))`)
+    }
+    if (query.cursor) filters.push(gt(contentItemVersions.itemId, query.cursor))
+    const limit = query.limit ?? 40
+    const orderField = query.sort === 'id' ? contentItemVersions.itemId
+      : query.sort === 'createdAt' ? contentItemVersions.createdAt
+        : query.sort === 'title' ? contentItemVersions.titleRu
+          : contentItemVersions.itemId
+    const order = query.order === 'desc' ? desc(orderField) : asc(orderField)
+    const selected = await deps.db.select({
+      id: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode,
+      titleRu: contentItemVersions.titleRu, titleOriginal: contentItemVersions.titleOriginal, year: contentItemVersions.year,
+      payload: contentItemVersions.payload, allowedInGame: contentItemVersions.allowedInGame, updatedAt: contentItemVersions.createdAt,
+      reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`,
+      issuesCount: sql<number>`(select count(*)::int from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`,
+      draftVersion: contentWorkspaceChanges.version,
+    }).from(contentItemVersions)
+      .leftJoin(contentWorkspaceChanges, and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, contentItemVersions.itemId)))
+      .where(and(...filters)).orderBy(order, asc(contentItemVersions.itemId)).limit(limit + 1)
+    const totalFilters = filters.filter((_, index) => !(query.cursor && index === filters.length - 1))
+    const total = await deps.db.select({ count: sql<number>`count(*)::int` }).from(contentItemVersions).where(and(...totalFilters))
+    return {
+      items: selected.slice(0, limit).map(({ payload, ...item }) => ({ ...item, posterUrl: posterOf(payload), completeness: completionOf(payload) })),
+      nextCursor: selected.length > limit ? selected[limit - 1].id : null,
+      total: total[0]?.count ?? 0,
+      filters: query,
+    }
+  })
+
+  app.get('/api/v1/admin/content/items/:itemId', { schema: { params: AdminItemParamsSchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const { itemId } = request.params as { itemId: string }
+    const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const active = await deps.db.select({
+      id: contentItemVersions.id, itemId: contentItemVersions.itemId, mode: contentItemVersions.mode,
+      payload: contentItemVersions.payload, createdAt: contentItemVersions.createdAt, revisionId: contentItemVersions.revisionId,
+    }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+      .where(and(eq(contentItemVersions.itemId, itemId), eq(contentRevisions.status, 'active'))).limit(1)
+    const draft = await deps.db.select().from(contentWorkspaceChanges).where(and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, itemId))).limit(1)
+    if (!active[0] && !draft[0]) throw new ApiError(404, 'CONTENT_ITEM_NOT_FOUND', 'Карточка не найдена')
+    const mode = active[0]?.mode ?? draft[0].mode
+    const [reports, issues, decisions] = await Promise.all([
+      deps.db.select().from(contentReports).where(eq(contentReports.itemId, itemId)).orderBy(desc(contentReports.createdAt)).limit(50),
+      deps.db.select().from(contentQualityIssues).where(and(eq(contentQualityIssues.itemId, itemId), eq(contentQualityIssues.status, 'open'))).orderBy(desc(contentQualityIssues.createdAt)),
+      deps.db.select().from(contentReviewDecisions).where(eq(contentReviewDecisions.itemId, itemId)).orderBy(desc(contentReviewDecisions.updatedAt)),
+    ])
+    return { active: active[0] ?? null, draft: draft[0] ?? null, workspace: await workspaceSummary(deps.db, actor), schema: itemSchema(mode), reports, issues, decisions }
+  })
+
+  app.get('/api/v1/admin/content/items/:itemId/history', { schema: { params: AdminItemParamsSchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const { itemId } = request.params as { itemId: string }
+    const versions = await deps.db.select({
+      id: contentItemVersions.id, revisionId: contentItemVersions.revisionId, revisionVersion: contentRevisions.version,
+      revisionStatus: contentRevisions.status, payload: contentItemVersions.payload, createdAt: contentItemVersions.createdAt, createdBy: contentRevisions.createdBy,
+    }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+      .where(eq(contentItemVersions.itemId, itemId)).orderBy(desc(contentItemVersions.createdAt))
+    const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const drafts = await deps.db.select().from(contentWorkspaceChanges).where(and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, itemId)))
+    return { versions, drafts }
+  })
+
+  app.get('/api/v1/admin/content/workspace', async (request, reply) => workspaceSummary(deps.db, await admin(request, reply, deps)))
+
+  app.put('/api/v1/admin/content/workspace/items/:itemId', { schema: { params: AdminItemParamsSchema, body: AdminWorkspaceItemBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    return saveWorkspaceItem(deps.db, actor, (request.params as { itemId: string }).itemId, request.body as AdminWorkspaceItemBody, request.id)
+  })
+
+  app.delete('/api/v1/admin/content/workspace/items/:itemId', { schema: { params: AdminItemParamsSchema } }, async (request, reply) => discardWorkspaceItem(
+    deps.db, await admin(request, reply, deps), (request.params as { itemId: string }).itemId, request.id,
+  ))
+
+  app.post('/api/v1/admin/content/workspace/bulk', { schema: { body: AdminWorkspaceBulkBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as AdminWorkspaceBulkBody
+    const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const activeRows = await deps.db.select({ itemId: contentItemVersions.itemId, mode: contentItemVersions.mode, payload: contentItemVersions.payload })
+      .from(contentItemVersions).where(and(eq(contentItemVersions.revisionId, workspace.baseRevisionId), inArray(contentItemVersions.itemId, body.itemIds)))
+    const drafts = await loadWorkspaceChanges(deps.db, workspace.id, body.itemIds); const draftById = new Map(drafts.map((entry) => [entry.itemId, entry]))
+    const results: Array<{ itemId: string; status: 'saved' | 'failed'; message?: string }> = []
+    for (const row of activeRows) {
+      const draft = draftById.get(row.itemId); const payload = { ...asRecord(draft?.afterPayload ?? row.payload) }
+      if (body.operation === 'allow' || body.operation === 'disallow') payload.allowedInGame = body.operation === 'allow'
+      if (body.operation === 'add_tag' || body.operation === 'remove_tag') {
+        const tags = new Set(Array.isArray(payload.tags) ? payload.tags.map(String) : [])
+        if (body.operation === 'add_tag' && body.value) tags.add(body.value)
+        if (body.operation === 'remove_tag' && body.value) tags.delete(body.value)
+        payload.tags = [...tags]
+      }
+      try {
+        await saveWorkspaceItem(deps.db, actor, row.itemId, { mode: row.mode, payload, expectedVersion: draft?.version ?? 0, source: 'bulk', reason: body.reason }, request.id)
+        results.push({ itemId: row.itemId, status: 'saved' })
+      } catch (error) { results.push({ itemId: row.itemId, status: 'failed', message: error instanceof Error ? error.message : 'Ошибка' }) }
+    }
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'content.workspace.bulk', entityType: 'content_workspace', entityId: workspace.id, before: null, after: { operation: body.operation, requested: body.itemIds.length, results }, reason: body.reason, requestId: request.id })
+    return { requested: body.itemIds.length, processed: results.length, succeeded: results.filter((entry) => entry.status === 'saved').length, failed: results.filter((entry) => entry.status === 'failed').length, results }
+  })
+
+  app.post('/api/v1/admin/content/workspace/validate', async (request, reply) => validateWorkspace(deps.db, await admin(request, reply, deps)))
+  app.post('/api/v1/admin/content/workspace/build', { schema: { headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const workspace = await getOrCreateWorkspace(deps.db, actor); const key = requireIdempotencyKey(request)
+    const existing = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existing[0]) return reply.code(202).send({ job: existing[0] })
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'content_revision_build', idempotencyKey: key, createdBy: actor.id, payload: { workspaceId: workspace.id, requestId: request.id } }).returning())[0]
+    await deps.db.update(contentWorkspaces).set({ status: 'building', lockedAt: new Date(), updatedAt: new Date() }).where(eq(contentWorkspaces.id, workspace.id))
+    return reply.code(202).send({ job })
+  })
+  app.post('/api/v1/admin/content/workspace/activate', { schema: { headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const workspace = await getOrCreateWorkspace(deps.db, actor)
+    return activateWorkspaceRevision(deps.db, actor, workspace.id, request.id)
+  })
+  app.post('/api/v1/admin/content/quality-checks', { schema: { headers: idempotencyHeaders, body: Type.Optional(Type.Object({ itemIds: Type.Optional(Type.Array(Type.String(), { maxItems: 5000 })) })) } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const key = requireIdempotencyKey(request)
+    const job = await deps.db.insert(backgroundJobs).values({ type: 'content_quality_check', idempotencyKey: key, createdBy: actor.id, payload: request.body ?? {} }).onConflictDoNothing().returning()
+    const resolved = job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0]
+    return reply.code(202).send({ job: resolved })
+  })
+}
+
+const registerReportRoutes = (app: FastifyInstance, deps: Deps) => {
+  app.get('/api/v1/admin/content-reports', { schema: { querystring: AdminReportQuerySchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const query = request.query as AdminReportQuery; const filters = []
+    if (query.status) filters.push(eq(contentReports.status, query.status))
+    if (query.reason) filters.push(eq(contentReports.reason, query.reason))
+    if (query.mode) filters.push(eq(contentReports.mode, query.mode))
+    if (query.itemId) filters.push(eq(contentReports.itemId, query.itemId))
+    if (query.userId) filters.push(eq(contentReports.userId, query.userId))
+    if (query.cursor) filters.push(lt(contentReports.createdAt, new Date(query.cursor)))
+    if (query.q) filters.push(or(ilike(contentReports.comment, `%${query.q}%`), sql`${contentReports.id}::text ilike ${`%${query.q}%`}`)!)
+    const limit = query.limit ?? 40
+    const list = await deps.db.select({ report: contentReports, userEmail: user.email, titleRu: contentItemVersions.titleRu, sessionStatus: gameSessions.status })
+      .from(contentReports).innerJoin(user, eq(user.id, contentReports.userId)).innerJoin(gameSessions, eq(gameSessions.id, contentReports.sessionId))
+      .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameSessions.answerItemVersionId))
+      .where(filters.length ? and(...filters) : undefined).orderBy(desc(contentReports.createdAt)).limit(limit + 1)
+    return { items: list.slice(0, limit), nextCursor: list.length > limit ? list[limit - 1].report.createdAt.toISOString() : null }
+  })
+
+  app.get('/api/v1/admin/content-reports/:id', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    const report = await deps.db.select({ report: contentReports, reporter: user, game: gameSessions, snapshot: contentItemVersions.payload, snapshotVersionId: contentItemVersions.id })
+      .from(contentReports).innerJoin(user, eq(user.id, contentReports.userId)).innerJoin(gameSessions, eq(gameSessions.id, contentReports.sessionId))
+      .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameSessions.answerItemVersionId)).where(eq(contentReports.id, id)).limit(1)
+    if (!report[0]) throw new ApiError(404, 'REPORT_NOT_FOUND', 'Баг-репорт не найден')
+    const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const [attempts, hints, active, draft, similar] = await Promise.all([
+      deps.db.select().from(gameAttempts).where(eq(gameAttempts.sessionId, report[0].game.id)).orderBy(asc(gameAttempts.position)),
+      deps.db.select().from(gameHintChoices).where(eq(gameHintChoices.sessionId, report[0].game.id)).orderBy(asc(gameHintChoices.checkpoint)),
+      deps.db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentItemVersions.itemId, report[0].report.itemId), eq(contentRevisions.status, 'active'))).limit(1),
+      deps.db.select().from(contentWorkspaceChanges).where(and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, report[0].report.itemId))).limit(1),
+      deps.db.select().from(contentReports).where(and(eq(contentReports.itemId, report[0].report.itemId), sql`${contentReports.id} <> ${id}`)).orderBy(desc(contentReports.createdAt)).limit(20),
+    ])
+    return { ...report[0], attempts, hints, active: active[0] ?? null, draft: draft[0] ?? null, similar }
+  })
+
+  app.get('/api/v1/admin/content-reports/:id/similar', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    const current = await deps.db.select().from(contentReports).where(eq(contentReports.id, id)).limit(1)
+    if (!current[0]) throw new ApiError(404, 'REPORT_NOT_FOUND', 'Баг-репорт не найден')
+    return { items: await deps.db.select().from(contentReports).where(and(eq(contentReports.itemId, current[0].itemId), sql`${contentReports.id} <> ${id}`)).orderBy(desc(contentReports.createdAt)).limit(50) }
+  })
+
+  app.patch('/api/v1/admin/content-reports/:id', { schema: { params: AdminIdParamsSchema, body: AdminReportPatchBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as AdminReportPatchBody
+    if (body.status === 'duplicate' && !body.duplicateOfReportId) throw new ApiError(422, 'DUPLICATE_TARGET_REQUIRED', 'Выберите основной отчёт')
+    if (['resolved', 'dismissed', 'duplicate'].includes(body.status) && !body.resolutionType) throw new ApiError(422, 'RESOLUTION_REQUIRED', 'Выберите итог обработки')
+    const before = await deps.db.select().from(contentReports).where(eq(contentReports.id, id)).limit(1)
+    if (!before[0]) throw new ApiError(404, 'REPORT_NOT_FOUND', 'Баг-репорт не найден')
+    if (body.duplicateOfReportId === id) throw new ApiError(422, 'SELF_DUPLICATE', 'Отчёт не может быть дубликатом самого себя')
+    const resolved = ['resolved', 'dismissed', 'duplicate'].includes(body.status)
+    const updated = await deps.db.update(contentReports).set({
+      status: body.status, assignedTo: body.assignedTo === undefined ? before[0].assignedTo : body.assignedTo,
+      resolutionType: body.resolutionType === undefined ? before[0].resolutionType : body.resolutionType,
+      resolutionComment: body.resolutionComment === undefined ? before[0].resolutionComment : body.resolutionComment,
+      linkedWorkspaceChangeId: body.linkedWorkspaceChangeId === undefined ? before[0].linkedWorkspaceChangeId : body.linkedWorkspaceChangeId,
+      linkedRevisionId: body.linkedRevisionId === undefined ? before[0].linkedRevisionId : body.linkedRevisionId,
+      duplicateOfReportId: body.duplicateOfReportId === undefined ? before[0].duplicateOfReportId : body.duplicateOfReportId,
+      resolvedAt: resolved ? new Date() : null, resolvedBy: resolved ? actor.id : null, updatedAt: new Date(),
+    }).where(eq(contentReports.id, id)).returning()
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'content_report.update', entityType: 'content_report', entityId: id, before: before[0], after: updated[0], reason: body.resolutionComment ?? undefined, requestId: request.id })
+    return updated[0]
+  })
+}
+
+const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
+  app.get('/api/v1/admin/pipelines', async (request, reply) => {
+    await admin(request, reply, deps)
+    const last = await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(20)
+    const music = last.filter((entry) => entry.pipelineKey === 'music')
+    return { items: [
+      { key: 'music', title: 'Музыка', description: 'Поиск, проверка источников и подготовка музыкальных карточек', mode: 'music', state: 'connected', lastRun: music[0] ?? null, awaitingReview: music.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
+      { key: 'translation', title: 'Машинный перевод', description: 'Единый review-контур для переводов', mode: null, state: 'not_connected', lastRun: null, awaitingReview: 0 },
+    ] }
+  })
+
+  app.post('/api/v1/admin/pipelines/music/estimate', { schema: { body: MusicPipelineEstimateBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const body = request.body as MusicPipelineEstimateBody
+    const calls = body.aiMode === 'never' ? 0 : body.maxItems * 2
+    return { items: body.maxItems, aiReviewCalls: calls, estimatedCost: Number((calls * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: deps.config.musicPipelineModel }
+  })
+
+  app.post('/api/v1/admin/pipelines/music/runs', { schema: { body: MusicPipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as MusicPipelineRunBody; const key = requireIdempotencyKey(request)
+    if (body.scenario === 'selected' && (!body.itemIds?.length || body.itemIds.length > body.maxItems)) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите музыкальные карточки в пределах лимита')
+    const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
+    const run = (await deps.db.insert(pipelineRuns).values({
+      pipelineKey: 'music', pipelineVersion: 'music-cli-v1', status: 'queued', createdBy: actor.id, itemsTotal: body.maxItems,
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [] },
+      settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
+      estimatedCost: String((body.aiMode === 'never' ? 0 : body.maxItems * .04).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+    }).returning())[0]
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'music_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id } }).returning())[0]
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.music.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { scenario: body.scenario, maxItems: body.maxItems, jobId: job.id }, requestId: request.id })
+    return reply.code(202).send({ runId: run.id, jobId: job.id })
+  })
+
+  app.get('/api/v1/admin/pipeline-runs', async (request, reply) => ({ items: await deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(100) , actor: (await admin(request, reply, deps)).id }))
+  app.get('/api/v1/admin/pipeline-runs/:id', { schema: { params } }, async (request, reply) => {
+    await admin(request, reply, deps); const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, (request.params as { id: string }).id)).limit(1)
+    if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+    return run[0]
+  })
+  app.get('/api/v1/admin/pipeline-runs/:id/items', { schema: { params } }, async (request, reply) => {
+    await admin(request, reply, deps); return { items: await deps.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.runId, (request.params as { id: string }).id)).orderBy(asc(pipelineRunItems.createdAt)) }
+  })
+  app.patch('/api/v1/admin/pipeline-runs/:id/items/:itemId/decision', { schema: { params: runItemParams, body: PipelineItemDecisionBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const { id, itemId } = request.params as { id: string; itemId: string }; const body = request.body as PipelineItemDecisionBody
+    const item = await deps.db.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.id, itemId), eq(pipelineRunItems.runId, id))).limit(1)
+    if (!item[0]) throw new ApiError(404, 'PIPELINE_ITEM_NOT_FOUND', 'Результат не найден')
+    const updated = await deps.db.update(pipelineRunItems).set({ status: body.approved ? 'approved' : 'rejected', fieldDecisionsJson: body.fieldDecisions, approvedBy: actor.id, approvedAt: new Date(), updatedAt: new Date() }).where(eq(pipelineRunItems.id, itemId)).returning()
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.item.decision', entityType: 'pipeline_run_item', entityId: itemId, before: item[0], after: updated[0], reason: body.note, requestId: request.id })
+    return updated[0]
+  })
+
+  const approveToWorkspace = async (request: FastifyRequest, reply: FastifyReply, publish: boolean) => {
+    const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const body = request.body as PipelineApprovalBody
+    const filters = [eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'approved')]
+    if (body.itemIds?.length) filters.push(inArray(pipelineRunItems.id, body.itemIds))
+    const items = await deps.db.select().from(pipelineRunItems).where(and(...filters)); const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const existingChanges = await loadWorkspaceChanges(deps.db, workspace.id, items.map((entry) => entry.cardId).filter((entry): entry is string => Boolean(entry)))
+    const changeByItem = new Map(existingChanges.map((entry) => [entry.itemId, entry]))
+    const results: Array<{ itemId: string; status: string; message?: string }> = []
+    for (const item of items) {
+      const before = asRecord(item.beforeJson); const proposed = asRecord(item.proposedJson); const decisions = asRecord(item.fieldDecisionsJson)
+      const payload = { ...before }
+      for (const [field, rawDecision] of Object.entries(decisions)) {
+        const decision = asRecord(rawDecision); const action = decision.action
+        if (action === 'accept') payload[field] = proposed[field]
+        if (action === 'edit') payload[field] = decision.value
+      }
+      const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)
+      payload.id = itemId; payload.mode = 'music'
+      try {
+        const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode: 'music', payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
+        await deps.db.update(pipelineRunItems).set({ status: 'staged', workspaceChangeId: change.id, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
+        results.push({ itemId: item.id, status: 'staged' })
+      } catch (error) {
+        await deps.db.update(pipelineRunItems).set({ status: 'conflict', errorCode: 'WORKSPACE_CONFLICT', safeErrorMessage: error instanceof Error ? error.message : 'Конфликт', updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
+        results.push({ itemId: item.id, status: 'conflict', message: error instanceof Error ? error.message : 'Конфликт' })
+      }
+    }
+    await deps.db.update(pipelineRuns).set({ status: results.some((entry) => entry.status === 'conflict') ? 'partially_failed' : 'staged' }).where(eq(pipelineRuns.id, runId))
+    if (!publish) return { results, workspace: await workspaceSummary(deps.db, actor) }
+    const built = await buildWorkspaceRevision(deps.db, actor, workspace.id, request.id)
+    const activated = await activateWorkspaceRevision(deps.db, actor, workspace.id, request.id)
+    await deps.db.update(pipelineRuns).set({ status: results.some((entry) => entry.status === 'conflict') ? 'partially_published' : 'published', finishedAt: new Date() }).where(eq(pipelineRuns.id, runId))
+    await deps.db.update(pipelineRunItems).set({ status: 'published', appliedRevisionId: activated.revision.id, updatedAt: new Date() }).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'staged')))
+    return { results, built, activated }
+  }
+  app.post('/api/v1/admin/pipeline-runs/:id/approve-to-workspace', { schema: { params, body: PipelineApprovalBodySchema } }, async (request, reply) => approveToWorkspace(request, reply, false))
+  app.post('/api/v1/admin/pipeline-runs/:id/approve-and-publish', { schema: { params, body: PipelineApprovalBodySchema } }, async (request, reply) => approveToWorkspace(request, reply, true))
+  app.post('/api/v1/admin/pipeline-runs/:id/retry-failed', { schema: { params, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
+    const failed = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
+    if (!failed[0]?.count) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
+    const job = await deps.db.insert(backgroundJobs).values({ type: 'music_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId, payload: { runId, retryFailed: true } }).onConflictDoNothing().returning()
+    return reply.code(202).send({ job: job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
+  })
+  app.post('/api/v1/admin/pipeline-runs/:id/cancel', { schema: { params } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    const run = await deps.db.update(pipelineRuns).set({ cancelRequestedAt: new Date() }).where(and(eq(pipelineRuns.id, id), sql`${pipelineRuns.status} in ('queued','running')`)).returning()
+    if (!run[0]) throw new ApiError(409, 'PIPELINE_NOT_CANCELLABLE', 'Запуск уже завершён')
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.cancel', entityType: 'pipeline_run', entityId: id, before: null, after: { cancelRequestedAt: run[0].cancelRequestedAt }, requestId: request.id })
+    return run[0]
+  })
+  app.get('/api/v1/admin/pipeline-runs/:id/events', { schema: { params } }, async (request, reply) => {
+    await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id)).limit(1)
+    if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+    return { run: run[0], pollAfterMs: ['queued', 'running'].includes(run[0].status) ? 2500 : null }
+  })
+}
+
+const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
+  app.get('/api/v1/admin/users', { schema: { querystring: AdminUsersQuerySchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const query = request.query as AdminUsersQuery; const filters = []
+    if (query.status) filters.push(eq(playerProfiles.accountStatus, query.status))
+    if (query.accountType) filters.push(eq(user.isAnonymous, query.accountType === 'anonymous'))
+    if (query.cursor) filters.push(lt(user.createdAt, new Date(query.cursor)))
+    if (query.q) filters.push(or(ilike(user.email, `%${query.q}%`), ilike(user.name, `%${query.q}%`), ilike(playerProfiles.displayName, `%${query.q}%`), sql`${user.id}::text ilike ${`%${query.q}%`}`)!)
+    const limit = query.limit ?? 40
+    const items = await deps.db.select({
+      id: user.id, email: user.email, name: user.name, displayName: playerProfiles.displayName, isAnonymous: user.isAnonymous,
+      accountStatus: playerProfiles.accountStatus, role: playerProfiles.role, createdAt: user.createdAt,
+      lastActivityAt: sql<Date | null>`(select max(gs.started_at) from game_sessions gs where gs.user_id = ${user.id})`,
+      sessionsCount: sql<number>`(select count(*)::int from game_sessions gs where gs.user_id = ${user.id})`,
+      completedCount: sql<number>`(select count(*)::int from game_sessions gs where gs.user_id = ${user.id} and gs.status in ('won','lost'))`,
+      reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.user_id = ${user.id})`,
+      balance: sql<number>`coalesce(${walletAccounts.balance}, 0)`,
+    }).from(user).leftJoin(playerProfiles, eq(playerProfiles.userId, user.id)).leftJoin(walletAccounts, eq(walletAccounts.userId, user.id))
+      .where(filters.length ? and(...filters) : undefined).orderBy(desc(user.createdAt)).limit(limit + 1)
+    return { items: items.slice(0, limit), nextCursor: items.length > limit ? items[limit - 1].createdAt.toISOString() : null }
+  })
+
+  app.get('/api/v1/admin/users/:id', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    const profile = await deps.db.select({ user, profile: playerProfiles, wallet: walletAccounts }).from(user)
+      .leftJoin(playerProfiles, eq(playerProfiles.userId, user.id)).leftJoin(walletAccounts, eq(walletAccounts.userId, user.id)).where(eq(user.id, id)).limit(1)
+    if (!profile[0]) throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
+    const [sessions, reports, stats, attendance, ledger, entitlements, redemptions, imports, notes, auth, audit] = await Promise.all([
+      deps.db.select().from(gameSessions).where(eq(gameSessions.userId, id)).orderBy(desc(gameSessions.startedAt)).limit(30),
+      deps.db.select().from(contentReports).where(eq(contentReports.userId, id)).orderBy(desc(contentReports.createdAt)).limit(30),
+      deps.db.select().from(userModeStats).where(eq(userModeStats.userId, id)),
+      deps.db.select().from(attendanceStats).where(eq(attendanceStats.userId, id)).limit(1),
+      deps.db.select().from(walletLedger).where(eq(walletLedger.userId, id)).orderBy(desc(walletLedger.createdAt)).limit(50),
+      deps.db.select().from(periodEntitlements).where(eq(periodEntitlements.userId, id)),
+      deps.db.select().from(promoRedemptions).where(eq(promoRedemptions.userId, id)).orderBy(desc(promoRedemptions.createdAt)),
+      deps.db.select().from(legacyImports).where(eq(legacyImports.userId, id)).orderBy(desc(legacyImports.createdAt)),
+      deps.db.select().from(adminUserNotes).where(eq(adminUserNotes.userId, id)).orderBy(desc(adminUserNotes.createdAt)),
+      deps.db.select().from(authEvents).where(eq(authEvents.userId, id)).orderBy(desc(authEvents.occurredAt)).limit(50),
+      deps.db.select().from(auditLog).where(and(eq(auditLog.entityType, 'user'), eq(auditLog.entityId, id))).orderBy(desc(auditLog.createdAt)).limit(50),
+    ])
+    return { ...profile[0], sessions, reports, stats, attendance: attendance[0] ?? null, ledger, entitlements, redemptions, imports, notes, authEvents: auth, audit }
+  })
+
+  app.post('/api/v1/admin/users/:id/block', { schema: { params: AdminIdParamsSchema, body: AdminBlockUserBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as AdminBlockUserBody
+    if (id === actor.id) throw new ApiError(409, 'ADMIN_SELF_ACTION_FORBIDDEN', 'Нельзя заблокировать собственный аккаунт')
+    const before = await deps.db.select().from(playerProfiles).where(eq(playerProfiles.userId, id)).limit(1)
+    if (!before[0]) throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
+    const updated = await deps.db.update(playerProfiles).set({ accountStatus: 'blocked', blockedAt: new Date(), blockedUntil: body.blockedUntil ? new Date(body.blockedUntil) : null, blockedReason: `${body.reason}${body.comment ? `: ${body.comment}` : ''}`, blockedBy: actor.id, updatedAt: new Date() }).where(eq(playerProfiles.userId, id)).returning()
+    if (body.revokeSessions ?? true) await deps.db.delete(session).where(eq(session.userId, id))
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'user.block', entityType: 'user', entityId: id, before: before[0], after: updated[0], reason: body.reason, requestId: request.id })
+    return updated[0]
+  })
+  app.post('/api/v1/admin/users/:id/unblock', { schema: { params: AdminIdParamsSchema, body: Type.Object({ reason: Type.String({ minLength: 3, maxLength: 500 }) }, { additionalProperties: false }) } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as { reason: string }
+    if (id === actor.id) throw new ApiError(409, 'ADMIN_SELF_ACTION_FORBIDDEN', 'Нельзя менять блокировку собственного аккаунта')
+    const before = await deps.db.select().from(playerProfiles).where(eq(playerProfiles.userId, id)).limit(1)
+    const updated = await deps.db.update(playerProfiles).set({ accountStatus: 'active', blockedAt: null, blockedUntil: null, blockedReason: null, blockedBy: null, updatedAt: new Date() }).where(eq(playerProfiles.userId, id)).returning()
+    if (!updated[0]) throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'user.unblock', entityType: 'user', entityId: id, before: before[0] ?? null, after: updated[0], reason: body.reason, requestId: request.id })
+    return updated[0]
+  })
+  app.post('/api/v1/admin/users/:id/revoke-sessions', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id
+    if (id === actor.id) throw new ApiError(409, 'ADMIN_SELF_ACTION_FORBIDDEN', 'Нельзя отозвать собственные административные сессии')
+    const deleted = await deps.db.delete(session).where(eq(session.userId, id)).returning({ id: session.id })
+    await deps.db.insert(authEvents).values({ userId: id, eventName: 'sessions_revoked', result: 'success', requestId: request.id })
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'user.sessions.revoke', entityType: 'user', entityId: id, before: null, after: { revoked: deleted.length }, requestId: request.id })
+    return { revoked: deleted.length }
+  })
+  app.post('/api/v1/admin/users/:id/notes', { schema: { params: AdminIdParamsSchema, body: AdminUserNoteBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const body = request.body as AdminUserNoteBody
+    const note = (await deps.db.insert(adminUserNotes).values({ userId: id, text: body.text.trim(), createdBy: actor.id }).returning())[0]
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'user.note.create', entityType: 'user', entityId: id, before: null, after: { noteId: note.id }, requestId: request.id })
+    return note
+  })
+  app.post('/api/v1/admin/users/:id/export', { schema: { params: AdminIdParamsSchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
+    const inserted = await deps.db.insert(backgroundJobs).values({ type: 'user_export', idempotencyKey: key, createdBy: actor.id, payload: { userId: id } }).onConflictDoNothing().returning()
+    const job = inserted[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0]
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'user.export.create', entityType: 'user', entityId: id, before: null, after: { jobId: job.id }, requestId: request.id })
+    return reply.code(202).send({ job })
+  })
+}
+
+const timelineSql = async (deps: Deps, query: AdminEventsQuery) => {
+  const userFilter = query.userId ? sql`and e.user_id = ${query.userId}::uuid` : sql``
+  const sessionFilter = query.gameSessionId ? sql`and e.game_session_id = ${query.gameSessionId}::uuid` : sql``
+  const from = query.from ? new Date(query.from) : new Date(Date.now() - 24 * 60 * 60 * 1000)
+  const to = query.to ? new Date(query.to) : new Date()
+  const limit = query.limit ?? 50
+  const result = await deps.db.execute(sql`
+    select * from (
+      select 'game:' || gs.id::text id, 'game_started' type, gs.started_at "occurredAt", gs.user_id "userId", gs.auth_session_id "authSessionId", gs.id "gameSessionId", civ.item_id "itemId", gs.answer_item_version_id "itemVersionId", gs.mode::text mode,
+        'Игра начата' title, concat(gs.mode, ' · ', gs.kind) summary, jsonb_build_object('kind', gs.kind, 'period', gs.period, 'difficulty', gs.difficulty, 'status', gs.status) details, null::text "requestId", 'game_sessions' "sourceTable"
+      from game_sessions gs join content_item_versions civ on civ.id = gs.answer_item_version_id
+      union all
+      select 'attempt:' || ga.id::text, 'attempt', ga."createdAt", gs.user_id, gs.auth_session_id, gs.id, civ.item_id, ga.guessed_item_version_id, gs.mode::text,
+        'Сделана попытка', concat('Попытка ', ga.position, case when ga.is_correct then ' · верно' else ' · неверно' end), jsonb_build_object('position', ga.position, 'isCorrect', ga.is_correct, 'hints', ga.hints_snapshot), null::text, 'game_attempts'
+      from game_attempts ga join game_sessions gs on gs.id = ga.session_id join content_item_versions civ on civ.id = ga.guessed_item_version_id
+      union all
+      select 'hint:' || gh.id::text, 'hint_opened', gh."createdAt", gs.user_id, gs.auth_session_id, gs.id, civ.item_id, gs.answer_item_version_id, gs.mode::text,
+        'Открыта подсказка', concat('Раунд ', gh.checkpoint, ' · ', gh.hint_key), jsonb_build_object('checkpoint', gh.checkpoint, 'hintKey', gh.hint_key), null::text, 'game_hint_choices'
+      from game_hint_choices gh join game_sessions gs on gs.id = gh.session_id join content_item_versions civ on civ.id = gs.answer_item_version_id
+      union all
+      select 'report:' || cr.id::text, 'content_report', cr."createdAt", cr.user_id, gs.auth_session_id, cr.session_id, cr.item_id, gs.answer_item_version_id, cr.mode::text,
+        'Отправлен баг-репорт', concat(cr.reason, coalesce(' · ' || cr.comment, '')), jsonb_build_object('reason', cr.reason, 'status', cr.status), cr.request_id, 'content_reports'
+      from content_reports cr join game_sessions gs on gs.id = cr.session_id
+      union all
+      select 'wallet:' || wl.id::text, 'wallet', wl."createdAt", wl.user_id, null::uuid, null::uuid, null::text, null::uuid, null::text,
+        'Изменился баланс', concat(case when wl.amount >= 0 then '+' else '' end, wl.amount, ' · ', wl.reason), jsonb_build_object('type', wl.type, 'amount', wl.amount, 'balanceAfter', wl.balance_after), null::text, 'wallet_ledger'
+      from wallet_ledger wl
+      union all
+      select 'client:' || ce.id::text, ce.event_name, ce.occurred_at, ce.user_id, ce.auth_session_id, ce.game_session_id, null::text, null::uuid, null::text,
+        'Клиентское событие', concat_ws(' · ', ce.route, ce.error_code), ce.properties, ce.request_id, 'client_events'
+      from client_events ce
+      union all
+      select 'auth:' || ae.id::text, ae.event_name, ae.occurred_at, ae.user_id, ae.auth_session_id, null::uuid, null::text, null::uuid, null::text,
+        'Авторизация', concat(ae.event_name, ' · ', ae.result), jsonb_build_object('browser', ae.browser, 'os', ae.os, 'device', ae.device), ae.request_id, 'auth_events'
+      from auth_events ae
+    ) e where e."occurredAt" between ${from} and ${to} ${userFilter} ${sessionFilter}
+    ${query.type ? sql`and e.type = ${query.type}` : sql``}
+    ${query.requestId ? sql`and e."requestId" = ${query.requestId}` : sql``}
+    ${query.errorsOnly ? sql`and e.type in ('client_error','api_error')` : sql``}
+    ${query.cursor ? sql`and e."occurredAt" < ${new Date(query.cursor)}` : sql``}
+    order by e."occurredAt" desc limit ${limit + 1}
+  `)
+  return rows<Record<string, unknown>>(result)
+}
+
+const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
+  app.get('/api/v1/admin/dashboard', async (request, reply) => {
+    const actor = await admin(request, reply, deps); const since24h = new Date(Date.now() - 86_400_000); const since7d = new Date(Date.now() - 7 * 86_400_000); const stale = new Date(Date.now() - deps.config.workerStaleAfterMs)
+    const [active, counters, recentReports, recentChanges, recentRuns] = await Promise.all([
+      deps.db.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1),
+      deps.db.execute(sql`select
+        (select count(*)::int from content_reports where status = 'open') "newReports",
+        (select count(*)::int from content_quality_issues where status = 'open' and severity = 'critical') "criticalIssues",
+        (select count(*)::int from background_jobs where status in ('queued','running')) "activeJobs",
+        (select count(*)::int from background_jobs where status = 'running' and heartbeat_at < ${stale}) "stuckJobs",
+        (select count(*)::int from pipeline_runs where status in ('review_required','partially_failed')) "pipelineReview",
+        (select count(distinct user_id)::int from game_sessions where started_at >= ${since24h}) "activeUsers24h",
+        (select count(distinct user_id)::int from game_sessions where started_at >= ${since7d}) "activeUsers7d",
+        (select count(*)::int from game_sessions where started_at >= ${since24h}) "sessionsStarted24h",
+        (select count(*)::int from game_sessions where completed_at >= ${since24h}) "sessionsCompleted24h"`),
+      deps.db.select().from(contentReports).where(eq(contentReports.status, 'open')).orderBy(desc(contentReports.createdAt)).limit(6),
+      deps.db.select().from(contentWorkspaceChanges).orderBy(desc(contentWorkspaceChanges.updatedAt)).limit(8),
+      deps.db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.createdAt)).limit(6),
+    ])
+    const revision = active[0]
+    const counts = revision ? await deps.db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, revision.id)) : []
+    return { activeRevision: revision ? { id: revision.id, version: revision.version, createdAt: revision.createdAt, counts } : null, workspace: await workspaceSummary(deps.db, actor), counters: rows<Record<string, number>>(counters)[0], recentReports, recentChanges, recentRuns }
+  })
+  app.get('/api/v1/admin/events', { schema: { querystring: AdminEventsQuerySchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const query = request.query as AdminEventsQuery; const items = await timelineSql(deps, query); const limit = query.limit ?? 50
+    return { items: items.slice(0, limit), nextCursor: items.length > limit ? items[limit - 1].occurredAt : null }
+  })
+  app.get('/api/v1/admin/game-sessions/:id/timeline', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
+    await admin(request, reply, deps); return { items: await timelineSql(deps, { gameSessionId: (request.params as { id: string }).id, limit: 200 } as AdminEventsQuery) }
+  })
+  app.post('/api/v1/admin/events/export', { schema: { body: AdminEventsQuerySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const key = requireIdempotencyKey(request)
+    const inserted = await deps.db.insert(backgroundJobs).values({ type: 'event_export', idempotencyKey: key, createdBy: actor.id, payload: request.body ?? {} }).onConflictDoNothing().returning()
+    return reply.code(202).send({ job: inserted[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
+  })
+  app.get('/api/v1/admin/jobs', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(backgroundJobs).orderBy(desc(backgroundJobs.createdAt)).limit(200) } })
+  app.get('/api/v1/admin/jobs/:id', { schema: { params: AdminIdParamsSchema } }, async (request, reply) => {
+    await admin(request, reply, deps); const job = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.id, (request.params as { id: string }).id)).limit(1)
+    if (!job[0]) throw new ApiError(404, 'JOB_NOT_FOUND', 'Задача не найдена'); return job[0]
+  })
+  app.post('/api/v1/admin/jobs/:id/retry', { schema: { params: AdminIdParamsSchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
+    const original = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.id, id)).limit(1)
+    if (!original[0] || original[0].status !== 'failed') throw new ApiError(409, 'JOB_NOT_RETRYABLE', 'Задачу нельзя повторить')
+    const job = await deps.db.insert(backgroundJobs).values({ type: original[0].type, idempotencyKey: key, createdBy: actor.id, pipelineRunId: original[0].pipelineRunId, payload: { ...asRecord(original[0].payload), retryOf: id } }).onConflictDoNothing().returning()
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'job.retry', entityType: 'background_job', entityId: id, before: original[0], after: job[0] ?? null, requestId: request.id })
+    return reply.code(202).send({ job: job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
+  })
+  app.get('/api/v1/admin/audit-log', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(auditLog).orderBy(desc(auditLog.createdAt)).limit(250) } })
+  app.get('/api/v1/admin/health', async (request, reply) => {
+    await admin(request, reply, deps); let database = true
+    try { await deps.db.execute(sql`select 1`) } catch { database = false }
+    const queued = await deps.db.select({ count: sql<number>`count(*)::int` }).from(backgroundJobs).where(sql`${backgroundJobs.status} in ('queued','running')`)
+    return { status: database ? 'ok' : 'degraded', checks: { database, queueDepth: queued[0]?.count ?? 0, mediaRootConfigured: Boolean(deps.config.mediaRoot), enrichmentRootConfigured: Boolean(deps.config.enrichmentDataRoot) }, app: { version: deps.config.appVersion, gitSha: deps.config.gitSha } }
+  })
+  app.get('/api/v1/admin/promos', async (request, reply) => {
+    await admin(request, reply, deps); return { items: await deps.db.select({ promo: promoCodes, redemptions: sql<number>`(select count(*)::int from promo_redemptions pr where pr.promo_id = ${promoCodes.id})` }).from(promoCodes).orderBy(desc(promoCodes.createdAt)) }
+  })
+  app.get('/api/v1/admin/settings', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(appSettings).orderBy(asc(appSettings.key)) } })
+  app.get('/api/v1/admin/quality-issues', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(contentQualityIssues).orderBy(desc(contentQualityIssues.createdAt)).limit(250) } })
+}
+
+export const registerAdminRoutes = async (app: FastifyInstance, deps: Deps) => {
+  registerContentRoutes(app, deps)
+  registerReportRoutes(app, deps)
+  registerPipelineRoutes(app, deps)
+  registerUserRoutes(app, deps)
+  registerSystemRoutes(app, deps)
+}
+
+export const registerClientEventRoutes = async (app: FastifyInstance, deps: Deps) => {
+  app.post('/api/v1/client-events/batch', { schema: { body: ClientEventsBatchBodySchema }, config: { rateLimit: { max: 60, timeWindow: '1 minute' } }, bodyLimit: 64 * 1024 }, async (request) => {
+    const actor = await getRequestUser(request, deps.auth, deps.db, true, deps.config); const body = request.body as ClientEventsBatchBody
+    const cutoff = Date.now() + 5 * 60_000
+    const values = body.events.map((event) => {
+      const occurredAt = new Date(event.occurredAt)
+      if (occurredAt.getTime() > cutoff || occurredAt.getTime() < Date.now() - 7 * 86_400_000) throw new ApiError(422, 'EVENT_TIME_INVALID', 'Время события вне допустимого диапазона')
+      return { ...event, occurredAt, userId: actor!.id, authSessionId: actor!.authSessionId, properties: event.properties ?? {}, gameSessionId: event.gameSessionId ?? null }
+    })
+    const inserted = await deps.db.insert(clientEvents).values(values).onConflictDoNothing().returning({ id: clientEvents.id })
+    return { accepted: inserted.length, duplicates: values.length - inserted.length }
+  })
+}

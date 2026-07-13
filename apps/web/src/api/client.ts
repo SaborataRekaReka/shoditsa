@@ -70,7 +70,15 @@ export const api = {
     body: JSON.stringify(payload),
     timeoutMs: 20_000,
   }),
-  contentReport: (payload: ContentReportBody) => request<ContentReportResponse>(`${API_BASE}/content-reports`, { method: 'POST', body: JSON.stringify(payload) }),
+  contentReport: (payload: ContentReportBody) => request<ContentReportResponse>(`${API_BASE}/content-reports`, {
+    method: 'POST',
+    body: JSON.stringify({
+      clientEventId: crypto.randomUUID(),
+      appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev'),
+      pageUrl: `${window.location.origin}${window.location.pathname}`,
+      ...payload,
+    }),
+  }),
   reviewQueue: (params = new URLSearchParams({ mode: 'music', pendingOnly: 'true', limit: '30' })) => request<AdminReviewQueueResponse>(`${API_BASE}/admin/content-review?${params}`),
   reviewDecision: (itemId: string, field: string, decision: AdminContentReviewDecision, key: string) => request<AdminReviewDecisionResponse>(`${API_BASE}/admin/content-review/${encodeURIComponent(itemId)}/${encodeURIComponent(field)}`, { method: 'PUT', headers: { 'Idempotency-Key': key }, body: JSON.stringify(decision) }),
   signIn: (email: string, password: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-in/email`, { method: 'POST', body: JSON.stringify({ email, password }) }),

@@ -32,6 +32,7 @@ import { getMoscowDate } from './lib/time.js'
 import { chooseHint, getOwnedSession, publicCard, searchCatalog, startGame, submitAttempt } from './modules/games/service.js'
 import { dashboard, ledgerPage, normalizePromoCode, promoHash, redeemPromo, startFreePlay, unlockPeriod } from './modules/economy/service.js'
 import { importLegacy } from './modules/users/legacy-import.js'
+import { registerAdminRoutes, registerClientEventRoutes } from './modules/admin/routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -88,6 +89,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   if (!config.production) await app.register(swaggerUi, { routePrefix: '/api/docs' })
 
   app.addHook('onRequest', async (request, reply) => { reply.header('X-Request-Id', request.id) })
+  app.addHook('onRequest', async (request, reply) => {
+    if (request.url.startsWith('/api/v1/admin/')) reply.header('Cache-Control', 'no-store')
+  })
   app.addHook('onRequest', async (request) => { requestStarted.set(request, performance.now()) })
   app.addHook('onResponse', async (request, reply) => {
     const route = (request.routeOptions.url ?? request.url.split('?')[0]).replace(/:[^/]+/g, ':id')
@@ -221,7 +225,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
 
   app.post('/api/v1/games/start', { schema: { body: GameStartBodySchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    return { session: await startGame(db, user!.id, request.body as GameStartBody) }
+    return { session: await startGame(db, user!.id, request.body as GameStartBody, user!.authSessionId) }
   })
   app.get('/api/v1/games/:sessionId', { schema: { params: paramsId } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -240,6 +244,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.post('/api/v1/content-reports', { schema: { body: ContentReportBodySchema }, config: { rateLimit: { max: 10, timeWindow: '1 hour' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
     const body = request.body as ContentReportBody
+    if (body.clientEventId) {
+      const replay = await db.select({ id: contentReports.id, reason: contentReports.reason, createdAt: contentReports.createdAt })
+        .from(contentReports).where(and(eq(contentReports.userId, user!.id), eq(contentReports.clientEventId, body.clientEventId))).limit(1)
+      if (replay[0]) return replay[0]
+    }
     const sessions = await db.select({
       id: gameSessions.id,
       mode: gameSessions.mode,
@@ -256,6 +265,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       mode: sessions[0].mode,
       reason: body.reason,
       comment: body.comment?.trim() || null,
+      clientEventId: body.clientEventId ?? null,
+      appVersion: body.appVersion?.trim() || null,
+      pageUrl: body.pageUrl ? (() => { try { const parsed = new URL(body.pageUrl, config.authUrl); return `${parsed.origin}${parsed.pathname}` } catch { return null } })() : null,
+      clientErrorId: body.clientErrorId?.trim() || null,
+      requestId: request.id,
     }).returning({ id: contentReports.id, reason: contentReports.reason, createdAt: contentReports.createdAt })
     return rows[0]
   })
@@ -274,7 +288,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   })
   app.post('/api/v1/economy/free-play/start', { schema: { body: FreePlayBodySchema, headers: idempotencyHeaders } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const body = request.body as FreePlayBody
-    return startFreePlay(db, user!.id, body.mode, body.difficulty ?? null, requireIdempotencyKey(request))
+    return startFreePlay(db, user!.id, body.mode, body.difficulty ?? null, requireIdempotencyKey(request), user!.authSessionId)
   })
   app.post('/api/v1/promos/redeem', { schema: { body: PromoRedeemBodySchema, headers: idempotencyHeaders }, config: { rateLimit: { max: 5, timeWindow: '1 hour' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -295,6 +309,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const user = await getRequestUser(request, auth, db, true, config); const { date } = request.params as { date: string }
     return { items: await db.select({ mode: gameSessions.mode, status: gameSessions.status, id: gameSessions.id }).from(gameSessions).where(and(eq(gameSessions.userId, user!.id), eq(gameSessions.puzzleDate, date))) }
   })
+
+  await registerClientEventRoutes(app, { db, auth, config })
+  await registerAdminRoutes(app, { db, auth, config })
 
   app.get('/api/v1/admin/content/revisions', async (request) => { await requireAdmin(request, auth, db, config); return { items: await db.select().from(contentRevisions).orderBy(desc(contentRevisions.createdAt)) } })
   app.post('/api/v1/admin/content/revisions/:id/activate', { schema: { params: Type.Object({ id: UuidSchema }), headers: idempotencyHeaders } }, async (request) => {

@@ -62,7 +62,7 @@ const dailySalt = async (tx: Transaction) => {
 
 export const startGame = async (db: Database, userId: string, input: {
   kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null;
-}) => db.transaction(async (tx) => {
+}, authSessionId: string | null = null) => db.transaction(async (tx) => {
   const period = ['game', 'music', 'diagnosis'].includes(input.mode) ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
   if (period !== 'all' && ['movie', 'series', 'anime'].includes(input.mode)) {
@@ -92,7 +92,7 @@ export const startGame = async (db: Database, userId: string, input: {
     challenge = inserted[0] ? inserted : await tx.select().from(dailyChallenges).where(eq(dailyChallenges.challengeKey, challengeKey)).limit(1)
   }
   const insertedSession = await tx.insert(gameSessions).values({
-    userId, challengeId: challenge[0].id, kind: input.kind, mode: input.mode, period, difficulty,
+    userId, authSessionId, challengeId: challenge[0].id, kind: input.kind, mode: input.mode, period, difficulty,
     puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: 1,
   }).onConflictDoNothing().returning()
   const session = insertedSession[0] ?? (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.challengeId, challenge[0].id))).limit(1))[0]

@@ -88,6 +88,10 @@ export const ContentReportReasonSchema = Type.Union([
   Type.Literal('disputed_comparison'),
   Type.Literal('title_not_found'),
   Type.Literal('bad_hint'),
+  Type.Literal('bad_image'),
+  Type.Literal('duplicate_card'),
+  Type.Literal('typo_or_translation'),
+  Type.Literal('technical_error'),
   Type.Literal('other'),
 ])
 
@@ -95,6 +99,10 @@ export const ContentReportBodySchema = Type.Object({
   sessionId: UuidSchema,
   reason: ContentReportReasonSchema,
   comment: Type.Optional(Type.String({ maxLength: 500 })),
+  clientEventId: Type.Optional(UuidSchema),
+  appVersion: Type.Optional(Type.String({ minLength: 1, maxLength: 80 })),
+  pageUrl: Type.Optional(Type.String({ minLength: 1, maxLength: 500 })),
+  clientErrorId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
 }, { additionalProperties: false })
 
 export const LegacyImportBodySchema = Type.Object({

@@ -36,6 +36,7 @@
     "db:generate": "drizzle-kit generate --config packages/database/drizzle.config.ts",
     "db:migrate": "tsx packages/database/src/migrate.ts",
     "db:check": "tsx packages/database/src/check.ts",
+    "admin:bootstrap": "tsx scripts/admin/bootstrap.ts",
     "content:import": "tsx scripts/content/import.ts",
     "content:import:production-snapshot": "tsx scripts/content/import.ts --production-snapshot",
     "content:activate": "tsx scripts/content/activate.ts",
