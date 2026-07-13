@@ -1,4 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { rm } from 'node:fs/promises'
+import { join, resolve } from 'node:path'
+import sharp from 'sharp'
 import { eq } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
 import {
@@ -21,6 +24,7 @@ describe('admin API guard, workspace and telemetry', () => {
   let originalAdminRole: string | null = null
   let createdWorkspaceId: string | null = null
   let telemetryEventId: string | null = null
+  let uploadedMediaFile: string | null = null
   let initialWorkspaceIds = new Set<string>()
   const forgedAdminId = crypto.randomUUID()
   const draftItemId = `admin-integration-${crypto.randomUUID()}`
@@ -72,6 +76,7 @@ describe('admin API guard, workspace and telemetry', () => {
       await database.db.delete(auditLog).where(eq(auditLog.entityId, draftItemId))
       if (createdWorkspaceId) await database.db.delete(contentWorkspaces).where(eq(contentWorkspaces.id, createdWorkspaceId))
       await database.db.delete(contentItems).where(eq(contentItems.id, draftItemId))
+      if (uploadedMediaFile) await rm(uploadedMediaFile, { force: true })
       await database.db.delete(user).where(eq(user.id, forgedAdminId))
       if (adminCreated) await database.db.delete(user).where(eq(user.id, adminId))
       else if (adminProfileCreated) await database.db.delete(playerProfiles).where(eq(playerProfiles.userId, adminId))
@@ -118,6 +123,26 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(detail.json().active).toBeNull()
     expect(detail.json().draft.afterPayload.titleRu).toBe('Интеграционная карточка')
     expect(await database.db.select().from(contentItemVersions).where(eq(contentItemVersions.itemId, draftItemId))).toEqual([])
+
+    const image = await sharp({ create: { width: 320, height: 180, channels: 3, background: '#2b060a' } }).png().toBuffer()
+    const uploaded = await app.inject({
+      method: 'POST',
+      url: `/api/v1/admin/content/items/${draftItemId}/media`,
+      payload: { fileName: 'cover.png', contentType: 'image/png', base64: image.toString('base64'), purpose: 'posterUrl' },
+    })
+    expect(uploaded.statusCode, uploaded.body).toBe(201)
+    expect(uploaded.json()).toMatchObject({ width: 320, height: 180, purpose: 'posterUrl' })
+    expect(uploaded.json().url).toMatch(/\/media\/admin\/[0-9a-f]{2}\/[0-9a-f]{64}\.webp$/)
+    uploadedMediaFile = join(resolve(config.mediaRoot), String(uploaded.json().url).split('/media/')[1])
+
+    const tiny = await sharp({ create: { width: 40, height: 40, channels: 3, background: '#000' } }).png().toBuffer()
+    const rejectedMedia = await app.inject({
+      method: 'POST',
+      url: `/api/v1/admin/content/items/${draftItemId}/media`,
+      payload: { fileName: 'tiny.png', contentType: 'image/png', base64: tiny.toString('base64'), purpose: 'posterUrl' },
+    })
+    expect(rejectedMedia.statusCode).toBe(422)
+    expect(rejectedMedia.json().error.code).toBe('MEDIA_RESOLUTION_TOO_SMALL')
 
     const conflict = await app.inject({
       method: 'PUT',
