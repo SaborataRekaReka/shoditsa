@@ -58,6 +58,7 @@ jobs:
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
           ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' bash -s" <<'REMOTE'
           set -euo pipefail
+          trap 'status=$?; echo "remote deploy failed at line ${LINENO}: ${BASH_COMMAND} (exit ${status})" >&2' ERR
           STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
           RELEASE="${DEPLOY_ROOT}/releases/${GITHUB_SHA}"
           rm -rf "$STAGE"
@@ -78,24 +79,93 @@ jobs:
           ln -sfn "$RELEASE" "${DEPLOY_ROOT}/current.next"
           mv -Tf "${DEPLOY_ROOT}/current.next" "${DEPLOY_ROOT}/current"
 
-          # The previous deployment layout served this directory directly.
-          # Migrate the installed Nginx vhost to the immutable release symlink
-          # without replacing the vhost (and its TLS certificate settings).
+          # The previous deployment layout served this directory directly. The
+          # VPS can run Nginx either on the host or as a Docker Compose service.
+          # Keep the installed TLS/vhost configuration and only change the
+          # filesystem source behind its existing /var/www/shoditsa root.
           LEGACY_ROOT="/opt/repeto/deploy/shoditsa"
           CURRENT_ROOT="${DEPLOY_ROOT}/current/web"
-          if ! nginx -T 2>&1 | grep -Eq "root[[:space:]]+${CURRENT_ROOT//\//\\/}/?;"; then
-            mapfile -t NGINX_CONFIGS < <(grep -RIlE "root[[:space:]]+${LEGACY_ROOT//\//\\/}/?;" /etc/nginx 2>/dev/null || true)
-            test "${#NGINX_CONFIGS[@]}" -eq 1
-            NGINX_CONFIG="${NGINX_CONFIGS[0]}"
-            NGINX_BACKUP="${NGINX_CONFIG}.pre-shoditsa-release-root"
-            cp -a "$NGINX_CONFIG" "$NGINX_BACKUP"
-            sed -Ei "s#root[[:space:]]+${LEGACY_ROOT}/?;#root ${CURRENT_ROOT};#" "$NGINX_CONFIG"
-            if ! nginx -t; then
-              cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
-              nginx -t
+          if command -v nginx >/dev/null 2>&1; then
+            if ! nginx -T 2>&1 | grep -Eq "root[[:space:]]+${CURRENT_ROOT//\//\\/}/?;"; then
+              mapfile -t NGINX_CONFIGS < <(grep -RIlE "root[[:space:]]+${LEGACY_ROOT//\//\\/}/?;" /etc/nginx 2>/dev/null || true)
+              if [ "${#NGINX_CONFIGS[@]}" -ne 1 ]; then
+                echo "Expected exactly one host Nginx config with legacy Shoditsa root, found ${#NGINX_CONFIGS[@]}" >&2
+                exit 1
+              fi
+              NGINX_CONFIG="${NGINX_CONFIGS[0]}"
+              NGINX_BACKUP="${NGINX_CONFIG}.pre-shoditsa-release-root"
+              cp -a "$NGINX_CONFIG" "$NGINX_BACKUP"
+              sed -Ei "s#root[[:space:]]+${LEGACY_ROOT}/?;#root ${CURRENT_ROOT};#" "$NGINX_CONFIG"
+              if ! nginx -t; then
+                cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+                nginx -t
+                exit 1
+              fi
+              systemctl reload nginx
+            fi
+          elif command -v docker >/dev/null 2>&1; then
+            mapfile -t NGINX_CONTAINERS < <(
+              while IFS= read -r container; do
+                mount_source="$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/var/www/shoditsa"}}{{.Source}}{{end}}{{end}}' "$container")"
+                [ -n "$mount_source" ] && printf '%s\n' "$container"
+              done < <(docker ps -q)
+            )
+            if [ "${#NGINX_CONTAINERS[@]}" -ne 1 ]; then
+              echo "Expected exactly one running container with /var/www/shoditsa, found ${#NGINX_CONTAINERS[@]}" >&2
               exit 1
             fi
-            systemctl reload nginx
+            NGINX_CONTAINER="${NGINX_CONTAINERS[0]}"
+            COMPOSE_FILES="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.config_files"}}' "$NGINX_CONTAINER")"
+            COMPOSE_DIR="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' "$NGINX_CONTAINER")"
+            COMPOSE_PROJECT="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "$NGINX_CONTAINER")"
+            COMPOSE_SERVICE="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.service"}}' "$NGINX_CONTAINER")"
+            if [ -z "$COMPOSE_FILES" ] || [[ "$COMPOSE_FILES" == *,* ]] || [ ! -f "$COMPOSE_FILES" ] || [ -z "$COMPOSE_DIR" ] || [ -z "$COMPOSE_PROJECT" ] || [ -z "$COMPOSE_SERVICE" ]; then
+              echo "Docker Nginx is missing a supported single-file Compose configuration" >&2
+              exit 1
+            fi
+
+            COMPOSE_BACKUP="${COMPOSE_FILES}.pre-shoditsa-release-root"
+            COMPOSE_CHANGED=0
+            if ! grep -Fq "${CURRENT_ROOT}:/var/www/shoditsa:ro" "$COMPOSE_FILES"; then
+              LEGACY_MOUNTS="$(grep -Ec '^[[:space:]]*-[[:space:]]+[^:]+:/var/www/shoditsa:ro[[:space:]]*$' "$COMPOSE_FILES" || true)"
+              if [ "$LEGACY_MOUNTS" -ne 1 ]; then
+                echo "Expected exactly one Compose bind mount for /var/www/shoditsa, found ${LEGACY_MOUNTS}" >&2
+                exit 1
+              fi
+              cp -a "$COMPOSE_FILES" "$COMPOSE_BACKUP"
+              sed -Ei "s#^([[:space:]]*-[[:space:]]+)[^:]+:/var/www/shoditsa:ro[[:space:]]*\$#\1${CURRENT_ROOT}:/var/www/shoditsa:ro#" "$COMPOSE_FILES"
+              grep -Fq "${CURRENT_ROOT}:/var/www/shoditsa:ro" "$COMPOSE_FILES"
+              COMPOSE_CHANGED=1
+            fi
+
+            compose() {
+              docker compose --project-directory "$COMPOSE_DIR" --project-name "$COMPOSE_PROJECT" -f "$COMPOSE_FILES" "$@"
+            }
+            rollback_compose() {
+              if [ "$COMPOSE_CHANGED" -eq 1 ] && [ -f "$COMPOSE_BACKUP" ]; then
+                cp -a "$COMPOSE_BACKUP" "$COMPOSE_FILES"
+                compose config --quiet
+                compose up -d --no-deps --force-recreate "$COMPOSE_SERVICE" || true
+              fi
+            }
+            compose config --quiet
+            if ! compose up -d --no-deps --force-recreate "$COMPOSE_SERVICE"; then
+              rollback_compose
+              exit 1
+            fi
+            NGINX_CONTAINER="$(compose ps -q "$COMPOSE_SERVICE")"
+            if [ -z "$NGINX_CONTAINER" ] || ! docker exec "$NGINX_CONTAINER" nginx -t; then
+              rollback_compose
+              exit 1
+            fi
+            if ! docker exec "$NGINX_CONTAINER" grep -Fq "\"commitSha\": \"${GITHUB_SHA}\"" /var/www/shoditsa/build-manifest.json; then
+              echo "Docker Nginx does not see release ${GITHUB_SHA}" >&2
+              rollback_compose
+              exit 1
+            fi
+          else
+            echo "Neither host Nginx nor Docker is available to activate the web release" >&2
+            exit 1
           fi
 
           test "$(readlink -f "$CURRENT_ROOT")" = "$(readlink -f "$RELEASE/web")"
