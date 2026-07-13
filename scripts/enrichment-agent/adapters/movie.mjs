@@ -3,7 +3,7 @@ import path from 'node:path'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { auditMovieRecord, cleanText, normalize, sanitizeMovieRecord } from '../../shared/movie-hint-sanitize.mjs'
 import { openAiFetch } from '../../shared/openai-fetch.mjs'
-import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError } from '../../shared/openai-web-search.mjs'
+import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError, requestOpenAiWithRetry } from '../../shared/openai-web-search.mjs'
 
 const API_BASE = 'https://kinopoiskapiunofficial.tech'
 const MOVIE_TYPES = new Set(['FILM', 'VIDEO', 'TV_MOVIE'])
@@ -180,9 +180,10 @@ const callAiReviewer = async ({ movie, evidence, options }) => {
       if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
       return payload
     }
-    const payload = await requestResponse().catch(async (error) => {
+    const requestWithRetry = (cacheOnly = false) => requestOpenAiWithRetry(() => requestResponse(cacheOnly))
+    const payload = await requestWithRetry().catch(async (error) => {
       if (!options.aiWebSearch || !isOpenAiWebSearchRegionalError(error)) throw error
-      return requestResponse(true)
+      return requestWithRetry(true)
     })
     const responseText = extractResponseText(payload)
     if (!String(responseText).trim()) {

@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { isNonArtistType, namesReferToSameArtist } from '../../music/artist-identity.mjs'
 import { openAiFetch } from '../../shared/openai-fetch.mjs'
-import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError } from '../../shared/openai-web-search.mjs'
+import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError, requestOpenAiWithRetry } from '../../shared/openai-web-search.mjs'
 
 const normalizeKeyPart = (value) => String(value ?? '')
   .normalize('NFKD')
@@ -202,9 +202,10 @@ const callAiReviewer = async ({ record, options }) => {
       if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
       return payload
     }
-    const payload = await requestResponse().catch(async (error) => {
+    const requestWithRetry = (cacheOnly = false) => requestOpenAiWithRetry(() => requestResponse(cacheOnly))
+    const payload = await requestWithRetry().catch(async (error) => {
       if (!options.aiWebSearch || !isOpenAiWebSearchRegionalError(error)) throw error
-      return requestResponse(true)
+      return requestWithRetry(true)
     })
     const responseText = extractResponseText(payload)
     if (!String(responseText).trim()) {
@@ -505,9 +506,10 @@ export const musicAdapter = {
         if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
         return payload
       }
-      const payload = await requestResponse().catch(async (error) => {
+      const requestWithRetry = (cacheOnly = false) => requestOpenAiWithRetry(() => requestResponse(cacheOnly))
+      const payload = await requestWithRetry().catch(async (error) => {
         if (!isOpenAiWebSearchRegionalError(error)) throw error
-        return requestResponse(true)
+        return requestWithRetry(true)
       })
       const parsed = parseJsonResponse(extractResponseText(payload))
       const discoveredAt = new Date().toISOString()

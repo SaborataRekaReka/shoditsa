@@ -3,7 +3,7 @@ import path from 'node:path'
 import { readJson, writeJsonAtomic } from '../core.mjs'
 import { buildPlotHint, cleanText, titleTokens, titleVariants } from '../../shared/plot-hint.mjs'
 import { openAiFetch } from '../../shared/openai-fetch.mjs'
-import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError } from '../../shared/openai-web-search.mjs'
+import { createOpenAiWebSearchTool, isOpenAiWebSearchRegionalError, requestOpenAiWithRetry } from '../../shared/openai-web-search.mjs'
 
 const API_BASE = 'https://shikimori.one'
 const ALLOWED_KINDS = new Set(['tv', 'movie', 'ova', 'ona', 'special', 'tv_special'])
@@ -195,9 +195,10 @@ const callAiReviewer = async ({ anime, options }) => {
       if (!response.ok) throw new Error(payload?.error?.message || `OpenAI HTTP ${response.status}`)
       return payload
     }
-    const payload = await requestResponse().catch(async (error) => {
+    const requestWithRetry = (cacheOnly = false) => requestOpenAiWithRetry(() => requestResponse(cacheOnly))
+    const payload = await requestWithRetry().catch(async (error) => {
       if (!options.aiWebSearch || !isOpenAiWebSearchRegionalError(error)) throw error
-      return requestResponse(true)
+      return requestWithRetry(true)
     })
     const responseText = extractResponseText(payload)
     if (!String(responseText).trim()) {
