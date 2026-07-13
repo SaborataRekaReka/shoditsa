@@ -75,7 +75,6 @@ npm test
 npm run test:integration
 npm run build
 npm run build:api
-npm run yandex:bundle
 ```
 
-Yandex archive проверяется отдельно: в нём должны быть SDK и автономные data assets, но не admin chunk; обычная server-сборка, наоборот, не должна содержать SDK или `/data`.
+Yandex archive собирается отдельно только вручную на локальной машине командой `npm run yandex:bundle`: в нём должны быть SDK и автономные data assets, но не admin chunk. Архивы gitignored и не создаются CI/release workflow. Обычная server-сборка, наоборот, не должна содержать SDK или `/data`.

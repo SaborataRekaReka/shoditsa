@@ -34,12 +34,13 @@ npm run test:integration
 npm run test:e2e
 npm run build
 npm run build:api
-npm run yandex:bundle
 npm run data:validate
 docker build -f infra/docker/Dockerfile.api .
 ```
 
 Integration/E2E требуют запущенного PostgreSQL с применённой migration и active content revision. `test:e2e` поднимает отдельные API/Web процессы на 3002/5174.
+
+Yandex Games bundle собирается только вручную и локально: `npm run yandex:bundle`. Архивы `dist.zip` и `dist-yandex.zip` находятся в `.gitignore`; CI, release workflow и production deploy их не создают и не загружают.
 
 ## Основные команды данных
 

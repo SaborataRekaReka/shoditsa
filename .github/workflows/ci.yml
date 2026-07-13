@@ -41,5 +41,4 @@ jobs:
       - run: npm run test:integration
       - run: npm run build
       - run: npm run build:api
-      - run: npm run yandex:bundle
       - run: docker build -f infra/docker/Dockerfile.api .
