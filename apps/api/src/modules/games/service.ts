@@ -26,7 +26,7 @@ const legacyMediaUrl = (value: string | null | undefined, mode: TitleMode, itemI
 
 export const publicCard = (item: TitleItem) => ({
   id: item.id, mode: item.mode, titleRu: item.titleRu, titleOriginal: item.titleOriginal ?? '',
-  year: item.year ?? null, posterUrl: legacyMediaUrl(item.posterUrl, item.mode, item.id),
+  year: item.year ?? null, genres: item.genres ?? [], posterUrl: legacyMediaUrl(item.posterUrl, item.mode, item.id),
 })
 
 const progressiveMusicHints = (answer: TitleItem, attempts: number) => {
