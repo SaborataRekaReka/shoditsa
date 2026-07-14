@@ -17,7 +17,7 @@ import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
-import { assertNormalizationField, normalizationStartIndex, normalizeProposedValue, requestNormalization } from './modules/admin/normalization-pipeline.js'
+import { assertNormalizationField, mergeNormalizationUsage, normalizationStartIndex, normalizeProposedValue, requestNormalization } from './modules/admin/normalization-pipeline.js'
 import { ApiError } from './lib/errors.js'
 
 type Json = Record<string, unknown>
@@ -626,7 +626,10 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   if (!job.pipelineRunId) throw new Error('normalization_pipeline job has no pipelineRunId')
   const run = (await db.select().from(pipelineRuns).where(eq(pipelineRuns.id, job.pipelineRunId)).limit(1))[0]
   if (!run) throw new Error('Pipeline run not found')
-  if (run.cancelRequestedAt) {
+  const jobPayload = record(job.payload)
+  const regenerateItemId = text(jobPayload.regenerateItemId)
+  const isItemRegeneration = Boolean(regenerateItemId)
+  if (run.cancelRequestedAt && !isItemRegeneration) {
     await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date() }).where(eq(pipelineRuns.id, run.id))
     return { cancelled: true }
   }
@@ -634,19 +637,26 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   const mode = text(input.mode) as ContentMode; const field = text(input.field); const prompt = text(input.prompt)
   if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].includes(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
   assertNormalizationField(mode, field)
-  const itemIds = strings(input.itemIds)
-  if (!itemIds.length) throw new ApiError(422, 'NORMALIZATION_ITEMS_EMPTY', 'В запуске нет карточек')
-  const offset = normalizationStartIndex(itemIds, record(job.payload).offset)
+  const runItemIds = strings(input.itemIds)
+  if (!runItemIds.length) throw new ApiError(422, 'NORMALIZATION_ITEMS_EMPTY', 'В запуске нет карточек')
+  const requestedItemIds = strings(jobPayload.itemIds)
+  const itemIds = isItemRegeneration ? [...new Set(requestedItemIds)].filter((itemId) => runItemIds.includes(itemId)) : runItemIds
+  if (isItemRegeneration && itemIds.length !== 1) throw new ApiError(422, 'NORMALIZATION_REGENERATE_ITEM_INVALID', 'Для повторной генерации нужна ровно одна карточка исходного запуска')
+  const offset = isItemRegeneration ? 0 : normalizationStartIndex(itemIds, jobPayload.offset)
   const environment = await loadIntegrationEnvironment(db, config)
   if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'OpenAI API key не настроен')
-  await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }).where(eq(pipelineRuns.id, run.id))
+  await db.update(pipelineRuns).set(isItemRegeneration
+    ? { heartbeatAt: new Date(), logExcerpt: `${itemIds[0]}: повторная генерация` }
+    : { status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }
+  ).where(eq(pipelineRuns.id, run.id))
+  if (isItemRegeneration) await db.update(pipelineRunItems).set({ status: 'running', updatedAt: new Date() }).where(and(eq(pipelineRunItems.id, regenerateItemId), eq(pipelineRunItems.runId, run.id)))
   const activeCards = await db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, payload: contentItemVersions.payload })
     .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
     .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, mode), inArray(contentItemVersions.itemId, itemIds)))
   const cardById = new Map(activeCards.map((card) => [card.itemId, card]))
   for (let index = offset; index < itemIds.length; index += 1) {
-    const cancellation = await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, run.id)).limit(1)
-    if (cancellation[0]?.cancelRequestedAt) {
+    const cancellation = isItemRegeneration ? [] : await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, run.id)).limit(1)
+    if (!isItemRegeneration && cancellation[0]?.cancelRequestedAt) {
       await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
       return { cancelled: true, processed: index }
     }
@@ -667,16 +677,21 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
       if (result.confidence < 0.75) warnings.push(`Низкая уверенность: ${Math.round(result.confidence * 100)}%`)
       if (settings.webSearch !== false && !result.sourceUrls.length) warnings.push('Модель не вернула ссылки на источники')
       if (field === 'activityStartYear' && Object.hasOwn(before, 'year')) proposed.year = null
-      const usage = result.usage ? { responses: [result.usage], inputTokens: result.usage.inputTokens, cachedInputTokens: result.usage.cachedInputTokens, outputTokens: result.usage.outputTokens, webSearchCalls: result.usage.webSearchCalls, costUsd: result.usage.costUsd } : { responses: [] }
+      const existing = await db.select({ confidence: pipelineRunItems.confidenceJson }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, run.id), eq(pipelineRunItems.entityKey, itemId))).limit(1)
+      const usage = mergeNormalizationUsage(existing[0]?.confidence, result.usage)
       await db.insert(pipelineRunItems).values({
         runId: run.id, entityKey: itemId, cardId: itemId, inputItemVersionId: card.versionId, status: 'review_required', beforeJson: before, proposedJson: proposed,
         warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage },
         rawResultRef: result.responseId || null, idempotencyKey: `${run.id}:${itemId}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { status: 'review_required', beforeJson: before, proposedJson: proposed, warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage }, rawResultRef: result.responseId || null, errorCode: null, safeErrorMessage: null, updatedAt: new Date() } })
     } catch (error) { await saveProcessingFailure(run.id, itemId, error) }
+    const current = index - offset + 1
     await Promise.all([
-      db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { current: index + 1, total: itemIds.length, percent: Math.round((index + 1) / itemIds.length * 100), message: `${itemId}: ${index + 1}/${itemIds.length}` } }).where(eq(backgroundJobs.id, job.id)),
-      db.update(pipelineRuns).set({ heartbeatAt: new Date(), itemsProcessed: index + 1, logExcerpt: `${itemId}: ${index + 1}/${itemIds.length}` }).where(eq(pipelineRuns.id, run.id)),
+      db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { current, total: itemIds.length - offset, percent: Math.round(current / (itemIds.length - offset) * 100), message: `${itemId}: ${current}/${itemIds.length - offset}` } }).where(eq(backgroundJobs.id, job.id)),
+      db.update(pipelineRuns).set(isItemRegeneration
+        ? { heartbeatAt: new Date(), logExcerpt: `${itemId}: повторная генерация завершена` }
+        : { heartbeatAt: new Date(), itemsProcessed: index + 1, logExcerpt: `${itemId}: ${index + 1}/${itemIds.length}` }
+      ).where(eq(pipelineRuns.id, run.id)),
     ])
   }
   const metrics = await loadRunMetrics(run.id)
@@ -687,7 +702,11 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
     outputTokens: responses.reduce((sum, entry) => sum + Number(entry.outputTokens ?? 0), 0), webSearchCalls: responses.reduce((sum, entry) => sum + Number(entry.webSearchCalls ?? 0), 0),
     responses: responses.length, pricingVersion: 'openai-2026-07-13',
   }
-  await db.update(pipelineRuns).set({ ...metrics, actualCost: String(metrics.actualCost.toFixed(8)), usageJson, status: metrics.itemsFailed ? 'partially_failed' : 'review_required', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+  await db.update(pipelineRuns).set({
+    ...metrics, actualCost: String(metrics.actualCost.toFixed(8)), usageJson,
+    status: isItemRegeneration ? run.status : metrics.itemsFailed ? 'partially_failed' : 'review_required',
+    finishedAt: isItemRegeneration ? run.finishedAt : new Date(), heartbeatAt: new Date(),
+  }).where(eq(pipelineRuns.id, run.id))
   return { ...metrics, usage: usageJson }
 }
 

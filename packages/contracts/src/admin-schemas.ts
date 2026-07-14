@@ -13,10 +13,18 @@ export const AdminContentItemsQuerySchema = Type.Object({
   hasHint: Type.Optional(Type.Boolean()),
   source: Type.Optional(Type.Union([Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('import'), Type.Literal('rollback'), Type.Literal('report_fix')])),
   pipelineKey: Type.Optional(Type.Union([Type.Literal('music'), Type.Literal('movie'), Type.Literal('anime'), Type.Literal('normalization')])),
-  sort: Type.Optional(Type.Union([Type.Literal('title'), Type.Literal('id'), Type.Literal('createdAt'), Type.Literal('updatedAt'), Type.Literal('reports'), Type.Literal('completeness')])),
+  includeTagIds: Type.Optional(Type.String({ maxLength: 1200 })),
+  excludeTagIds: Type.Optional(Type.String({ maxLength: 1200 })),
+  tagMatch: Type.Optional(Type.Union([Type.Literal('all'), Type.Literal('any')])),
+  sort: Type.Optional(Type.Union([Type.Literal('title'), Type.Literal('id'), Type.Literal('createdAt'), Type.Literal('updatedAt'), Type.Literal('reports'), Type.Literal('completeness'), Type.Literal('tag')])),
   order: Type.Optional(Type.Union([Type.Literal('asc'), Type.Literal('desc')])),
   cursor: Type.Optional(Type.String({ maxLength: 512 })),
   limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 40 })),
+}, { additionalProperties: false })
+
+export const AdminTagCreateBodySchema = Type.Object({
+  name: Type.String({ minLength: 1, maxLength: 80 }),
+  color: Type.Optional(Type.String({ pattern: '^#[0-9a-fA-F]{6}$' })),
 }, { additionalProperties: false })
 
 export const AdminWorkspaceItemBodySchema = Type.Object({
@@ -237,6 +245,9 @@ const NormalizationPipelineRequestProperties = {
   scope: Type.Union([Type.Literal('all'), Type.Literal('selected')]),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 500, uniqueItems: true })),
   query: Type.Optional(Type.String({ maxLength: 160 })),
+  includeTagIds: Type.Optional(Type.Array(UuidSchema, { maxItems: 30, uniqueItems: true })),
+  excludeTagIds: Type.Optional(Type.Array(UuidSchema, { maxItems: 30, uniqueItems: true })),
+  tagMatch: Type.Optional(Type.Union([Type.Literal('all'), Type.Literal('any')])),
   maxItems: Type.Integer({ minimum: 1, maximum: 500, default: 100 }),
   model: Type.Optional(Type.Literal('gpt-5-mini')),
   webSearch: Type.Optional(Type.Boolean()),
@@ -330,6 +341,7 @@ export const ClientEventSchema = Type.Object({
 export const ClientEventsBatchBodySchema = Type.Object({ events: Type.Array(ClientEventSchema, { minItems: 1, maxItems: 50 }) }, { additionalProperties: false })
 
 export type AdminContentItemsQuery = Static<typeof AdminContentItemsQuerySchema>
+export type AdminTagCreateBody = Static<typeof AdminTagCreateBodySchema>
 export type AdminWorkspaceItemBody = Static<typeof AdminWorkspaceItemBodySchema>
 export type AdminWorkspaceBulkBody = Static<typeof AdminWorkspaceBulkBodySchema>
 export type ContentExchangeSelectionBody = Static<typeof ContentExchangeSelectionBodySchema>

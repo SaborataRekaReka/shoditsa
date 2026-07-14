@@ -8,13 +8,20 @@ import {
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
-import type { AdminContentListItem, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
+import type { AdminContentListItem, AdminContentTag, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
 import './admin.css'
 
 type Section = 'dashboard' | 'content' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
+
+function TagPicker({ tags, value, onChange, label }: { tags: AdminContentTag[]; value: string[]; onChange: (ids: string[]) => void; label: string }) {
+  const selected = new Set(value)
+  return <div className="admin-tag-picker"><span>{label}</span><select value="" onChange={(event) => { if (event.target.value) onChange([...value, event.target.value]) }}><option value="">Добавить тег…</option>{tags.filter((tag) => !selected.has(tag.id)).map((tag) => <option key={tag.id} value={tag.id}>{tag.name} ({tag.itemsCount ?? 0})</option>)}</select><div>{value.map((id) => { const tag = tags.find((entry) => entry.id === id); return tag ? <button key={id} type="button" style={{ borderColor: tag.color }} onClick={() => onChange(value.filter((entry) => entry !== id))}>{tag.name}<X /></button> : null })}</div></div>
+}
+
+const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admin-tags">{tags.map((tag) => <span key={tag.id} style={{ borderColor: tag.color }}>{tag.name}</span>)}</span>
 
 const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
@@ -184,6 +191,12 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
   const [tab, setTab] = useState<'data' | 'preview' | 'reports' | 'history' | 'technical'>('data')
   const [payload, setPayload] = useState<Record<string, unknown>>({}); const [original, setOriginal] = useState(''); const [advanced, setAdvanced] = useState(false); const [restored, setRestored] = useState(false)
   const historyQuery = useQuery({ queryKey: ['admin', 'history', itemId], queryFn: () => adminApi.contentHistory(itemId), enabled: tab === 'history' })
+  const allTags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags })
+  const changeTag = useMutation({
+    mutationFn: ({ tagId, operation }: { tagId: string; operation: 'add_tag' | 'remove_tag' }) => adminApi.bulkContent({ itemIds: [itemId], operation, value: tagId, reason: operation === 'add_tag' ? 'Тег назначен карточке' : 'Тег снят с карточки' }),
+    onSuccess: () => { void client.invalidateQueries({ queryKey: ['admin', 'item', itemId] }); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }) },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const storageKey = `shoditsa:admin:draft:${itemId}`
   useEffect(() => {
     if (!detail.data) return
@@ -215,6 +228,7 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
     {restored && <div className="admin-recovered"><FileClock />Восстановлен несохранённый текст из этого браузера.</div>}
     <nav className="admin-tabs">{([['data', 'Данные'], ['preview', 'Как в игре'], ['reports', `Баг-репорты ${data.reports.length || ''}`], ['history', 'История'], ['technical', 'Техническое']] as const).map(([key, label]) => <button key={key} className={tab === key ? 'is-active' : ''} onClick={() => setTab(key)}>{label}</button>)}</nav>
     <div className="admin-drawer__body">
+      <section className="admin-form-section admin-card-tags"><header><h3>Теги карточки</h3><span>{data.tags.length}</span></header><TagPicker tags={allTags.data?.items ?? []} value={data.tags.map((tag) => tag.id)} onChange={(ids) => { const before = new Set(data.tags.map((tag) => tag.id)); const added = ids.find((id) => !before.has(id)); const removed = data.tags.find((tag) => !ids.includes(tag.id))?.id; if (added) changeTag.mutate({ tagId: added, operation: 'add_tag' }); else if (removed) changeTag.mutate({ tagId: removed, operation: 'remove_tag' }) }} label="Операционные теги" /><button className="admin-btn admin-btn--secondary" onClick={async () => { const name = prompt('Название нового тега'); if (!name?.trim()) return; try { const tag = await adminApi.createTag(name.trim()); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); changeTag.mutate({ tagId: tag.id, operation: 'add_tag' }) } catch (error) { notify('error', errorText(error)) } }}><Plus />Создать и назначить</button></section>
       {tab === 'data' && <>{data.schema.groups.map((group) => <section className="admin-form-section" key={group.key}><header><h3>{group.title}</h3><span>{group.fields.filter((field) => payload[field] != null && payload[field] !== '').length}/{group.fields.length}</span></header><div className="admin-form-grid">{group.fields.map((field) => {
         if (!['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'].includes(field)) return <FieldEditor key={field} name={field} value={payload[field]} disabled={field === 'id' || field === 'mode'} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />
         return <div className="admin-media-field" key={field}><FieldEditor name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} /><MediaUpload itemId={itemId} field={field} notify={notify} onUploaded={(url) => setPayload((current) => field === 'screenshots' ? { ...current, screenshots: [...array(current.screenshots), url] } : { ...current, [field]: url })} /></div>
@@ -331,10 +345,10 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const client = useQueryClient()
   const params = new URLSearchParams(location.search)
 
-  type ContentSortKey = 'titleRu' | 'id' | 'mode' | 'status' | 'source' | 'pipelineKey' | 'fieldsFilled' | 'hasHint' | 'completeness' | 'reportsCount' | 'issuesCount' | 'updatedAt'
-  type ContentFieldFilter = 'all' | 'title' | 'id' | 'mode' | 'status' | 'source' | 'pipeline' | 'fields' | 'hint' | 'reports' | 'issues' | 'completeness' | 'missing'
-  const sortableKeys: ContentSortKey[] = ['titleRu', 'id', 'mode', 'status', 'source', 'pipelineKey', 'fieldsFilled', 'hasHint', 'completeness', 'reportsCount', 'issuesCount', 'updatedAt']
-  const validFieldFilters: ContentFieldFilter[] = ['all', 'title', 'id', 'mode', 'status', 'source', 'pipeline', 'fields', 'hint', 'reports', 'issues', 'completeness', 'missing']
+  type ContentSortKey = 'titleRu' | 'id' | 'mode' | 'status' | 'source' | 'pipelineKey' | 'tags' | 'fieldsFilled' | 'hasHint' | 'completeness' | 'reportsCount' | 'issuesCount' | 'updatedAt'
+  type ContentFieldFilter = 'all' | 'title' | 'id' | 'mode' | 'status' | 'source' | 'pipeline' | 'tags' | 'fields' | 'hint' | 'reports' | 'issues' | 'completeness' | 'missing'
+  const sortableKeys: ContentSortKey[] = ['titleRu', 'id', 'mode', 'status', 'source', 'pipelineKey', 'tags', 'fieldsFilled', 'hasHint', 'completeness', 'reportsCount', 'issuesCount', 'updatedAt']
+  const validFieldFilters: ContentFieldFilter[] = ['all', 'title', 'id', 'mode', 'status', 'source', 'pipeline', 'tags', 'fields', 'hint', 'reports', 'issues', 'completeness', 'missing']
   const parseTriState = (value: string | null): 'all' | 'yes' | 'no' => value === 'yes' || value === 'no' ? value : 'all'
   const parseFieldFilter = (value: string | null): ContentFieldFilter => value && validFieldFilters.includes(value as ContentFieldFilter) ? value as ContentFieldFilter : 'all'
   const parseSortKey = (value: string | null): ContentSortKey => value && sortableKeys.includes(value as ContentSortKey) ? value as ContentSortKey : 'updatedAt'
@@ -361,6 +375,10 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const [hintFilter, setHintFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasHint')))
   const [reportsFilter, setReportsFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasReports')))
   const [issuesFilter, setIssuesFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasIssues')))
+  const [includeTagIds, setIncludeTagIds] = useState<string[]>(params.get('includeTags')?.split(',').filter(Boolean) ?? [])
+  const [excludeTagIds, setExcludeTagIds] = useState<string[]>(params.get('excludeTags')?.split(',').filter(Boolean) ?? [])
+  const [tagMatch, setTagMatch] = useState<'all' | 'any'>(params.get('tagMatch') === 'any' ? 'any' : 'all')
+  const [bulkTagId, setBulkTagId] = useState('')
   const [fieldFilter, setFieldFilter] = useState<ContentFieldFilter>(parseFieldFilter(params.get('field')))
   const [fieldFilterValue, setFieldFilterValue] = useState(params.get('fieldQ') ?? '')
   const [sortBy, setSortBy] = useState<ContentSortKey>(parseSortKey(params.get('sortBy')))
@@ -372,6 +390,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const [adding, setAdding] = useState(false)
   const [exchange, setExchange] = useState<'export' | 'import' | null>(null)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const tags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags })
 
   useEffect(() => {
     const next = new URLSearchParams()
@@ -383,15 +402,18 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     if (hintFilter !== 'all') next.set('hasHint', hintFilter)
     if (reportsFilter !== 'all') next.set('hasReports', reportsFilter)
     if (issuesFilter !== 'all') next.set('hasIssues', issuesFilter)
+    if (includeTagIds.length) next.set('includeTags', includeTagIds.join(','))
+    if (excludeTagIds.length) next.set('excludeTags', excludeTagIds.join(','))
+    if (tagMatch !== 'all') next.set('tagMatch', tagMatch)
     if (fieldFilter !== 'all') next.set('field', fieldFilter)
     if (fieldFilterValue.trim()) next.set('fieldQ', fieldFilterValue.trim())
     if (sortBy !== 'updatedAt') next.set('sortBy', sortBy)
     if (sortOrder !== 'desc') next.set('sortOrder', sortOrder)
     history.replaceState({}, '', `${location.pathname}${next.size ? `?${next}` : ''}`)
-  }, [fieldFilter, fieldFilterValue, hintFilter, issuesFilter, mode, pipelineFilter, publication, q, reportsFilter, sortBy, sortOrder, source])
+  }, [excludeTagIds, fieldFilter, fieldFilterValue, hintFilter, includeTagIds, issuesFilter, mode, pipelineFilter, publication, q, reportsFilter, sortBy, sortOrder, source, tagMatch])
 
   const items = useInfiniteQuery({
-    queryKey: ['admin', 'content', { q, mode, publication, pageSize, source, pipelineFilter, hintFilter, reportsFilter, issuesFilter }],
+    queryKey: ['admin', 'content', { q, mode, publication, pageSize, source, pipelineFilter, hintFilter, reportsFilter, issuesFilter, includeTagIds, excludeTagIds, tagMatch, sortBy, sortOrder }],
     initialPageParam: null as string | null,
     queryFn: ({ pageParam }) => adminApi.contentItems({
       q,
@@ -402,6 +424,11 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       hasHint: hintFilter === 'yes' ? true : hintFilter === 'no' ? false : undefined,
       hasReports: reportsFilter === 'yes' ? true : reportsFilter === 'no' ? false : undefined,
       hasIssues: issuesFilter === 'yes' ? true : issuesFilter === 'no' ? false : undefined,
+      includeTagIds: includeTagIds.join(',') || undefined,
+      excludeTagIds: excludeTagIds.join(',') || undefined,
+      tagMatch,
+      sort: sortBy === 'tags' ? 'tag' : undefined,
+      order: sortBy === 'tags' ? sortOrder : undefined,
       limit: pageSize,
       cursor: pageParam ?? undefined,
     }),
@@ -440,7 +467,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       const sourceValue = sourceLabel(item.source)
       const pipelineValue = pipelineLabel(item.pipelineKey)
       const missing = item.missingFields.join(' ')
-      const all = [title, item.id, MODE_LABEL[item.mode], status, sourceValue, pipelineValue, fields, hint, reports, issues, completeness, missing]
+      const tagValue = item.tags.map((tag) => tag.name).join(' ')
+      const all = [title, item.id, MODE_LABEL[item.mode], status, sourceValue, pipelineValue, tagValue, fields, hint, reports, issues, completeness, missing]
       if (fieldFilter === 'all') return all.join(' ')
       if (fieldFilter === 'title') return title
       if (fieldFilter === 'id') return item.id
@@ -448,6 +476,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       if (fieldFilter === 'status') return status
       if (fieldFilter === 'source') return sourceValue
       if (fieldFilter === 'pipeline') return pipelineValue
+      if (fieldFilter === 'tags') return tagValue
       if (fieldFilter === 'fields') return fields
       if (fieldFilter === 'hint') return hint
       if (fieldFilter === 'reports') return reports
@@ -468,6 +497,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       if (sortBy === 'status') return compareNumber(left.allowedInGame ? 1 : 0, right.allowedInGame ? 1 : 0)
       if (sortBy === 'source') return compareText(sourceLabel(left.source), sourceLabel(right.source))
       if (sortBy === 'pipelineKey') return compareText(pipelineLabel(left.pipelineKey), pipelineLabel(right.pipelineKey))
+      if (sortBy === 'tags') return compareText(left.tags.map((tag) => tag.name).join(', '), right.tags.map((tag) => tag.name).join(', '))
       if (sortBy === 'fieldsFilled') return compareNumber(left.fieldsFilled, right.fieldsFilled)
       if (sortBy === 'hasHint') return compareNumber(left.hasHint ? 1 : 0, right.hasHint ? 1 : 0)
       if (sortBy === 'completeness') return compareNumber(left.completeness, right.completeness)
@@ -486,10 +516,11 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const selectedVisibleCount = useMemo(() => sortedItems.reduce((count, item) => count + (selected.has(item.id) ? 1 : 0), 0), [selected, sortedItems])
 
   const bulk = useMutation({
-    mutationFn: (operation: 'allow' | 'disallow') => adminApi.bulkContent({
+    mutationFn: (operation: 'allow' | 'disallow' | 'add_tag' | 'remove_tag') => adminApi.bulkContent({
       itemIds: [...selected],
       operation,
-      reason: operation === 'allow' ? 'Массовое включение в игру' : 'Массовое исключение из игры',
+      value: operation.endsWith('_tag') ? bulkTagId : undefined,
+      reason: operation === 'allow' ? 'Массовое включение в игру' : operation === 'disallow' ? 'Массовое исключение из игры' : operation === 'add_tag' ? 'Массовое назначение тега' : 'Массовое снятие тега',
     }),
     onSuccess: (data) => {
       notify('success', `Обработано: ${data.succeeded ?? 0}, ошибок: ${data.failed ?? 0}`)
@@ -497,6 +528,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       setSelectionAnchorIndex(null)
       void client.invalidateQueries({ queryKey: ['admin', 'content'] })
       void client.invalidateQueries({ queryKey: ['admin', 'workspace'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'content-tags'] })
     },
     onError: (error) => notify('error', errorText(error)),
   })
@@ -547,6 +579,9 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     setHintFilter('all')
     setReportsFilter('all')
     setIssuesFilter('all')
+    setIncludeTagIds([])
+    setExcludeTagIds([])
+    setTagMatch('all')
     setFieldFilter('all')
     setFieldFilterValue('')
     setSortBy('updatedAt')
@@ -580,12 +615,17 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     </div>
 
     <div className="admin-toolbar admin-toolbar--content admin-toolbar--sub">
+      <TagPicker tags={tags.data?.items ?? []} value={includeTagIds} onChange={(ids) => { setIncludeTagIds(ids); setSelected(new Set()) }} label="С тегами" />
+      <label><Tags /><select value={tagMatch} onChange={(event) => setTagMatch(event.target.value as 'all' | 'any')}><option value="all">Должны быть все</option><option value="any">Достаточно любого</option></select></label>
+      <TagPicker tags={tags.data?.items ?? []} value={excludeTagIds} onChange={(ids) => { setExcludeTagIds(ids); setSelected(new Set()) }} label="Исключить теги" />
+      <label><Tags /><select value={sortBy} onChange={(event) => setSortBy(event.target.value as ContentSortKey)}><option value="updatedAt">Сортировка: изменено</option><option value="titleRu">Сортировка: название</option><option value="tags">Сортировка: тег</option></select></label>
+      <label><ChevronDown /><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as 'asc' | 'desc')}><option value="asc">По возрастанию</option><option value="desc">По убыванию</option></select></label>
       <label><Filter /><select value={fieldFilter} onChange={(event) => setFieldFilter(event.target.value as ContentFieldFilter)}><option value="all">Локальный фильтр: все поля</option><option value="title">Название</option><option value="id">ID</option><option value="mode">Категория</option><option value="status">Статус</option><option value="source">Источник</option><option value="pipeline">Пайплайн</option><option value="fields">Заполнено полей</option><option value="hint">Подсказка</option><option value="reports">Репорты</option><option value="issues">Качество</option><option value="completeness">Полнота</option><option value="missing">Чего не хватает</option></select></label>
       <label className="admin-search admin-search--compact"><Search /><input value={fieldFilterValue} onChange={(event) => setFieldFilterValue(event.target.value)} placeholder="Фильтр по выбранному полю" />{fieldFilterValue && <button onClick={() => setFieldFilterValue('')}><X /></button>}</label>
       <button className="admin-btn admin-btn--secondary" onClick={resetFilters}>Сбросить фильтры</button>
     </div>
 
-    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => setExchange('export')}><Download />Экспорт JSON</button><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><button onClick={() => { setSelected(new Set()); setSelectionAnchorIndex(null) }}><X />Снять выбор</button></div>}
+    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => setExchange('export')}><Download />Экспорт JSON</button><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><select value={bulkTagId} onChange={(event) => setBulkTagId(event.target.value)}><option value="">Выберите тег</option>{tags.data?.items.map((tag) => <option key={tag.id} value={tag.id}>{tag.name}</option>)}</select><button disabled={!bulkTagId} onClick={() => bulk.mutate('add_tag')}><Tags />Назначить тег</button><button disabled={!bulkTagId} onClick={() => bulk.mutate('remove_tag')}><X />Снять тег</button><button onClick={async () => { const name = prompt('Название нового тега'); if (!name?.trim()) return; try { const tag = await adminApi.createTag(name.trim()); setBulkTagId(tag.id); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); notify('success', 'Тег создан — теперь его можно назначить') } catch (error) { notify('error', errorText(error)) } }}><Plus />Новый тег</button><button onClick={() => { setSelected(new Set()); setSelectionAnchorIndex(null) }}><X />Снять выбор</button></div>}
 
     {items.isLoading
       ? <Loading />
@@ -649,6 +689,9 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const [normalizationScope, setNormalizationScope] = useState<'all' | 'selected'>('all')
   const [normalizationQuery, setNormalizationQuery] = useState('')
   const [normalizationSelected, setNormalizationSelected] = useState<Set<string>>(new Set())
+  const [normalizationIncludeTags, setNormalizationIncludeTags] = useState<string[]>([])
+  const [normalizationExcludeTags, setNormalizationExcludeTags] = useState<string[]>([])
+  const [normalizationTagMatch, setNormalizationTagMatch] = useState<'all' | 'any'>('all')
   const [artistText, setArtistText] = useState(''); const artists = useMemo(() => parseArtistList(artistText), [artistText])
   const [movieText, setMovieText] = useState(''); const movies = useMemo(() => parseMovieList(movieText), [movieText])
   const [animeText, setAnimeText] = useState(''); const anime = useMemo(() => parseAnimeList(animeText), [animeText])
@@ -656,10 +699,11 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const manualPayload = pipelineKey === 'music' ? { artists } : pipelineKey === 'movie' ? { movies } : { anime }
   const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && pipelineKey !== 'normalization' && scenario === 'manual' && manualItems.length > 0 })
   const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization' })
-  const normalizationCandidates = useQuery({ queryKey: ['admin', 'normalization-candidates', normalizationMode, normalizationQuery], queryFn: () => adminApi.contentItems({ mode: normalizationMode, q: normalizationQuery || undefined, limit: 100, sort: 'title' }), enabled: starting && pipelineKey === 'normalization' })
-  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, maxItems, model: 'gpt-5-mini', webSearch: true }
+  const normalizationTags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags, enabled: starting && pipelineKey === 'normalization' })
+  const normalizationCandidates = useQuery({ queryKey: ['admin', 'normalization-candidates', normalizationMode, normalizationQuery, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], queryFn: () => adminApi.contentItems({ mode: normalizationMode, q: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags.join(',') || undefined, excludeTagIds: normalizationExcludeTags.join(',') || undefined, tagMatch: normalizationTagMatch, limit: 100, sort: 'title' }), enabled: starting && pipelineKey === 'normalization' })
+  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags, excludeTagIds: normalizationExcludeTags, tagMatch: normalizationTagMatch, maxItems, model: 'gpt-5-mini', webSearch: true }
   const estimate = useQuery({
-    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, normalizationMode, normalizationField, normalizationPrompt, normalizationScope, normalizationQuery, normalizationSelected.size], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario !== 'manual' || manualItems.length > 0,
+    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, normalizationMode, normalizationField, normalizationPrompt, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario !== 'manual' || manualItems.length > 0,
     queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
   })
   const start = useMutation({
@@ -725,6 +769,16 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
+  const regenerateItem = useMutation({
+    mutationFn: (itemId: string) => adminApi.regeneratePipelineItem(selectedId!, itemId),
+    onSuccess: () => {
+      notify('success', 'Айтем поставлен на повторную генерацию')
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events', selectedId] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const approve = useMutation({
     mutationFn: ({ publish, itemIds }: { publish: boolean; itemIds?: string[] }) => adminApi.approvePipeline(selectedId!, itemIds?.length ? { itemIds } : {}, publish),
     onSuccess: (_, variables) => {
@@ -741,6 +795,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     const settings = record(run.settingsJson)
     if (run.pipelineKey === 'normalization') return {
       mode: input.mode, field: input.field, prompt: input.prompt, scope: 'selected', itemIds: array(input.itemIds).map(String).slice(0, 500),
+      includeTagIds: array(input.includeTagIds).map(String), excludeTagIds: array(input.excludeTagIds).map(String), tagMatch: input.tagMatch === 'any' ? 'any' : 'all',
       maxItems: Math.max(1, Math.min(500, Number(settings.maxItems ?? run.itemsTotal ?? 100) || 100)), model: 'gpt-5-mini', webSearch: settings.webSearch !== false,
     }
     const rawScenario = String(input.scenario || 'discover')
@@ -1024,6 +1079,15 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     continueRun.mutate()
   }
 
+  const requestRegenerateItem = (itemId: string, entityKey: unknown) => {
+    if (selectedRun?.pipelineKey !== 'normalization') {
+      notify('info', 'Повторная генерация отдельного айтема доступна для универсальной нормализации')
+      return
+    }
+    if (!confirm(`Перегенерировать только ${title(entityKey)}? Будет выполнен один новый платный запрос GPT-5 mini; остальные айтемы не изменятся.`)) return
+    regenerateItem.mutate(itemId)
+  }
+
   const requestDeleteRun = () => {
     if (!selectedRun) return
     const active = ['queued', 'running'].includes(String(selectedRun.status))
@@ -1122,7 +1186,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
         <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
         <div className="admin-pipeline-review">{items.isLoading ? <Loading /> : runItems.length ? <>
           <header className="admin-pipeline-review__head"><div><h3>Результаты на проверке</h3><small>Таблица для массового согласования. Клик по строке открывает подробный diff справа.</small></div><div><button className="admin-btn admin-btn--secondary" disabled={!reviewQueue.length} onClick={openModeration}><Play />Начать модерацию</button><button className="admin-btn admin-btn--secondary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: false })}><X />Отклонить выбранные</button><button className="admin-btn admin-btn--primary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: true })}><Check />Принять выбранные</button></div></header>
-          <div className="admin-table-wrap admin-table-wrap--pipeline"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все результаты" checked={selectedPipelineItems.size > 0 && selectedPipelineItems.size === runItems.filter((entry) => isItemReviewable(record(entry))).length} onChange={(event) => setSelectedPipelineItems(event.target.checked ? new Set(runItems.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id))) : new Set())} /></th><th>Карточка</th><th>Статус</th><th>Изменено</th><th>Предупреждения</th><th>Обновлено</th><th /></tr></thead><tbody>{runItems.map((raw) => { const item = record(raw); const proposed = record(item.proposedJson); const fields = itemDiffFields(item); const warnings = pipelineWarnings(item.warningsJson); const itemId = String(item.id); const reviewable = isItemReviewable(item); return <tr key={itemId} className={activePipelineItemId === itemId ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`} disabled={!reviewable} checked={selectedPipelineItems.has(itemId)} onChange={(event) => setSelectedPipelineItems((current) => { const next = new Set(current); event.target.checked ? next.add(itemId) : next.delete(itemId); return next })} /></td><td><button className="admin-title-cell" onClick={() => setActivePipelineItemId(itemId)}><span>{pipelineIcon(selectedRun.pipelineKey)}</span><span><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>{title(item.entityKey)}</small></span></button></td><td><Status value={item.status} /></td><td>{fields.length}</td><td>{warnings.length ? <span className="admin-count admin-count--warn">{warnings.length}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt || item.createdAt)}</td><td>{reviewable && <div className="admin-row-actions"><button className="admin-icon-btn" title="Отклонить" onClick={() => decide.mutate({ itemId, approved: false })}><X /></button><button className="admin-icon-btn" title="Принять" onClick={() => decide.mutate({ itemId, approved: true })}><Check /></button></div>}</td></tr> })}</tbody></table></div>
+          <div className="admin-table-wrap admin-table-wrap--pipeline"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все результаты" checked={selectedPipelineItems.size > 0 && selectedPipelineItems.size === runItems.filter((entry) => isItemReviewable(record(entry))).length} onChange={(event) => setSelectedPipelineItems(event.target.checked ? new Set(runItems.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id))) : new Set())} /></th><th>Карточка</th><th>Статус</th><th>Изменено</th><th>Предупреждения</th><th>Обновлено</th><th /></tr></thead><tbody>{runItems.map((raw) => { const item = record(raw); const proposed = record(item.proposedJson); const fields = itemDiffFields(item); const warnings = pipelineWarnings(item.warningsJson); const itemId = String(item.id); const reviewable = isItemReviewable(item); const regenerating = regenerateItem.isPending && regenerateItem.variables === itemId; const canRegenerate = selectedRun.pipelineKey === 'normalization' && !item.workspaceChangeId && !item.appliedRevisionId && !['staged', 'published', 'running', 'pending'].includes(String(item.status)); return <tr key={itemId} className={activePipelineItemId === itemId ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`} disabled={!reviewable} checked={selectedPipelineItems.has(itemId)} onChange={(event) => setSelectedPipelineItems((current) => { const next = new Set(current); event.target.checked ? next.add(itemId) : next.delete(itemId); return next })} /></td><td><button className="admin-title-cell" onClick={() => setActivePipelineItemId(itemId)}><span>{pipelineIcon(selectedRun.pipelineKey)}</span><span><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>{title(item.entityKey)}</small></span></button></td><td><Status value={item.status} /></td><td>{fields.length}</td><td>{warnings.length ? <span className="admin-count admin-count--warn">{warnings.length}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt || item.createdAt)}</td><td><div className="admin-row-actions">{canRegenerate && <button className="admin-icon-btn" title="Перегенерировать только этот айтем" aria-label={`Перегенерировать ${title(item.entityKey)}`} disabled={regenerateItem.isPending || decide.isPending} onClick={() => requestRegenerateItem(itemId, item.entityKey)}>{regenerating ? <LoaderCircle className="admin-spinner" /> : <RefreshCw />}</button>}{reviewable && <><button className="admin-icon-btn" title="Отклонить" onClick={() => decide.mutate({ itemId, approved: false })} disabled={regenerateItem.isPending}><X /></button><button className="admin-icon-btn" title="Принять" onClick={() => decide.mutate({ itemId, approved: true })} disabled={regenerateItem.isPending}><Check /></button></>}</div></td></tr> })}</tbody></table></div>
         </> : <Empty title="Результатов пока нет" text={['queued', 'running'].includes(String(selectedRun.status)) ? 'Worker обрабатывает список партиями. Страница обновится автоматически.' : 'Запуск не создал проверяемых результатов.'} />}</div>
         {approvedItemIds.length > 0 && <div className="admin-sticky-actions"><span>Одобрено: {approvedItemIds.length}. «В рабочую версию» только стаджит изменения, «Одобрить и опубликовать» сразу активирует новую ревизию.</span><button className="admin-btn admin-btn--secondary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: false, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>В рабочую версию{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button><button className="admin-btn admin-btn--primary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: true, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>Одобрить и опубликовать{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button></div>}
       </>}</section>
@@ -1153,6 +1217,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             <label className="admin-field admin-field--wide"><span>Поле</span><select value={normalizationField} onChange={(event) => setNormalizationField(event.target.value)}>{normalizationFieldsQuery.data?.items.map((entry) => <option key={entry.field} value={entry.field}>{entry.label} · {entry.field}</option>)}</select></label>
             <label className="admin-field admin-field--wide"><span>Инструкция модели</span><textarea value={normalizationPrompt} onChange={(event) => setNormalizationPrompt(event.target.value)} rows={6} /><small>GPT-5 mini получит эту инструкцию вместе с одной карточкой и вернет только изменение выбранного поля, уверенность и источники.</small></label>
             <label className="admin-field admin-field--wide"><span>Поиск карточек</span><input value={normalizationQuery} onChange={(event) => { setNormalizationQuery(event.target.value); setNormalizationSelected(new Set()) }} placeholder="Название или ID; пусто — вся категория" /></label>
+            <section className="admin-normalization-tags"><TagPicker tags={normalizationTags.data?.items ?? []} value={normalizationIncludeTags} onChange={(ids) => { setNormalizationIncludeTags(ids); setNormalizationSelected(new Set()) }} label="Включить карточки с тегами" /><label className="admin-field"><span>Совпадение включаемых тегов</span><select value={normalizationTagMatch} onChange={(event) => { setNormalizationTagMatch(event.target.value as 'all' | 'any'); setNormalizationSelected(new Set()) }}><option value="all">Есть все выбранные теги</option><option value="any">Есть хотя бы один тег</option></select></label><TagPicker tags={normalizationTags.data?.items ?? []} value={normalizationExcludeTags} onChange={(ids) => { setNormalizationExcludeTags(ids); setNormalizationSelected(new Set()) }} label="Исключить карточки с тегами" /></section>
             <div className="admin-periods"><button className={normalizationScope === 'all' ? 'is-active' : ''} onClick={() => setNormalizationScope('all')}>Все подходящие</button><button className={normalizationScope === 'selected' ? 'is-active' : ''} onClick={() => setNormalizationScope('selected')}>Только выбранные · {normalizationSelected.size}</button></div>
             {normalizationScope === 'selected' && <div className="admin-import-list">{normalizationCandidates.isLoading ? <Loading /> : normalizationCandidates.data?.items.map((item) => <label key={item.id}><input type="checkbox" checked={normalizationSelected.has(item.id)} onChange={(event) => setNormalizationSelected((current) => { const next = new Set(current); event.target.checked ? next.add(item.id) : next.delete(item.id); return next })} /><strong>{item.titleRu}</strong><small>{item.id}</small></label>)}</div>}
             <label className="admin-field"><span>Максимум карточек · {maxItems}</span><input type="range" min="1" max="500" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} /><small>Для выбранных карточек применяется тот же верхний лимит. Результат всегда сначала попадает на проверку.</small></label>

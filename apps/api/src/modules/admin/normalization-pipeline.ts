@@ -35,6 +35,30 @@ export const normalizationStartIndex = (itemIds: string[], offset: unknown) => {
 }
 
 const record = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
+export const mergeNormalizationUsage = (previousConfidence: unknown, nextUsage: OpenAiUsageEntry | null) => {
+  const previousUsage = record(record(previousConfidence).usage)
+  const previousResponses = Array.isArray(previousUsage.responses) ? previousUsage.responses : []
+  const responses = new Map<string, OpenAiUsageEntry>()
+  for (const raw of [...previousResponses, ...(nextUsage ? [nextUsage] : [])]) {
+    const entry = record(raw)
+    const normalized: OpenAiUsageEntry = {
+      responseId: String(entry.responseId ?? ''), model: String(entry.model ?? 'gpt-5-mini'),
+      inputTokens: Number(entry.inputTokens ?? 0), cachedInputTokens: Number(entry.cachedInputTokens ?? 0),
+      outputTokens: Number(entry.outputTokens ?? 0), webSearchCalls: Number(entry.webSearchCalls ?? 0), costUsd: Number(entry.costUsd ?? 0),
+    }
+    const identity = normalized.responseId || JSON.stringify(normalized)
+    responses.set(identity, normalized)
+  }
+  const entries = [...responses.values()]
+  return {
+    responses: entries,
+    inputTokens: entries.reduce((sum, entry) => sum + entry.inputTokens, 0),
+    cachedInputTokens: entries.reduce((sum, entry) => sum + entry.cachedInputTokens, 0),
+    outputTokens: entries.reduce((sum, entry) => sum + entry.outputTokens, 0),
+    webSearchCalls: entries.reduce((sum, entry) => sum + entry.webSearchCalls, 0),
+    costUsd: Number(entries.reduce((sum, entry) => sum + entry.costUsd, 0).toFixed(8)),
+  }
+}
 const extractResponseText = (payload: Json) => typeof payload.output_text === 'string'
   ? payload.output_text
   : (Array.isArray(payload.output) ? payload.output : []).flatMap((item) => Array.isArray(record(item).content) ? record(item).content as unknown[] : [])

@@ -5,7 +5,7 @@ import sharp from 'sharp'
 import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm'
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import {
-  AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminDailyChallengeReplaceBodySchema, AdminEventsQuerySchema, AdminIdParamsSchema,
+  AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminDailyChallengeReplaceBodySchema, AdminEventsQuerySchema, AdminIdParamsSchema, AdminTagCreateBodySchema,
   AnimePipelineEstimateBodySchema, AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema,
   AdminItemParamsSchema, AdminMediaUploadBodySchema, AdminQualityIssuePatchBodySchema, AdminReportBulkResolveBodySchema, AdminReportPatchBodySchema, AdminReportQuerySchema, AdminUserNoteBodySchema,
   AdminUsersQuerySchema, AdminWorkspaceBulkBodySchema, AdminWorkspaceItemBodySchema, ClientEventsBatchBodySchema,
@@ -15,7 +15,7 @@ import {
   NormalizationPipelineEstimateBodySchema, NormalizationPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
-  type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
+  type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody, type AdminTagCreateBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type ContentMode, type IntegrationKey, type IntegrationSecretUpdateBody,
   type ContentExchangeExportBody, type ContentExchangeImportApplyBody, type ContentExchangeImportPreviewBody, type ContentExchangeSelectionBody,
@@ -29,7 +29,7 @@ import { Type } from '@sinclair/typebox'
 import type { AppConfig } from '@shoditsa/config'
 import {
   account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
-  contentAliases, contentItems, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes,
+  contentAliases, contentItems, contentItemTags, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes, contentTags,
   contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, dailyChallenges, gameAttempts, gameHintChoices,
   gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
   promoRedemptions, session, user, userModeStats, walletAccounts, walletLedger, type Database,
@@ -270,6 +270,30 @@ const itemSchema = (mode: string) => ({
 })
 
 const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
+  const tagIds = (value?: string) => [...new Set((value ?? '').split(',').map((entry) => entry.trim()).filter((entry) => /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(entry)))]
+
+  app.get('/api/v1/admin/content/tags', async (request, reply) => {
+    await admin(request, reply, deps)
+    return { items: await deps.db.select({ id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color, itemsCount: sql<number>`count(${contentItemTags.itemId})::int` })
+      .from(contentTags).leftJoin(contentItemTags, eq(contentItemTags.tagId, contentTags.id)).groupBy(contentTags.id).orderBy(asc(contentTags.name)) }
+  })
+
+  app.post('/api/v1/admin/content/tags', { schema: { body: AdminTagCreateBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as AdminTagCreateBody
+    const name = body.name.trim().replace(/\s+/g, ' ')
+    if (!name) throw new ApiError(422, 'CONTENT_TAG_NAME_REQUIRED', 'Введите название тега')
+    const base = name.normalize('NFKC').toLocaleLowerCase('ru-RU').replace(/\s+/g, '-').replace(/[^\p{L}\p{N}_-]+/gu, '').replace(/^-+|-+$/g, '') || 'tag'
+    const slug = `${base}-${createHash('sha256').update(name.toLocaleLowerCase('ru-RU')).digest('hex').slice(0, 8)}`
+    try {
+      const created = (await deps.db.insert(contentTags).values({ name, slug, color: body.color ?? '#6b7280', createdBy: actor.id }).returning())[0]
+      await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'content.tag.create', entityType: 'content_tag', entityId: created.id, before: null, after: created, requestId: request.id })
+      return reply.code(201).send(created)
+    } catch (error) {
+      if ((error as { code?: string }).code === '23505') throw new ApiError(409, 'CONTENT_TAG_EXISTS', 'Тег с таким названием уже существует')
+      throw error
+    }
+  })
+
   app.get('/api/v1/admin/content/items', { schema: { querystring: AdminContentItemsQuerySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const query = request.query as AdminContentItemsQuery
     const active = (await deps.db.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
@@ -287,6 +311,10 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     if (query.hasHint === false) filters.push(sql`coalesce(nullif(trim(${contentItemVersions.payload}->>'plotHint'), ''), nullif(trim(${contentItemVersions.payload}->>'description'), '')) is null`)
     if (query.source) filters.push(sql`exists (select 1 from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} and cwc.source = ${query.source})`)
     if (query.pipelineKey) filters.push(sql`exists (select 1 from content_workspace_changes cwc inner join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} and pr.pipeline_key = ${query.pipelineKey})`)
+    const includedTags = tagIds(query.includeTagIds); const excludedTags = tagIds(query.excludeTagIds)
+    if (includedTags.length && query.tagMatch === 'any') filters.push(sql`exists (select 1 from content_item_tags cit where cit.item_id = ${contentItemVersions.itemId} and cit.tag_id in (${sql.join(includedTags.map((id) => sql`${id}::uuid`), sql`, `)}))`)
+    if (includedTags.length && query.tagMatch !== 'any') filters.push(sql`(select count(distinct cit.tag_id)::int from content_item_tags cit where cit.item_id = ${contentItemVersions.itemId} and cit.tag_id in (${sql.join(includedTags.map((id) => sql`${id}::uuid`), sql`, `)})) = ${includedTags.length}`)
+    if (excludedTags.length) filters.push(sql`not exists (select 1 from content_item_tags cit where cit.item_id = ${contentItemVersions.itemId} and cit.tag_id in (${sql.join(excludedTags.map((id) => sql`${id}::uuid`), sql`, `)}))`)
     if (query.q?.trim()) {
       const raw = query.q.trim(); const exact = raw.length > 1 && raw.startsWith('"') && raw.endsWith('"')
       const needle = raw.replace(/^"|"$/g, '').replaceAll('ё', 'е').replaceAll('Ё', 'Е')
@@ -294,11 +322,13 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
         ? sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or ${contentItemVersions.itemId} = ${needle})`
         : sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or ${contentItemVersions.itemId} ilike ${`%${needle}%`} or exists (select 1 from content_aliases ca where ca.item_version_id = ${contentItemVersions.id} and replace(lower(ca.alias), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`}))`)
     }
-    if (query.cursor) filters.push(gt(contentItemVersions.itemId, query.cursor))
+    const tagOffset = query.sort === 'tag' && query.cursor?.startsWith('tag:') ? Math.max(0, Number(query.cursor.slice(4)) || 0) : 0
+    if (query.cursor && query.sort !== 'tag') filters.push(gt(contentItemVersions.itemId, query.cursor))
     const limit = query.limit ?? 40
     const orderField = query.sort === 'id' ? contentItemVersions.itemId
       : query.sort === 'createdAt' ? contentItemVersions.createdAt
         : query.sort === 'title' ? contentItemVersions.titleRu
+          : query.sort === 'tag' ? sql<string>`coalesce((select min(lower(ct.name)) from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '')`
           : contentItemVersions.itemId
     const order = query.order === 'desc' ? desc(orderField) : asc(orderField)
     const selected = await deps.db.select({
@@ -311,10 +341,11 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`,
       issuesCount: sql<number>`(select count(*)::int from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`,
       draftVersion: contentWorkspaceChanges.version,
+      tags: sql<Array<{ id: string; name: string; slug: string; color: string }>>`coalesce((select jsonb_agg(jsonb_build_object('id', ct.id, 'name', ct.name, 'slug', ct.slug, 'color', ct.color) order by lower(ct.name)) from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '[]'::jsonb)`,
     }).from(contentItemVersions)
       .leftJoin(contentWorkspaceChanges, and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, contentItemVersions.itemId)))
-      .where(and(...filters)).orderBy(order, asc(contentItemVersions.itemId)).limit(limit + 1)
-    const totalFilters = filters.filter((_, index) => !(query.cursor && index === filters.length - 1))
+      .where(and(...filters)).orderBy(order, asc(contentItemVersions.itemId)).limit(limit + 1).offset(tagOffset)
+    const totalFilters = filters.filter((_, index) => !(query.cursor && query.sort !== 'tag' && index === filters.length - 1))
     const total = await deps.db.select({ count: sql<number>`count(*)::int` }).from(contentItemVersions).where(and(...totalFilters))
     return {
       items: selected.slice(0, limit).map(({ payload, mode, ...item }) => {
@@ -330,7 +361,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
           hasHint: completion.hasHint,
         }
       }),
-      nextCursor: selected.length > limit ? selected[limit - 1].id : null,
+      nextCursor: selected.length > limit ? (query.sort === 'tag' ? `tag:${tagOffset + limit}` : selected[limit - 1].id) : null,
       total: total[0]?.count ?? 0,
       filters: query,
     }
@@ -347,12 +378,13 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     const draft = await deps.db.select().from(contentWorkspaceChanges).where(and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, itemId))).limit(1)
     if (!active[0] && !draft[0]) throw new ApiError(404, 'CONTENT_ITEM_NOT_FOUND', 'Карточка не найдена')
     const mode = active[0]?.mode ?? draft[0].mode
-    const [reports, issues, decisions] = await Promise.all([
+    const [reports, issues, decisions, tags] = await Promise.all([
       deps.db.select().from(contentReports).where(eq(contentReports.itemId, itemId)).orderBy(desc(contentReports.createdAt)).limit(50),
       deps.db.select().from(contentQualityIssues).where(and(eq(contentQualityIssues.itemId, itemId), eq(contentQualityIssues.status, 'open'))).orderBy(desc(contentQualityIssues.createdAt)),
       deps.db.select().from(contentReviewDecisions).where(eq(contentReviewDecisions.itemId, itemId)).orderBy(desc(contentReviewDecisions.updatedAt)),
+      deps.db.select({ id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color }).from(contentItemTags).innerJoin(contentTags, eq(contentTags.id, contentItemTags.tagId)).where(eq(contentItemTags.itemId, itemId)).orderBy(asc(contentTags.name)),
     ])
-    return { active: active[0] ?? null, draft: draft[0] ?? null, workspace: await workspaceSummary(deps.db, actor), schema: itemSchema(mode), reports, issues, decisions }
+    return { active: active[0] ?? null, draft: draft[0] ?? null, workspace: await workspaceSummary(deps.db, actor), schema: itemSchema(mode), reports, issues, decisions, tags }
   })
 
   app.get('/api/v1/admin/content/items/:itemId/history', { schema: { params: AdminItemParamsSchema } }, async (request, reply) => {
@@ -441,6 +473,16 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
 
   app.post('/api/v1/admin/content/workspace/bulk', { schema: { body: AdminWorkspaceBulkBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const body = request.body as AdminWorkspaceBulkBody
+    if (body.operation === 'add_tag' || body.operation === 'remove_tag') {
+      if (!body.value || !/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(body.value)) throw new ApiError(422, 'CONTENT_TAG_REQUIRED', 'Выберите тег')
+      const tag = (await deps.db.select({ id: contentTags.id }).from(contentTags).where(eq(contentTags.id, body.value)).limit(1))[0]
+      if (!tag) throw new ApiError(404, 'CONTENT_TAG_NOT_FOUND', 'Тег не найден')
+      const found = await deps.db.select({ id: contentItems.id }).from(contentItems).where(inArray(contentItems.id, body.itemIds))
+      if (body.operation === 'add_tag' && found.length) await deps.db.insert(contentItemTags).values(found.map((item) => ({ itemId: item.id, tagId: tag.id, createdBy: actor.id }))).onConflictDoNothing()
+      if (body.operation === 'remove_tag' && found.length) await deps.db.delete(contentItemTags).where(and(inArray(contentItemTags.itemId, found.map((item) => item.id)), eq(contentItemTags.tagId, tag.id)))
+      await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: `content.tag.${body.operation === 'add_tag' ? 'assign' : 'remove'}`, entityType: 'content_tag', entityId: tag.id, before: null, after: { itemIds: found.map((item) => item.id) }, reason: body.reason, requestId: request.id })
+      return { requested: body.itemIds.length, processed: found.length, succeeded: found.length, failed: body.itemIds.length - found.length, results: found.map((item) => ({ itemId: item.id, status: 'saved' })) }
+    }
     const workspace = await getOrCreateWorkspace(deps.db, actor)
     const activeRows = await deps.db.select({ itemId: contentItemVersions.itemId, mode: contentItemVersions.mode, payload: contentItemVersions.payload })
       .from(contentItemVersions).where(and(eq(contentItemVersions.revisionId, workspace.baseRevisionId), inArray(contentItemVersions.itemId, body.itemIds)))
@@ -449,12 +491,6 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     for (const row of activeRows) {
       const draft = draftById.get(row.itemId); const payload = { ...asRecord(draft?.afterPayload ?? row.payload) }
       if (body.operation === 'allow' || body.operation === 'disallow') payload.allowedInGame = body.operation === 'allow'
-      if (body.operation === 'add_tag' || body.operation === 'remove_tag') {
-        const tags = new Set(Array.isArray(payload.tags) ? payload.tags.map(String) : [])
-        if (body.operation === 'add_tag' && body.value) tags.add(body.value)
-        if (body.operation === 'remove_tag' && body.value) tags.delete(body.value)
-        payload.tags = [...tags]
-      }
       try {
         await saveWorkspaceItem(deps.db, actor, row.itemId, { mode: row.mode, payload, expectedVersion: draft?.version ?? 0, source: 'bulk', reason: body.reason }, request.id)
         results.push({ itemId: row.itemId, status: 'saved' })
@@ -637,6 +673,9 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!active) throw new ApiError(409, 'ACTIVE_REVISION_NOT_FOUND', 'Нет активной ревизии контента')
     const filters = [eq(contentItemVersions.revisionId, active.id), eq(contentItemVersions.mode, body.mode)]
     if (body.scope === 'selected') filters.push(inArray(contentItemVersions.itemId, body.itemIds!))
+    if (body.includeTagIds?.length && body.tagMatch === 'any') filters.push(sql`exists (select 1 from content_item_tags cit where cit.item_id = ${contentItemVersions.itemId} and cit.tag_id in (${sql.join(body.includeTagIds.map((id) => sql`${id}::uuid`), sql`, `)}))`)
+    if (body.includeTagIds?.length && body.tagMatch !== 'any') filters.push(sql`(select count(distinct cit.tag_id)::int from content_item_tags cit where cit.item_id = ${contentItemVersions.itemId} and cit.tag_id in (${sql.join(body.includeTagIds.map((id) => sql`${id}::uuid`), sql`, `)})) = ${body.includeTagIds.length}`)
+    if (body.excludeTagIds?.length) filters.push(sql`not exists (select 1 from content_item_tags cit where cit.item_id = ${contentItemVersions.itemId} and cit.tag_id in (${sql.join(body.excludeTagIds.map((id) => sql`${id}::uuid`), sql`, `)}))`)
     if (body.query?.trim()) {
       const needle = `%${body.query.trim()}%`
       filters.push(or(ilike(contentItemVersions.itemId, needle), ilike(contentItemVersions.titleRu, needle), ilike(contentItemVersions.titleOriginal, needle))!)
@@ -662,7 +701,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!items.length) throw new ApiError(409, 'NORMALIZATION_ITEMS_EMPTY', 'Под заданный фильтр не найдено карточек')
     const run = (await deps.db.insert(pipelineRuns).values({
       pipelineKey: 'normalization', pipelineVersion: 'normalization-v1', status: 'queued', createdBy: actor.id, itemsTotal: items.length,
-      inputDefinitionJson: { scenario: 'normalize', mode: body.mode, field: body.field, prompt: body.prompt, scope: body.scope, query: body.query ?? '', itemIds: items.map((item) => item.itemId) },
+      inputDefinitionJson: { scenario: 'normalize', mode: body.mode, field: body.field, prompt: body.prompt, scope: body.scope, query: body.query ?? '', includeTagIds: body.includeTagIds ?? [], excludeTagIds: body.excludeTagIds ?? [], tagMatch: body.tagMatch ?? 'all', itemIds: items.map((item) => item.itemId) },
       settingsJson: { maxItems: items.length, model: body.model ?? 'gpt-5-mini', webSearch: body.webSearch ?? true },
       estimatedCost: String((items.length * 0.02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]
@@ -875,6 +914,48 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const updated = await deps.db.update(pipelineRunItems).set({ status: body.approved ? 'approved' : 'rejected', fieldDecisionsJson: body.fieldDecisions, approvedBy: actor.id, approvedAt: new Date(), updatedAt: new Date() }).where(eq(pipelineRunItems.id, itemId)).returning()
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.item.decision', entityType: 'pipeline_run_item', entityId: itemId, before: item[0], after: updated[0], reason: body.note, requestId: request.id })
     return updated[0]
+  })
+  app.post('/api/v1/admin/pipeline-runs/:id/items/:itemId/regenerate', { schema: { params: runItemParams, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const { id: runId, itemId } = request.params as { id: string; itemId: string }
+    const key = requireIdempotencyKey(request)
+    const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingJob[0]) return reply.code(202).send({ runId, itemId, jobId: existingJob[0].id })
+
+    const result = await deps.db.transaction(async (tx) => {
+      const run = await tx.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+      if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+      if (run[0].pipelineKey !== 'normalization') throw new ApiError(409, 'PIPELINE_ITEM_REGENERATE_UNSUPPORTED', 'Повторная генерация отдельного айтема доступна только для универсальной нормализации')
+      if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Дождитесь остановки или завершения общего запуска')
+
+      const item = await tx.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.id, itemId), eq(pipelineRunItems.runId, runId))).limit(1)
+      if (!item[0]) throw new ApiError(404, 'PIPELINE_ITEM_NOT_FOUND', 'Результат не найден')
+      if (item[0].workspaceChangeId || item[0].appliedRevisionId || ['staged', 'published'].includes(item[0].status)) {
+        throw new ApiError(409, 'PIPELINE_ITEM_ALREADY_APPLIED', 'Айтем уже перенесён в рабочую версию или опубликован')
+      }
+      const active = await tx.select({ id: backgroundJobs.id }).from(backgroundJobs).where(and(
+        eq(backgroundJobs.pipelineRunId, runId),
+        eq(backgroundJobs.type, 'normalization_pipeline'),
+        sql`${backgroundJobs.status} in ('queued','running')`,
+        sql`${backgroundJobs.payload}->>'regenerateItemId' = ${itemId}`,
+      )).limit(1)
+      if (active[0]) throw new ApiError(409, 'PIPELINE_ITEM_REGENERATE_ACTIVE', 'Этот айтем уже перегенерируется')
+
+      const job = (await tx.insert(backgroundJobs).values({
+        type: 'normalization_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId,
+        payload: { runId, itemIds: [item[0].entityKey], regenerateItemId: itemId },
+      }).returning())[0]
+      await tx.update(pipelineRunItems).set({
+        status: 'pending', fieldDecisionsJson: {}, approvedBy: null, approvedAt: null,
+        errorCode: null, safeErrorMessage: null, updatedAt: new Date(),
+      }).where(eq(pipelineRunItems.id, itemId))
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id, action: 'pipeline.item.regenerate', entityType: 'pipeline_run_item', entityId: itemId,
+        before: item[0], after: { jobId: job.id, entityKey: item[0].entityKey }, requestId: request.id,
+      })
+      return { runId, itemId, jobId: job.id }
+    })
+    return reply.code(202).send(result)
   })
 
   const approveToWorkspace = async (request: FastifyRequest, reply: FastifyReply, publish: boolean) => {

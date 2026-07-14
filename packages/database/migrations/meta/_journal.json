@@ -64,6 +64,13 @@
       "when": 1784038110180,
       "tag": "0008_lean_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1784041800000,
+      "tag": "0009_content_tags",
+      "breakpoints": true
     }
   ]
 }

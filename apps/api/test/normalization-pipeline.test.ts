@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { assertNormalizationField, normalizationFields, normalizationStartIndex, normalizeProposedValue } from '../src/modules/admin/normalization-pipeline.js'
+import { assertNormalizationField, mergeNormalizationUsage, normalizationFields, normalizationStartIndex, normalizeProposedValue } from '../src/modules/admin/normalization-pipeline.js'
 
 describe('normalization pipeline', () => {
   it('exposes activityStartYear instead of ambiguous year for music', () => {
@@ -25,5 +25,12 @@ describe('normalization pipeline', () => {
     expect(itemIds.slice(normalizationStartIndex(itemIds, 46))[0]).toBe('music:47')
     expect(normalizationStartIndex(itemIds, -5)).toBe(0)
     expect(normalizationStartIndex(itemIds, 500)).toBe(100)
+  })
+
+  it('keeps the previous billed usage when one item is regenerated', () => {
+    const previous = { usage: { responses: [{ responseId: 'old', model: 'gpt-5-mini', inputTokens: 100, cachedInputTokens: 20, outputTokens: 10, webSearchCalls: 1, costUsd: 0.01 }] } }
+    const usage = mergeNormalizationUsage(previous, { responseId: 'new', model: 'gpt-5-mini', inputTokens: 200, cachedInputTokens: 50, outputTokens: 20, webSearchCalls: 1, costUsd: 0.02 })
+    expect(usage).toMatchObject({ inputTokens: 300, cachedInputTokens: 70, outputTokens: 30, webSearchCalls: 2, costUsd: 0.03 })
+    expect(usage.responses).toHaveLength(2)
   })
 })

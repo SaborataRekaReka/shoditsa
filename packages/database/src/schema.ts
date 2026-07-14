@@ -115,6 +115,26 @@ export const contentItems = pgTable('content_items', {
   updatedAt: now(),
 }, (table) => [index('content_items_mode_idx').on(table.mode)])
 
+export const contentTags = pgTable('content_tags', {
+  id: uuid().primaryKey().defaultRandom(),
+  name: text().notNull(),
+  slug: text().notNull().unique(),
+  color: text().notNull().default('#6b7280'),
+  createdBy: uuid('created_by').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: now(),
+  updatedAt: now(),
+}, (table) => [uniqueIndex('content_tags_name_ci_unique').on(sql`lower(trim(${table.name}))`)])
+
+export const contentItemTags = pgTable('content_item_tags', {
+  itemId: text('item_id').notNull().references(() => contentItems.id, { onDelete: 'cascade' }),
+  tagId: uuid('tag_id').notNull().references(() => contentTags.id, { onDelete: 'cascade' }),
+  createdBy: uuid('created_by').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: now(),
+}, (table) => [
+  primaryKey({ columns: [table.itemId, table.tagId] }),
+  index('content_item_tags_tag_idx').on(table.tagId, table.itemId),
+])
+
 export const contentItemVersions = pgTable('content_item_versions', {
   id: uuid().primaryKey().defaultRandom(),
   itemId: text('item_id').notNull().references(() => contentItems.id),

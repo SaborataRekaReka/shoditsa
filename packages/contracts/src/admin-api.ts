@@ -33,7 +33,10 @@ export type AdminContentListItem = {
   pipelineKey: 'music' | 'movie' | 'anime' | null
   draftVersion: number | null
   updatedAt: string
+  tags: AdminContentTag[]
 }
+
+export type AdminContentTag = { id: string; name: string; slug: string; color: string; itemsCount?: number }
 
 export type AdminContentItemsResponse = {
   items: AdminContentListItem[]

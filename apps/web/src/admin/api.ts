@@ -1,5 +1,5 @@
 import type {
-  AdminContentItemsResponse, AdminDashboardResponse, AdminTimelineEvent, AdminUserListItem, AdminWorkspaceSummary,
+  AdminContentItemsResponse, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, AdminUserListItem, AdminWorkspaceSummary,
   ContentMode, MeResponse,
 } from '@shoditsa/contracts'
 
@@ -53,6 +53,7 @@ export type AdminItemDetail = {
   reports: Array<Record<string, unknown>>
   issues: Array<Record<string, unknown>>
   decisions: Array<Record<string, unknown>>
+  tags: AdminContentTag[]
 }
 
 export type ReportListResponse = { items: Array<{ report: Record<string, unknown>; userEmail: string; titleRu: string; sessionStatus: string }>; nextCursor: string | null }
@@ -79,6 +80,8 @@ export const adminApi = {
   me: () => request<MeResponse>('/me'),
   dashboard: () => request<AdminDashboardResponse>('/admin/dashboard'),
   contentItems: (filters: Record<string, unknown>) => request<AdminContentItemsResponse>(`/admin/content/items${query(filters)}`),
+  tags: () => request<{ items: AdminContentTag[] }>('/admin/content/tags'),
+  createTag: (name: string, color?: string) => request<AdminContentTag>('/admin/content/tags', { method: 'POST', body: json({ name, ...(color ? { color } : {}) }) }),
   contentItem: (id: string) => request<AdminItemDetail>(`/admin/content/items/${encodeURIComponent(id)}`),
   contentHistory: (id: string) => request<{ versions: Array<Record<string, unknown>>; drafts: Array<Record<string, unknown>> }>(`/admin/content/items/${encodeURIComponent(id)}/history`),
   workspace: () => request<AdminWorkspaceSummary>('/admin/content/workspace'),
@@ -106,6 +109,7 @@ export const adminApi = {
   pipelineRunEvents: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/events`),
   pipelineItems: (id: string) => request<{ items: Array<Record<string, unknown>> }>(`/admin/pipeline-runs/${id}/items`),
   pipelineDecision: (runId: string, itemId: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/items/${itemId}/decision`, { method: 'PATCH', body: json(body) }),
+  regeneratePipelineItem: (runId: string, itemId: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/items/${itemId}/regenerate`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
   approvePipeline: (runId: string, body: Record<string, unknown>, publish = false) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/${publish ? 'approve-and-publish' : 'approve-to-workspace'}`, { method: 'POST', body: json(body), timeoutMs: 120_000 }),
   cancelPipeline: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/cancel`, { method: 'POST', body: '{}' }),
   continuePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/continue`, { method: 'POST', body: '{}' }),
