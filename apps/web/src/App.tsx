@@ -3282,6 +3282,23 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   if (game.isLoading) return <div className="loading"><Sparkles /> Восстанавливаем сеанс…</div>
   if (!session) return <><AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} /><main className="loading loading--error" role="alert"><AlertTriangle /><h1>Сеанс не открылся</h1><p>{apiErrorMessage(game.error)}</p><ActionButton onClick={onBack}>Назад</ActionButton></main></>
 
+  const isPromoSession = isPromoVariant(session.variantKey)
+  const promoHints = isPromoSession
+    ? session.progressiveHints
+      .map((entry) => {
+        const value = typeof entry.value === 'object' && entry.value !== null ? entry.value as Record<string, unknown> : null
+        const text = typeof value?.text === 'string' ? value.text.trim() : ''
+        if (!text) return null
+        const unlockAfterAttempts = typeof value?.unlockAfterAttempts === 'number' ? value.unlockAfterAttempts : null
+        const authorArchetype = typeof value?.authorArchetype === 'string' ? value.authorArchetype.trim() : ''
+        return { key: entry.key, text, unlockAfterAttempts, authorArchetype }
+      })
+      .filter((entry): entry is { key: string; text: string; unlockAfterAttempts: number | null; authorArchetype: string } => Boolean(entry))
+    : []
+  const promoHeading = isPromoSession ? session.promoPrompt?.title?.trim() || 'Срач дня' : null
+  const promoSubtitle = isPromoSession ? session.promoPrompt?.subtitle?.trim() || '' : ''
+  const promoDisclaimer = isPromoSession ? session.promoPrompt?.disclaimer?.trim() || '' : ''
+
   const attempts = session.attempts.map(serverAttemptToLegacy)
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
@@ -3341,7 +3358,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="game-shell">
       <div className="screen-back-row"><button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
-      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}</span></div><h1>{modeMeta(session.mode).daily} дня</h1><p>{prettyDate(session.puzzleDate)} · серверная сессия</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
+      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}</span></div><h1>{isPromoSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromoSession ? 'DTF promo-пак' : 'серверная сессия'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
+      {isPromoSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
+      {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHintRound)}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}

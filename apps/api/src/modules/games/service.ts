@@ -186,6 +186,10 @@ const loadPromoPack = async (packId: string) => {
   return null
 }
 
+const isPromoSessionVariant = (mode: TitleMode, variantKey: string | null | undefined) => (
+  mode === 'game' && variantKey === PROMO_PACK_ID
+)
+
 const promoPromptOf = (pack: PromoPackDocument) => ({
   packId: pack.pack.id,
   title: pack.pack.title,
@@ -467,8 +471,13 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   }
   const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
+  const isPromoSession = isPromoSessionVariant(session.mode, challengeVariant)
   const promo = await promoSessionPayload(session.mode, challengeVariant, answer, session.attemptsCount)
-  const hintOptions = answer ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey) }))) : []
+  const hintOptions = isPromoSession
+    ? []
+    : answer
+      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey) })))
+      : []
   const result: Record<string, unknown> = {
     id: session.id, kind: session.kind, mode: session.mode, variantKey: challengeVariant, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
@@ -486,7 +495,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
           ? 'available'
           : 'locked',
     })),
-    hintChoices: choices,
+    hintChoices: isPromoSession ? [] : choices,
     hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
     progressiveHints: promo.progressiveHints,
     promoPrompt: promo.promoPrompt,
@@ -561,6 +570,12 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   const lockedReplay = await tx.select({ response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(and(eq(gameHintChoices.sessionId, sessionId), eq(gameHintChoices.idempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return lockedReplay[0].response
   if (session.attemptsCount < checkpoint) throw new ApiError(422, 'HINT_CHECKPOINT_LOCKED', 'Эта подсказка пока недоступна')
+  const variantKey = session.challengeId
+    ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
+    : null
+  if (isPromoSessionVariant(session.mode, variantKey)) {
+    throw new ApiError(422, 'HINT_DISABLED_FOR_PROMO', 'В промо-режиме доступны только подсказки из пакета')
+  }
   const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))
   if (existingChoices.some((choice) => choice.checkpoint === checkpoint)) throw new ApiError(409, 'HINT_ALREADY_CHOSEN', 'Подсказка на этом этапе уже выбрана')
   const answers = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
