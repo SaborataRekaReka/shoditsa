@@ -964,7 +964,7 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
 
   return portraitSource && !failed
     ? <img className={className} src={portraitSource} alt={`Постер «${item.titleRu}»`} onError={() => setFailed(true)} />
-    : <div className={`${className} poster-fallback`}>
+    : <div className={`${className} poster-fallback${item.mode === 'diagnosis' ? ' poster-fallback--diagnosis' : ''}`}>
       {item.mode === 'music'
         ? <>
             <Music2 />
