@@ -1313,7 +1313,7 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -1342,11 +1342,13 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   difficulty: DifficultyKey
   setDifficulty: (difficulty: DifficultyKey) => void
   difficultyCounts: Record<DifficultyKey, number> | null
+  isBusy: boolean
 }) {
   const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
   const canStart = freePlayArmed ? hasActiveFreePlay || freePlayShortage === 0 : !periodLocked || periodShortage === 0
+  const canTriggerStart = canStart && !isBusy
   const playButtonLabel = freePlayArmed
     ? hasActiveFreePlay
       ? 'Продолжить'
@@ -1358,8 +1360,9 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
         ? `Не хватает ${formatTickets(periodShortage)}`
         : `Открыть за ${formatTickets(periodCost)}`
       : 'Начать игру'
+  const playButtonText = isBusy ? 'Запускаем…' : playButtonLabel
   const startSelectedPeriod = async () => {
-    if (!canStart) return
+    if (!canTriggerStart) return
     if (freePlayArmed) {
       onPlay()
       return
@@ -1378,6 +1381,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
       }
       if (event.key === 'Enter') {
         event.preventDefault()
+        if (!canTriggerStart) return
         startSelectedPeriod()
       }
     }
@@ -1449,7 +1453,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                     </div>
                   </div>
                   <div className="game-case__actions">
-                    <ActionButton className="game-case__play" onClick={onPlay}><Play /> Начать игру <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>
+                    <ActionButton className="game-case__play" onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
                   </div>
                 </div>
               </section>
@@ -1499,10 +1503,10 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
             </section>}
         {mode === 'music'
           ? <div className="title-play-row">
-              <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
+              <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
               <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
             </div>
-          : mode !== 'game' && <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
+          : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
     </main>
   </>
@@ -4155,9 +4159,9 @@ function GameApp() {
   }, [])
 
   const startServerSession = useMutation({
-    mutationFn: async ({ body }: { body: GameStartBody; backTarget: 'title' | 'rewatch' | 'hub' }) => {
+    mutationFn: async ({ body, key }: { body: GameStartBody; key: string; backTarget: 'title' | 'rewatch' | 'hub' }) => {
       await ensureServerSession()
-      return api.start(body)
+      return api.start(body, key)
     },
     onSuccess: async (response, variables) => {
       activateServerSession(response.session, variables.backTarget)
@@ -4512,6 +4516,7 @@ function GameApp() {
     if (SERVER_RUNTIME) {
       const today = serverRuntime.meta?.moscowDate ?? getMoscowDate()
       startServerSession.mutate({
+        key: crypto.randomUUID(),
         body: {
           kind: challenge.date === today ? 'daily' : 'archive',
           mode: challenge.mode,
@@ -4569,6 +4574,7 @@ function GameApp() {
   const buyPeriodUnlock = async (periodKey: PeriodKey) => {
     if (!canUnlockPeriods(mode)) return false
     if (SERVER_RUNTIME) {
+      if (unlockServerPeriod.isPending || startServerSession.isPending || startServerFreePlay.isPending) return false
       if (currentUnlockedPeriods.includes(periodKey)) {
         setPeriod(periodKey)
         return true
@@ -4607,6 +4613,7 @@ function GameApp() {
     return true
   }
   const launchFreePlay = () => {
+    if (startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending) return
     if (transition === 'title-to-game') return
     if (!FREE_PLAY_MODES.has(mode)) return
 
@@ -4691,6 +4698,7 @@ function GameApp() {
     setTransition('title-to-game')
   }
   const playToday = () => {
+    if (startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending) return
     if (freePlayArmed) {
       launchFreePlay()
       return
@@ -4702,6 +4710,7 @@ function GameApp() {
       setFreePlayArmed(false)
       const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
       startServerSession.mutate({
+        key: crypto.randomUUID(),
         body: {
           kind: 'daily',
           mode,
@@ -4744,8 +4753,10 @@ function GameApp() {
       return
     }
     if (SERVER_RUNTIME) {
+      if (startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending) return
       setServerActionError('')
       startServerSession.mutate({
+        key: crypto.randomUUID(),
         body: {
           kind: 'archive',
           mode,
@@ -4772,6 +4783,7 @@ function GameApp() {
     setPeriod(nextPeriod)
   }
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
+  const titleActionPending = startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending
   const completeTitleTransition = () => {
     if (transition !== 'title-to-game') return
     setScreen('game')
@@ -4783,7 +4795,7 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

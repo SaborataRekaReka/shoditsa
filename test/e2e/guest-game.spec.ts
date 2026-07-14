@@ -45,6 +45,11 @@ const answerTitleForSession = async (sessionId: string) => {
 
 const ticketBalance = async (page: Page) => Number(await page.locator('.header-economy strong').first().textContent())
 
+const expectNoHorizontalOverflow = async (page: Page, screen: string) => {
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  expect(overflow, `Горизонтальный overflow на экране: ${screen}`).toBeLessThanOrEqual(1)
+}
+
 const footerNavigation = (page: Page) => page.getByRole('navigation', { name: 'Навигация в подвале' })
 
 const openGuestProfile = async (page: Page) => {
@@ -113,6 +118,30 @@ test('archive screen starts a server archive session in the polished layout', as
   await page.getByRole('button', { name: /Вчера/ }).click()
   await expect(searchInput(page)).toBeVisible({ timeout: 15_000 })
   await expect(page.locator('.game-heading')).toContainText('Архив')
+})
+
+test('critical guest screens stay in viewport and main navigation remains clickable', async ({ page }) => {
+  await page.goto('/')
+  await expectNoHorizontalOverflow(page, 'hub')
+
+  await openModeLobby(page, 'Кино')
+  await expectNoHorizontalOverflow(page, 'title')
+
+  await page.getByRole('button', { name: 'Начать игру' }).click()
+  await expect(searchInput(page)).toBeVisible({ timeout: 15_000 })
+  await expectNoHorizontalOverflow(page, 'game')
+
+  await page.getByRole('button', { name: 'На главный экран' }).first().click()
+  await expect(page.getByRole('heading', { name: 'Все сойдется!' })).toBeVisible()
+  await expectNoHorizontalOverflow(page, 'hub-after-game')
+
+  await footerNavigation(page).getByRole('button', { name: 'Профиль' }).click()
+  await expect(page.getByRole('heading', { name: 'Гость кинозала' })).toBeVisible()
+  await expectNoHorizontalOverflow(page, 'profile')
+
+  await footerNavigation(page).getByRole('button', { name: 'Архив' }).click()
+  await expect(page.getByRole('heading', { name: 'Архив' })).toBeVisible()
+  await expectNoHorizontalOverflow(page, 'archive')
 })
 
 test('server exposes the first assist checkpoint after five attempts', async ({ page }) => {
