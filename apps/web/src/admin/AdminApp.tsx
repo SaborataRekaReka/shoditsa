@@ -304,7 +304,7 @@ function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { i
   </div></div>
 }
 
-function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
+function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const params = new URLSearchParams(location.search)
   const [q, setQ] = useState(params.get('q') ?? ''); const [mode, setMode] = useState(params.get('mode') ?? ''); const [publication, setPublication] = useState(params.get('publication') ?? 'all'); const [pageSize, setPageSize] = useState<20 | 40 | 60 | 100>(60); const [view, setView] = useState<'table' | 'grid' | 'review'>('table'); const [selected, setSelected] = useState<Set<string>>(new Set()); const [adding, setAdding] = useState(false); const [exchange, setExchange] = useState<'export' | 'import' | null>(null); const loadMoreRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => { const next = new URLSearchParams(); if (q) next.set('q', q); if (mode) next.set('mode', mode); if (publication !== 'all') next.set('publication', publication); history.replaceState({}, '', `${location.pathname}${next.size ? `?${next}` : ''}`) }, [q, mode, publication])
@@ -324,6 +324,286 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     {selectedId && <ItemEditor itemId={selectedId} onClose={() => navigate('content')} notify={notify} />}
     {adding && <NewCardDialog close={() => setAdding(false)} done={(id) => { setAdding(false); navigate('content', id); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} notify={notify} />}
     {exchange && <ContentExchangeDialog initialTab={exchange} itemIds={[...selected]} close={() => setExchange(null)} notify={notify} done={() => { setExchange(null); setSelected(new Set()); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} />}
+  </>
+}
+
+function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
+  const client = useQueryClient()
+  const params = new URLSearchParams(location.search)
+
+  type ContentSortKey = 'titleRu' | 'id' | 'mode' | 'status' | 'source' | 'pipelineKey' | 'fieldsFilled' | 'hasHint' | 'completeness' | 'reportsCount' | 'issuesCount' | 'updatedAt'
+  type ContentFieldFilter = 'all' | 'title' | 'id' | 'mode' | 'status' | 'source' | 'pipeline' | 'fields' | 'hint' | 'reports' | 'issues' | 'completeness' | 'missing'
+  const sortableKeys: ContentSortKey[] = ['titleRu', 'id', 'mode', 'status', 'source', 'pipelineKey', 'fieldsFilled', 'hasHint', 'completeness', 'reportsCount', 'issuesCount', 'updatedAt']
+  const validFieldFilters: ContentFieldFilter[] = ['all', 'title', 'id', 'mode', 'status', 'source', 'pipeline', 'fields', 'hint', 'reports', 'issues', 'completeness', 'missing']
+  const parseTriState = (value: string | null): 'all' | 'yes' | 'no' => value === 'yes' || value === 'no' ? value : 'all'
+  const parseFieldFilter = (value: string | null): ContentFieldFilter => value && validFieldFilters.includes(value as ContentFieldFilter) ? value as ContentFieldFilter : 'all'
+  const parseSortKey = (value: string | null): ContentSortKey => value && sortableKeys.includes(value as ContentSortKey) ? value as ContentSortKey : 'updatedAt'
+  const parseSortOrder = (value: string | null): 'asc' | 'desc' => value === 'asc' || value === 'desc' ? value : 'desc'
+  const sourceLabelMap: Record<string, string> = {
+    manual: 'Ручное',
+    ai_pipeline: 'AI пайплайн',
+    bulk: 'Массовое',
+    import: 'Импорт',
+    rollback: 'Откат',
+    report_fix: 'Фикс по репорту',
+  }
+  const pipelineLabelMap: Record<string, string> = {
+    music: 'Музыка',
+    movie: 'Кино',
+    anime: 'Аниме',
+  }
+
+  const [q, setQ] = useState(params.get('q') ?? '')
+  const [mode, setMode] = useState(params.get('mode') ?? '')
+  const [publication, setPublication] = useState(params.get('publication') ?? 'all')
+  const [source, setSource] = useState(params.get('source') ?? '')
+  const [pipelineFilter, setPipelineFilter] = useState(params.get('pipeline') ?? '')
+  const [hintFilter, setHintFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasHint')))
+  const [reportsFilter, setReportsFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasReports')))
+  const [issuesFilter, setIssuesFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasIssues')))
+  const [fieldFilter, setFieldFilter] = useState<ContentFieldFilter>(parseFieldFilter(params.get('field')))
+  const [fieldFilterValue, setFieldFilterValue] = useState(params.get('fieldQ') ?? '')
+  const [sortBy, setSortBy] = useState<ContentSortKey>(parseSortKey(params.get('sortBy')))
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(parseSortOrder(params.get('sortOrder')))
+  const [pageSize, setPageSize] = useState<20 | 40 | 60 | 100>(60)
+  const [view, setView] = useState<'table' | 'grid' | 'review'>('table')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [selectionAnchorIndex, setSelectionAnchorIndex] = useState<number | null>(null)
+  const [adding, setAdding] = useState(false)
+  const [exchange, setExchange] = useState<'export' | 'import' | null>(null)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const next = new URLSearchParams()
+    if (q) next.set('q', q)
+    if (mode) next.set('mode', mode)
+    if (publication !== 'all') next.set('publication', publication)
+    if (source) next.set('source', source)
+    if (pipelineFilter) next.set('pipeline', pipelineFilter)
+    if (hintFilter !== 'all') next.set('hasHint', hintFilter)
+    if (reportsFilter !== 'all') next.set('hasReports', reportsFilter)
+    if (issuesFilter !== 'all') next.set('hasIssues', issuesFilter)
+    if (fieldFilter !== 'all') next.set('field', fieldFilter)
+    if (fieldFilterValue.trim()) next.set('fieldQ', fieldFilterValue.trim())
+    if (sortBy !== 'updatedAt') next.set('sortBy', sortBy)
+    if (sortOrder !== 'desc') next.set('sortOrder', sortOrder)
+    history.replaceState({}, '', `${location.pathname}${next.size ? `?${next}` : ''}`)
+  }, [fieldFilter, fieldFilterValue, hintFilter, issuesFilter, mode, pipelineFilter, publication, q, reportsFilter, sortBy, sortOrder, source])
+
+  const items = useInfiniteQuery({
+    queryKey: ['admin', 'content', { q, mode, publication, pageSize, source, pipelineFilter, hintFilter, reportsFilter, issuesFilter }],
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) => adminApi.contentItems({
+      q,
+      mode,
+      publication,
+      source,
+      pipelineKey: pipelineFilter || undefined,
+      hasHint: hintFilter === 'yes' ? true : hintFilter === 'no' ? false : undefined,
+      hasReports: reportsFilter === 'yes' ? true : reportsFilter === 'no' ? false : undefined,
+      hasIssues: issuesFilter === 'yes' ? true : issuesFilter === 'no' ? false : undefined,
+      limit: pageSize,
+      cursor: pageParam ?? undefined,
+    }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  })
+
+  const listedItems = useMemo(() => items.data?.pages.flatMap((page) => page.items) as AdminContentListItem[] ?? [], [items.data])
+  const totalItems = items.data?.pages[0]?.total ?? 0
+
+  useEffect(() => {
+    const target = loadMoreRef.current
+    if (!target || !items.hasNextPage || items.isFetchingNextPage) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) void items.fetchNextPage()
+    }, { rootMargin: '320px' })
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [items.fetchNextPage, items.hasNextPage, items.isFetchingNextPage])
+
+  const text = (value: unknown) => String(value ?? '').toLocaleLowerCase('ru-RU').trim()
+  const sourceLabel = (value: AdminContentListItem['source']) => value ? sourceLabelMap[value] ?? value : '—'
+  const pipelineLabel = (value: AdminContentListItem['pipelineKey']) => value ? pipelineLabelMap[value] ?? value : '—'
+  const asNumber = (value: unknown) => Number.isFinite(Number(value)) ? Number(value) : 0
+
+  const filteredItems = useMemo(() => {
+    const needle = text(fieldFilterValue)
+    if (!needle) return listedItems
+    const byField = (item: AdminContentListItem) => {
+      const title = `${item.titleRu} ${item.titleOriginal}`
+      const status = item.allowedInGame ? 'в игре active' : 'скрыта hidden'
+      const fields = `${item.fieldsFilled}/${item.fieldsTotal}`
+      const hint = item.hasHint ? 'есть yes true' : 'нет no false'
+      const reports = String(item.reportsCount)
+      const issues = String(item.issuesCount)
+      const completeness = String(item.completeness)
+      const sourceValue = sourceLabel(item.source)
+      const pipelineValue = pipelineLabel(item.pipelineKey)
+      const missing = item.missingFields.join(' ')
+      const all = [title, item.id, MODE_LABEL[item.mode], status, sourceValue, pipelineValue, fields, hint, reports, issues, completeness, missing]
+      if (fieldFilter === 'all') return all.join(' ')
+      if (fieldFilter === 'title') return title
+      if (fieldFilter === 'id') return item.id
+      if (fieldFilter === 'mode') return MODE_LABEL[item.mode]
+      if (fieldFilter === 'status') return status
+      if (fieldFilter === 'source') return sourceValue
+      if (fieldFilter === 'pipeline') return pipelineValue
+      if (fieldFilter === 'fields') return fields
+      if (fieldFilter === 'hint') return hint
+      if (fieldFilter === 'reports') return reports
+      if (fieldFilter === 'issues') return issues
+      if (fieldFilter === 'completeness') return completeness
+      return missing
+    }
+    return listedItems.filter((item) => text(byField(item)).includes(needle))
+  }, [fieldFilter, fieldFilterValue, listedItems])
+
+  const sortedItems = useMemo(() => {
+    const compareText = (left: string, right: string) => left.localeCompare(right, 'ru-RU', { sensitivity: 'base' })
+    const compareNumber = (left: number, right: number) => left === right ? 0 : left > right ? 1 : -1
+    const compare = (left: AdminContentListItem, right: AdminContentListItem) => {
+      if (sortBy === 'titleRu') return compareText(left.titleRu, right.titleRu)
+      if (sortBy === 'id') return compareText(left.id, right.id)
+      if (sortBy === 'mode') return compareText(MODE_LABEL[left.mode], MODE_LABEL[right.mode])
+      if (sortBy === 'status') return compareNumber(left.allowedInGame ? 1 : 0, right.allowedInGame ? 1 : 0)
+      if (sortBy === 'source') return compareText(sourceLabel(left.source), sourceLabel(right.source))
+      if (sortBy === 'pipelineKey') return compareText(pipelineLabel(left.pipelineKey), pipelineLabel(right.pipelineKey))
+      if (sortBy === 'fieldsFilled') return compareNumber(left.fieldsFilled, right.fieldsFilled)
+      if (sortBy === 'hasHint') return compareNumber(left.hasHint ? 1 : 0, right.hasHint ? 1 : 0)
+      if (sortBy === 'completeness') return compareNumber(left.completeness, right.completeness)
+      if (sortBy === 'reportsCount') return compareNumber(left.reportsCount, right.reportsCount)
+      if (sortBy === 'issuesCount') return compareNumber(left.issuesCount, right.issuesCount)
+      return compareNumber(Date.parse(left.updatedAt) || 0, Date.parse(right.updatedAt) || 0)
+    }
+    const direction = sortOrder === 'asc' ? 1 : -1
+    return [...filteredItems].sort((left, right) => {
+      const result = compare(left, right)
+      if (result !== 0) return result * direction
+      return left.id.localeCompare(right.id, 'ru-RU', { sensitivity: 'base' })
+    })
+  }, [filteredItems, sortBy, sortOrder])
+
+  const selectedVisibleCount = useMemo(() => sortedItems.reduce((count, item) => count + (selected.has(item.id) ? 1 : 0), 0), [selected, sortedItems])
+
+  const bulk = useMutation({
+    mutationFn: (operation: 'allow' | 'disallow') => adminApi.bulkContent({
+      itemIds: [...selected],
+      operation,
+      reason: operation === 'allow' ? 'Массовое включение в игру' : 'Массовое исключение из игры',
+    }),
+    onSuccess: (data) => {
+      notify('success', `Обработано: ${data.succeeded ?? 0}, ошибок: ${data.failed ?? 0}`)
+      setSelected(new Set())
+      setSelectionAnchorIndex(null)
+      void client.invalidateQueries({ queryKey: ['admin', 'content'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'workspace'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+
+  const toggleSort = (key: ContentSortKey) => {
+    const defaultDesc = new Set<ContentSortKey>(['updatedAt', 'reportsCount', 'issuesCount', 'completeness', 'fieldsFilled'])
+    if (sortBy === key) {
+      setSortOrder((current) => current === 'asc' ? 'desc' : 'asc')
+      return
+    }
+    setSortBy(key)
+    setSortOrder(defaultDesc.has(key) ? 'desc' : 'asc')
+  }
+
+  const sortMark = (key: ContentSortKey) => {
+    if (sortBy !== key) return '↕'
+    return sortOrder === 'asc' ? '▲' : '▼'
+  }
+
+  const updateSelection = (itemId: string, rowIndex: number, checked: boolean, withShift: boolean) => {
+    setSelected((current) => {
+      const next = new Set(current)
+      if (withShift && selectionAnchorIndex != null && sortedItems.length > 0) {
+        const from = Math.min(selectionAnchorIndex, rowIndex)
+        const to = Math.max(selectionAnchorIndex, rowIndex)
+        for (let index = from; index <= to; index += 1) {
+          const targetId = sortedItems[index]?.id
+          if (!targetId) continue
+          if (checked) next.add(targetId)
+          else next.delete(targetId)
+        }
+      } else if (checked) {
+        next.add(itemId)
+      } else {
+        next.delete(itemId)
+      }
+      return next
+    })
+    setSelectionAnchorIndex(rowIndex)
+  }
+
+  const resetFilters = () => {
+    setQ('')
+    setMode('')
+    setPublication('all')
+    setSource('')
+    setPipelineFilter('')
+    setHintFilter('all')
+    setReportsFilter('all')
+    setIssuesFilter('all')
+    setFieldFilter('all')
+    setFieldFilterValue('')
+    setSortBy('updatedAt')
+    setSortOrder('desc')
+    setSelected(new Set())
+    setSelectionAnchorIndex(null)
+  }
+
+  const hasLocalFilter = Boolean(fieldFilterValue.trim()) || fieldFilter !== 'all'
+
+  return <>
+    <PageHead
+      eyebrow="Контент"
+      title="Карточки"
+      description="Поиск, проверка и публикация всех шести игровых библиотек."
+      actions={<><div className="admin-view-switch"><button className={view === 'table' ? 'is-active' : ''} onClick={() => setView('table')}><Menu />Таблица</button><button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')}><Boxes />Карточки</button><button className={view === 'review' ? 'is-active' : ''} onClick={() => setView('review')}><Eye />Проверка</button></div><button className="admin-btn admin-btn--secondary" onClick={() => setExchange('import')}><Upload />Импорт JSON</button><button className="admin-btn admin-btn--secondary" disabled={!selected.size} onClick={() => setExchange('export')}><Download />Экспорт JSON{selected.size ? ` · ${selected.size}` : ''}</button><button className="admin-btn admin-btn--primary" onClick={() => setAdding(true)}><Plus />Добавить карточку</button></>}
+    />
+    <WorkspaceBar notify={notify} />
+
+    <div className="admin-toolbar admin-toolbar--content">
+      <label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Название, альтернативное название или ID" />{q && <button onClick={() => setQ('')}><X /></button>}</label>
+      <label><Filter /><select value={mode} onChange={(event) => setMode(event.target.value)}><option value="">Все категории</option>{MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></label>
+      <label><Archive /><select value={publication} onChange={(event) => setPublication(event.target.value)}><option value="all">Все статусы</option><option value="published">Опубликованы</option><option value="hidden">Скрыты</option></select></label>
+      <label><FileJson /><select value={source} onChange={(event) => setSource(event.target.value)}><option value="">Все источники</option><option value="manual">Ручное</option><option value="ai_pipeline">AI пайплайн</option><option value="bulk">Массовое</option><option value="import">Импорт</option><option value="rollback">Откат</option><option value="report_fix">Фикс по репорту</option></select></label>
+      <label><Bot /><select value={pipelineFilter} onChange={(event) => setPipelineFilter(event.target.value)}><option value="">Любой пайплайн</option><option value="music">Музыка</option><option value="movie">Кино</option><option value="anime">Аниме</option></select></label>
+      <label><Sparkles /><select value={hintFilter} onChange={(event) => setHintFilter(event.target.value as 'all' | 'yes' | 'no')}><option value="all">Подсказка: все</option><option value="yes">Подсказка: есть</option><option value="no">Подсказка: нет</option></select></label>
+      <label><Bug /><select value={reportsFilter} onChange={(event) => setReportsFilter(event.target.value as 'all' | 'yes' | 'no')}><option value="all">Репорты: все</option><option value="yes">Репорты: есть</option><option value="no">Репорты: нет</option></select></label>
+      <label><AlertTriangle /><select value={issuesFilter} onChange={(event) => setIssuesFilter(event.target.value as 'all' | 'yes' | 'no')}><option value="all">Качество: все</option><option value="yes">Качество: есть проблемы</option><option value="no">Качество: без проблем</option></select></label>
+      <label><ListChecks /><select aria-label="Размер страницы" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100); setSelected(new Set()); setSelectionAnchorIndex(null) }}><option value={20}>20</option><option value={40}>40</option><option value={60}>60</option><option value={100}>100</option></select></label>
+      <button className="admin-btn admin-btn--secondary" onClick={() => void items.refetch()}><RefreshCw /></button>
+    </div>
+
+    <div className="admin-toolbar admin-toolbar--content admin-toolbar--sub">
+      <label><Filter /><select value={fieldFilter} onChange={(event) => setFieldFilter(event.target.value as ContentFieldFilter)}><option value="all">Локальный фильтр: все поля</option><option value="title">Название</option><option value="id">ID</option><option value="mode">Категория</option><option value="status">Статус</option><option value="source">Источник</option><option value="pipeline">Пайплайн</option><option value="fields">Заполнено полей</option><option value="hint">Подсказка</option><option value="reports">Репорты</option><option value="issues">Качество</option><option value="completeness">Полнота</option><option value="missing">Чего не хватает</option></select></label>
+      <label className="admin-search admin-search--compact"><Search /><input value={fieldFilterValue} onChange={(event) => setFieldFilterValue(event.target.value)} placeholder="Фильтр по выбранному полю" />{fieldFilterValue && <button onClick={() => setFieldFilterValue('')}><X /></button>}</label>
+      <button className="admin-btn admin-btn--secondary" onClick={resetFilters}>Сбросить фильтры</button>
+    </div>
+
+    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => setExchange('export')}><Download />Экспорт JSON</button><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><button onClick={() => { setSelected(new Set()); setSelectionAnchorIndex(null) }}><X />Снять выбор</button></div>}
+
+    {items.isLoading
+      ? <Loading />
+      : items.error
+        ? <ErrorState error={items.error} retry={() => void items.refetch()} />
+        : !listedItems.length
+          ? <Empty title="Ничего не найдено" text="Измените запрос или сбросьте фильтры." icon={<Search />} action={<button className="admin-btn admin-btn--secondary" onClick={resetFilters}>Сбросить фильтры</button>} />
+          : !sortedItems.length
+            ? <Empty title="По локальному фильтру совпадений нет" text="Измените поле/значение локального фильтра или сбросьте его." icon={<Filter />} action={<button className="admin-btn admin-btn--secondary" onClick={() => { setFieldFilter('all'); setFieldFilterValue('') }}>Сбросить локальный фильтр</button>} />
+            : view === 'grid'
+              ? <div className="admin-content-grid">{sortedItems.map((item) => <button key={item.id} onClick={() => navigate('content', item.id)}><div>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <ImageIcon />}{item.draftVersion && <span>Draft v{item.draftVersion}</span>}</div><small>{MODE_LABEL[item.mode]}</small><strong>{item.titleRu}</strong><p>{item.titleOriginal || item.id}</p><footer><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status><span>{item.fieldsFilled}/{item.fieldsTotal} · {item.completeness}%</span></footer></button>)}</div>
+              : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все" checked={sortedItems.length > 0 && selectedVisibleCount === sortedItems.length} onChange={(event) => { const checked = event.target.checked; setSelected((current) => { const next = new Set(current); for (const item of sortedItems) { if (checked) next.add(item.id); else next.delete(item.id) } return next }); setSelectionAnchorIndex(null) }} /></th><th><button className="admin-th-sort" onClick={() => toggleSort('titleRu')}>Карточка <span className={`admin-th-sort__mark ${sortBy === 'titleRu' ? 'is-active' : ''}`}>{sortMark('titleRu')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('id')}>ID <span className={`admin-th-sort__mark ${sortBy === 'id' ? 'is-active' : ''}`}>{sortMark('id')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('mode')}>Категория <span className={`admin-th-sort__mark ${sortBy === 'mode' ? 'is-active' : ''}`}>{sortMark('mode')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('status')}>Статус <span className={`admin-th-sort__mark ${sortBy === 'status' ? 'is-active' : ''}`}>{sortMark('status')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('source')}>Источник <span className={`admin-th-sort__mark ${sortBy === 'source' ? 'is-active' : ''}`}>{sortMark('source')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('pipelineKey')}>Пайплайн <span className={`admin-th-sort__mark ${sortBy === 'pipelineKey' ? 'is-active' : ''}`}>{sortMark('pipelineKey')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('fieldsFilled')}>Поля <span className={`admin-th-sort__mark ${sortBy === 'fieldsFilled' ? 'is-active' : ''}`}>{sortMark('fieldsFilled')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('hasHint')}>Подсказка <span className={`admin-th-sort__mark ${sortBy === 'hasHint' ? 'is-active' : ''}`}>{sortMark('hasHint')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('completeness')}>Полнота <span className={`admin-th-sort__mark ${sortBy === 'completeness' ? 'is-active' : ''}`}>{sortMark('completeness')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('reportsCount')}>Репорты <span className={`admin-th-sort__mark ${sortBy === 'reportsCount' ? 'is-active' : ''}`}>{sortMark('reportsCount')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('issuesCount')}>Качество <span className={`admin-th-sort__mark ${sortBy === 'issuesCount' ? 'is-active' : ''}`}>{sortMark('issuesCount')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('updatedAt')}>Изменена <span className={`admin-th-sort__mark ${sortBy === 'updatedAt' ? 'is-active' : ''}`}>{sortMark('updatedAt')}</span></button></th><th /></tr></thead><tbody>{sortedItems.map((item, rowIndex) => <tr key={item.id} className={selectedId === item.id ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${item.titleRu}`} checked={selected.has(item.id)} onChange={(event) => updateSelection(item.id, rowIndex, event.target.checked, event.nativeEvent instanceof MouseEvent ? event.nativeEvent.shiftKey : false)} /></td><td><button className="admin-title-cell" onClick={() => navigate('content', item.id)}>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <span><ImageIcon /></span>}<span><strong>{item.titleRu}</strong><small>{item.titleOriginal || 'Без оригинального названия'}{item.year ? ` · ${item.year}` : ''}</small></span></button></td><td><code>{item.id}</code></td><td>{MODE_LABEL[item.mode]}</td><td><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status>{item.draftVersion && <small className="admin-draft-label">Draft v{item.draftVersion}</small>}</td><td><span className={`admin-source-chip ${item.source ? `admin-source-chip--${item.source}` : ''}`}>{sourceLabel(item.source)}</span></td><td>{pipelineLabel(item.pipelineKey)}</td><td>{item.fieldsFilled}/{item.fieldsTotal}</td><td>{item.hasHint ? <Status value="active">Есть</Status> : <Status value="warning">Нет</Status>}</td><td><div className="admin-completeness admin-completeness--hint" data-tooltip={item.missingFields.length ? `Не хватает: ${item.missingFields.join(', ')}` : 'Все базовые поля заполнены'}><i style={{ width: `${item.completeness}%` }} /><span>{item.completeness}%</span></div></td><td>{item.reportsCount ? <button className="admin-count admin-count--warn" onClick={() => navigate('reports')}>{item.reportsCount}</button> : '—'}</td><td>{item.issuesCount ? <span className="admin-count admin-count--danger">{item.issuesCount}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt)}</td><td><button className="admin-icon-btn" onClick={() => navigate('content', item.id)}><ChevronRight /></button></td></tr>)}</tbody></table><footer className="admin-table-footer"><span>Показано {sortedItems.length} из {totalItems.toLocaleString('ru-RU')}{hasLocalFilter ? ' · локальный фильтр включён' : ''}</span></footer></div>}
+
+    <div className="admin-content-pagination" ref={loadMoreRef}>{items.hasNextPage ? items.isFetchingNextPage ? 'Загружаем дальше…' : 'Прокрутите ниже, чтобы догрузить список' : `Загружены все ${listedItems.length.toLocaleString('ru-RU')}`}</div>
+
+    {selectedId && <ItemEditor itemId={selectedId} onClose={() => navigate('content')} notify={notify} />}
+    {adding && <NewCardDialog close={() => setAdding(false)} done={(id) => { setAdding(false); navigate('content', id); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} notify={notify} />}
+    {exchange && <ContentExchangeDialog initialTab={exchange} itemIds={[...selected]} close={() => setExchange(null)} notify={notify} done={() => { setExchange(null); setSelected(new Set()); setSelectionAnchorIndex(null); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} />}
   </>
 }
 
@@ -847,7 +1127,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
           <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{moderationHint}</p></article></section>
           <section className="admin-moderation-meta"><article><small>Изменено полей</small><strong>{moderationChangedFields.length}</strong></article><article><small>Обновлено</small><strong>{compactDate(moderationItem.updatedAt || moderationItem.createdAt)}</strong></article><article><small>ID карточки</small><strong>{title(moderationItem.entityKey)}</strong></article><article><small>Предупреждения</small><strong>{moderationWarnings.length || 'Нет'}</strong></article>{moderationChangedFields.length > 0 && <div className="admin-moderation-changes">{moderationChangedFields.map((field) => <span key={field}>{field}</span>)}</div>}</section>
         </div>
-        <footer className="admin-review-footer"><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(-1)} disabled={moderationIndex === 0 || decide.isPending}><ChevronLeft />Назад<kbd>←</kbd></button><button className="admin-btn admin-btn--secondary" onClick={() => submitModerationDecision(false)} disabled={decide.isPending}><X />Отклонить<kbd>X</kbd></button><button className="admin-btn admin-btn--primary" onClick={() => submitModerationDecision(true)} disabled={decide.isPending}><Check />Одобрить<kbd>C</kbd></button><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(1)} disabled={moderationIndex >= reviewQueue.length - 1 || decide.isPending}>Дальше<ChevronRight /><kbd>→</kbd></button></footer>
+        <footer className="admin-review-footer"><button className="ui-button ui-button--ghost" onClick={() => moveModeration(-1)} disabled={moderationIndex === 0 || decide.isPending}><ChevronLeft />Назад<span className="keycap-hint keycap-hint--inline" aria-hidden="true">←</span></button><button className="ui-button ui-button--secondary" onClick={() => submitModerationDecision(false)} disabled={decide.isPending}><X />Отклонить<span className="keycap-hint keycap-hint--inline" aria-hidden="true">X</span></button><button className="ui-button ui-button--primary" onClick={() => submitModerationDecision(true)} disabled={decide.isPending}><Check />Одобрить<span className="keycap-hint keycap-hint--inline" aria-hidden="true">C</span></button><button className="ui-button ui-button--ghost" onClick={() => moveModeration(1)} disabled={moderationIndex >= reviewQueue.length - 1 || decide.isPending}>Дальше<ChevronRight /><span className="keycap-hint keycap-hint--inline" aria-hidden="true">→</span></button></footer>
       </div>
     </div>}
     {selectedRun && activePipelineItem && <div className="admin-drawer"><header className="admin-drawer__head"><div><small>{pipelineLabel(selectedRun.pipelineKey)} · {title(activePipelineItem.entityKey)}</small><h2>{title(record(activePipelineItem.proposedJson).titleRu || record(activePipelineItem.proposedJson).name || activePipelineItem.entityKey)}</h2></div><div><Status value={activePipelineItem.status} /><button onClick={() => setActivePipelineItemId(null)}><X /></button></div></header><div className="admin-drawer__body"><div className="admin-diff">{itemDiffFields(record(activePipelineItem)).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(record(activePipelineItem.beforeJson)[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(record(activePipelineItem.proposedJson)[field], null, 2) ?? '—'}</pre></div>)}</div>{pipelineWarnings(activePipelineItem.warningsJson).length > 0 && <div className="admin-pipeline-item-warnings"><AlertTriangle />{pipelineWarnings(activePipelineItem.warningsJson).join(' · ')}</div>}</div><footer className="admin-drawer__footer"><div><small>{title(activePipelineItem.entityKey)}</small></div><button className="admin-btn admin-btn--secondary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: false })}><X />Отклонить</button><button className="admin-btn admin-btn--primary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: true })}><Check />Принять</button></footer></div>}

@@ -63,10 +63,73 @@ const posterOf = (payload: unknown) => {
   const record = asRecord(payload)
   return typeof record.posterUrl === 'string' ? record.posterUrl : typeof record.headerUrl === 'string' ? record.headerUrl : null
 }
-const completionOf = (payload: unknown) => {
+type CompletionField = { label: string; present: (payload: Record<string, unknown>) => boolean }
+
+const hasTextValue = (value: unknown) => typeof value === 'string' && value.trim().length > 0
+
+const hasContentValue = (value: unknown): boolean => {
+  if (value == null) return false
+  if (typeof value === 'string') return value.trim().length > 0
+  if (typeof value === 'number') return Number.isFinite(value)
+  if (typeof value === 'boolean') return true
+  if (Array.isArray(value)) return value.some((entry) => hasContentValue(entry))
+  if (typeof value === 'object') return Object.values(asRecord(value)).some((entry) => hasContentValue(entry))
+  return false
+}
+
+const valueFromKeys = (payload: Record<string, unknown>, keys: string[]) => keys.some((key) => hasContentValue(payload[key]))
+
+const COMPLETION_COMMON_FIELDS: CompletionField[] = [
+  { label: 'Русское название', present: (payload) => hasTextValue(payload.titleRu) },
+  { label: 'Оригинальное название', present: (payload) => hasTextValue(payload.titleOriginal) },
+  { label: 'Альтернативные названия', present: (payload) => hasContentValue(payload.alternativeTitles) },
+  { label: 'Подсказка', present: (payload) => hasTextValue(payload.plotHint) || hasTextValue(payload.description) },
+  { label: 'Постер', present: (payload) => valueFromKeys(payload, ['posterUrl', 'headerUrl', 'backdropUrl']) },
+  { label: 'Жанры', present: (payload) => hasContentValue(payload.genres) },
+]
+
+const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
+  movie: [
+    { label: 'Год', present: (payload) => hasContentValue(payload.year) },
+    { label: 'Страна', present: (payload) => valueFromKeys(payload, ['countries', 'country']) },
+    { label: 'Рейтинг Кинопоиска', present: (payload) => valueFromKeys(payload, ['kp', 'kpRating', 'kinopoiskRating']) },
+  ],
+  series: [
+    { label: 'Год', present: (payload) => hasContentValue(payload.year) },
+    { label: 'Страна', present: (payload) => valueFromKeys(payload, ['countries', 'country']) },
+    { label: 'Сезоны', present: (payload) => hasContentValue(payload.seasons) || hasContentValue(payload.seasonsCount) },
+  ],
+  anime: [
+    { label: 'Год', present: (payload) => hasContentValue(payload.year) },
+    { label: 'Эпизоды', present: (payload) => hasContentValue(payload.episodes) || hasContentValue(payload.episodesAired) },
+    { label: 'Студия', present: (payload) => valueFromKeys(payload, ['studio', 'studios']) },
+  ],
+  game: [
+    { label: 'Платформы', present: (payload) => hasContentValue(payload.platforms) },
+    { label: 'Разработчики', present: (payload) => valueFromKeys(payload, ['developers', 'developer']) },
+    { label: 'Издатели', present: (payload) => valueFromKeys(payload, ['publishers', 'publisher']) },
+  ],
+  music: [
+    { label: 'Страна', present: (payload) => valueFromKeys(payload, ['countries', 'country']) },
+    { label: 'Топ-треки', present: (payload) => hasContentValue(payload.topTracks) },
+    { label: 'Топ-альбомы', present: (payload) => hasContentValue(payload.topAlbums) },
+  ],
+  diagnosis: [
+    { label: 'МКБ / группа', present: (payload) => valueFromKeys(payload, ['icd10', 'icdGroup']) },
+    { label: 'Системы организма', present: (payload) => hasContentValue(payload.bodySystems) },
+    { label: 'Симптомы', present: (payload) => valueFromKeys(payload, ['keySymptoms', 'symptoms']) },
+  ],
+}
+
+const completionMeta = (payload: unknown, mode: ContentMode) => {
   const record = asRecord(payload)
-  const fields = ['titleRu', 'titleOriginal', 'alternativeTitles', 'plotHint', 'posterUrl', 'genres']
-  return Math.round(fields.filter((field) => record[field] != null && record[field] !== '' && (!Array.isArray(record[field]) || (record[field] as unknown[]).length > 0)).length / fields.length * 100)
+  const fields = [...COMPLETION_COMMON_FIELDS, ...(COMPLETION_MODE_FIELDS[mode] ?? [])]
+  const missingFields = fields.filter((field) => !field.present(record)).map((field) => field.label)
+  const fieldsTotal = fields.length
+  const fieldsFilled = fieldsTotal - missingFields.length
+  const completeness = fieldsTotal > 0 ? Math.round(fieldsFilled / fieldsTotal * 100) : 0
+  const hasHint = hasTextValue(record.plotHint) || hasTextValue(record.description)
+  return { completeness, fieldsFilled, fieldsTotal, missingFields, hasHint }
 }
 
 const normalizeArtistName = (value: unknown) => String(value ?? '').normalize('NFKC').toLocaleLowerCase('ru-RU')
@@ -213,8 +276,14 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     if (query.mode) filters.push(eq(contentItemVersions.mode, query.mode))
     if (query.publication === 'published') filters.push(eq(contentItemVersions.allowedInGame, true))
     if (query.publication === 'hidden') filters.push(eq(contentItemVersions.allowedInGame, false))
-    if (query.hasReports) filters.push(sql`exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
-    if (query.hasIssues) filters.push(sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
+    if (query.hasReports === true) filters.push(sql`exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
+    if (query.hasReports === false) filters.push(sql`not exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
+    if (query.hasIssues === true) filters.push(sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
+    if (query.hasIssues === false) filters.push(sql`not exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
+    if (query.hasHint === true) filters.push(sql`coalesce(nullif(trim(${contentItemVersions.payload}->>'plotHint'), ''), nullif(trim(${contentItemVersions.payload}->>'description'), '')) is not null`)
+    if (query.hasHint === false) filters.push(sql`coalesce(nullif(trim(${contentItemVersions.payload}->>'plotHint'), ''), nullif(trim(${contentItemVersions.payload}->>'description'), '')) is null`)
+    if (query.source) filters.push(sql`exists (select 1 from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} and cwc.source = ${query.source})`)
+    if (query.pipelineKey) filters.push(sql`exists (select 1 from content_workspace_changes cwc inner join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} and pr.pipeline_key = ${query.pipelineKey})`)
     if (query.q?.trim()) {
       const raw = query.q.trim(); const exact = raw.length > 1 && raw.startsWith('"') && raw.endsWith('"')
       const needle = raw.replace(/^"|"$/g, '').replaceAll('ё', 'е').replaceAll('Ё', 'Е')
@@ -232,7 +301,10 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     const selected = await deps.db.select({
       id: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode,
       titleRu: contentItemVersions.titleRu, titleOriginal: contentItemVersions.titleOriginal, year: contentItemVersions.year,
-      payload: contentItemVersions.payload, allowedInGame: contentItemVersions.allowedInGame, updatedAt: contentItemVersions.createdAt,
+      payload: contentItemVersions.payload, allowedInGame: contentItemVersions.allowedInGame,
+      source: sql<string | null>`(select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc.updated_at desc limit 1)`,
+      pipelineKey: sql<string | null>`(select pr.pipeline_key from content_workspace_changes cwc inner join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc.updated_at desc limit 1)`,
+      updatedAt: sql<Date>`coalesce((select cwc.updated_at from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc.updated_at desc limit 1), ${contentItemVersions.createdAt})`,
       reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`,
       issuesCount: sql<number>`(select count(*)::int from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`,
       draftVersion: contentWorkspaceChanges.version,
@@ -242,7 +314,19 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     const totalFilters = filters.filter((_, index) => !(query.cursor && index === filters.length - 1))
     const total = await deps.db.select({ count: sql<number>`count(*)::int` }).from(contentItemVersions).where(and(...totalFilters))
     return {
-      items: selected.slice(0, limit).map(({ payload, ...item }) => ({ ...item, posterUrl: posterOf(payload), completeness: completionOf(payload) })),
+      items: selected.slice(0, limit).map(({ payload, mode, ...item }) => {
+        const completion = completionMeta(payload, mode as ContentMode)
+        return {
+          ...item,
+          mode,
+          posterUrl: posterOf(payload),
+          completeness: completion.completeness,
+          fieldsFilled: completion.fieldsFilled,
+          fieldsTotal: completion.fieldsTotal,
+          missingFields: completion.missingFields,
+          hasHint: completion.hasHint,
+        }
+      }),
       nextCursor: selected.length > limit ? selected[limit - 1].id : null,
       total: total[0]?.count ?? 0,
       filters: query,

@@ -25,6 +25,12 @@ export type AdminContentListItem = {
   completeness: number
   reportsCount: number
   issuesCount: number
+  fieldsFilled: number
+  fieldsTotal: number
+  missingFields: string[]
+  hasHint: boolean
+  source: 'manual' | 'ai_pipeline' | 'bulk' | 'import' | 'rollback' | 'report_fix' | null
+  pipelineKey: 'music' | 'movie' | 'anime' | null
   draftVersion: number | null
   updatedAt: string
 }
