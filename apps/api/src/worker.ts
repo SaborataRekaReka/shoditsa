@@ -17,7 +17,7 @@ import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
-import { assertNormalizationField, mergeNormalizationUsage, normalizationStartIndex, normalizeProposedValue, requestNormalization } from './modules/admin/normalization-pipeline.js'
+import { assertNormalizationField, isNormalizationRateLimitError, mergeNormalizationUsage, normalizationPendingItemIds, normalizeProposedValue, requestNormalization, runNormalizationPool } from './modules/admin/normalization-pipeline.js'
 import { ApiError } from './lib/errors.js'
 
 type Json = Record<string, unknown>
@@ -140,7 +140,7 @@ const saveProcessingFailure = async (runId: string, entityKey: string, error: un
   })
 }
 
-const loadRunMetrics = async (runId: string) => {
+const loadRunSnapshot = async (runId: string) => {
   const rows = await db.select({ status: pipelineRunItems.status, confidence: pipelineRunItems.confidenceJson }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, runId))
   const failedStatuses = new Set(['failed', 'rejected', 'conflict'])
   const responses = new Map<string, Json>()
@@ -154,7 +154,26 @@ const loadRunMetrics = async (runId: string) => {
   }
   const actualCost = Number([...responses.values()].reduce((sum, response) => sum + Number(response.costUsd ?? 0), 0).toFixed(8))
   const itemsFailed = rows.filter((row) => failedStatuses.has(row.status)).length
-  return { itemsProcessed: rows.length, itemsSucceeded: rows.length - itemsFailed, itemsFailed, actualCost }
+  const usageEntries = [...responses.values()]
+  return {
+    itemsProcessed: rows.length,
+    itemsSucceeded: rows.length - itemsFailed,
+    itemsFailed,
+    actualCost,
+    usageJson: {
+      inputTokens: usageEntries.reduce((sum, entry) => sum + Number(entry.inputTokens ?? 0), 0),
+      cachedInputTokens: usageEntries.reduce((sum, entry) => sum + Number(entry.cachedInputTokens ?? 0), 0),
+      outputTokens: usageEntries.reduce((sum, entry) => sum + Number(entry.outputTokens ?? 0), 0),
+      webSearchCalls: usageEntries.reduce((sum, entry) => sum + Number(entry.webSearchCalls ?? 0), 0),
+      responses: usageEntries.length,
+      pricingVersion: 'openai-2026-07-13',
+    },
+  }
+}
+
+const loadRunMetrics = async (runId: string) => {
+  const { usageJson: _usageJson, ...metrics } = await loadRunSnapshot(runId)
+  return metrics
 }
 
 const mapMusicRecord = (raw: Json) => {
@@ -642,7 +661,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   const requestedItemIds = strings(jobPayload.itemIds)
   const itemIds = isItemRegeneration ? [...new Set(requestedItemIds)].filter((itemId) => runItemIds.includes(itemId)) : runItemIds
   if (isItemRegeneration && itemIds.length !== 1) throw new ApiError(422, 'NORMALIZATION_REGENERATE_ITEM_INVALID', 'Для повторной генерации нужна ровно одна карточка исходного запуска')
-  const offset = isItemRegeneration ? 0 : normalizationStartIndex(itemIds, jobPayload.offset)
+  const offset = isItemRegeneration ? 0 : jobPayload.offset
   const environment = await loadIntegrationEnvironment(db, config)
   if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'OpenAI API key не настроен')
   await db.update(pipelineRuns).set(isItemRegeneration
@@ -650,18 +669,59 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
     : { status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }
   ).where(eq(pipelineRuns.id, run.id))
   if (isItemRegeneration) await db.update(pipelineRunItems).set({ status: 'running', updatedAt: new Date() }).where(and(eq(pipelineRunItems.id, regenerateItemId), eq(pipelineRunItems.runId, run.id)))
-  const activeCards = await db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, payload: contentItemVersions.payload })
-    .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
-    .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, mode), inArray(contentItemVersions.itemId, itemIds)))
+  const existingItems = await db.select({ entityKey: pipelineRunItems.entityKey, status: pipelineRunItems.status })
+    .from(pipelineRunItems).where(eq(pipelineRunItems.runId, run.id))
+  const existingByItemId = new Map(existingItems.map((item) => [item.entityKey, item.status]))
+  const workItemIds = isItemRegeneration
+    ? itemIds
+    : jobPayload.retryFailed === true
+      ? itemIds.filter((itemId) => existingByItemId.get(itemId) === 'failed')
+      : normalizationPendingItemIds(itemIds, existingByItemId.keys(), offset)
+  const activeCards = workItemIds.length
+    ? await db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, payload: contentItemVersions.payload })
+      .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+      .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, mode), inArray(contentItemVersions.itemId, workItemIds)))
+    : []
   const cardById = new Map(activeCards.map((card) => [card.itemId, card]))
-  for (let index = offset; index < itemIds.length; index += 1) {
+  let completedThisJob = 0
+  let progressWrite = Promise.resolve()
+  const persistProgress = (itemId: string) => {
+    const current = ++completedThisJob
+    progressWrite = progressWrite.then(async () => {
+      const snapshot = await loadRunSnapshot(run.id)
+      await Promise.all([
+        db.update(backgroundJobs).set({
+          heartbeatAt: new Date(),
+          progress: {
+            current,
+            total: workItemIds.length,
+            percent: Math.round(current / Math.max(1, workItemIds.length) * 100),
+            message: `${itemId}: ${current}/${workItemIds.length}`,
+          },
+        }).where(eq(backgroundJobs.id, job.id)),
+        db.update(pipelineRuns).set({
+          heartbeatAt: new Date(),
+          itemsProcessed: snapshot.itemsProcessed,
+          itemsSucceeded: snapshot.itemsSucceeded,
+          itemsFailed: snapshot.itemsFailed,
+          actualCost: String(snapshot.actualCost.toFixed(8)),
+          usageJson: snapshot.usageJson,
+          logExcerpt: isItemRegeneration ? `${itemId}: повторная генерация завершена` : `${itemId}: ${snapshot.itemsProcessed}/${itemIds.length}`,
+        }).where(eq(pipelineRuns.id, run.id)),
+      ])
+    })
+    return progressWrite
+  }
+  const requestedConcurrency = isItemRegeneration ? 1 : Math.min(6, Math.max(1, Number(settings.concurrency ?? config.normalizationConcurrency) || 3))
+  const pool = await runNormalizationPool(workItemIds, requestedConcurrency, async (itemId, _index, rateLimitRetry) => {
     const cancellation = isItemRegeneration ? [] : await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, run.id)).limit(1)
-    if (!isItemRegeneration && cancellation[0]?.cancelRequestedAt) {
-      await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
-      return { cancelled: true, processed: index }
+    if (!isItemRegeneration && cancellation[0]?.cancelRequestedAt) return 'cancelled'
+    const card = cardById.get(itemId)
+    if (!card) {
+      await saveProcessingFailure(run.id, itemId, new Error('Активная версия карточки не найдена'))
+      await persistProgress(itemId)
+      return 'completed'
     }
-    const itemId = itemIds[index]; const card = cardById.get(itemId)
-    if (!card) { await saveProcessingFailure(run.id, itemId, new Error('Активная версия карточки не найдена')); continue }
     const before = record(card.payload)
     try {
       const result = await requestNormalization({
@@ -684,30 +744,25 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
         warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage },
         rawResultRef: result.responseId || null, idempotencyKey: `${run.id}:${itemId}`,
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { status: 'review_required', beforeJson: before, proposedJson: proposed, warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage }, rawResultRef: result.responseId || null, errorCode: null, safeErrorMessage: null, updatedAt: new Date() } })
-    } catch (error) { await saveProcessingFailure(run.id, itemId, error) }
-    const current = index - offset + 1
-    await Promise.all([
-      db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { current, total: itemIds.length - offset, percent: Math.round(current / (itemIds.length - offset) * 100), message: `${itemId}: ${current}/${itemIds.length - offset}` } }).where(eq(backgroundJobs.id, job.id)),
-      db.update(pipelineRuns).set(isItemRegeneration
-        ? { heartbeatAt: new Date(), logExcerpt: `${itemId}: повторная генерация завершена` }
-        : { heartbeatAt: new Date(), itemsProcessed: index + 1, logExcerpt: `${itemId}: ${index + 1}/${itemIds.length}` }
-      ).where(eq(pipelineRuns.id, run.id)),
-    ])
-  }
-  const metrics = await loadRunMetrics(run.id)
-  const usageRows = await db.select({ confidence: pipelineRunItems.confidenceJson }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, run.id))
-  const responses = usageRows.flatMap((row) => Array.isArray(record(record(row.confidence).usage).responses) ? record(record(row.confidence).usage).responses as unknown[] : []).map(record)
-  const usageJson = {
-    inputTokens: responses.reduce((sum, entry) => sum + Number(entry.inputTokens ?? 0), 0), cachedInputTokens: responses.reduce((sum, entry) => sum + Number(entry.cachedInputTokens ?? 0), 0),
-    outputTokens: responses.reduce((sum, entry) => sum + Number(entry.outputTokens ?? 0), 0), webSearchCalls: responses.reduce((sum, entry) => sum + Number(entry.webSearchCalls ?? 0), 0),
-    responses: responses.length, pricingVersion: 'openai-2026-07-13',
-  }
+    } catch (error) {
+      if (rateLimitRetry === 0 && isNormalizationRateLimitError(error)) return 'rate_limited'
+      await saveProcessingFailure(run.id, itemId, error)
+    }
+    await persistProgress(itemId)
+    return 'completed'
+  })
+  await progressWrite
+  const snapshot = await loadRunSnapshot(run.id)
   await db.update(pipelineRuns).set({
-    ...metrics, actualCost: String(metrics.actualCost.toFixed(8)), usageJson,
-    status: isItemRegeneration ? run.status : metrics.itemsFailed ? 'partially_failed' : 'review_required',
+    itemsProcessed: snapshot.itemsProcessed,
+    itemsSucceeded: snapshot.itemsSucceeded,
+    itemsFailed: snapshot.itemsFailed,
+    actualCost: String(snapshot.actualCost.toFixed(8)),
+    usageJson: snapshot.usageJson,
+    status: isItemRegeneration ? run.status : pool.cancelled ? 'cancelled' : snapshot.itemsFailed ? 'partially_failed' : 'review_required',
     finishedAt: isItemRegeneration ? run.finishedAt : new Date(), heartbeatAt: new Date(),
   }).where(eq(pipelineRuns.id, run.id))
-  return { ...metrics, usage: usageJson }
+  return { ...snapshot, cancelled: pool.cancelled, concurrency: pool.finalConcurrency }
 }
 
 const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {

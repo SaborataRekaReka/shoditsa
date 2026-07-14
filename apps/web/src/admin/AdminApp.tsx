@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
@@ -16,9 +16,24 @@ import './admin.css'
 type Section = 'dashboard' | 'content' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
 
-function TagPicker({ tags, value, onChange, label }: { tags: AdminContentTag[]; value: string[]; onChange: (ids: string[]) => void; label: string }) {
+function TagPicker({ tags, value, onChange, label, onCreate, compact = false, disabled = false }: { tags: AdminContentTag[]; value: string[]; onChange: (ids: string[]) => void; label: string; onCreate?: (name: string) => Promise<AdminContentTag>; compact?: boolean; disabled?: boolean }) {
+  const [query, setQuery] = useState('')
+  const [creating, setCreating] = useState(false)
+  const listId = useId().replace(/:/g, '')
   const selected = new Set(value)
-  return <div className="admin-tag-picker"><span>{label}</span><select value="" onChange={(event) => { if (event.target.value) onChange([...value, event.target.value]) }}><option value="">Добавить тег…</option>{tags.filter((tag) => !selected.has(tag.id)).map((tag) => <option key={tag.id} value={tag.id}>{tag.name} ({tag.itemsCount ?? 0})</option>)}</select><div>{value.map((id) => { const tag = tags.find((entry) => entry.id === id); return tag ? <button key={id} type="button" style={{ borderColor: tag.color }} onClick={() => onChange(value.filter((entry) => entry !== id))}>{tag.name}<X /></button> : null })}</div></div>
+  const available = tags.filter((tag) => !selected.has(tag.id))
+  const commit = async () => {
+    const name = query.trim()
+    if (!name || disabled || creating) return
+    const normalized = name.toLocaleLowerCase('ru-RU')
+    const found = available.find((tag) => tag.name.toLocaleLowerCase('ru-RU') === normalized)
+      ?? available.find((tag) => tag.name.toLocaleLowerCase('ru-RU').startsWith(normalized))
+    if (found) { onChange([...value, found.id]); setQuery(''); return }
+    if (!onCreate) return
+    setCreating(true)
+    try { const created = await onCreate(name); onChange([...value, created.id]); setQuery('') } finally { setCreating(false) }
+  }
+  return <div className={`admin-tag-picker ${compact ? 'admin-tag-picker--compact' : ''}`}><span>{label}</span><div className="admin-tag-picker__control">{value.map((id) => { const tag = tags.find((entry) => entry.id === id); return tag ? <button key={id} type="button" style={{ borderColor: tag.color }} disabled={disabled} onClick={() => onChange(value.filter((entry) => entry !== id))}>{tag.name}<X /></button> : null })}<input list={listId} value={query} disabled={disabled || creating} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ',') { event.preventDefault(); void commit() } }} onBlur={() => { if (available.some((tag) => tag.name.toLocaleLowerCase('ru-RU') === query.trim().toLocaleLowerCase('ru-RU'))) void commit() }} placeholder={value.length ? 'Ещё тег…' : 'Введите тег…'} /><datalist id={listId}>{available.map((tag) => <option key={tag.id} value={tag.name}>{tag.itemsCount == null ? tag.name : `${tag.name} · ${tag.itemsCount}`}</option>)}</datalist></div></div>
 }
 
 const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admin-tags">{tags.map((tag) => <span key={tag.id} style={{ borderColor: tag.color }}>{tag.name}</span>)}</span>
@@ -327,324 +342,1646 @@ function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: strin
   const totalItems = items.data?.pages[0]?.total ?? 0
   useEffect(() => { const target = loadMoreRef.current; if (!target || !items.hasNextPage || items.isFetchingNextPage) return; const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) void items.fetchNextPage() }, { rootMargin: '320px' }); observer.observe(target); return () => observer.disconnect() }, [items.fetchNextPage, items.hasNextPage, items.isFetchingNextPage])
   const bulk = useMutation({ mutationFn: (operation: 'allow' | 'disallow') => adminApi.bulkContent({ itemIds: [...selected], operation, reason: operation === 'allow' ? 'Массовое включение в игру' : 'Массовое исключение из игры' }), onSuccess: (data) => { notify('success', `Обработано: ${data.succeeded ?? 0}, ошибок: ${data.failed ?? 0}`); setSelected(new Set()); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }, onError: (error) => notify('error', errorText(error)) })
-  return <>
-    <PageHead eyebrow="Контент" title="Карточки" description="Поиск, проверка и публикация всех шести игровых библиотек." actions={<><div className="admin-view-switch"><button className={view === 'table' ? 'is-active' : ''} onClick={() => setView('table')}><Menu />Таблица</button><button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')}><Boxes />Карточки</button><button className={view === 'review' ? 'is-active' : ''} onClick={() => setView('review')}><Eye />Проверка</button></div><button className="admin-btn admin-btn--secondary" onClick={() => setExchange('import')}><Upload />Импорт JSON</button><button className="admin-btn admin-btn--secondary" disabled={!selected.size} onClick={() => setExchange('export')}><Download />Экспорт JSON{selected.size ? ` · ${selected.size}` : ''}</button><button className="admin-btn admin-btn--primary" onClick={() => setAdding(true)}><Plus />Добавить карточку</button></>} />
-    <WorkspaceBar notify={notify} />
-    <div className="admin-toolbar"><label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Название, альтернативное название или ID" />{q && <button onClick={() => setQ('')}><X /></button>}</label><label><Filter /><select value={mode} onChange={(event) => setMode(event.target.value)}><option value="">Все категории</option>{MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></label><label><Archive /><select value={publication} onChange={(event) => setPublication(event.target.value)}><option value="all">Все статусы</option><option value="published">Опубликованы</option><option value="hidden">Скрыты</option></select></label><label><ListChecks /><select aria-label="Размер страницы" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100); setSelected(new Set()) }}><option value={20}>20</option><option value={40}>40</option><option value={60}>60</option><option value={100}>100</option></select></label><button className="admin-btn admin-btn--secondary" onClick={() => void items.refetch()}><RefreshCw /></button></div>
-    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => setExchange('export')}><Download />Экспорт JSON</button><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><button onClick={() => setSelected(new Set())}><X />Снять выбор</button></div>}
-    {items.isLoading ? <Loading /> : items.error ? <ErrorState error={items.error} retry={() => void items.refetch()} /> : !listedItems.length ? <Empty title="Ничего не найдено" text="Измените запрос или сбросьте фильтры." icon={<Search />} action={<button className="admin-btn admin-btn--secondary" onClick={() => { setQ(''); setMode(''); setPublication('all') }}>Сбросить фильтры</button>} />
-      : view === 'grid' ? <div className="admin-content-grid">{listedItems.map((item) => <button key={item.id} onClick={() => navigate('content', item.id)}><div>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <ImageIcon />}{item.draftVersion && <span>Draft v{item.draftVersion}</span>}</div><small>{MODE_LABEL[item.mode]}</small><strong>{item.titleRu}</strong><p>{item.titleOriginal || item.id}</p><footer><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status><span>{item.completeness}%</span></footer></button>)}</div>
-        : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все" checked={selected.size === listedItems.length && selected.size > 0} onChange={(event) => setSelected(event.target.checked ? new Set(listedItems.map((item) => item.id)) : new Set())} /></th><th>Карточка</th><th>ID</th><th>Категория</th><th>Статус</th><th>Полнота</th><th>Репорты</th><th>Качество</th><th>Изменена</th><th /></tr></thead><tbody>{listedItems.map((item) => <tr key={item.id} className={selectedId === item.id ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${item.titleRu}`} checked={selected.has(item.id)} onChange={(event) => setSelected((current) => { const next = new Set(current); event.target.checked ? next.add(item.id) : next.delete(item.id); return next })} /></td><td><button className="admin-title-cell" onClick={() => navigate('content', item.id)}>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <span><ImageIcon /></span>}<span><strong>{item.titleRu}</strong><small>{item.titleOriginal || 'Без оригинального названия'}{item.year ? ` · ${item.year}` : ''}</small></span></button></td><td><code>{item.id}</code></td><td>{MODE_LABEL[item.mode]}</td><td><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status>{item.draftVersion && <small className="admin-draft-label">Draft v{item.draftVersion}</small>}</td><td><div className="admin-completeness"><i style={{ width: `${item.completeness}%` }} /><span>{item.completeness}%</span></div></td><td>{item.reportsCount ? <button className="admin-count admin-count--warn" onClick={() => navigate('reports')}>{item.reportsCount}</button> : '—'}</td><td>{item.issuesCount ? <span className="admin-count admin-count--danger">{item.issuesCount}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt)}</td><td><button className="admin-icon-btn" onClick={() => navigate('content', item.id)}><ChevronRight /></button></td></tr>)}</tbody></table><footer className="admin-table-footer"><span>Показано {listedItems.length} из {totalItems.toLocaleString('ru-RU')}</span></footer></div>}<div className="admin-content-pagination" ref={loadMoreRef}>{items.hasNextPage ? <button className="admin-btn admin-btn--secondary" disabled={items.isFetchingNextPage} onClick={() => void items.fetchNextPage()}>{items.isFetchingNextPage ? <LoaderCircle className="admin-spinner" /> : null}{items.isFetchingNextPage ? 'Загружаем…' : 'Загрузить ещё'}</button> : <span>Все карточки загружены</span>}</div>
-    {selectedId && <ItemEditor itemId={selectedId} onClose={() => navigate('content')} notify={notify} />}
-    {adding && <NewCardDialog close={() => setAdding(false)} done={(id) => { setAdding(false); navigate('content', id); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} notify={notify} />}
-    {exchange && <ContentExchangeDialog initialTab={exchange} itemIds={[...selected]} close={() => setExchange(null)} notify={notify} done={() => { setExchange(null); setSelected(new Set()); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} />}
-  </>
+  return (
+    <>
+      <PageHead
+        eyebrow="Контент"
+        title="Карточки"
+        description="Поиск, проверка и публикация всех шести игровых библиотек."
+        actions={
+          <>
+            <div className="admin-view-switch">
+              <button
+                className={view === "table" ? "is-active" : ""}
+                onClick={() => setView("table")}
+              >
+                <Menu />
+                Таблица
+              </button>
+              <button
+                className={view === "grid" ? "is-active" : ""}
+                onClick={() => setView("grid")}
+              >
+                <Boxes />
+                Карточки
+              </button>
+              <button
+                className={view === "review" ? "is-active" : ""}
+                onClick={() => setView("review")}
+              >
+                <Eye />
+                Проверка
+              </button>
+            </div>
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => setExchange("import")}
+            >
+              <Upload />
+              Импорт JSON
+            </button>
+            <button
+              className="admin-btn admin-btn--secondary"
+              disabled={!selected.size}
+              onClick={() => setExchange("export")}
+            >
+              <Download />
+              Экспорт JSON{selected.size ? ` · ${selected.size}` : ""}
+            </button>
+            <button
+              className="admin-btn admin-btn--primary"
+              onClick={() => setAdding(true)}
+            >
+              <Plus />
+              Добавить карточку
+            </button>
+          </>
+        }
+      />
+      <WorkspaceBar notify={notify} />
+      <div className="admin-toolbar">
+        <label className="admin-search">
+          <Search />
+          <input
+            value={q}
+            onChange={(event) => setQ(event.target.value)}
+            placeholder="Название, альтернативное название или ID"
+          />
+          {q && (
+            <button onClick={() => setQ("")}>
+              <X />
+            </button>
+          )}
+        </label>
+        <label>
+          <Filter />
+          <select
+            value={mode}
+            onChange={(event) => setMode(event.target.value)}
+          >
+            <option value="">Все категории</option>
+            {MODES.map((entry) => (
+              <option key={entry.value} value={entry.value}>
+                {entry.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <Archive />
+          <select
+            value={publication}
+            onChange={(event) => setPublication(event.target.value)}
+          >
+            <option value="all">Все статусы</option>
+            <option value="published">Опубликованы</option>
+            <option value="hidden">Скрыты</option>
+          </select>
+        </label>
+        <label>
+          <ListChecks />
+          <select
+            aria-label="Размер страницы"
+            value={pageSize}
+            onChange={(event) => {
+              setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100);
+              setSelected(new Set());
+            }}
+          >
+            <option value={20}>20</option>
+            <option value={40}>40</option>
+            <option value={60}>60</option>
+            <option value={100}>100</option>
+          </select>
+        </label>
+        <button
+          className="admin-btn admin-btn--secondary"
+          onClick={() => void items.refetch()}
+        >
+          <RefreshCw />
+        </button>
+      </div>
+      {selected.size > 0 && (
+        <div className="admin-bulk">
+          <strong>Выбрано: {selected.size}</strong>
+          <button onClick={() => setExchange("export")}>
+            <Download />
+            Экспорт JSON
+          </button>
+          <button onClick={() => bulk.mutate("allow")}>
+            <Check />
+            Разрешить в игре
+          </button>
+          <button onClick={() => bulk.mutate("disallow")}>
+            <Archive />
+            Скрыть
+          </button>
+          <button onClick={() => setSelected(new Set())}>
+            <X />
+            Снять выбор
+          </button>
+        </div>
+      )}
+      {items.isLoading ? (
+        <Loading />
+      ) : items.error ? (
+        <ErrorState error={items.error} retry={() => void items.refetch()} />
+      ) : !listedItems.length ? (
+        <Empty
+          title="Ничего не найдено"
+          text="Измените запрос или сбросьте фильтры."
+          icon={<Search />}
+          action={
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => {
+                setQ("");
+                setMode("");
+                setPublication("all");
+              }}
+            >
+              Сбросить фильтры
+            </button>
+          }
+        />
+      ) : view === "grid" ? (
+        <div className="admin-content-grid">
+          {listedItems.map((item) => (
+            <button key={item.id} onClick={() => navigate("content", item.id)}>
+              <div>
+                {item.posterUrl ? (
+                  <img src={item.posterUrl} alt="" />
+                ) : (
+                  <ImageIcon />
+                )}
+                {item.draftVersion && <span>Draft v{item.draftVersion}</span>}
+              </div>
+              <small>{MODE_LABEL[item.mode]}</small>
+              <strong>{item.titleRu}</strong>
+              <p>{item.titleOriginal || item.id}</p>
+              <footer>
+                <Status value={item.allowedInGame ? "active" : "blocked"}>
+                  {item.allowedInGame ? "В игре" : "Скрыта"}
+                </Status>
+                <span>{item.completeness}%</span>
+              </footer>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th className="admin-check">
+                  <input
+                    type="checkbox"
+                    aria-label="Выбрать все"
+                    checked={
+                      selected.size === listedItems.length && selected.size > 0
+                    }
+                    onChange={(event) =>
+                      setSelected(
+                        event.target.checked
+                          ? new Set(listedItems.map((item) => item.id))
+                          : new Set(),
+                      )
+                    }
+                  />
+                </th>
+                <th>Карточка</th>
+                <th>ID</th>
+                <th>Категория</th>
+                <th>Статус</th>
+                <th>Полнота</th>
+                <th>Репорты</th>
+                <th>Качество</th>
+                <th>Изменена</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {listedItems.map((item) => (
+                <tr
+                  key={item.id}
+                  className={selectedId === item.id ? "is-open" : ""}
+                >
+                  <td className="admin-check">
+                    <input
+                      type="checkbox"
+                      aria-label={`Выбрать ${item.titleRu}`}
+                      checked={selected.has(item.id)}
+                      onChange={(event) =>
+                        setSelected((current) => {
+                          const next = new Set(current);
+                          event.target.checked
+                            ? next.add(item.id)
+                            : next.delete(item.id);
+                          return next;
+                        })
+                      }
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className="admin-title-cell"
+                      onClick={() => navigate("content", item.id)}
+                    >
+                      {item.posterUrl ? (
+                        <img src={item.posterUrl} alt="" />
+                      ) : (
+                        <span>
+                          <ImageIcon />
+                        </span>
+                      )}
+                      <span>
+                        <strong>{item.titleRu}</strong>
+                        <small>
+                          {item.titleOriginal || "Без оригинального названия"}
+                          {item.year ? ` · ${item.year}` : ""}
+                        </small>
+                      </span>
+                    </button>
+                  </td>
+                  <td>
+                    <code>{item.id}</code>
+                  </td>
+                  <td>{MODE_LABEL[item.mode]}</td>
+                  <td>
+                    <Status value={item.allowedInGame ? "active" : "blocked"}>
+                      {item.allowedInGame ? "В игре" : "Скрыта"}
+                    </Status>
+                    {item.draftVersion && (
+                      <small className="admin-draft-label">
+                        Draft v{item.draftVersion}
+                      </small>
+                    )}
+                  </td>
+                  <td>
+                    <div className="admin-completeness">
+                      <i style={{ width: `${item.completeness}%` }} />
+                      <span>{item.completeness}%</span>
+                    </div>
+                  </td>
+                  <td>
+                    {item.reportsCount ? (
+                      <button
+                        className="admin-count admin-count--warn"
+                        onClick={() => navigate("reports")}
+                      >
+                        {item.reportsCount}
+                      </button>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td>
+                    {item.issuesCount ? (
+                      <span className="admin-count admin-count--danger">
+                        {item.issuesCount}
+                      </span>
+                    ) : (
+                      <Check className="admin-table-ok" />
+                    )}
+                  </td>
+                  <td>{compactDate(item.updatedAt)}</td>
+                  <td>
+                    <button
+                      className="admin-icon-btn"
+                      onClick={() => navigate("content", item.id)}
+                    >
+                      <ChevronRight />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <footer className="admin-table-footer">
+            <span>
+              Показано {listedItems.length} из{" "}
+              {totalItems.toLocaleString("ru-RU")}
+            </span>
+          </footer>
+        </div>
+      )}
+      <div className="admin-content-pagination" ref={loadMoreRef}>
+        {items.hasNextPage ? (
+          <button
+            className="admin-btn admin-btn--secondary"
+            disabled={items.isFetchingNextPage}
+            onClick={() => void items.fetchNextPage()}
+          >
+            {items.isFetchingNextPage ? (
+              <LoaderCircle className="admin-spinner" />
+            ) : null}
+            {items.isFetchingNextPage ? "Загружаем…" : "Загрузить ещё"}
+          </button>
+        ) : (
+          <span>Все карточки загружены</span>
+        )}
+      </div>
+      {selectedId && (
+        <ItemEditor
+          itemId={selectedId}
+          onClose={() => navigate("content")}
+          notify={notify}
+        />
+      )}
+      {adding && (
+        <NewCardDialog
+          close={() => setAdding(false)}
+          done={(id) => {
+            setAdding(false);
+            navigate("content", id);
+            void client.invalidateQueries({ queryKey: ["admin", "content"] });
+            void client.invalidateQueries({ queryKey: ["admin", "workspace"] });
+          }}
+          notify={notify}
+        />
+      )}
+      {exchange && (
+        <ContentExchangeDialog
+          initialTab={exchange}
+          itemIds={[...selected]}
+          close={() => setExchange(null)}
+          notify={notify}
+          done={() => {
+            setExchange(null);
+            setSelected(new Set());
+            void client.invalidateQueries({ queryKey: ["admin", "content"] });
+            void client.invalidateQueries({ queryKey: ["admin", "workspace"] });
+          }}
+        />
+      )}
+    </>
+  );
 }
 
 function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
-  const client = useQueryClient()
-  const params = new URLSearchParams(location.search)
+  const client = useQueryClient();
+  const params = new URLSearchParams(location.search);
 
-  type ContentSortKey = 'titleRu' | 'id' | 'mode' | 'status' | 'source' | 'pipelineKey' | 'tags' | 'fieldsFilled' | 'hasHint' | 'completeness' | 'reportsCount' | 'issuesCount' | 'updatedAt'
-  type ContentFieldFilter = 'all' | 'title' | 'id' | 'mode' | 'status' | 'source' | 'pipeline' | 'tags' | 'fields' | 'hint' | 'reports' | 'issues' | 'completeness' | 'missing'
-  const sortableKeys: ContentSortKey[] = ['titleRu', 'id', 'mode', 'status', 'source', 'pipelineKey', 'tags', 'fieldsFilled', 'hasHint', 'completeness', 'reportsCount', 'issuesCount', 'updatedAt']
-  const validFieldFilters: ContentFieldFilter[] = ['all', 'title', 'id', 'mode', 'status', 'source', 'pipeline', 'tags', 'fields', 'hint', 'reports', 'issues', 'completeness', 'missing']
-  const parseTriState = (value: string | null): 'all' | 'yes' | 'no' => value === 'yes' || value === 'no' ? value : 'all'
-  const parseFieldFilter = (value: string | null): ContentFieldFilter => value && validFieldFilters.includes(value as ContentFieldFilter) ? value as ContentFieldFilter : 'all'
-  const parseSortKey = (value: string | null): ContentSortKey => value && sortableKeys.includes(value as ContentSortKey) ? value as ContentSortKey : 'updatedAt'
-  const parseSortOrder = (value: string | null): 'asc' | 'desc' => value === 'asc' || value === 'desc' ? value : 'desc'
+  type ContentSortKey =
+    | "titleRu"
+    | "id"
+    | "mode"
+    | "status"
+    | "source"
+    | "pipelineKey"
+    | "tags"
+    | "fieldsFilled"
+    | "hasHint"
+    | "completeness"
+    | "reportsCount"
+    | "issuesCount"
+    | "updatedAt";
+  type ContentFieldFilter =
+    | "all"
+    | "title"
+    | "id"
+    | "mode"
+    | "status"
+    | "source"
+    | "pipeline"
+    | "tags"
+    | "fields"
+    | "hint"
+    | "reports"
+    | "issues"
+    | "completeness"
+    | "missing";
+  const sortableKeys: ContentSortKey[] = [
+    "titleRu",
+    "id",
+    "mode",
+    "status",
+    "source",
+    "pipelineKey",
+    "tags",
+    "fieldsFilled",
+    "hasHint",
+    "completeness",
+    "reportsCount",
+    "issuesCount",
+    "updatedAt",
+  ];
+  const validFieldFilters: ContentFieldFilter[] = [
+    "all",
+    "title",
+    "id",
+    "mode",
+    "status",
+    "source",
+    "pipeline",
+    "tags",
+    "fields",
+    "hint",
+    "reports",
+    "issues",
+    "completeness",
+    "missing",
+  ];
+  const parseTriState = (value: string | null): "all" | "yes" | "no" =>
+    value === "yes" || value === "no" ? value : "all";
+  const parseFieldFilter = (value: string | null): ContentFieldFilter =>
+    value && validFieldFilters.includes(value as ContentFieldFilter)
+      ? (value as ContentFieldFilter)
+      : "all";
+  const parseSortKey = (value: string | null): ContentSortKey =>
+    value && sortableKeys.includes(value as ContentSortKey)
+      ? (value as ContentSortKey)
+      : "updatedAt";
+  const parseSortOrder = (value: string | null): "asc" | "desc" =>
+    value === "asc" || value === "desc" ? value : "desc";
   const sourceLabelMap: Record<string, string> = {
-    manual: 'Ручное',
-    ai_pipeline: 'AI пайплайн',
-    bulk: 'Массовое',
-    import: 'Импорт',
-    rollback: 'Откат',
-    report_fix: 'Фикс по репорту',
-  }
+    manual: "Ручное",
+    ai_pipeline: "AI пайплайн",
+    bulk: "Массовое",
+    import: "Импорт",
+    rollback: "Откат",
+    report_fix: "Фикс по репорту",
+  };
   const pipelineLabelMap: Record<string, string> = {
-    music: 'Музыка',
-    movie: 'Кино',
-    anime: 'Аниме',
-  }
+    music: "Музыка",
+    movie: "Кино",
+    anime: "Аниме",
+  };
 
-  const [q, setQ] = useState(params.get('q') ?? '')
-  const [mode, setMode] = useState(params.get('mode') ?? '')
-  const [publication, setPublication] = useState(params.get('publication') ?? 'all')
-  const [source, setSource] = useState(params.get('source') ?? '')
-  const [pipelineFilter, setPipelineFilter] = useState(params.get('pipeline') ?? '')
-  const [hintFilter, setHintFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasHint')))
-  const [reportsFilter, setReportsFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasReports')))
-  const [issuesFilter, setIssuesFilter] = useState<'all' | 'yes' | 'no'>(parseTriState(params.get('hasIssues')))
-  const [includeTagIds, setIncludeTagIds] = useState<string[]>(params.get('includeTags')?.split(',').filter(Boolean) ?? [])
-  const [excludeTagIds, setExcludeTagIds] = useState<string[]>(params.get('excludeTags')?.split(',').filter(Boolean) ?? [])
-  const [tagMatch, setTagMatch] = useState<'all' | 'any'>(params.get('tagMatch') === 'any' ? 'any' : 'all')
-  const [bulkTagId, setBulkTagId] = useState('')
-  const [fieldFilter, setFieldFilter] = useState<ContentFieldFilter>(parseFieldFilter(params.get('field')))
-  const [fieldFilterValue, setFieldFilterValue] = useState(params.get('fieldQ') ?? '')
-  const [sortBy, setSortBy] = useState<ContentSortKey>(parseSortKey(params.get('sortBy')))
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(parseSortOrder(params.get('sortOrder')))
-  const [pageSize, setPageSize] = useState<20 | 40 | 60 | 100>(60)
-  const [view, setView] = useState<'table' | 'grid' | 'review'>('table')
-  const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [selectionAnchorIndex, setSelectionAnchorIndex] = useState<number | null>(null)
-  const [adding, setAdding] = useState(false)
-  const [exchange, setExchange] = useState<'export' | 'import' | null>(null)
-  const loadMoreRef = useRef<HTMLDivElement | null>(null)
-  const tags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags })
+  const [q, setQ] = useState(params.get("q") ?? "");
+  const [mode, setMode] = useState(params.get("mode") ?? "");
+  const [publication, setPublication] = useState(
+    params.get("publication") ?? "all",
+  );
+  const [source, setSource] = useState(params.get("source") ?? "");
+  const [pipelineFilter, setPipelineFilter] = useState(
+    params.get("pipeline") ?? "",
+  );
+  const [hintFilter, setHintFilter] = useState<"all" | "yes" | "no">(
+    parseTriState(params.get("hasHint")),
+  );
+  const [reportsFilter, setReportsFilter] = useState<"all" | "yes" | "no">(
+    parseTriState(params.get("hasReports")),
+  );
+  const [issuesFilter, setIssuesFilter] = useState<"all" | "yes" | "no">(
+    parseTriState(params.get("hasIssues")),
+  );
+  const [includeTagIds, setIncludeTagIds] = useState<string[]>(
+    params.get("includeTags")?.split(",").filter(Boolean) ?? [],
+  );
+  const [excludeTagIds, setExcludeTagIds] = useState<string[]>(
+    params.get("excludeTags")?.split(",").filter(Boolean) ?? [],
+  );
+  const [tagMatch, setTagMatch] = useState<"all" | "any">(
+    params.get("tagMatch") === "any" ? "any" : "all",
+  );
+  const [bulkTagIds, setBulkTagIds] = useState<string[]>([]);
+  const [fieldFilter, setFieldFilter] = useState<ContentFieldFilter>(
+    parseFieldFilter(params.get("field")),
+  );
+  const [fieldFilterValue, setFieldFilterValue] = useState(
+    params.get("fieldQ") ?? "",
+  );
+  const [sortBy, setSortBy] = useState<ContentSortKey>(
+    parseSortKey(params.get("sortBy")),
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
+    parseSortOrder(params.get("sortOrder")),
+  );
+  const [pageSize, setPageSize] = useState<20 | 40 | 60 | 100>(60);
+  const [view, setView] = useState<"table" | "grid" | "review">("table");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selectionAnchorIndex, setSelectionAnchorIndex] = useState<
+    number | null
+  >(null);
+  const [adding, setAdding] = useState(false);
+  const [exchange, setExchange] = useState<"export" | "import" | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const tags = useQuery({
+    queryKey: ["admin", "content-tags"],
+    queryFn: adminApi.tags,
+  });
 
   useEffect(() => {
-    const next = new URLSearchParams()
-    if (q) next.set('q', q)
-    if (mode) next.set('mode', mode)
-    if (publication !== 'all') next.set('publication', publication)
-    if (source) next.set('source', source)
-    if (pipelineFilter) next.set('pipeline', pipelineFilter)
-    if (hintFilter !== 'all') next.set('hasHint', hintFilter)
-    if (reportsFilter !== 'all') next.set('hasReports', reportsFilter)
-    if (issuesFilter !== 'all') next.set('hasIssues', issuesFilter)
-    if (includeTagIds.length) next.set('includeTags', includeTagIds.join(','))
-    if (excludeTagIds.length) next.set('excludeTags', excludeTagIds.join(','))
-    if (tagMatch !== 'all') next.set('tagMatch', tagMatch)
-    if (fieldFilter !== 'all') next.set('field', fieldFilter)
-    if (fieldFilterValue.trim()) next.set('fieldQ', fieldFilterValue.trim())
-    if (sortBy !== 'updatedAt') next.set('sortBy', sortBy)
-    if (sortOrder !== 'desc') next.set('sortOrder', sortOrder)
-    history.replaceState({}, '', `${location.pathname}${next.size ? `?${next}` : ''}`)
-  }, [excludeTagIds, fieldFilter, fieldFilterValue, hintFilter, includeTagIds, issuesFilter, mode, pipelineFilter, publication, q, reportsFilter, sortBy, sortOrder, source, tagMatch])
+    const next = new URLSearchParams();
+    if (q) next.set("q", q);
+    if (mode) next.set("mode", mode);
+    if (publication !== "all") next.set("publication", publication);
+    if (source) next.set("source", source);
+    if (pipelineFilter) next.set("pipeline", pipelineFilter);
+    if (hintFilter !== "all") next.set("hasHint", hintFilter);
+    if (reportsFilter !== "all") next.set("hasReports", reportsFilter);
+    if (issuesFilter !== "all") next.set("hasIssues", issuesFilter);
+    if (includeTagIds.length) next.set("includeTags", includeTagIds.join(","));
+    if (excludeTagIds.length) next.set("excludeTags", excludeTagIds.join(","));
+    if (tagMatch !== "all") next.set("tagMatch", tagMatch);
+    if (fieldFilter !== "all") next.set("field", fieldFilter);
+    if (fieldFilterValue.trim()) next.set("fieldQ", fieldFilterValue.trim());
+    if (sortBy !== "updatedAt") next.set("sortBy", sortBy);
+    if (sortOrder !== "desc") next.set("sortOrder", sortOrder);
+    history.replaceState(
+      {},
+      "",
+      `${location.pathname}${next.size ? `?${next}` : ""}`,
+    );
+  }, [
+    excludeTagIds,
+    fieldFilter,
+    fieldFilterValue,
+    hintFilter,
+    includeTagIds,
+    issuesFilter,
+    mode,
+    pipelineFilter,
+    publication,
+    q,
+    reportsFilter,
+    sortBy,
+    sortOrder,
+    source,
+    tagMatch,
+  ]);
 
   const items = useInfiniteQuery({
-    queryKey: ['admin', 'content', { q, mode, publication, pageSize, source, pipelineFilter, hintFilter, reportsFilter, issuesFilter, includeTagIds, excludeTagIds, tagMatch, sortBy, sortOrder }],
+    queryKey: [
+      "admin",
+      "content",
+      {
+        q,
+        mode,
+        publication,
+        pageSize,
+        source,
+        pipelineFilter,
+        hintFilter,
+        reportsFilter,
+        issuesFilter,
+        includeTagIds,
+        excludeTagIds,
+        tagMatch,
+        sortBy,
+        sortOrder,
+      },
+    ],
     initialPageParam: null as string | null,
-    queryFn: ({ pageParam }) => adminApi.contentItems({
-      q,
-      mode,
-      publication,
-      source,
-      pipelineKey: pipelineFilter || undefined,
-      hasHint: hintFilter === 'yes' ? true : hintFilter === 'no' ? false : undefined,
-      hasReports: reportsFilter === 'yes' ? true : reportsFilter === 'no' ? false : undefined,
-      hasIssues: issuesFilter === 'yes' ? true : issuesFilter === 'no' ? false : undefined,
-      includeTagIds: includeTagIds.join(',') || undefined,
-      excludeTagIds: excludeTagIds.join(',') || undefined,
-      tagMatch,
-      sort: sortBy === 'tags' ? 'tag' : undefined,
-      order: sortBy === 'tags' ? sortOrder : undefined,
-      limit: pageSize,
-      cursor: pageParam ?? undefined,
-    }),
+    queryFn: ({ pageParam }) =>
+      adminApi.contentItems({
+        q,
+        mode,
+        publication,
+        source,
+        pipelineKey: pipelineFilter || undefined,
+        hasHint:
+          hintFilter === "yes" ? true : hintFilter === "no" ? false : undefined,
+        hasReports:
+          reportsFilter === "yes"
+            ? true
+            : reportsFilter === "no"
+              ? false
+              : undefined,
+        hasIssues:
+          issuesFilter === "yes"
+            ? true
+            : issuesFilter === "no"
+              ? false
+              : undefined,
+        includeTagIds: includeTagIds.join(",") || undefined,
+        excludeTagIds: excludeTagIds.join(",") || undefined,
+        tagMatch,
+        sort: sortBy === "tags" ? "tag" : undefined,
+        order: sortBy === "tags" ? sortOrder : undefined,
+        limit: pageSize,
+        cursor: pageParam ?? undefined,
+      }),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-  })
+  });
 
-  const listedItems = useMemo(() => items.data?.pages.flatMap((page) => page.items) as AdminContentListItem[] ?? [], [items.data])
-  const totalItems = items.data?.pages[0]?.total ?? 0
+  const listedItems = useMemo(
+    () =>
+      (items.data?.pages.flatMap(
+        (page) => page.items,
+      ) as AdminContentListItem[]) ?? [],
+    [items.data],
+  );
+  const totalItems = items.data?.pages[0]?.total ?? 0;
 
   useEffect(() => {
-    const target = loadMoreRef.current
-    if (!target || !items.hasNextPage || items.isFetchingNextPage) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) void items.fetchNextPage()
-    }, { rootMargin: '320px' })
-    observer.observe(target)
-    return () => observer.disconnect()
-  }, [items.fetchNextPage, items.hasNextPage, items.isFetchingNextPage])
+    const target = loadMoreRef.current;
+    if (!target || !items.hasNextPage || items.isFetchingNextPage) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) void items.fetchNextPage();
+      },
+      { rootMargin: "320px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [items.fetchNextPage, items.hasNextPage, items.isFetchingNextPage]);
 
-  const text = (value: unknown) => String(value ?? '').toLocaleLowerCase('ru-RU').trim()
-  const sourceLabel = (value: AdminContentListItem['source']) => value ? sourceLabelMap[value] ?? value : '—'
-  const pipelineLabel = (value: AdminContentListItem['pipelineKey']) => value ? pipelineLabelMap[value] ?? value : '—'
-  const asNumber = (value: unknown) => Number.isFinite(Number(value)) ? Number(value) : 0
+  const text = (value: unknown) =>
+    String(value ?? "")
+      .toLocaleLowerCase("ru-RU")
+      .trim();
+  const sourceLabel = (value: AdminContentListItem["source"]) =>
+    value ? (sourceLabelMap[value] ?? value) : "—";
+  const pipelineLabel = (value: AdminContentListItem["pipelineKey"]) =>
+    value ? (pipelineLabelMap[value] ?? value) : "—";
+  const asNumber = (value: unknown) =>
+    Number.isFinite(Number(value)) ? Number(value) : 0;
 
   const filteredItems = useMemo(() => {
-    const needle = text(fieldFilterValue)
-    if (!needle) return listedItems
+    const needle = text(fieldFilterValue);
+    if (!needle) return listedItems;
     const byField = (item: AdminContentListItem) => {
-      const title = `${item.titleRu} ${item.titleOriginal}`
-      const status = item.allowedInGame ? 'в игре active' : 'скрыта hidden'
-      const fields = `${item.fieldsFilled}/${item.fieldsTotal}`
-      const hint = item.hasHint ? 'есть yes true' : 'нет no false'
-      const reports = String(item.reportsCount)
-      const issues = String(item.issuesCount)
-      const completeness = String(item.completeness)
-      const sourceValue = sourceLabel(item.source)
-      const pipelineValue = pipelineLabel(item.pipelineKey)
-      const missing = item.missingFields.join(' ')
-      const tagValue = item.tags.map((tag) => tag.name).join(' ')
-      const all = [title, item.id, MODE_LABEL[item.mode], status, sourceValue, pipelineValue, tagValue, fields, hint, reports, issues, completeness, missing]
-      if (fieldFilter === 'all') return all.join(' ')
-      if (fieldFilter === 'title') return title
-      if (fieldFilter === 'id') return item.id
-      if (fieldFilter === 'mode') return MODE_LABEL[item.mode]
-      if (fieldFilter === 'status') return status
-      if (fieldFilter === 'source') return sourceValue
-      if (fieldFilter === 'pipeline') return pipelineValue
-      if (fieldFilter === 'tags') return tagValue
-      if (fieldFilter === 'fields') return fields
-      if (fieldFilter === 'hint') return hint
-      if (fieldFilter === 'reports') return reports
-      if (fieldFilter === 'issues') return issues
-      if (fieldFilter === 'completeness') return completeness
-      return missing
-    }
-    return listedItems.filter((item) => text(byField(item)).includes(needle))
-  }, [fieldFilter, fieldFilterValue, listedItems])
+      const title = `${item.titleRu} ${item.titleOriginal}`;
+      const status = item.allowedInGame ? "в игре active" : "скрыта hidden";
+      const fields = `${item.fieldsFilled}/${item.fieldsTotal}`;
+      const hint = item.hasHint ? "есть yes true" : "нет no false";
+      const reports = String(item.reportsCount);
+      const issues = String(item.issuesCount);
+      const completeness = String(item.completeness);
+      const sourceValue = sourceLabel(item.source);
+      const pipelineValue = pipelineLabel(item.pipelineKey);
+      const missing = item.missingFields.join(" ");
+      const tagValue = item.tags.map((tag) => tag.name).join(" ");
+      const all = [
+        title,
+        item.id,
+        MODE_LABEL[item.mode],
+        status,
+        sourceValue,
+        pipelineValue,
+        tagValue,
+        fields,
+        hint,
+        reports,
+        issues,
+        completeness,
+        missing,
+      ];
+      if (fieldFilter === "all") return all.join(" ");
+      if (fieldFilter === "title") return title;
+      if (fieldFilter === "id") return item.id;
+      if (fieldFilter === "mode") return MODE_LABEL[item.mode];
+      if (fieldFilter === "status") return status;
+      if (fieldFilter === "source") return sourceValue;
+      if (fieldFilter === "pipeline") return pipelineValue;
+      if (fieldFilter === "tags") return tagValue;
+      if (fieldFilter === "fields") return fields;
+      if (fieldFilter === "hint") return hint;
+      if (fieldFilter === "reports") return reports;
+      if (fieldFilter === "issues") return issues;
+      if (fieldFilter === "completeness") return completeness;
+      return missing;
+    };
+    return listedItems.filter((item) => text(byField(item)).includes(needle));
+  }, [fieldFilter, fieldFilterValue, listedItems]);
 
   const sortedItems = useMemo(() => {
-    const compareText = (left: string, right: string) => left.localeCompare(right, 'ru-RU', { sensitivity: 'base' })
-    const compareNumber = (left: number, right: number) => left === right ? 0 : left > right ? 1 : -1
-    const compare = (left: AdminContentListItem, right: AdminContentListItem) => {
-      if (sortBy === 'titleRu') return compareText(left.titleRu, right.titleRu)
-      if (sortBy === 'id') return compareText(left.id, right.id)
-      if (sortBy === 'mode') return compareText(MODE_LABEL[left.mode], MODE_LABEL[right.mode])
-      if (sortBy === 'status') return compareNumber(left.allowedInGame ? 1 : 0, right.allowedInGame ? 1 : 0)
-      if (sortBy === 'source') return compareText(sourceLabel(left.source), sourceLabel(right.source))
-      if (sortBy === 'pipelineKey') return compareText(pipelineLabel(left.pipelineKey), pipelineLabel(right.pipelineKey))
-      if (sortBy === 'tags') return compareText(left.tags.map((tag) => tag.name).join(', '), right.tags.map((tag) => tag.name).join(', '))
-      if (sortBy === 'fieldsFilled') return compareNumber(left.fieldsFilled, right.fieldsFilled)
-      if (sortBy === 'hasHint') return compareNumber(left.hasHint ? 1 : 0, right.hasHint ? 1 : 0)
-      if (sortBy === 'completeness') return compareNumber(left.completeness, right.completeness)
-      if (sortBy === 'reportsCount') return compareNumber(left.reportsCount, right.reportsCount)
-      if (sortBy === 'issuesCount') return compareNumber(left.issuesCount, right.issuesCount)
-      return compareNumber(Date.parse(left.updatedAt) || 0, Date.parse(right.updatedAt) || 0)
-    }
-    const direction = sortOrder === 'asc' ? 1 : -1
+    const compareText = (left: string, right: string) =>
+      left.localeCompare(right, "ru-RU", { sensitivity: "base" });
+    const compareNumber = (left: number, right: number) =>
+      left === right ? 0 : left > right ? 1 : -1;
+    const compare = (
+      left: AdminContentListItem,
+      right: AdminContentListItem,
+    ) => {
+      if (sortBy === "titleRu") return compareText(left.titleRu, right.titleRu);
+      if (sortBy === "id") return compareText(left.id, right.id);
+      if (sortBy === "mode")
+        return compareText(MODE_LABEL[left.mode], MODE_LABEL[right.mode]);
+      if (sortBy === "status")
+        return compareNumber(
+          left.allowedInGame ? 1 : 0,
+          right.allowedInGame ? 1 : 0,
+        );
+      if (sortBy === "source")
+        return compareText(sourceLabel(left.source), sourceLabel(right.source));
+      if (sortBy === "pipelineKey")
+        return compareText(
+          pipelineLabel(left.pipelineKey),
+          pipelineLabel(right.pipelineKey),
+        );
+      if (sortBy === "tags")
+        return compareText(
+          left.tags.map((tag) => tag.name).join(", "),
+          right.tags.map((tag) => tag.name).join(", "),
+        );
+      if (sortBy === "fieldsFilled")
+        return compareNumber(left.fieldsFilled, right.fieldsFilled);
+      if (sortBy === "hasHint")
+        return compareNumber(left.hasHint ? 1 : 0, right.hasHint ? 1 : 0);
+      if (sortBy === "completeness")
+        return compareNumber(left.completeness, right.completeness);
+      if (sortBy === "reportsCount")
+        return compareNumber(left.reportsCount, right.reportsCount);
+      if (sortBy === "issuesCount")
+        return compareNumber(left.issuesCount, right.issuesCount);
+      return compareNumber(
+        Date.parse(left.updatedAt) || 0,
+        Date.parse(right.updatedAt) || 0,
+      );
+    };
+    const direction = sortOrder === "asc" ? 1 : -1;
     return [...filteredItems].sort((left, right) => {
-      const result = compare(left, right)
-      if (result !== 0) return result * direction
-      return left.id.localeCompare(right.id, 'ru-RU', { sensitivity: 'base' })
-    })
-  }, [filteredItems, sortBy, sortOrder])
+      const result = compare(left, right);
+      if (result !== 0) return result * direction;
+      return left.id.localeCompare(right.id, "ru-RU", { sensitivity: "base" });
+    });
+  }, [filteredItems, sortBy, sortOrder]);
 
-  const selectedVisibleCount = useMemo(() => sortedItems.reduce((count, item) => count + (selected.has(item.id) ? 1 : 0), 0), [selected, sortedItems])
+  const selectedVisibleCount = useMemo(
+    () =>
+      sortedItems.reduce(
+        (count, item) => count + (selected.has(item.id) ? 1 : 0),
+        0,
+      ),
+    [selected, sortedItems],
+  );
 
   const bulk = useMutation({
-    mutationFn: (operation: 'allow' | 'disallow' | 'add_tag' | 'remove_tag') => adminApi.bulkContent({
-      itemIds: [...selected],
-      operation,
-      value: operation.endsWith('_tag') ? bulkTagId : undefined,
-      reason: operation === 'allow' ? 'Массовое включение в игру' : operation === 'disallow' ? 'Массовое исключение из игры' : operation === 'add_tag' ? 'Массовое назначение тега' : 'Массовое снятие тега',
-    }),
-    onSuccess: (data) => {
-      notify('success', `Обработано: ${data.succeeded ?? 0}, ошибок: ${data.failed ?? 0}`)
-      setSelected(new Set())
-      setSelectionAnchorIndex(null)
-      void client.invalidateQueries({ queryKey: ['admin', 'content'] })
-      void client.invalidateQueries({ queryKey: ['admin', 'workspace'] })
-      void client.invalidateQueries({ queryKey: ['admin', 'content-tags'] })
+    mutationFn: async (operation: "allow" | "disallow" | "add_tag" | "remove_tag") => {
+      if (operation === 'add_tag' || operation === 'remove_tag') {
+        const responses = await Promise.all(bulkTagIds.map((tagId) => adminApi.bulkContent({ itemIds: [...selected], operation, value: tagId, reason: operation === 'add_tag' ? 'Массовое назначение тегов' : 'Массовое снятие тегов' })))
+        return { succeeded: selected.size, failed: responses.some((response) => Number(response.failed ?? 0) > 0) ? selected.size : 0, tagCount: bulkTagIds.length }
+      }
+      return adminApi.bulkContent({ itemIds: [...selected], operation, reason: operation === 'allow' ? 'Массовое включение в игру' : 'Массовое исключение из игры' })
     },
+    onSuccess: (data) => {
+      notify(
+        "success",
+        `Обработано: ${data.succeeded ?? 0}, ошибок: ${data.failed ?? 0}`,
+      );
+      setSelected(new Set());
+      setBulkTagIds([]);
+      setSelectionAnchorIndex(null);
+      void client.invalidateQueries({ queryKey: ["admin", "content"] });
+      void client.invalidateQueries({ queryKey: ["admin", "workspace"] });
+      void client.invalidateQueries({ queryKey: ["admin", "content-tags"] });
+    },
+    onError: (error) => notify("error", errorText(error)),
+  });
+  const updateRowTags = useMutation({
+    mutationFn: ({ itemId, current, next }: { itemId: string; current: string[]; next: string[] }) => {
+      const before = new Set(current)
+      const added = next.find((id) => !before.has(id))
+      const removed = current.find((id) => !next.includes(id))
+      if (!added && !removed) return Promise.resolve({})
+      return adminApi.bulkContent({ itemIds: [itemId], operation: added ? 'add_tag' : 'remove_tag', value: added ?? removed, reason: added ? 'Тег назначен в таблице карточек' : 'Тег снят в таблице карточек' })
+    },
+    onSuccess: () => { void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }) },
     onError: (error) => notify('error', errorText(error)),
   })
+  const createTag = async (name: string) => {
+    const created = await adminApi.createTag(name)
+    await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] })
+    return created
+  }
 
   const toggleSort = (key: ContentSortKey) => {
-    const defaultDesc = new Set<ContentSortKey>(['updatedAt', 'reportsCount', 'issuesCount', 'completeness', 'fieldsFilled'])
+    const defaultDesc = new Set<ContentSortKey>([
+      "updatedAt",
+      "reportsCount",
+      "issuesCount",
+      "completeness",
+      "fieldsFilled",
+    ]);
     if (sortBy === key) {
-      setSortOrder((current) => current === 'asc' ? 'desc' : 'asc')
-      return
+      setSortOrder((current) => (current === "asc" ? "desc" : "asc"));
+      return;
     }
-    setSortBy(key)
-    setSortOrder(defaultDesc.has(key) ? 'desc' : 'asc')
-  }
+    setSortBy(key);
+    setSortOrder(defaultDesc.has(key) ? "desc" : "asc");
+  };
 
   const sortMark = (key: ContentSortKey) => {
-    if (sortBy !== key) return '↕'
-    return sortOrder === 'asc' ? '▲' : '▼'
-  }
+    if (sortBy !== key) return "↕";
+    return sortOrder === "asc" ? "▲" : "▼";
+  };
 
-  const updateSelection = (itemId: string, rowIndex: number, checked: boolean, withShift: boolean) => {
+  const updateSelection = (
+    itemId: string,
+    rowIndex: number,
+    checked: boolean,
+    withShift: boolean,
+  ) => {
     setSelected((current) => {
-      const next = new Set(current)
+      const next = new Set(current);
       if (withShift && selectionAnchorIndex != null && sortedItems.length > 0) {
-        const from = Math.min(selectionAnchorIndex, rowIndex)
-        const to = Math.max(selectionAnchorIndex, rowIndex)
+        const from = Math.min(selectionAnchorIndex, rowIndex);
+        const to = Math.max(selectionAnchorIndex, rowIndex);
         for (let index = from; index <= to; index += 1) {
-          const targetId = sortedItems[index]?.id
-          if (!targetId) continue
-          if (checked) next.add(targetId)
-          else next.delete(targetId)
+          const targetId = sortedItems[index]?.id;
+          if (!targetId) continue;
+          if (checked) next.add(targetId);
+          else next.delete(targetId);
         }
       } else if (checked) {
-        next.add(itemId)
+        next.add(itemId);
       } else {
-        next.delete(itemId)
+        next.delete(itemId);
       }
-      return next
-    })
-    setSelectionAnchorIndex(rowIndex)
-  }
+      return next;
+    });
+    setSelectionAnchorIndex(rowIndex);
+  };
 
   const resetFilters = () => {
-    setQ('')
-    setMode('')
-    setPublication('all')
-    setSource('')
-    setPipelineFilter('')
-    setHintFilter('all')
-    setReportsFilter('all')
-    setIssuesFilter('all')
-    setIncludeTagIds([])
-    setExcludeTagIds([])
-    setTagMatch('all')
-    setFieldFilter('all')
-    setFieldFilterValue('')
-    setSortBy('updatedAt')
-    setSortOrder('desc')
-    setSelected(new Set())
-    setSelectionAnchorIndex(null)
-  }
+    setQ("");
+    setMode("");
+    setPublication("all");
+    setSource("");
+    setPipelineFilter("");
+    setHintFilter("all");
+    setReportsFilter("all");
+    setIssuesFilter("all");
+    setIncludeTagIds([]);
+    setExcludeTagIds([]);
+    setTagMatch("all");
+    setFieldFilter("all");
+    setFieldFilterValue("");
+    setSortBy("updatedAt");
+    setSortOrder("desc");
+    setSelected(new Set());
+    setSelectionAnchorIndex(null);
+  };
 
-  const hasLocalFilter = Boolean(fieldFilterValue.trim()) || fieldFilter !== 'all'
+  const hasLocalFilter =
+    Boolean(fieldFilterValue.trim()) || fieldFilter !== "all";
 
-  return <>
-    <PageHead
-      eyebrow="Контент"
-      title="Карточки"
-      description="Поиск, проверка и публикация всех шести игровых библиотек."
-      actions={<><div className="admin-view-switch"><button className={view === 'table' ? 'is-active' : ''} onClick={() => setView('table')}><Menu />Таблица</button><button className={view === 'grid' ? 'is-active' : ''} onClick={() => setView('grid')}><Boxes />Карточки</button><button className={view === 'review' ? 'is-active' : ''} onClick={() => setView('review')}><Eye />Проверка</button></div><button className="admin-btn admin-btn--secondary" onClick={() => setExchange('import')}><Upload />Импорт JSON</button><button className="admin-btn admin-btn--secondary" disabled={!selected.size} onClick={() => setExchange('export')}><Download />Экспорт JSON{selected.size ? ` · ${selected.size}` : ''}</button><button className="admin-btn admin-btn--primary" onClick={() => setAdding(true)}><Plus />Добавить карточку</button></>}
-    />
-    <WorkspaceBar notify={notify} />
+  return (
+    <>
+      <PageHead
+        eyebrow="Контент"
+        title="Карточки"
+        description="Поиск, проверка и публикация всех шести игровых библиотек."
+        actions={
+          <>
+            <div className="admin-view-switch">
+              <button
+                className={view === "table" ? "is-active" : ""}
+                onClick={() => setView("table")}
+              >
+                <Menu />
+                Таблица
+              </button>
+              <button
+                className={view === "grid" ? "is-active" : ""}
+                onClick={() => setView("grid")}
+              >
+                <Boxes />
+                Карточки
+              </button>
+              <button
+                className={view === "review" ? "is-active" : ""}
+                onClick={() => setView("review")}
+              >
+                <Eye />
+                Проверка
+              </button>
+            </div>
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => setExchange("import")}
+            >
+              <Upload />
+              Импорт JSON
+            </button>
+            <button
+              className="admin-btn admin-btn--secondary"
+              disabled={!selected.size}
+              onClick={() => setExchange("export")}
+            >
+              <Download />
+              Экспорт JSON{selected.size ? ` · ${selected.size}` : ""}
+            </button>
+            <button
+              className="admin-btn admin-btn--primary"
+              onClick={() => setAdding(true)}
+            >
+              <Plus />
+              Добавить карточку
+            </button>
+          </>
+        }
+      />
+      <WorkspaceBar notify={notify} />
 
-    <div className="admin-toolbar admin-toolbar--content">
-      <label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Название, альтернативное название или ID" />{q && <button onClick={() => setQ('')}><X /></button>}</label>
-      <label><Filter /><select value={mode} onChange={(event) => setMode(event.target.value)}><option value="">Все категории</option>{MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></label>
-      <label><Archive /><select value={publication} onChange={(event) => setPublication(event.target.value)}><option value="all">Все статусы</option><option value="published">Опубликованы</option><option value="hidden">Скрыты</option></select></label>
-      <label><FileJson /><select value={source} onChange={(event) => setSource(event.target.value)}><option value="">Все источники</option><option value="manual">Ручное</option><option value="ai_pipeline">AI пайплайн</option><option value="bulk">Массовое</option><option value="import">Импорт</option><option value="rollback">Откат</option><option value="report_fix">Фикс по репорту</option></select></label>
-      <label><Bot /><select value={pipelineFilter} onChange={(event) => setPipelineFilter(event.target.value)}><option value="">Любой пайплайн</option><option value="music">Музыка</option><option value="movie">Кино</option><option value="anime">Аниме</option></select></label>
-      <label><Sparkles /><select value={hintFilter} onChange={(event) => setHintFilter(event.target.value as 'all' | 'yes' | 'no')}><option value="all">Подсказка: все</option><option value="yes">Подсказка: есть</option><option value="no">Подсказка: нет</option></select></label>
-      <label><Bug /><select value={reportsFilter} onChange={(event) => setReportsFilter(event.target.value as 'all' | 'yes' | 'no')}><option value="all">Репорты: все</option><option value="yes">Репорты: есть</option><option value="no">Репорты: нет</option></select></label>
-      <label><AlertTriangle /><select value={issuesFilter} onChange={(event) => setIssuesFilter(event.target.value as 'all' | 'yes' | 'no')}><option value="all">Качество: все</option><option value="yes">Качество: есть проблемы</option><option value="no">Качество: без проблем</option></select></label>
-      <label><ListChecks /><select aria-label="Размер страницы" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100); setSelected(new Set()); setSelectionAnchorIndex(null) }}><option value={20}>20</option><option value={40}>40</option><option value={60}>60</option><option value={100}>100</option></select></label>
-      <button className="admin-btn admin-btn--secondary" onClick={() => void items.refetch()}><RefreshCw /></button>
-    </div>
+      <div className="admin-toolbar admin-toolbar--content">
+        <label className="admin-search">
+          <Search />
+          <input
+            value={q}
+            onChange={(event) => setQ(event.target.value)}
+            placeholder="Название, альтернативное название или ID"
+          />
+          {q && (
+            <button onClick={() => setQ("")}>
+              <X />
+            </button>
+          )}
+        </label>
+        <label>
+          <Filter />
+          <select
+            value={mode}
+            onChange={(event) => setMode(event.target.value)}
+          >
+            <option value="">Все категории</option>
+            {MODES.map((entry) => (
+              <option key={entry.value} value={entry.value}>
+                {entry.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <Archive />
+          <select
+            value={publication}
+            onChange={(event) => setPublication(event.target.value)}
+          >
+            <option value="all">Все статусы</option>
+            <option value="published">Опубликованы</option>
+            <option value="hidden">Скрыты</option>
+          </select>
+        </label>
+        <label>
+          <FileJson />
+          <select
+            value={source}
+            onChange={(event) => setSource(event.target.value)}
+          >
+            <option value="">Все источники</option>
+            <option value="manual">Ручное</option>
+            <option value="ai_pipeline">AI пайплайн</option>
+            <option value="bulk">Массовое</option>
+            <option value="import">Импорт</option>
+            <option value="rollback">Откат</option>
+            <option value="report_fix">Фикс по репорту</option>
+          </select>
+        </label>
+        <label>
+          <Bot />
+          <select
+            value={pipelineFilter}
+            onChange={(event) => setPipelineFilter(event.target.value)}
+          >
+            <option value="">Любой пайплайн</option>
+            <option value="music">Музыка</option>
+            <option value="movie">Кино</option>
+            <option value="anime">Аниме</option>
+          </select>
+        </label>
+        <label>
+          <Sparkles />
+          <select
+            value={hintFilter}
+            onChange={(event) =>
+              setHintFilter(event.target.value as "all" | "yes" | "no")
+            }
+          >
+            <option value="all">Подсказка: все</option>
+            <option value="yes">Подсказка: есть</option>
+            <option value="no">Подсказка: нет</option>
+          </select>
+        </label>
+        <label>
+          <Bug />
+          <select
+            value={reportsFilter}
+            onChange={(event) =>
+              setReportsFilter(event.target.value as "all" | "yes" | "no")
+            }
+          >
+            <option value="all">Репорты: все</option>
+            <option value="yes">Репорты: есть</option>
+            <option value="no">Репорты: нет</option>
+          </select>
+        </label>
+        <label>
+          <AlertTriangle />
+          <select
+            value={issuesFilter}
+            onChange={(event) =>
+              setIssuesFilter(event.target.value as "all" | "yes" | "no")
+            }
+          >
+            <option value="all">Качество: все</option>
+            <option value="yes">Качество: есть проблемы</option>
+            <option value="no">Качество: без проблем</option>
+          </select>
+        </label>
+        <label>
+          <ListChecks />
+          <select
+            aria-label="Размер страницы"
+            value={pageSize}
+            onChange={(event) => {
+              setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100);
+              setSelected(new Set());
+              setSelectionAnchorIndex(null);
+            }}
+          >
+            <option value={20}>20</option>
+            <option value={40}>40</option>
+            <option value={60}>60</option>
+            <option value={100}>100</option>
+          </select>
+        </label>
+        <button
+          className="admin-btn admin-btn--secondary"
+          onClick={() => void items.refetch()}
+        >
+          <RefreshCw />
+        </button>
+      </div>
 
-    <div className="admin-toolbar admin-toolbar--content admin-toolbar--sub">
-      <TagPicker tags={tags.data?.items ?? []} value={includeTagIds} onChange={(ids) => { setIncludeTagIds(ids); setSelected(new Set()) }} label="С тегами" />
-      <label><Tags /><select value={tagMatch} onChange={(event) => setTagMatch(event.target.value as 'all' | 'any')}><option value="all">Должны быть все</option><option value="any">Достаточно любого</option></select></label>
-      <TagPicker tags={tags.data?.items ?? []} value={excludeTagIds} onChange={(ids) => { setExcludeTagIds(ids); setSelected(new Set()) }} label="Исключить теги" />
-      <label><Tags /><select value={sortBy} onChange={(event) => setSortBy(event.target.value as ContentSortKey)}><option value="updatedAt">Сортировка: изменено</option><option value="titleRu">Сортировка: название</option><option value="tags">Сортировка: тег</option></select></label>
-      <label><ChevronDown /><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as 'asc' | 'desc')}><option value="asc">По возрастанию</option><option value="desc">По убыванию</option></select></label>
-      <label><Filter /><select value={fieldFilter} onChange={(event) => setFieldFilter(event.target.value as ContentFieldFilter)}><option value="all">Локальный фильтр: все поля</option><option value="title">Название</option><option value="id">ID</option><option value="mode">Категория</option><option value="status">Статус</option><option value="source">Источник</option><option value="pipeline">Пайплайн</option><option value="fields">Заполнено полей</option><option value="hint">Подсказка</option><option value="reports">Репорты</option><option value="issues">Качество</option><option value="completeness">Полнота</option><option value="missing">Чего не хватает</option></select></label>
-      <label className="admin-search admin-search--compact"><Search /><input value={fieldFilterValue} onChange={(event) => setFieldFilterValue(event.target.value)} placeholder="Фильтр по выбранному полю" />{fieldFilterValue && <button onClick={() => setFieldFilterValue('')}><X /></button>}</label>
-      <button className="admin-btn admin-btn--secondary" onClick={resetFilters}>Сбросить фильтры</button>
-    </div>
+      <div className="admin-toolbar admin-toolbar--content admin-toolbar--sub">
+        <TagPicker
+          tags={tags.data?.items ?? []}
+          value={includeTagIds}
+          onChange={(ids) => {
+            setIncludeTagIds(ids);
+            setSelected(new Set());
+          }}
+          label="С тегами"
+        />
+        <label>
+          <Tags />
+          <select
+            value={tagMatch}
+            onChange={(event) =>
+              setTagMatch(event.target.value as "all" | "any")
+            }
+          >
+            <option value="all">Должны быть все</option>
+            <option value="any">Достаточно любого</option>
+          </select>
+        </label>
+        <TagPicker
+          tags={tags.data?.items ?? []}
+          value={excludeTagIds}
+          onChange={(ids) => {
+            setExcludeTagIds(ids);
+            setSelected(new Set());
+          }}
+          label="Исключить теги"
+        />
+        <label>
+          <Tags />
+          <select
+            value={sortBy}
+            onChange={(event) =>
+              setSortBy(event.target.value as ContentSortKey)
+            }
+          >
+            <option value="updatedAt">Сортировка: изменено</option>
+            <option value="titleRu">Сортировка: название</option>
+            <option value="tags">Сортировка: тег</option>
+          </select>
+        </label>
+        <label>
+          <ChevronDown />
+          <select
+            value={sortOrder}
+            onChange={(event) =>
+              setSortOrder(event.target.value as "asc" | "desc")
+            }
+          >
+            <option value="asc">По возрастанию</option>
+            <option value="desc">По убыванию</option>
+          </select>
+        </label>
+        <label>
+          <Filter />
+          <select
+            value={fieldFilter}
+            onChange={(event) =>
+              setFieldFilter(event.target.value as ContentFieldFilter)
+            }
+          >
+            <option value="all">Локальный фильтр: все поля</option>
+            <option value="title">Название</option>
+            <option value="id">ID</option>
+            <option value="mode">Категория</option>
+            <option value="status">Статус</option>
+            <option value="source">Источник</option>
+            <option value="pipeline">Пайплайн</option>
+            <option value="fields">Заполнено полей</option>
+            <option value="hint">Подсказка</option>
+            <option value="reports">Репорты</option>
+            <option value="issues">Качество</option>
+            <option value="completeness">Полнота</option>
+            <option value="missing">Чего не хватает</option>
+          </select>
+        </label>
+        <label className="admin-search admin-search--compact">
+          <Search />
+          <input
+            value={fieldFilterValue}
+            onChange={(event) => setFieldFilterValue(event.target.value)}
+            placeholder="Фильтр по выбранному полю"
+          />
+          {fieldFilterValue && (
+            <button onClick={() => setFieldFilterValue("")}>
+              <X />
+            </button>
+          )}
+        </label>
+        <button
+          className="admin-btn admin-btn--secondary"
+          onClick={resetFilters}
+        >
+          Сбросить фильтры
+        </button>
+      </div>
 
-    {selected.size > 0 && <div className="admin-bulk"><strong>Выбрано: {selected.size}</strong><button onClick={() => setExchange('export')}><Download />Экспорт JSON</button><button onClick={() => bulk.mutate('allow')}><Check />Разрешить в игре</button><button onClick={() => bulk.mutate('disallow')}><Archive />Скрыть</button><select value={bulkTagId} onChange={(event) => setBulkTagId(event.target.value)}><option value="">Выберите тег</option>{tags.data?.items.map((tag) => <option key={tag.id} value={tag.id}>{tag.name}</option>)}</select><button disabled={!bulkTagId} onClick={() => bulk.mutate('add_tag')}><Tags />Назначить тег</button><button disabled={!bulkTagId} onClick={() => bulk.mutate('remove_tag')}><X />Снять тег</button><button onClick={async () => { const name = prompt('Название нового тега'); if (!name?.trim()) return; try { const tag = await adminApi.createTag(name.trim()); setBulkTagId(tag.id); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); notify('success', 'Тег создан — теперь его можно назначить') } catch (error) { notify('error', errorText(error)) } }}><Plus />Новый тег</button><button onClick={() => { setSelected(new Set()); setSelectionAnchorIndex(null) }}><X />Снять выбор</button></div>}
+      {selected.size > 0 && (
+        <div className="admin-bulk">
+          <strong>Выбрано: {selected.size}</strong>
+          <button onClick={() => setExchange("export")}>
+            <Download />
+            Экспорт JSON
+          </button>
+          <button onClick={() => bulk.mutate("allow")}>
+            <Check />
+            Разрешить в игре
+          </button>
+          <button onClick={() => bulk.mutate("disallow")}>
+            <Archive />
+            Скрыть
+          </button>
+          <TagPicker compact label="Массовые теги" tags={tags.data?.items ?? []} value={bulkTagIds} onChange={setBulkTagIds} onCreate={createTag} />
+          <button disabled={!bulkTagIds.length} onClick={() => bulk.mutate("add_tag")}>
+            <Tags />
+            Назначить теги · {bulkTagIds.length}
+          </button>
+          <button
+            disabled={!bulkTagIds.length}
+            onClick={() => bulk.mutate("remove_tag")}
+          >
+            <X />
+            Снять теги · {bulkTagIds.length}
+          </button>
+          <button
+            onClick={() => {
+              setSelected(new Set());
+              setSelectionAnchorIndex(null);
+            }}
+          >
+            <X />
+            Снять выбор
+          </button>
+        </div>
+      )}
 
-    {items.isLoading
-      ? <Loading />
-      : items.error
-        ? <ErrorState error={items.error} retry={() => void items.refetch()} />
-        : !listedItems.length
-          ? <Empty title="Ничего не найдено" text="Измените запрос или сбросьте фильтры." icon={<Search />} action={<button className="admin-btn admin-btn--secondary" onClick={resetFilters}>Сбросить фильтры</button>} />
-          : !sortedItems.length
-            ? <Empty title="По локальному фильтру совпадений нет" text="Измените поле/значение локального фильтра или сбросьте его." icon={<Filter />} action={<button className="admin-btn admin-btn--secondary" onClick={() => { setFieldFilter('all'); setFieldFilterValue('') }}>Сбросить локальный фильтр</button>} />
-            : view === 'grid'
-              ? <div className="admin-content-grid">{sortedItems.map((item) => <button key={item.id} onClick={() => navigate('content', item.id)}><div>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <ImageIcon />}{item.draftVersion && <span>Draft v{item.draftVersion}</span>}</div><small>{MODE_LABEL[item.mode]}</small><strong>{item.titleRu}</strong><p>{item.titleOriginal || item.id}</p><footer><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status><span>{item.fieldsFilled}/{item.fieldsTotal} · {item.completeness}%</span></footer></button>)}</div>
-              : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все" checked={sortedItems.length > 0 && selectedVisibleCount === sortedItems.length} onChange={(event) => { const checked = event.target.checked; setSelected((current) => { const next = new Set(current); for (const item of sortedItems) { if (checked) next.add(item.id); else next.delete(item.id) } return next }); setSelectionAnchorIndex(null) }} /></th><th><button className="admin-th-sort" onClick={() => toggleSort('titleRu')}>Карточка <span className={`admin-th-sort__mark ${sortBy === 'titleRu' ? 'is-active' : ''}`}>{sortMark('titleRu')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('id')}>ID <span className={`admin-th-sort__mark ${sortBy === 'id' ? 'is-active' : ''}`}>{sortMark('id')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('mode')}>Категория <span className={`admin-th-sort__mark ${sortBy === 'mode' ? 'is-active' : ''}`}>{sortMark('mode')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('status')}>Статус <span className={`admin-th-sort__mark ${sortBy === 'status' ? 'is-active' : ''}`}>{sortMark('status')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('source')}>Источник <span className={`admin-th-sort__mark ${sortBy === 'source' ? 'is-active' : ''}`}>{sortMark('source')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('pipelineKey')}>Пайплайн <span className={`admin-th-sort__mark ${sortBy === 'pipelineKey' ? 'is-active' : ''}`}>{sortMark('pipelineKey')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('fieldsFilled')}>Поля <span className={`admin-th-sort__mark ${sortBy === 'fieldsFilled' ? 'is-active' : ''}`}>{sortMark('fieldsFilled')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('hasHint')}>Подсказка <span className={`admin-th-sort__mark ${sortBy === 'hasHint' ? 'is-active' : ''}`}>{sortMark('hasHint')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('completeness')}>Полнота <span className={`admin-th-sort__mark ${sortBy === 'completeness' ? 'is-active' : ''}`}>{sortMark('completeness')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('reportsCount')}>Репорты <span className={`admin-th-sort__mark ${sortBy === 'reportsCount' ? 'is-active' : ''}`}>{sortMark('reportsCount')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('issuesCount')}>Качество <span className={`admin-th-sort__mark ${sortBy === 'issuesCount' ? 'is-active' : ''}`}>{sortMark('issuesCount')}</span></button></th><th><button className="admin-th-sort" onClick={() => toggleSort('updatedAt')}>Изменена <span className={`admin-th-sort__mark ${sortBy === 'updatedAt' ? 'is-active' : ''}`}>{sortMark('updatedAt')}</span></button></th><th /></tr></thead><tbody>{sortedItems.map((item, rowIndex) => <tr key={item.id} className={selectedId === item.id ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${item.titleRu}`} checked={selected.has(item.id)} onChange={(event) => updateSelection(item.id, rowIndex, event.target.checked, event.nativeEvent instanceof MouseEvent ? event.nativeEvent.shiftKey : false)} /></td><td><button className="admin-title-cell" onClick={() => navigate('content', item.id)}>{item.posterUrl ? <img src={item.posterUrl} alt="" /> : <span><ImageIcon /></span>}<span><strong>{item.titleRu}</strong><small>{item.titleOriginal || 'Без оригинального названия'}{item.year ? ` · ${item.year}` : ''}</small></span></button></td><td><code>{item.id}</code></td><td>{MODE_LABEL[item.mode]}</td><td><Status value={item.allowedInGame ? 'active' : 'blocked'}>{item.allowedInGame ? 'В игре' : 'Скрыта'}</Status>{item.draftVersion && <small className="admin-draft-label">Draft v{item.draftVersion}</small>}</td><td><span className={`admin-source-chip ${item.source ? `admin-source-chip--${item.source}` : ''}`}>{sourceLabel(item.source)}</span></td><td>{pipelineLabel(item.pipelineKey)}</td><td>{item.fieldsFilled}/{item.fieldsTotal}</td><td>{item.hasHint ? <Status value="active">Есть</Status> : <Status value="warning">Нет</Status>}</td><td><div className="admin-completeness admin-completeness--hint" data-tooltip={item.missingFields.length ? `Не хватает: ${item.missingFields.join(', ')}` : 'Все базовые поля заполнены'}><i style={{ width: `${item.completeness}%` }} /><span>{item.completeness}%</span></div></td><td>{item.reportsCount ? <button className="admin-count admin-count--warn" onClick={() => navigate('reports')}>{item.reportsCount}</button> : '—'}</td><td>{item.issuesCount ? <span className="admin-count admin-count--danger">{item.issuesCount}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt)}</td><td><button className="admin-icon-btn" onClick={() => navigate('content', item.id)}><ChevronRight /></button></td></tr>)}</tbody></table><footer className="admin-table-footer"><span>Показано {sortedItems.length} из {totalItems.toLocaleString('ru-RU')}{hasLocalFilter ? ' · локальный фильтр включён' : ''}</span></footer></div>}
+      {items.isLoading ? (
+        <Loading />
+      ) : items.error ? (
+        <ErrorState error={items.error} retry={() => void items.refetch()} />
+      ) : !listedItems.length ? (
+        <Empty
+          title="Ничего не найдено"
+          text="Измените запрос или сбросьте фильтры."
+          icon={<Search />}
+          action={
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={resetFilters}
+            >
+              Сбросить фильтры
+            </button>
+          }
+        />
+      ) : !sortedItems.length ? (
+        <Empty
+          title="По локальному фильтру совпадений нет"
+          text="Измените поле/значение локального фильтра или сбросьте его."
+          icon={<Filter />}
+          action={
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => {
+                setFieldFilter("all");
+                setFieldFilterValue("");
+              }}
+            >
+              Сбросить локальный фильтр
+            </button>
+          }
+        />
+      ) : view === "grid" ? (
+        <div className="admin-content-grid">
+          {sortedItems.map((item) => (
+            <button key={item.id} onClick={() => navigate("content", item.id)}>
+              <div>
+                {item.posterUrl ? (
+                  <img src={item.posterUrl} alt="" />
+                ) : (
+                  <ImageIcon />
+                )}
+                {item.draftVersion && <span>Draft v{item.draftVersion}</span>}
+              </div>
+              <small>{MODE_LABEL[item.mode]}</small>
+              <strong>{item.titleRu}</strong>
+              <p>{item.titleOriginal || item.id}</p>
+              <footer>
+                <Status value={item.allowedInGame ? "active" : "blocked"}>
+                  {item.allowedInGame ? "В игре" : "Скрыта"}
+                </Status>
+                <span>
+                  {item.fieldsFilled}/{item.fieldsTotal} · {item.completeness}%
+                </span>
+              </footer>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th className="admin-check">
+                  <input
+                    type="checkbox"
+                    aria-label="Выбрать все"
+                    checked={
+                      sortedItems.length > 0 &&
+                      selectedVisibleCount === sortedItems.length
+                    }
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setSelected((current) => {
+                        const next = new Set(current);
+                        for (const item of sortedItems) {
+                          if (checked) next.add(item.id);
+                          else next.delete(item.id);
+                        }
+                        return next;
+                      });
+                      setSelectionAnchorIndex(null);
+                    }}
+                  />
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("titleRu")}
+                  >
+                    Карточка{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "titleRu" ? "is-active" : ""}`}
+                    >
+                      {sortMark("titleRu")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("id")}
+                  >
+                    ID{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "id" ? "is-active" : ""}`}
+                    >
+                      {sortMark("id")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("mode")}
+                  >
+                    Категория{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "mode" ? "is-active" : ""}`}
+                    >
+                      {sortMark("mode")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("status")}
+                  >
+                    Статус{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "status" ? "is-active" : ""}`}
+                    >
+                      {sortMark("status")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("source")}
+                  >
+                    Источник{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "source" ? "is-active" : ""}`}
+                    >
+                      {sortMark("source")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("pipelineKey")}
+                  >
+                    Пайплайн{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "pipelineKey" ? "is-active" : ""}`}
+                    >
+                      {sortMark("pipelineKey")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("tags")}
+                  >
+                    Теги{" "}
+                    <span className={`admin-th-sort__mark ${sortBy === "tags" ? "is-active" : ""}`}>
+                      {sortMark("tags")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("fieldsFilled")}
+                  >
+                    Поля{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "fieldsFilled" ? "is-active" : ""}`}
+                    >
+                      {sortMark("fieldsFilled")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("hasHint")}
+                  >
+                    Подсказка{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "hasHint" ? "is-active" : ""}`}
+                    >
+                      {sortMark("hasHint")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("completeness")}
+                  >
+                    Полнота{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "completeness" ? "is-active" : ""}`}
+                    >
+                      {sortMark("completeness")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("reportsCount")}
+                  >
+                    Репорты{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "reportsCount" ? "is-active" : ""}`}
+                    >
+                      {sortMark("reportsCount")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("issuesCount")}
+                  >
+                    Качество{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "issuesCount" ? "is-active" : ""}`}
+                    >
+                      {sortMark("issuesCount")}
+                    </span>
+                  </button>
+                </th>
+                <th>
+                  <button
+                    className="admin-th-sort"
+                    onClick={() => toggleSort("updatedAt")}
+                  >
+                    Изменена{" "}
+                    <span
+                      className={`admin-th-sort__mark ${sortBy === "updatedAt" ? "is-active" : ""}`}
+                    >
+                      {sortMark("updatedAt")}
+                    </span>
+                  </button>
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {sortedItems.map((item, rowIndex) => (
+                <tr
+                  key={item.id}
+                  className={selectedId === item.id ? "is-open" : ""}
+                >
+                  <td className="admin-check">
+                    <input
+                      type="checkbox"
+                      aria-label={`Выбрать ${item.titleRu}`}
+                      checked={selected.has(item.id)}
+                      onChange={(event) =>
+                        updateSelection(
+                          item.id,
+                          rowIndex,
+                          event.target.checked,
+                          event.nativeEvent instanceof MouseEvent
+                            ? event.nativeEvent.shiftKey
+                            : false,
+                        )
+                      }
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className="admin-title-cell"
+                      onClick={() => navigate("content", item.id)}
+                    >
+                      {item.posterUrl ? (
+                        <img src={item.posterUrl} alt="" />
+                      ) : (
+                        <span>
+                          <ImageIcon />
+                        </span>
+                      )}
+                      <span>
+                        <strong>{item.titleRu}</strong>
+                        <small>
+                          {item.titleOriginal || "Без оригинального названия"}
+                          {item.year ? ` · ${item.year}` : ""}
+                        </small>
+                      </span>
+                    </button>
+                  </td>
+                  <td>
+                    <code>{item.id}</code>
+                  </td>
+                  <td>{MODE_LABEL[item.mode]}</td>
+                  <td>
+                    <Status value={item.allowedInGame ? "active" : "blocked"}>
+                      {item.allowedInGame ? "В игре" : "Скрыта"}
+                    </Status>
+                    {item.draftVersion && (
+                      <small className="admin-draft-label">
+                        Draft v{item.draftVersion}
+                      </small>
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={`admin-source-chip ${item.source ? `admin-source-chip--${item.source}` : ""}`}
+                    >
+                      {sourceLabel(item.source)}
+                    </span>
+                  </td>
+                  <td>{pipelineLabel(item.pipelineKey)}</td>
+                  <td className="admin-tags-cell">
+                    <TagPicker
+                      compact
+                      label="Теги"
+                      tags={tags.data?.items ?? []}
+                      value={item.tags.map((tag) => tag.id)}
+                      disabled={updateRowTags.isPending}
+                      onCreate={createTag}
+                      onChange={(next) => updateRowTags.mutate({ itemId: item.id, current: item.tags.map((tag) => tag.id), next })}
+                    />
+                  </td>
+                  <td>
+                    {item.fieldsFilled}/{item.fieldsTotal}
+                  </td>
+                  <td>
+                    {item.hasHint ? (
+                      <Status value="active">Есть</Status>
+                    ) : (
+                      <Status value="warning">Нет</Status>
+                    )}
+                  </td>
+                  <td>
+                    <div
+                      className="admin-completeness admin-completeness--hint"
+                      data-tooltip={
+                        item.missingFields.length
+                          ? `Не хватает: ${item.missingFields.join(", ")}`
+                          : "Все базовые поля заполнены"
+                      }
+                    >
+                      <i style={{ width: `${item.completeness}%` }} />
+                      <span>{item.completeness}%</span>
+                    </div>
+                  </td>
+                  <td>
+                    {item.reportsCount ? (
+                      <button
+                        className="admin-count admin-count--warn"
+                        onClick={() => navigate("reports")}
+                      >
+                        {item.reportsCount}
+                      </button>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td>
+                    {item.issuesCount ? (
+                      <span className="admin-count admin-count--danger">
+                        {item.issuesCount}
+                      </span>
+                    ) : (
+                      <Check className="admin-table-ok" />
+                    )}
+                  </td>
+                  <td>{compactDate(item.updatedAt)}</td>
+                  <td>
+                    <button
+                      className="admin-icon-btn"
+                      onClick={() => navigate("content", item.id)}
+                    >
+                      <ChevronRight />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <footer className="admin-table-footer">
+            <span>
+              Показано {sortedItems.length} из{" "}
+              {totalItems.toLocaleString("ru-RU")}
+              {hasLocalFilter ? " · локальный фильтр включён" : ""}
+            </span>
+          </footer>
+        </div>
+      )}
 
-    <div className="admin-content-pagination" ref={loadMoreRef}>{items.hasNextPage ? items.isFetchingNextPage ? 'Загружаем дальше…' : 'Прокрутите ниже, чтобы догрузить список' : `Загружены все ${listedItems.length.toLocaleString('ru-RU')}`}</div>
+      <div className="admin-content-pagination" ref={loadMoreRef}>
+        {items.hasNextPage
+          ? items.isFetchingNextPage
+            ? "Загружаем дальше…"
+            : "Прокрутите ниже, чтобы догрузить список"
+          : `Загружены все ${listedItems.length.toLocaleString("ru-RU")}`}
+      </div>
 
-    {selectedId && <ItemEditor itemId={selectedId} onClose={() => navigate('content')} notify={notify} />}
-    {adding && <NewCardDialog close={() => setAdding(false)} done={(id) => { setAdding(false); navigate('content', id); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} notify={notify} />}
-    {exchange && <ContentExchangeDialog initialTab={exchange} itemIds={[...selected]} close={() => setExchange(null)} notify={notify} done={() => { setExchange(null); setSelected(new Set()); setSelectionAnchorIndex(null); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }} />}
-  </>
+      {selectedId && (
+        <ItemEditor
+          itemId={selectedId}
+          onClose={() => navigate("content")}
+          notify={notify}
+        />
+      )}
+      {adding && (
+        <NewCardDialog
+          close={() => setAdding(false)}
+          done={(id) => {
+            setAdding(false);
+            navigate("content", id);
+            void client.invalidateQueries({ queryKey: ["admin", "content"] });
+            void client.invalidateQueries({ queryKey: ["admin", "workspace"] });
+          }}
+          notify={notify}
+        />
+      )}
+      {exchange && (
+        <ContentExchangeDialog
+          initialTab={exchange}
+          itemIds={[...selected]}
+          close={() => setExchange(null)}
+          notify={notify}
+          done={() => {
+            setExchange(null);
+            setSelected(new Set());
+            setSelectionAnchorIndex(null);
+            void client.invalidateQueries({ queryKey: ["admin", "content"] });
+            void client.invalidateQueries({ queryKey: ["admin", "workspace"] });
+          }}
+        />
+      )}
+    </>
+  );
 }
 
 function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
@@ -676,6 +2013,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const runs = useQuery({ queryKey: ['admin', 'pipeline-runs'], queryFn: adminApi.pipelineRuns, refetchInterval: 5_000 })
   const selectedRun = runs.data?.items.find((entry) => entry.id === selectedId)
   const items = useQuery({ queryKey: ['admin', 'pipeline-items', selectedId], queryFn: () => adminApi.pipelineItems(selectedId!), enabled: Boolean(selectedId), refetchInterval: selectedId ? 5_000 : false })
+  const contentTags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags })
   const runEvents = useQuery({
     queryKey: ['admin', 'pipeline-events', selectedId],
     queryFn: () => adminApi.pipelineRunEvents(selectedId!),
@@ -713,11 +2051,13 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   })
   const runItems = items.data?.items ?? []
   const [selectedPipelineItems, setSelectedPipelineItems] = useState<Set<string>>(new Set())
+  const [pipelineBulkTagIds, setPipelineBulkTagIds] = useState<string[]>([])
   const [activePipelineItemId, setActivePipelineItemId] = useState<string | null>(null)
   const [moderationOpen, setModerationOpen] = useState(false)
   const [moderationIndex, setModerationIndex] = useState(0)
   useEffect(() => {
     setSelectedPipelineItems(new Set())
+    setPipelineBulkTagIds([])
     setActivePipelineItemId(null)
     setModerationOpen(false)
     setModerationIndex(0)
@@ -781,10 +2121,57 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   })
   const approve = useMutation({
     mutationFn: ({ publish, itemIds }: { publish: boolean; itemIds?: string[] }) => adminApi.approvePipeline(selectedId!, itemIds?.length ? { itemIds } : {}, publish),
-    onSuccess: (_, variables) => {
-      notify('success', variables.publish ? 'Выбранные изменения опубликованы' : 'Изменения добавлены в рабочую версию')
+    onSuccess: (result, variables) => {
+      const publishedTag = record(result).tag
+      notify('success', variables.publish ? `Изменения опубликованы${publishedTag?.name ? ` · тег «${publishedTag.name}» назначен` : ''}` : 'Изменения добавлены в рабочую версию')
       setSelectedPipelineItems(new Set())
       void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const updatePipelineItemTags = useMutation({
+    mutationFn: ({ cardId, current, next }: { cardId: string; current: string[]; next: string[] }) => {
+      const before = new Set(current)
+      const added = next.find((id) => !before.has(id))
+      const removed = current.find((id) => !next.includes(id))
+      if (!added && !removed) return Promise.resolve({})
+      return adminApi.bulkContent({ itemIds: [cardId], operation: added ? 'add_tag' : 'remove_tag', value: added ?? removed, reason: added ? 'Тег назначен в таблице пайплайна' : 'Тег снят в таблице пайплайна' })
+    },
+    onSuccess: () => { void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] }); void client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); void client.invalidateQueries({ queryKey: ['admin', 'content'] }) },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const createPipelineTag = async (name: string) => {
+    const created = await adminApi.createTag(name)
+    await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] })
+    return created
+  }
+  const updateSelectedPipelineItemTags = useMutation({
+    mutationFn: async (operation: 'add_tag' | 'remove_tag') => {
+      const cardIds = [...new Set(
+        runItems
+          .filter((entry) => selectedPipelineItems.has(String(entry.id)))
+          .map((entry) => String(record(entry).cardId ?? ''))
+          .filter(Boolean),
+      )]
+      if (!cardIds.length) throw new Error('У выбранных результатов ещё нет связанных карточек')
+      let failed = 0
+      for (const tagId of pipelineBulkTagIds) {
+        const result = await adminApi.bulkContent({
+          itemIds: cardIds,
+          operation,
+          value: tagId,
+          reason: operation === 'add_tag' ? 'Массовое назначение тегов в результатах пайплайна' : 'Массовое снятие тегов в результатах пайплайна',
+        })
+        failed += Number(result.failed ?? 0)
+      }
+      return { operation, cardCount: cardIds.length, tagCount: pipelineBulkTagIds.length, failed }
+    },
+    onSuccess: (result) => {
+      notify(result.failed ? 'info' : 'success', `${result.operation === 'add_tag' ? 'Теги назначены' : 'Теги сняты'}: карточек ${result.cardCount}, тегов ${result.tagCount}${result.failed ? `, ошибок ${result.failed}` : ''}`)
+      setPipelineBulkTagIds([])
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'content-tags'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'content'] })
     },
     onError: (error) => notify('error', errorText(error)),
   })
@@ -934,6 +2321,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   )
   const lifecycleMessage = title(events.lifecycleMessage || (selectedRun ? pipelinePulseText(String(selectedRun.status)) : 'Ожидание'))
   const selectedItemsData = useMemo(() => runItems.filter((entry) => selectedPipelineItems.has(String(entry.id))), [runItems, selectedPipelineItems])
+  const selectedPipelineCardCount = useMemo(() => new Set(selectedItemsData.map((entry) => String(record(entry).cardId ?? '')).filter(Boolean)).size, [selectedItemsData])
   const selectedReviewableIds = useMemo(() => selectedItemsData.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id)), [selectedItemsData])
   const selectedApprovedIds = useMemo(() => selectedItemsData.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [selectedItemsData])
   const approvedItemIds = useMemo(() => runItems.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [runItems])
@@ -1159,82 +2547,1440 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     return () => removeEventListener('keydown', handleModerationHotkeys)
   }, [decide.isPending, moderationItem, moderationOpen, moveModeration, submitModerationDecision])
 
-  return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('normalization')}><Bot />Нормализовать поле</button></>} />
-    <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
-    <div className="admin-split admin-split--pipeline">
-      <section className="admin-list-panel">
-        <header className="admin-subhead"><h2>Запуски</h2><div className="admin-subhead__actions"><button onClick={requestCleanup} title="Удалить старые завершённые запуски"><Trash2 /></button><button onClick={() => void runs.refetch()} title="Обновить список"><RefreshCw /></button></div></header>
-        {runs.data?.items.map((raw) => {
-          const run = record(raw)
-          const live = ['queued', 'running'].includes(String(run.status))
-          const heartbeat = run.heartbeatAt ? Math.round((Date.now() - new Date(String(run.heartbeatAt)).getTime()) / 1_000) : null
-          const staleRun = live && heartbeat != null && heartbeat > 180
-          const summary = run.safeErrorMessage
-            ? title(run.safeErrorMessage)
-            : live
-              ? staleRun
-                ? `Нет heartbeat ${heartbeat}s`
-                : `${pipelinePulseText(String(run.status))}${heartbeat != null ? ` · heartbeat ${heartbeat}s назад` : ''}`
-              : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0} · $${Number(run.actualCost ?? 0).toFixed(4)}`
-          return <button key={String(run.id)} className={selectedId === run.id ? 'is-active' : ''} onClick={() => navigate('pipelines', String(run.id))}><span className="admin-list-icon">{pipelineIcon(run.pipelineKey)}</span><span><header><strong>{pipelineLabel(run.pipelineKey)} · {Number(run.itemsProcessed ?? 0)}/{Number(run.itemsTotal ?? 0)}</strong><time>{compactDate(run.createdAt)}</time></header><p>{title(record(run.inputDefinitionJson).scenario)}</p><small className={live ? 'is-live' : ''}>{summary}</small></span><Status value={run.status} /></button>
+  return (
+    <>
+      <PageHead
+        eyebrow="Автоматизация"
+        title="ИИ-пайплайны"
+        description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию."
+        actions={
+          <>
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => openPipeline("anime")}
+            >
+              <Sparkles />
+              Запустить аниме
+            </button>
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => openPipeline("movie")}
+            >
+              <Clapperboard />
+              Запустить кино
+            </button>
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() => openPipeline("music")}
+            >
+              <WandSparkles />
+              Запустить музыку
+            </button>
+            <button
+              className="admin-btn admin-btn--primary"
+              onClick={() => openPipeline("normalization")}
+            >
+              <Bot />
+              Нормализовать поле
+            </button>
+          </>
+        }
+      />
+      <div className="admin-pipeline-catalog">
+        {pipelines.data?.items.map((raw) => {
+          const pipeline = record(raw);
+          return (
+            <article
+              key={String(pipeline.key)}
+              className={
+                pipeline.state === "not_connected" ? "is-disabled" : ""
+              }
+            >
+              <div className="admin-pipeline-icon">
+                {pipeline.key === "music" ? (
+                  <WandSparkles />
+                ) : pipeline.key === "movie" ? (
+                  <Clapperboard />
+                ) : pipeline.key === "anime" ? (
+                  <Sparkles />
+                ) : (
+                  <Bot />
+                )}
+              </div>
+              <div>
+                <Status
+                  value={pipeline.state === "connected" ? "active" : "neutral"}
+                >
+                  {pipeline.state === "connected"
+                    ? "Подключён"
+                    : "Ещё не подключён"}
+                </Status>
+                <h3>{title(pipeline.title)}</h3>
+                <p>{title(pipeline.description)}</p>
+                <small>
+                  {pipeline.awaitingReview
+                    ? `Ждут проверки: ${pipeline.awaitingReview}`
+                    : "Нет результатов на проверке"}
+                </small>
+              </div>
+              {pipeline.state === "connected" && (
+                <button onClick={() => openPipeline(pipeline.key)}>
+                  Запустить <Play />
+                </button>
+              )}
+            </article>
+          );
         })}
-      </section>
-      <section className="admin-detail-panel">{!selectedRun ? <Empty title="Выберите запуск" text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям." icon={<WandSparkles />} /> : <>
-        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button>{canContinueRun && <button onClick={requestContinueRun} disabled={continueRun.isPending || restartRun.isPending || cancel.isPending || removeRun.isPending}><Play />Продолжить</button>}<button onClick={requestRestartRun} disabled={restartRun.isPending || continueRun.isPending}><RefreshCw />Перезапустить процесс</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending || continueRun.isPending}><X />Остановить</button>}<button onClick={requestDeleteRun} disabled={removeRun.isPending || cancel.isPending || continueRun.isPending}><Trash2 />Удалить процесс</button><Status value={selectedRun.status} /></div></header>
-        <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div>{Object.keys(record(selectedRun.usageJson)).length > 0 && <small>Токены: вход {Number(record(selectedRun.usageJson).inputTokens ?? 0).toLocaleString('ru-RU')} · кэш {Number(record(selectedRun.usageJson).cachedInputTokens ?? 0).toLocaleString('ru-RU')} · выход {Number(record(selectedRun.usageJson).outputTokens ?? 0).toLocaleString('ru-RU')} · web search {String(record(selectedRun.usageJson).webSearchCalls ?? 0)}</small>}</div>
-        <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
-        <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
-        <div className="admin-pipeline-review">{items.isLoading ? <Loading /> : runItems.length ? <>
-          <header className="admin-pipeline-review__head"><div><h3>Результаты на проверке</h3><small>Таблица для массового согласования. Клик по строке открывает подробный diff справа.</small></div><div><button className="admin-btn admin-btn--secondary" disabled={!reviewQueue.length} onClick={openModeration}><Play />Начать модерацию</button><button className="admin-btn admin-btn--secondary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: false })}><X />Отклонить выбранные</button><button className="admin-btn admin-btn--primary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: true })}><Check />Принять выбранные</button></div></header>
-          <div className="admin-table-wrap admin-table-wrap--pipeline"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все результаты" checked={selectedPipelineItems.size > 0 && selectedPipelineItems.size === runItems.filter((entry) => isItemReviewable(record(entry))).length} onChange={(event) => setSelectedPipelineItems(event.target.checked ? new Set(runItems.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id))) : new Set())} /></th><th>Карточка</th><th>Статус</th><th>Изменено</th><th>Предупреждения</th><th>Обновлено</th><th /></tr></thead><tbody>{runItems.map((raw) => { const item = record(raw); const proposed = record(item.proposedJson); const fields = itemDiffFields(item); const warnings = pipelineWarnings(item.warningsJson); const itemId = String(item.id); const reviewable = isItemReviewable(item); const regenerating = regenerateItem.isPending && regenerateItem.variables === itemId; const canRegenerate = selectedRun.pipelineKey === 'normalization' && !item.workspaceChangeId && !item.appliedRevisionId && !['staged', 'published', 'running', 'pending'].includes(String(item.status)); return <tr key={itemId} className={activePipelineItemId === itemId ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`} disabled={!reviewable} checked={selectedPipelineItems.has(itemId)} onChange={(event) => setSelectedPipelineItems((current) => { const next = new Set(current); event.target.checked ? next.add(itemId) : next.delete(itemId); return next })} /></td><td><button className="admin-title-cell" onClick={() => setActivePipelineItemId(itemId)}><span>{pipelineIcon(selectedRun.pipelineKey)}</span><span><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>{title(item.entityKey)}</small></span></button></td><td><Status value={item.status} /></td><td>{fields.length}</td><td>{warnings.length ? <span className="admin-count admin-count--warn">{warnings.length}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt || item.createdAt)}</td><td><div className="admin-row-actions">{canRegenerate && <button className="admin-icon-btn" title="Перегенерировать только этот айтем" aria-label={`Перегенерировать ${title(item.entityKey)}`} disabled={regenerateItem.isPending || decide.isPending} onClick={() => requestRegenerateItem(itemId, item.entityKey)}>{regenerating ? <LoaderCircle className="admin-spinner" /> : <RefreshCw />}</button>}{reviewable && <><button className="admin-icon-btn" title="Отклонить" onClick={() => decide.mutate({ itemId, approved: false })} disabled={regenerateItem.isPending}><X /></button><button className="admin-icon-btn" title="Принять" onClick={() => decide.mutate({ itemId, approved: true })} disabled={regenerateItem.isPending}><Check /></button></>}</div></td></tr> })}</tbody></table></div>
-        </> : <Empty title="Результатов пока нет" text={['queued', 'running'].includes(String(selectedRun.status)) ? 'Worker обрабатывает список партиями. Страница обновится автоматически.' : 'Запуск не создал проверяемых результатов.'} />}</div>
-        {approvedItemIds.length > 0 && <div className="admin-sticky-actions"><span>Одобрено: {approvedItemIds.length}. «В рабочую версию» только стаджит изменения, «Одобрить и опубликовать» сразу активирует новую ревизию.</span><button className="admin-btn admin-btn--secondary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: false, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>В рабочую версию{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button><button className="admin-btn admin-btn--primary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: true, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>Одобрить и опубликовать{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button></div>}
-      </>}</section>
-    </div>
-    {moderationOpen && selectedRun && moderationItem && <div className="admin-modal-backdrop admin-modal-backdrop--moderation" onMouseDown={(event) => event.target === event.currentTarget && setModerationOpen(false)}>
-      <div className="admin-modal admin-modal--moderation">
-        <header><div><span>{pipelineLabel(selectedRun.pipelineKey)} · Ручная модерация</span><h2>Карточка как в игре</h2></div><button onClick={() => setModerationOpen(false)}><X /></button></header>
-        <div className="admin-modal__body admin-modal__body--moderation">
-          <section className="review-stats admin-review-stats"><article><small>Позиция</small><strong>{reviewQueue.length ? `${moderationIndex + 1}/${reviewQueue.length}` : '0/0'}</strong></article><article><small>Ожидают решения</small><strong>{reviewQueue.length}</strong></article><article><small>Подсказка</small><strong>{moderationHint === 'Подсказка не заполнена' ? 'Нет' : 'Есть'}</strong></article><article><small>Горячие клавиши</small><strong>← → · X / C</strong></article></section>
-          <section className={`attempt-card attempt-card--screen admin-attempt-card ${moderationWarnings.length ? 'has-conflict' : ''}`}>
-            <div className="attempt-card__header admin-attempt-card__header"><span className="attempt-card__number">{String(moderationIndex + 1).padStart(2, '0')}</span>{moderationPoster ? <img className="review-card__poster" src={moderationPoster} alt={moderationTitle} /> : <div className="review-card__poster admin-review-poster-fallback">{pipelineIcon(selectedRun.pipelineKey)}</div>}<div className="attempt-card__identity"><span className="attempt-label">Попытка воспроизведения · {MODE_LABEL[moderationMode]}</span><h2>{moderationTitle}</h2><p className="gm-head__sub"><span className="gm-head__orig">{moderationSubtitle}</span>{moderationYear && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{moderationYear}</span></>}{moderationCountry && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{moderationCountry}</span></>}</p>{!!moderationGenres.length && <div className="gm-genres">{moderationGenres.map((genre) => <span key={genre} className="gm-genre">{genre}</span>)}</div>}</div><div className="review-approval-badge"><small>Статус</small><strong>{STATUS_LABEL[String(moderationItem.status)] ?? title(moderationItem.status)}</strong></div></div>
-            {!!moderationWarnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Предупреждения</strong><span>{moderationWarnings.join(' • ')}</span></div>}
-            <div className="admin-attempt-fields">{moderationAttemptFields.length ? moderationAttemptFields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
-          </section>
-          <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{moderationHint}</p></article></section>
-          <section className="admin-moderation-meta"><article><small>Изменено полей</small><strong>{moderationChangedFields.length}</strong></article><article><small>Обновлено</small><strong>{compactDate(moderationItem.updatedAt || moderationItem.createdAt)}</strong></article><article><small>ID карточки</small><strong>{title(moderationItem.entityKey)}</strong></article><article><small>Предупреждения</small><strong>{moderationWarnings.length || 'Нет'}</strong></article>{moderationChangedFields.length > 0 && <div className="admin-moderation-changes">{moderationChangedFields.map((field) => <span key={field}>{field}</span>)}</div>}</section>
-        </div>
-        <footer className="admin-review-footer"><button className="ui-button ui-button--ghost" onClick={() => moveModeration(-1)} disabled={moderationIndex === 0 || decide.isPending}><ChevronLeft />Назад<span className="keycap-hint keycap-hint--inline" aria-hidden="true">←</span></button><button className="ui-button ui-button--secondary" onClick={() => submitModerationDecision(false)} disabled={decide.isPending}><X />Отклонить<span className="keycap-hint keycap-hint--inline" aria-hidden="true">X</span></button><button className="ui-button ui-button--primary" onClick={() => submitModerationDecision(true)} disabled={decide.isPending}><Check />Одобрить<span className="keycap-hint keycap-hint--inline" aria-hidden="true">C</span></button><button className="ui-button ui-button--ghost" onClick={() => moveModeration(1)} disabled={moderationIndex >= reviewQueue.length - 1 || decide.isPending}>Дальше<ChevronRight /><span className="keycap-hint keycap-hint--inline" aria-hidden="true">→</span></button></footer>
       </div>
-    </div>}
-    {selectedRun && activePipelineItem && <div className="admin-drawer"><header className="admin-drawer__head"><div><small>{pipelineLabel(selectedRun.pipelineKey)} · {title(activePipelineItem.entityKey)}</small><h2>{title(record(activePipelineItem.proposedJson).titleRu || record(activePipelineItem.proposedJson).name || activePipelineItem.entityKey)}</h2></div><div><Status value={activePipelineItem.status} /><button onClick={() => setActivePipelineItemId(null)}><X /></button></div></header><div className="admin-drawer__body"><div className="admin-diff">{itemDiffFields(record(activePipelineItem)).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(record(activePipelineItem.beforeJson)[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(record(activePipelineItem.proposedJson)[field], null, 2) ?? '—'}</pre></div>)}</div>{pipelineWarnings(activePipelineItem.warningsJson).length > 0 && <div className="admin-pipeline-item-warnings"><AlertTriangle />{pipelineWarnings(activePipelineItem.warningsJson).join(' · ')}</div>}</div><footer className="admin-drawer__footer"><div><small>{title(activePipelineItem.entityKey)}</small></div><button className="admin-btn admin-btn--secondary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: false })}><X />Отклонить</button><button className="admin-btn admin-btn--primary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: true })}><Check />Принять</button></footer></div>}
-    {starting && <div className="admin-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setStarting(false)}>
-      <div className="admin-modal admin-modal--pipeline">
-        <header><div><span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini</span><h2>Новый запуск</h2></div><button onClick={() => setStarting(false)}><X /></button></header>
-        <div className="admin-modal__body">
-          {pipelineKey === 'normalization' ? <>
-            <label className="admin-field admin-field--wide"><span>Категория</span><select value={normalizationMode} onChange={(event) => { const mode = event.target.value as ContentMode; setNormalizationMode(mode); setNormalizationField(mode === 'music' ? 'activityStartYear' : 'year'); setNormalizationSelected(new Set()) }}>{Object.entries(MODE_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-            <label className="admin-field admin-field--wide"><span>Поле</span><select value={normalizationField} onChange={(event) => setNormalizationField(event.target.value)}>{normalizationFieldsQuery.data?.items.map((entry) => <option key={entry.field} value={entry.field}>{entry.label} · {entry.field}</option>)}</select></label>
-            <label className="admin-field admin-field--wide"><span>Инструкция модели</span><textarea value={normalizationPrompt} onChange={(event) => setNormalizationPrompt(event.target.value)} rows={6} /><small>GPT-5 mini получит эту инструкцию вместе с одной карточкой и вернет только изменение выбранного поля, уверенность и источники.</small></label>
-            <label className="admin-field admin-field--wide"><span>Поиск карточек</span><input value={normalizationQuery} onChange={(event) => { setNormalizationQuery(event.target.value); setNormalizationSelected(new Set()) }} placeholder="Название или ID; пусто — вся категория" /></label>
-            <section className="admin-normalization-tags"><TagPicker tags={normalizationTags.data?.items ?? []} value={normalizationIncludeTags} onChange={(ids) => { setNormalizationIncludeTags(ids); setNormalizationSelected(new Set()) }} label="Включить карточки с тегами" /><label className="admin-field"><span>Совпадение включаемых тегов</span><select value={normalizationTagMatch} onChange={(event) => { setNormalizationTagMatch(event.target.value as 'all' | 'any'); setNormalizationSelected(new Set()) }}><option value="all">Есть все выбранные теги</option><option value="any">Есть хотя бы один тег</option></select></label><TagPicker tags={normalizationTags.data?.items ?? []} value={normalizationExcludeTags} onChange={(ids) => { setNormalizationExcludeTags(ids); setNormalizationSelected(new Set()) }} label="Исключить карточки с тегами" /></section>
-            <div className="admin-periods"><button className={normalizationScope === 'all' ? 'is-active' : ''} onClick={() => setNormalizationScope('all')}>Все подходящие</button><button className={normalizationScope === 'selected' ? 'is-active' : ''} onClick={() => setNormalizationScope('selected')}>Только выбранные · {normalizationSelected.size}</button></div>
-            {normalizationScope === 'selected' && <div className="admin-import-list">{normalizationCandidates.isLoading ? <Loading /> : normalizationCandidates.data?.items.map((item) => <label key={item.id}><input type="checkbox" checked={normalizationSelected.has(item.id)} onChange={(event) => setNormalizationSelected((current) => { const next = new Set(current); event.target.checked ? next.add(item.id) : next.delete(item.id); return next })} /><strong>{item.titleRu}</strong><small>{item.id}</small></label>)}</div>}
-            <label className="admin-field"><span>Максимум карточек · {maxItems}</span><input type="range" min="1" max="500" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} /><small>Для выбранных карточек применяется тот же верхний лимит. Результат всегда сначала попадает на проверку.</small></label>
-          </> : <>
-          <label className="admin-field admin-field--wide"><span>Сценарий</span><select value={scenario} onChange={(event) => setScenario(event.target.value)}><option value="manual">Создать карточки по моему списку</option><option value="discover">{pipelineKey === 'music' ? 'Найти и подготовить новых исполнителей' : pipelineKey === 'movie' ? 'Взять новые фильмы из топа Кинопоиска' : 'Взять новые аниме из топа Shikimori'}</option><option value="candidates">Обработать найденных кандидатов</option><option value="review">Перепроверить очередь ручной проверки</option></select></label>
-          {scenario === 'manual' && <>
-            <label className="admin-field admin-field--wide admin-artist-import"><span>{manualFieldLabel} <small>до 500 строк</small></span><textarea value={manualText} onChange={(event) => setManualText(event.target.value)} placeholder={manualPlaceholder} /><small>{manualHelp}</small><label className="admin-file-button"><Upload />Загрузить TXT или CSV<input type="file" accept=".txt,.csv,text/plain,text/csv" onChange={(event) => { const file = event.target.files?.[0]; if (file) void file.text().then(setManualText) }} /></label></label>
-            <div className="admin-import-preview"><header><strong>Предварительная проверка</strong><span>{preview.isFetching ? 'Проверяем нашу базу…' : `${manualItems.length} строк`}</span></header>{preview.error && !preview.isFetching && <ErrorState error={preview.error} />}{preview.data && <><div className="admin-import-summary"><span><b>{readyItems}</b> новых</span><span><b>{String(previewSummary.existing ?? 0)}</b> уже есть</span><span><b>{String(previewSummary.duplicates ?? 0)}</b> дублей</span></div><div className="admin-import-list">{preview.data.items.slice(0, 100).map((raw) => { const item = record(raw); const identity = pipelineKey === 'music' ? title(item.artist) : pipelineKey === 'movie' ? title(item.query || (item.kinopoiskId ? `Кинопоиск #${String(item.kinopoiskId)}` : 'Фильм не распознан')) : `Shikimori #${String(item.shikimoriId)}`; const details = pipelineKey === 'movie' ? item.existingTitle || (item.kinopoiskId ? `Кинопоиск #${String(item.kinopoiskId)}` : `ID будет найден после запуска${item.requestedYear ? ` · ${String(item.requestedYear)}` : ''}`) : item.country || item.existingTitle || item.hint || '—'; return <div key={`${item.index}-${item.artist ?? item.query ?? item.kinopoiskId ?? item.shikimoriId}`}><strong>{identity}</strong><small>{title(details)}</small>{item.existingItemId && <button className="admin-link" onClick={() => { setStarting(false); navigate('content', String(item.existingItemId)) }}>Открыть карточку <ChevronRight /></button>}<Status value={item.status}>{item.status === 'ready' ? 'Новый' : item.status === 'existing_card' ? 'Уже есть' : item.status === 'duplicate_input' ? 'Дубль' : 'Ошибка'}</Status></div> })}</div></>}</div>
-          </>}
-          <label className="admin-field"><span>{scenario === 'manual' ? 'Размер партии' : 'Количество'} · {maxItems}</span><input type="range" min="1" max="20" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} /><small>{scenario === 'manual' ? 'После каждой партии прогресс и расход сохраняются в БД.' : 'Максимум элементов в текущем запуске.'}</small></label>
-          </>}
-          <div className="admin-estimate"><CircleDollarSign /><div><span>Ориентировочная оценка</span><strong>${String(estimate.data?.estimatedCost ?? '—')}</strong><small>{String(estimate.data?.aiReviewCalls ?? '—')} AI-вызовов · фактическая сумма считается по usage и web search calls</small></div></div>
-        </div>
-        <footer><button className="admin-btn admin-btn--secondary" onClick={() => setStarting(false)}>Отмена</button><button className="admin-btn admin-btn--primary" disabled={start.isPending || (pipelineKey === 'normalization' ? normalizationPrompt.trim().length < 10 || (normalizationScope === 'selected' && !normalizationSelected.size) : scenario === 'manual' && (!readyItems || preview.isFetching))} onClick={() => start.mutate()}><Play />{pipelineKey === 'normalization' ? `Нормализовать до ${maxItems} карточек` : scenario === 'manual' ? `Запустить ${readyItems} ${pipelineKey === 'music' ? 'артистов' : pipelineKey === 'movie' ? 'фильмов' : 'аниме'}` : `Запустить ${maxItems} элементов`}</button></footer>
+      <div className="admin-split admin-split--pipeline">
+        <section className="admin-list-panel">
+          <header className="admin-subhead">
+            <h2>Запуски</h2>
+            <div className="admin-subhead__actions">
+              <button
+                onClick={requestCleanup}
+                title="Удалить старые завершённые запуски"
+              >
+                <Trash2 />
+              </button>
+              <button
+                onClick={() => void runs.refetch()}
+                title="Обновить список"
+              >
+                <RefreshCw />
+              </button>
+            </div>
+          </header>
+          {runs.data?.items.map((raw) => {
+            const run = record(raw);
+            const live = ["queued", "running"].includes(String(run.status));
+            const heartbeat = run.heartbeatAt
+              ? Math.round(
+                  (Date.now() - new Date(String(run.heartbeatAt)).getTime()) /
+                    1_000,
+                )
+              : null;
+            const staleRun = live && heartbeat != null && heartbeat > 180;
+            const summary = run.safeErrorMessage
+              ? title(run.safeErrorMessage)
+              : live
+                ? staleRun
+                  ? `Нет heartbeat ${heartbeat}s`
+                  : `${pipelinePulseText(String(run.status))}${heartbeat != null ? ` · heartbeat ${heartbeat}s назад` : ""}`
+                : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0} · $${Number(run.actualCost ?? 0).toFixed(4)}`;
+            return (
+              <button
+                key={String(run.id)}
+                className={selectedId === run.id ? "is-active" : ""}
+                onClick={() => navigate("pipelines", String(run.id))}
+              >
+                <span className="admin-list-icon">
+                  {pipelineIcon(run.pipelineKey)}
+                </span>
+                <span>
+                  <header>
+                    <strong>
+                      {pipelineLabel(run.pipelineKey)} ·{" "}
+                      {Number(run.itemsProcessed ?? 0)}/
+                      {Number(run.itemsTotal ?? 0)}
+                    </strong>
+                    <time>{compactDate(run.createdAt)}</time>
+                  </header>
+                  <p>{title(record(run.inputDefinitionJson).scenario)}</p>
+                  <small className={live ? "is-live" : ""}>{summary}</small>
+                </span>
+                <Status value={run.status} />
+              </button>
+            );
+          })}
+        </section>
+        <section className="admin-detail-panel">
+          {!selectedRun ? (
+            <Empty
+              title="Выберите запуск"
+              text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям."
+              icon={<WandSparkles />}
+            />
+          ) : (
+            <>
+              <header className="admin-detail-head">
+                <div>
+                  <span>Запуск {String(selectedRun.id).slice(0, 8)}</span>
+                  <h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2>
+                  <p>
+                    {formatDate(selectedRun.createdAt)} ·{" "}
+                    {title(record(selectedRun.settingsJson).model)}
+                  </p>
+                </div>
+                <div className="admin-detail-head__actions">
+                  <button
+                    onClick={() =>
+                      void navigator.clipboard.writeText(String(selectedRun.id))
+                    }
+                  >
+                    <Copy />
+                    ID
+                  </button>
+                  {canContinueRun && (
+                    <button
+                      onClick={requestContinueRun}
+                      disabled={
+                        continueRun.isPending ||
+                        restartRun.isPending ||
+                        cancel.isPending ||
+                        removeRun.isPending
+                      }
+                    >
+                      <Play />
+                      Продолжить
+                    </button>
+                  )}
+                  <button
+                    onClick={requestRestartRun}
+                    disabled={restartRun.isPending || continueRun.isPending}
+                  >
+                    <RefreshCw />
+                    Перезапустить процесс
+                  </button>
+                  {["queued", "running"].includes(
+                    String(selectedRun.status),
+                  ) && (
+                    <button
+                      onClick={() => cancel.mutate()}
+                      disabled={cancel.isPending || continueRun.isPending}
+                    >
+                      <X />
+                      Остановить
+                    </button>
+                  )}
+                  <button
+                    onClick={requestDeleteRun}
+                    disabled={
+                      removeRun.isPending ||
+                      cancel.isPending ||
+                      continueRun.isPending
+                    }
+                  >
+                    <Trash2 />
+                    Удалить процесс
+                  </button>
+                  <Status value={selectedRun.status} />
+                </div>
+              </header>
+              <div className="admin-run-progress">
+                <div>
+                  <span>Обработано</span>
+                  <strong>
+                    {String(selectedRun.itemsProcessed ?? 0)} /{" "}
+                    {String(selectedRun.itemsTotal ?? 0)}
+                  </strong>
+                </div>
+                <i>
+                  <b style={{ width: `${progressPercent}%` }} />
+                </i>
+                <div>
+                  <span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span>
+                  <span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span>
+                  <span>
+                    Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}
+                  </span>
+                  <strong>
+                    Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}
+                  </strong>
+                </div>
+                {Object.keys(record(selectedRun.usageJson)).length > 0 && (
+                  <small>
+                    Токены: вход{" "}
+                    {Number(
+                      record(selectedRun.usageJson).inputTokens ?? 0,
+                    ).toLocaleString("ru-RU")}{" "}
+                    · кэш{" "}
+                    {Number(
+                      record(selectedRun.usageJson).cachedInputTokens ?? 0,
+                    ).toLocaleString("ru-RU")}{" "}
+                    · выход{" "}
+                    {Number(
+                      record(selectedRun.usageJson).outputTokens ?? 0,
+                    ).toLocaleString("ru-RU")}{" "}
+                    · web search{" "}
+                    {String(record(selectedRun.usageJson).webSearchCalls ?? 0)}
+                  </small>
+                )}
+              </div>
+              <div className="admin-run-live">
+                <header>
+                  <div>
+                    <strong>Ход выполнения</strong>
+                    <small>{lifecycleMessage}</small>
+                  </div>
+                  <span
+                    className={`admin-run-pulse ${["queued", "running"].includes(String(selectedRun.status)) ? "is-live" : ""} ${stale ? "is-stale" : ""}`}
+                  >
+                    {stale
+                      ? "нет heartbeat"
+                      : heartbeatAgeSec == null
+                        ? "ожидание"
+                        : `${heartbeatAgeSec}s`}
+                  </span>
+                </header>
+                <div className="admin-run-live__stats">
+                  <span>
+                    В очереди/в работе:{" "}
+                    {String(
+                      Number(statsByStatus.pending ?? 0) +
+                        Number(statsByStatus.running ?? 0),
+                    )}
+                  </span>
+                  <span>
+                    На проверке: {String(statsByStatus.review_required ?? 0)}
+                  </span>
+                  <span>Провалено: {String(statsByStatus.failed ?? 0)}</span>
+                  <span>Одобрено: {String(statsByStatus.approved ?? 0)}</span>
+                </div>
+                {eventRows.length ? (
+                  <div className="admin-run-events">
+                    {eventRows.slice(0, 24).map((entry) => (
+                      <div key={String(entry.id)}>
+                        <time>{compactDate(entry.at)}</time>
+                        <p>{title(entry.message)}</p>
+                        <small>
+                          {entry.status
+                            ? (STATUS_LABEL[String(entry.status)] ??
+                              String(entry.status))
+                            : title(entry.type)}
+                        </small>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="admin-run-events__empty">
+                    События пока не поступили
+                  </p>
+                )}
+                <details
+                  className="admin-run-journal"
+                  open={Boolean(
+                    ["queued", "running"].includes(
+                      String(selectedRun.status),
+                    ) && journalLines.length,
+                  )}
+                >
+                  <summary>Журнал процесса ({journalLines.length})</summary>
+                  {journalLines.length ? (
+                    <pre>{journalLines.join("\n")}</pre>
+                  ) : (
+                    <p>Лог пока пуст.</p>
+                  )}
+                </details>
+              </div>
+              <div className="admin-run-settings">
+                <header>
+                  <h3>Настройки запуска</h3>
+                  <div>
+                    <button
+                      className="admin-link"
+                      onClick={() =>
+                        void copyJson(
+                          record(selectedRun.inputDefinitionJson),
+                          "Input JSON",
+                        )
+                      }
+                    >
+                      <Copy />
+                      Скопировать input
+                    </button>
+                    <button
+                      className="admin-link"
+                      onClick={() =>
+                        void copyJson(
+                          record(selectedRun.settingsJson),
+                          "Settings JSON",
+                        )
+                      }
+                    >
+                      <Copy />
+                      Скопировать settings
+                    </button>
+                  </div>
+                </header>
+                <div>
+                  <article>
+                    <span>Input definition</span>
+                    <pre>
+                      {JSON.stringify(
+                        record(selectedRun.inputDefinitionJson),
+                        null,
+                        2,
+                      )}
+                    </pre>
+                  </article>
+                  <article>
+                    <span>Settings</span>
+                    <pre>
+                      {JSON.stringify(
+                        record(selectedRun.settingsJson),
+                        null,
+                        2,
+                      )}
+                    </pre>
+                  </article>
+                </div>
+              </div>
+              <div className="admin-pipeline-review">
+                {items.isLoading ? (
+                  <Loading />
+                ) : runItems.length ? (
+                  <>
+                    <header className="admin-pipeline-review__head">
+                      <div>
+                        <h3>Результаты на проверке</h3>
+                        <small>
+                          Таблица для массового согласования. Клик по строке
+                          открывает подробный diff справа.
+                        </small>
+                      </div>
+                      <div>
+                        <button
+                          className="admin-btn admin-btn--secondary"
+                          disabled={!reviewQueue.length}
+                          onClick={openModeration}
+                        >
+                          <Play />
+                          Начать модерацию
+                        </button>
+                        <button
+                          className="admin-btn admin-btn--secondary"
+                          disabled={
+                            !selectedReviewableIds.length ||
+                            decideBulk.isPending
+                          }
+                          onClick={() =>
+                            decideBulk.mutate({
+                              itemIds: selectedReviewableIds,
+                              approved: false,
+                            })
+                          }
+                        >
+                          <X />
+                          Отклонить выбранные
+                        </button>
+                        <button
+                          className="admin-btn admin-btn--primary"
+                          disabled={
+                            !selectedReviewableIds.length ||
+                            decideBulk.isPending
+                          }
+                          onClick={() =>
+                            decideBulk.mutate({
+                              itemIds: selectedReviewableIds,
+                              approved: true,
+                            })
+                          }
+                        >
+                          <Check />
+                          Принять выбранные
+                        </button>
+                      </div>
+                    </header>
+                    {selectedPipelineItems.size > 0 && (
+                      <div className="admin-pipeline-review__bulk-tags">
+                        <strong>Выбрано: {selectedPipelineItems.size}</strong>
+                        <TagPicker
+                          compact
+                          label="Массовые теги"
+                          tags={contentTags.data?.items ?? []}
+                          value={pipelineBulkTagIds}
+                          onChange={setPipelineBulkTagIds}
+                          onCreate={createPipelineTag}
+                          disabled={updateSelectedPipelineItemTags.isPending}
+                        />
+                        <button
+                          className="admin-btn admin-btn--secondary"
+                          disabled={!pipelineBulkTagIds.length || !selectedPipelineCardCount || updateSelectedPipelineItemTags.isPending}
+                          onClick={() => updateSelectedPipelineItemTags.mutate('add_tag')}
+                        >
+                          <Tags />
+                          Назначить теги · {pipelineBulkTagIds.length}
+                        </button>
+                        <button
+                          className="admin-btn admin-btn--secondary"
+                          disabled={!pipelineBulkTagIds.length || !selectedPipelineCardCount || updateSelectedPipelineItemTags.isPending}
+                          onClick={() => updateSelectedPipelineItemTags.mutate('remove_tag')}
+                        >
+                          <X />
+                          Снять теги · {pipelineBulkTagIds.length}
+                        </button>
+                      </div>
+                    )}
+                    <div className="admin-table-wrap admin-table-wrap--pipeline">
+                      <table className="admin-table">
+                        <thead>
+                          <tr>
+                            <th className="admin-check">
+                              <input
+                                type="checkbox"
+                                aria-label="Выбрать все результаты"
+                                checked={
+                                  selectedPipelineItems.size > 0 &&
+                                  selectedPipelineItems.size ===
+                                    runItems.filter((entry) =>
+                                      isItemReviewable(record(entry)),
+                                    ).length
+                                }
+                                onChange={(event) =>
+                                  setSelectedPipelineItems(
+                                    event.target.checked
+                                      ? new Set(
+                                          runItems
+                                            .filter((entry) =>
+                                              isItemReviewable(record(entry)),
+                                            )
+                                            .map((entry) => String(entry.id)),
+                                        )
+                                      : new Set(),
+                                  )
+                                }
+                              />
+                            </th>
+                            <th>Карточка</th>
+                            <th>Статус</th>
+                            <th>Изменено</th>
+                            <th>Теги</th>
+                            <th>Предупреждения</th>
+                            <th>Обновлено</th>
+                            <th />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {runItems.map((raw) => {
+                            const item = record(raw);
+                            const proposed = record(item.proposedJson);
+                            const fields = itemDiffFields(item);
+                            const warnings = pipelineWarnings(
+                              item.warningsJson,
+                            );
+                            const itemId = String(item.id);
+                            const reviewable = isItemReviewable(item);
+                            const regenerating =
+                              regenerateItem.isPending &&
+                              regenerateItem.variables === itemId;
+                            const canRegenerate =
+                              selectedRun.pipelineKey === "normalization" &&
+                              !item.workspaceChangeId &&
+                              !item.appliedRevisionId &&
+                              ![
+                                "staged",
+                                "published",
+                                "running",
+                                "pending",
+                              ].includes(String(item.status));
+                            return (
+                              <tr
+                                key={itemId}
+                                className={
+                                  activePipelineItemId === itemId
+                                    ? "is-open"
+                                    : ""
+                                }
+                              >
+                                <td className="admin-check">
+                                  <input
+                                    type="checkbox"
+                                    aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`}
+                                    disabled={!reviewable}
+                                    checked={selectedPipelineItems.has(itemId)}
+                                    onChange={(event) =>
+                                      setSelectedPipelineItems((current) => {
+                                        const next = new Set(current);
+                                        event.target.checked
+                                          ? next.add(itemId)
+                                          : next.delete(itemId);
+                                        return next;
+                                      })
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <button
+                                    className="admin-title-cell"
+                                    onClick={() =>
+                                      setActivePipelineItemId(itemId)
+                                    }
+                                  >
+                                    <span>
+                                      {pipelineIcon(selectedRun.pipelineKey)}
+                                    </span>
+                                    <span>
+                                      <strong>
+                                        {title(
+                                          proposed.titleRu ||
+                                            proposed.name ||
+                                            item.entityKey,
+                                        )}
+                                      </strong>
+                                      <small>{title(item.entityKey)}</small>
+                                    </span>
+                                  </button>
+                                </td>
+                                <td>
+                                  <Status value={item.status} />
+                                </td>
+                                <td>{fields.length}</td>
+                                <td className="admin-tags-cell admin-tags-cell--pipeline">
+                                  <TagPicker
+                                    compact
+                                    label="Теги"
+                                    tags={contentTags.data?.items ?? []}
+                                    value={array(item.tags).map((tag) => String(record(tag).id))}
+                                    disabled={!item.cardId || updatePipelineItemTags.isPending}
+                                    onCreate={createPipelineTag}
+                                    onChange={(next) => updatePipelineItemTags.mutate({ cardId: String(item.cardId), current: array(item.tags).map((tag) => String(record(tag).id)), next })}
+                                  />
+                                </td>
+                                <td>
+                                  {warnings.length ? (
+                                    <span className="admin-count admin-count--warn">
+                                      {warnings.length}
+                                    </span>
+                                  ) : (
+                                    <Check className="admin-table-ok" />
+                                  )}
+                                </td>
+                                <td>
+                                  {compactDate(
+                                    item.updatedAt || item.createdAt,
+                                  )}
+                                </td>
+                                <td>
+                                  <div className="admin-row-actions">
+                                    {canRegenerate && (
+                                      <button
+                                        className="admin-icon-btn"
+                                        title="Перегенерировать только этот айтем"
+                                        aria-label={`Перегенерировать ${title(item.entityKey)}`}
+                                        disabled={
+                                          regenerateItem.isPending ||
+                                          decide.isPending
+                                        }
+                                        onClick={() =>
+                                          requestRegenerateItem(
+                                            itemId,
+                                            item.entityKey,
+                                          )
+                                        }
+                                      >
+                                        {regenerating ? (
+                                          <LoaderCircle className="admin-spinner" />
+                                        ) : (
+                                          <RefreshCw />
+                                        )}
+                                      </button>
+                                    )}
+                                    {reviewable && (
+                                      <>
+                                        <button
+                                          className="admin-icon-btn"
+                                          title="Отклонить"
+                                          onClick={() =>
+                                            decide.mutate({
+                                              itemId,
+                                              approved: false,
+                                            })
+                                          }
+                                          disabled={regenerateItem.isPending}
+                                        >
+                                          <X />
+                                        </button>
+                                        <button
+                                          className="admin-icon-btn"
+                                          title="Принять"
+                                          onClick={() =>
+                                            decide.mutate({
+                                              itemId,
+                                              approved: true,
+                                            })
+                                          }
+                                          disabled={regenerateItem.isPending}
+                                        >
+                                          <Check />
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                ) : (
+                  <Empty
+                    title="Результатов пока нет"
+                    text={
+                      ["queued", "running"].includes(String(selectedRun.status))
+                        ? "Worker обрабатывает список партиями. Страница обновится автоматически."
+                        : "Запуск не создал проверяемых результатов."
+                    }
+                  />
+                )}
+              </div>
+              {approvedItemIds.length > 0 && (
+                <div className="admin-sticky-actions">
+                  <span>
+                    Одобрено: {approvedItemIds.length}. «В рабочую версию»
+                    только стаджит изменения, «Одобрить и опубликовать» сразу
+                    активирует новую ревизию.
+                  </span>
+                  <button
+                    className="admin-btn admin-btn--secondary"
+                    disabled={approve.isPending}
+                    onClick={() =>
+                      approve.mutate({
+                        publish: false,
+                        itemIds: selectedApprovedIds.length
+                          ? selectedApprovedIds
+                          : undefined,
+                      })
+                    }
+                  >
+                    В рабочую версию
+                    {selectedApprovedIds.length
+                      ? ` · ${selectedApprovedIds.length}`
+                      : ""}
+                  </button>
+                  <button
+                    className="admin-btn admin-btn--primary"
+                    disabled={approve.isPending}
+                    onClick={() =>
+                      approve.mutate({
+                        publish: true,
+                        itemIds: selectedApprovedIds.length
+                          ? selectedApprovedIds
+                          : undefined,
+                      })
+                    }
+                  >
+                    Одобрить и опубликовать
+                    {selectedApprovedIds.length
+                      ? ` · ${selectedApprovedIds.length}`
+                      : ""}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </section>
       </div>
-    </div>}
-  </>
+      {moderationOpen && selectedRun && moderationItem && (
+        <div
+          className="admin-modal-backdrop admin-modal-backdrop--moderation"
+          onMouseDown={(event) =>
+            event.target === event.currentTarget && setModerationOpen(false)
+          }
+        >
+          <div className="admin-modal admin-modal--moderation">
+            <header>
+              <div>
+                <span>
+                  {pipelineLabel(selectedRun.pipelineKey)} · Ручная модерация
+                </span>
+                <h2>Карточка как в игре</h2>
+              </div>
+              <button onClick={() => setModerationOpen(false)}>
+                <X />
+              </button>
+            </header>
+            <div className="admin-modal__body admin-modal__body--moderation">
+              <section className="review-stats admin-review-stats">
+                <article>
+                  <small>Позиция</small>
+                  <strong>
+                    {reviewQueue.length
+                      ? `${moderationIndex + 1}/${reviewQueue.length}`
+                      : "0/0"}
+                  </strong>
+                </article>
+                <article>
+                  <small>Ожидают решения</small>
+                  <strong>{reviewQueue.length}</strong>
+                </article>
+                <article>
+                  <small>Подсказка</small>
+                  <strong>
+                    {moderationHint === "Подсказка не заполнена"
+                      ? "Нет"
+                      : "Есть"}
+                  </strong>
+                </article>
+                <article>
+                  <small>Горячие клавиши</small>
+                  <strong>← → · X / C</strong>
+                </article>
+              </section>
+              <section
+                className={`attempt-card attempt-card--screen admin-attempt-card ${moderationWarnings.length ? "has-conflict" : ""}`}
+              >
+                <div className="attempt-card__header admin-attempt-card__header">
+                  <span className="attempt-card__number">
+                    {String(moderationIndex + 1).padStart(2, "0")}
+                  </span>
+                  {moderationPoster ? (
+                    <img
+                      className="review-card__poster"
+                      src={moderationPoster}
+                      alt={moderationTitle}
+                    />
+                  ) : (
+                    <div className="review-card__poster admin-review-poster-fallback">
+                      {pipelineIcon(selectedRun.pipelineKey)}
+                    </div>
+                  )}
+                  <div className="attempt-card__identity">
+                    <span className="attempt-label">
+                      Попытка воспроизведения · {MODE_LABEL[moderationMode]}
+                    </span>
+                    <h2>{moderationTitle}</h2>
+                    <p className="gm-head__sub">
+                      <span className="gm-head__orig">
+                        {moderationSubtitle}
+                      </span>
+                      {moderationYear && (
+                        <>
+                          <i className="gm-head__dot" aria-hidden="true">
+                            ·
+                          </i>
+                          <span className="gm-year">{moderationYear}</span>
+                        </>
+                      )}
+                      {moderationCountry && (
+                        <>
+                          <i className="gm-head__dot" aria-hidden="true">
+                            ·
+                          </i>
+                          <span className="gm-year">{moderationCountry}</span>
+                        </>
+                      )}
+                    </p>
+                    {!!moderationGenres.length && (
+                      <div className="gm-genres">
+                        {moderationGenres.map((genre) => (
+                          <span key={genre} className="gm-genre">
+                            {genre}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="review-approval-badge">
+                    <small>Статус</small>
+                    <strong>
+                      {STATUS_LABEL[String(moderationItem.status)] ??
+                        title(moderationItem.status)}
+                    </strong>
+                  </div>
+                </div>
+                {!!moderationWarnings.length && (
+                  <div className="review-conflict-banner">
+                    <strong>
+                      <AlertTriangle /> Предупреждения
+                    </strong>
+                    <span>{moderationWarnings.join(" • ")}</span>
+                  </div>
+                )}
+                <div className="admin-attempt-fields">
+                  {moderationAttemptFields.length ? (
+                    moderationAttemptFields.map((entry) => (
+                      <article
+                        className="admin-attempt-field"
+                        key={entry.label}
+                      >
+                        <small>{entry.label}</small>
+                        <strong>{entry.value}</strong>
+                      </article>
+                    ))
+                  ) : (
+                    <p className="admin-attempt-fields__empty">
+                      Недостаточно игровых полей для предпросмотра попытки.
+                    </p>
+                  )}
+                </div>
+              </section>
+              <section className="assist-revealed">
+                <article className="assist-reveal-card">
+                  <span>
+                    <Sparkles /> Подсказка в игре
+                  </span>
+                  <p>{moderationHint}</p>
+                </article>
+              </section>
+              <section className="admin-moderation-meta">
+                <article>
+                  <small>Изменено полей</small>
+                  <strong>{moderationChangedFields.length}</strong>
+                </article>
+                <article>
+                  <small>Обновлено</small>
+                  <strong>
+                    {compactDate(
+                      moderationItem.updatedAt || moderationItem.createdAt,
+                    )}
+                  </strong>
+                </article>
+                <article>
+                  <small>ID карточки</small>
+                  <strong>{title(moderationItem.entityKey)}</strong>
+                </article>
+                <article>
+                  <small>Предупреждения</small>
+                  <strong>{moderationWarnings.length || "Нет"}</strong>
+                </article>
+                {moderationChangedFields.length > 0 && (
+                  <div className="admin-moderation-changes">
+                    {moderationChangedFields.map((field) => (
+                      <span key={field}>{field}</span>
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
+            <footer className="admin-review-footer">
+              <button
+                className="ui-button ui-button--ghost"
+                onClick={() => moveModeration(-1)}
+                disabled={moderationIndex === 0 || decide.isPending}
+              >
+                <ChevronLeft />
+                Назад
+                <span
+                  className="keycap-hint keycap-hint--inline"
+                  aria-hidden="true"
+                >
+                  ←
+                </span>
+              </button>
+              <button
+                className="ui-button ui-button--secondary"
+                onClick={() => submitModerationDecision(false)}
+                disabled={decide.isPending}
+              >
+                <X />
+                Отклонить
+                <span
+                  className="keycap-hint keycap-hint--inline"
+                  aria-hidden="true"
+                >
+                  X
+                </span>
+              </button>
+              <button
+                className="ui-button ui-button--primary"
+                onClick={() => submitModerationDecision(true)}
+                disabled={decide.isPending}
+              >
+                <Check />
+                Одобрить
+                <span
+                  className="keycap-hint keycap-hint--inline"
+                  aria-hidden="true"
+                >
+                  C
+                </span>
+              </button>
+              <button
+                className="ui-button ui-button--ghost"
+                onClick={() => moveModeration(1)}
+                disabled={
+                  moderationIndex >= reviewQueue.length - 1 || decide.isPending
+                }
+              >
+                Дальше
+                <ChevronRight />
+                <span
+                  className="keycap-hint keycap-hint--inline"
+                  aria-hidden="true"
+                >
+                  →
+                </span>
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+      {selectedRun && activePipelineItem && (
+        <div className="admin-drawer">
+          <header className="admin-drawer__head">
+            <div>
+              <small>
+                {pipelineLabel(selectedRun.pipelineKey)} ·{" "}
+                {title(activePipelineItem.entityKey)}
+              </small>
+              <h2>
+                {title(
+                  record(activePipelineItem.proposedJson).titleRu ||
+                    record(activePipelineItem.proposedJson).name ||
+                    activePipelineItem.entityKey,
+                )}
+              </h2>
+            </div>
+            <div>
+              <Status value={activePipelineItem.status} />
+              <button onClick={() => setActivePipelineItemId(null)}>
+                <X />
+              </button>
+            </div>
+          </header>
+          <div className="admin-drawer__body">
+            <div className="admin-diff">
+              {itemDiffFields(record(activePipelineItem)).map((field) => (
+                <div key={field}>
+                  <strong>{field}</strong>
+                  <pre>
+                    {JSON.stringify(
+                      record(activePipelineItem.beforeJson)[field],
+                      null,
+                      2,
+                    ) ?? "—"}
+                  </pre>
+                  <ChevronRight />
+                  <pre>
+                    {JSON.stringify(
+                      record(activePipelineItem.proposedJson)[field],
+                      null,
+                      2,
+                    ) ?? "—"}
+                  </pre>
+                </div>
+              ))}
+            </div>
+            {pipelineWarnings(activePipelineItem.warningsJson).length > 0 && (
+              <div className="admin-pipeline-item-warnings">
+                <AlertTriangle />
+                {pipelineWarnings(activePipelineItem.warningsJson).join(" · ")}
+              </div>
+            )}
+          </div>
+          <footer className="admin-drawer__footer">
+            <div>
+              <small>{title(activePipelineItem.entityKey)}</small>
+            </div>
+            <button
+              className="admin-btn admin-btn--secondary"
+              onClick={() =>
+                decide.mutate({
+                  itemId: String(activePipelineItem.id),
+                  approved: false,
+                })
+              }
+            >
+              <X />
+              Отклонить
+            </button>
+            <button
+              className="admin-btn admin-btn--primary"
+              onClick={() =>
+                decide.mutate({
+                  itemId: String(activePipelineItem.id),
+                  approved: true,
+                })
+              }
+            >
+              <Check />
+              Принять
+            </button>
+          </footer>
+        </div>
+      )}
+      {starting && (
+        <div
+          className="admin-modal-backdrop"
+          onMouseDown={(event) =>
+            event.target === event.currentTarget && setStarting(false)
+          }
+        >
+          <div className="admin-modal admin-modal--pipeline">
+            <header>
+              <div>
+                <span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini</span>
+                <h2>Новый запуск</h2>
+              </div>
+              <button onClick={() => setStarting(false)}>
+                <X />
+              </button>
+            </header>
+            <div className="admin-modal__body">
+              {pipelineKey === "normalization" ? (
+                <>
+                  <label className="admin-field admin-field--wide">
+                    <span>Категория</span>
+                    <select
+                      value={normalizationMode}
+                      onChange={(event) => {
+                        const mode = event.target.value as ContentMode;
+                        setNormalizationMode(mode);
+                        setNormalizationField(
+                          mode === "music" ? "activityStartYear" : "year",
+                        );
+                        setNormalizationSelected(new Set());
+                      }}
+                    >
+                      {Object.entries(MODE_LABEL).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="admin-field admin-field--wide">
+                    <span>Поле</span>
+                    <select
+                      value={normalizationField}
+                      onChange={(event) =>
+                        setNormalizationField(event.target.value)
+                      }
+                    >
+                      {normalizationFieldsQuery.data?.items.map((entry) => (
+                        <option key={entry.field} value={entry.field}>
+                          {entry.label} · {entry.field}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="admin-field admin-field--wide">
+                    <span>Инструкция модели</span>
+                    <textarea
+                      value={normalizationPrompt}
+                      onChange={(event) =>
+                        setNormalizationPrompt(event.target.value)
+                      }
+                      rows={6}
+                    />
+                    <small>
+                      GPT-5 mini получит эту инструкцию вместе с одной карточкой
+                      и вернет только изменение выбранного поля, уверенность и
+                      источники.
+                    </small>
+                  </label>
+                  <label className="admin-field admin-field--wide">
+                    <span>Поиск карточек</span>
+                    <input
+                      value={normalizationQuery}
+                      onChange={(event) => {
+                        setNormalizationQuery(event.target.value);
+                        setNormalizationSelected(new Set());
+                      }}
+                      placeholder="Название или ID; пусто — вся категория"
+                    />
+                  </label>
+                  <section className="admin-normalization-tags">
+                    <TagPicker
+                      tags={normalizationTags.data?.items ?? []}
+                      value={normalizationIncludeTags}
+                      onChange={(ids) => {
+                        setNormalizationIncludeTags(ids);
+                        setNormalizationSelected(new Set());
+                      }}
+                      label="Включить карточки с тегами"
+                    />
+                    <label className="admin-field">
+                      <span>Совпадение включаемых тегов</span>
+                      <select
+                        value={normalizationTagMatch}
+                        onChange={(event) => {
+                          setNormalizationTagMatch(
+                            event.target.value as "all" | "any",
+                          );
+                          setNormalizationSelected(new Set());
+                        }}
+                      >
+                        <option value="all">Есть все выбранные теги</option>
+                        <option value="any">Есть хотя бы один тег</option>
+                      </select>
+                    </label>
+                    <TagPicker
+                      tags={normalizationTags.data?.items ?? []}
+                      value={normalizationExcludeTags}
+                      onChange={(ids) => {
+                        setNormalizationExcludeTags(ids);
+                        setNormalizationSelected(new Set());
+                      }}
+                      label="Исключить карточки с тегами"
+                    />
+                  </section>
+                  <div className="admin-periods">
+                    <button
+                      className={
+                        normalizationScope === "all" ? "is-active" : ""
+                      }
+                      onClick={() => setNormalizationScope("all")}
+                    >
+                      Все подходящие
+                    </button>
+                    <button
+                      className={
+                        normalizationScope === "selected" ? "is-active" : ""
+                      }
+                      onClick={() => setNormalizationScope("selected")}
+                    >
+                      Только выбранные · {normalizationSelected.size}
+                    </button>
+                  </div>
+                  {normalizationScope === "selected" && (
+                    <div className="admin-import-list">
+                      {normalizationCandidates.isLoading ? (
+                        <Loading />
+                      ) : (
+                        normalizationCandidates.data?.items.map((item) => (
+                          <label key={item.id}>
+                            <input
+                              type="checkbox"
+                              checked={normalizationSelected.has(item.id)}
+                              onChange={(event) =>
+                                setNormalizationSelected((current) => {
+                                  const next = new Set(current);
+                                  event.target.checked
+                                    ? next.add(item.id)
+                                    : next.delete(item.id);
+                                  return next;
+                                })
+                              }
+                            />
+                            <strong>{item.titleRu}</strong>
+                            <small>{item.id}</small>
+                          </label>
+                        ))
+                      )}
+                    </div>
+                  )}
+                  <label className="admin-field">
+                    <span>Максимум карточек · {maxItems}</span>
+                    <input
+                      type="range"
+                      min="1"
+                      max="500"
+                      value={maxItems}
+                      onChange={(event) =>
+                        setMaxItems(Number(event.target.value))
+                      }
+                    />
+                    <small>
+                      Для выбранных карточек применяется тот же верхний лимит.
+                      Результат всегда сначала попадает на проверку.
+                    </small>
+                  </label>
+                </>
+              ) : (
+                <>
+                  <label className="admin-field admin-field--wide">
+                    <span>Сценарий</span>
+                    <select
+                      value={scenario}
+                      onChange={(event) => setScenario(event.target.value)}
+                    >
+                      <option value="manual">
+                        Создать карточки по моему списку
+                      </option>
+                      <option value="discover">
+                        {pipelineKey === "music"
+                          ? "Найти и подготовить новых исполнителей"
+                          : pipelineKey === "movie"
+                            ? "Взять новые фильмы из топа Кинопоиска"
+                            : "Взять новые аниме из топа Shikimori"}
+                      </option>
+                      <option value="candidates">
+                        Обработать найденных кандидатов
+                      </option>
+                      <option value="review">
+                        Перепроверить очередь ручной проверки
+                      </option>
+                    </select>
+                  </label>
+                  {scenario === "manual" && (
+                    <>
+                      <label className="admin-field admin-field--wide admin-artist-import">
+                        <span>
+                          {manualFieldLabel} <small>до 500 строк</small>
+                        </span>
+                        <textarea
+                          value={manualText}
+                          onChange={(event) =>
+                            setManualText(event.target.value)
+                          }
+                          placeholder={manualPlaceholder}
+                        />
+                        <small>{manualHelp}</small>
+                        <label className="admin-file-button">
+                          <Upload />
+                          Загрузить TXT или CSV
+                          <input
+                            type="file"
+                            accept=".txt,.csv,text/plain,text/csv"
+                            onChange={(event) => {
+                              const file = event.target.files?.[0];
+                              if (file) void file.text().then(setManualText);
+                            }}
+                          />
+                        </label>
+                      </label>
+                      <div className="admin-import-preview">
+                        <header>
+                          <strong>Предварительная проверка</strong>
+                          <span>
+                            {preview.isFetching
+                              ? "Проверяем нашу базу…"
+                              : `${manualItems.length} строк`}
+                          </span>
+                        </header>
+                        {preview.error && !preview.isFetching && (
+                          <ErrorState error={preview.error} />
+                        )}
+                        {preview.data && (
+                          <>
+                            <div className="admin-import-summary">
+                              <span>
+                                <b>{readyItems}</b> новых
+                              </span>
+                              <span>
+                                <b>{String(previewSummary.existing ?? 0)}</b>{" "}
+                                уже есть
+                              </span>
+                              <span>
+                                <b>{String(previewSummary.duplicates ?? 0)}</b>{" "}
+                                дублей
+                              </span>
+                            </div>
+                            <div className="admin-import-list">
+                              {preview.data.items.slice(0, 100).map((raw) => {
+                                const item = record(raw);
+                                const identity =
+                                  pipelineKey === "music"
+                                    ? title(item.artist)
+                                    : pipelineKey === "movie"
+                                      ? title(
+                                          item.query ||
+                                            (item.kinopoiskId
+                                              ? `Кинопоиск #${String(item.kinopoiskId)}`
+                                              : "Фильм не распознан"),
+                                        )
+                                      : `Shikimori #${String(item.shikimoriId)}`;
+                                const details =
+                                  pipelineKey === "movie"
+                                    ? item.existingTitle ||
+                                      (item.kinopoiskId
+                                        ? `Кинопоиск #${String(item.kinopoiskId)}`
+                                        : `ID будет найден после запуска${item.requestedYear ? ` · ${String(item.requestedYear)}` : ""}`)
+                                    : item.country ||
+                                      item.existingTitle ||
+                                      item.hint ||
+                                      "—";
+                                return (
+                                  <div
+                                    key={`${item.index}-${item.artist ?? item.query ?? item.kinopoiskId ?? item.shikimoriId}`}
+                                  >
+                                    <strong>{identity}</strong>
+                                    <small>{title(details)}</small>
+                                    {item.existingItemId && (
+                                      <button
+                                        className="admin-link"
+                                        onClick={() => {
+                                          setStarting(false);
+                                          navigate(
+                                            "content",
+                                            String(item.existingItemId),
+                                          );
+                                        }}
+                                      >
+                                        Открыть карточку <ChevronRight />
+                                      </button>
+                                    )}
+                                    <Status value={item.status}>
+                                      {item.status === "ready"
+                                        ? "Новый"
+                                        : item.status === "existing_card"
+                                          ? "Уже есть"
+                                          : item.status === "duplicate_input"
+                                            ? "Дубль"
+                                            : "Ошибка"}
+                                    </Status>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  <label className="admin-field">
+                    <span>
+                      {scenario === "manual" ? "Размер партии" : "Количество"} ·{" "}
+                      {maxItems}
+                    </span>
+                    <input
+                      type="range"
+                      min="1"
+                      max="20"
+                      value={maxItems}
+                      onChange={(event) =>
+                        setMaxItems(Number(event.target.value))
+                      }
+                    />
+                    <small>
+                      {scenario === "manual"
+                        ? "После каждой партии прогресс и расход сохраняются в БД."
+                        : "Максимум элементов в текущем запуске."}
+                    </small>
+                  </label>
+                </>
+              )}
+              <div className="admin-estimate">
+                <CircleDollarSign />
+                <div>
+                  <span>Ориентировочная оценка</span>
+                  <strong>
+                    ${String(estimate.data?.estimatedCost ?? "—")}
+                  </strong>
+                  <small>
+                    {String(estimate.data?.aiReviewCalls ?? "—")} AI-вызовов ·
+                    фактическая сумма считается по usage и web search calls
+                  </small>
+                </div>
+              </div>
+            </div>
+            <footer>
+              <button
+                className="admin-btn admin-btn--secondary"
+                onClick={() => setStarting(false)}
+              >
+                Отмена
+              </button>
+              <button
+                className="admin-btn admin-btn--primary"
+                disabled={
+                  start.isPending ||
+                  (pipelineKey === "normalization"
+                    ? normalizationPrompt.trim().length < 10 ||
+                      (normalizationScope === "selected" &&
+                        !normalizationSelected.size)
+                    : scenario === "manual" &&
+                      (!readyItems || preview.isFetching))
+                }
+                onClick={() => start.mutate()}
+              >
+                <Play />
+                {pipelineKey === "normalization"
+                  ? `Нормализовать до ${maxItems} карточек`
+                  : scenario === "manual"
+                    ? `Запустить ${readyItems} ${pipelineKey === "music" ? "артистов" : pipelineKey === "movie" ? "фильмов" : "аниме"}`
+                    : `Запустить ${maxItems} элементов`}
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
 
 function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {

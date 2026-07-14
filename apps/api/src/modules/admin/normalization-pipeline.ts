@@ -14,6 +14,15 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
 }
 
+const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
+  movie: ['year', 'countries', 'directors', 'kinopoiskId', 'imdbId'],
+  series: ['year', 'endYear', 'countries', 'showrunners', 'kinopoiskId', 'imdbId'],
+  anime: ['year', 'countries', 'studios', 'shikimoriId', 'shikimoriUrl'],
+  game: ['year', 'countries', 'developers', 'publishers', 'steamAppId', 'steamUrl'],
+  music: ['year', 'activityStartYear', 'endYear', 'countries', 'musicType', 'musicOrigin', 'members', 'associatedActs', 'musicLinks'],
+  diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
+}
+
 const LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Окончание деятельности', titleRu: 'Русское название',
   titleOriginal: 'Оригинальное название', plotHint: 'Подсказка', facts: 'Факты', genres: 'Жанры', countries: 'Страны',
@@ -32,6 +41,54 @@ export const normalizationStartIndex = (itemIds: string[], offset: unknown) => {
   const parsed = Number(offset)
   if (!Number.isFinite(parsed)) return 0
   return Math.max(0, Math.min(itemIds.length, Math.trunc(parsed)))
+}
+
+export const normalizationPendingItemIds = (itemIds: string[], processedItemIds: Iterable<string>, offset: unknown) => {
+  const processed = new Set(processedItemIds)
+  const start = normalizationStartIndex(itemIds, offset)
+  return [...itemIds.slice(0, start), ...itemIds.slice(start)].filter((itemId) => !processed.has(itemId))
+}
+
+export const buildNormalizationCardContext = (payload: Json, mode: ContentMode, field: string) => {
+  const fields = new Set(['titleRu', 'titleOriginal', 'alternativeTitles', 'aliases', field, ...NORMALIZATION_CONTEXT_FIELDS[mode]])
+  return Object.fromEntries([...fields].flatMap((key) => payload[key] === undefined ? [] : [[key, payload[key]]]))
+}
+
+export type NormalizationPoolOutcome = 'completed' | 'rate_limited' | 'cancelled'
+
+export const isNormalizationRateLimitError = (error: unknown) => /(?:openai http 429|rate.?limit|too many requests)/i.test(error instanceof Error ? error.message : String(error))
+
+export const runNormalizationPool = async <T>(
+  items: T[],
+  requestedConcurrency: number,
+  handler: (item: T, index: number, rateLimitRetry: number) => Promise<NormalizationPoolOutcome>,
+  options: { rateLimitBackoffMs?: number } = {},
+) => {
+  const concurrency = Math.max(1, Math.min(items.length || 1, Math.trunc(requestedConcurrency) || 1))
+  const backoffMs = Math.max(0, options.rateLimitBackoffMs ?? 5_000)
+  let cursor = 0
+  let desiredConcurrency = concurrency
+  let completed = 0
+  let cancelled = false
+  const runners = Array.from({ length: concurrency }, (_, slot) => (async () => {
+    while (!cancelled && slot < desiredConcurrency) {
+      const index = cursor
+      cursor += 1
+      if (index >= items.length) return
+      let outcome = await handler(items[index], index, 0)
+      if (outcome === 'cancelled') { cancelled = true; return }
+      if (outcome === 'rate_limited') {
+        desiredConcurrency = Math.max(1, desiredConcurrency - 1)
+        if (backoffMs) await new Promise((resolve) => setTimeout(resolve, backoffMs))
+        outcome = await handler(items[index], index, 1)
+        if (outcome === 'cancelled') { cancelled = true; return }
+        if (outcome === 'rate_limited') throw new Error('Normalization task remained rate limited after adaptive retry')
+      }
+      completed += 1
+    }
+  })())
+  await Promise.all(runners)
+  return { completed, cancelled, finalConcurrency: desiredConcurrency }
 }
 
 const record = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
@@ -115,14 +172,14 @@ export const requestNormalization = async (options: {
     `Инструкция администратора: ${options.prompt}`,
     'Верни только JSON: {"decision":"update|keep|clear|review","value":...,"confidence":0..1,"reason":"...","sourceUrls":["https://..."]}.',
     'update — новое подтвержденное значение; keep — текущее значение уже верно; clear — значение ошибочно или не подтверждается; review — неоднозначность требует человека.',
-    `Карточка: ${JSON.stringify(options.payload)}`,
+    `Контекст карточки: ${JSON.stringify(buildNormalizationCardContext(options.payload, options.mode, options.field))}`,
   ].filter(Boolean).join('\n\n')
   const body = {
     model: options.model,
     input,
     reasoning: { effort: 'low' },
     max_output_tokens: 1200,
-    ...(options.webSearch ? { tools: [{ type: 'web_search' }] } : {}),
+    ...(options.webSearch ? { tools: [{ type: 'web_search', search_context_size: 'low' }] } : {}),
     text: { format: { type: 'json_schema', name: 'normalization_result', strict: false, schema: {
       type: 'object', additionalProperties: false,
       properties: {

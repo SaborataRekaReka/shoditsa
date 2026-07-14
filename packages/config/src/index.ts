@@ -89,6 +89,7 @@ export const loadConfig = () => {
     workerPollIntervalMs: integer('WORKER_POLL_INTERVAL_MS', 2_000, 250),
     workerHeartbeatIntervalMs: integer('WORKER_HEARTBEAT_INTERVAL_MS', 5_000, 1_000),
     workerStaleAfterMs: integer('WORKER_STALE_AFTER_MS', 60_000, 5_000),
+    normalizationConcurrency: integer('NORMALIZATION_CONCURRENCY', 3, 1),
     musicPipelineModel: process.env.MUSIC_PIPELINE_MODEL?.trim() || 'gpt-5-mini',
     pipelineSecretsKey: process.env.PIPELINE_SECRETS_KEY?.trim() || authSecret,
   })

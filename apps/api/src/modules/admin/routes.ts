@@ -702,7 +702,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const run = (await deps.db.insert(pipelineRuns).values({
       pipelineKey: 'normalization', pipelineVersion: 'normalization-v1', status: 'queued', createdBy: actor.id, itemsTotal: items.length,
       inputDefinitionJson: { scenario: 'normalize', mode: body.mode, field: body.field, prompt: body.prompt, scope: body.scope, query: body.query ?? '', includeTagIds: body.includeTagIds ?? [], excludeTagIds: body.excludeTagIds ?? [], tagMatch: body.tagMatch ?? 'all', itemIds: items.map((item) => item.itemId) },
-      settingsJson: { maxItems: items.length, model: body.model ?? 'gpt-5-mini', webSearch: body.webSearch ?? true },
+      settingsJson: { maxItems: items.length, model: body.model ?? 'gpt-5-mini', webSearch: body.webSearch ?? true, concurrency: Math.min(6, deps.config.normalizationConcurrency) },
       estimatedCost: String((items.length * 0.02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]
     const job = (await deps.db.insert(backgroundJobs).values({ type: 'normalization_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id } }).returning())[0]
@@ -905,7 +905,14 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     return run[0]
   })
   app.get('/api/v1/admin/pipeline-runs/:id/items', { schema: { params } }, async (request, reply) => {
-    await admin(request, reply, deps); return { items: await deps.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.runId, (request.params as { id: string }).id)).orderBy(asc(pipelineRunItems.createdAt)) }
+    await admin(request, reply, deps)
+    const rows = await deps.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.runId, (request.params as { id: string }).id)).orderBy(asc(pipelineRunItems.createdAt))
+    const cardIds = [...new Set(rows.map((item) => item.cardId).filter((id): id is string => Boolean(id)))]
+    const assigned = cardIds.length ? await deps.db.select({ itemId: contentItemTags.itemId, id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color })
+      .from(contentItemTags).innerJoin(contentTags, eq(contentTags.id, contentItemTags.tagId)).where(inArray(contentItemTags.itemId, cardIds)).orderBy(asc(contentTags.name)) : []
+    const byCard = new Map<string, typeof assigned>()
+    for (const tag of assigned) byCard.set(tag.itemId, [...(byCard.get(tag.itemId) ?? []), tag])
+    return { items: rows.map((item) => ({ ...item, tags: item.cardId ? (byCard.get(item.cardId) ?? []).map(({ itemId: _, ...tag }) => tag) : [] })) }
   })
   app.patch('/api/v1/admin/pipeline-runs/:id/items/:itemId/decision', { schema: { params: runItemParams, body: PipelineItemDecisionBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const { id, itemId } = request.params as { id: string; itemId: string }; const body = request.body as PipelineItemDecisionBody
@@ -960,6 +967,8 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
   const approveToWorkspace = async (request: FastifyRequest, reply: FastifyReply, publish: boolean) => {
     const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const body = request.body as PipelineApprovalBody
+    const run = (await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1))[0]
+    if (!run) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
     const filters = [eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'approved')]
     if (body.itemIds?.length) filters.push(inArray(pipelineRunItems.id, body.itemIds))
     const items = await deps.db.select().from(pipelineRunItems).where(and(...filters)); const workspace = await getOrCreateWorkspace(deps.db, actor)
@@ -999,7 +1008,16 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const activated = await activateWorkspaceRevision(deps.db, actor, workspace.id, request.id)
     await deps.db.update(pipelineRuns).set({ status: results.some((entry) => entry.status === 'conflict') ? 'partially_published' : 'published', finishedAt: new Date() }).where(eq(pipelineRuns.id, runId))
     await deps.db.update(pipelineRunItems).set({ status: 'published', appliedRevisionId: activated.revision.id, updatedAt: new Date() }).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'staged')))
-    return { results, built, activated }
+    const successfulItemIds = new Set(results.filter((entry) => entry.status === 'staged').map((entry) => entry.itemId))
+    const publishedCardIds = [...new Set(items.filter((item) => successfulItemIds.has(item.id)).map((item) => item.cardId ?? String(asRecord(item.proposedJson).id ?? item.entityKey)).filter(Boolean))]
+    const tagSlug = `pipeline-run-${runId}`
+    const pipelineName = run.pipelineKey === 'normalization' ? 'Нормализация' : run.pipelineKey === 'music' ? 'Музыка' : run.pipelineKey === 'movie' ? 'Кино' : run.pipelineKey === 'anime' ? 'Аниме' : 'Пайплайн'
+    const date = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Asia/Almaty', day: '2-digit', month: '2-digit', year: 'numeric' }).format(run.createdAt)
+    await deps.db.insert(contentTags).values({ name: `${pipelineName} · ${date} · ${runId.slice(0, 8)}`, slug: tagSlug, color: '#697f2f', createdBy: actor.id }).onConflictDoNothing()
+    const runTag = (await deps.db.select({ id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color }).from(contentTags).where(eq(contentTags.slug, tagSlug)).limit(1))[0]
+    if (runTag && publishedCardIds.length) await deps.db.insert(contentItemTags).values(publishedCardIds.map((itemId) => ({ itemId, tagId: runTag.id, createdBy: actor.id }))).onConflictDoNothing()
+    if (runTag) await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.publish.tag', entityType: 'content_tag', entityId: runTag.id, before: null, after: { runId, itemIds: publishedCardIds }, requestId: request.id })
+    return { results, built, activated, tag: runTag ?? null }
   }
   app.post('/api/v1/admin/pipeline-runs/:id/approve-to-workspace', { schema: { params, body: PipelineApprovalBodySchema } }, async (request, reply) => approveToWorkspace(request, reply, false))
   app.post('/api/v1/admin/pipeline-runs/:id/approve-and-publish', { schema: { params, body: PipelineApprovalBodySchema } }, async (request, reply) => approveToWorkspace(request, reply, true))
