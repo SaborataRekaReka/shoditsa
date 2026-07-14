@@ -299,8 +299,10 @@ const applyFactcheckPatch = (baseItem, record) => {
   }
 
   const beginYear = toYear(current.beginYear)
-  if (beginYear != null && beginYear !== next.year) {
-    next.year = beginYear
+  if (beginYear != null && beginYear !== next.activityStartYear) {
+    next.activityStartYear = beginYear
+    delete next.year
+    changed.add('activityStartYear')
     changed.add('year')
   }
 

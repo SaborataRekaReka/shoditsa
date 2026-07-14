@@ -12,7 +12,7 @@ export const AdminContentItemsQuerySchema = Type.Object({
   hasIssues: Type.Optional(Type.Boolean()),
   hasHint: Type.Optional(Type.Boolean()),
   source: Type.Optional(Type.Union([Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('import'), Type.Literal('rollback'), Type.Literal('report_fix')])),
-  pipelineKey: Type.Optional(Type.Union([Type.Literal('music'), Type.Literal('movie'), Type.Literal('anime')])),
+  pipelineKey: Type.Optional(Type.Union([Type.Literal('music'), Type.Literal('movie'), Type.Literal('anime'), Type.Literal('normalization')])),
   sort: Type.Optional(Type.Union([Type.Literal('title'), Type.Literal('id'), Type.Literal('createdAt'), Type.Literal('updatedAt'), Type.Literal('reports'), Type.Literal('completeness')])),
   order: Type.Optional(Type.Union([Type.Literal('asc'), Type.Literal('desc')])),
   cursor: Type.Optional(Type.String({ maxLength: 512 })),
@@ -230,6 +230,24 @@ export const AnimePipelineManualPreviewBodySchema = Type.Object({
   anime: Type.Array(AnimePipelineItemSchema, { minItems: 1, maxItems: 500 }),
 }, { additionalProperties: false })
 
+const NormalizationPipelineRequestProperties = {
+  mode: ContentModeSchema,
+  field: ContentExchangeFieldSchema,
+  prompt: Type.String({ minLength: 10, maxLength: 4_000 }),
+  scope: Type.Union([Type.Literal('all'), Type.Literal('selected')]),
+  itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 500, uniqueItems: true })),
+  query: Type.Optional(Type.String({ maxLength: 160 })),
+  maxItems: Type.Integer({ minimum: 1, maximum: 500, default: 100 }),
+  model: Type.Optional(Type.Literal('gpt-5-mini')),
+  webSearch: Type.Optional(Type.Boolean()),
+}
+
+export const NormalizationPipelineEstimateBodySchema = Type.Object(NormalizationPipelineRequestProperties, { additionalProperties: false })
+export const NormalizationPipelineRunBodySchema = Type.Object({
+  ...NormalizationPipelineRequestProperties,
+  confirmation: Type.Literal(true),
+}, { additionalProperties: false })
+
 export const IntegrationKeySchema = Type.Union([
   Type.Literal('OPENAI_API_KEY'), Type.Literal('LASTFM_API_KEY'), Type.Literal('SPOTIFY_CLIENT_ID'),
   Type.Literal('SPOTIFY_CLIENT_SECRET'), Type.Literal('THEAUDIODB_API_KEY'), Type.Literal('MUSICBRAINZ_USER_AGENT'),
@@ -334,6 +352,8 @@ export type MoviePipelineManualPreviewBody = Static<typeof MoviePipelineManualPr
 export type AnimePipelineEstimateBody = Static<typeof AnimePipelineEstimateBodySchema>
 export type AnimePipelineRunBody = Static<typeof AnimePipelineRunBodySchema>
 export type AnimePipelineManualPreviewBody = Static<typeof AnimePipelineManualPreviewBodySchema>
+export type NormalizationPipelineEstimateBody = Static<typeof NormalizationPipelineEstimateBodySchema>
+export type NormalizationPipelineRunBody = Static<typeof NormalizationPipelineRunBodySchema>
 export type IntegrationKey = Static<typeof IntegrationKeySchema>
 export type IntegrationSecretUpdateBody = Static<typeof IntegrationSecretUpdateBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { TitleItem } from '@shoditsa/contracts'
-import { publicCard } from '../src/modules/games/service.js'
+import { buildHintOptions, publicCard } from '../src/modules/games/service.js'
 
 describe('public game card', () => {
   it('keeps genres required by attempt cards', () => {
@@ -67,5 +67,34 @@ describe('public game card', () => {
 
     const card = publicCard(item)
     expect(card.cast?.[0]?.photoUrl).toBe('/media/people/84/842c7705dac914e1a3765e58bb2ca6d50117a5eb20e833d38133af5ca19a9ab3.webp')
+  })
+})
+
+describe('server hint options', () => {
+  it('does not repeat matched facts and removes matched values from list facts', () => {
+    const answer = {
+      id: 'game_1',
+      mode: 'game',
+      titleRu: 'Example game',
+      titleOriginal: 'Example game',
+      alternativeTitles: [],
+      popularityScore: 0,
+      year: 1998,
+      genres: ['Racing', 'Action'],
+      platforms: ['Nintendo 64'],
+      developers: ['Nintendo EAD'],
+      facts: ['Released in 1998.', 'It introduced a new championship mode.'],
+    } as TitleItem
+    const attempts = [{
+      hints: [
+        { key: 'year', label: 'Year', value: '1998', status: 'match' as const, direction: null },
+        { key: 'genres', label: 'Genres', value: 'Racing', status: 'close' as const, direction: null, matchedValues: ['Racing'] },
+      ],
+    }]
+
+    const options = buildHintOptions(answer, [], attempts)
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Жанры: Action')
+    expect(options.find((option) => option.key === 'fact')?.value).toBe('It introduced a new championship mode.')
   })
 })

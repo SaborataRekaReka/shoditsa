@@ -12,6 +12,7 @@ import {
   ContentExchangeExportBodySchema, ContentExchangeImportApplyBodySchema, ContentExchangeImportPreviewBodySchema, ContentExchangeSelectionBodySchema,
   IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
   MusicPipelineRunBodySchema, MoviePipelineEstimateBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema,
+  NormalizationPipelineEstimateBodySchema, NormalizationPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody,
@@ -21,6 +22,7 @@ import {
   type AnimePipelineEstimateBody, type AnimePipelineManualPreviewBody, type AnimePipelineRunBody,
   type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
   type MoviePipelineEstimateBody, type MoviePipelineManualPreviewBody, type MoviePipelineRunBody,
+  type NormalizationPipelineEstimateBody, type NormalizationPipelineRunBody,
   type PipelineApprovalBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
 import { Type } from '@sinclair/typebox'
@@ -45,6 +47,7 @@ import { loadAdminTimeline } from './timeline-service.js'
 import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
+import { assertNormalizationField, normalizationFields } from './normalization-pipeline.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
@@ -255,13 +258,13 @@ const itemSchema = (mode: string) => ({
   mode,
   groups: [
     { key: 'identity', title: 'Идентификация и названия', fields: ['id', 'mode', 'titleRu', 'titleOriginal', 'alternativeTitles'] },
-    { key: 'game', title: 'Игровые данные и подсказки', fields: ['year', 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame'] },
+    { key: 'game', title: 'Игровые данные и подсказки', fields: [...(mode === 'music' ? ['activityStartYear'] : ['year']), 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame'] },
     { key: 'media', title: 'Медиа', fields: ['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'] },
     ...(mode === 'movie' ? [{ key: 'movie', title: 'Кино', fields: ['runtime', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'kinopoiskId', 'imdbId', 'ratings', 'awards'] }] : []),
     ...(mode === 'series' ? [{ key: 'series', title: 'Сериал', fields: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'kinopoiskId', 'imdbId'] }] : []),
     ...(mode === 'anime' ? [{ key: 'anime', title: 'Аниме', fields: ['kind', 'status', 'episodes', 'episodesAired', 'source', 'studios', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'] }] : []),
     ...(mode === 'game' ? [{ key: 'gameMeta', title: 'Игра', fields: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic'] }] : []),
-    ...(mode === 'music' ? [{ key: 'music', title: 'Музыка', fields: ['canonicalId', 'aliases', 'gameTier', 'contentStatus', 'activeState', 'origin', 'artistType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
+    ...(mode === 'music' ? [{ key: 'music', title: 'Музыка', fields: ['canonicalId', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
     ...(mode === 'diagnosis' ? [{ key: 'diagnosis', title: 'Диагноз', fields: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'] }] : []),
   ],
 })
@@ -610,12 +613,62 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const music = last.filter((entry) => entry.pipelineKey === 'music')
     const movies = last.filter((entry) => entry.pipelineKey === 'movie')
     const anime = last.filter((entry) => entry.pipelineKey === 'anime')
+    const normalization = last.filter((entry) => entry.pipelineKey === 'normalization')
     return { items: [
       { key: 'music', title: 'Музыка', description: 'Поиск, проверка источников и подготовка музыкальных карточек', mode: 'music', state: 'connected', lastRun: music[0] ?? null, awaitingReview: music.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'movie', title: 'Кино · Кинопоиск', description: 'Поиск фильмов, данные Кинопоиска, фактчекинг и подготовка карточек', mode: 'movie', state: 'connected', lastRun: movies[0] ?? null, awaitingReview: movies.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'anime', title: 'Аниме · Shikimori', description: 'Каталог Shikimori, роли, метаданные, фактчекинг и подготовка аниме-карточек', mode: 'anime', state: 'connected', lastRun: anime[0] ?? null, awaitingReview: anime.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
+      { key: 'normalization', title: 'Универсальная нормализация', description: 'Выбор категории, карточек и поля; произвольная инструкция для GPT-5 mini с учетом токенов и стоимости', mode: null, state: 'connected', lastRun: normalization[0] ?? null, awaitingReview: normalization.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'translation', title: 'Машинный перевод', description: 'Единый review-контур для переводов', mode: null, state: 'not_connected', lastRun: null, awaitingReview: 0 },
     ] }
+  })
+
+  const normalizationModeQuery = Type.Object({ mode: Type.Union(['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].map((value) => Type.Literal(value))) }, { additionalProperties: false })
+  app.get('/api/v1/admin/pipelines/normalization/fields', { schema: { querystring: normalizationModeQuery } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const mode = (request.query as { mode: ContentMode }).mode
+    return { mode, items: normalizationFields(mode) }
+  })
+
+  const resolveNormalizationItems = async (body: NormalizationPipelineEstimateBody) => {
+    try { assertNormalizationField(body.mode, body.field) } catch (error) { throw new ApiError(422, 'NORMALIZATION_FIELD_INVALID', error instanceof Error ? error.message : 'Недопустимое поле') }
+    if (body.scope === 'selected' && !body.itemIds?.length) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите хотя бы одну карточку')
+    const active = (await deps.db.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
+    if (!active) throw new ApiError(409, 'ACTIVE_REVISION_NOT_FOUND', 'Нет активной ревизии контента')
+    const filters = [eq(contentItemVersions.revisionId, active.id), eq(contentItemVersions.mode, body.mode)]
+    if (body.scope === 'selected') filters.push(inArray(contentItemVersions.itemId, body.itemIds!))
+    if (body.query?.trim()) {
+      const needle = `%${body.query.trim()}%`
+      filters.push(or(ilike(contentItemVersions.itemId, needle), ilike(contentItemVersions.titleRu, needle), ilike(contentItemVersions.titleOriginal, needle))!)
+    }
+    return deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, titleRu: contentItemVersions.titleRu })
+      .from(contentItemVersions).where(and(...filters)).orderBy(asc(contentItemVersions.itemId)).limit(body.maxItems)
+  }
+
+  app.post('/api/v1/admin/pipelines/normalization/estimate', { schema: { body: NormalizationPipelineEstimateBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const body = request.body as NormalizationPipelineEstimateBody
+    const items = await resolveNormalizationItems(body)
+    return { items: items.length, aiReviewCalls: items.length, estimatedCost: Number((items.length * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: body.model ?? 'gpt-5-mini' }
+  })
+
+  app.post('/api/v1/admin/pipelines/normalization/runs', { schema: { body: NormalizationPipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as NormalizationPipelineRunBody; const key = requireIdempotencyKey(request)
+    const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
+    const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
+    if (!integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    const items = await resolveNormalizationItems(body)
+    if (!items.length) throw new ApiError(409, 'NORMALIZATION_ITEMS_EMPTY', 'Под заданный фильтр не найдено карточек')
+    const run = (await deps.db.insert(pipelineRuns).values({
+      pipelineKey: 'normalization', pipelineVersion: 'normalization-v1', status: 'queued', createdBy: actor.id, itemsTotal: items.length,
+      inputDefinitionJson: { scenario: 'normalize', mode: body.mode, field: body.field, prompt: body.prompt, scope: body.scope, query: body.query ?? '', itemIds: items.map((item) => item.itemId) },
+      settingsJson: { maxItems: items.length, model: body.model ?? 'gpt-5-mini', webSearch: body.webSearch ?? true },
+      estimatedCost: String((items.length * 0.02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+    }).returning())[0]
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'normalization_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id } }).returning())[0]
+    await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.normalization.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { mode: body.mode, field: body.field, items: items.length, jobId: job.id }, requestId: request.id })
+    return reply.code(202).send({ runId: run.id, jobId: job.id })
   })
 
   app.post('/api/v1/admin/pipelines/music/estimate', { schema: { body: MusicPipelineEstimateBodySchema } }, async (request, reply) => {
@@ -874,7 +927,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const failed = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
     if (!failed[0]?.count) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
     const pipeline = await deps.db.select({ key: pipelineRuns.pipelineKey }).from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
-    const jobType = pipeline[0]?.key === 'movie' ? 'movie_pipeline' : pipeline[0]?.key === 'anime' ? 'anime_pipeline' : 'music_pipeline'
+    const jobType = pipeline[0]?.key === 'movie' ? 'movie_pipeline' : pipeline[0]?.key === 'anime' ? 'anime_pipeline' : pipeline[0]?.key === 'normalization' ? 'normalization_pipeline' : 'music_pipeline'
     const job = await deps.db.insert(backgroundJobs).values({ type: jobType, idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId, payload: { runId, retryFailed: true } }).onConflictDoNothing().returning()
     return reply.code(202).send({ job: job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
   })

@@ -232,7 +232,7 @@ const mapFromLibraryItem = (item, index) => {
       displayNameRu: titleRu,
       displayNameEn: titleOriginal,
       country: asString(asArray(item?.countries)[0]),
-      beginYear: toInt(item?.year),
+      beginYear: toInt(item?.activityStartYear),
       endYear: toInt(item?.endYear),
       isActive: typeof item?.musicIsActive === 'boolean' ? item.musicIsActive : null,
       artistType: asString(item?.musicType),

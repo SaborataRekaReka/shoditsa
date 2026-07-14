@@ -113,6 +113,10 @@ describe('server-authoritative game API', () => {
     const afterCompletion = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/attempts`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { itemId: answerId } })
     expect(afterCompletion.statusCode).toBe(409)
     expect(afterCompletion.json().error.code).toBe('GAME_ALREADY_COMPLETED')
+
+    const repeatedStart = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'series', period: 'all', difficulty: null, archiveDate: null } })
+    expect(repeatedStart.statusCode).toBe(409)
+    expect(repeatedStart.json().error.code).toBe('GAME_ALREADY_COMPLETED')
   })
 
   it('enforces hint checkpoint lock and one choice per checkpoint', async () => {

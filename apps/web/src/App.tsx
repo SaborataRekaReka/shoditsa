@@ -739,7 +739,7 @@ const buildInfoHintCandidates = (item: TitleItem) => {
   if (item.mode === 'music') {
     return [
       compactAssistList('Страна', (item.countries ?? []).map(localizeMusicCountry), 2),
-      item.year ? `Начало карьеры: ${item.year}` : '',
+      item.activityStartYear ? `Начало деятельности: ${item.activityStartYear}` : '',
       `Тип: ${musicTypeLabel(item.musicType)}`,
       item.musicOrigin ? `Сцена: ${musicOriginLabel(item.musicOrigin)}` : '',
       compactAssistList('Жанры', item.genres ?? [], 3),
@@ -1224,10 +1224,9 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectPromo, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectPromo: () => void
-  onOpenSavedSession: (game: SavedGame) => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1299,8 +1298,9 @@ function HubScreen({ onSelect, onSelectPromo, onOpenSavedSession, onRewatch, onS
             const handleClick = () => {
               const eventName = status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play'
               trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGameAttemptCount(savedGame), date: todayAttendance.date })
-              if (savedGame) onOpenSavedSession(savedGame)
-              else onSelect(config.mode)
+              // Opening a category is always configuration first. Resuming a
+              // saved session remains an explicit action in the resume list.
+              onSelect(config.mode)
             }
             return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[config.mode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
@@ -1315,12 +1315,7 @@ function HubScreen({ onSelect, onSelectPromo, onOpenSavedSession, onRewatch, onS
             status={promoSession?.status === 'playing' ? 'active' : promoSession ? 'completed' : 'new'}
             attempts={promoSession ? savedGameAttemptCount(promoSession) : null}
             onClick={() => {
-              if (promoSession) {
-                trackMetrikaGoal('category_ticket_resume', { mode: 'game', variant: PROMO_PACK_ID, status: promoSession.status, attempts: savedGameAttemptCount(promoSession), date: todayAttendance.date })
-                onOpenSavedSession(promoSession)
-                return
-              }
-              trackMetrikaGoal('category_ticket_play', { mode: 'game', variant: PROMO_PACK_ID, status: 'new', attempts: 0, date: todayAttendance.date })
+              trackMetrikaGoal('category_ticket_play', { mode: 'game', variant: PROMO_PACK_ID, status: promoSession ? 'completed' : 'new', attempts: promoSession ? savedGameAttemptCount(promoSession) : 0, date: todayAttendance.date })
               onSelectPromo()
             }}
           />}
@@ -3151,7 +3146,8 @@ const publicItemToTitle = (item: PublicContentItem): TitleItem => {
     titleRu: item.titleRu,
     titleOriginal: item.titleOriginal,
     alternativeTitles: extended.alternativeTitles ?? [],
-    year: item.year ?? undefined,
+    year: item.mode === 'music' ? undefined : item.year ?? undefined,
+    activityStartYear: extended.activityStartYear ?? null,
     genres: item.genres ?? [],
     popularityScore: extended.popularityScore ?? 0,
     posterUrl: item.posterUrl,
@@ -3806,14 +3802,13 @@ const profileStatus = (completedGames: number) => completedGames >= 80
       ? 'Игрок'
       : 'Новичок'
 
-function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode, onResumeActive }: {
+function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode }: {
   onHome: () => void
   onArchive: () => void
   onStats: () => void
   onRules: () => void
   onReview: () => void
   onSelectMode: (mode: TitleMode) => void
-  onResumeActive: () => void
 }) {
   const { session, loading, refresh: refreshSession } = useAuthSession()
   const serverRuntime = useServerRuntime()
@@ -3902,7 +3897,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
   const nextDailyCategory = CATEGORY_TICKET_CONFIG.find((category) => category.mode === activeSession?.mode)
     ?? CATEGORY_TICKET_CONFIG.find((category) => !today.completedModes.includes(category.mode))
     ?? CATEGORY_TICKET_CONFIG[0]
-  const openDailyMode = (mode: TitleMode) => activeSession?.mode === mode ? onResumeActive() : onSelectMode(mode)
+  const openDailyMode = (mode: TitleMode) => onSelectMode(mode)
 
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} profileActive />
@@ -4168,8 +4163,6 @@ function GameApp() {
     ? 'profile'
     : typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('tab')
       ? 'profile'
-    : SERVER_RUNTIME && typeof window !== 'undefined' && window.sessionStorage.getItem('shoditsa:active-server-session')
-      ? 'game'
       : 'hub')
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
   const [mode, setMode] = useState<TitleMode>(() => challenge?.mode ?? 'movie')
@@ -4180,10 +4173,7 @@ function GameApp() {
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [freePlayLaunch, setFreePlayLaunch] = useState<number | null>(null)
   const [freePlayArmed, setFreePlayArmed] = useState(false)
-  const [serverSessionId, setServerSessionId] = useState<string | null>(() => {
-    if (!SERVER_RUNTIME || typeof window === 'undefined') return null
-    return window.sessionStorage.getItem('shoditsa:active-server-session')
-  })
+  const [serverSessionId, setServerSessionId] = useState<string | null>(null)
   const [serverActionError, setServerActionError] = useState('')
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
@@ -4932,7 +4922,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
@@ -4940,7 +4930,7 @@ function GameApp() {
 
     {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} onResumeActive={resumeActiveSession} />}
+    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} />}
 
     {screen === 'game' && (SERVER_RUNTIME
       ? serverSessionId

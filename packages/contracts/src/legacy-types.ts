@@ -53,6 +53,8 @@ export type TitleItem = {
   titleOriginal: string
   alternativeTitles: string[]
   year?: number
+  /** First year of public creative activity. Never a birth year. */
+  activityStartYear?: number | null
   endYear?: number | null
   releaseDate?: string | null
   countries?: string[]

@@ -888,28 +888,29 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const guessActive = guess.musicIsActive
   const answerActive = answer.musicIsActive
 
-  const guessDecade = decadeFromYear(guess.year)
-  const answerDecade = decadeFromYear(answer.year)
+  const guessDecade = decadeFromYear(guess.activityStartYear)
+  const answerDecade = decadeFromYear(answer.activityStartYear)
   const decadeHint = numeric(guessDecade, answerDecade, 0, 0)
 
   const guessSimilar = (guess.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
   const answerSimilar = (answer.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
   const hasSimilar = guessSimilar.length > 0 || answerSimilar.length > 0
 
-  const year = numeric(guess.year, answer.year, 0, 2)
+  const activityStartYear = numeric(guess.activityStartYear, answer.activityStartYear, 0, 2)
+  const hasActivityStart = guess.activityStartYear != null || answer.activityStartYear != null
   const activeStatus = scalar(
     guessActive == null ? null : guessActive ? 'active' : 'inactive',
     answerActive == null ? null : answerActive ? 'active' : 'inactive',
   )
 
   const hints: Hint[] = [
-    { key: 'year', label: 'Начало карьеры', value: guess.year != null ? String(guess.year) : '—', ...year },
-    {
+    ...(hasActivityStart ? [{ key: 'activity_start_year', label: 'Начало деятельности', value: guess.activityStartYear != null ? String(guess.activityStartYear) : '—', ...activityStartYear } satisfies Hint] : []),
+    ...(hasActivityStart ? [{
       key: 'decade',
       label: 'Десятилетие',
       value: guessDecade != null ? `${guessDecade}-е` : '—',
       ...decadeHint,
-    },
+    } satisfies Hint] : []),
     {
       key: 'country',
       label: 'Страна',

@@ -628,7 +628,7 @@ function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | nu
     </div></>
 }
 
-type PipelineKey = 'music' | 'movie' | 'anime'
+type PipelineKey = 'music' | 'movie' | 'anime' | 'normalization'
 
 function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient()
@@ -643,19 +643,28 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     refetchInterval: selectedRun && ['queued', 'running'].includes(String(selectedRun.status)) ? 2_500 : false,
   })
   const [scenario, setScenario] = useState('manual'); const [maxItems, setMaxItems] = useState(5); const [starting, setStarting] = useState(false); const [pipelineKey, setPipelineKey] = useState<PipelineKey>('music')
+  const [normalizationMode, setNormalizationMode] = useState<ContentMode>('music')
+  const [normalizationField, setNormalizationField] = useState('activityStartYear')
+  const [normalizationPrompt, setNormalizationPrompt] = useState('Проверь по надежным источникам и унифицируй значение. Для сольного артиста укажи первый подтвержденный год профессиональной музыкальной деятельности или дебюта, для группы — год основания. Никогда не используй год рождения. Если надежных данных нет — очисти поле.')
+  const [normalizationScope, setNormalizationScope] = useState<'all' | 'selected'>('all')
+  const [normalizationQuery, setNormalizationQuery] = useState('')
+  const [normalizationSelected, setNormalizationSelected] = useState<Set<string>>(new Set())
   const [artistText, setArtistText] = useState(''); const artists = useMemo(() => parseArtistList(artistText), [artistText])
   const [movieText, setMovieText] = useState(''); const movies = useMemo(() => parseMovieList(movieText), [movieText])
   const [animeText, setAnimeText] = useState(''); const anime = useMemo(() => parseAnimeList(animeText), [animeText])
   const manualItems = pipelineKey === 'music' ? artists : pipelineKey === 'movie' ? movies : anime
   const manualPayload = pipelineKey === 'music' ? { artists } : pipelineKey === 'movie' ? { movies } : { anime }
-  const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey, manualItems), enabled: starting && scenario === 'manual' && manualItems.length > 0 })
+  const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && pipelineKey !== 'normalization' && scenario === 'manual' && manualItems.length > 0 })
+  const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization' })
+  const normalizationCandidates = useQuery({ queryKey: ['admin', 'normalization-candidates', normalizationMode, normalizationQuery], queryFn: () => adminApi.contentItems({ mode: normalizationMode, q: normalizationQuery || undefined, limit: 100, sort: 'title' }), enabled: starting && pipelineKey === 'normalization' })
+  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, maxItems, model: 'gpt-5-mini', webSearch: true }
   const estimate = useQuery({
-    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems], enabled: scenario !== 'manual' || manualItems.length > 0,
-    queryFn: () => adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
+    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, normalizationMode, normalizationField, normalizationPrompt, normalizationScope, normalizationQuery, normalizationSelected.size], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario !== 'manual' || manualItems.length > 0,
+    queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
   })
   const start = useMutation({
-    mutationFn: () => adminApi.startPipeline(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
-    onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : 'Аниме-пайплайн запущен'); setStarting(false); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
+    mutationFn: () => pipelineKey === 'normalization' ? adminApi.startPipeline('normalization', normalizationPayload) : adminApi.startPipeline(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
+    onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : pipelineKey === 'anime' ? 'Аниме-пайплайн запущен' : 'Нормализация запущена'); setStarting(false); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
     onError: (error) => notify('error', errorText(error)),
   })
   const runItems = items.data?.items ?? []
@@ -725,11 +734,15 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
-  const isPipelineKey = (value: unknown): value is PipelineKey => value === 'music' || value === 'movie' || value === 'anime'
+  const isPipelineKey = (value: unknown): value is PipelineKey => value === 'music' || value === 'movie' || value === 'anime' || value === 'normalization'
   const safeText = (value: unknown) => typeof value === 'string' ? value.trim() : ''
   const buildRestartPayload = (run: Record<string, any>) => {
     const input = record(run.inputDefinitionJson)
     const settings = record(run.settingsJson)
+    if (run.pipelineKey === 'normalization') return {
+      mode: input.mode, field: input.field, prompt: input.prompt, scope: 'selected', itemIds: array(input.itemIds).map(String).slice(0, 500),
+      maxItems: Math.max(1, Math.min(500, Number(settings.maxItems ?? run.itemsTotal ?? 100) || 100)), model: 'gpt-5-mini', webSearch: settings.webSearch !== false,
+    }
     const rawScenario = String(input.scenario || 'discover')
     const scenario = ['discover', 'candidates', 'review', 'selected', 'manual'].includes(rawScenario) ? rawScenario : 'discover'
     const payload: Record<string, unknown> = {
@@ -789,7 +802,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const restartRun = useMutation({
     mutationFn: async () => {
       if (!selectedRun) throw new Error('Запуск не выбран')
-      if (!isPipelineKey(selectedRun.pipelineKey)) throw new Error('Перезапуск доступен только для music/movie/anime')
+      if (!isPipelineKey(selectedRun.pipelineKey)) throw new Error('Перезапуск для этого пайплайна недоступен')
       return adminApi.startPipeline(selectedRun.pipelineKey, buildRestartPayload(record(selectedRun)))
     },
     onSuccess: (data) => {
@@ -836,8 +849,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     onError: (error) => notify('error', errorText(error)),
   })
   const previewSummary = record(preview.data?.summary); const readyItems = Number(previewSummary.ready ?? 0)
-  const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : 'Пайплайн'
-  const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : 'Контентный пайплайн'
+  const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : key === 'normalization' ? 'Нормализация' : 'Пайплайн'
+  const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : key === 'normalization' ? 'Универсальная нормализация' : 'Контентный пайплайн'
   const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : <Bot />
   const pipelinePulseText = (status: string) => status === 'queued' ? 'В очереди' : status === 'running' ? 'В работе' : 'Остановлен'
   const manualText = pipelineKey === 'music' ? artistText : pipelineKey === 'movie' ? movieText : animeText
@@ -845,7 +858,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const manualFieldLabel = pipelineKey === 'music' ? 'Исполнители' : pipelineKey === 'movie' ? 'Фильмы Кинопоиска' : 'Аниме Shikimori'
   const manualPlaceholder = pipelineKey === 'music' ? 'Кино\nDepeche Mode\nPhoenix,Франция,indie rock band' : pipelineKey === 'movie' ? 'В поисках Немо (Finding Nemo, 2003)\nЧёрная Пантера (Black Panther, 2018)\nБэтмен (The Batman, 2022)' : '16498\nhttps://shikimori.one/animes/5114\n9253,добавить аниме из списка'
   const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Один фильм на строку: «Название (Original title, год)» или просто название. Предпросмотр проверяет только нашу базу; ID Кинопоиска найдутся после запуска.' : 'Формат: только ID или ссылка Shikimori. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.'
-  const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime') { setPipelineKey(key); setScenario('manual'); setStarting(true) } }
+  const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime' || key === 'normalization') { setPipelineKey(key); setScenario('manual'); setMaxItems(key === 'normalization' ? 100 : 5); setStarting(true) } }
   const events = record(runEvents.data)
   const eventRows = array(events.events).map(record)
   const journalLines = array(events.journalLines).map((line) => String(line))
@@ -1082,7 +1095,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     return () => removeEventListener('keydown', handleModerationHotkeys)
   }, [decide.isPending, moderationItem, moderationOpen, moveModeration, submitModerationDecision])
 
-  return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button></>} />
+  return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('normalization')}><Bot />Нормализовать поле</button></>} />
     <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
     <div className="admin-split admin-split--pipeline">
       <section className="admin-list-panel">
@@ -1104,7 +1117,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       </section>
       <section className="admin-detail-panel">{!selectedRun ? <Empty title="Выберите запуск" text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям." icon={<WandSparkles />} /> : <>
         <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button>{canContinueRun && <button onClick={requestContinueRun} disabled={continueRun.isPending || restartRun.isPending || cancel.isPending || removeRun.isPending}><Play />Продолжить</button>}<button onClick={requestRestartRun} disabled={restartRun.isPending || continueRun.isPending}><RefreshCw />Перезапустить процесс</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending || continueRun.isPending}><X />Остановить</button>}<button onClick={requestDeleteRun} disabled={removeRun.isPending || cancel.isPending || continueRun.isPending}><Trash2 />Удалить процесс</button><Status value={selectedRun.status} /></div></header>
-        <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div></div>
+        <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div>{Object.keys(record(selectedRun.usageJson)).length > 0 && <small>Токены: вход {Number(record(selectedRun.usageJson).inputTokens ?? 0).toLocaleString('ru-RU')} · кэш {Number(record(selectedRun.usageJson).cachedInputTokens ?? 0).toLocaleString('ru-RU')} · выход {Number(record(selectedRun.usageJson).outputTokens ?? 0).toLocaleString('ru-RU')} · web search {String(record(selectedRun.usageJson).webSearchCalls ?? 0)}</small>}</div>
         <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
         <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
         <div className="admin-pipeline-review">{items.isLoading ? <Loading /> : runItems.length ? <>
@@ -1135,15 +1148,25 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       <div className="admin-modal admin-modal--pipeline">
         <header><div><span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini</span><h2>Новый запуск</h2></div><button onClick={() => setStarting(false)}><X /></button></header>
         <div className="admin-modal__body">
+          {pipelineKey === 'normalization' ? <>
+            <label className="admin-field admin-field--wide"><span>Категория</span><select value={normalizationMode} onChange={(event) => { const mode = event.target.value as ContentMode; setNormalizationMode(mode); setNormalizationField(mode === 'music' ? 'activityStartYear' : 'year'); setNormalizationSelected(new Set()) }}>{Object.entries(MODE_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+            <label className="admin-field admin-field--wide"><span>Поле</span><select value={normalizationField} onChange={(event) => setNormalizationField(event.target.value)}>{normalizationFieldsQuery.data?.items.map((entry) => <option key={entry.field} value={entry.field}>{entry.label} · {entry.field}</option>)}</select></label>
+            <label className="admin-field admin-field--wide"><span>Инструкция модели</span><textarea value={normalizationPrompt} onChange={(event) => setNormalizationPrompt(event.target.value)} rows={6} /><small>GPT-5 mini получит эту инструкцию вместе с одной карточкой и вернет только изменение выбранного поля, уверенность и источники.</small></label>
+            <label className="admin-field admin-field--wide"><span>Поиск карточек</span><input value={normalizationQuery} onChange={(event) => { setNormalizationQuery(event.target.value); setNormalizationSelected(new Set()) }} placeholder="Название или ID; пусто — вся категория" /></label>
+            <div className="admin-periods"><button className={normalizationScope === 'all' ? 'is-active' : ''} onClick={() => setNormalizationScope('all')}>Все подходящие</button><button className={normalizationScope === 'selected' ? 'is-active' : ''} onClick={() => setNormalizationScope('selected')}>Только выбранные · {normalizationSelected.size}</button></div>
+            {normalizationScope === 'selected' && <div className="admin-import-list">{normalizationCandidates.isLoading ? <Loading /> : normalizationCandidates.data?.items.map((item) => <label key={item.id}><input type="checkbox" checked={normalizationSelected.has(item.id)} onChange={(event) => setNormalizationSelected((current) => { const next = new Set(current); event.target.checked ? next.add(item.id) : next.delete(item.id); return next })} /><strong>{item.titleRu}</strong><small>{item.id}</small></label>)}</div>}
+            <label className="admin-field"><span>Максимум карточек · {maxItems}</span><input type="range" min="1" max="500" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} /><small>Для выбранных карточек применяется тот же верхний лимит. Результат всегда сначала попадает на проверку.</small></label>
+          </> : <>
           <label className="admin-field admin-field--wide"><span>Сценарий</span><select value={scenario} onChange={(event) => setScenario(event.target.value)}><option value="manual">Создать карточки по моему списку</option><option value="discover">{pipelineKey === 'music' ? 'Найти и подготовить новых исполнителей' : pipelineKey === 'movie' ? 'Взять новые фильмы из топа Кинопоиска' : 'Взять новые аниме из топа Shikimori'}</option><option value="candidates">Обработать найденных кандидатов</option><option value="review">Перепроверить очередь ручной проверки</option></select></label>
           {scenario === 'manual' && <>
             <label className="admin-field admin-field--wide admin-artist-import"><span>{manualFieldLabel} <small>до 500 строк</small></span><textarea value={manualText} onChange={(event) => setManualText(event.target.value)} placeholder={manualPlaceholder} /><small>{manualHelp}</small><label className="admin-file-button"><Upload />Загрузить TXT или CSV<input type="file" accept=".txt,.csv,text/plain,text/csv" onChange={(event) => { const file = event.target.files?.[0]; if (file) void file.text().then(setManualText) }} /></label></label>
             <div className="admin-import-preview"><header><strong>Предварительная проверка</strong><span>{preview.isFetching ? 'Проверяем нашу базу…' : `${manualItems.length} строк`}</span></header>{preview.error && !preview.isFetching && <ErrorState error={preview.error} />}{preview.data && <><div className="admin-import-summary"><span><b>{readyItems}</b> новых</span><span><b>{String(previewSummary.existing ?? 0)}</b> уже есть</span><span><b>{String(previewSummary.duplicates ?? 0)}</b> дублей</span></div><div className="admin-import-list">{preview.data.items.slice(0, 100).map((raw) => { const item = record(raw); const identity = pipelineKey === 'music' ? title(item.artist) : pipelineKey === 'movie' ? title(item.query || (item.kinopoiskId ? `Кинопоиск #${String(item.kinopoiskId)}` : 'Фильм не распознан')) : `Shikimori #${String(item.shikimoriId)}`; const details = pipelineKey === 'movie' ? item.existingTitle || (item.kinopoiskId ? `Кинопоиск #${String(item.kinopoiskId)}` : `ID будет найден после запуска${item.requestedYear ? ` · ${String(item.requestedYear)}` : ''}`) : item.country || item.existingTitle || item.hint || '—'; return <div key={`${item.index}-${item.artist ?? item.query ?? item.kinopoiskId ?? item.shikimoriId}`}><strong>{identity}</strong><small>{title(details)}</small>{item.existingItemId && <button className="admin-link" onClick={() => { setStarting(false); navigate('content', String(item.existingItemId)) }}>Открыть карточку <ChevronRight /></button>}<Status value={item.status}>{item.status === 'ready' ? 'Новый' : item.status === 'existing_card' ? 'Уже есть' : item.status === 'duplicate_input' ? 'Дубль' : 'Ошибка'}</Status></div> })}</div></>}</div>
           </>}
           <label className="admin-field"><span>{scenario === 'manual' ? 'Размер партии' : 'Количество'} · {maxItems}</span><input type="range" min="1" max="20" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} /><small>{scenario === 'manual' ? 'После каждой партии прогресс и расход сохраняются в БД.' : 'Максимум элементов в текущем запуске.'}</small></label>
+          </>}
           <div className="admin-estimate"><CircleDollarSign /><div><span>Ориентировочная оценка</span><strong>${String(estimate.data?.estimatedCost ?? '—')}</strong><small>{String(estimate.data?.aiReviewCalls ?? '—')} AI-вызовов · фактическая сумма считается по usage и web search calls</small></div></div>
         </div>
-        <footer><button className="admin-btn admin-btn--secondary" onClick={() => setStarting(false)}>Отмена</button><button className="admin-btn admin-btn--primary" disabled={start.isPending || (scenario === 'manual' && (!readyItems || preview.isFetching))} onClick={() => start.mutate()}><Play />{scenario === 'manual' ? `Запустить ${readyItems} ${pipelineKey === 'music' ? 'артистов' : pipelineKey === 'movie' ? 'фильмов' : 'аниме'}` : `Запустить ${maxItems} элементов`}</button></footer>
+        <footer><button className="admin-btn admin-btn--secondary" onClick={() => setStarting(false)}>Отмена</button><button className="admin-btn admin-btn--primary" disabled={start.isPending || (pipelineKey === 'normalization' ? normalizationPrompt.trim().length < 10 || (normalizationScope === 'selected' && !normalizationSelected.size) : scenario === 'manual' && (!readyItems || preview.isFetching))} onClick={() => start.mutate()}><Play />{pipelineKey === 'normalization' ? `Нормализовать до ${maxItems} карточек` : scenario === 'manual' ? `Запустить ${readyItems} ${pipelineKey === 'music' ? 'артистов' : pipelineKey === 'movie' ? 'фильмов' : 'аниме'}` : `Запустить ${maxItems} элементов`}</button></footer>
       </div>
     </div>}
   </>

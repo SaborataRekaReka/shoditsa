@@ -37,7 +37,7 @@ const runtimeItemToSeed = (item) => ({
   alternative_names: [item?.titleRu, ...(item?.alternativeTitles ?? [])].filter(Boolean),
   type: item?.musicType ?? null,
   country: item?.countries?.[0] ?? null,
-  debutYear: item?.year ?? null,
+  debutYear: item?.activityStartYear ?? null,
   topAlbum: item?.topAlbums?.[0]?.title ?? null,
   genres: Array.isArray(item?.genres) ? item.genres : [],
   similarArtists: Array.isArray(item?.similarArtists) ? item.similarArtists : [],

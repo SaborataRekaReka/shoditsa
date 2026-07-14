@@ -208,6 +208,7 @@ export const pipelineRuns = pgTable('pipeline_runs', {
   itemsFailed: integer('items_failed').notNull().default(0),
   estimatedCost: numeric('estimated_cost', { precision: 12, scale: 6 }),
   actualCost: numeric('actual_cost', { precision: 12, scale: 6 }),
+  usageJson: jsonb('usage_json').notNull().default({}),
   createdBy: uuid('created_by').notNull().references(() => user.id),
   createdAt: now(),
   startedAt: timestamp('started_at', { withTimezone: true }),
@@ -304,7 +305,7 @@ export const backgroundJobs = pgTable('background_jobs', {
   workerId: text('worker_id'),
   pipelineRunId: uuid('pipeline_run_id').references(() => pipelineRuns.id, { onDelete: 'set null' }),
 }, (table) => [
-  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','event_export','user_export','media_check','client_event_retention')`),
+  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention')`),
   check('background_job_status_check', sql`${table.status} in ('queued','running','completed','failed','cancelled')`),
   index('background_job_claim_idx').on(table.status, table.nextRetryAt, table.createdAt),
   index('background_job_pipeline_idx').on(table.pipelineRunId),

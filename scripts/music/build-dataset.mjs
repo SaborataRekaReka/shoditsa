@@ -429,7 +429,7 @@ const mapNormalizedArtistToTitleItem = (entry, index) => {
     titleRu,
     titleOriginal,
     alternativeTitles,
-    year: beginYear ?? undefined,
+    activityStartYear: beginYear ?? null,
     endYear,
     countries: uniqueStrings([country, area, city].filter(Boolean)),
     genres,

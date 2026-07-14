@@ -11,12 +11,13 @@ import {
 } from '@shoditsa/database'
 import { buildWorkspaceRevision, validateContentPayload } from './modules/admin/content-service.js'
 import { loadAdminTimeline } from './modules/admin/timeline-service.js'
-import type { AdminEventsQuery } from '@shoditsa/contracts'
+import type { AdminEventsQuery, ContentMode } from '@shoditsa/contracts'
 import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.js'
 import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
+import { assertNormalizationField, normalizeProposedValue, requestNormalization } from './modules/admin/normalization-pipeline.js'
 import { ApiError } from './lib/errors.js'
 
 type Json = Record<string, unknown>
@@ -170,7 +171,7 @@ const mapMusicRecord = (raw: Json) => {
   const hint = text(record(source.agentHint).text)
   return {
     id: `music:${artistKey}`, mode: 'music', titleRu, titleOriginal, alternativeTitles: aliases,
-    year: Number(primary(source.beginYear)) || undefined, endYear: Number(primary(source.endYear)) || undefined,
+    year: undefined, activityStartYear: Number(primary(source.beginYear)) || null, endYear: Number(primary(source.endYear)) || undefined,
     countries: [...fieldStrings(primary(source.country)), ...fieldStrings(primary(source.area))], genres,
     popularityScore: Number(primary(record(source.popularityMetrics).listeners)) || 0,
     posterUrl: imageCandidates[0] ?? null, headerUrl: imageCandidates[1] ?? null, backdropUrl: imageCandidates[2] ?? null,
@@ -621,6 +622,74 @@ const handleUserExport = async (job: typeof backgroundJobs.$inferSelect) => {
   return { exportedAt: new Date().toISOString(), user: identity[0] ?? null, profile: profile[0] ?? null, wallet: wallet[0] ?? null, authSessions: activeSessions }
 }
 
+const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
+  if (!job.pipelineRunId) throw new Error('normalization_pipeline job has no pipelineRunId')
+  const run = (await db.select().from(pipelineRuns).where(eq(pipelineRuns.id, job.pipelineRunId)).limit(1))[0]
+  if (!run) throw new Error('Pipeline run not found')
+  if (run.cancelRequestedAt) {
+    await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+    return { cancelled: true }
+  }
+  const input = record(run.inputDefinitionJson); const settings = record(run.settingsJson)
+  const mode = text(input.mode) as ContentMode; const field = text(input.field); const prompt = text(input.prompt)
+  if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].includes(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
+  assertNormalizationField(mode, field)
+  const itemIds = strings(input.itemIds)
+  if (!itemIds.length) throw new ApiError(422, 'NORMALIZATION_ITEMS_EMPTY', 'В запуске нет карточек')
+  const environment = await loadIntegrationEnvironment(db, config)
+  if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'OpenAI API key не настроен')
+  await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }).where(eq(pipelineRuns.id, run.id))
+  const activeCards = await db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, payload: contentItemVersions.payload })
+    .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+    .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, mode), inArray(contentItemVersions.itemId, itemIds)))
+  const cardById = new Map(activeCards.map((card) => [card.itemId, card]))
+  for (let index = 0; index < itemIds.length; index += 1) {
+    const cancellation = await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, run.id)).limit(1)
+    if (cancellation[0]?.cancelRequestedAt) {
+      await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+      return { cancelled: true, processed: index }
+    }
+    const itemId = itemIds[index]; const card = cardById.get(itemId)
+    if (!card) { await saveProcessingFailure(run.id, itemId, new Error('Активная версия карточки не найдена')); continue }
+    const before = record(card.payload)
+    try {
+      const result = await requestNormalization({
+        apiKey: environment.OPENAI_API_KEY, proxyUrl: environment.OPENAI_OUTBOUND_PROXY_URL || environment.MUSIC_OUTBOUND_PROXY_URL,
+        model: 'gpt-5-mini', webSearch: settings.webSearch !== false, mode, field, prompt, payload: before,
+      })
+      const proposed = { ...before }
+      const warnings: string[] = []
+      if (result.decision === 'update') proposed[field] = normalizeProposedValue(field, result.value, before[field])
+      if (result.decision === 'clear') proposed[field] = null
+      if (result.decision === 'review') warnings.push('Модель отметила неоднозначность — требуется ручная проверка')
+      if (result.decision === 'keep') warnings.push('Текущее значение подтверждено, изменений нет')
+      if (result.confidence < 0.75) warnings.push(`Низкая уверенность: ${Math.round(result.confidence * 100)}%`)
+      if (settings.webSearch !== false && !result.sourceUrls.length) warnings.push('Модель не вернула ссылки на источники')
+      if (field === 'activityStartYear' && Object.hasOwn(before, 'year')) proposed.year = null
+      const usage = result.usage ? { responses: [result.usage], inputTokens: result.usage.inputTokens, cachedInputTokens: result.usage.cachedInputTokens, outputTokens: result.usage.outputTokens, webSearchCalls: result.usage.webSearchCalls, costUsd: result.usage.costUsd } : { responses: [] }
+      await db.insert(pipelineRunItems).values({
+        runId: run.id, entityKey: itemId, cardId: itemId, inputItemVersionId: card.versionId, status: 'review_required', beforeJson: before, proposedJson: proposed,
+        warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage },
+        rawResultRef: result.responseId || null, idempotencyKey: `${run.id}:${itemId}`,
+      }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { status: 'review_required', beforeJson: before, proposedJson: proposed, warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage }, rawResultRef: result.responseId || null, errorCode: null, safeErrorMessage: null, updatedAt: new Date() } })
+    } catch (error) { await saveProcessingFailure(run.id, itemId, error) }
+    await Promise.all([
+      db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { current: index + 1, total: itemIds.length, percent: Math.round((index + 1) / itemIds.length * 100), message: `${itemId}: ${index + 1}/${itemIds.length}` } }).where(eq(backgroundJobs.id, job.id)),
+      db.update(pipelineRuns).set({ heartbeatAt: new Date(), itemsProcessed: index + 1, logExcerpt: `${itemId}: ${index + 1}/${itemIds.length}` }).where(eq(pipelineRuns.id, run.id)),
+    ])
+  }
+  const metrics = await loadRunMetrics(run.id)
+  const usageRows = await db.select({ confidence: pipelineRunItems.confidenceJson }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, run.id))
+  const responses = usageRows.flatMap((row) => Array.isArray(record(record(row.confidence).usage).responses) ? record(record(row.confidence).usage).responses as unknown[] : []).map(record)
+  const usageJson = {
+    inputTokens: responses.reduce((sum, entry) => sum + Number(entry.inputTokens ?? 0), 0), cachedInputTokens: responses.reduce((sum, entry) => sum + Number(entry.cachedInputTokens ?? 0), 0),
+    outputTokens: responses.reduce((sum, entry) => sum + Number(entry.outputTokens ?? 0), 0), webSearchCalls: responses.reduce((sum, entry) => sum + Number(entry.webSearchCalls ?? 0), 0),
+    responses: responses.length, pricingVersion: 'openai-2026-07-13',
+  }
+  await db.update(pipelineRuns).set({ ...metrics, usageJson, status: metrics.itemsFailed ? 'partially_failed' : 'review_required', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+  return { ...metrics, usage: usageJson }
+}
+
 const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   if (job.type === 'content_revision_build') {
     const payload = record(job.payload); const workspaceId = text(payload.workspaceId)
@@ -631,6 +700,7 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   if (job.type === 'music_pipeline') return handleMusic(job)
   if (job.type === 'movie_pipeline') return handleMovie(job)
   if (job.type === 'anime_pipeline') return handleAnime(job)
+  if (job.type === 'normalization_pipeline') return handleNormalization(job)
   if (job.type === 'user_export') return handleUserExport(job)
   if (job.type === 'event_export') {
     const events = await loadAdminTimeline(db, { ...record(job.payload), limit: 10_000 } as AdminEventsQuery)

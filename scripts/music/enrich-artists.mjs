@@ -1506,26 +1506,23 @@ const extractStageForArtist = (entry) => {
   pushEvidence(cityEvidence, 'wikidata', pickWikidataCity(wd))
   pushEvidence(cityEvidence, 'theaudiodb', adbArtist?.strLocation)
 
+  const typeLabels = buildWikidataTypeLabels(wd)
+  const isPersonArtist = String(mbArtist?.type ?? '').toLowerCase() === 'person'
+    || typeLabels.some((value) => /^(?:person|human|человек|певец|певица|музыкант|рэпер)$/i.test(String(value)))
   const beginYearEvidence = []
-  pushEvidence(beginYearEvidence, 'musicbrainz', yearFromDateLike(mbArtist?.['life-span']?.begin))
-  pushEvidence(beginYearEvidence, 'wikidata',
-    yearFromDateLike(
-      getWikidataClaimList(wdEntity, 'P571').map((claim) => getWikidataClaimTimeYear(claim)).find(Boolean)
-      || getWikidataClaimList(wdEntity, 'P569').map((claim) => getWikidataClaimTimeYear(claim)).find(Boolean)
-    )
-  )
-  pushEvidence(beginYearEvidence, 'theaudiodb', toInt(adbArtist?.intFormedYear))
+  // MusicBrainz life-span for a person is a birth date, not the start of a career.
+  if (!isPersonArtist) pushEvidence(beginYearEvidence, 'musicbrainz', yearFromDateLike(mbArtist?.['life-span']?.begin))
+  pushEvidence(beginYearEvidence, 'wikidata', yearFromDateLike(
+    getWikidataClaimList(wdEntity, isPersonArtist ? 'P2031' : 'P571').map((claim) => getWikidataClaimTimeYear(claim)).find(Boolean)
+  ))
+  if (!isPersonArtist) pushEvidence(beginYearEvidence, 'theaudiodb', toInt(adbArtist?.intFormedYear))
   pushEvidence(beginYearEvidence, 'input', toInt(input?.debutYear))
 
   const endYearEvidence = []
-  pushEvidence(endYearEvidence, 'musicbrainz', yearFromDateLike(mbArtist?.['life-span']?.end))
-  pushEvidence(endYearEvidence, 'wikidata',
-    yearFromDateLike(
-      getWikidataClaimList(wdEntity, 'P576').map((claim) => getWikidataClaimTimeYear(claim)).find(Boolean)
-      || getWikidataClaimList(wdEntity, 'P570').map((claim) => getWikidataClaimTimeYear(claim)).find(Boolean)
-    )
-  )
-  pushEvidence(endYearEvidence, 'theaudiodb', toInt(adbArtist?.intDiedYear))
+  if (!isPersonArtist) pushEvidence(endYearEvidence, 'musicbrainz', yearFromDateLike(mbArtist?.['life-span']?.end))
+  pushEvidence(endYearEvidence, 'wikidata', yearFromDateLike(
+    getWikidataClaimList(wdEntity, isPersonArtist ? 'P2032' : 'P576').map((claim) => getWikidataClaimTimeYear(claim)).find(Boolean)
+  ))
 
   const isActiveEvidence = []
   if (typeof mbArtist?.['life-span']?.ended === 'boolean') {
