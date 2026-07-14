@@ -3177,6 +3177,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const debouncedQuery = useDebouncedValue(query.trim(), 120)
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
+  const [gameMatchStripOpen, setGameMatchStripOpen] = useState(false)
   const [hintModalRound, setHintModalRound] = useState<5 | 8 | null>(null)
   const [dismissedHintRounds, setDismissedHintRounds] = useState<Array<5 | 8>>([])
   const [lastAward, setLastAward] = useState<AttemptResponse['reward'] | null>(null)
@@ -3229,6 +3230,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setHintModalRound(null)
     setDismissedHintRounds([])
   }, [sessionId])
+
+  useEffect(() => {
+    if (!session) return
+    setGameMatchStripOpen(session.mode === 'diagnosis')
+  }, [session?.id, session?.mode])
 
   const hintOptions = session?.hintOptions ?? []
   const usedHintRounds = useMemo(() => new Set((session?.hintChoices ?? []).map((choice) => choice.checkpoint)), [session?.hintChoices])
@@ -3300,6 +3306,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const promoDisclaimer = isPromoSession ? session.promoPrompt?.disclaimer?.trim() || '' : ''
 
   const attempts = session.attempts.map(serverAttemptToLegacy)
+  const matchedTags = useMemo(() => collectMatchedTags(attempts), [attempts])
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
@@ -3365,7 +3372,37 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHintRound)}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => onPlayNext(nextMode)} onConfigure={onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
-      {session.status === 'playing' && <section className="search-area search-area--sticky"><div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div><div className="search-picker"><div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>{query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}</div>{message && <div className="search-meta"><strong>{message}</strong></div>}</section>}
+      {session.status === 'playing' && <section className="search-area search-area--sticky">
+        <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div>
+        <div className="search-picker">
+          <div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>
+          {query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}
+        </div>
+        {(session.mode === 'diagnosis' || !!attempts.length) && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
+          <button
+            type="button"
+            className="game-match-strip__toggle"
+            onClick={() => {
+              trackMetrikaGoal('toggle_match_strip', { mode: session.mode, period: session.period })
+              setGameMatchStripOpen((current) => !current)
+            }}
+            aria-expanded={gameMatchStripOpen}
+            aria-controls="game-match-strip-panel"
+          >
+            <span className="game-match-strip__logo" aria-hidden="true"><img src="./images/symbol.svg" alt="" /></span>
+            <span className="game-match-strip__title">Что сходится</span>
+            <ChevronRight aria-hidden="true" />
+          </button>
+          <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!gameMatchStripOpen}>
+            <HorizontalScrollLane className="game-match-strip__tags">
+              {matchedTags.length
+                ? matchedTags.map((tag) => <span key={tag} className="dx-chip match game-match-strip__tag">{tag}</span>)
+                : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
+            </HorizontalScrollLane>
+          </div>
+        </div>}
+        {message && <div className="search-meta"><strong>{message}</strong></div>}
+      </section>}
       {!attempts.length && session.status === 'playing' && <section className="empty-card"><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>Начните с первой попытки</h2><p>После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.</p></div></section>}
       {!!session.attempts.length && <section className="attempt-list"><div className="section-title"><span>Ваши попытки</span><strong>{session.attempts.length}/10</strong></div>{[...session.attempts].reverse().map((entry) => {
         const item = publicItemToTitle(entry.item)

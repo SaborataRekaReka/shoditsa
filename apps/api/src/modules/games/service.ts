@@ -55,6 +55,8 @@ type PromoPackDocument = {
     id: string
     title: string
     subtitle?: string
+    itemCount?: number
+    recommendedOrder?: string[]
     uiCopy?: { disclaimer?: string }
   }
   items: PromoPackItem[]
@@ -64,6 +66,11 @@ type ResolvedPromoEntry = {
   promoId: string
   answer: TitleItem
   progressiveHints: PromoHint[]
+}
+
+type AnswerPoolResult = {
+  items: TitleItem[]
+  byItemId: Map<string, string>
 }
 
 const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
@@ -159,12 +166,73 @@ const resolvePromoEntries = (pack: PromoPackDocument, pool: TitleItem[]) => pack
   return result
 }, [])
 
+const positiveModulo = (value: number, divisor: number) => ((value % divisor) + divisor) % divisor
+
+const hashText = (value: string) => {
+  let hash = 0
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash * 31) + value.charCodeAt(index)) >>> 0
+  }
+  return hash
+}
+
+const promoExpectedCount = (pack: PromoPackDocument) => {
+  const configured = numeric(pack.pack.itemCount)
+  if (Number.isInteger(configured) && configured > 0) return configured
+  return pack.items.length
+}
+
+const orderResolvedPromoEntries = (pack: PromoPackDocument, entries: ResolvedPromoEntry[]) => {
+  const byPromoId = new Map(entries.map((entry) => [entry.promoId, entry]))
+  const ordered: ResolvedPromoEntry[] = []
+  for (const rawId of pack.pack.recommendedOrder ?? []) {
+    const promoId = String(rawId)
+    const entry = byPromoId.get(promoId)
+    if (!entry) continue
+    ordered.push(entry)
+    byPromoId.delete(promoId)
+  }
+  const tail = [...byPromoId.values()].sort((left, right) => left.promoId.localeCompare(right.promoId, 'ru-RU'))
+  return [...ordered, ...tail]
+}
+
+const assertPromoCoverage = (pack: PromoPackDocument, entries: ResolvedPromoEntry[]) => {
+  const expected = promoExpectedCount(pack)
+  if (entries.length !== expected) {
+    throw new ApiError(503, 'PROMO_PACK_CATALOG_MISMATCH', `Promo-пак содержит ${expected} элементов, но сопоставлено ${entries.length}`)
+  }
+}
+
+const restrictPoolToPromoEntries = async (pool: AnswerPoolResult, mode: TitleMode, variantKey: string | null): Promise<AnswerPoolResult> => {
+  if (!isPromoSessionVariant(mode, variantKey)) return pool
+  const pack = await loadPromoPack(String(variantKey ?? ''))
+  if (!pack) throw new ApiError(422, 'PROMO_PACK_NOT_FOUND', 'Указанный promo-пак не найден')
+
+  const resolved = orderResolvedPromoEntries(pack, resolvePromoEntries(pack, pool.items))
+  if (!resolved.length) throw new ApiError(503, 'PROMO_PACK_UNRESOLVED', 'Promo-пак не удалось сопоставить с активным каталогом игр')
+  assertPromoCoverage(pack, resolved)
+
+  const items: TitleItem[] = []
+  const byItemId = new Map<string, string>()
+  for (const entry of resolved) {
+    const answerVersionId = pool.byItemId.get(entry.answer.id)
+    if (!answerVersionId) {
+      throw new ApiError(503, 'PROMO_PACK_VERSION_MISSING', `В активной ревизии нет версии для ${entry.answer.id}`)
+    }
+    items.push(entry.answer)
+    byItemId.set(entry.answer.id, answerVersionId)
+  }
+
+  return { items, byItemId }
+}
+
 const selectPromoEntry = (entries: ResolvedPromoEntry[], puzzleDate: string, salt: number, variantKey: string) => {
   if (!entries.length) return null
-  const pseudoPool = entries.map((entry) => ({ ...entry.answer, id: `promo:${entry.promoId}` }))
-  const picked = dailyTitle(pseudoPool, 'game', 'all', puzzleDate, salt, variantKey)
-  if (!picked) return null
-  return entries.find((entry) => `promo:${entry.promoId}` === picked.id) ?? null
+  const dayStamp = Date.parse(`${puzzleDate}T00:00:00Z`)
+  const dayNumber = Number.isFinite(dayStamp) ? Math.floor(dayStamp / 86_400_000) : 0
+  const rotation = positiveModulo(hashText(`promo|${variantKey}|${salt}`), entries.length)
+  const index = positiveModulo(dayNumber + rotation, entries.length)
+  return entries[index] ?? null
 }
 
 const loadPromoPack = async (packId: string) => {
@@ -426,8 +494,9 @@ export const startGame = async (db: Database, userId: string, input: {
         const resolve = async () => {
           const pack = await loadPromoPack(packId)
           if (!pack) throw new ApiError(422, 'PROMO_PACK_NOT_FOUND', 'Указанный promo-пак не найден')
-          const resolved = resolvePromoEntries(pack, pool.items)
+          const resolved = orderResolvedPromoEntries(pack, resolvePromoEntries(pack, pool.items))
           if (!resolved.length) throw new ApiError(503, 'PROMO_PACK_UNRESOLVED', 'Promo-пак не удалось сопоставить с активным каталогом игр')
+          assertPromoCoverage(pack, resolved)
           const selected = selectPromoEntry(resolved, puzzleDate, salt, variant)
           if (!selected) throw new ApiError(503, 'PROMO_PACK_EMPTY', 'В promo-паке нет доступных элементов для запуска')
           return selected.answer
@@ -523,7 +592,11 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   if (session.attemptsCount >= 10) throw new ApiError(409, 'GAME_ATTEMPTS_EXHAUSTED', 'Попытки закончились')
 
-  const pool = await answerPool(tx, session.revisionId, session.mode, session.period, session.difficulty)
+  const variantKey = session.challengeId
+    ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
+    : null
+  const basePool = await answerPool(tx, session.revisionId, session.mode, session.period, session.difficulty)
+  const pool = await restrictPoolToPromoEntries(basePool, session.mode, variantKey)
   const guess = pool.items.find((item) => item.id === itemId)
   if (!guess) throw new ApiError(422, 'GAME_ITEM_OUTSIDE_POOL', 'Вариант недоступен в этой игре')
   const guessedVersionId = pool.byItemId.get(guess.id)!
@@ -531,9 +604,6 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   if (duplicate[0]) throw new ApiError(409, 'GAME_DUPLICATE_GUESS', 'Этот вариант уже был в попытках')
   const answers = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answers[0].payload as TitleItem
-  const variantKey = session.challengeId
-    ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
-    : null
   const isCorrect = guess.id === answer.id
   const position = session.attemptsCount + 1
   const status = isCorrect ? 'won' : position >= 10 ? 'lost' : 'playing'
@@ -588,21 +658,28 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
 })
 
 export const searchCatalog = async (db: Database, input: { mode: TitleMode; q: string; period?: PeriodKey; difficulty?: ApiDifficultyKey; sessionId?: string; limit?: number }, userId?: string) => {
+  let mode = input.mode
   let revisionId: string
   let period = input.period ?? 'all'
   let difficulty = input.difficulty ?? null
+  let variantKey: string | null = null
   const excluded = new Set<string>()
   if (input.sessionId) {
     const sessions = await db.select().from(gameSessions).where(eq(gameSessions.id, input.sessionId)).limit(1)
     const session = sessions[0]
     if (!session || (userId && session.userId !== userId)) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
+    mode = session.mode
     revisionId = session.revisionId; period = session.period; difficulty = session.difficulty
+    variantKey = session.challengeId
+      ? (await db.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
+      : null
     const used = await db.select({ itemId: contentItemVersions.itemId }).from(gameAttempts).innerJoin(contentItemVersions, eq(contentItemVersions.id, gameAttempts.guessedItemVersionId)).where(eq(gameAttempts.sessionId, session.id))
     used.forEach((row) => excluded.add(row.itemId))
   } else {
     revisionId = await activeRevision(db)
   }
-  const pool = await answerPool(db, revisionId, input.mode, period, difficulty ?? null)
+  const basePool = await answerPool(db, revisionId, mode, period, difficulty ?? null)
+  const pool = await restrictPoolToPromoEntries(basePool, mode, variantKey)
   const { searchTitles } = await import('@shoditsa/game-core')
   return searchTitles(pool.items, input.q, excluded).slice(0, input.limit ?? 10).map(publicCard)
 }
