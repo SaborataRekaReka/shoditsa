@@ -28,6 +28,7 @@ import {
 import { createAuth, type Auth } from './modules/auth/auth.js'
 import { getRequestUser, requireAdmin } from './modules/auth/session.js'
 import { ApiError, requireIdempotencyKey, sendError } from './lib/errors.js'
+import { rateLimitError, rateLimitKey, rateLimitMax } from './lib/rate-limit.js'
 import { getMoscowDate } from './lib/time.js'
 import { chooseHint, getOwnedSession, publicCard, searchCatalog, startGame, submitAttempt } from './modules/games/service.js'
 import { dashboard, ledgerPage, normalizePromoCode, promoHash, redeemPromo, startFreePlay, unlockPeriod } from './modules/economy/service.js'
@@ -82,9 +83,10 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   })
   await app.register(rateLimit, {
     global: true,
-    max: config.production ? 120 : 1000,
+    max: (request) => rateLimitMax(config.production, request.url, request.method),
     timeWindow: '1 minute',
-    keyGenerator: (request) => request.ip,
+    keyGenerator: (request) => rateLimitKey(request.ip, request.url, request.method),
+    errorResponseBuilder: (_request, context) => rateLimitError(context),
   })
   await app.register(swagger, { openapi: { info: { title: 'Сходится! API', version: '1.0.0' }, openapi: '3.1.0' } })
   if (!config.production) await app.register(swaggerUi, { routePrefix: '/api/docs' })

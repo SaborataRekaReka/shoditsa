@@ -6,7 +6,7 @@ import { and, eq, inArray } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
 import {
   auditLog, clientEvents, contentItems, contentItemVersions, contentRevisions, contentWorkspaceChanges, contentWorkspaces,
-  createDatabase, integrationSecrets, playerProfiles, user,
+  createDatabase, integrationSecrets, pipelineRunItems, pipelineRuns, playerProfiles, user,
 } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
 import type { Auth } from '../src/modules/auth/auth.js'
@@ -26,6 +26,8 @@ describe('admin API guard, workspace and telemetry', () => {
   let telemetryEventId: string | null = null
   let uploadedMediaFile: string | null = null
   let initialWorkspaceIds = new Set<string>()
+  const bulkDecisionRunId = crypto.randomUUID()
+  const bulkDecisionItemIds = [crypto.randomUUID(), crypto.randomUUID()]
   const forgedAdminId = crypto.randomUUID()
   const draftItemId = `admin-integration-${crypto.randomUUID()}`
   const exchangeNewItemId = `exchange-integration-${crypto.randomUUID()}`
@@ -78,6 +80,8 @@ describe('admin API guard, workspace and telemetry', () => {
       await database.db.delete(auditLog).where(and(eq(auditLog.actorUserId, adminId), inArray(auditLog.action, ['content.exchange.export', 'content.exchange.import'])))
       await database.db.delete(auditLog).where(eq(auditLog.entityId, 'OPENAI_API_KEY'))
       await database.db.delete(auditLog).where(eq(auditLog.entityId, 'MUSIC_OUTBOUND_PROXY_URL'))
+      await database.db.delete(auditLog).where(inArray(auditLog.entityId, bulkDecisionItemIds))
+      await database.db.delete(pipelineRuns).where(eq(pipelineRuns.id, bulkDecisionRunId))
       await database.db.delete(integrationSecrets).where(eq(integrationSecrets.key, 'OPENAI_API_KEY'))
       await database.db.delete(integrationSecrets).where(eq(integrationSecrets.key, 'MUSIC_OUTBOUND_PROXY_URL'))
       if (createdWorkspaceId) await database.db.delete(contentWorkspaces).where(eq(contentWorkspaces.id, createdWorkspaceId))
@@ -261,6 +265,53 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(preview.statusCode, preview.body).toBe(200)
     expect(preview.json().summary).toMatchObject({ total: 2, ready: 1, duplicates: 1 })
     expect(preview.json().items[1].status).toBe('duplicate_input')
+  })
+
+  it('applies a bulk pipeline decision atomically in one request', async () => {
+    await database.db.insert(pipelineRuns).values({
+      id: bulkDecisionRunId,
+      pipelineKey: 'normalization',
+      pipelineVersion: 'integration-test',
+      status: 'review_required',
+      itemsTotal: bulkDecisionItemIds.length,
+      itemsProcessed: bulkDecisionItemIds.length,
+      itemsSucceeded: bulkDecisionItemIds.length,
+      createdBy: adminId,
+    })
+    await database.db.insert(pipelineRunItems).values(bulkDecisionItemIds.map((id, index) => ({
+      id,
+      runId: bulkDecisionRunId,
+      entityKey: `bulk-decision-${index}`,
+      status: 'review_required',
+      beforeJson: { title: `До ${index}`, unchanged: true },
+      proposedJson: { title: `После ${index}`, unchanged: true },
+      idempotencyKey: crypto.randomUUID(),
+    })))
+
+    const missingId = crypto.randomUUID()
+    const rejectedAtomicAttempt = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/admin/pipeline-runs/${bulkDecisionRunId}/items/decisions`,
+      payload: { itemIds: [bulkDecisionItemIds[0], missingId], approved: true },
+    })
+    expect(rejectedAtomicAttempt.statusCode, rejectedAtomicAttempt.body).toBe(404)
+    expect(rejectedAtomicAttempt.json().error).toMatchObject({ code: 'PIPELINE_ITEMS_NOT_FOUND', details: { missingItemIds: [missingId] } })
+    expect((await database.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.id, bulkDecisionItemIds[0])))[0].status).toBe('review_required')
+
+    const accepted = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/admin/pipeline-runs/${bulkDecisionRunId}/items/decisions`,
+      payload: { itemIds: bulkDecisionItemIds, approved: true, note: 'Интеграционная массовая проверка' },
+    })
+    expect(accepted.statusCode, accepted.body).toBe(200)
+    expect(accepted.json()).toMatchObject({ success: 2, failed: 0, approved: true })
+    const updated = await database.db.select().from(pipelineRunItems).where(inArray(pipelineRunItems.id, bulkDecisionItemIds))
+    expect(updated).toHaveLength(2)
+    expect(updated.every((item) => item.status === 'approved' && item.approvedBy === adminId)).toBe(true)
+    expect(updated.every((item) => (item.fieldDecisionsJson as Record<string, { action: string }>).title?.action === 'accept')).toBe(true)
+    const decisions = await database.db.select().from(auditLog).where(and(eq(auditLog.action, 'pipeline.item.decision'), inArray(auditLog.entityId, bulkDecisionItemIds)))
+    expect(decisions).toHaveLength(2)
+    expect(new Set(decisions.map((entry) => entry.requestId)).size).toBe(1)
   })
 
   it('round-trips selected content fields and separates updates from new categorized cards', async () => {

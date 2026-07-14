@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { extname, join } from 'node:path'
 import sharp from 'sharp'
-import { and, asc, desc, eq, gt, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, gt, gte, ilike, inArray, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm'
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import {
   AdminBlockUserBodySchema, AdminContentItemsQuerySchema, AdminDailyChallengeReplaceBodySchema, AdminEventsQuerySchema, AdminIdParamsSchema, AdminTagCreateBodySchema,
@@ -13,7 +13,7 @@ import {
   IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
   MusicPipelineRunBodySchema, MoviePipelineEstimateBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema,
   NormalizationPipelineEstimateBodySchema, NormalizationPipelineRunBodySchema,
-  PipelineApprovalBodySchema, PipelineItemDecisionBodySchema,
+  PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema, PipelineItemDecisionBodySchema,
   UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody, type AdminTagCreateBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
@@ -23,7 +23,7 @@ import {
   type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
   type MoviePipelineEstimateBody, type MoviePipelineManualPreviewBody, type MoviePipelineRunBody,
   type NormalizationPipelineEstimateBody, type NormalizationPipelineRunBody,
-  type PipelineApprovalBody, type PipelineItemDecisionBody,
+  type PipelineApprovalBody, type PipelineBulkDecisionBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
 import { Type } from '@sinclair/typebox'
 import type { AppConfig } from '@shoditsa/config'
@@ -62,6 +62,18 @@ const runItemParams = Type.Object({ id: UuidSchema, itemId: UuidSchema }, { addi
 const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
 const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
 const rows = <T>(value: unknown) => Array.from(value as Iterable<T>)
+const pipelineFieldDecisions = (item: { beforeJson: unknown; proposedJson: unknown }, approved: boolean) => {
+  const before = asRecord(item.beforeJson)
+  const proposed = asRecord(item.proposedJson)
+  const fields = [...new Set([...Object.keys(before), ...Object.keys(proposed)])]
+    .filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field]))
+  return Object.fromEntries(fields.map((field) => [field, { action: approved ? 'accept' : 'keep' }]))
+}
+const assertPipelineItemReviewable = (item: { id: string; status: string; workspaceChangeId: string | null; appliedRevisionId: string | null }) => {
+  if (item.workspaceChangeId || item.appliedRevisionId || ['staged', 'published'].includes(item.status)) {
+    throw new ApiError(409, 'PIPELINE_ITEM_ALREADY_APPLIED', 'Опубликованный или перенесённый в рабочую область результат нельзя пересмотреть', { itemId: item.id })
+  }
+}
 const posterOf = (payload: unknown) => {
   const record = asRecord(payload)
   return typeof record.posterUrl === 'string' ? record.posterUrl : typeof record.headerUrl === 'string' ? record.headerUrl : null
@@ -914,11 +926,64 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     for (const tag of assigned) byCard.set(tag.itemId, [...(byCard.get(tag.itemId) ?? []), tag])
     return { items: rows.map((item) => ({ ...item, tags: item.cardId ? (byCard.get(item.cardId) ?? []).map(({ itemId: _, ...tag }) => tag) : [] })) }
   })
+  app.patch('/api/v1/admin/pipeline-runs/:id/items/decisions', { schema: { params, body: PipelineBulkDecisionBodySchema } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const { id: runId } = request.params as { id: string }
+    const body = request.body as PipelineBulkDecisionBody
+    const result = await deps.db.transaction(async (tx) => {
+      const selected = await tx.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), inArray(pipelineRunItems.id, body.itemIds)))
+      if (selected.length !== body.itemIds.length) {
+        const found = new Set(selected.map((item) => item.id))
+        throw new ApiError(404, 'PIPELINE_ITEMS_NOT_FOUND', 'Часть результатов не найдена', { missingItemIds: body.itemIds.filter((itemId) => !found.has(itemId)) })
+      }
+      selected.forEach(assertPipelineItemReviewable)
+
+      const now = new Date()
+      const changes: Array<{ before: typeof selected[number]; after: typeof selected[number] }> = []
+      for (const item of selected) {
+        const updated = await tx.update(pipelineRunItems).set({
+          status: body.approved ? 'approved' : 'rejected',
+          fieldDecisionsJson: pipelineFieldDecisions(item, body.approved),
+          approvedBy: actor.id,
+          approvedAt: now,
+          updatedAt: now,
+        }).where(and(
+          eq(pipelineRunItems.id, item.id),
+          eq(pipelineRunItems.runId, runId),
+          notInArray(pipelineRunItems.status, ['staged', 'published']),
+          isNull(pipelineRunItems.workspaceChangeId),
+          isNull(pipelineRunItems.appliedRevisionId),
+        )).returning()
+        if (!updated[0]) throw new ApiError(409, 'PIPELINE_ITEM_UPDATE_CONFLICT', 'Результат изменился во время массового действия', { itemId: item.id })
+        changes.push({ before: item, after: updated[0] })
+      }
+      await tx.insert(auditLog).values(changes.map((change) => ({
+        actorUserId: actor.id,
+        action: 'pipeline.item.decision',
+        entityType: 'pipeline_run_item',
+        entityId: change.after.id,
+        before: change.before,
+        after: change.after,
+        reason: body.note,
+        requestId: request.id,
+      })))
+      return changes
+    })
+    return { success: result.length, failed: 0, approved: body.approved, itemIds: result.map((change) => change.after.id) }
+  })
   app.patch('/api/v1/admin/pipeline-runs/:id/items/:itemId/decision', { schema: { params: runItemParams, body: PipelineItemDecisionBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const { id, itemId } = request.params as { id: string; itemId: string }; const body = request.body as PipelineItemDecisionBody
     const item = await deps.db.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.id, itemId), eq(pipelineRunItems.runId, id))).limit(1)
     if (!item[0]) throw new ApiError(404, 'PIPELINE_ITEM_NOT_FOUND', 'Результат не найден')
-    const updated = await deps.db.update(pipelineRunItems).set({ status: body.approved ? 'approved' : 'rejected', fieldDecisionsJson: body.fieldDecisions, approvedBy: actor.id, approvedAt: new Date(), updatedAt: new Date() }).where(eq(pipelineRunItems.id, itemId)).returning()
+    assertPipelineItemReviewable(item[0])
+    const updated = await deps.db.update(pipelineRunItems).set({ status: body.approved ? 'approved' : 'rejected', fieldDecisionsJson: body.fieldDecisions, approvedBy: actor.id, approvedAt: new Date(), updatedAt: new Date() }).where(and(
+      eq(pipelineRunItems.id, itemId),
+      eq(pipelineRunItems.runId, id),
+      notInArray(pipelineRunItems.status, ['staged', 'published']),
+      isNull(pipelineRunItems.workspaceChangeId),
+      isNull(pipelineRunItems.appliedRevisionId),
+    )).returning()
+    if (!updated[0]) throw new ApiError(409, 'PIPELINE_ITEM_UPDATE_CONFLICT', 'Результат изменился во время сохранения', { itemId })
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.item.decision', entityType: 'pipeline_run_item', entityId: itemId, before: item[0], after: updated[0], reason: body.note, requestId: request.id })
     return updated[0]
   })

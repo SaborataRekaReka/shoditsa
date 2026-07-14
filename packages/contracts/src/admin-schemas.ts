@@ -286,6 +286,12 @@ export const PipelineItemDecisionBodySchema = Type.Object({
   note: Type.Optional(Type.String({ maxLength: 1_000 })),
 }, { additionalProperties: false })
 
+export const PipelineBulkDecisionBodySchema = Type.Object({
+  itemIds: Type.Array(UuidSchema, { minItems: 1, maxItems: 500, uniqueItems: true }),
+  approved: Type.Boolean(),
+  note: Type.Optional(Type.String({ maxLength: 1_000 })),
+}, { additionalProperties: false })
+
 export const PipelineApprovalBodySchema = Type.Object({
   itemIds: Type.Optional(Type.Array(UuidSchema, { minItems: 1, maxItems: 500 })),
   expectedWorkspaceVersion: Type.Optional(Type.Integer({ minimum: 1 })),
@@ -369,6 +375,7 @@ export type NormalizationPipelineRunBody = Static<typeof NormalizationPipelineRu
 export type IntegrationKey = Static<typeof IntegrationKeySchema>
 export type IntegrationSecretUpdateBody = Static<typeof IntegrationSecretUpdateBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>
+export type PipelineBulkDecisionBody = Static<typeof PipelineBulkDecisionBodySchema>
 export type PipelineApprovalBody = Static<typeof PipelineApprovalBodySchema>
 export type AdminUsersQuery = Static<typeof AdminUsersQuerySchema>
 export type AdminBlockUserBody = Static<typeof AdminBlockUserBodySchema>

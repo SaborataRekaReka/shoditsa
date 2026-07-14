@@ -28,7 +28,10 @@ const request = async <T>(path: string, init: RequestInit & { timeoutMs?: number
     const payload = response.status === 204 ? null : await response.json().catch(() => null) as Record<string, unknown> | null
     if (!response.ok) {
       const envelope = payload?.error && typeof payload.error === 'object' ? payload.error as Record<string, unknown> : payload
-      throw new AdminApiError(response.status, String(envelope?.code ?? 'HTTP_ERROR'), String(envelope?.message ?? 'Не удалось выполнить запрос'), (envelope?.details as Record<string, unknown>) ?? {})
+      const details = { ...((envelope?.details as Record<string, unknown>) ?? {}) }
+      const retryAfter = Number(response.headers.get('retry-after'))
+      if (response.status === 429 && details.retryAfterMs === undefined && Number.isFinite(retryAfter)) details.retryAfterMs = retryAfter * 1_000
+      throw new AdminApiError(response.status, String(envelope?.code ?? 'HTTP_ERROR'), String(envelope?.message ?? 'Не удалось выполнить запрос'), details)
     }
     return payload as T
   } catch (error) {
@@ -109,6 +112,7 @@ export const adminApi = {
   pipelineRunEvents: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/events`),
   pipelineItems: (id: string) => request<{ items: Array<Record<string, unknown>> }>(`/admin/pipeline-runs/${id}/items`),
   pipelineDecision: (runId: string, itemId: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/items/${itemId}/decision`, { method: 'PATCH', body: json(body) }),
+  pipelineBulkDecision: (runId: string, body: { itemIds: string[]; approved: boolean; note?: string }) => request<{ success: number; failed: number; approved: boolean; itemIds: string[] }>(`/admin/pipeline-runs/${runId}/items/decisions`, { method: 'PATCH', body: json(body) }),
   regeneratePipelineItem: (runId: string, itemId: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/items/${itemId}/regenerate`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
   approvePipeline: (runId: string, body: Record<string, unknown>, publish = false) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/${publish ? 'approve-and-publish' : 'approve-to-workspace'}`, { method: 'POST', body: json(body), timeoutMs: 120_000 }),
   cancelPipeline: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/cancel`, { method: 'POST', body: '{}' }),

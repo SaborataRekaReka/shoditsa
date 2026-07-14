@@ -6,7 +6,7 @@ export class ApiError extends Error {
   }
 }
 
-const fromUnknownError = (error: unknown) => {
+export const fromUnknownError = (error: unknown) => {
   if (error instanceof ApiError) return error
   if (!error || typeof error !== 'object') return new ApiError(500, 'INTERNAL_ERROR', 'Внутренняя ошибка сервера')
 
@@ -16,10 +16,14 @@ const fromUnknownError = (error: unknown) => {
     : 500
   const code = typeof (error as { code?: unknown }).code === 'string'
     ? (error as { code: string }).code
+    : statusCode === 429
+      ? 'RATE_LIMITED'
     : statusCode >= 500
       ? 'INTERNAL_ERROR'
       : 'BAD_REQUEST'
-  const message = statusCode >= 500
+  const message = statusCode === 429
+    ? 'Слишком много запросов. Повторите попытку позже'
+    : statusCode >= 500
     ? 'Внутренняя ошибка сервера'
     : typeof (error as { message?: unknown }).message === 'string' && (error as { message: string }).message.trim()
       ? (error as { message: string }).message

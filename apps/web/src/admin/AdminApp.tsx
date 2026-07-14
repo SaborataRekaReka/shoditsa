@@ -2084,24 +2084,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     onError: (error) => notify('error', errorText(error)),
   })
   const decideBulk = useMutation({
-    mutationFn: async ({ itemIds, approved }: { itemIds: string[]; approved: boolean }) => {
-      let success = 0
-      let failed = 0
-      for (const itemId of itemIds) {
-        const item = runItems.find((entry) => entry.id === itemId)
-        if (!item) {
-          failed += 1
-          continue
-        }
-        try {
-          await adminApi.pipelineDecision(selectedId!, itemId, { approved, fieldDecisions: itemFieldDecisions(record(item), approved) })
-          success += 1
-        } catch {
-          failed += 1
-        }
-      }
-      return { success, failed, approved }
-    },
+    mutationFn: ({ itemIds, approved }: { itemIds: string[]; approved: boolean }) => adminApi.pipelineBulkDecision(selectedId!, { itemIds, approved }),
     onSuccess: (result) => {
       notify(result.failed ? 'info' : 'success', `${result.approved ? 'Принято' : 'Отклонено'}: ${result.success}, ошибок: ${result.failed}`)
       setSelectedPipelineItems(new Set())
