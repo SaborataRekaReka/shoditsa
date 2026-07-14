@@ -2610,7 +2610,7 @@ function Game({
     }
 
     setHintModalRound(null)
-    setGameMatchStripOpen(mode === 'diagnosis')
+    setGameMatchStripOpen(true)
     setAnamnesisOpen(false)
     setLastAward(null)
     setIsSearchDropdownOpen(false)
@@ -3233,7 +3233,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   useEffect(() => {
     if (!session) return
-    setGameMatchStripOpen(session.mode === 'diagnosis')
+    setGameMatchStripOpen(true)
   }, [session?.id, session?.mode])
 
   const hintOptions = session?.hintOptions ?? []
