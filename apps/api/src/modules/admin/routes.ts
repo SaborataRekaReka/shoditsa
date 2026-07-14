@@ -794,6 +794,105 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const job = await deps.db.insert(backgroundJobs).values({ type: jobType, idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId, payload: { runId, retryFailed: true } }).onConflictDoNothing().returning()
     return reply.code(202).send({ job: job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
   })
+  app.post('/api/v1/admin/pipeline-runs/:id/continue', { schema: { params } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const runId = (request.params as { id: string }).id
+    const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+    if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+
+    const pipelineKey = String(run[0].pipelineKey)
+    const jobType = pipelineKey === 'music' ? 'music_pipeline' : pipelineKey === 'movie' ? 'movie_pipeline' : pipelineKey === 'anime' ? 'anime_pipeline' : null
+    if (!jobType) throw new ApiError(409, 'PIPELINE_CONTINUE_UNSUPPORTED', 'Продолжение доступно только для music/movie/anime пайплайнов')
+
+    const input = asRecord(run[0].inputDefinitionJson)
+    const scenario = String(input.scenario || 'discover')
+    if (scenario !== 'manual') throw new ApiError(409, 'PIPELINE_CONTINUE_MANUAL_ONLY', 'Продолжение доступно только для ручного сценария')
+
+    const nonResumableStatuses = new Set(['review_required', 'approved', 'staged', 'published', 'partially_published'])
+    if (nonResumableStatuses.has(run[0].status)) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Запуск уже завершён; продолжать нечего')
+
+    const staleAfterMs = Math.max(30_000, deps.config.workerStaleAfterMs)
+    const heartbeatTs = run[0].heartbeatAt?.getTime() ?? run[0].startedAt?.getTime() ?? run[0].createdAt.getTime()
+    const runIsStale = Date.now() - heartbeatTs > staleAfterMs
+    if (['queued', 'running'].includes(run[0].status) && !runIsStale) {
+      throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Запуск уже выполняется. Продолжение доступно только для stale процесса')
+    }
+
+    const activeJobs = await deps.db.select().from(backgroundJobs).where(and(eq(backgroundJobs.pipelineRunId, runId), sql`${backgroundJobs.status} in ('queued','running')`)).orderBy(desc(backgroundJobs.createdAt))
+    const freshActiveJob = activeJobs.find((job) => {
+      const jobTs = job.heartbeatAt?.getTime() ?? job.startedAt?.getTime() ?? job.createdAt.getTime()
+      return Date.now() - jobTs <= staleAfterMs
+    })
+    if (freshActiveJob) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Фоновая задача уже активна; дождитесь завершения или stale heartbeat')
+
+    const processedItems = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, runId))
+    const processed = Math.max(Number(run[0].itemsProcessed ?? 0), Number(processedItems[0]?.count ?? 0))
+    const manualTotal = pipelineKey === 'music'
+      ? (Array.isArray(input.artists) ? input.artists.map(asRecord).filter((entry) => typeof entry.artist === 'string' && entry.artist.trim().length > 0).length : 0)
+      : pipelineKey === 'movie'
+        ? (Array.isArray(input.movies) ? input.movies.length : 0)
+        : (Array.isArray(input.anime) ? input.anime.length : 0)
+    const total = Math.max(Number(run[0].itemsTotal ?? 0), manualTotal)
+    const offset = Math.max(0, Math.min(total, Math.trunc(processed)))
+    if (total <= 0 || offset >= total) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Все элементы уже обработаны. Продолжать нечего')
+
+    const resumeKey = `${runId}:manual:${offset}`
+    let job = (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, resumeKey)).limit(1))[0]
+    if (job) {
+      job = (await deps.db.update(backgroundJobs).set({
+        status: 'queued',
+        startedAt: null,
+        finishedAt: null,
+        nextRetryAt: null,
+        heartbeatAt: new Date(),
+        workerId: null,
+        errorCode: null,
+        safeErrorMessage: null,
+      }).where(eq(backgroundJobs.id, job.id)).returning())[0]
+    } else {
+      const inserted = await deps.db.insert(backgroundJobs).values({
+        type: jobType,
+        idempotencyKey: resumeKey,
+        createdBy: actor.id,
+        pipelineRunId: runId,
+        payload: { runId, offset },
+      }).onConflictDoNothing().returning()
+      job = inserted[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, resumeKey)).limit(1))[0]
+    }
+
+    const staleJobIds = activeJobs.map((entry) => entry.id).filter((id) => id !== job.id)
+    if (staleJobIds.length) {
+      await deps.db.update(backgroundJobs).set({
+        status: 'cancelled',
+        finishedAt: new Date(),
+        nextRetryAt: null,
+        heartbeatAt: new Date(),
+        errorCode: 'PIPELINE_RUN_CONTINUED',
+        safeErrorMessage: 'Задача отменена после ручного продолжения процесса',
+      }).where(inArray(backgroundJobs.id, staleJobIds))
+    }
+
+    await deps.db.update(pipelineRuns).set({
+      status: 'queued',
+      finishedAt: null,
+      cancelRequestedAt: null,
+      heartbeatAt: new Date(),
+      workerId: null,
+      errorCode: null,
+      safeErrorMessage: null,
+    }).where(eq(pipelineRuns.id, runId))
+
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'pipeline.continue',
+      entityType: 'pipeline_run',
+      entityId: runId,
+      before: run[0],
+      after: { jobId: job.id, offset, staleJobsCancelled: staleJobIds.length },
+      requestId: request.id,
+    })
+    return reply.code(202).send({ runId, jobId: job.id, offset })
+  })
   app.post('/api/v1/admin/pipeline-runs/:id/cancel', { schema: { params } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const id = (request.params as { id: string }).id
     const run = await deps.db.update(pipelineRuns).set({ cancelRequestedAt: new Date() }).where(and(eq(pipelineRuns.id, id), sql`${pipelineRuns.status} in ('queued','running')`)).returning()

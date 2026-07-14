@@ -1,10 +1,32 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { loadConfig } from '@shoditsa/config'
 import { buildApp } from '../src/app.js'
-import { createDatabase, periodEntitlements, promoCodes, user, walletAccounts, walletLedger } from '@shoditsa/database'
+import { contentItemVersions, createDatabase, gameSessions, periodEntitlements, promoCodes, user, walletAccounts, walletLedger } from '@shoditsa/database'
 import { eq } from 'drizzle-orm'
 import { mergeAnonymousAccount } from '../src/modules/auth/merge.js'
 import { promoHash } from '../src/modules/economy/service.js'
+
+const answerItemIdForSession = async (sessionId: string) => {
+  const database = createDatabase(loadConfig())
+  try {
+    const rows = await database.db
+      .select({ itemId: contentItemVersions.itemId })
+      .from(gameSessions)
+      .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameSessions.answerItemVersionId))
+      .where(eq(gameSessions.id, sessionId))
+      .limit(1)
+    if (!rows[0]?.itemId) throw new Error(`Не найден answer itemId для сессии ${sessionId}`)
+    return rows[0].itemId
+  } finally {
+    await database.client.end()
+  }
+}
+
+const searchGuess = async (app: Awaited<ReturnType<typeof buildApp>>, cookie: string, sessionId: string, mode: 'movie' | 'series', query = 'а') => {
+  const response = await app.inject({ method: 'GET', url: `/api/v1/catalog/search?mode=${mode}&q=${encodeURIComponent(query)}&sessionId=${sessionId}&limit=10`, headers: { cookie } })
+  expect(response.statusCode).toBe(200)
+  return response.json().items as Array<{ id: string }>
+}
 
 describe('server-authoritative game API', () => {
   let app: Awaited<ReturnType<typeof buildApp>>
@@ -55,6 +77,78 @@ describe('server-authoritative game API', () => {
     expect(second.json()).toEqual(first.json())
     const snapshot = await app.inject({ method: 'GET', url: `/api/v1/games/${session.id}`, headers: { cookie } })
     expect(snapshot.json().session.attemptsCount).toBe(1)
+  })
+
+  it('rejects duplicate guesses and keeps attempts count unchanged', async () => {
+    const start = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'movie', period: 'all', difficulty: null, archiveDate: null } })
+    expect(start.statusCode).toBe(200)
+    const sessionId = start.json().session.id as string
+
+    const items = await searchGuess(app, cookie, sessionId, 'movie')
+    expect(items.length).toBeGreaterThan(0)
+    const itemId = items[0].id
+
+    const first = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/attempts`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { itemId } })
+    expect(first.statusCode).toBe(200)
+
+    const duplicate = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/attempts`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { itemId } })
+    expect(duplicate.statusCode).toBe(409)
+    expect(duplicate.json().error.code).toBe('GAME_DUPLICATE_GUESS')
+
+    const snapshot = await app.inject({ method: 'GET', url: `/api/v1/games/${sessionId}`, headers: { cookie } })
+    expect(snapshot.statusCode).toBe(200)
+    expect(snapshot.json().session.attemptsCount).toBe(1)
+  })
+
+  it('rejects any new attempt after game completion', async () => {
+    const start = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'series', period: 'all', difficulty: null, archiveDate: null } })
+    expect(start.statusCode).toBe(200)
+    const sessionId = start.json().session.id as string
+    const answerId = await answerItemIdForSession(sessionId)
+
+    const winning = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/attempts`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { itemId: answerId } })
+    expect(winning.statusCode).toBe(200)
+    expect(winning.json().session.status).toBe('won')
+
+    const afterCompletion = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/attempts`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { itemId: answerId } })
+    expect(afterCompletion.statusCode).toBe(409)
+    expect(afterCompletion.json().error.code).toBe('GAME_ALREADY_COMPLETED')
+  })
+
+  it('enforces hint checkpoint lock and one choice per checkpoint', async () => {
+    const start = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'movie', period: 'all', difficulty: null, archiveDate: null } })
+    expect(start.statusCode).toBe(200)
+    const sessionId = start.json().session.id as string
+    const answerId = await answerItemIdForSession(sessionId)
+
+    const lockedHint = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/hints`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { checkpoint: 5, hintKey: 'info' } })
+    expect(lockedHint.statusCode).toBe(422)
+    expect(lockedHint.json().error.code).toBe('HINT_CHECKPOINT_LOCKED')
+
+    const used = new Set<string>()
+    for (const query of ['а', 'е', 'и', 'о', 'с', 'н', 'р']) {
+      if (used.size >= 5) break
+      const items = await searchGuess(app, cookie, sessionId, 'movie', query)
+      const candidate = items.find((item) => item.id !== answerId && !used.has(item.id))
+      if (!candidate) continue
+      const attempt = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/attempts`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { itemId: candidate.id } })
+      expect(attempt.statusCode).toBe(200)
+      expect(attempt.json().session.status).toBe('playing')
+      used.add(candidate.id)
+    }
+    expect(used.size).toBe(5)
+
+    const snapshot = await app.inject({ method: 'GET', url: `/api/v1/games/${sessionId}`, headers: { cookie } })
+    expect(snapshot.statusCode).toBe(200)
+    const firstOption = snapshot.json().session.hintOptions?.[0]
+    expect(firstOption?.key).toBeTruthy()
+
+    const opened = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/hints`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { checkpoint: 5, hintKey: firstOption.key } })
+    expect(opened.statusCode).toBe(200)
+
+    const duplicate = await app.inject({ method: 'POST', url: `/api/v1/games/${sessionId}/hints`, headers: { cookie, 'idempotency-key': crypto.randomUUID() }, payload: { checkpoint: 5, hintKey: firstOption.key } })
+    expect(duplicate.statusCode).toBe(409)
+    expect(duplicate.json().error.code).toBe('HINT_ALREADY_CHOSEN')
   })
 
   it('charges unlock, free play and promo only once under concurrent retries', async () => {

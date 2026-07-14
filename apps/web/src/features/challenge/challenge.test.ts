@@ -14,6 +14,23 @@ describe('challenge deep links', () => {
   it('rejects malformed or incomplete challenges', () => {
     expect(parseChallengeUrl('https://shoditsa.ru/?play=movie&date=bad&challenge=4&from=x')).toBeNull()
     expect(parseChallengeUrl('https://shoditsa.ru/?play=movie&date=2026-07-12&challenge=99&from=x')).toBeNull()
+    expect(parseChallengeUrl('https://shoditsa.ru/?play=movie&date=2026-07-12&period=all&difficulty=nightmare&challenge=4&from=x')).toBeNull()
+  })
+
+  it('keeps only challenge params and trims sender id to 64 chars', () => {
+    const longFrom = 'x'.repeat(96)
+    const link = buildChallengeUrl('https://shoditsa.ru/path?legacy=1#old', {
+      mode: 'movie',
+      date: '2026-07-12',
+      period: 'all',
+      opponentAttempts: 4,
+      from: longFrom,
+    })
+    const url = new URL(link)
+    expect(url.hash).toBe('')
+    expect(url.searchParams.get('legacy')).toBeNull()
+    const parsed = parseChallengeUrl(link)
+    expect(parsed?.from).toBe(longFrom.slice(0, 64))
   })
 
   it('compares results and keeps one anonymous installation id', () => {

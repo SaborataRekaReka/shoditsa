@@ -643,9 +643,53 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   throw new Error(`Unsupported job type: ${job.type}`)
 }
 
+const recoverStaleJobs = async () => {
+  const staleBefore = new Date(Date.now() - Math.max(config.workerStaleAfterMs, config.workerHeartbeatIntervalMs * 2))
+  const recovered = await db.update(backgroundJobs).set({
+    status: 'queued',
+    startedAt: null,
+    finishedAt: null,
+    nextRetryAt: null,
+    heartbeatAt: new Date(),
+    workerId: null,
+    errorCode: 'WORKER_STALE_RECOVERED',
+    safeErrorMessage: 'Задача автоматически возвращена в очередь после потери heartbeat worker',
+  }).where(and(
+    eq(backgroundJobs.status, 'running'),
+    eq(backgroundJobs.workerId, config.workerId),
+    lt(backgroundJobs.heartbeatAt, staleBefore),
+  )).returning({ id: backgroundJobs.id, pipelineRunId: backgroundJobs.pipelineRunId })
+  if (!recovered.length) return
+  const runIds = [...new Set(recovered.map((entry) => entry.pipelineRunId).filter((entry): entry is string => Boolean(entry)))]
+  if (runIds.length) {
+    await db.update(pipelineRuns).set({
+      status: 'queued',
+      finishedAt: null,
+      cancelRequestedAt: null,
+      heartbeatAt: new Date(),
+      workerId: null,
+      errorCode: 'WORKER_STALE_RECOVERED',
+      safeErrorMessage: 'Запуск автоматически возвращён в очередь после потери heartbeat worker',
+    }).where(and(inArray(pipelineRuns.id, runIds), eq(pipelineRuns.status, 'running')))
+  }
+  console.warn(`[worker] recovered stale jobs: ${recovered.map((entry) => entry.id).join(', ')}`)
+}
+
 const work = async () => {
   while (!stopping) {
-    const job = await claim()
+    try {
+      await recoverStaleJobs()
+    } catch (error) {
+      console.error(`[worker] stale recovery failed: ${safeError(error)}`)
+    }
+    let job: typeof backgroundJobs.$inferSelect | null = null
+    try {
+      job = await claim()
+    } catch (error) {
+      console.error(`[worker] failed to claim job: ${safeError(error)}`)
+      await sleep(config.workerPollIntervalMs)
+      continue
+    }
     if (!job) { await sleep(config.workerPollIntervalMs); continue }
     try {
       const result = await handleJob(job)
@@ -655,16 +699,20 @@ const work = async () => {
       const retryable = isRetryableJobError(error)
       const exhausted = !retryable || job.attempts >= job.maxAttempts
       const errorCode = jobErrorCode(error)
-      await db.update(backgroundJobs).set({
-        status: exhausted ? 'failed' : 'queued', errorCode, safeErrorMessage: message,
-        finishedAt: exhausted ? new Date() : null, nextRetryAt: exhausted ? null : new Date(Date.now() + Math.min(60_000, 2 ** job.attempts * 2_000)), heartbeatAt: new Date(),
-      }).where(eq(backgroundJobs.id, job.id))
-      if (job.pipelineRunId) await db.update(pipelineRuns).set({
-        status: exhausted ? 'failed' : 'queued',
-        errorCode: error instanceof ApiError ? error.code : 'PIPELINE_WORKER_FAILED',
-        safeErrorMessage: message,
-        finishedAt: exhausted ? new Date() : null,
-      }).where(eq(pipelineRuns.id, job.pipelineRunId))
+      try {
+        await db.update(backgroundJobs).set({
+          status: exhausted ? 'failed' : 'queued', errorCode, safeErrorMessage: message,
+          finishedAt: exhausted ? new Date() : null, nextRetryAt: exhausted ? null : new Date(Date.now() + Math.min(60_000, 2 ** job.attempts * 2_000)), heartbeatAt: new Date(),
+        }).where(eq(backgroundJobs.id, job.id))
+        if (job.pipelineRunId) await db.update(pipelineRuns).set({
+          status: exhausted ? 'failed' : 'queued',
+          errorCode: error instanceof ApiError ? error.code : 'PIPELINE_WORKER_FAILED',
+          safeErrorMessage: message,
+          finishedAt: exhausted ? new Date() : null,
+        }).where(eq(pipelineRuns.id, job.pipelineRunId))
+      } catch (persistError) {
+        console.error(`[worker] failed to persist job error state for ${job.id}: ${safeError(persistError)}`)
+      }
     }
   }
 }

@@ -45,6 +45,26 @@ const answerTitleForSession = async (sessionId: string) => {
 
 const ticketBalance = async (page: Page) => Number(await page.locator('.header-economy strong').first().textContent())
 
+const footerNavigation = (page: Page) => page.getByRole('navigation', { name: 'Навигация в подвале' })
+
+const openGuestProfile = async (page: Page) => {
+  await footerNavigation(page).getByRole('button', { name: 'Профиль' }).click()
+  await expect(page.getByRole('heading', { name: 'Гость кинозала' })).toBeVisible()
+}
+
+const openProfileSettings = async (page: Page) => {
+  await page.getByRole('tab', { name: 'Настройки', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Вход и пароль' })).toBeVisible()
+}
+
+const ensureHintModalOpen = async (page: Page) => {
+  const title = page.getByRole('heading', { name: 'Выберите подсказку' })
+  if (!(await title.isVisible())) {
+    await page.locator('.hint-trigger').first().click()
+  }
+  await expect(title).toBeVisible()
+}
+
 const verificationUrlFor = async (email: string) => {
   await expect.poll(async () => {
     const response = await fetch('http://127.0.0.1:8025/api/v1/messages')
@@ -102,11 +122,12 @@ test('server exposes the first assist checkpoint after five attempts', async ({ 
     if (!(await searchInput(page).isVisible())) break
     await submitAttempt(page, query)
   }
-  await expect(page.getByRole('button', { name: 'Подсказка' })).toBeVisible()
-  await page.getByRole('button', { name: 'Подсказка' }).click()
-  await expect(page.getByRole('heading', { name: 'Выберите подсказку' })).toBeVisible()
+  await expect(page.locator('.hint-trigger').first()).toBeVisible()
+  await ensureHintModalOpen(page)
   await page.getByRole('button', { name: 'Не сейчас' }).click()
-  await page.getByRole('button', { name: 'Подсказка' }).click()
+  await expect(page.locator('.hint-modal-backdrop')).toBeHidden()
+  await page.locator('.hint-trigger').first().click()
+  await expect(page.getByRole('heading', { name: 'Выберите подсказку' })).toBeVisible()
   await page.locator('.hint-modal__options button').first().click()
   await expect(page.locator('.assist-reveal-card')).toBeVisible()
 })
@@ -117,7 +138,7 @@ test('guest economy is server-backed and invalid promo errors are visible', asyn
   await page.locator('.period-control--custom').click()
   const freePlay = page.locator('.period-option--free-play')
   await expect(freePlay).toContainText(/Не хватает 45 билетов/)
-  await expect(freePlay).toBeDisabled()
+  await expect(freePlay).toHaveClass(/locked/)
   await page.getByRole('button', { name: 'На главный экран' }).first().click()
   await page.locator('.header-economy').click()
   await expect(page.getByRole('heading', { name: 'Билеты' })).toBeVisible()
@@ -128,10 +149,11 @@ test('guest economy is server-backed and invalid promo errors are visible', asyn
 
 test('profile opens the current account screen for a guest', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('button', { name: 'Профиль' }).first().click()
-  await expect(page.getByRole('heading', { name: 'Гость кинозала' })).toBeVisible()
-  await expect(page.getByText(/При регистрации или входе все гостевые сеансы, билеты и открытые периоды автоматически перейдут в аккаунт/)).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Подключить аккаунт' })).toBeVisible()
+  await openGuestProfile(page)
+  await expect(page.getByText(/Ваш прогресс сохранён в текущем браузере/)).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Настройки профиля' })).toBeVisible()
+  await openProfileSettings(page)
+  await expect(page.getByRole('button', { name: 'Создать аккаунт' })).toBeVisible()
   await expect(page.getByLabel('Email')).toBeVisible()
 })
 
@@ -165,7 +187,8 @@ test('guest winnings survive registration, logout, login and a second browser', 
   await page.locator('.result-next').click()
   await expect(page.locator('.title-screen')).toBeVisible()
 
-  await page.getByRole('button', { name: 'Профиль' }).first().click()
+  await openGuestProfile(page)
+  await openProfileSettings(page)
   await page.getByRole('button', { name: 'Создать аккаунт', exact: true }).click()
   await page.getByLabel('Имя').fill('Lifecycle Player')
   await page.getByLabel('Email').fill(email)
@@ -176,16 +199,17 @@ test('guest winnings survive registration, logout, login and a second browser', 
   expect(await ticketBalance(page)).toBe(guestBalance)
   const verificationUrl = await verificationUrlFor(email)
   await page.goto(verificationUrl)
-  await page.getByRole('button', { name: 'Профиль' }).first().click()
+  await page.goto('/')
+  await footerNavigation(page).getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('heading', { name: 'Lifecycle Player' })).toBeVisible()
   await expect(page.locator('.profile-overview article').filter({ hasText: 'Билеты' }).locator('strong')).toHaveText(String(guestBalance))
 
   await page.reload()
-  await expect(page.getByRole('button', { name: /Открыть результат игры: Кино/ })).toContainText('1/10')
-  await page.getByRole('button', { name: 'Профиль' }).first().click()
+  await footerNavigation(page).getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('heading', { name: 'Lifecycle Player' })).toBeVisible({ timeout: 15_000 })
   expect(await ticketBalance(page)).toBe(guestBalance)
 
+  await openProfileSettings(page)
   await page.getByRole('button', { name: 'Выйти', exact: true }).click()
   await expect(page.getByText(/прогресс и билеты сохранены на сервере/)).toBeVisible({ timeout: 15_000 })
   await expect(page.getByRole('heading', { name: 'Гость кинозала' })).toBeVisible()
@@ -200,11 +224,12 @@ test('guest winnings survive registration, logout, login and a second browser', 
   const secondContext = await browser.newContext()
   const secondPage = await secondContext.newPage()
   try {
-    await secondPage.goto('/profile')
-    await secondPage.getByRole('button', { name: 'Профиль' }).first().click()
+    await secondPage.goto('/login')
     await secondPage.getByLabel('Email').fill(email)
-    await secondPage.getByLabel('Пароль').fill(password)
-    await secondPage.getByRole('button', { name: 'Войти', exact: true }).click()
+    await secondPage.getByRole('textbox', { name: 'Пароль' }).fill(password)
+    await secondPage.getByRole('button', { name: 'ВОЙТИ', exact: true }).click()
+    await expect.poll(() => secondPage.url(), { timeout: 15_000 }).not.toContain('/login')
+    await footerNavigation(secondPage).getByRole('button', { name: 'Профиль' }).click()
     await expect(secondPage.getByRole('heading', { name: 'Lifecycle Player' })).toBeVisible({ timeout: 15_000 })
     expect(await ticketBalance(secondPage)).toBe(guestBalance)
   } finally {
@@ -234,14 +259,13 @@ test('header, footer, profile and account controls navigate without server error
   for (const mode of ['Фильмы', 'Сериалы', 'Аниме', 'Игры', 'Музыка', 'Диагнозы']) {
     await page.locator('.mode-tabs').getByRole('button', { name: mode, exact: true }).click()
   }
-  await page.getByRole('navigation', { name: 'Навигация в подвале' }).getByRole('button', { name: 'Профиль' }).click()
+  await footerNavigation(page).getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('heading', { name: 'Гость кинозала' })).toBeVisible()
-  await page.getByRole('button', { name: 'Вся статистика' }).click()
-  await expect(page.getByRole('dialog', { name: 'Статистика' })).toBeVisible()
-  await page.getByRole('button', { name: 'Закрыть' }).click()
-  await page.getByRole('button', { name: 'История билетов' }).click()
-  await expect(page.getByRole('dialog', { name: 'Билеты' })).toBeVisible()
-  await page.getByRole('button', { name: 'Закрыть' }).click()
+  await page.getByRole('tab', { name: 'Статистика', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'По категориям' })).toBeVisible()
+  await page.getByRole('tab', { name: 'Достижения', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Достижения' })).toBeVisible()
+  await openProfileSettings(page)
   await expect(page.getByRole('button', { name: 'Войти через Яндекс' })).toHaveCount(0)
   await page.getByRole('button', { name: 'Забыли пароль?' }).click()
   await expect(page.getByRole('button', { name: 'Отправить ссылку' })).toBeVisible()
@@ -250,13 +274,14 @@ test('header, footer, profile and account controls navigate without server error
   await expect(page.getByLabel('Имя')).toBeVisible()
   await page.getByRole('button', { name: 'У меня уже есть аккаунт' }).click()
   await expect(page.getByLabel('Имя')).toHaveCount(0)
+  await page.getByRole('tab', { name: 'Обзор', exact: true }).click()
   await page.getByRole('button', { name: 'Выбрать игру' }).click()
-  await expect(page.getByRole('heading', { name: 'Все сойдется!' })).toBeVisible()
-  await page.getByRole('navigation', { name: 'Навигация в подвале' }).getByRole('button', { name: 'Как играть' }).click()
+  await expect(page.locator('.title-screen')).toBeVisible()
+  await footerNavigation(page).getByRole('button', { name: 'Правила' }).click()
   await page.getByRole('button', { name: 'Закрыть' }).click()
-  await page.getByRole('navigation', { name: 'Навигация в подвале' }).getByRole('button', { name: 'Архив' }).click()
+  await footerNavigation(page).getByRole('button', { name: 'Архив' }).click()
   await expect(page.getByRole('heading', { name: 'Архив' })).toBeVisible()
-  await page.getByRole('navigation', { name: 'Навигация в подвале' }).getByRole('button', { name: 'Игры' }).click()
+  await footerNavigation(page).getByRole('button', { name: 'Игры' }).click()
   await expect(page.getByRole('heading', { name: 'Все сойдется!' })).toBeVisible()
   expect(failures).toEqual([])
 })

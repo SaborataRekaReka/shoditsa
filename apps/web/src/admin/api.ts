@@ -107,6 +107,7 @@ export const adminApi = {
   pipelineDecision: (runId: string, itemId: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/items/${itemId}/decision`, { method: 'PATCH', body: json(body) }),
   approvePipeline: (runId: string, body: Record<string, unknown>, publish = false) => request<Record<string, unknown>>(`/admin/pipeline-runs/${runId}/${publish ? 'approve-and-publish' : 'approve-to-workspace'}`, { method: 'POST', body: json(body), timeoutMs: 120_000 }),
   cancelPipeline: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/cancel`, { method: 'POST', body: '{}' }),
+  continuePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/continue`, { method: 'POST', body: '{}' }),
   deletePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`, { method: 'DELETE', body: json({ confirmation: true }) }),
   cleanupPipelineRuns: (keepLatest = 30) => request<Record<string, unknown>>('/admin/pipeline-runs/cleanup', { method: 'POST', body: json({ confirmation: true, keepLatest }) }),
   integrations: () => request<{ items: Array<Record<string, unknown>> }>('/admin/integrations'),

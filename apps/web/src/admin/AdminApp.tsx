@@ -516,6 +516,17 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
+  const continueRun = useMutation({
+    mutationFn: () => adminApi.continuePipelineRun(selectedId!),
+    onSuccess: () => {
+      notify('success', 'Продолжение поставлено в очередь')
+      void runs.refetch()
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const cancel = useMutation({ mutationFn: () => adminApi.cancelPipeline(selectedId!), onSuccess: () => { notify('info', 'Остановка запрошена'); void runs.refetch() }, onError: (error) => notify('error', errorText(error)) })
   const removeRun = useMutation({
     mutationFn: () => adminApi.deletePipelineRun(selectedId!),
@@ -560,6 +571,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     ? Number(events.progressPercent)
     : Math.min(100, Math.round(Number(selectedRun?.itemsProcessed ?? 0) / Math.max(1, Number(selectedRun?.itemsTotal ?? 1)) * 100))
   const stale = Boolean(events.stale)
+  const runStatus = String(selectedRun?.status ?? '')
+  const totalItems = Number(selectedRun?.itemsTotal ?? 0)
+  const processedItems = Number(selectedRun?.itemsProcessed ?? 0)
+  const hasRemainingItems = totalItems > 0 && processedItems < totalItems
+  const canContinueRun = hasRemainingItems && (
+    (['queued', 'running'].includes(runStatus) && stale)
+    || ['failed', 'partially_failed', 'cancelled'].includes(runStatus)
+  )
   const lifecycleMessage = title(events.lifecycleMessage || (selectedRun ? pipelinePulseText(String(selectedRun.status)) : 'Ожидание'))
   const selectedItemsData = useMemo(() => runItems.filter((entry) => selectedPipelineItems.has(String(entry.id))), [runItems, selectedPipelineItems])
   const selectedReviewableIds = useMemo(() => selectedItemsData.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id)), [selectedItemsData])
@@ -593,6 +612,27 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     restartRun.mutate()
   }
 
+  const requestContinueRun = () => {
+    if (!selectedRun) return
+    const processed = Number(selectedRun.itemsProcessed ?? 0)
+    const total = Number(selectedRun.itemsTotal ?? 0)
+    if (total <= 0) {
+      notify('info', 'Для этого запуска не определено количество элементов для продолжения')
+      return
+    }
+    const isActive = ['queued', 'running'].includes(String(selectedRun.status))
+    if (isActive && !stale) {
+      notify('info', 'Процесс уже активен. Продолжение доступно только для stale запуска')
+      return
+    }
+    if (processed >= total) {
+      notify('info', 'Все элементы уже обработаны. Продолжение не требуется')
+      return
+    }
+    if (!confirm(`Продолжить процесс с текущего прогресса ${processed}/${total}?`)) return
+    continueRun.mutate()
+  }
+
   const requestDeleteRun = () => {
     if (!selectedRun) return
     const active = ['queued', 'running'].includes(String(selectedRun.status))
@@ -624,7 +664,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
         })}
       </section>
       <section className="admin-detail-panel">{!selectedRun ? <Empty title="Выберите запуск" text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям." icon={<WandSparkles />} /> : <>
-        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button><button onClick={requestRestartRun} disabled={restartRun.isPending}><RefreshCw />Перезапустить процесс</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending}><X />Остановить</button>}<button onClick={requestDeleteRun} disabled={removeRun.isPending || cancel.isPending}><Trash2 />Удалить процесс</button><Status value={selectedRun.status} /></div></header>
+        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button>{canContinueRun && <button onClick={requestContinueRun} disabled={continueRun.isPending || restartRun.isPending || cancel.isPending || removeRun.isPending}><Play />Продолжить</button>}<button onClick={requestRestartRun} disabled={restartRun.isPending || continueRun.isPending}><RefreshCw />Перезапустить процесс</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending || continueRun.isPending}><X />Остановить</button>}<button onClick={requestDeleteRun} disabled={removeRun.isPending || cancel.isPending || continueRun.isPending}><Trash2 />Удалить процесс</button><Status value={selectedRun.status} /></div></header>
         <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div></div>
         <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
         <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
