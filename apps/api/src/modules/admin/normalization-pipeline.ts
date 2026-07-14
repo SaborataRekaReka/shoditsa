@@ -293,6 +293,17 @@ export const requestNormalization = async (options: {
         payload = record(await response.json())
       }
     }
+    if (!response!.ok && options.webSearch) {
+      const message = String(record(payload.error).message ?? `OpenAI HTTP ${response!.status}`)
+      if (/country,\s*region,\s*or\s*territory/i.test(message)) {
+        response = await undiciFetch('https://api.openai.com/v1/responses', {
+          method: 'POST', headers: { Authorization: `Bearer ${options.apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...body, tools: undefined }), signal: controller.signal,
+          ...(dispatcher ? { dispatcher } : {}),
+        })
+        payload = record(await response.json())
+      }
+    }
     if (!response!.ok) throw new Error(String(record(payload.error).message ?? `OpenAI HTTP ${response!.status}`))
     const parsed = parseJson(extractResponseText(payload))
     const decision = String(parsed.decision) as NormalizationResult['decision']

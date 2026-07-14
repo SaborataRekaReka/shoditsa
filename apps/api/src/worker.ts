@@ -129,14 +129,24 @@ const saveManifestFailures = async (runId: string, failures: Array<{ key: string
   }
 }
 
-const saveProcessingFailure = async (runId: string, entityKey: string, error: unknown, warnings: unknown[] = []) => {
+const saveProcessingFailure = async (
+  runId: string,
+  entityKey: string,
+  error: unknown,
+  warnings: unknown[] = [],
+  context: { beforeJson?: Json; cardId?: string; inputItemVersionId?: string } = {},
+) => {
   const message = safeError(error)
   await db.insert(pipelineRunItems).values({
-    runId, entityKey, status: 'failed', proposedJson: null, warningsJson: [...warnings, message],
+    runId, entityKey, status: 'failed', beforeJson: context.beforeJson, proposedJson: null, warningsJson: [...warnings, message],
+    cardId: context.cardId, inputItemVersionId: context.inputItemVersionId,
     idempotencyKey: `${runId}:${entityKey}`, errorCode: 'PIPELINE_ITEM_MAPPING_FAILED', safeErrorMessage: message,
   }).onConflictDoUpdate({
     target: pipelineRunItems.idempotencyKey,
-    set: { proposedJson: null, warningsJson: [...warnings, message], updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_ITEM_MAPPING_FAILED', safeErrorMessage: message },
+    set: {
+      beforeJson: context.beforeJson, proposedJson: null, warningsJson: [...warnings, message], cardId: context.cardId,
+      inputItemVersionId: context.inputItemVersionId, updatedAt: new Date(), status: 'failed', errorCode: 'PIPELINE_ITEM_MAPPING_FAILED', safeErrorMessage: message,
+    },
   })
 }
 
@@ -724,7 +734,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
       await persistProgress(itemId)
       return 'completed'
     }
-    const before = record(card.payload)
+    const before: Json = { ...record(card.payload), id: itemId, mode }
     try {
       const result = await requestNormalization({
         apiKey: environment.OPENAI_API_KEY, proxyUrl: environment.OPENAI_OUTBOUND_PROXY_URL || environment.MUSIC_OUTBOUND_PROXY_URL,
@@ -748,7 +758,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
       }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: { status: 'review_required', beforeJson: before, proposedJson: proposed, warningsJson: warnings, sourcesJson: result.sourceUrls, confidenceJson: { decision: result.decision, confidence: result.confidence, reason: result.reason, usage }, rawResultRef: result.responseId || null, errorCode: null, safeErrorMessage: null, updatedAt: new Date() } })
     } catch (error) {
       if (rateLimitRetry === 0 && isNormalizationRateLimitError(error)) return 'rate_limited'
-      await saveProcessingFailure(run.id, itemId, error)
+      await saveProcessingFailure(run.id, itemId, error, [], { beforeJson: before, cardId: itemId, inputItemVersionId: card.versionId })
     }
     await persistProgress(itemId)
     return 'completed'

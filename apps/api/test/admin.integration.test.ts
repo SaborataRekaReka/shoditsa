@@ -28,6 +28,7 @@ describe('admin API guard, workspace and telemetry', () => {
   let initialWorkspaceIds = new Set<string>()
   const bulkDecisionRunId = crypto.randomUUID()
   const bulkDecisionItemIds = [crypto.randomUUID(), crypto.randomUUID()]
+  const failedDecisionItemId = crypto.randomUUID()
   const forgedAdminId = crypto.randomUUID()
   const draftItemId = `admin-integration-${crypto.randomUUID()}`
   const exchangeNewItemId = `exchange-integration-${crypto.randomUUID()}`
@@ -298,6 +299,26 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(rejectedAtomicAttempt.json().error).toMatchObject({ code: 'PIPELINE_ITEMS_NOT_FOUND', details: { missingItemIds: [missingId] } })
     expect((await database.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.id, bulkDecisionItemIds[0])))[0].status).toBe('review_required')
 
+    await database.db.insert(pipelineRunItems).values({
+      id: failedDecisionItemId,
+      runId: bulkDecisionRunId,
+      entityKey: 'bulk-decision-failed',
+      status: 'failed',
+      proposedJson: null,
+      idempotencyKey: crypto.randomUUID(),
+      errorCode: 'PIPELINE_ITEM_MAPPING_FAILED',
+      safeErrorMessage: 'Model failed',
+    })
+    const failedResultAttempt = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/admin/pipeline-runs/${bulkDecisionRunId}/items/decisions`,
+      payload: { itemIds: [bulkDecisionItemIds[0], failedDecisionItemId], approved: true },
+    })
+    expect(failedResultAttempt.statusCode, failedResultAttempt.body).toBe(409)
+    expect(failedResultAttempt.json().error).toMatchObject({ code: 'PIPELINE_ITEM_NOT_DECIDABLE', details: { itemId: failedDecisionItemId, status: 'failed' } })
+    expect((await database.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.id, bulkDecisionItemIds[0])))[0].status).toBe('review_required')
+    expect((await database.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.id, failedDecisionItemId)))[0].status).toBe('failed')
+
     const accepted = await app.inject({
       method: 'PATCH',
       url: `/api/v1/admin/pipeline-runs/${bulkDecisionRunId}/items/decisions`,
@@ -312,6 +333,21 @@ describe('admin API guard, workspace and telemetry', () => {
     const decisions = await database.db.select().from(auditLog).where(and(eq(auditLog.action, 'pipeline.item.decision'), inArray(auditLog.entityId, bulkDecisionItemIds)))
     expect(decisions).toHaveLength(2)
     expect(new Set(decisions.map((entry) => entry.requestId)).size).toBe(1)
+
+    // Simulate a legacy-corrupted row that was marked approved without a model result.
+    // Publication must reject the complete batch before touching the workspace.
+    await database.db.update(pipelineRunItems).set({ status: 'approved' }).where(eq(pipelineRunItems.id, failedDecisionItemId))
+    const changesBefore = await database.db.select({ id: contentWorkspaceChanges.id }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.actorUserId, adminId))
+    const invalidPublish = await app.inject({
+      method: 'POST',
+      url: `/api/v1/admin/pipeline-runs/${bulkDecisionRunId}/approve-to-workspace`,
+      payload: { itemIds: [failedDecisionItemId] },
+    })
+    expect(invalidPublish.statusCode, invalidPublish.body).toBe(422)
+    expect(invalidPublish.json().error).toMatchObject({ code: 'PIPELINE_ITEMS_INVALID', details: { invalidCount: 1 } })
+    const changesAfter = await database.db.select({ id: contentWorkspaceChanges.id }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.actorUserId, adminId))
+    expect(changesAfter).toHaveLength(changesBefore.length)
+    await database.db.update(pipelineRunItems).set({ status: 'failed' }).where(eq(pipelineRunItems.id, failedDecisionItemId))
   })
 
   it('round-trips selected content fields and separates updates from new categorized cards', async () => {

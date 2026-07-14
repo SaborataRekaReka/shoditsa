@@ -72,9 +72,16 @@ const pipelineFieldDecisions = (item: { beforeJson: unknown; proposedJson: unkno
     .filter((field) => JSON.stringify(before[field]) !== JSON.stringify(proposed[field]))
   return Object.fromEntries(fields.map((field) => [field, { action: approved ? 'accept' : 'keep' }]))
 }
+const pipelineItemHasResult = (item: { proposedJson: unknown }) => Boolean(item.proposedJson && typeof item.proposedJson === 'object' && !Array.isArray(item.proposedJson))
 const assertPipelineItemReviewable = (item: { id: string; status: string; workspaceChangeId: string | null; appliedRevisionId: string | null }) => {
   if (item.workspaceChangeId || item.appliedRevisionId || ['staged', 'published'].includes(item.status)) {
     throw new ApiError(409, 'PIPELINE_ITEM_ALREADY_APPLIED', 'Опубликованный или перенесённый в рабочую область результат нельзя пересмотреть', { itemId: item.id })
+  }
+}
+const assertPipelineItemDecidable = (item: { id: string; status: string; proposedJson: unknown; workspaceChangeId: string | null; appliedRevisionId: string | null }) => {
+  assertPipelineItemReviewable(item)
+  if (!['review_required', 'approved', 'rejected'].includes(item.status) || !pipelineItemHasResult(item)) {
+    throw new ApiError(409, 'PIPELINE_ITEM_NOT_DECIDABLE', 'Неуспешный или пустой результат нельзя одобрить. Перегенерируйте айтем или оставьте его в статусе ошибки.', { itemId: item.id, status: item.status })
   }
 }
 const posterOf = (payload: unknown) => {
@@ -968,12 +975,22 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
   app.get('/api/v1/admin/pipeline-runs/:id/items', { schema: { params } }, async (request, reply) => {
     await admin(request, reply, deps)
     const rows = await deps.db.select().from(pipelineRunItems).where(eq(pipelineRunItems.runId, (request.params as { id: string }).id)).orderBy(asc(pipelineRunItems.createdAt))
-    const cardIds = [...new Set(rows.map((item) => item.cardId).filter((id): id is string => Boolean(id)))]
+    const cardIds = [...new Set(rows.map((item) => item.cardId ?? item.entityKey).filter(Boolean))]
+    const activeCards = cardIds.length ? await deps.db.select({
+      itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode,
+      titleRu: contentItemVersions.titleRu, titleOriginal: contentItemVersions.titleOriginal,
+    }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+      .where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, cardIds))) : []
+    const activeByCard = new Map(activeCards.map((card) => [card.itemId, card]))
     const assigned = cardIds.length ? await deps.db.select({ itemId: contentItemTags.itemId, id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color })
       .from(contentItemTags).innerJoin(contentTags, eq(contentTags.id, contentItemTags.tagId)).where(inArray(contentItemTags.itemId, cardIds)).orderBy(asc(contentTags.name)) : []
     const byCard = new Map<string, typeof assigned>()
     for (const tag of assigned) byCard.set(tag.itemId, [...(byCard.get(tag.itemId) ?? []), tag])
-    return { items: rows.map((item) => ({ ...item, tags: item.cardId ? (byCard.get(item.cardId) ?? []).map(({ itemId: _, ...tag }) => tag) : [] })) }
+    return { items: rows.map((item) => {
+      const card = activeByCard.get(item.cardId ?? item.entityKey) ?? null
+      const cardId = item.cardId ?? card?.itemId ?? null
+      return { ...item, cardId, card, tags: cardId ? (byCard.get(cardId) ?? []).map(({ itemId: _, ...tag }) => tag) : [] }
+    }) }
   })
   app.patch('/api/v1/admin/pipeline-runs/:id/items/decisions', { schema: { params, body: PipelineBulkDecisionBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps)
@@ -985,7 +1002,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
         const found = new Set(selected.map((item) => item.id))
         throw new ApiError(404, 'PIPELINE_ITEMS_NOT_FOUND', 'Часть результатов не найдена', { missingItemIds: body.itemIds.filter((itemId) => !found.has(itemId)) })
       }
-      selected.forEach(assertPipelineItemReviewable)
+      selected.forEach(assertPipelineItemDecidable)
 
       const now = new Date()
       const changes: Array<{ before: typeof selected[number]; after: typeof selected[number] }> = []
@@ -1024,7 +1041,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const actor = await admin(request, reply, deps); const { id, itemId } = request.params as { id: string; itemId: string }; const body = request.body as PipelineItemDecisionBody
     const item = await deps.db.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.id, itemId), eq(pipelineRunItems.runId, id))).limit(1)
     if (!item[0]) throw new ApiError(404, 'PIPELINE_ITEM_NOT_FOUND', 'Результат не найден')
-    assertPipelineItemReviewable(item[0])
+    assertPipelineItemDecidable(item[0])
     const updated = await deps.db.update(pipelineRunItems).set({ status: body.approved ? 'approved' : 'rejected', fieldDecisionsJson: body.fieldDecisions, approvedBy: actor.id, approvedAt: new Date(), updatedAt: new Date() }).where(and(
       eq(pipelineRunItems.id, itemId),
       eq(pipelineRunItems.runId, id),
@@ -1085,30 +1102,46 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!run) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
     const filters = [eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'approved')]
     if (body.itemIds?.length) filters.push(inArray(pipelineRunItems.id, body.itemIds))
-    const items = await deps.db.select().from(pipelineRunItems).where(and(...filters)); const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const items = await deps.db.select().from(pipelineRunItems).where(and(...filters))
     if (!items.length) throw new ApiError(409, 'PIPELINE_ITEMS_NOT_APPROVED', 'Нет одобренных результатов для применения')
-    if (body.expectedWorkspaceVersion !== undefined && workspace.version !== body.expectedWorkspaceVersion) throw new ApiError(409, 'WORKSPACE_VERSION_CONFLICT', 'Рабочая версия уже изменилась; обновите данные перед применением', { expectedVersion: body.expectedWorkspaceVersion, currentVersion: workspace.version })
     const targetIds = items.map((item) => item.cardId ?? String(asRecord(item.proposedJson).id ?? item.entityKey))
-    const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id }).from(contentItemVersions)
+    const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode }).from(contentItemVersions)
       .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, targetIds))) : []
-    const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry.versionId]))
-    const existingChanges = await loadWorkspaceChanges(deps.db, workspace.id, items.map((entry) => entry.cardId).filter((entry): entry is string => Boolean(entry)))
-    const changeByItem = new Map(existingChanges.map((entry) => [entry.itemId, entry]))
-    const results: Array<{ itemId: string; status: string; message?: string }> = []
-    for (const item of items) {
+    const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry]))
+    const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+    const prepared = items.map((item) => {
       const before = asRecord(item.beforeJson); const proposed = asRecord(item.proposedJson); const decisions = asRecord(item.fieldDecisionsJson)
+      const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)
+      const active = activeVersionByItem.get(itemId)
+      const mode = String(active?.mode ?? proposed.mode ?? before.mode ?? '')
+      if (!pipelineItemHasResult(item)) return { item, itemId, error: 'У результата отсутствует proposedJson' }
+      if (!contentModes.includes(mode as ContentMode)) return { item, itemId, error: 'Не удалось определить допустимую категорию карточки' }
+      if (item.inputItemVersionId && active?.versionId !== item.inputItemVersionId) return { item, itemId, error: 'Карточка изменилась после запуска пайплайна' }
       const payload = { ...before }
       for (const [field, rawDecision] of Object.entries(decisions)) {
         const decision = asRecord(rawDecision); const action = decision.action
         if (action === 'accept') payload[field] = proposed[field]
         if (action === 'edit') payload[field] = decision.value
       }
-      const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)
-      payload.id = itemId; payload.mode = String(proposed.mode || before.mode || '')
-      if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].includes(String(payload.mode))) throw new ApiError(422, 'PIPELINE_ITEM_MODE_INVALID', 'Результат пайплайна не содержит допустимый режим контента')
+      payload.id = itemId; payload.mode = mode
+      const fieldErrors = validateContentPayload(payload, mode as ContentMode).filter((issue) => issue.level === 'error')
+      if (fieldErrors.length) return { item, itemId, error: 'Карточка не прошла валидацию', fieldErrors }
+      return { item, itemId, mode: mode as ContentMode, payload }
+    })
+    const invalid = prepared.filter((entry) => entry.error)
+    if (invalid.length) throw new ApiError(422, 'PIPELINE_ITEMS_INVALID', 'Часть одобренных результатов нельзя применить. Ни одна новая карточка не была добавлена в рабочую версию.', {
+      items: invalid.slice(0, 50).map((entry) => ({ itemId: entry.item.id, entityKey: entry.item.entityKey, message: entry.error, fieldErrors: entry.fieldErrors ?? [] })),
+      invalidCount: invalid.length,
+    })
+    const workspace = await getOrCreateWorkspace(deps.db, actor)
+    if (body.expectedWorkspaceVersion !== undefined && workspace.version !== body.expectedWorkspaceVersion) throw new ApiError(409, 'WORKSPACE_VERSION_CONFLICT', 'Рабочая версия уже изменилась; обновите данные перед применением', { expectedVersion: body.expectedWorkspaceVersion, currentVersion: workspace.version })
+    const existingChanges = await loadWorkspaceChanges(deps.db, workspace.id, targetIds)
+    const changeByItem = new Map(existingChanges.map((entry) => [entry.itemId, entry]))
+    const results: Array<{ itemId: string; status: string; message?: string }> = []
+    for (const entry of prepared) {
+      const { item, itemId, mode, payload } = entry as typeof entry & { mode: ContentMode; payload: Record<string, unknown> }
       try {
-        if (item.inputItemVersionId && activeVersionByItem.get(itemId) !== item.inputItemVersionId) throw new ApiError(409, 'PIPELINE_INPUT_VERSION_CONFLICT', 'Карточка изменилась после запуска пайплайна', { itemId, inputItemVersionId: item.inputItemVersionId, activeItemVersionId: activeVersionByItem.get(itemId) ?? null })
-        const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode: payload.mode as ContentMode, payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
+        const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode, payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
         await deps.db.update(pipelineRunItems).set({ status: 'staged', workspaceChangeId: change.id, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
         results.push({ itemId: item.id, status: 'staged' })
       } catch (error) {
@@ -1120,10 +1153,11 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!publish) return { results, workspace: await workspaceSummary(deps.db, actor) }
     const built = await buildWorkspaceRevision(deps.db, actor, workspace.id, request.id)
     const activated = await activateWorkspaceRevision(deps.db, actor, workspace.id, request.id)
-    await deps.db.update(pipelineRuns).set({ status: results.some((entry) => entry.status === 'conflict') ? 'partially_published' : 'published', finishedAt: new Date() }).where(eq(pipelineRuns.id, runId))
     await deps.db.update(pipelineRunItems).set({ status: 'published', appliedRevisionId: activated.revision.id, updatedAt: new Date() }).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'staged')))
-    const successfulItemIds = new Set(results.filter((entry) => entry.status === 'staged').map((entry) => entry.itemId))
-    const publishedCardIds = [...new Set(items.filter((item) => successfulItemIds.has(item.id)).map((item) => item.cardId ?? String(asRecord(item.proposedJson).id ?? item.entityKey)).filter(Boolean))]
+    const unresolved = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), sql`${pipelineRunItems.status} <> 'published'`))
+    await deps.db.update(pipelineRuns).set({ status: unresolved[0]?.count ? 'partially_published' : 'published', finishedAt: new Date() }).where(eq(pipelineRuns.id, runId))
+    const publishedItems = await deps.db.select({ cardId: pipelineRunItems.cardId, entityKey: pipelineRunItems.entityKey }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.appliedRevisionId, activated.revision.id)))
+    const publishedCardIds = [...new Set(publishedItems.map((item) => item.cardId ?? item.entityKey).filter(Boolean))]
     const tagSlug = `pipeline-run-${runId}`
     const pipelineName = run.pipelineKey === 'normalization' ? 'Нормализация' : run.pipelineKey === 'music' ? 'Музыка' : run.pipelineKey === 'movie' ? 'Кино' : run.pipelineKey === 'anime' ? 'Аниме' : 'Пайплайн'
     const date = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Asia/Almaty', day: '2-digit', month: '2-digit', year: 'numeric' }).format(run.createdAt)

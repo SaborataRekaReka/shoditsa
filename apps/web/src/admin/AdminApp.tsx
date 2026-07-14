@@ -2090,7 +2090,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     setModerationIndex(0)
   }, [selectedId])
 
-  const isItemReviewable = (item: Record<string, any>) => !['staged', 'published'].includes(String(item.status))
+  const isItemReviewable = (item: Record<string, any>) => ['review_required', 'approved', 'rejected'].includes(String(item.status)) && Boolean(item.proposedJson && typeof item.proposedJson === 'object' && !Array.isArray(item.proposedJson))
   const itemDiffFields = (item: Record<string, any>) => {
     const before = record(item.beforeJson)
     const proposed = record(item.proposedJson)
@@ -2346,16 +2346,20 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const selectedPipelineCardCount = useMemo(() => new Set(selectedItemsData.map((entry) => String(record(entry).cardId ?? '')).filter(Boolean)).size, [selectedItemsData])
   const selectedReviewableIds = useMemo(() => selectedItemsData.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id)), [selectedItemsData])
   const selectedApprovedIds = useMemo(() => selectedItemsData.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [selectedItemsData])
-  const approvedItemIds = useMemo(() => runItems.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [runItems])
+  const approvedItemIds = useMemo(() => runItems.filter((entry) => String(entry.status) === 'approved' && isItemReviewable(record(entry))).map((entry) => String(entry.id)), [runItems])
   const activePipelineItem = useMemo(() => runItems.find((entry) => String(entry.id) === activePipelineItemId) ?? null, [runItems, activePipelineItemId])
   const reviewQueue = useMemo(() => runItems.filter((entry) => isItemReviewable(record(entry))), [runItems])
   const moderationRawItem = reviewQueue[moderationIndex] ?? null
   const moderationItem = moderationRawItem ? record(moderationRawItem) : null
-  const fallbackModerationMode: ContentMode = selectedRun?.pipelineKey === 'movie' ? 'movie' : selectedRun?.pipelineKey === 'anime' ? 'anime' : 'music'
+  const fallbackModerationMode: ContentMode = selectedRun?.pipelineKey === 'normalization'
+    ? asContentMode(record(selectedRun.inputDefinitionJson).mode, 'music')
+    : selectedRun?.pipelineKey === 'movie' ? 'movie' : selectedRun?.pipelineKey === 'anime' ? 'anime' : 'music'
   const moderationProposed = record(moderationItem?.proposedJson)
-  const moderationMode = asContentMode(moderationProposed.mode, fallbackModerationMode)
-  const moderationTitle = title(moderationProposed.titleRu || moderationProposed.name || moderationItem?.entityKey)
-  const moderationSubtitle = title(moderationProposed.titleOriginal || moderationItem?.entityKey)
+  const moderationBefore = record(moderationItem?.beforeJson)
+  const moderationCard = record(moderationItem?.card)
+  const moderationMode = asContentMode(moderationProposed.mode || moderationBefore.mode || moderationCard.mode, fallbackModerationMode)
+  const moderationTitle = title(moderationProposed.titleRu || moderationBefore.titleRu || moderationCard.titleRu || moderationProposed.name || moderationItem?.entityKey)
+  const moderationSubtitle = title(moderationProposed.titleOriginal || moderationBefore.titleOriginal || moderationCard.titleOriginal || moderationItem?.entityKey)
   const moderationWarnings = moderationItem ? pipelineWarnings(moderationItem.warningsJson) : []
   const moderationFieldText = (value: unknown): string => {
     if (value == null) return ''
@@ -3077,6 +3081,9 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                           {runItems.map((raw) => {
                             const item = record(raw);
                             const proposed = record(item.proposedJson);
+                            const before = record(item.beforeJson);
+                            const card = record(item.card);
+                            const itemTitle = title(proposed.titleRu || before.titleRu || card.titleRu || proposed.name || item.entityKey);
                             const fields = itemDiffFields(item);
                             const warnings = pipelineWarnings(
                               item.warningsJson,
@@ -3108,7 +3115,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                                 <td className="admin-check">
                                   <input
                                     type="checkbox"
-                                    aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`}
+                                    aria-label={`Выбрать ${itemTitle}`}
                                     disabled={!reviewable}
                                     checked={selectedPipelineItems.has(itemId)}
                                     onChange={(event) =>
@@ -3136,6 +3143,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                                       <strong>
                                         {title(
                                           proposed.titleRu ||
+                                            before.titleRu ||
+                                            card.titleRu ||
                                             proposed.name ||
                                             item.entityKey,
                                         )}
@@ -3541,6 +3550,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
               <h2>
                 {title(
                   record(activePipelineItem.proposedJson).titleRu ||
+                    record(activePipelineItem.beforeJson).titleRu ||
+                    record(activePipelineItem.card).titleRu ||
                     record(activePipelineItem.proposedJson).name ||
                     activePipelineItem.entityKey,
                 )}
@@ -3587,30 +3598,33 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             <div>
               <small>{title(activePipelineItem.entityKey)}</small>
             </div>
-            <button
-              className="admin-btn admin-btn--secondary"
-              onClick={() =>
-                decide.mutate({
-                  itemId: String(activePipelineItem.id),
-                  approved: false,
-                })
-              }
-            >
-              <X />
-              Отклонить
-            </button>
-            <button
-              className="admin-btn admin-btn--primary"
-              onClick={() =>
-                decide.mutate({
-                  itemId: String(activePipelineItem.id),
-                  approved: true,
-                })
-              }
-            >
-              <Check />
-              Принять
-            </button>
+            {isItemReviewable(record(activePipelineItem)) ? (
+              <>
+                <button
+                  className="admin-btn admin-btn--secondary"
+                  onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: false })}
+                >
+                  <X />
+                  Отклонить
+                </button>
+                <button
+                  className="admin-btn admin-btn--primary"
+                  onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: true })}
+                >
+                  <Check />
+                  Принять
+                </button>
+              </>
+            ) : selectedRun.pipelineKey === 'normalization' && String(activePipelineItem.status) === 'failed' ? (
+              <button
+                className="admin-btn admin-btn--primary"
+                disabled={regenerateItem.isPending}
+                onClick={() => requestRegenerateItem(String(activePipelineItem.id), String(activePipelineItem.entityKey))}
+              >
+                <RefreshCw />
+                Перегенерировать айтем
+              </button>
+            ) : null}
           </footer>
         </div>
       )}
