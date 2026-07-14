@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+Host: shoditsa.ru
+Sitemap: https://shoditsa.ru/sitemap.xml

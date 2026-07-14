@@ -7,11 +7,13 @@ import { initMetrikaDataLayer, initWebVitalsObservers, markAppBootStart } from '
 import { AppErrorBoundary } from './components/app-shell/AppErrorBoundary'
 import './styles.css'
 import { initClientEvents } from './app/client-events'
+import { applyRuntimeSeo } from './app/seo'
 
 markAppBootStart()
 initMetrikaDataLayer()
 initWebVitalsObservers()
 initClientEvents()
+applyRuntimeSeo()
 
 // Initialize Yandex Games SDK before mounting the app.
 // YaGames is injected globally by /sdk.js loaded in index.html.
