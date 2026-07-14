@@ -91,11 +91,10 @@ if command -v nginx >/dev/null 2>&1; then
     fi
     systemctl reload nginx
   fi
-  fi
 elif command -v docker >/dev/null 2>&1; then
   mapfile -t NGINX_CONTAINERS < <(
     while IFS= read -r container; do
-      mount_source="$(docker inspect --format '{{range .Mounts}}{{if eq .Destination \"/var/www/shoditsa\"}}{{.Source}}{{end}}{{end}}' "$container")"
+      mount_source="$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/var/www/shoditsa"}}{{.Source}}{{end}}{{end}}' "$container")"
       [ -n "$mount_source" ] && printf '%s\n' "$container"
     done < <(docker ps -q)
   )
@@ -104,10 +103,10 @@ elif command -v docker >/dev/null 2>&1; then
     exit 1
   fi
   NGINX_CONTAINER="${NGINX_CONTAINERS[0]}"
-  COMPOSE_FILES="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.project.config_files\"}}' "$NGINX_CONTAINER")"
-  COMPOSE_DIR="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.project.working_dir\"}}' "$NGINX_CONTAINER")"
-  COMPOSE_PROJECT="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.project\"}}' "$NGINX_CONTAINER")"
-  COMPOSE_SERVICE="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.service\"}}' "$NGINX_CONTAINER")"
+  COMPOSE_FILES="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.config_files"}}' "$NGINX_CONTAINER")"
+  COMPOSE_DIR="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' "$NGINX_CONTAINER")"
+  COMPOSE_PROJECT="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "$NGINX_CONTAINER")"
+  COMPOSE_SERVICE="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.service"}}' "$NGINX_CONTAINER")"
   if [ -z "$COMPOSE_FILES" ] || [[ "$COMPOSE_FILES" == *,* ]] || [ ! -f "$COMPOSE_FILES" ] || [ -z "$COMPOSE_DIR" ] || [ -z "$COMPOSE_PROJECT" ] || [ -z "$COMPOSE_SERVICE" ]; then
     echo "Docker Nginx is missing a supported single-file Compose configuration" >&2
     exit 1

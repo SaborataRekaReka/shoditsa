@@ -7999,20 +7999,6 @@
         "guessId": "music:001_michael-jackson",
         "output": [
           {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "1964",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "1960-е",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
             "key": "country",
             "label": "Страна",
             "value": "🇺🇸 США",
@@ -8058,25 +8044,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "a6910609e0321689a572d24d6cf9725f318818662dcb61157f7310eddef18f97"
+        "digest": "3dc0a481627f34301427dcb67303ef36792caaf8c2119f7007df335543d364d3"
       },
       {
         "guessId": "music:004_shadowraze",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2019",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8127,25 +8099,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "7543e82d0cb4968c85614993dd2b6ed0735709b0e199463c21b0870a408357cd"
+        "digest": "8d475ebeefc2334dd1a0522f9e09c47d69d3ac84f75a83ec02d7373da5ea4420"
       },
       {
         "guessId": "music:006_artik",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2007",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2000-е",
-            "status": "miss",
-            "direction": "up"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8194,25 +8152,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "48745bfc65b00e245651e485b2acda89bea35c36e529c453f815331548dae759"
+        "digest": "cd433e564ddd291daf89bee04298d2b89434f212b1e20ccfad45f7de3509ae27"
       },
       {
         "guessId": "music:007_asti",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2010",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8261,25 +8205,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "edbd075e6c725a676b7be57e1f3fe74c29a31198dcf9b7ddacbb0f8031bd0cdf"
+        "digest": "7e450dbb79ee2cda0befd70a11215dfee2e91ac79b2ec1f3b98f9f95f7ba69d1"
       },
       {
         "guessId": "music:009_big-baby-tape",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2017",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8330,25 +8260,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "125f2b28903af1d78ac5a521d0de5bc10aa9052449f7a5f9bb359b0583ee7a41"
+        "digest": "75b68fd7e7fc10d46e4a410bf1a06ee25231de7bbcdc52e9bb81eeda6fa9d7b6"
       },
       {
         "guessId": "music:010_adele",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2006",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2000-е",
-            "status": "miss",
-            "direction": "up"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8395,25 +8311,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "4f83d0b9b21168e5b72fb44d86a218e2d000b73bc7ed0e83c3bae072e59f260a"
+        "digest": "38af51ccd0bd44a44f0858a11c898a92cf1b0a139fbc080c8e1cb447e56e99fb"
       },
       {
         "guessId": "music:012_face",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2015",
-            "status": "close",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8464,25 +8366,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "9db42b8ef2f0dad3da8ccc554db5d6ecada7fe8181e47c1acdccbfb2a70d8cf5"
+        "digest": "1384534ed7015bd33703da137728210f22fc47ba435ab71fa8c18c040cc2f71e"
       },
       {
         "guessId": "music:014_bts",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2013",
-            "status": "close",
-            "direction": "up"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8529,25 +8417,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "5d1c44cca17c6b3a2b1ef0be061b840fdaf54645f3992dd977d0cbabc997f0ab"
+        "digest": "9488bff2a997d94fac2cbfe9d4b6b6f2c34bcee82dced4ac6b07835e67f41649"
       },
       {
         "guessId": "music:015_andy-panda",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2014",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8598,25 +8472,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "434d99fa0820f8525bf0720b6873a883030225ba32b18a4e7b9243324503931c"
+        "digest": "3d3b844ebf5503e2326081c4d275772d511348e7cb7abaee35056fcca2baed87"
       },
       {
         "guessId": "music:016_bearwolf",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2023",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2020-е",
-            "status": "miss",
-            "direction": "down"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8665,25 +8525,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "08a7feb2e0e6e1254626b14f6aa66a0bef809a437e4e7e588c91e0067a97d749"
+        "digest": "00d74a1691a535cb2aaea480477c3b24b0f2b4ad90b5db1a685bdac081f46efe"
       },
       {
         "guessId": "music:020_enzro",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2026",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2020-е",
-            "status": "miss",
-            "direction": "down"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8730,25 +8576,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "2c1046ec7f7ecbca51c584b1c3c37ebb5586aad79899ecdba676c766ba078dd6"
+        "digest": "6468139e046f892e7e23204ac55f3953a802e26c68907047ae6f01ddb9783664"
       },
       {
         "guessId": "music:020_taemin",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2008",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2000-е",
-            "status": "miss",
-            "direction": "up"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8795,25 +8627,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "4a82cb7b63b354476ec6c456e2f01d1d54746a2d7dbb02b23bea2b59fae42074"
+        "digest": "02583c127962ae21194f9f0417fd7c11f0760aa160ca58f84b0a3f3a74da8ab5"
       },
       {
         "guessId": "music:021_xolidayboy",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2021",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2020-е",
-            "status": "miss",
-            "direction": "down"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8864,25 +8682,11 @@
             ]
           }
         ],
-        "digest": "16cd050b8e50cd8787022b9c69a650d8902374633bc123c241ac88d77a112712"
+        "digest": "14e228ba3bbe4110ee34aea401dbc95c3916bd65b4ec42d2766873cab923347d"
       },
       {
         "guessId": "music:022_anna-asti",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2021",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2020-е",
-            "status": "miss",
-            "direction": "down"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -8931,25 +8735,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "4952610ea80dad8386406977b94cafa124ff5bde9a69e12f2e0aff6f8871c532"
+        "digest": "7c38f6ee719d63788dc7a8be2b26b1c223f9deaf8233b10fe641b3773e554ef2"
       },
       {
         "guessId": "music:024_by-индия",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2019",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -9000,25 +8790,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "40af0830aa5877f79596be20873e2e2d8a09787d19b1135b97b78d2e3b28e60d"
+        "digest": "63ee09454941be32714c240c94b353c6b8d8cd67bc2f1b1391f74547692d5d4e"
       },
       {
         "guessId": "music:025_hugel",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2015",
-            "status": "close",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -9065,25 +8841,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "21d532ff18500327fbd321c53bacf1e5c85af7fe8ba096e9b8ca6dbf3191039c"
+        "digest": "fbbc036bdf056777f48bbdc8cc6faf6a235087cea1f816be4dffe4d0d4bff356"
       },
       {
         "guessId": "music:025_sayan",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2021",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2020-е",
-            "status": "miss",
-            "direction": "down"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -9132,25 +8894,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "cbb2d0371cf2414bb5ce320e2be7d02dee37ce79a78af7b247737953c17c70f6"
+        "digest": "e4d01cad28c2c294dec7524c977fabf0d3bedc858caa344418509a50462ca4bd"
       },
       {
         "guessId": "music:026_женя-трофимов",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2017",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -9199,25 +8947,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "c0a1a650b769e7e5bdeac8be6f46cf757177871e4e26e1e823da4a553f7ec09c"
+        "digest": "ec47592f01f2f356e0cb55e673188d49dfae61b96fd7e85f0aa588df2052e9cc"
       },
       {
         "guessId": "music:027_macan",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2019",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2010-е",
-            "status": "match",
-            "direction": null
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -9268,25 +9002,11 @@
             "matchedValues": []
           }
         ],
-        "digest": "cd9516bed651db0cae2a9f4c6b52c865358d7a8bbdbf93dbe239a58650ca99c6"
+        "digest": "6c3c8022e43bbd267440aeb72ca4b9c6769be6a6cb856e9aac4806081252668c"
       },
       {
         "guessId": "music:028_полка",
         "output": [
-          {
-            "key": "year",
-            "label": "Начало карьеры",
-            "value": "2022",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "decade",
-            "label": "Десятилетие",
-            "value": "2020-е",
-            "status": "miss",
-            "direction": "down"
-          },
           {
             "key": "country",
             "label": "Страна",
@@ -9337,7 +9057,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "2bfe0f26dbadda957019911f2c28e57bfacc3390efdc713617d12b788eec6e83"
+        "digest": "45f04f764326c212866ceb3c765e329e162774580afdac48aa2f4a1b94d4d71a"
       }
     ]
   },

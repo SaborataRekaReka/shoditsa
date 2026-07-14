@@ -686,7 +686,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
     outputTokens: responses.reduce((sum, entry) => sum + Number(entry.outputTokens ?? 0), 0), webSearchCalls: responses.reduce((sum, entry) => sum + Number(entry.webSearchCalls ?? 0), 0),
     responses: responses.length, pricingVersion: 'openai-2026-07-13',
   }
-  await db.update(pipelineRuns).set({ ...metrics, usageJson, status: metrics.itemsFailed ? 'partially_failed' : 'review_required', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+  await db.update(pipelineRuns).set({ ...metrics, actualCost: String(metrics.actualCost.toFixed(8)), usageJson, status: metrics.itemsFailed ? 'partially_failed' : 'review_required', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
   return { ...metrics, usage: usageJson }
 }
 

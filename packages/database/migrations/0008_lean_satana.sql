@@ -1,0 +1,3 @@
+ALTER TABLE "background_jobs" DROP CONSTRAINT "background_job_type_check";--> statement-breakpoint
+ALTER TABLE "pipeline_runs" ADD COLUMN "usage_json" jsonb DEFAULT '{}'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "background_jobs" ADD CONSTRAINT "background_job_type_check" CHECK ("background_jobs"."type" in ('content_revision_build','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention'));

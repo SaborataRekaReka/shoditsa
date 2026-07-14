@@ -57,6 +57,13 @@
       "when": 1783949009397,
       "tag": "0007_fast_network",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1784038110180,
+      "tag": "0008_lean_satana",
+      "breakpoints": true
     }
   ]
 }
