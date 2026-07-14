@@ -91,6 +91,47 @@ if command -v nginx >/dev/null 2>&1; then
     fi
     systemctl reload nginx
   fi
+  fi
+elif command -v docker >/dev/null 2>&1; then
+  mapfile -t NGINX_CONTAINERS < <(
+    while IFS= read -r container; do
+      mount_source="$(docker inspect --format '{{range .Mounts}}{{if eq .Destination \"/var/www/shoditsa\"}}{{.Source}}{{end}}{{end}}' "$container")"
+      [ -n "$mount_source" ] && printf '%s\n' "$container"
+    done < <(docker ps -q)
+  )
+  if [ "${#NGINX_CONTAINERS[@]}" -ne 1 ]; then
+    echo "Expected exactly one running container with /var/www/shoditsa, found ${#NGINX_CONTAINERS[@]}" >&2
+    exit 1
+  fi
+  NGINX_CONTAINER="${NGINX_CONTAINERS[0]}"
+  COMPOSE_FILES="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.project.config_files\"}}' "$NGINX_CONTAINER")"
+  COMPOSE_DIR="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.project.working_dir\"}}' "$NGINX_CONTAINER")"
+  COMPOSE_PROJECT="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.project\"}}' "$NGINX_CONTAINER")"
+  COMPOSE_SERVICE="$(docker inspect --format '{{index .Config.Labels \"com.docker.compose.service\"}}' "$NGINX_CONTAINER")"
+  if [ -z "$COMPOSE_FILES" ] || [[ "$COMPOSE_FILES" == *,* ]] || [ ! -f "$COMPOSE_FILES" ] || [ -z "$COMPOSE_DIR" ] || [ -z "$COMPOSE_PROJECT" ] || [ -z "$COMPOSE_SERVICE" ]; then
+    echo "Docker Nginx is missing a supported single-file Compose configuration" >&2
+    exit 1
+  fi
+  compose() {
+    docker compose --project-directory "$COMPOSE_DIR" --project-name "$COMPOSE_PROJECT" -f "$COMPOSE_FILES" "$@"
+  }
+  compose config --quiet
+  # Docker resolves the target of a symlinked bind mount when the container
+  # starts, so a release symlink switch is not visible until Nginx restarts.
+  if ! compose up -d --no-deps --force-recreate "$COMPOSE_SERVICE"; then
+    exit 1
+  fi
+  NGINX_CONTAINER="$(compose ps -q "$COMPOSE_SERVICE")"
+  if [ -z "$NGINX_CONTAINER" ] || ! docker exec "$NGINX_CONTAINER" nginx -t; then
+    exit 1
+  fi
+  if ! docker exec "$NGINX_CONTAINER" grep -Fq "\"commitSha\": \"${GITHUB_SHA}\"" /var/www/shoditsa/build-manifest.json; then
+    echo "Docker Nginx does not see release ${GITHUB_SHA}" >&2
+    exit 1
+  fi
+else
+  echo "Neither host Nginx nor Docker is available to activate the web release" >&2
+  exit 1
 fi
 rm -f "$REMOTE_ARCHIVE"
 '@
