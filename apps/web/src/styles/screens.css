@@ -294,12 +294,15 @@
   box-shadow: 4px 4px 0 var(--color-shadow);
   display: grid;
   gap: 4px;
-  max-height: min(240px, calc(100dvh - 260px));
+  max-height: var(--period-menu-max-height, min(240px, calc(100dvh - 260px)));
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable;
 }
+.period-select-wrap.opens-up .period-menu { top: auto; bottom: 100%; }
 .period-option {
   min-height: 44px;
   padding: 7px 9px;

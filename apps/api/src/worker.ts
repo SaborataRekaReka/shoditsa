@@ -659,10 +659,10 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
       })
       const proposed = { ...before }
       const warnings: string[] = []
-      if (result.decision === 'update') proposed[field] = normalizeProposedValue(field, result.value, before[field])
+      if (result.decision === 'update' || (field === 'activityStartYear' && result.decision === 'keep' && before[field] == null && result.value != null)) proposed[field] = normalizeProposedValue(field, result.value, before[field])
       if (result.decision === 'clear') proposed[field] = null
       if (result.decision === 'review') warnings.push('Модель отметила неоднозначность — требуется ручная проверка')
-      if (result.decision === 'keep') warnings.push('Текущее значение подтверждено, изменений нет')
+      if (result.decision === 'keep' && JSON.stringify(proposed[field]) === JSON.stringify(before[field])) warnings.push('Текущее значение подтверждено, изменений нет')
       if (result.confidence < 0.75) warnings.push(`Низкая уверенность: ${Math.round(result.confidence * 100)}%`)
       if (settings.webSearch !== false && !result.sourceUrls.length) warnings.push('Модель не вернула ссылки на источники')
       if (field === 'activityStartYear' && Object.hasOwn(before, 'year')) proposed.year = null

@@ -1017,6 +1017,8 @@ function PeriodControl({
   completedPeriods: PeriodKey[]
 }) {
   const [open, setOpen] = useState(false)
+  const [menuPlacement, setMenuPlacement] = useState<'above' | 'below'>('below')
+  const [menuMaxHeight, setMenuMaxHeight] = useState(240)
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const closePeriodMenu = useCallback(() => setOpen(false), [])
   const unlocked = new Set(unlockedPeriods)
@@ -1025,12 +1027,45 @@ function PeriodControl({
   const selectedCost = periodUnlockCost(value)
   const shortage = Math.max(0, selectedCost - wallet.tickets)
   const selectedUnlockable = selectedLocked && selectedCost > 0 && shortage === 0
+  const positionMenu = useCallback(() => {
+    const rect = wrapRef.current?.getBoundingClientRect()
+    if (!rect) return
+
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+    const spaceBelow = viewportHeight - rect.bottom
+    const spaceAbove = rect.top
+    const openAbove = spaceBelow < 240 && spaceAbove > spaceBelow
+    const availableSpace = openAbove ? spaceAbove : spaceBelow
+
+    setMenuPlacement(openAbove ? 'above' : 'below')
+    setMenuMaxHeight(Math.max(96, Math.floor(availableSpace - 8)))
+  }, [])
   useDismissOnOutside(open, wrapRef, closePeriodMenu)
 
-  return <div ref={wrapRef} className={`period-select-wrap ${open ? 'is-open' : ''}`}>
+  useEffect(() => {
+    if (!open) return
+    const reposition = () => positionMenu()
+    window.addEventListener('resize', reposition)
+    window.visualViewport?.addEventListener('resize', reposition)
+    return () => {
+      window.removeEventListener('resize', reposition)
+      window.visualViewport?.removeEventListener('resize', reposition)
+    }
+  }, [open, positionMenu])
+
+  return <div
+    ref={wrapRef}
+    className={`period-select-wrap ${open ? 'is-open' : ''} ${menuPlacement === 'above' ? 'opens-up' : ''}`}
+    style={{ '--period-menu-max-height': `${menuMaxHeight}px` } as CSSProperties}
+  >
     <button type="button" className={`period-control period-control--custom ${selectedLocked ? 'is-locked' : ''} ${selectedUnlockable ? 'is-unlockable' : ''}`} onClick={(event) => {
       event.stopPropagation()
-      setOpen((current) => !current)
+      if (open) {
+        setOpen(false)
+        return
+      }
+      positionMenu()
+      setOpen(true)
     }} aria-expanded={open}>
       <span className="period-control__top">
         <span>Период</span>
@@ -2484,6 +2519,7 @@ function Game({
   searchIndex,
   challenge,
   onPlayNext,
+  onReplay,
   onConfigureMode,
 }: {
   titles: TitleItem[]
@@ -2507,6 +2543,7 @@ function Game({
   searchIndex: LibrarySearchIndex | null
   challenge: ChallengePayload | null
   onPlayNext: (mode: TitleMode | null) => void
+  onReplay: () => void
   onConfigureMode: () => void
 }) {
   const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' || mode === 'music' ? 'all' : period
@@ -2827,8 +2864,9 @@ function Game({
   const attendance = loadDailyAttendance(date)
   const completedToday = new Set(attendance.completedModes).size
   const nextMode = nextDailyMode(mode, attendance.completedModes)
-  const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Свободная игра или архив'
-  const configureLabel = resultConfigureLabel(mode)
+  const routeCompleted = !nextMode
+  const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Сыграть ещё раз'
+  const configureLabel = routeCompleted ? 'Выбрать другой режим' : resultConfigureLabel(mode)
   const challengeLink = buildChallengeUrl(location.href, {
     mode,
     date,
@@ -2949,9 +2987,9 @@ function Game({
         telegramUrl={telegramUrl}
         challengeOutcome={challenge ? challengeOutcome(attempts.length, challenge.opponentAttempts) : undefined}
         opponentAttempts={challenge?.opponentAttempts}
-        onNext={() => onPlayNext(nextMode)}
+        onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)}
         configureLabel={configureLabel}
-        onConfigure={onConfigureMode}
+        onConfigure={routeCompleted ? onHome : onConfigureMode}
         onChallenge={shareChallenge}
         onCopy={copyResult}
         onHome={onHome}
@@ -3156,7 +3194,7 @@ const publicItemToTitle = (item: PublicContentItem): TitleItem => {
 
 const serverAttemptToLegacy = (entry: GameAttemptSnapshot): Attempt => ({ titleId: entry.item.id, hints: entry.hints })
 
-function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onConfigureMode, onSessionLoaded }: {
+function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, onConfigureMode, onSessionLoaded }: {
   sessionId: string
   onHome: () => void
   onBack: () => void
@@ -3165,6 +3203,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   onRules: () => void
   onReview: () => void
   onPlayNext: (mode: TitleMode | null) => void
+  onReplay: () => void
   onConfigureMode: () => void
   onSessionLoaded: (session: GameSessionSnapshot) => void
 }) {
@@ -3321,8 +3360,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const completedModes = dashboard.data?.today?.completedModes ?? []
   const completedToday = new Set(completedModes).size
   const nextMode = nextDailyMode(session.mode, completedModes)
-  const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Свободная игра или архив'
-  const configureLabel = resultConfigureLabel(session.mode)
+  const routeCompleted = !nextMode
+  const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Сыграть ещё раз'
+  const configureLabel = routeCompleted ? 'Выбрать другой режим' : resultConfigureLabel(session.mode)
   const shareText = resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won')
   const challengeLink = buildChallengeUrl(location.href, {
     mode: session.mode,
@@ -3367,7 +3407,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHintRound)}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
-      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => onPlayNext(nextMode)} onConfigure={onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div>
         <div className="search-picker">
@@ -4943,6 +4983,7 @@ function GameApp() {
             onRules={() => setModal('rules')}
             onReview={openMusicReview}
             onPlayNext={playNextDaily}
+            onReplay={launchFreePlay}
             onConfigureMode={() => moveToScreen('title')}
             onSessionLoaded={syncServerSessionContext}
           />
@@ -4973,6 +5014,7 @@ function GameApp() {
           searchIndex={searchIndex}
           challenge={challengeAccepted ? challenge : null}
           onPlayNext={playNextDaily}
+          onReplay={launchFreePlay}
           onConfigureMode={() => moveToScreen('title')}
             />)}
 

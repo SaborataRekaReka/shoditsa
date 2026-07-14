@@ -79,6 +79,8 @@ export const requestNormalization = async (options: {
   const input = [
     'Ты проверяешь одну карточку контента. Изменяй только указанное поле и не выдумывай данные.',
     `Категория: ${options.mode}. Поле: ${options.field}.`,
+    `Текущее значение выбранного поля: ${JSON.stringify(options.payload[options.field] ?? null)}. Решение keep относится только к этому значению, а не к похожим legacy-полям карточки.`,
+    options.field === 'activityStartYear' ? `Legacy year=${JSON.stringify(options.payload.year ?? null)} — это только непроверенный кандидат и часто год рождения; если он подтвержден как начало деятельности, верни update с этим годом, а не keep.` : '',
     specialRule,
     `Инструкция администратора: ${options.prompt}`,
     'Верни только JSON: {"decision":"update|keep|clear|review","value":...,"confidence":0..1,"reason":"...","sourceUrls":["https://..."]}.',
@@ -111,7 +113,18 @@ export const requestNormalization = async (options: {
       if (response.ok || ![429, 500, 502, 503, 504].includes(response.status)) break
       await new Promise((resolve) => setTimeout(resolve, 1_000 * (attempt + 1)))
     }
-    const payload = record(await response!.json())
+    let payload = record(await response!.json())
+    if (!response!.ok) {
+      const message = String(record(payload.error).message ?? `OpenAI HTTP ${response!.status}`)
+      if (options.webSearch && /country,\s*region,\s*or\s*territory/i.test(message)) {
+        response = await undiciFetch('https://api.openai.com/v1/responses', {
+          method: 'POST', headers: { Authorization: `Bearer ${options.apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...body, tools: [{ type: 'web_search', search_context_size: 'low', external_web_access: false }] }), signal: controller.signal,
+          ...(dispatcher ? { dispatcher } : {}),
+        })
+        payload = record(await response.json())
+      }
+    }
     if (!response!.ok) throw new Error(String(record(payload.error).message ?? `OpenAI HTTP ${response!.status}`))
     const parsed = parseJson(extractResponseText(payload))
     const decision = String(parsed.decision) as NormalizationResult['decision']
