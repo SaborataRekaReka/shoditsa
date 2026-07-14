@@ -993,6 +993,7 @@ function PeriodControl({
   value,
   onChange,
   onStartFreePlay,
+  hasActiveFreePlay,
   freePlayCostValue,
   freePlayShortage,
   freePlayLaunchesToday,
@@ -1004,6 +1005,7 @@ function PeriodControl({
   value: PeriodKey
   onChange: (period: PeriodKey) => void
   onStartFreePlay: () => void
+  hasActiveFreePlay: boolean
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
@@ -1086,24 +1088,23 @@ function PeriodControl({
       })}
       {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <button
         type="button"
-        className={`period-option period-option--free-play ${freePlayShortage > 0 ? 'locked' : 'unlocked'}`}
+        className={`period-option period-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? 'unlocked' : 'locked'}`}
         onClick={(event) => {
           event.stopPropagation()
-          if (freePlayShortage > 0) return
           trackMetrikaGoal('open_free_play', {
             mode,
-            cost: freePlayCostValue,
+            cost: hasActiveFreePlay ? 0 : freePlayCostValue,
             launchesToday: freePlayLaunchesToday,
+            hasActiveSession: hasActiveFreePlay,
           })
           setOpen(false)
           onStartFreePlay()
         }}
-        disabled={freePlayShortage > 0}
       >
         <span className="period-option__lock"><Sparkles /></span>
         <span className="period-option__copy">
           <strong>Свободная игра</strong>
-          <small>{freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
+          <small>{hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
         </span>
       </button>}
     </div>}
@@ -1122,6 +1123,7 @@ function DifficultyControl({
   onChange,
   counts,
   onStartFreePlay,
+  hasActiveFreePlay,
   freePlayCostValue,
   freePlayShortage,
   freePlayLaunchesToday,
@@ -1130,6 +1132,7 @@ function DifficultyControl({
   onChange: (difficulty: DifficultyKey) => void
   counts?: Record<DifficultyKey, number> | null
   onStartFreePlay: () => void
+  hasActiveFreePlay: boolean
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
@@ -1186,20 +1189,18 @@ function DifficultyControl({
       })}
       <button
         type="button"
-        className={`difficulty-option difficulty-option--free-play ${freePlayShortage > 0 ? 'locked' : ''}`}
+        className={`difficulty-option difficulty-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? '' : 'locked'}`}
         onClick={(event) => {
           event.stopPropagation()
-          if (freePlayShortage > 0) return
-          trackMetrikaGoal('open_free_play', { mode: 'music', cost: freePlayCostValue, launchesToday: freePlayLaunchesToday })
+          trackMetrikaGoal('open_free_play', { mode: 'music', cost: hasActiveFreePlay ? 0 : freePlayCostValue, launchesToday: freePlayLaunchesToday, hasActiveSession: hasActiveFreePlay })
           setOpen(false)
           onStartFreePlay()
         }}
-        disabled={freePlayShortage > 0}
       >
         <span className="difficulty-option__spark" aria-hidden="true"><Sparkles /></span>
         <span className="difficulty-option__copy">
           <strong>Свободная игра</strong>
-          <small>{freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
+          <small>{hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
         </span>
       </button>
     </div>}
@@ -1312,7 +1313,7 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -1334,6 +1335,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   onUnlockPeriod: (period: PeriodKey) => boolean | Promise<boolean>
   onStartFreePlay: () => void
   freePlayArmed: boolean
+  hasActiveFreePlay: boolean
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
@@ -1344,11 +1346,13 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
-  const canStart = freePlayArmed ? freePlayShortage === 0 : !periodLocked || periodShortage === 0
+  const canStart = freePlayArmed ? hasActiveFreePlay || freePlayShortage === 0 : !periodLocked || periodShortage === 0
   const playButtonLabel = freePlayArmed
-    ? freePlayShortage > 0
-      ? `Не хватает ${formatTickets(freePlayShortage)}`
-      : 'Начать свободную игру'
+    ? hasActiveFreePlay
+      ? 'Продолжить'
+      : freePlayShortage > 0
+        ? `Не хватает ${formatTickets(freePlayShortage)}`
+        : 'Начать новую'
     : periodLocked
       ? periodShortage > 0
         ? `Не хватает ${formatTickets(periodShortage)}`
@@ -1489,14 +1493,14 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 <h1>Ежедневная игра: {modeMeta(mode).lower}</h1>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 <div className="ticket-settings">
-                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
                 </div>
               </div>
             </section>}
         {mode === 'music'
           ? <div className="title-play-row">
               <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
-              <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
+              <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
             </div>
           : mode !== 'game' && <ActionButton className={`play-button ${!canStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canStart}><Play /> {playButtonLabel} {canStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
@@ -4400,6 +4404,17 @@ function GameApp() {
     return PERIOD_UNLOCK_ORDER.filter((periodKey) => completed.has(periodKey))
   }, [games, mode])
   const activeGames = useMemo(() => games.filter((game) => game.status === 'playing').sort((a, b) => b.updatedAt - a.updatedAt), [games])
+  const hasActiveFreePlay = useMemo(() => {
+    if (!FREE_PLAY_MODES.has(mode)) return false
+    if (SERVER_RUNTIME) {
+      return (serverRuntime.dashboard?.activeSessions ?? []).some((session) => (
+        session.kind === 'free_play' && session.status === 'playing' && session.mode === mode
+      ))
+    }
+    return activeGames.some((savedGame) => (
+      savedGame.mode === mode && savedGame.status === 'playing' && freePlayLaunchFromGameKey(savedGame.key) !== null
+    ))
+  }, [activeGames, mode, serverRuntime.dashboard])
   const diagnosisAnamnesis = useMemo(() => {
     if (SERVER_RUNTIME) return null
     if (mode !== 'diagnosis' || !data.diagnosis.length) return null
@@ -4768,7 +4783,7 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
