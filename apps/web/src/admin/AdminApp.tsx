@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
-  Check, ChevronDown, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye,
+  Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye,
   Download, FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
   LoaderCircle, LockKeyhole, Menu, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
@@ -58,6 +58,7 @@ const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.
 const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid'].includes(String(status)) ? 'danger'
   : ['running', 'in_progress', 'warning', 'partially_failed'].includes(String(status)) ? 'warning'
     : ['completed', 'published', 'resolved', 'active', 'ready'].includes(String(status)) ? 'success' : 'neutral'
+const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => typeof value === 'string' && value in MODE_LABEL ? value as ContentMode : fallback
 
 const sectionFromPath = (): { section: Section; id: string | null } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
@@ -380,9 +381,13 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const runItems = items.data?.items ?? []
   const [selectedPipelineItems, setSelectedPipelineItems] = useState<Set<string>>(new Set())
   const [activePipelineItemId, setActivePipelineItemId] = useState<string | null>(null)
+  const [moderationOpen, setModerationOpen] = useState(false)
+  const [moderationIndex, setModerationIndex] = useState(0)
   useEffect(() => {
     setSelectedPipelineItems(new Set())
     setActivePipelineItemId(null)
+    setModerationOpen(false)
+    setModerationIndex(0)
   }, [selectedId])
 
   const isItemReviewable = (item: Record<string, any>) => !['staged', 'published'].includes(String(item.status))
@@ -585,6 +590,24 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const selectedApprovedIds = useMemo(() => selectedItemsData.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [selectedItemsData])
   const approvedItemIds = useMemo(() => runItems.filter((entry) => String(entry.status) === 'approved').map((entry) => String(entry.id)), [runItems])
   const activePipelineItem = useMemo(() => runItems.find((entry) => String(entry.id) === activePipelineItemId) ?? null, [runItems, activePipelineItemId])
+  const reviewQueue = useMemo(() => runItems.filter((entry) => isItemReviewable(record(entry))), [runItems])
+  const moderationRawItem = reviewQueue[moderationIndex] ?? null
+  const moderationItem = moderationRawItem ? record(moderationRawItem) : null
+  const fallbackModerationMode: ContentMode = selectedRun?.pipelineKey === 'movie' ? 'movie' : selectedRun?.pipelineKey === 'anime' ? 'anime' : 'music'
+  const moderationProposed = record(moderationItem?.proposedJson)
+  const moderationMode = asContentMode(moderationProposed.mode, fallbackModerationMode)
+  const moderationTitle = title(moderationProposed.titleRu || moderationProposed.name || moderationItem?.entityKey)
+  const moderationSubtitle = title(moderationProposed.titleOriginal || moderationItem?.entityKey)
+  const moderationWarnings = moderationItem ? pipelineWarnings(moderationItem.warningsJson) : []
+  const moderationHint = (() => {
+    const firstFact = array(moderationProposed.facts).map((entry) => typeof entry === 'string' ? entry.trim() : '').find(Boolean)
+    return [moderationProposed.plotHint, moderationProposed.description, firstFact].map((entry) => typeof entry === 'string' ? entry.trim() : '').find(Boolean) || 'Подсказка не заполнена'
+  })()
+  const moderationPoster = [moderationProposed.posterUrl, moderationProposed.headerUrl, moderationProposed.backdropUrl, ...array(moderationProposed.screenshots)].map((entry) => typeof entry === 'string' ? entry.trim() : '').find(Boolean) || ''
+  useEffect(() => {
+    setModerationIndex((current) => Math.min(current, Math.max(0, reviewQueue.length - 1)))
+    if (!reviewQueue.length) setModerationOpen(false)
+  }, [reviewQueue.length])
 
   const copyJson = async (payload: unknown, label: string) => {
     try {
@@ -643,6 +666,32 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     removeRun.mutate()
   }
 
+  const openModeration = () => {
+    if (!reviewQueue.length) return
+    const targetIndex = activePipelineItemId ? reviewQueue.findIndex((entry) => String(entry.id) === activePipelineItemId) : 0
+    setModerationIndex(targetIndex >= 0 ? targetIndex : 0)
+    setModerationOpen(true)
+  }
+
+  const moveModeration = (direction: -1 | 1) => {
+    setModerationIndex((current) => {
+      const next = current + direction
+      if (next < 0) return 0
+      return Math.min(next, Math.max(0, reviewQueue.length - 1))
+    })
+  }
+
+  const submitModerationDecision = (approved: boolean) => {
+    if (!moderationItem) return
+    const currentItemId = String(moderationItem.id)
+    const nextIndex = Math.min(moderationIndex + 1, Math.max(0, reviewQueue.length - 1))
+    decide.mutate({ itemId: currentItemId, approved }, {
+      onSuccess: () => {
+        setModerationIndex(nextIndex)
+      },
+    })
+  }
+
   return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button></>} />
     <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
     <div className="admin-split admin-split--pipeline">
@@ -669,12 +718,27 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
         <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
         <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
         <div className="admin-pipeline-review">{items.isLoading ? <Loading /> : runItems.length ? <>
-          <header className="admin-pipeline-review__head"><div><h3>Результаты на проверке</h3><small>Таблица для массового согласования. Клик по строке открывает подробный diff справа.</small></div><div><button className="admin-btn admin-btn--secondary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: false })}><X />Отклонить выбранные</button><button className="admin-btn admin-btn--primary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: true })}><Check />Принять выбранные</button></div></header>
+          <header className="admin-pipeline-review__head"><div><h3>Результаты на проверке</h3><small>Таблица для массового согласования. Клик по строке открывает подробный diff справа.</small></div><div><button className="admin-btn admin-btn--secondary" disabled={!reviewQueue.length} onClick={openModeration}><Play />Начать модерацию</button><button className="admin-btn admin-btn--secondary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: false })}><X />Отклонить выбранные</button><button className="admin-btn admin-btn--primary" disabled={!selectedReviewableIds.length || decideBulk.isPending} onClick={() => decideBulk.mutate({ itemIds: selectedReviewableIds, approved: true })}><Check />Принять выбранные</button></div></header>
           <div className="admin-table-wrap admin-table-wrap--pipeline"><table className="admin-table"><thead><tr><th className="admin-check"><input type="checkbox" aria-label="Выбрать все результаты" checked={selectedPipelineItems.size > 0 && selectedPipelineItems.size === runItems.filter((entry) => isItemReviewable(record(entry))).length} onChange={(event) => setSelectedPipelineItems(event.target.checked ? new Set(runItems.filter((entry) => isItemReviewable(record(entry))).map((entry) => String(entry.id))) : new Set())} /></th><th>Карточка</th><th>Статус</th><th>Изменено</th><th>Предупреждения</th><th>Обновлено</th><th /></tr></thead><tbody>{runItems.map((raw) => { const item = record(raw); const proposed = record(item.proposedJson); const fields = itemDiffFields(item); const warnings = pipelineWarnings(item.warningsJson); const itemId = String(item.id); const reviewable = isItemReviewable(item); return <tr key={itemId} className={activePipelineItemId === itemId ? 'is-open' : ''}><td className="admin-check"><input type="checkbox" aria-label={`Выбрать ${title(proposed.titleRu || proposed.name || item.entityKey)}`} disabled={!reviewable} checked={selectedPipelineItems.has(itemId)} onChange={(event) => setSelectedPipelineItems((current) => { const next = new Set(current); event.target.checked ? next.add(itemId) : next.delete(itemId); return next })} /></td><td><button className="admin-title-cell" onClick={() => setActivePipelineItemId(itemId)}><span>{pipelineIcon(selectedRun.pipelineKey)}</span><span><strong>{title(proposed.titleRu || proposed.name || item.entityKey)}</strong><small>{title(item.entityKey)}</small></span></button></td><td><Status value={item.status} /></td><td>{fields.length}</td><td>{warnings.length ? <span className="admin-count admin-count--warn">{warnings.length}</span> : <Check className="admin-table-ok" />}</td><td>{compactDate(item.updatedAt || item.createdAt)}</td><td>{reviewable && <div className="admin-row-actions"><button className="admin-icon-btn" title="Отклонить" onClick={() => decide.mutate({ itemId, approved: false })}><X /></button><button className="admin-icon-btn" title="Принять" onClick={() => decide.mutate({ itemId, approved: true })}><Check /></button></div>}</td></tr> })}</tbody></table></div>
         </> : <Empty title="Результатов пока нет" text={['queued', 'running'].includes(String(selectedRun.status)) ? 'Worker обрабатывает список партиями. Страница обновится автоматически.' : 'Запуск не создал проверяемых результатов.'} />}</div>
         {approvedItemIds.length > 0 && <div className="admin-sticky-actions"><span>Одобрено: {approvedItemIds.length}. «В рабочую версию» только стаджит изменения, «Одобрить и опубликовать» сразу активирует новую ревизию.</span><button className="admin-btn admin-btn--secondary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: false, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>В рабочую версию{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button><button className="admin-btn admin-btn--primary" disabled={approve.isPending} onClick={() => approve.mutate({ publish: true, itemIds: selectedApprovedIds.length ? selectedApprovedIds : undefined })}>Одобрить и опубликовать{selectedApprovedIds.length ? ` · ${selectedApprovedIds.length}` : ''}</button></div>}
       </>}</section>
     </div>
+    {moderationOpen && selectedRun && moderationItem && <div className="admin-modal-backdrop admin-modal-backdrop--moderation" onMouseDown={(event) => event.target === event.currentTarget && setModerationOpen(false)}>
+      <div className="admin-modal admin-modal--moderation">
+        <header><div><span>{pipelineLabel(selectedRun.pipelineKey)} · Ручная модерация</span><h2>Карточка как в игре</h2></div><button onClick={() => setModerationOpen(false)}><X /></button></header>
+        <div className="admin-modal__body admin-modal__body--moderation">
+          <section className="review-stats admin-review-stats"><article><small>Позиция</small><strong>{reviewQueue.length ? `${moderationIndex + 1}/${reviewQueue.length}` : '0/0'}</strong></article><article><small>Ожидают решения</small><strong>{reviewQueue.length}</strong></article><article><small>Подсказка</small><strong>{moderationHint === 'Подсказка не заполнена' ? 'Нет' : 'Есть'}</strong></article></section>
+          <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{moderationHint}</p></article></section>
+          <section className={`review-card ${moderationWarnings.length ? 'has-conflict' : ''}`}>
+            <div className="review-card__head"><span className="review-card__number">{String(moderationIndex + 1).padStart(3, '0')}</span>{moderationPoster ? <img className="review-card__poster" src={moderationPoster} alt={moderationTitle} /> : <div className="review-card__poster admin-review-poster-fallback">{pipelineIcon(selectedRun.pipelineKey)}</div>}<div className="review-card__identity"><span className="attempt-label">{MODE_LABEL[moderationMode]}</span><h2>{moderationTitle}</h2><p className="gm-head__sub"><span className="gm-head__orig">{moderationSubtitle}</span></p></div><div className="review-approval-badge"><small>Статус</small><strong>{STATUS_LABEL[String(moderationItem.status)] ?? title(moderationItem.status)}</strong></div></div>
+            {!!moderationWarnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Предупреждения</strong><span>{moderationWarnings.join(' • ')}</span></div>}
+            <div className="review-card__meta"><span><small>Изменено полей</small><strong>{itemDiffFields(moderationItem).length}</strong></span><span><small>Обновлено</small><strong>{compactDate(moderationItem.updatedAt || moderationItem.createdAt)}</strong></span><span><small>ID карточки</small><strong>{title(moderationItem.entityKey)}</strong></span><span><small>Предупреждения</small><strong>{moderationWarnings.length || 'Нет'}</strong></span></div>
+          </section>
+        </div>
+        <footer className="admin-review-footer"><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(-1)} disabled={moderationIndex === 0 || decide.isPending}><ChevronLeft />Назад</button><button className="admin-btn admin-btn--secondary" onClick={() => submitModerationDecision(false)} disabled={decide.isPending}><X />Не одобрено</button><button className="admin-btn admin-btn--primary" onClick={() => submitModerationDecision(true)} disabled={decide.isPending}><Check />Одобрено</button><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(1)} disabled={moderationIndex >= reviewQueue.length - 1 || decide.isPending}>Дальше<ChevronRight /></button></footer>
+      </div>
+    </div>}
     {selectedRun && activePipelineItem && <div className="admin-drawer"><header className="admin-drawer__head"><div><small>{pipelineLabel(selectedRun.pipelineKey)} · {title(activePipelineItem.entityKey)}</small><h2>{title(record(activePipelineItem.proposedJson).titleRu || record(activePipelineItem.proposedJson).name || activePipelineItem.entityKey)}</h2></div><div><Status value={activePipelineItem.status} /><button onClick={() => setActivePipelineItemId(null)}><X /></button></div></header><div className="admin-drawer__body"><div className="admin-diff">{itemDiffFields(record(activePipelineItem)).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(record(activePipelineItem.beforeJson)[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(record(activePipelineItem.proposedJson)[field], null, 2) ?? '—'}</pre></div>)}</div>{pipelineWarnings(activePipelineItem.warningsJson).length > 0 && <div className="admin-pipeline-item-warnings"><AlertTriangle />{pipelineWarnings(activePipelineItem.warningsJson).join(' · ')}</div>}</div><footer className="admin-drawer__footer"><div><small>{title(activePipelineItem.entityKey)}</small></div><button className="admin-btn admin-btn--secondary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: false })}><X />Отклонить</button><button className="admin-btn admin-btn--primary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: true })}><Check />Принять</button></footer></div>}
     {starting && <div className="admin-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setStarting(false)}>
       <div className="admin-modal admin-modal--pipeline">

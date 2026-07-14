@@ -394,6 +394,15 @@
 .admin-estimate small { grid-column: 1/-1; color: var(--a-muted); font-size: 12px; }
 .admin-modal--pipeline { width: min(880px,100%); }
 .admin-modal--pipeline .admin-modal__body { max-height: calc(100vh - 190px); overflow: auto; }
+.admin-modal-backdrop--moderation { padding: 18px; align-items: center; }
+.admin-modal--moderation { width: min(920px, 100%); max-height: calc(100vh - 36px); display: flex; flex-direction: column; overflow: hidden; }
+.admin-modal--moderation .admin-modal__body--moderation { max-height: calc(100vh - 230px); overflow: auto; grid-template-columns: 1fr; gap: 10px; }
+.admin-review-stats { margin: 0; }
+.admin-review-stats article { min-height: 62px; }
+.admin-review-poster-fallback { color: #f3f4ec; background: #2c2d29; display: grid; place-items: center; }
+.admin-review-poster-fallback svg { width: 24px; height: 24px; }
+.admin-review-footer { min-height: 62px; padding: 9px 17px; border-top: 1px solid var(--a-line); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.admin-review-footer .admin-btn { width: 100%; }
 .admin-modal--exchange { width: min(920px,100%); }
 .admin-modal--exchange .admin-modal__body { max-height: calc(100vh - 250px); overflow: auto; grid-template-columns: 1fr; }
 .admin-exchange-tabs { min-height: 43px; padding: 6px 17px; border-bottom: 1px solid var(--a-line); display: flex; gap: 6px; }
@@ -624,6 +633,10 @@
   .admin-modal-backdrop { padding: 0; align-items: flex-end; }
   .admin-modal--pipeline { max-height: 95dvh; border-radius: 14px 14px 0 0; }
   .admin-modal--pipeline .admin-modal__body { grid-template-columns: 1fr; }
+  .admin-modal-backdrop--moderation { padding: 0; align-items: flex-end; }
+  .admin-modal--moderation { width: 100dvw; max-height: 95dvh; border-radius: 14px 14px 0 0; }
+  .admin-modal--moderation .admin-modal__body--moderation { max-height: calc(95dvh - 196px); padding: 12px; }
+  .admin-review-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px max(10px, env(safe-area-inset-bottom)); }
   .admin-modal--exchange { max-height: 95dvh; border-radius: 14px 14px 0 0; }
   .admin-exchange-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .admin-exchange-fields > div { grid-template-columns: 1fr; }
