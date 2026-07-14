@@ -28,6 +28,12 @@ export const assertNormalizationField = (mode: ContentMode, field: string) => {
   if (!normalizationFields(mode).some((entry) => entry.field === field)) throw new Error(`Поле ${field} нельзя нормализовать для категории ${mode}`)
 }
 
+export const normalizationStartIndex = (itemIds: string[], offset: unknown) => {
+  const parsed = Number(offset)
+  if (!Number.isFinite(parsed)) return 0
+  return Math.max(0, Math.min(itemIds.length, Math.trunc(parsed)))
+}
+
 const record = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
 const extractResponseText = (payload: Json) => typeof payload.output_text === 'string'
   ? payload.output_text

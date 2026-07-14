@@ -938,12 +938,12 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
 
     const pipelineKey = String(run[0].pipelineKey)
-    const jobType = pipelineKey === 'music' ? 'music_pipeline' : pipelineKey === 'movie' ? 'movie_pipeline' : pipelineKey === 'anime' ? 'anime_pipeline' : null
-    if (!jobType) throw new ApiError(409, 'PIPELINE_CONTINUE_UNSUPPORTED', 'Продолжение доступно только для music/movie/anime пайплайнов')
+    const jobType = pipelineKey === 'music' ? 'music_pipeline' : pipelineKey === 'movie' ? 'movie_pipeline' : pipelineKey === 'anime' ? 'anime_pipeline' : pipelineKey === 'normalization' ? 'normalization_pipeline' : null
+    if (!jobType) throw new ApiError(409, 'PIPELINE_CONTINUE_UNSUPPORTED', 'Продолжение недоступно для этого типа пайплайна')
 
     const input = asRecord(run[0].inputDefinitionJson)
     const scenario = String(input.scenario || 'discover')
-    if (scenario !== 'manual') throw new ApiError(409, 'PIPELINE_CONTINUE_MANUAL_ONLY', 'Продолжение доступно только для ручного сценария')
+    if (pipelineKey !== 'normalization' && scenario !== 'manual') throw new ApiError(409, 'PIPELINE_CONTINUE_MANUAL_ONLY', 'Продолжение доступно только для ручного сценария')
 
     const nonResumableStatuses = new Set(['review_required', 'approved', 'staged', 'published', 'partially_published'])
     if (nonResumableStatuses.has(run[0].status)) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Запуск уже завершён; продолжать нечего')
@@ -964,16 +964,18 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
     const processedItems = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, runId))
     const processed = Math.max(Number(run[0].itemsProcessed ?? 0), Number(processedItems[0]?.count ?? 0))
-    const manualTotal = pipelineKey === 'music'
+    const inputTotal = pipelineKey === 'normalization'
+      ? (Array.isArray(input.itemIds) ? input.itemIds.filter((entry) => typeof entry === 'string' && entry.trim().length > 0).length : 0)
+      : pipelineKey === 'music'
       ? (Array.isArray(input.artists) ? input.artists.map(asRecord).filter((entry) => typeof entry.artist === 'string' && entry.artist.trim().length > 0).length : 0)
       : pipelineKey === 'movie'
         ? (Array.isArray(input.movies) ? input.movies.length : 0)
         : (Array.isArray(input.anime) ? input.anime.length : 0)
-    const total = Math.max(Number(run[0].itemsTotal ?? 0), manualTotal)
+    const total = Math.max(Number(run[0].itemsTotal ?? 0), inputTotal)
     const offset = Math.max(0, Math.min(total, Math.trunc(processed)))
     if (total <= 0 || offset >= total) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Все элементы уже обработаны. Продолжать нечего')
 
-    const resumeKey = `${runId}:manual:${offset}`
+    const resumeKey = `${runId}:${pipelineKey === 'normalization' ? 'normalization' : 'manual'}:${offset}`
     let job = (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, resumeKey)).limit(1))[0]
     if (job) {
       job = (await deps.db.update(backgroundJobs).set({

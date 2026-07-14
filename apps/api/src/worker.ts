@@ -17,7 +17,7 @@ import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
-import { assertNormalizationField, normalizeProposedValue, requestNormalization } from './modules/admin/normalization-pipeline.js'
+import { assertNormalizationField, normalizationStartIndex, normalizeProposedValue, requestNormalization } from './modules/admin/normalization-pipeline.js'
 import { ApiError } from './lib/errors.js'
 
 type Json = Record<string, unknown>
@@ -636,6 +636,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   assertNormalizationField(mode, field)
   const itemIds = strings(input.itemIds)
   if (!itemIds.length) throw new ApiError(422, 'NORMALIZATION_ITEMS_EMPTY', 'В запуске нет карточек')
+  const offset = normalizationStartIndex(itemIds, record(job.payload).offset)
   const environment = await loadIntegrationEnvironment(db, config)
   if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'OpenAI API key не настроен')
   await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId }).where(eq(pipelineRuns.id, run.id))
@@ -643,7 +644,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
     .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
     .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, mode), inArray(contentItemVersions.itemId, itemIds)))
   const cardById = new Map(activeCards.map((card) => [card.itemId, card]))
-  for (let index = 0; index < itemIds.length; index += 1) {
+  for (let index = offset; index < itemIds.length; index += 1) {
     const cancellation = await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, run.id)).limit(1)
     if (cancellation[0]?.cancelRequestedAt) {
       await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date(), heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id))
