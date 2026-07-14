@@ -3306,7 +3306,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const promoDisclaimer = isPromoSession ? session.promoPrompt?.disclaimer?.trim() || '' : ''
 
   const attempts = session.attempts.map(serverAttemptToLegacy)
-  const matchedTags = useMemo(() => collectMatchedTags(attempts), [attempts])
+  const matchedTags = collectMatchedTags(attempts)
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
