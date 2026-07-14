@@ -1312,7 +1312,7 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts }: {
+function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts }: {
   mode: TitleMode
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
@@ -1333,6 +1333,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   completedPeriods: PeriodKey[]
   onUnlockPeriod: (period: PeriodKey) => boolean | Promise<boolean>
   onStartFreePlay: () => void
+  freePlayArmed: boolean
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
@@ -1340,17 +1341,25 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   setDifficulty: (difficulty: DifficultyKey) => void
   difficultyCounts: Record<DifficultyKey, number> | null
 }) {
-  const periodLocked = canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
+  const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
-  const canStart = !periodLocked || periodShortage === 0
-  const playButtonLabel = periodLocked
-    ? periodShortage > 0
-      ? `Не хватает ${formatTickets(periodShortage)}`
-      : `Открыть за ${formatTickets(periodCost)}`
-    : 'Начать игру'
+  const canStart = freePlayArmed ? freePlayShortage === 0 : !periodLocked || periodShortage === 0
+  const playButtonLabel = freePlayArmed
+    ? freePlayShortage > 0
+      ? `Не хватает ${formatTickets(freePlayShortage)}`
+      : 'Начать свободную игру'
+    : periodLocked
+      ? periodShortage > 0
+        ? `Не хватает ${formatTickets(periodShortage)}`
+        : `Открыть за ${formatTickets(periodCost)}`
+      : 'Начать игру'
   const startSelectedPeriod = async () => {
     if (!canStart) return
+    if (freePlayArmed) {
+      onPlay()
+      return
+    }
     if (periodLocked && !(await onUnlockPeriod(period))) return
     onPlay()
   }
@@ -4065,6 +4074,7 @@ function GameApp() {
   const [date, setDate] = useState(() => challenge?.date ?? getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [freePlayLaunch, setFreePlayLaunch] = useState<number | null>(null)
+  const [freePlayArmed, setFreePlayArmed] = useState(false)
   const [serverSessionId, setServerSessionId] = useState<string | null>(() => {
     if (!SERVER_RUNTIME || typeof window === 'undefined') return null
     return window.sessionStorage.getItem('shoditsa:active-server-session')
@@ -4127,6 +4137,7 @@ function GameApp() {
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
     setDate(session.puzzleDate)
     setFreePlayLaunch(session.kind === 'free_play' ? 1 : null)
+    setFreePlayArmed(false)
     setTransition('idle')
     setModal(null)
     setScreen('game')
@@ -4355,6 +4366,7 @@ function GameApp() {
   const moveToScreen = (target: 'hub' | 'title' | 'rewatch' | 'profile') => {
     clearTransitionTimer()
     setTransition('idle')
+    setFreePlayArmed(false)
     if (target !== 'profile' && typeof window !== 'undefined') {
       const url = new URL(window.location.href)
       if (url.searchParams.has('tab')) {
@@ -4409,10 +4421,11 @@ function GameApp() {
     }
   }, [modal, activeGames.length])
 
-  const openSavedSession = (savedGame: SavedGame, backTarget: 'hub' | 'rewatch' = 'hub') => {
+  const openSavedSession = (savedGame: SavedGame, backTarget: 'hub' | 'rewatch' | 'title' = 'hub') => {
     trackMetrikaGoal('open_saved_session', { mode: savedGame.mode, status: savedGame.status, backTarget })
     clearTransitionTimer()
     setTransition('idle')
+    setFreePlayArmed(false)
     if (SERVER_RUNTIME && savedGame.key.startsWith('server:')) {
       const sessionId = savedGame.key.slice('server:'.length)
       setServerSessionId(sessionId)
@@ -4460,6 +4473,7 @@ function GameApp() {
       }
     }
     setFreePlayLaunch(null)
+    setFreePlayArmed(false)
     setModeSafe(nextMode)
     setDate(getMoscowDate())
     setScreen('title')
@@ -4473,6 +4487,7 @@ function GameApp() {
     clearTransitionTimer()
     setTransition('idle')
     setFreePlayLaunch(null)
+    setFreePlayArmed(false)
     setModeSafe(challenge.mode)
     setPeriod(challenge.mode === 'movie' || challenge.mode === 'series' || challenge.mode === 'anime' ? challenge.period : 'all')
     if (challenge.difficulty) setDifficulty(challenge.difficulty)
@@ -4508,6 +4523,7 @@ function GameApp() {
     setChallenge(null)
     setChallengeAccepted(false)
     setFreePlayLaunch(null)
+    setFreePlayArmed(false)
     if (!nextMode) {
       setDate(getMoscowDate())
       setScreen('rewatch')
@@ -4575,48 +4591,44 @@ function GameApp() {
     refreshEconomy()
     return true
   }
-  const playToday = () => {
-    if (transition === 'title-to-game') return
-    trackMetrikaGoal('start_session', { mode, period })
-    if (SERVER_RUNTIME) {
-      setServerActionError('')
-      const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
-      startServerSession.mutate({
-        body: {
-          kind: 'daily',
-          mode,
-          period,
-          difficulty: mode === 'music' ? apiDifficulty(difficulty) : null,
-          archiveDate: null,
-        },
-        backTarget,
-      })
-      return
-    }
-    adminDailySaltRef.current = 0
-    setAdminDailySalt(0)
-    setFreePlayLaunch(null)
-    const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
-    setGameBackTarget(backTarget)
-    setDate(getMoscowDate())
-    setModal(null)
-    window.scrollTo({ top: 0 })
-    if (screen !== 'title') {
-      clearTransitionTimer()
-      setTransition('idle')
-      setScreen('game')
-      return
-    }
-    setTransition('title-to-game')
-  }
-  const startFreePlay = () => {
+  const launchFreePlay = () => {
     if (transition === 'title-to-game') return
     if (!FREE_PLAY_MODES.has(mode)) return
 
+    const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
+
     if (SERVER_RUNTIME) {
       setServerActionError('')
-      const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
+      const activeServerFreePlay = (serverRuntime.dashboard?.activeSessions ?? []).find((session) => (
+        session.kind === 'free_play' && session.status === 'playing' && session.mode === mode
+      ))
+      if (activeServerFreePlay) {
+        setServerSessionId(activeServerFreePlay.id)
+        window.sessionStorage.setItem('shoditsa:active-server-session', activeServerFreePlay.id)
+        setGameBackTarget(backTarget)
+        setModeSafe(activeServerFreePlay.mode)
+        setPeriod(activeServerFreePlay.period)
+        if (activeServerFreePlay.mode === 'music' && activeServerFreePlay.difficulty) setDifficulty(activeServerFreePlay.difficulty)
+        setDate(activeServerFreePlay.puzzleDate)
+        setFreePlayLaunch(1)
+        setFreePlayArmed(false)
+        setTransition('idle')
+        setModal(null)
+        setScreen('game')
+        window.scrollTo({ top: 0 })
+        return
+      }
+      setFreePlayArmed(false)
       startServerFreePlay.mutate({ key: crypto.randomUUID(), backTarget })
+      return
+    }
+
+    const activeLocalFreePlay = activeGames.find((savedGame) => (
+      savedGame.mode === mode && savedGame.status === 'playing' && freePlayLaunchFromGameKey(savedGame.key) !== null
+    ))
+    if (activeLocalFreePlay) {
+      setFreePlayArmed(false)
+      openSavedSession(activeLocalFreePlay, backTarget)
       return
     }
 
@@ -4645,11 +4657,11 @@ function GameApp() {
       nextLaunchNumber,
     })
 
-    const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
     setGameBackTarget(backTarget)
     setPeriod('all')
     setDate(today)
     setFreePlayLaunch(nextLaunchNumber)
+    setFreePlayArmed(false)
     setModal(null)
     window.scrollTo({ top: 0 })
     refreshEconomy()
@@ -4663,8 +4675,55 @@ function GameApp() {
 
     setTransition('title-to-game')
   }
+  const playToday = () => {
+    if (freePlayArmed) {
+      launchFreePlay()
+      return
+    }
+    if (transition === 'title-to-game') return
+    trackMetrikaGoal('start_session', { mode, period })
+    if (SERVER_RUNTIME) {
+      setServerActionError('')
+      setFreePlayArmed(false)
+      const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
+      startServerSession.mutate({
+        body: {
+          kind: 'daily',
+          mode,
+          period,
+          difficulty: mode === 'music' ? apiDifficulty(difficulty) : null,
+          archiveDate: null,
+        },
+        backTarget,
+      })
+      return
+    }
+    adminDailySaltRef.current = 0
+    setAdminDailySalt(0)
+    setFreePlayLaunch(null)
+    setFreePlayArmed(false)
+    const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
+    setGameBackTarget(backTarget)
+    setDate(getMoscowDate())
+    setModal(null)
+    window.scrollTo({ top: 0 })
+    if (screen !== 'title') {
+      clearTransitionTimer()
+      setTransition('idle')
+      setScreen('game')
+      return
+    }
+    setTransition('title-to-game')
+  }
+  const startFreePlay = () => {
+    if (!FREE_PLAY_MODES.has(mode)) return
+    setServerActionError('')
+    setFreePlayArmed(true)
+    setPeriod('all')
+  }
   const openArchive = (archiveDate: string, savedGame: SavedGame | null) => {
     trackMetrikaGoal('open_archive_day', { hasSavedSession: Boolean(savedGame) })
+    setFreePlayArmed(false)
     if (savedGame) {
       openSavedSession(savedGame, 'rewatch')
       return
@@ -4687,10 +4746,15 @@ function GameApp() {
     setTransition('idle')
     setGameBackTarget('rewatch')
     setFreePlayLaunch(null)
+    setFreePlayArmed(false)
     setDate(archiveDate)
     setScreen('game')
     setModal(null)
     window.scrollTo({ top: 0 })
+  }
+  const setPeriodFromTitle = (nextPeriod: PeriodKey) => {
+    setFreePlayArmed(false)
+    setPeriod(nextPeriod)
   }
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
   const completeTitleTransition = () => {
@@ -4704,7 +4768,7 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriod} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
+    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
