@@ -693,7 +693,22 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const id = (request.params as { id: string }).id
     const run = await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id)).limit(1)
     if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
-    if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Нельзя удалить запущенный пайплайн')
+    let cancelledJobs = 0
+    if (['queued', 'running'].includes(run[0].status)) {
+      const staleAfterMs = Math.max(30_000, deps.config.workerStaleAfterMs)
+      const heartbeatTs = run[0].heartbeatAt?.getTime() ?? run[0].startedAt?.getTime() ?? run[0].createdAt.getTime()
+      const stale = Date.now() - heartbeatTs > staleAfterMs
+      if (!stale) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Нельзя удалить активный пайплайн: сначала остановите процесс или дождитесь stale heartbeat')
+      const cancelled = await deps.db.update(backgroundJobs).set({
+        status: 'cancelled',
+        finishedAt: new Date(),
+        nextRetryAt: null,
+        heartbeatAt: new Date(),
+        errorCode: 'PIPELINE_RUN_DELETED',
+        safeErrorMessage: 'Задача отменена при удалении зависшего пайплайна',
+      }).where(and(eq(backgroundJobs.pipelineRunId, id), sql`${backgroundJobs.status} in ('queued','running')`)).returning({ id: backgroundJobs.id })
+      cancelledJobs = cancelled.length
+    }
     const items = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, id))
     await deps.db.delete(pipelineRuns).where(eq(pipelineRuns.id, id))
     await deps.db.insert(auditLog).values({
@@ -702,10 +717,10 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       entityType: 'pipeline_run',
       entityId: id,
       before: run[0],
-      after: { deleted: true, items: items[0]?.count ?? 0 },
+      after: { deleted: true, items: items[0]?.count ?? 0, cancelledJobs },
       requestId: request.id,
     })
-    return { deleted: true, runId: id, removedItems: items[0]?.count ?? 0 }
+    return { deleted: true, runId: id, removedItems: items[0]?.count ?? 0, cancelledJobs }
   })
 
   app.get('/api/v1/admin/pipeline-runs/:id', { schema: { params } }, async (request, reply) => {

@@ -440,6 +440,82 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
+  const isPipelineKey = (value: unknown): value is PipelineKey => value === 'music' || value === 'movie' || value === 'anime'
+  const safeText = (value: unknown) => typeof value === 'string' ? value.trim() : ''
+  const buildRestartPayload = (run: Record<string, any>) => {
+    const input = record(run.inputDefinitionJson)
+    const settings = record(run.settingsJson)
+    const rawScenario = String(input.scenario || 'discover')
+    const scenario = ['discover', 'candidates', 'review', 'selected', 'manual'].includes(rawScenario) ? rawScenario : 'discover'
+    const payload: Record<string, unknown> = {
+      scenario,
+      maxItems: Math.max(1, Math.min(20, Number(settings.maxItems ?? run.itemsTotal ?? 5) || 5)),
+      aiMode: settings.aiMode === 'never' ? 'never' : 'auto',
+      model: 'gpt-5-mini',
+      webSearch: settings.webSearch !== false,
+    }
+    if (scenario === 'selected') {
+      const itemIds = array(input.itemIds).map((entry) => String(entry).trim()).filter(Boolean).slice(0, 20)
+      if (itemIds.length) payload.itemIds = itemIds
+    }
+    if (scenario === 'manual') {
+      if (run.pipelineKey === 'music') {
+        const artists = array(input.artists).map((entry) => {
+          const source = record(entry)
+          const artist = safeText(source.artist)
+          if (!artist) return null
+          const country = safeText(source.country)
+          const hint = safeText(source.hint)
+          return { artist, ...(country ? { country } : {}), ...(hint ? { hint } : {}) }
+        }).filter(Boolean).slice(0, 500)
+        if (!artists.length) throw new Error('В исходном запуске нет валидного списка исполнителей для перезапуска')
+        payload.artists = artists
+      }
+      if (run.pipelineKey === 'movie') {
+        const movies = array(input.movies).map((entry) => {
+          const source = record(entry)
+          const kinopoiskId = Number(source.kinopoiskId)
+          if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) {
+            const hint = safeText(source.hint)
+            return { kinopoiskId, ...(hint ? { hint } : {}) }
+          }
+          const query = safeText(source.query)
+          if (!query) return null
+          const yearValue = Number(source.year)
+          return Number.isInteger(yearValue) ? { query, year: yearValue } : { query }
+        }).filter(Boolean).slice(0, 500)
+        if (!movies.length) throw new Error('В исходном запуске нет валидного списка фильмов для перезапуска')
+        payload.movies = movies
+      }
+      if (run.pipelineKey === 'anime') {
+        const anime = array(input.anime).map((entry) => {
+          const source = record(entry)
+          const shikimoriId = Number(source.shikimoriId)
+          if (!Number.isInteger(shikimoriId) || shikimoriId <= 0) return null
+          const hint = safeText(source.hint)
+          return { shikimoriId, ...(hint ? { hint } : {}) }
+        }).filter(Boolean).slice(0, 500)
+        if (!anime.length) throw new Error('В исходном запуске нет валидного списка аниме для перезапуска')
+        payload.anime = anime
+      }
+    }
+    return payload
+  }
+  const restartRun = useMutation({
+    mutationFn: async () => {
+      if (!selectedRun) throw new Error('Запуск не выбран')
+      if (!isPipelineKey(selectedRun.pipelineKey)) throw new Error('Перезапуск доступен только для music/movie/anime')
+      return adminApi.startPipeline(selectedRun.pipelineKey, buildRestartPayload(record(selectedRun)))
+    },
+    onSuccess: (data) => {
+      notify('success', 'Процесс перезапущен')
+      navigate('pipelines', data.runId)
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events'] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const cancel = useMutation({ mutationFn: () => adminApi.cancelPipeline(selectedId!), onSuccess: () => { notify('info', 'Остановка запрошена'); void runs.refetch() }, onError: (error) => notify('error', errorText(error)) })
   const removeRun = useMutation({
     mutationFn: () => adminApi.deletePipelineRun(selectedId!),
@@ -511,9 +587,19 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     cleanupRuns.mutate(keepLatest)
   }
 
+  const requestRestartRun = () => {
+    if (!selectedRun) return
+    if (!confirm('Перезапустить процесс с теми же входными данными и настройками? Будет создан новый запуск.')) return
+    restartRun.mutate()
+  }
+
   const requestDeleteRun = () => {
     if (!selectedRun) return
-    if (!confirm('Удалить этот запуск и все его результаты? Действие необратимо.')) return
+    const active = ['queued', 'running'].includes(String(selectedRun.status))
+    const message = active
+      ? 'Удалить процесс и все его результаты? Для активного запуска удаление возможно только при stale heartbeat.'
+      : 'Удалить этот запуск и все его результаты? Действие необратимо.'
+    if (!confirm(message)) return
     removeRun.mutate()
   }
 
@@ -538,7 +624,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
         })}
       </section>
       <section className="admin-detail-panel">{!selectedRun ? <Empty title="Выберите запуск" text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям." icon={<WandSparkles />} /> : <>
-        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending}><X />Остановить</button>}{!['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={requestDeleteRun} disabled={removeRun.isPending}><Trash2 />Удалить</button>}<Status value={selectedRun.status} /></div></header>
+        <header className="admin-detail-head"><div><span>Запуск {String(selectedRun.id).slice(0, 8)}</span><h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2><p>{formatDate(selectedRun.createdAt)} · {title(record(selectedRun.settingsJson).model)}</p></div><div className="admin-detail-head__actions"><button onClick={() => void navigator.clipboard.writeText(String(selectedRun.id))}><Copy />ID</button><button onClick={requestRestartRun} disabled={restartRun.isPending}><RefreshCw />Перезапустить процесс</button>{['queued', 'running'].includes(String(selectedRun.status)) && <button onClick={() => cancel.mutate()} disabled={cancel.isPending}><X />Остановить</button>}<button onClick={requestDeleteRun} disabled={removeRun.isPending || cancel.isPending}><Trash2 />Удалить процесс</button><Status value={selectedRun.status} /></div></header>
         <div className="admin-run-progress"><div><span>Обработано</span><strong>{String(selectedRun.itemsProcessed ?? 0)} / {String(selectedRun.itemsTotal ?? 0)}</strong></div><i><b style={{ width: `${progressPercent}%` }} /></i><div><span>Успешно {String(selectedRun.itemsSucceeded ?? 0)}</span><span>Ошибок {String(selectedRun.itemsFailed ?? 0)}</span><span>Оценка ${Number(selectedRun.estimatedCost ?? 0).toFixed(2)}</span><strong>Фактически ${Number(selectedRun.actualCost ?? 0).toFixed(6)}</strong></div></div>
         <div className="admin-run-live"><header><div><strong>Ход выполнения</strong><small>{lifecycleMessage}</small></div><span className={`admin-run-pulse ${['queued', 'running'].includes(String(selectedRun.status)) ? 'is-live' : ''} ${stale ? 'is-stale' : ''}`}>{stale ? 'нет heartbeat' : heartbeatAgeSec == null ? 'ожидание' : `${heartbeatAgeSec}s`}</span></header><div className="admin-run-live__stats"><span>В очереди/в работе: {String(Number(statsByStatus.pending ?? 0) + Number(statsByStatus.running ?? 0))}</span><span>На проверке: {String(statsByStatus.review_required ?? 0)}</span><span>Провалено: {String(statsByStatus.failed ?? 0)}</span><span>Одобрено: {String(statsByStatus.approved ?? 0)}</span></div>{eventRows.length ? <div className="admin-run-events">{eventRows.slice(0, 24).map((entry) => <div key={String(entry.id)}><time>{compactDate(entry.at)}</time><p>{title(entry.message)}</p><small>{entry.status ? STATUS_LABEL[String(entry.status)] ?? String(entry.status) : title(entry.type)}</small></div>)}</div> : <p className="admin-run-events__empty">События пока не поступили</p>}<details className="admin-run-journal" open={Boolean(['queued', 'running'].includes(String(selectedRun.status)) && journalLines.length)}><summary>Журнал процесса ({journalLines.length})</summary>{journalLines.length ? <pre>{journalLines.join('\n')}</pre> : <p>Лог пока пуст.</p>}</details></div>
         <div className="admin-run-settings"><header><h3>Настройки запуска</h3><div><button className="admin-link" onClick={() => void copyJson(record(selectedRun.inputDefinitionJson), 'Input JSON')}><Copy />Скопировать input</button><button className="admin-link" onClick={() => void copyJson(record(selectedRun.settingsJson), 'Settings JSON')}><Copy />Скопировать settings</button></div></header><div><article><span>Input definition</span><pre>{JSON.stringify(record(selectedRun.inputDefinitionJson), null, 2)}</pre></article><article><span>Settings</span><pre>{JSON.stringify(record(selectedRun.settingsJson), null, 2)}</pre></article></div></div>
