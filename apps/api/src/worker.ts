@@ -75,14 +75,20 @@ const runCommand = async (args: string[], runId: string, jobId: string, integrat
   let output = ''
   const append = (chunk: Buffer) => { output = `${output}${chunk.toString('utf8')}`.slice(-12_000) }
   child.stdout.on('data', append); child.stderr.on('data', append)
-  const heartbeat = setInterval(async () => {
-    const cancellation = await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
-    if (cancellation[0]?.cancelRequestedAt) child.kill('SIGTERM')
-    await Promise.all([
-      db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { message: output.split(/\r?\n/).filter(Boolean).at(-1) ?? 'Выполняется' } }).where(eq(backgroundJobs.id, jobId)),
-      db.update(pipelineRuns).set({ heartbeatAt: new Date(), logExcerpt: redactSecrets(output) }).where(eq(pipelineRuns.id, runId)),
-    ])
-  }, config.workerHeartbeatIntervalMs)
+  const heartbeatTick = async () => {
+    try {
+      const cancellation = await db.select({ cancelRequestedAt: pipelineRuns.cancelRequestedAt }).from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+      if (cancellation[0]?.cancelRequestedAt) child.kill('SIGTERM')
+      await Promise.all([
+        db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: { message: output.split(/\r?\n/).filter(Boolean).at(-1) ?? 'Выполняется' } }).where(eq(backgroundJobs.id, jobId)),
+        db.update(pipelineRuns).set({ heartbeatAt: new Date(), logExcerpt: redactSecrets(output) }).where(eq(pipelineRuns.id, runId)),
+      ])
+    } catch (error) {
+      console.error(`[worker] heartbeat update failed run=${runId} job=${jobId}: ${safeError(error)}`)
+    }
+  }
+  const heartbeat = setInterval(() => { void heartbeatTick() }, config.workerHeartbeatIntervalMs)
+  void heartbeatTick()
   try {
     const exitCode = await new Promise<number | null>((resolveExit, reject) => { child.once('error', reject); child.once('exit', resolveExit) })
     if (exitCode !== 0) throw new Error(output.split(/\r?\n/).filter(Boolean).slice(-8).join('\n') || `Pipeline worker exited with ${exitCode}`)
