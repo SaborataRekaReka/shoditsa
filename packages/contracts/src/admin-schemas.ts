@@ -164,6 +164,7 @@ const MusicPipelineRequestProperties = {
   aiMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('never')])),
   model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
   webSearch: Type.Optional(Type.Boolean()),
+  includeExisting: Type.Optional(Type.Boolean()),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 20 })),
   artists: Type.Optional(Type.Array(MusicPipelineArtistSchema, { minItems: 1, maxItems: 500 })),
 }
@@ -197,6 +198,7 @@ const MoviePipelineRequestProperties = {
   aiMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('never')])),
   model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
   webSearch: Type.Optional(Type.Boolean()),
+  includeExisting: Type.Optional(Type.Boolean()),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 20 })),
   movies: Type.Optional(Type.Array(MoviePipelineItemSchema, { minItems: 1, maxItems: 500 })),
 }
@@ -223,6 +225,7 @@ const AnimePipelineRequestProperties = {
   aiMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('never')])),
   model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
   webSearch: Type.Optional(Type.Boolean()),
+  includeExisting: Type.Optional(Type.Boolean()),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 20 })),
   anime: Type.Optional(Type.Array(AnimePipelineItemSchema, { minItems: 1, maxItems: 500 })),
 }

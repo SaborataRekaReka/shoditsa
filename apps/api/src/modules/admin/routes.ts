@@ -797,7 +797,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (body.scenario === 'manual') {
       if (!body.artists?.length) throw new ApiError(422, 'PIPELINE_ARTISTS_REQUIRED', 'Добавьте хотя бы одного исполнителя')
       const preview = await previewManualArtists(deps.db, body.artists)
-      manualArtists = preview.items.filter((entry) => entry.status === 'ready').map(({ artist, country, hint }) => ({ artist, ...(country ? { country } : {}), ...(hint ? { hint } : {}) }))
+      manualArtists = preview.items.filter((entry) => entry.status === 'ready' || (body.includeExisting === true && entry.status === 'existing_card')).map(({ artist, country, hint }) => ({ artist, ...(country ? { country } : {}), ...(hint ? { hint } : {}) }))
       if (!manualArtists.length) throw new ApiError(409, 'PIPELINE_ARTISTS_ALREADY_EXIST', 'В списке нет новых исполнителей для обработки', preview.summary)
     }
     if (body.scenario === 'discover' || body.aiMode !== 'never') {
@@ -809,7 +809,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const estimatedCalls = body.aiMode === 'never' ? 0 : body.scenario === 'manual' ? manualArtists.length : body.scenario === 'discover' ? body.maxItems * 2 : body.maxItems
     const run = (await deps.db.insert(pipelineRuns).values({
       pipelineKey: 'music', pipelineVersion: 'music-cli-v2', status: 'queued', createdBy: actor.id, itemsTotal: body.scenario === 'manual' ? manualArtists.length : body.maxItems,
-      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], artists: manualArtists },
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], artists: manualArtists, includeExisting: body.includeExisting ?? false },
       settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
       estimatedCost: String((estimatedCalls * .02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]
@@ -839,7 +839,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       if (!body.movies?.length) throw new ApiError(422, 'PIPELINE_MOVIES_REQUIRED', 'Добавьте хотя бы один фильм')
       const preview = await previewManualMovies(deps.db, body.movies)
       for (const entry of preview.items) {
-        if (entry.status !== 'ready') continue
+        if (entry.status !== 'ready' && !(body.includeExisting === true && entry.status === 'existing_card')) continue
         if (typeof entry.kinopoiskId === 'number') {
           manualMovies.push({ kinopoiskId: entry.kinopoiskId, ...(entry.hint ? { hint: entry.hint } : {}) })
         } else if (entry.query) {
@@ -856,7 +856,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const estimatedCalls = body.aiMode === 'never' ? 0 : itemCount
     const run = (await deps.db.insert(pipelineRuns).values({
       pipelineKey: 'movie', pipelineVersion: 'kinopoisk-cli-v1', status: 'queued', createdBy: actor.id, itemsTotal: itemCount,
-      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], movies: manualMovies },
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], movies: manualMovies, includeExisting: body.includeExisting ?? false },
       settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
       estimatedCost: String((estimatedCalls * .02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]
@@ -884,7 +884,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (body.scenario === 'manual') {
       if (!body.anime?.length) throw new ApiError(422, 'PIPELINE_ANIME_REQUIRED', 'Добавьте хотя бы один ID Shikimori')
       const preview = await previewManualAnime(deps.db, body.anime)
-      manualAnime = preview.items.filter((entry) => entry.status === 'ready').map(({ shikimoriId, hint }) => ({ shikimoriId, ...(hint ? { hint } : {}) }))
+      manualAnime = preview.items.filter((entry) => entry.status === 'ready' || (body.includeExisting === true && entry.status === 'existing_card')).map(({ shikimoriId, hint }) => ({ shikimoriId, ...(hint ? { hint } : {}) }))
       if (!manualAnime.length) throw new ApiError(409, 'PIPELINE_ANIME_ALREADY_EXIST', 'В списке нет новых аниме для обработки', preview.summary)
     }
     const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
@@ -896,7 +896,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const estimatedCalls = body.aiMode === 'never' ? 0 : itemCount
     const run = (await deps.db.insert(pipelineRuns).values({
       pipelineKey: 'anime', pipelineVersion: 'shikimori-cli-v1', status: 'queued', createdBy: actor.id, itemsTotal: itemCount,
-      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], anime: manualAnime },
+      inputDefinitionJson: { scenario: body.scenario, itemIds: body.itemIds ?? [], anime: manualAnime, includeExisting: body.includeExisting ?? false },
       settingsJson: { maxItems: body.maxItems, aiMode: body.aiMode ?? 'auto', model: body.model ?? deps.config.musicPipelineModel, webSearch: body.webSearch ?? true },
       estimatedCost: String((estimatedCalls * .02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]

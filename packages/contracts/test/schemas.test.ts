@@ -27,20 +27,20 @@ describe('API schemas', () => {
   it('accepts a bounded manual music artist queue', () => {
     const artists = [{ artist: 'Кино' }, { artist: 'Phoenix', country: 'Франция', hint: 'indie rock band' }]
     expect(Value.Check(MusicPipelineManualPreviewBodySchema, { artists })).toBe(true)
-    expect(Value.Check(MusicPipelineRunBodySchema, { scenario: 'manual', maxItems: 5, artists, confirmation: true })).toBe(true)
+    expect(Value.Check(MusicPipelineRunBodySchema, { scenario: 'manual', maxItems: 5, artists, includeExisting: true, confirmation: true })).toBe(true)
     expect(Value.Check(MusicPipelineManualPreviewBodySchema, { artists: Array.from({ length: 501 }, (_, index) => ({ artist: `Artist ${index}` })) })).toBe(false)
   })
   it('accepts a bounded manual Kinopoisk movie queue', () => {
     const movies = [{ kinopoiskId: 326 }, { query: 'В поисках Немо', year: 2003 }, { query: 'Интерстеллар' }]
     expect(Value.Check(MoviePipelineManualPreviewBodySchema, { movies })).toBe(true)
-    expect(Value.Check(MoviePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, movies, confirmation: true })).toBe(true)
+    expect(Value.Check(MoviePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, movies, includeExisting: true, confirmation: true })).toBe(true)
     expect(Value.Check(MoviePipelineManualPreviewBodySchema, { movies: [{ kinopoiskId: 0 }] })).toBe(false)
     expect(Value.Check(MoviePipelineManualPreviewBodySchema, { movies: [{ query: 'Бэтмен', year: 1800 }] })).toBe(false)
   })
   it('accepts a bounded manual Shikimori anime queue', () => {
     const anime = [{ shikimoriId: 16498 }, { shikimoriId: 5114, hint: 'проверить студию' }]
     expect(Value.Check(AnimePipelineManualPreviewBodySchema, { anime })).toBe(true)
-    expect(Value.Check(AnimePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, anime, confirmation: true })).toBe(true)
+    expect(Value.Check(AnimePipelineRunBodySchema, { scenario: 'manual', maxItems: 5, anime, includeExisting: true, confirmation: true })).toBe(true)
     expect(Value.Check(AnimePipelineManualPreviewBodySchema, { anime: [{ shikimoriId: 0 }] })).toBe(false)
   })
   it('accepts a self-describing selective content exchange document', () => {

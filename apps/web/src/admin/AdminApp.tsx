@@ -2021,6 +2021,11 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     refetchInterval: selectedRun && ['queued', 'running'].includes(String(selectedRun.status)) ? 2_500 : false,
   })
   const [scenario, setScenario] = useState('manual'); const [maxItems, setMaxItems] = useState(5); const [starting, setStarting] = useState(false); const [pipelineKey, setPipelineKey] = useState<PipelineKey>('music')
+  const [repeatSourceRunId, setRepeatSourceRunId] = useState<string | null>(null)
+  const [pipelineAiMode, setPipelineAiMode] = useState<'auto' | 'never'>('auto')
+  const [pipelineWebSearch, setPipelineWebSearch] = useState(true)
+  const [includeExisting, setIncludeExisting] = useState(false)
+  const [selectedPipelineIdsText, setSelectedPipelineIdsText] = useState('')
   const [normalizationMode, setNormalizationMode] = useState<ContentMode>('music')
   const [normalizationField, setNormalizationField] = useState('activityStartYear')
   const [normalizationPrompt, setNormalizationPrompt] = useState('Проверь по надежным источникам и унифицируй значение. Для сольного артиста укажи первый подтвержденный год профессиональной музыкальной деятельности или дебюта, для группы — год основания. Никогда не используй год рождения. Если надежных данных нет — очисти поле.')
@@ -2032,18 +2037,20 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const [normalizationIncludeTags, setNormalizationIncludeTags] = useState<string[]>([])
   const [normalizationExcludeTags, setNormalizationExcludeTags] = useState<string[]>([])
   const [normalizationTagMatch, setNormalizationTagMatch] = useState<'all' | 'any'>('all')
+  const [normalizationPrefilled, setNormalizationPrefilled] = useState(false)
   const [artistText, setArtistText] = useState(''); const artists = useMemo(() => parseArtistList(artistText), [artistText])
   const [movieText, setMovieText] = useState(''); const movies = useMemo(() => parseMovieList(movieText), [movieText])
   const [animeText, setAnimeText] = useState(''); const anime = useMemo(() => parseAnimeList(animeText), [animeText])
   const manualItems = pipelineKey === 'music' ? artists : pipelineKey === 'movie' ? movies : anime
-  const manualPayload = pipelineKey === 'music' ? { artists } : pipelineKey === 'movie' ? { movies } : { anime }
+  const selectedPipelineIds = useMemo(() => [...new Set(selectedPipelineIdsText.split(/\r?\n|,/).map((entry) => entry.trim()).filter(Boolean))].slice(0, 20), [selectedPipelineIdsText])
+  const manualPayload = pipelineKey === 'music' ? { artists, includeExisting } : pipelineKey === 'movie' ? { movies, includeExisting } : { anime, includeExisting }
   const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && pipelineKey !== 'normalization' && scenario === 'manual' && manualItems.length > 0 })
   const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization' })
   useEffect(() => {
-    if (starting && pipelineKey === 'normalization' && normalizationFieldsQuery.data?.mode === normalizationMode) {
+    if (starting && pipelineKey === 'normalization' && !normalizationPrefilled && normalizationFieldsQuery.data?.mode === normalizationMode) {
       setNormalizationContextFields(normalizationFieldsQuery.data.defaultContextFields)
     }
-  }, [starting, pipelineKey, normalizationMode, normalizationFieldsQuery.data?.mode])
+  }, [starting, pipelineKey, normalizationMode, normalizationPrefilled, normalizationFieldsQuery.data?.mode])
   const normalizationTags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags, enabled: starting && pipelineKey === 'normalization' })
   const normalizationCandidates = useQuery({ queryKey: ['admin', 'normalization-candidates', normalizationMode, normalizationQuery, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], queryFn: () => adminApi.contentItems({ mode: normalizationMode, q: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags.join(',') || undefined, excludeTagIds: normalizationExcludeTags.join(',') || undefined, tagMatch: normalizationTagMatch, limit: 100, sort: 'title' }), enabled: starting && pipelineKey === 'normalization' })
   const normalizationUnknownVariables = useMemo(() => {
@@ -2051,7 +2058,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     if (!allowed.size) return []
     return [...new Set([...normalizationPrompt.matchAll(/%([^%\s]{1,80})%/g)].map((match) => match[1]).filter((name) => !allowed.has(name)))]
   }, [normalizationPrompt, normalizationFieldsQuery.data?.variables])
-  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, contextFields: normalizationContextFields, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags, excludeTagIds: normalizationExcludeTags, tagMatch: normalizationTagMatch, maxItems, model: 'gpt-5-mini', webSearch: true }
+  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, contextFields: normalizationContextFields, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags, excludeTagIds: normalizationExcludeTags, tagMatch: normalizationTagMatch, maxItems, model: 'gpt-5-mini', webSearch: pipelineWebSearch }
   const [normalizationPreviewPayload, setNormalizationPreviewPayload] = useState<Record<string, unknown> | null>(null)
   useEffect(() => {
     if (!starting || pipelineKey !== 'normalization' || normalizationPrompt.trim().length < 10 || normalizationUnknownVariables.length || (normalizationScope === 'selected' && !normalizationSelected.size)) {
@@ -2068,12 +2075,12 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     retry: false,
   })
   const estimate = useQuery({
-    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, normalizationMode, normalizationField, normalizationPrompt, normalizationContextFields, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && !normalizationUnknownVariables.length && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario !== 'manual' || manualItems.length > 0,
-    queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
+    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, includeExisting, selectedPipelineIds, pipelineAiMode, pipelineWebSearch, normalizationMode, normalizationField, normalizationPrompt, normalizationContextFields, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && !normalizationUnknownVariables.length && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario === 'manual' ? manualItems.length > 0 : scenario === 'selected' ? selectedPipelineIds.length > 0 && selectedPipelineIds.length <= maxItems : true,
+    queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), ...(scenario === 'selected' ? { itemIds: selectedPipelineIds } : {}), aiMode: pipelineAiMode, model: 'gpt-5-mini', webSearch: pipelineWebSearch }),
   })
   const start = useMutation({
-    mutationFn: () => pipelineKey === 'normalization' ? adminApi.startPipeline('normalization', normalizationPayload) : adminApi.startPipeline(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
-    onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : pipelineKey === 'anime' ? 'Аниме-пайплайн запущен' : 'Нормализация запущена'); setStarting(false); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
+    mutationFn: () => pipelineKey === 'normalization' ? adminApi.startPipeline('normalization', normalizationPayload) : adminApi.startPipeline(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), ...(scenario === 'selected' ? { itemIds: selectedPipelineIds } : {}), aiMode: pipelineAiMode, model: 'gpt-5-mini', webSearch: pipelineWebSearch }),
+    onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : pipelineKey === 'anime' ? 'Аниме-пайплайн запущен' : 'Нормализация запущена'); setStarting(false); setRepeatSourceRunId(null); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
     onError: (error) => notify('error', errorText(error)),
   })
   const runItems = items.data?.items ?? []
@@ -2187,86 +2194,6 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   })
   const isPipelineKey = (value: unknown): value is PipelineKey => value === 'music' || value === 'movie' || value === 'anime' || value === 'normalization'
   const safeText = (value: unknown) => typeof value === 'string' ? value.trim() : ''
-  const buildRestartPayload = (run: Record<string, any>) => {
-    const input = record(run.inputDefinitionJson)
-    const settings = record(run.settingsJson)
-    if (run.pipelineKey === 'normalization') return {
-      mode: input.mode, field: input.field, prompt: input.prompt, scope: 'selected', itemIds: array(input.itemIds).map(String).slice(0, 500),
-      contextFields: Array.isArray(input.contextFields) ? array(input.contextFields).map(String) : undefined,
-      includeTagIds: array(input.includeTagIds).map(String), excludeTagIds: array(input.excludeTagIds).map(String), tagMatch: input.tagMatch === 'any' ? 'any' : 'all',
-      maxItems: Math.max(1, Math.min(500, Number(settings.maxItems ?? run.itemsTotal ?? 100) || 100)), model: 'gpt-5-mini', webSearch: settings.webSearch !== false,
-    }
-    const rawScenario = String(input.scenario || 'discover')
-    const scenario = ['discover', 'candidates', 'review', 'selected', 'manual'].includes(rawScenario) ? rawScenario : 'discover'
-    const payload: Record<string, unknown> = {
-      scenario,
-      maxItems: Math.max(1, Math.min(20, Number(settings.maxItems ?? run.itemsTotal ?? 5) || 5)),
-      aiMode: settings.aiMode === 'never' ? 'never' : 'auto',
-      model: 'gpt-5-mini',
-      webSearch: settings.webSearch !== false,
-    }
-    if (scenario === 'selected') {
-      const itemIds = array(input.itemIds).map((entry) => String(entry).trim()).filter(Boolean).slice(0, 20)
-      if (itemIds.length) payload.itemIds = itemIds
-    }
-    if (scenario === 'manual') {
-      if (run.pipelineKey === 'music') {
-        const artists = array(input.artists).map((entry) => {
-          const source = record(entry)
-          const artist = safeText(source.artist)
-          if (!artist) return null
-          const country = safeText(source.country)
-          const hint = safeText(source.hint)
-          return { artist, ...(country ? { country } : {}), ...(hint ? { hint } : {}) }
-        }).filter(Boolean).slice(0, 500)
-        if (!artists.length) throw new Error('В исходном запуске нет валидного списка исполнителей для перезапуска')
-        payload.artists = artists
-      }
-      if (run.pipelineKey === 'movie') {
-        const movies = array(input.movies).map((entry) => {
-          const source = record(entry)
-          const kinopoiskId = Number(source.kinopoiskId)
-          if (Number.isInteger(kinopoiskId) && kinopoiskId > 0) {
-            const hint = safeText(source.hint)
-            return { kinopoiskId, ...(hint ? { hint } : {}) }
-          }
-          const query = safeText(source.query)
-          if (!query) return null
-          const yearValue = Number(source.year)
-          return Number.isInteger(yearValue) ? { query, year: yearValue } : { query }
-        }).filter(Boolean).slice(0, 500)
-        if (!movies.length) throw new Error('В исходном запуске нет валидного списка фильмов для перезапуска')
-        payload.movies = movies
-      }
-      if (run.pipelineKey === 'anime') {
-        const anime = array(input.anime).map((entry) => {
-          const source = record(entry)
-          const shikimoriId = Number(source.shikimoriId)
-          if (!Number.isInteger(shikimoriId) || shikimoriId <= 0) return null
-          const hint = safeText(source.hint)
-          return { shikimoriId, ...(hint ? { hint } : {}) }
-        }).filter(Boolean).slice(0, 500)
-        if (!anime.length) throw new Error('В исходном запуске нет валидного списка аниме для перезапуска')
-        payload.anime = anime
-      }
-    }
-    return payload
-  }
-  const restartRun = useMutation({
-    mutationFn: async () => {
-      if (!selectedRun) throw new Error('Запуск не выбран')
-      if (!isPipelineKey(selectedRun.pipelineKey)) throw new Error('Перезапуск для этого пайплайна недоступен')
-      return adminApi.startPipeline(selectedRun.pipelineKey, buildRestartPayload(record(selectedRun)))
-    },
-    onSuccess: (data) => {
-      notify('success', 'Процесс перезапущен')
-      navigate('pipelines', data.runId)
-      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
-      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items'] })
-      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events'] })
-    },
-    onError: (error) => notify('error', errorText(error)),
-  })
   const continueRun = useMutation({
     mutationFn: () => adminApi.continuePipelineRun(selectedId!),
     onSuccess: () => {
@@ -2280,13 +2207,13 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   })
   const cancel = useMutation({ mutationFn: () => adminApi.cancelPipeline(selectedId!), onSuccess: () => { notify('info', 'Остановка запрошена'); void runs.refetch() }, onError: (error) => notify('error', errorText(error)) })
   const removeRun = useMutation({
-    mutationFn: () => adminApi.deletePipelineRun(selectedId!),
-    onSuccess: () => {
+    mutationFn: (runId: string) => adminApi.deletePipelineRun(runId),
+    onSuccess: (_result, runId) => {
       notify('success', 'Запуск удалён')
-      navigate('pipelines')
+      if (selectedId === runId) navigate('pipelines')
       void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
-      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items'] })
-      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events'] })
+      void client.removeQueries({ queryKey: ['admin', 'pipeline-items', runId] })
+      void client.removeQueries({ queryKey: ['admin', 'pipeline-events', runId] })
     },
     onError: (error) => notify('error', errorText(error)),
   })
@@ -2302,6 +2229,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     onError: (error) => notify('error', errorText(error)),
   })
   const previewSummary = record(preview.data?.summary); const readyItems = Number(previewSummary.ready ?? 0)
+  const runnableManualItems = readyItems + (includeExisting ? Number(previewSummary.existing ?? 0) : 0)
   const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : key === 'normalization' ? 'Нормализация' : 'Пайплайн'
   const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : key === 'normalization' ? 'Универсальная нормализация' : 'Контентный пайплайн'
   const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : <Bot />
@@ -2322,7 +2250,71 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       normalizationPromptRef.current?.setSelectionRange(start + token.length, start + token.length)
     })
   }
-  const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime' || key === 'normalization') { setPipelineKey(key); setScenario('manual'); setMaxItems(key === 'normalization' ? 100 : 5); setStarting(true) } }
+  const closePipelineDialog = () => { setStarting(false); setRepeatSourceRunId(null); setNormalizationPrefilled(false) }
+  const openPipeline = (key: unknown) => {
+    if (!isPipelineKey(key)) return
+    setPipelineKey(key)
+    setScenario('manual')
+    setMaxItems(key === 'normalization' ? 100 : 5)
+    setPipelineAiMode('auto')
+    setPipelineWebSearch(true)
+    setIncludeExisting(false)
+    setSelectedPipelineIdsText('')
+    setArtistText('')
+    setMovieText('')
+    setAnimeText('')
+    setRepeatSourceRunId(null)
+    if (key === 'normalization') {
+      setNormalizationScope('all')
+      setNormalizationQuery('')
+      setNormalizationSelected(new Set())
+      setNormalizationIncludeTags([])
+      setNormalizationExcludeTags([])
+      setNormalizationTagMatch('all')
+    }
+    setNormalizationPrefilled(false)
+    setStarting(true)
+  }
+  const openRepeatRun = (rawRun: Record<string, any>) => {
+    const key = rawRun.pipelineKey
+    if (!isPipelineKey(key)) { notify('info', 'Повтор для этого пайплайна недоступен'); return }
+    const input = record(rawRun.inputDefinitionJson)
+    const settings = record(rawRun.settingsJson)
+    const rawScenario = String(input.scenario || 'discover')
+    const nextScenario = ['discover', 'candidates', 'review', 'selected', 'manual'].includes(rawScenario) ? rawScenario : 'discover'
+    const itemIds = array(input.itemIds).map(String).filter(Boolean)
+    setPipelineKey(key)
+    setRepeatSourceRunId(String(rawRun.id))
+    setPipelineAiMode(settings.aiMode === 'never' ? 'never' : 'auto')
+    setPipelineWebSearch(settings.webSearch !== false)
+    setIncludeExisting(nextScenario === 'manual' ? true : input.includeExisting === true)
+    setMaxItems(Math.max(1, Math.min(key === 'normalization' ? 500 : 20, Number(settings.maxItems ?? rawRun.itemsTotal ?? (key === 'normalization' ? 100 : 5)) || 5)))
+    setSelectedPipelineIdsText(itemIds.slice(0, 20).join('\n'))
+    setArtistText('')
+    setMovieText('')
+    setAnimeText('')
+    if (key === 'normalization') {
+      const mode = asContentMode(input.mode, 'music')
+      setNormalizationMode(mode)
+      setNormalizationField(safeText(input.field) || (mode === 'music' ? 'activityStartYear' : 'year'))
+      setNormalizationPrompt(safeText(input.prompt))
+      setNormalizationContextFields(array(input.contextFields).map(String))
+      setNormalizationScope(input.scope === 'selected' ? 'selected' : 'all')
+      setNormalizationQuery(safeText(input.query))
+      setNormalizationSelected(new Set(itemIds.slice(0, 500)))
+      setNormalizationIncludeTags(array(input.includeTagIds).map(String))
+      setNormalizationExcludeTags(array(input.excludeTagIds).map(String))
+      setNormalizationTagMatch(input.tagMatch === 'any' ? 'any' : 'all')
+      setNormalizationPrefilled(true)
+    } else {
+      setScenario(nextScenario)
+      setNormalizationPrefilled(false)
+      if (key === 'music') setArtistText(array(input.artists).map((entry) => { const item = record(entry); return [safeText(item.artist), safeText(item.country), safeText(item.hint)].join('\t').replace(/\t+$/g, '') }).filter(Boolean).join('\n'))
+      if (key === 'movie') setMovieText(array(input.movies).map((entry) => { const item = record(entry); if (Number.isInteger(Number(item.kinopoiskId)) && Number(item.kinopoiskId) > 0) return [String(item.kinopoiskId), safeText(item.hint)].filter(Boolean).join('\t'); const query = safeText(item.query); return query ? `${query}${Number.isInteger(Number(item.year)) ? ` (${String(item.year)})` : ''}` : '' }).filter(Boolean).join('\n'))
+      if (key === 'anime') setAnimeText(array(input.anime).map((entry) => { const item = record(entry); return [String(item.shikimoriId ?? ''), safeText(item.hint)].filter(Boolean).join('\t') }).filter(Boolean).join('\n'))
+    }
+    setStarting(true)
+  }
   const events = record(runEvents.data)
   const eventRows = array(events.events).map(record)
   const journalLines = array(events.journalLines).map((line) => String(line))
@@ -2468,8 +2460,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
 
   const requestRestartRun = () => {
     if (!selectedRun) return
-    if (!confirm('Перезапустить процесс с теми же входными данными и настройками? Будет создан новый запуск.')) return
-    restartRun.mutate()
+    openRepeatRun(record(selectedRun))
   }
 
   const requestContinueRun = () => {
@@ -2502,14 +2493,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     regenerateItem.mutate(itemId)
   }
 
-  const requestDeleteRun = () => {
-    if (!selectedRun) return
-    const active = ['queued', 'running'].includes(String(selectedRun.status))
+  const requestDeleteRun = (rawRun: Record<string, any> | undefined = selectedRun ? record(selectedRun) : undefined) => {
+    if (!rawRun) return
+    const active = ['queued', 'running'].includes(String(rawRun.status))
     const message = active
       ? 'Удалить процесс и все его результаты? Для активного запуска удаление возможно только при stale heartbeat.'
       : 'Удалить этот запуск и все его результаты? Действие необратимо.'
     if (!confirm(message)) return
-    removeRun.mutate()
+    removeRun.mutate(String(rawRun.id))
   }
 
   const openModeration = () => {
@@ -2695,28 +2686,54 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   : `${pipelinePulseText(String(run.status))}${heartbeat != null ? ` · heartbeat ${heartbeat}s назад` : ""}`
                 : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0} · $${Number(run.actualCost ?? 0).toFixed(4)}`;
             return (
-              <button
+              <article
                 key={String(run.id)}
-                className={selectedId === run.id ? "is-active" : ""}
-                onClick={() => navigate("pipelines", String(run.id))}
+                className={`admin-pipeline-run-item ${selectedId === run.id ? "is-active" : ""}`}
               >
-                <span className="admin-list-icon">
-                  {pipelineIcon(run.pipelineKey)}
-                </span>
-                <span>
-                  <header>
-                    <strong>
-                      {pipelineLabel(run.pipelineKey)} ·{" "}
-                      {Number(run.itemsProcessed ?? 0)}/
-                      {Number(run.itemsTotal ?? 0)}
-                    </strong>
-                    <time>{compactDate(run.createdAt)}</time>
-                  </header>
-                  <p>{title(record(run.inputDefinitionJson).scenario)}</p>
-                  <small className={live ? "is-live" : ""}>{summary}</small>
-                </span>
-                <Status value={run.status} />
-              </button>
+                <button
+                  className="admin-pipeline-run-item__main"
+                  onClick={() => navigate("pipelines", String(run.id))}
+                >
+                  <span className="admin-list-icon">
+                    {pipelineIcon(run.pipelineKey)}
+                  </span>
+                  <span>
+                    <header>
+                      <strong>
+                        {pipelineLabel(run.pipelineKey)} ·{" "}
+                        {Number(run.itemsProcessed ?? 0)}/
+                        {Number(run.itemsTotal ?? 0)}
+                      </strong>
+                      <time>{compactDate(run.createdAt)}</time>
+                    </header>
+                    <p>{title(record(run.inputDefinitionJson).scenario)}</p>
+                    <small className={live ? "is-live" : ""}>{summary}</small>
+                  </span>
+                  <Status value={run.status} />
+                </button>
+                {!live && (
+                  <div className="admin-pipeline-run-item__actions">
+                    <button
+                      type="button"
+                      title="Запустить ещё раз с этими настройками"
+                      aria-label={`Запустить ещё раз ${pipelineLabel(run.pipelineKey)} ${String(run.id).slice(0, 8)}`}
+                      disabled={start.isPending}
+                      onClick={() => openRepeatRun(run)}
+                    >
+                      <RefreshCw />
+                    </button>
+                    <button
+                      type="button"
+                      title="Удалить этот запуск"
+                      aria-label={`Удалить запуск ${pipelineLabel(run.pipelineKey)} ${String(run.id).slice(0, 8)}`}
+                      disabled={removeRun.isPending && removeRun.variables === String(run.id)}
+                      onClick={() => requestDeleteRun(run)}
+                    >
+                      <Trash2 />
+                    </button>
+                  </div>
+                )}
+              </article>
             );
           })}
         </section>
@@ -2752,7 +2769,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       onClick={requestContinueRun}
                       disabled={
                         continueRun.isPending ||
-                        restartRun.isPending ||
+                        start.isPending ||
                         cancel.isPending ||
                         removeRun.isPending
                       }
@@ -2763,7 +2780,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   )}
                   <button
                     onClick={requestRestartRun}
-                    disabled={restartRun.isPending || continueRun.isPending}
+                    disabled={start.isPending || continueRun.isPending}
                   >
                     <RefreshCw />
                     Перезапустить процесс
@@ -2780,7 +2797,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     </button>
                   )}
                   <button
-                    onClick={requestDeleteRun}
+                    onClick={() => requestDeleteRun()}
                     disabled={
                       removeRun.isPending ||
                       cancel.isPending ||
@@ -3632,16 +3649,16 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
         <div
           className="admin-modal-backdrop"
           onMouseDown={(event) =>
-            event.target === event.currentTarget && setStarting(false)
+            event.target === event.currentTarget && closePipelineDialog()
           }
         >
           <div className="admin-modal admin-modal--pipeline">
             <header>
               <div>
-                <span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini</span>
-                <h2>Новый запуск</h2>
+                <span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini{repeatSourceRunId ? ` · на основе ${repeatSourceRunId.slice(0, 8)}` : ''}</span>
+                <h2>{repeatSourceRunId ? 'Повторный запуск' : 'Новый запуск'}</h2>
               </div>
-              <button onClick={() => setStarting(false)}>
+              <button onClick={closePipelineDialog}>
                 <X />
               </button>
             </header>
@@ -3660,6 +3677,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                         );
                         setNormalizationContextFields([]);
                         setNormalizationSelected(new Set());
+                        setNormalizationPrefilled(false);
                       }}
                     >
                       {Object.entries(MODE_LABEL).map(([value, label]) => (
@@ -3892,8 +3910,22 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       <option value="review">
                         Перепроверить очередь ручной проверки
                       </option>
+                      <option value="selected">
+                        Обработать выбранные карточки по ID
+                      </option>
                     </select>
                   </label>
+                  {scenario === "selected" && (
+                    <label className="admin-field admin-field--wide admin-artist-import">
+                      <span>ID карточек <small>до 20 строк</small></span>
+                      <textarea
+                        value={selectedPipelineIdsText}
+                        onChange={(event) => setSelectedPipelineIdsText(event.target.value)}
+                        placeholder="Один ID карточки на строку"
+                      />
+                      <small>Выбрано: {selectedPipelineIds.length}. Количество ID не должно превышать установленный ниже лимит.</small>
+                    </label>
+                  )}
                   {scenario === "manual" && (
                     <>
                       <label className="admin-field admin-field--wide admin-artist-import">
@@ -3920,6 +3952,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                             }}
                           />
                         </label>
+                      </label>
+                      <label className="admin-toggle admin-pipeline-repeat-existing">
+                        <input
+                          type="checkbox"
+                          checked={includeExisting}
+                          onChange={(event) => setIncludeExisting(event.target.checked)}
+                        />
+                        Включать уже существующие карточки
                       </label>
                       <div className="admin-import-preview">
                         <header>
@@ -3982,7 +4022,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                                       <button
                                         className="admin-link"
                                         onClick={() => {
-                                          setStarting(false);
+                                          closePipelineDialog();
                                           navigate(
                                             "content",
                                             String(item.existingItemId),
@@ -4032,6 +4072,27 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   </label>
                 </>
               )}
+              <section className="admin-pipeline-run-options">
+                {pipelineKey !== 'normalization' && (
+                  <label className="admin-toggle">
+                    <input
+                      type="checkbox"
+                      checked={pipelineAiMode !== 'never'}
+                      onChange={(event) => setPipelineAiMode(event.target.checked ? 'auto' : 'never')}
+                    />
+                    Проверять результат через GPT-5 mini
+                  </label>
+                )}
+                <label className="admin-toggle">
+                  <input
+                    type="checkbox"
+                    checked={pipelineWebSearch}
+                    disabled={pipelineKey !== 'normalization' && pipelineAiMode === 'never'}
+                    onChange={(event) => setPipelineWebSearch(event.target.checked)}
+                  />
+                  Использовать веб-поиск
+                </label>
+              </section>
               <div className="admin-estimate">
                 <CircleDollarSign />
                 <div>
@@ -4049,7 +4110,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             <footer>
               <button
                 className="admin-btn admin-btn--secondary"
-                onClick={() => setStarting(false)}
+                onClick={closePipelineDialog}
               >
                 Отмена
               </button>
@@ -4063,7 +4124,9 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       (normalizationScope === "selected" &&
                         !normalizationSelected.size)
                     : scenario === "manual" &&
-                      (!readyItems || preview.isFetching))
+                      (!runnableManualItems || preview.isFetching) ||
+                      (scenario === "selected" &&
+                        (!selectedPipelineIds.length || selectedPipelineIds.length > maxItems)))
                 }
                 onClick={() => start.mutate()}
               >
@@ -4071,7 +4134,9 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                 {pipelineKey === "normalization"
                   ? `Нормализовать до ${maxItems} карточек`
                   : scenario === "manual"
-                    ? `Запустить ${readyItems} ${pipelineKey === "music" ? "артистов" : pipelineKey === "movie" ? "фильмов" : "аниме"}`
+                    ? `Запустить ${runnableManualItems} ${pipelineKey === "music" ? "артистов" : pipelineKey === "movie" ? "фильмов" : "аниме"}`
+                    : scenario === "selected"
+                      ? `Запустить ${selectedPipelineIds.length} карточек`
                     : `Запустить ${maxItems} элементов`}
               </button>
             </footer>
