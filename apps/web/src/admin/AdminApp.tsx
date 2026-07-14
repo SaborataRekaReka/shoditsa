@@ -599,6 +599,81 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const moderationTitle = title(moderationProposed.titleRu || moderationProposed.name || moderationItem?.entityKey)
   const moderationSubtitle = title(moderationProposed.titleOriginal || moderationItem?.entityKey)
   const moderationWarnings = moderationItem ? pipelineWarnings(moderationItem.warningsJson) : []
+  const moderationFieldText = (value: unknown): string => {
+    if (value == null) return ''
+    if (typeof value === 'string') return value.trim()
+    if (typeof value === 'number') return Number.isFinite(value) ? String(value) : ''
+    if (typeof value === 'boolean') return value ? 'Да' : 'Нет'
+    if (Array.isArray(value)) {
+      const values = value.map((entry) => moderationFieldText(entry)).filter(Boolean)
+      if (!values.length) return ''
+      const visible = values.slice(0, 5)
+      return `${visible.join(', ')}${values.length > visible.length ? ' …' : ''}`
+    }
+    const source = record(value)
+    return [source.titleRu, source.titleOriginal, source.title, source.name, source.value, source.id]
+      .map((entry) => moderationFieldText(entry))
+      .find(Boolean) || ''
+  }
+  const moderationField = (label: string, ...candidates: unknown[]) => {
+    for (const candidate of candidates) {
+      const value = moderationFieldText(candidate)
+      if (value) return { label, value }
+    }
+    return null
+  }
+  const moderationGenres = array(moderationProposed.genres).map((entry) => moderationFieldText(entry)).filter(Boolean).slice(0, 6)
+  const moderationYear = moderationFieldText(moderationProposed.year) || moderationFieldText(moderationProposed.releaseYear) || moderationFieldText(moderationProposed.startYear)
+  const moderationCountry = moderationFieldText(array(moderationProposed.countries)[0]) || moderationFieldText(moderationProposed.country) || moderationFieldText(moderationProposed.originCountry)
+  const moderationTopTrack = record(array(moderationProposed.topTracks)[0])
+  const moderationTopAlbum = record(array(moderationProposed.topAlbums)[0])
+  const moderationSimilarArtists = array(moderationProposed.similarArtists)
+    .map((entry) => moderationFieldText(record(entry).name || entry))
+    .filter(Boolean)
+  const moderationAttemptFields = (() => {
+    const shared = [
+      moderationField('Страна', moderationCountry, moderationProposed.countries),
+      moderationField('Год', moderationYear),
+      moderationField('Жанры', moderationProposed.genres),
+    ]
+    const movieFields = [
+      moderationField('Кинопоиск', moderationProposed.kp, moderationProposed.kpRating, moderationProposed.kinopoiskRating),
+      moderationField('IMDb', moderationProposed.imdb, moderationProposed.imdbRating),
+      moderationField('Возраст', moderationProposed.ageRating, moderationProposed.age),
+      moderationField('Хронометраж', moderationProposed.runtime, moderationProposed.durationMinutes),
+    ]
+    const animeFields = [
+      moderationField('Эпизоды', moderationProposed.episodes, moderationProposed.episodesAired),
+      moderationField('Студия', moderationProposed.studio, moderationProposed.studios),
+      moderationField('Статус', moderationProposed.animeStatus, moderationProposed.seriesStatus, moderationProposed.status),
+      moderationField('Источник', moderationProposed.animeSource, moderationProposed.source),
+    ]
+    const musicFields = [
+      moderationField('Тип', moderationProposed.musicType, moderationProposed.type),
+      moderationField('Статус', moderationProposed.musicIsActive, moderationProposed.activityStatus),
+      moderationField('Топ-трек', moderationTopTrack.title, moderationTopTrack.name, moderationProposed.topTrack),
+      moderationField('Топ-альбом', moderationTopAlbum.title, moderationTopAlbum.name, moderationProposed.topAlbum),
+      moderationField('Похожие', moderationSimilarArtists),
+      moderationField('Слушатели', moderationProposed.listeners, record(moderationProposed.votes).gamesPlayed),
+    ]
+    const gameFields = [
+      moderationField('Платформы', moderationProposed.platforms),
+      moderationField('Разработчик', moderationProposed.developers, moderationProposed.developer),
+      moderationField('Издатель', moderationProposed.publishers, moderationProposed.publisher),
+      moderationField('Рейтинг', moderationProposed.metacritic, moderationProposed.rating),
+    ]
+    const modeSpecific = moderationMode === 'music'
+      ? musicFields
+      : moderationMode === 'anime'
+        ? [...movieFields, ...animeFields]
+        : moderationMode === 'game'
+          ? gameFields
+          : movieFields
+    return [...shared, ...modeSpecific]
+      .filter((entry): entry is { label: string; value: string } => Boolean(entry?.value))
+      .slice(0, 9)
+  })()
+  const moderationChangedFields = moderationItem ? itemDiffFields(moderationItem) : []
   const moderationHint = (() => {
     const firstFact = array(moderationProposed.facts).map((entry) => typeof entry === 'string' ? entry.trim() : '').find(Boolean)
     return [moderationProposed.plotHint, moderationProposed.description, firstFact].map((entry) => typeof entry === 'string' ? entry.trim() : '').find(Boolean) || 'Подсказка не заполнена'
@@ -692,6 +767,41 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     })
   }
 
+  useEffect(() => {
+    if (!moderationOpen || !moderationItem) return
+    const handleModerationHotkeys = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return
+      const target = event.target
+      if (target instanceof HTMLElement) {
+        const tag = target.tagName
+        if (target.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      }
+      if (decide.isPending) return
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        moveModeration(-1)
+        return
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        moveModeration(1)
+        return
+      }
+      if (event.repeat) return
+      if (event.code === 'KeyC') {
+        event.preventDefault()
+        submitModerationDecision(true)
+        return
+      }
+      if (event.code === 'KeyX') {
+        event.preventDefault()
+        submitModerationDecision(false)
+      }
+    }
+    addEventListener('keydown', handleModerationHotkeys)
+    return () => removeEventListener('keydown', handleModerationHotkeys)
+  }, [decide.isPending, moderationItem, moderationOpen, moveModeration, submitModerationDecision])
+
   return <><PageHead eyebrow="Автоматизация" title="ИИ-пайплайны" description="Управляемые очереди контента, подробная проверка и применение предложений через общую рабочую версию." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('anime')}><Sparkles />Запустить аниме</button><button className="admin-btn admin-btn--secondary" onClick={() => openPipeline('movie')}><Clapperboard />Запустить кино</button><button className="admin-btn admin-btn--primary" onClick={() => openPipeline('music')}><WandSparkles />Запустить музыку</button></>} />
     <div className="admin-pipeline-catalog">{pipelines.data?.items.map((raw) => { const pipeline = record(raw); return <article key={String(pipeline.key)} className={pipeline.state === 'not_connected' ? 'is-disabled' : ''}><div className="admin-pipeline-icon">{pipeline.key === 'music' ? <WandSparkles /> : pipeline.key === 'movie' ? <Clapperboard /> : pipeline.key === 'anime' ? <Sparkles /> : <Bot />}</div><div><Status value={pipeline.state === 'connected' ? 'active' : 'neutral'}>{pipeline.state === 'connected' ? 'Подключён' : 'Ещё не подключён'}</Status><h3>{title(pipeline.title)}</h3><p>{title(pipeline.description)}</p><small>{pipeline.awaitingReview ? `Ждут проверки: ${pipeline.awaitingReview}` : 'Нет результатов на проверке'}</small></div>{pipeline.state === 'connected' && <button onClick={() => openPipeline(pipeline.key)}>Запустить <Play /></button>}</article> })}</div>
     <div className="admin-split admin-split--pipeline">
@@ -728,15 +838,16 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       <div className="admin-modal admin-modal--moderation">
         <header><div><span>{pipelineLabel(selectedRun.pipelineKey)} · Ручная модерация</span><h2>Карточка как в игре</h2></div><button onClick={() => setModerationOpen(false)}><X /></button></header>
         <div className="admin-modal__body admin-modal__body--moderation">
-          <section className="review-stats admin-review-stats"><article><small>Позиция</small><strong>{reviewQueue.length ? `${moderationIndex + 1}/${reviewQueue.length}` : '0/0'}</strong></article><article><small>Ожидают решения</small><strong>{reviewQueue.length}</strong></article><article><small>Подсказка</small><strong>{moderationHint === 'Подсказка не заполнена' ? 'Нет' : 'Есть'}</strong></article></section>
-          <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{moderationHint}</p></article></section>
-          <section className={`review-card ${moderationWarnings.length ? 'has-conflict' : ''}`}>
-            <div className="review-card__head"><span className="review-card__number">{String(moderationIndex + 1).padStart(3, '0')}</span>{moderationPoster ? <img className="review-card__poster" src={moderationPoster} alt={moderationTitle} /> : <div className="review-card__poster admin-review-poster-fallback">{pipelineIcon(selectedRun.pipelineKey)}</div>}<div className="review-card__identity"><span className="attempt-label">{MODE_LABEL[moderationMode]}</span><h2>{moderationTitle}</h2><p className="gm-head__sub"><span className="gm-head__orig">{moderationSubtitle}</span></p></div><div className="review-approval-badge"><small>Статус</small><strong>{STATUS_LABEL[String(moderationItem.status)] ?? title(moderationItem.status)}</strong></div></div>
+          <section className="review-stats admin-review-stats"><article><small>Позиция</small><strong>{reviewQueue.length ? `${moderationIndex + 1}/${reviewQueue.length}` : '0/0'}</strong></article><article><small>Ожидают решения</small><strong>{reviewQueue.length}</strong></article><article><small>Подсказка</small><strong>{moderationHint === 'Подсказка не заполнена' ? 'Нет' : 'Есть'}</strong></article><article><small>Горячие клавиши</small><strong>← → · X / C</strong></article></section>
+          <section className={`attempt-card attempt-card--screen admin-attempt-card ${moderationWarnings.length ? 'has-conflict' : ''}`}>
+            <div className="attempt-card__header admin-attempt-card__header"><span className="attempt-card__number">{String(moderationIndex + 1).padStart(2, '0')}</span>{moderationPoster ? <img className="review-card__poster" src={moderationPoster} alt={moderationTitle} /> : <div className="review-card__poster admin-review-poster-fallback">{pipelineIcon(selectedRun.pipelineKey)}</div>}<div className="attempt-card__identity"><span className="attempt-label">Попытка воспроизведения · {MODE_LABEL[moderationMode]}</span><h2>{moderationTitle}</h2><p className="gm-head__sub"><span className="gm-head__orig">{moderationSubtitle}</span>{moderationYear && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{moderationYear}</span></>}{moderationCountry && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{moderationCountry}</span></>}</p>{!!moderationGenres.length && <div className="gm-genres">{moderationGenres.map((genre) => <span key={genre} className="gm-genre">{genre}</span>)}</div>}</div><div className="review-approval-badge"><small>Статус</small><strong>{STATUS_LABEL[String(moderationItem.status)] ?? title(moderationItem.status)}</strong></div></div>
             {!!moderationWarnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Предупреждения</strong><span>{moderationWarnings.join(' • ')}</span></div>}
-            <div className="review-card__meta"><span><small>Изменено полей</small><strong>{itemDiffFields(moderationItem).length}</strong></span><span><small>Обновлено</small><strong>{compactDate(moderationItem.updatedAt || moderationItem.createdAt)}</strong></span><span><small>ID карточки</small><strong>{title(moderationItem.entityKey)}</strong></span><span><small>Предупреждения</small><strong>{moderationWarnings.length || 'Нет'}</strong></span></div>
+            <div className="admin-attempt-fields">{moderationAttemptFields.length ? moderationAttemptFields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
           </section>
+          <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{moderationHint}</p></article></section>
+          <section className="admin-moderation-meta"><article><small>Изменено полей</small><strong>{moderationChangedFields.length}</strong></article><article><small>Обновлено</small><strong>{compactDate(moderationItem.updatedAt || moderationItem.createdAt)}</strong></article><article><small>ID карточки</small><strong>{title(moderationItem.entityKey)}</strong></article><article><small>Предупреждения</small><strong>{moderationWarnings.length || 'Нет'}</strong></article>{moderationChangedFields.length > 0 && <div className="admin-moderation-changes">{moderationChangedFields.map((field) => <span key={field}>{field}</span>)}</div>}</section>
         </div>
-        <footer className="admin-review-footer"><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(-1)} disabled={moderationIndex === 0 || decide.isPending}><ChevronLeft />Назад</button><button className="admin-btn admin-btn--secondary" onClick={() => submitModerationDecision(false)} disabled={decide.isPending}><X />Не одобрено</button><button className="admin-btn admin-btn--primary" onClick={() => submitModerationDecision(true)} disabled={decide.isPending}><Check />Одобрено</button><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(1)} disabled={moderationIndex >= reviewQueue.length - 1 || decide.isPending}>Дальше<ChevronRight /></button></footer>
+        <footer className="admin-review-footer"><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(-1)} disabled={moderationIndex === 0 || decide.isPending}><ChevronLeft />Назад<kbd>←</kbd></button><button className="admin-btn admin-btn--secondary" onClick={() => submitModerationDecision(false)} disabled={decide.isPending}><X />Отклонить<kbd>X</kbd></button><button className="admin-btn admin-btn--primary" onClick={() => submitModerationDecision(true)} disabled={decide.isPending}><Check />Одобрить<kbd>C</kbd></button><button className="admin-btn admin-btn--secondary" onClick={() => moveModeration(1)} disabled={moderationIndex >= reviewQueue.length - 1 || decide.isPending}>Дальше<ChevronRight /><kbd>→</kbd></button></footer>
       </div>
     </div>}
     {selectedRun && activePipelineItem && <div className="admin-drawer"><header className="admin-drawer__head"><div><small>{pipelineLabel(selectedRun.pipelineKey)} · {title(activePipelineItem.entityKey)}</small><h2>{title(record(activePipelineItem.proposedJson).titleRu || record(activePipelineItem.proposedJson).name || activePipelineItem.entityKey)}</h2></div><div><Status value={activePipelineItem.status} /><button onClick={() => setActivePipelineItemId(null)}><X /></button></div></header><div className="admin-drawer__body"><div className="admin-diff">{itemDiffFields(record(activePipelineItem)).map((field) => <div key={field}><strong>{field}</strong><pre>{JSON.stringify(record(activePipelineItem.beforeJson)[field], null, 2) ?? '—'}</pre><ChevronRight /><pre>{JSON.stringify(record(activePipelineItem.proposedJson)[field], null, 2) ?? '—'}</pre></div>)}</div>{pipelineWarnings(activePipelineItem.warningsJson).length > 0 && <div className="admin-pipeline-item-warnings"><AlertTriangle />{pipelineWarnings(activePipelineItem.warningsJson).join(' · ')}</div>}</div><footer className="admin-drawer__footer"><div><small>{title(activePipelineItem.entityKey)}</small></div><button className="admin-btn admin-btn--secondary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: false })}><X />Отклонить</button><button className="admin-btn admin-btn--primary" onClick={() => decide.mutate({ itemId: String(activePipelineItem.id), approved: true })}><Check />Принять</button></footer></div>}
