@@ -67,7 +67,8 @@ jobs:
           scp -P "$DEPLOY_PORT" release-api-image.tar.gz "$REMOTE:$REMOTE_API_IMAGE"
           ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE'
           set -euo pipefail
-          trap 'status=$?; echo "remote deploy failed at line ${LINENO}: ${BASH_COMMAND} (exit ${status})" >&2; exit "$status"' ERR
+          API_DEPLOY_ROLLBACK_ARMED=0
+          trap 'status=$?; failed_line=$LINENO; failed_command=$BASH_COMMAND; if [ "${API_DEPLOY_ROLLBACK_ARMED:-0}" -eq 1 ] && declare -F rollback_api >/dev/null; then rollback_api || true; fi; echo "remote deploy failed at line ${failed_line}: ${failed_command} (exit ${status})" >&2; exit "$status"' ERR
           STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
           RELEASE="${DEPLOY_ROOT}/releases/${GITHUB_SHA}"
           rm -rf "$STAGE"
@@ -105,10 +106,6 @@ jobs:
             echo "Expected exactly three Shoditsa API image declarations (API, worker, migrate), found ${API_IMAGE_LINES}" >&2
             exit 1
           fi
-          API_COMPOSE_BACKUP="${API_COMPOSE_FILES}.pre-${GITHUB_SHA}"
-          cp -a "$API_COMPOSE_FILES" "$API_COMPOSE_BACKUP"
-          sed -Ei "s#^([[:space:]]*image:[[:space:]]*)shoditsa-api:[^[:space:]]+#\1shoditsa-api:${GITHUB_SHA}#" "$API_COMPOSE_FILES"
-
           api_compose() {
             docker compose --project-directory "$API_COMPOSE_DIR" --project-name "$API_COMPOSE_PROJECT" -f "$API_COMPOSE_FILES" "$@"
           }
@@ -119,14 +116,27 @@ jobs:
             exit 1
           fi
           API_WORKER_SERVICE="${API_WORKER_SERVICES[0]}"
+          API_COMPOSE_BACKUP="${API_COMPOSE_FILES}.pre-${GITHUB_SHA}"
+          cp -a "$API_COMPOSE_FILES" "$API_COMPOSE_BACKUP"
           rollback_api() {
+            API_DEPLOY_ROLLBACK_ARMED=0
             cp -a "$API_COMPOSE_BACKUP" "$API_COMPOSE_FILES"
             api_compose config --quiet
             api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" "$API_WORKER_SERVICE" || true
           }
+          API_DEPLOY_ROLLBACK_ARMED=1
+          sed -Ei "s#^([[:space:]]*image:[[:space:]]*)shoditsa-api:[^[:space:]]+#\1shoditsa-api:${GITHUB_SHA}#" "$API_COMPOSE_FILES"
           api_compose config --quiet
-          api_compose --profile migrate config --services | grep -Fxq 'shoditsa-migrate'
-          api_compose config --services | grep -Fxq 'shoditsa-postgres'
+          MIGRATE_SERVICES="$(api_compose --profile migrate config --services)"
+          API_SERVICES="$(api_compose config --services)"
+          if ! grep -Fx 'shoditsa-migrate' <<<"$MIGRATE_SERVICES" >/dev/null; then
+            echo "Shoditsa migrate service is missing from Compose" >&2
+            exit 1
+          fi
+          if ! grep -Fx 'shoditsa-postgres' <<<"$API_SERVICES" >/dev/null; then
+            echo "Shoditsa PostgreSQL service is missing from Compose" >&2
+            exit 1
+          fi
 
           POSTGRES_CONTAINER="$(api_compose ps -q shoditsa-postgres)"
           if [ -z "$POSTGRES_CONTAINER" ]; then
@@ -226,6 +236,7 @@ jobs:
             rollback_api
             exit 1
           fi
+          API_DEPLOY_ROLLBACK_ARMED=0
           rm -f "$API_COMPOSE_BACKUP"
 
           # Releases are immutable. A retry of the same SHA reuses the already
