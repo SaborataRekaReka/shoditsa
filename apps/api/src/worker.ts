@@ -654,6 +654,8 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   }
   const input = record(run.inputDefinitionJson); const settings = record(run.settingsJson)
   const mode = text(input.mode) as ContentMode; const field = text(input.field); const prompt = text(input.prompt)
+  const contextFields = Array.isArray(input.contextFields) ? strings(input.contextFields) : undefined
+  const availableFields = Array.isArray(input.availableFields) ? strings(input.availableFields) : undefined
   if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].includes(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
   assertNormalizationField(mode, field)
   const runItemIds = strings(input.itemIds)
@@ -726,7 +728,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
     try {
       const result = await requestNormalization({
         apiKey: environment.OPENAI_API_KEY, proxyUrl: environment.OPENAI_OUTBOUND_PROXY_URL || environment.MUSIC_OUTBOUND_PROXY_URL,
-        model: 'gpt-5-mini', webSearch: settings.webSearch !== false, mode, field, prompt, payload: before,
+        model: 'gpt-5-mini', webSearch: settings.webSearch !== false, mode, field, prompt, payload: before, contextFields, cardId: itemId, availableFields,
       })
       const proposed = { ...before }
       const warnings: string[] = []

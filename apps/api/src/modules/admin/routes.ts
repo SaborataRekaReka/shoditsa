@@ -47,7 +47,10 @@ import { loadAdminTimeline } from './timeline-service.js'
 import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
-import { assertNormalizationField, normalizationFields } from './normalization-pipeline.js'
+import {
+  assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, normalizationContextOptions,
+  normalizationDefaultContextFields, normalizationFields, normalizationTemplateVariables, renderNormalizationPrompt,
+} from './normalization-pipeline.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type AdminActor = Awaited<ReturnType<typeof requireAdmin>>
@@ -672,14 +675,42 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
   })
 
   const normalizationModeQuery = Type.Object({ mode: Type.Union(['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].map((value) => Type.Literal(value))) }, { additionalProperties: false })
+  let normalizationFieldCache: { expiresAt: number; fields: string[] } | null = null
+  const normalizationAvailableFields = async () => {
+    if (normalizationFieldCache && normalizationFieldCache.expiresAt > Date.now()) return normalizationFieldCache.fields
+    const discovered = await deps.db.execute(sql`
+      select distinct keys.field
+      from content_item_versions civ
+      inner join content_revisions cr on cr.id = civ.revision_id
+      cross join lateral jsonb_object_keys(civ.payload) as keys(field)
+      where cr.status = 'active' and keys.field ~ '^[A-Za-z][A-Za-z0-9_]{0,79}$'
+      order by keys.field
+      limit 500
+    `)
+    const fields = Array.from(discovered as Iterable<{ field: string }>).map((entry) => entry.field)
+    normalizationFieldCache = { expiresAt: Date.now() + 60_000, fields }
+    return fields
+  }
   app.get('/api/v1/admin/pipelines/normalization/fields', { schema: { querystring: normalizationModeQuery } }, async (request, reply) => {
     await admin(request, reply, deps)
     const mode = (request.query as { mode: ContentMode }).mode
-    return { mode, items: normalizationFields(mode) }
+    const availableFields = await normalizationAvailableFields()
+    return {
+      mode,
+      items: normalizationFields(mode),
+      variables: normalizationTemplateVariables(mode, availableFields),
+      contextOptions: normalizationContextOptions(mode, availableFields),
+      defaultContextFields: normalizationDefaultContextFields(mode),
+    }
   })
 
   const resolveNormalizationItems = async (body: NormalizationPipelineEstimateBody) => {
+    const availableFields = await normalizationAvailableFields()
     try { assertNormalizationField(body.mode, body.field) } catch (error) { throw new ApiError(422, 'NORMALIZATION_FIELD_INVALID', error instanceof Error ? error.message : 'Недопустимое поле') }
+    try {
+      assertNormalizationTemplate(body.prompt, body.mode, availableFields)
+      buildNormalizationCardContext({}, body.mode, body.field, body.contextFields, undefined, availableFields)
+    } catch (error) { throw new ApiError(422, 'NORMALIZATION_TEMPLATE_INVALID', error instanceof Error ? error.message : 'Недопустимый шаблон промпта') }
     if (body.scope === 'selected' && !body.itemIds?.length) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите хотя бы одну карточку')
     const active = (await deps.db.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
     if (!active) throw new ApiError(409, 'ACTIVE_REVISION_NOT_FOUND', 'Нет активной ревизии контента')
@@ -692,15 +723,33 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       const needle = `%${body.query.trim()}%`
       filters.push(or(ilike(contentItemVersions.itemId, needle), ilike(contentItemVersions.titleRu, needle), ilike(contentItemVersions.titleOriginal, needle))!)
     }
-    return deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, titleRu: contentItemVersions.titleRu })
+    const items = await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, titleRu: contentItemVersions.titleRu, titleOriginal: contentItemVersions.titleOriginal, payload: contentItemVersions.payload })
       .from(contentItemVersions).where(and(...filters)).orderBy(asc(contentItemVersions.itemId)).limit(body.maxItems)
+    return { items, availableFields }
   }
 
   app.post('/api/v1/admin/pipelines/normalization/estimate', { schema: { body: NormalizationPipelineEstimateBodySchema } }, async (request, reply) => {
     await admin(request, reply, deps)
     const body = request.body as NormalizationPipelineEstimateBody
-    const items = await resolveNormalizationItems(body)
+    const { items } = await resolveNormalizationItems(body)
     return { items: items.length, aiReviewCalls: items.length, estimatedCost: Number((items.length * 0.02).toFixed(2)), currency: 'USD', upperBound: true, model: body.model ?? 'gpt-5-mini' }
+  })
+
+  app.post('/api/v1/admin/pipelines/normalization/preview', { schema: { body: NormalizationPipelineEstimateBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const body = request.body as NormalizationPipelineEstimateBody
+    const { items, availableFields } = await resolveNormalizationItems({ ...body, maxItems: 1 })
+    const item = items[0]
+    if (!item) throw new ApiError(409, 'NORMALIZATION_ITEMS_EMPTY', 'Под заданный фильтр не найдено карточек для предпросмотра')
+    const rendered = renderNormalizationPrompt({
+      prompt: body.prompt, payload: asRecord(item.payload), mode: body.mode, field: body.field,
+      contextFields: body.contextFields, cardId: item.itemId, availableFields,
+    })
+    return {
+      item: { id: item.itemId, titleRu: item.titleRu, titleOriginal: item.titleOriginal },
+      renderedPrompt: rendered.prompt,
+      context: rendered.context,
+    }
   })
 
   app.post('/api/v1/admin/pipelines/normalization/runs', { schema: { body: NormalizationPipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
@@ -709,11 +758,11 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
     const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
-    const items = await resolveNormalizationItems(body)
+    const { items, availableFields } = await resolveNormalizationItems(body)
     if (!items.length) throw new ApiError(409, 'NORMALIZATION_ITEMS_EMPTY', 'Под заданный фильтр не найдено карточек')
     const run = (await deps.db.insert(pipelineRuns).values({
       pipelineKey: 'normalization', pipelineVersion: 'normalization-v1', status: 'queued', createdBy: actor.id, itemsTotal: items.length,
-      inputDefinitionJson: { scenario: 'normalize', mode: body.mode, field: body.field, prompt: body.prompt, scope: body.scope, query: body.query ?? '', includeTagIds: body.includeTagIds ?? [], excludeTagIds: body.excludeTagIds ?? [], tagMatch: body.tagMatch ?? 'all', itemIds: items.map((item) => item.itemId) },
+      inputDefinitionJson: { scenario: 'normalize', mode: body.mode, field: body.field, prompt: body.prompt, contextFields: body.contextFields ?? normalizationDefaultContextFields(body.mode), availableFields, scope: body.scope, query: body.query ?? '', includeTagIds: body.includeTagIds ?? [], excludeTagIds: body.excludeTagIds ?? [], tagMatch: body.tagMatch ?? 'all', itemIds: items.map((item) => item.itemId) },
       settingsJson: { maxItems: items.length, model: body.model ?? 'gpt-5-mini', webSearch: body.webSearch ?? true, concurrency: Math.min(6, deps.config.normalizationConcurrency) },
       estimatedCost: String((items.length * 0.02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
     }).returning())[0]

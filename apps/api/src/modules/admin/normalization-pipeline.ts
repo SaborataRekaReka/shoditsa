@@ -23,6 +23,32 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
 }
 
+const TEMPLATE_SPECIAL_VARIABLES = [
+  { name: 'title', label: 'Название карточки' },
+  { name: 'originalTitle', label: 'Оригинальное название' },
+  { name: 'cardId', label: 'ID карточки' },
+  { name: 'currentValue', label: 'Текущее значение поля' },
+  { name: 'field', label: 'Название поля' },
+  { name: 'mode', label: 'Категория' },
+  { name: 'card', label: 'Выбранный контекст карточки (JSON)' },
+] as const
+
+const compactTemplateValue = (value: unknown, depth = 0): unknown => {
+  if (value == null || typeof value === 'number' || typeof value === 'boolean') return value
+  if (typeof value === 'string') return value.length > 2_000 ? `${value.slice(0, 2_000)}…` : value
+  if (depth >= 3) return '[вложенные данные сокращены]'
+  if (Array.isArray(value)) return value.slice(0, 30).map((entry) => compactTemplateValue(entry, depth + 1))
+  if (typeof value === 'object') return Object.fromEntries(Object.entries(value as Json).slice(0, 40).map(([key, entry]) => [key, compactTemplateValue(entry, depth + 1)]))
+  return String(value)
+}
+
+const templateValueText = (value: unknown) => {
+  if (value === undefined || value === null || value === '') return 'не указано'
+  const compact = compactTemplateValue(value)
+  const rendered = typeof compact === 'string' ? compact : JSON.stringify(compact)
+  return rendered.length > 4_000 ? `${rendered.slice(0, 4_000)}…` : rendered
+}
+
 const LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Окончание деятельности', titleRu: 'Русское название',
   titleOriginal: 'Оригинальное название', plotHint: 'Подсказка', facts: 'Факты', genres: 'Жанры', countries: 'Страны',
@@ -32,6 +58,32 @@ export const normalizationFields = (mode: ContentMode) => [...new Set([
   ...COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year')),
   ...MODE_FIELDS[mode],
 ])].map((field) => ({ field, label: LABELS[field] ?? field }))
+
+export const normalizationContextOptions = (_mode?: ContentMode, extraFields: string[] = []) => [...new Set([...COMMON_FIELDS, ...Object.values(MODE_FIELDS).flat(), ...extraFields])]
+  .filter((field) => /^[A-Za-z][A-Za-z0-9_]{0,79}$/.test(field))
+  .map((field) => ({ field, label: LABELS[field] ?? field }))
+
+export const normalizationDefaultContextFields = (mode: ContentMode) => [...new Set([
+  ...NORMALIZATION_CONTEXT_FIELDS[mode],
+  ...(mode === 'music' ? ['alternativeTitles', 'aliases'] : []),
+])]
+
+export const normalizationTemplateVariables = (mode: ContentMode, extraFields: string[] = []) => [
+  ...TEMPLATE_SPECIAL_VARIABLES.map((entry) => ({ ...entry, token: `%${entry.name}%` })),
+  ...normalizationContextOptions(mode, extraFields)
+    .filter((entry) => !TEMPLATE_SPECIAL_VARIABLES.some((special) => special.name === entry.field))
+    .map((entry) => ({ name: entry.field, label: entry.label, token: `%${entry.field}%` })),
+]
+
+export const normalizationUnknownVariables = (prompt: string, mode: ContentMode, extraFields: string[] = []) => {
+  const allowed = new Set(normalizationTemplateVariables(mode, extraFields).map((entry) => entry.name))
+  return [...new Set([...prompt.matchAll(/%([^%\s]{1,80})%/g)].map((match) => match[1]).filter((name) => !allowed.has(name)))]
+}
+
+export const assertNormalizationTemplate = (prompt: string, mode: ContentMode, extraFields: string[] = []) => {
+  const unknown = normalizationUnknownVariables(prompt, mode, extraFields)
+  if (unknown.length) throw new Error(`Неизвестные переменные: ${unknown.map((name) => `%${name}%`).join(', ')}`)
+}
 
 export const assertNormalizationField = (mode: ContentMode, field: string) => {
   if (!normalizationFields(mode).some((entry) => entry.field === field)) throw new Error(`Поле ${field} нельзя нормализовать для категории ${mode}`)
@@ -49,9 +101,37 @@ export const normalizationPendingItemIds = (itemIds: string[], processedItemIds:
   return [...itemIds.slice(0, start), ...itemIds.slice(start)].filter((itemId) => !processed.has(itemId))
 }
 
-export const buildNormalizationCardContext = (payload: Json, mode: ContentMode, field: string) => {
-  const fields = new Set(['titleRu', 'titleOriginal', 'alternativeTitles', 'aliases', field, ...NORMALIZATION_CONTEXT_FIELDS[mode]])
-  return Object.fromEntries([...fields].flatMap((key) => payload[key] === undefined ? [] : [[key, payload[key]]]))
+export const buildNormalizationCardContext = (payload: Json, mode: ContentMode, field: string, contextFields?: string[], cardId?: string, availableFields: string[] = []) => {
+  const allowed = new Set(normalizationContextOptions(mode, availableFields).map((entry) => entry.field))
+  const optional = contextFields === undefined ? normalizationDefaultContextFields(mode) : contextFields
+  const invalid = optional.filter((key) => !allowed.has(key))
+  if (invalid.length) throw new Error(`Недопустимые поля контекста: ${invalid.join(', ')}`)
+  const fields = new Set(['titleRu', 'titleOriginal', field, ...optional])
+  return Object.fromEntries([
+    ...(cardId ? [['cardId', cardId] as const] : []),
+    ...[...fields].map((key) => [key, compactTemplateValue(payload[key] ?? null)] as const),
+  ])
+}
+
+export const renderNormalizationPrompt = (options: {
+  prompt: string; payload: Json; mode: ContentMode; field: string; contextFields?: string[]; cardId?: string; availableFields?: string[]
+}) => {
+  assertNormalizationField(options.mode, options.field)
+  assertNormalizationTemplate(options.prompt, options.mode, options.availableFields)
+  const context = buildNormalizationCardContext(options.payload, options.mode, options.field, options.contextFields, options.cardId, options.availableFields)
+  const values: Json = {
+    ...options.payload,
+    title: options.payload.titleRu || options.payload.titleOriginal || options.cardId || 'не указано',
+    originalTitle: options.payload.titleOriginal,
+    cardId: options.cardId,
+    currentValue: options.payload[options.field],
+    field: options.field,
+    mode: options.mode,
+    card: context,
+  }
+  const prompt = options.prompt.replace(/%([^%\s]{1,80})%/g, (_token, name: string) => templateValueText(values[name]))
+  if (prompt.length > 20_000) throw new Error('Промпт после подстановки переменных превышает 20 000 символов')
+  return { prompt, context }
 }
 
 export type NormalizationPoolOutcome = 'completed' | 'rate_limited' | 'cancelled'
@@ -157,9 +237,10 @@ export type NormalizationResult = {
 }
 
 export const requestNormalization = async (options: {
-  apiKey: string; proxyUrl?: string; model: 'gpt-5-mini'; webSearch: boolean; mode: ContentMode; field: string; prompt: string; payload: Json
+  apiKey: string; proxyUrl?: string; model: 'gpt-5-mini'; webSearch: boolean; mode: ContentMode; field: string; prompt: string; payload: Json; contextFields?: string[]; cardId?: string; availableFields?: string[]
 }): Promise<NormalizationResult> => {
   assertNormalizationField(options.mode, options.field)
+  const rendered = renderNormalizationPrompt(options)
   const specialRule = options.field === 'activityStartYear'
     ? 'Для сольного артиста это первый подтвержденный год профессиональной публичной музыкальной деятельности или дебюта; для группы — год основания/начала деятельности. Никогда не используй год рождения. Если надежного подтверждения нет, верни clear и null.'
     : ''
@@ -169,10 +250,10 @@ export const requestNormalization = async (options: {
     `Текущее значение выбранного поля: ${JSON.stringify(options.payload[options.field] ?? null)}. Решение keep относится только к этому значению, а не к похожим legacy-полям карточки.`,
     options.field === 'activityStartYear' ? `Legacy year=${JSON.stringify(options.payload.year ?? null)} — это только непроверенный кандидат и часто год рождения; если он подтвержден как начало деятельности, верни update с этим годом, а не keep.` : '',
     specialRule,
-    `Инструкция администратора: ${options.prompt}`,
+    `Инструкция администратора: ${rendered.prompt}`,
     'Верни только JSON: {"decision":"update|keep|clear|review","value":...,"confidence":0..1,"reason":"...","sourceUrls":["https://..."]}.',
     'update — новое подтвержденное значение; keep — текущее значение уже верно; clear — значение ошибочно или не подтверждается; review — неоднозначность требует человека.',
-    `Контекст карточки: ${JSON.stringify(buildNormalizationCardContext(options.payload, options.mode, options.field))}`,
+    `Контекст карточки: ${JSON.stringify(rendered.context)}`,
   ].filter(Boolean).join('\n\n')
   const body = {
     model: options.model,

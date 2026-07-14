@@ -242,6 +242,7 @@ const NormalizationPipelineRequestProperties = {
   mode: ContentModeSchema,
   field: ContentExchangeFieldSchema,
   prompt: Type.String({ minLength: 10, maxLength: 4_000 }),
+  contextFields: Type.Optional(Type.Array(ContentExchangeFieldSchema, { maxItems: 60, uniqueItems: true })),
   scope: Type.Union([Type.Literal('all'), Type.Literal('selected')]),
   itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 500, uniqueItems: true })),
   query: Type.Optional(Type.String({ maxLength: 160 })),

@@ -105,7 +105,18 @@ export const adminApi = {
   pipelines: () => request<{ items: Array<Record<string, unknown>> }>('/admin/pipelines'),
   pipelineEstimate: (pipeline: 'music' | 'movie' | 'anime' | 'normalization', body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/pipelines/${pipeline}/estimate`, { method: 'POST', body: json(body) }),
   pipelineManualPreview: (pipeline: 'music' | 'movie' | 'anime', items: Array<Record<string, unknown>>) => request<{ items: Array<Record<string, unknown>>; summary: Record<string, number> }>(`/admin/pipelines/${pipeline}/manual/preview`, { method: 'POST', body: json(pipeline === 'music' ? { artists: items } : pipeline === 'movie' ? { movies: items } : { anime: items }) }),
-  normalizationFields: (mode: ContentMode) => request<{ mode: ContentMode; items: Array<{ field: string; label: string }> }>(`/admin/pipelines/normalization/fields${query({ mode })}`),
+  normalizationFields: (mode: ContentMode) => request<{
+    mode: ContentMode
+    items: Array<{ field: string; label: string }>
+    variables: Array<{ name: string; label: string; token: string }>
+    contextOptions: Array<{ field: string; label: string }>
+    defaultContextFields: string[]
+  }>(`/admin/pipelines/normalization/fields${query({ mode })}`),
+  normalizationPreview: (body: Record<string, unknown>) => request<{
+    item: { id: string; titleRu: string | null; titleOriginal: string | null }
+    renderedPrompt: string
+    context: Record<string, unknown>
+  }>('/admin/pipelines/normalization/preview', { method: 'POST', body: json(body) }),
   startPipeline: (pipeline: 'music' | 'movie' | 'anime' | 'normalization', body: Record<string, unknown>) => request<{ runId: string; jobId: string }>(`/admin/pipelines/${pipeline}/runs`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ ...body, confirmation: true }) }),
   pipelineRuns: () => request<{ items: Array<Record<string, unknown>> }>('/admin/pipeline-runs'),
   pipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`),

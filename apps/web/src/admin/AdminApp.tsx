@@ -2024,6 +2024,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const [normalizationMode, setNormalizationMode] = useState<ContentMode>('music')
   const [normalizationField, setNormalizationField] = useState('activityStartYear')
   const [normalizationPrompt, setNormalizationPrompt] = useState('Проверь по надежным источникам и унифицируй значение. Для сольного артиста укажи первый подтвержденный год профессиональной музыкальной деятельности или дебюта, для группы — год основания. Никогда не используй год рождения. Если надежных данных нет — очисти поле.')
+  const normalizationPromptRef = useRef<HTMLTextAreaElement>(null)
+  const [normalizationContextFields, setNormalizationContextFields] = useState<string[]>([])
   const [normalizationScope, setNormalizationScope] = useState<'all' | 'selected'>('all')
   const [normalizationQuery, setNormalizationQuery] = useState('')
   const [normalizationSelected, setNormalizationSelected] = useState<Set<string>>(new Set())
@@ -2037,11 +2039,36 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const manualPayload = pipelineKey === 'music' ? { artists } : pipelineKey === 'movie' ? { movies } : { anime }
   const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && pipelineKey !== 'normalization' && scenario === 'manual' && manualItems.length > 0 })
   const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization' })
+  useEffect(() => {
+    if (starting && pipelineKey === 'normalization' && normalizationFieldsQuery.data?.mode === normalizationMode) {
+      setNormalizationContextFields(normalizationFieldsQuery.data.defaultContextFields)
+    }
+  }, [starting, pipelineKey, normalizationMode, normalizationFieldsQuery.data?.mode])
   const normalizationTags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags, enabled: starting && pipelineKey === 'normalization' })
   const normalizationCandidates = useQuery({ queryKey: ['admin', 'normalization-candidates', normalizationMode, normalizationQuery, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], queryFn: () => adminApi.contentItems({ mode: normalizationMode, q: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags.join(',') || undefined, excludeTagIds: normalizationExcludeTags.join(',') || undefined, tagMatch: normalizationTagMatch, limit: 100, sort: 'title' }), enabled: starting && pipelineKey === 'normalization' })
-  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags, excludeTagIds: normalizationExcludeTags, tagMatch: normalizationTagMatch, maxItems, model: 'gpt-5-mini', webSearch: true }
+  const normalizationUnknownVariables = useMemo(() => {
+    const allowed = new Set((normalizationFieldsQuery.data?.variables ?? []).map((entry) => entry.name))
+    if (!allowed.size) return []
+    return [...new Set([...normalizationPrompt.matchAll(/%([^%\s]{1,80})%/g)].map((match) => match[1]).filter((name) => !allowed.has(name)))]
+  }, [normalizationPrompt, normalizationFieldsQuery.data?.variables])
+  const normalizationPayload = { mode: normalizationMode, field: normalizationField, prompt: normalizationPrompt, contextFields: normalizationContextFields, scope: normalizationScope, itemIds: normalizationScope === 'selected' ? [...normalizationSelected] : undefined, query: normalizationQuery || undefined, includeTagIds: normalizationIncludeTags, excludeTagIds: normalizationExcludeTags, tagMatch: normalizationTagMatch, maxItems, model: 'gpt-5-mini', webSearch: true }
+  const [normalizationPreviewPayload, setNormalizationPreviewPayload] = useState<Record<string, unknown> | null>(null)
+  useEffect(() => {
+    if (!starting || pipelineKey !== 'normalization' || normalizationPrompt.trim().length < 10 || normalizationUnknownVariables.length || (normalizationScope === 'selected' && !normalizationSelected.size)) {
+      setNormalizationPreviewPayload(null)
+      return
+    }
+    const timer = window.setTimeout(() => setNormalizationPreviewPayload(normalizationPayload), 450)
+    return () => window.clearTimeout(timer)
+  }, [starting, pipelineKey, normalizationMode, normalizationField, normalizationPrompt, normalizationContextFields, normalizationScope, normalizationQuery, normalizationSelected, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch, maxItems, normalizationUnknownVariables.length])
+  const normalizationRenderedPreview = useQuery({
+    queryKey: ['admin', 'normalization-rendered-preview', normalizationPreviewPayload],
+    queryFn: () => adminApi.normalizationPreview(normalizationPreviewPayload!),
+    enabled: Boolean(normalizationPreviewPayload),
+    retry: false,
+  })
   const estimate = useQuery({
-    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, normalizationMode, normalizationField, normalizationPrompt, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario !== 'manual' || manualItems.length > 0,
+    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, normalizationMode, normalizationField, normalizationPrompt, normalizationContextFields, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && !normalizationUnknownVariables.length && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario !== 'manual' || manualItems.length > 0,
     queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), aiMode: 'auto', model: 'gpt-5-mini', webSearch: true }),
   })
   const start = useMutation({
@@ -2165,6 +2192,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     const settings = record(run.settingsJson)
     if (run.pipelineKey === 'normalization') return {
       mode: input.mode, field: input.field, prompt: input.prompt, scope: 'selected', itemIds: array(input.itemIds).map(String).slice(0, 500),
+      contextFields: Array.isArray(input.contextFields) ? array(input.contextFields).map(String) : undefined,
       includeTagIds: array(input.includeTagIds).map(String), excludeTagIds: array(input.excludeTagIds).map(String), tagMatch: input.tagMatch === 'any' ? 'any' : 'all',
       maxItems: Math.max(1, Math.min(500, Number(settings.maxItems ?? run.itemsTotal ?? 100) || 100)), model: 'gpt-5-mini', webSearch: settings.webSearch !== false,
     }
@@ -2283,6 +2311,17 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const manualFieldLabel = pipelineKey === 'music' ? 'Исполнители' : pipelineKey === 'movie' ? 'Фильмы Кинопоиска' : 'Аниме Shikimori'
   const manualPlaceholder = pipelineKey === 'music' ? 'Кино\nDepeche Mode\nPhoenix,Франция,indie rock band' : pipelineKey === 'movie' ? 'В поисках Немо (Finding Nemo, 2003)\nЧёрная Пантера (Black Panther, 2018)\nБэтмен (The Batman, 2022)' : '16498\nhttps://shikimori.one/animes/5114\n9253,добавить аниме из списка'
   const manualHelp = pipelineKey === 'music' ? 'Формат: имя или CSV «artist,country,hint». Страна и уточнение необязательны.' : pipelineKey === 'movie' ? 'Один фильм на строку: «Название (Original title, год)» или просто название. Предпросмотр проверяет только нашу базу; ID Кинопоиска найдутся после запуска.' : 'Формат: только ID или ссылка Shikimori. Названия без ID не распознаются. После запятой можно добавить внутреннее уточнение.'
+  const insertNormalizationVariable = (token: string) => {
+    const textarea = normalizationPromptRef.current
+    const start = textarea?.selectionStart ?? normalizationPrompt.length
+    const end = textarea?.selectionEnd ?? start
+    const next = `${normalizationPrompt.slice(0, start)}${token}${normalizationPrompt.slice(end)}`
+    setNormalizationPrompt(next)
+    window.requestAnimationFrame(() => {
+      normalizationPromptRef.current?.focus()
+      normalizationPromptRef.current?.setSelectionRange(start + token.length, start + token.length)
+    })
+  }
   const openPipeline = (key: unknown) => { if (key === 'music' || key === 'movie' || key === 'anime' || key === 'normalization') { setPipelineKey(key); setScenario('manual'); setMaxItems(key === 'normalization' ? 100 : 5); setStarting(true) } }
   const events = record(runEvents.data)
   const eventRows = array(events.events).map(record)
@@ -3605,6 +3644,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                         setNormalizationField(
                           mode === "music" ? "activityStartYear" : "year",
                         );
+                        setNormalizationContextFields([]);
                         setNormalizationSelected(new Set());
                       }}
                     >
@@ -3630,9 +3670,10 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       ))}
                     </select>
                   </label>
-                  <label className="admin-field admin-field--wide">
+                  <div className="admin-field admin-field--wide admin-normalization-template">
                     <span>Инструкция модели</span>
                     <textarea
+                      ref={normalizationPromptRef}
                       value={normalizationPrompt}
                       onChange={(event) =>
                         setNormalizationPrompt(event.target.value)
@@ -3640,11 +3681,71 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       rows={6}
                     />
                     <small>
-                      GPT-5 mini получит эту инструкцию вместе с одной карточкой
-                      и вернет только изменение выбранного поля, уверенность и
-                      источники.
+                      Переменные подставляются отдельно для каждой карточки перед вызовом GPT-5 mini.
                     </small>
-                  </label>
+                    <details open>
+                      <summary>Вставить переменную</summary>
+                      <div className="admin-normalization-variables">
+                        {normalizationFieldsQuery.data?.variables.map((entry) => (
+                          <button key={entry.name} type="button" title={entry.label} onClick={() => insertNormalizationVariable(entry.token)}>
+                            {entry.token}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
+                    {normalizationUnknownVariables.length > 0 && (
+                      <div className="admin-normalization-warning">
+                        <AlertTriangle /> Неизвестные переменные: {normalizationUnknownVariables.map((name) => `%${name}%`).join(', ')}
+                      </div>
+                    )}
+                  </div>
+                  <section className="admin-normalization-context">
+                    <header>
+                      <div>
+                        <strong>Контекст для модели</strong>
+                        <small>Название, оригинальное название, ID и нормализуемое поле передаются всегда. Остальные поля выбираете вы.</small>
+                      </div>
+                      <button type="button" onClick={() => setNormalizationContextFields(normalizationFieldsQuery.data?.defaultContextFields ?? [])}>По умолчанию</button>
+                    </header>
+                    <div>
+                      {normalizationFieldsQuery.data?.contextOptions.map((entry) => {
+                        const mandatory = entry.field === 'titleRu' || entry.field === 'titleOriginal' || entry.field === normalizationField
+                        const checked = mandatory || normalizationContextFields.includes(entry.field)
+                        return (
+                          <label key={entry.field} className={mandatory ? 'is-mandatory' : ''}>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              disabled={mandatory}
+                              onChange={(event) => setNormalizationContextFields((current) => event.target.checked
+                                ? [...new Set([...current, entry.field])]
+                                : current.filter((field) => field !== entry.field))}
+                            />
+                            <span>{entry.label}</span>
+                            <small>%{entry.field}%</small>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </section>
+                  <section className="admin-normalization-preview">
+                    <header>
+                      <div>
+                        <strong>Предпросмотр на первой подходящей карточке</strong>
+                        <small>Это бесплатный локальный рендер — ИИ не вызывается.</small>
+                      </div>
+                      {normalizationRenderedPreview.isFetching && <LoaderCircle className="is-spinning" />}
+                    </header>
+                    {normalizationRenderedPreview.error ? (
+                      <div className="admin-normalization-warning"><AlertTriangle /> {errorText(normalizationRenderedPreview.error)}</div>
+                    ) : normalizationRenderedPreview.data ? (
+                      <>
+                        <p><strong>{normalizationRenderedPreview.data.item.titleRu || normalizationRenderedPreview.data.item.titleOriginal || normalizationRenderedPreview.data.item.id}</strong><small>{normalizationRenderedPreview.data.item.id}</small></p>
+                        <label>Итоговая инструкция<pre>{normalizationRenderedPreview.data.renderedPrompt}</pre></label>
+                        <details><summary>Структурированный контекст</summary><pre>{JSON.stringify(normalizationRenderedPreview.data.context, null, 2)}</pre></details>
+                      </>
+                    ) : <small>Заполните инструкцию и выберите карточки — здесь появится точный промпт.</small>}
+                  </section>
                   <label className="admin-field admin-field--wide">
                     <span>Поиск карточек</span>
                     <input
@@ -3944,6 +4045,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   start.isPending ||
                   (pipelineKey === "normalization"
                     ? normalizationPrompt.trim().length < 10 ||
+                      normalizationUnknownVariables.length > 0 ||
                       (normalizationScope === "selected" &&
                         !normalizationSelected.size)
                     : scenario === "manual" &&

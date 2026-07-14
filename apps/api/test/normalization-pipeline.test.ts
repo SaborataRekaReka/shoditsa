@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { assertNormalizationField, buildNormalizationCardContext, isNormalizationRateLimitError, mergeNormalizationUsage, normalizationFields, normalizationPendingItemIds, normalizationStartIndex, normalizeProposedValue, runNormalizationPool } from '../src/modules/admin/normalization-pipeline.js'
+import { assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, isNormalizationRateLimitError, mergeNormalizationUsage, normalizationFields, normalizationPendingItemIds, normalizationStartIndex, normalizationUnknownVariables, normalizeProposedValue, renderNormalizationPrompt, runNormalizationPool } from '../src/modules/admin/normalization-pipeline.js'
 
 describe('normalization pipeline', () => {
   it('exposes activityStartYear instead of ambiguous year for music', () => {
@@ -41,6 +41,39 @@ describe('normalization pipeline', () => {
     expect(context).not.toHaveProperty('topTracks')
     expect(context).not.toHaveProperty('plotHint')
     expect(context).not.toHaveProperty('screenshots')
+  })
+
+  it('renders card variables separately for every normalization item', () => {
+    const rendered = renderNormalizationPrompt({
+      prompt: 'Найди данные для %title% (%originalTitle%), поле %field%, сейчас %currentValue%. Разработчики: %developers%.',
+      payload: { titleRu: 'Игра', titleOriginal: 'Game', year: 2001, developers: ['Studio'] },
+      mode: 'game', field: 'year', contextFields: ['developers'], cardId: 'game:1',
+    })
+    expect(rendered.prompt).toBe('Найди данные для Игра (Game), поле year, сейчас 2001. Разработчики: ["Studio"].')
+    expect(rendered.context).toMatchObject({ cardId: 'game:1', titleRu: 'Игра', titleOriginal: 'Game', year: 2001, developers: ['Studio'] })
+  })
+
+  it('supports an explicit minimal context and the card JSON variable', () => {
+    const rendered = renderNormalizationPrompt({
+      prompt: 'Карточка: %card%', payload: { titleRu: 'Игра', year: 2001, developers: ['Studio'] },
+      mode: 'game', field: 'year', contextFields: [], cardId: 'game:1',
+    })
+    expect(rendered.context).toEqual({ cardId: 'game:1', titleRu: 'Игра', titleOriginal: null, year: 2001 })
+    expect(rendered.prompt).not.toContain('developers')
+  })
+
+  it('blocks misspelled template variables before a paid request', () => {
+    expect(normalizationUnknownVariables('Проверь %titel% и %title%', 'game')).toEqual(['titel'])
+    expect(() => assertNormalizationTemplate('Проверь %titel%', 'game')).toThrow(/%titel%/)
+  })
+
+  it('allows a field discovered in any category to be used in every category', () => {
+    const rendered = renderNormalizationPrompt({
+      prompt: 'Универсальное поле: %customEditorialNote%', payload: { titleRu: 'Игра', customEditorialNote: 'Проверено' },
+      mode: 'game', field: 'plotHint', contextFields: ['customEditorialNote'], cardId: 'game:1', availableFields: ['customEditorialNote'],
+    })
+    expect(rendered.prompt).toBe('Универсальное поле: Проверено')
+    expect(rendered.context.customEditorialNote).toBe('Проверено')
   })
 
   it('processes normalization items with bounded concurrency', async () => {
