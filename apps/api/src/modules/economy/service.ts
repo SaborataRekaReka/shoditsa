@@ -3,7 +3,7 @@ import { and, asc, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import type { ApiDifficultyKey, ContentMode, PeriodKey } from '@shoditsa/contracts'
 import {
-  attendanceStats, dailyAttendance, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
+  attendanceStats, dailyAttendance, dailyChallenges, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
   promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
@@ -127,13 +127,17 @@ export const dashboard = async (db: Database, userId: string) => {
       mode: gameSessions.mode,
       kind: gameSessions.kind,
       status: gameSessions.status,
+      variantKey: dailyChallenges.variantKey,
       period: gameSessions.period,
       difficulty: gameSessions.difficulty,
       puzzleDate: gameSessions.puzzleDate,
       attemptsCount: gameSessions.attemptsCount,
       updatedAt: gameSessions.updatedAt,
     })
-      .from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.status, 'playing'))).orderBy(desc(gameSessions.updatedAt)),
+      .from(gameSessions)
+      .leftJoin(dailyChallenges, eq(dailyChallenges.id, gameSessions.challengeId))
+      .where(and(eq(gameSessions.userId, userId), eq(gameSessions.status, 'playing')))
+      .orderBy(desc(gameSessions.updatedAt)),
     db.select({ launches: freePlayUsage.launches }).from(freePlayUsage)
       .where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, activityDate))).limit(1),
   ])

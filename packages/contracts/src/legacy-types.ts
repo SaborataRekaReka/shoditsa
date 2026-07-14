@@ -183,6 +183,7 @@ export type GameStatus = 'playing' | 'won' | 'lost'
 export type SavedGame = {
   key: string
   mode: TitleMode
+  variantKey?: string | null
   period: PeriodKey
   date: string
   answerId: string

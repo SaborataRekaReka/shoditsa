@@ -49,6 +49,7 @@ export const GameStartBodySchema = Type.Object({
   mode: ContentModeSchema,
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),
+  packId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   archiveDate: Type.Optional(Type.Union([DateSchema, Type.Null()])),
 }, { additionalProperties: false })
 

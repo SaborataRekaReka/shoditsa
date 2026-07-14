@@ -11,6 +11,7 @@ export type ChallengePayload = {
   date: string
   period: PeriodKey
   difficulty?: DifficultyKey
+  packId?: string
   opponentAttempts: number
   from: string
 }
@@ -34,11 +35,12 @@ export const parseChallengeUrl = (input: string | URL): ChallengePayload | null 
   const period = (url.searchParams.get('period') ?? 'all') as PeriodKey
   const difficultyValue = url.searchParams.get('difficulty')
   const difficulty = difficultyValue as DifficultyKey | null
+  const packId = url.searchParams.get('pack')?.trim() || null
   const opponentAttempts = safeAttempts(url.searchParams.get('challenge'))
   const from = url.searchParams.get('from')?.trim()
   if (!mode || !MODES.has(mode) || !date || !ISO_DATE.test(date) || !PERIODS.has(period) || !opponentAttempts || !from) return null
   if (difficulty && !DIFFICULTIES.has(difficulty)) return null
-  return { mode, date, period, ...(difficulty ? { difficulty } : {}), opponentAttempts, from: from.slice(0, 64) }
+  return { mode, date, period, ...(difficulty ? { difficulty } : {}), ...(packId ? { packId: packId.slice(0, 120) } : {}), opponentAttempts, from: from.slice(0, 64) }
 }
 
 export const buildChallengeUrl = (baseUrl: string, payload: ChallengePayload) => {
@@ -49,6 +51,7 @@ export const buildChallengeUrl = (baseUrl: string, payload: ChallengePayload) =>
   url.searchParams.set('date', payload.date)
   url.searchParams.set('period', payload.period)
   if (payload.difficulty) url.searchParams.set('difficulty', payload.difficulty)
+  if (payload.packId) url.searchParams.set('pack', payload.packId)
   url.searchParams.set('challenge', String(payload.opponentAttempts))
   url.searchParams.set('from', payload.from)
   return url.toString()

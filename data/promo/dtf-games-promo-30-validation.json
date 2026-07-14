@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-07-14T11:30:35.343511+00:00",
+  "packId": "dtf-games-promo-30-v1",
+  "valid": true,
+  "checks": {
+    "jsonSchemaErrors": [],
+    "itemCount": {
+      "expected": 30,
+      "actual": 30,
+      "passed": true
+    },
+    "uniqueIds": {
+      "passed": true
+    },
+    "uniqueOriginalTitles": {
+      "passed": true
+    },
+    "hintSchedule": {
+      "expected": [
+        0,
+        0,
+        5,
+        8,
+        9
+      ],
+      "errors": [],
+      "passed": true
+    },
+    "preRescueExactTitleLeaks": {
+      "errors": [],
+      "passed": true
+    },
+    "minimumSources": {
+      "errors": [],
+      "passed": true
+    },
+    "minimumClueLength": {
+      "errors": [],
+      "passed": true
+    },
+    "difficultyDistribution": {
+      "easy": 15,
+      "medium": 13,
+      "hard": 2
+    },
+    "spoilerDistribution": {
+      "low": 24,
+      "high": 2,
+      "medium": 4
+    },
+    "catalogActionDistribution": {
+      "resolve_existing": 21,
+      "resolve_or_import": 9
+    },
+    "authoredCommentPolicy": {
+      "directQuotesUsed": false,
+      "realUsersReferenced": false,
+      "passed": true
+    }
+  },
+  "manualReviewStillRequired": [
+    "Проверить локальную узнаваемость каждой шутки по реальным веткам DTF.",
+    "Проверить наличие или импорт всех answerRef в активную ревизию контента.",
+    "Обогатить fallbackAnswerCard рейтингами, отзывами, ценой и изображениями.",
+    "Протестировать сложность на людях, не участвовавших в подготовке пакета.",
+    "Решить, включать ли две высокоспойлерные карточки в публичное промо."
+  ]
+}

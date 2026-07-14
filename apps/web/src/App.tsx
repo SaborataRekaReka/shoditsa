@@ -122,6 +122,9 @@ const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series', 'anime'])
 const FREE_PLAY_MODES = new Set<TitleMode>(['movie', 'series', 'anime', 'music'])
+const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
+const PROMO_POOL_COUNT = 30
+const isPromoVariant = (value: string | null | undefined) => value === PROMO_PACK_ID
 
 type EconomyAward = {
   total: number
@@ -1221,14 +1224,17 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onOpenSavedSession, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
+  onSelectPromo: () => void
   onOpenSavedSession: (game: SavedGame) => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
   onReview: () => void
   onResume: () => void
+  isAdmin: boolean
+  promoSession: SavedGame | null
   activeSessionsCount: number
   games: SavedGame[]
   preferredMode: TitleMode
@@ -1240,9 +1246,10 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
     { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
   ]
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const nonPromoGames = useMemo(() => games.filter((game) => !isPromoVariant(game.variantKey)), [games])
   const dailyState = useMemo(
-    () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt),
-    [games, globalDailySalt, preferredMode, todayAttendance],
+    () => buildDailyHubState(todayAttendance, nonPromoGames, preferredMode, globalDailySalt),
+    [globalDailySalt, nonPromoGames, preferredMode, todayAttendance],
   )
 
   return <>
@@ -1297,6 +1304,26 @@ function HubScreen({ onSelect, onOpenSavedSession, onRewatch, onStats, onRules, 
             }
             return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[config.mode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
+          {isAdmin && <CategoryTicket
+            mode="game"
+            title="Срач дня"
+            description="Промо-режим: угадайте игру по сатирическим комментариям DTF."
+            color="#B8655A"
+            icon={Gamepad2}
+            watermarkUrl="./images/category-stubs/game-stub.webp"
+            poolCount={PROMO_POOL_COUNT}
+            status={promoSession?.status === 'playing' ? 'active' : promoSession ? 'completed' : 'new'}
+            attempts={promoSession ? savedGameAttemptCount(promoSession) : null}
+            onClick={() => {
+              if (promoSession) {
+                trackMetrikaGoal('category_ticket_resume', { mode: 'game', variant: PROMO_PACK_ID, status: promoSession.status, attempts: savedGameAttemptCount(promoSession), date: todayAttendance.date })
+                onOpenSavedSession(promoSession)
+                return
+              }
+              trackMetrikaGoal('category_ticket_play', { mode: 'game', variant: PROMO_PACK_ID, status: 'new', attempts: 0, date: todayAttendance.date })
+              onSelectPromo()
+            }}
+          />}
         </div>
       </section>
 
@@ -2443,6 +2470,7 @@ function Progress({ attempts }: { attempts: number }) {
 function Game({
   titles,
   mode,
+  packId,
   period,
   difficulty,
   date,
@@ -2465,6 +2493,7 @@ function Game({
 }: {
   titles: TitleItem[]
   mode: TitleMode
+  packId: string | null
   period: PeriodKey
   difficulty: DifficultyKey
   date: string
@@ -2491,7 +2520,8 @@ function Game({
   const pool = useMemo(() => mode === 'music' ? musicDifficultyPool(basePool, difficulty) : basePool, [basePool, mode, difficulty])
   const answerSalt = freePlayLaunch === null ? dailySalt : freePlayAnswerSalt(freePlayLaunch)
   const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, answerSalt, difficultyVariant) : null, [pool, mode, effectivePeriod, date, answerSalt, difficultyVariant])
-  const baseKey = difficultyVariant ? `${gameKey(mode, effectivePeriod, date)}|diff:${difficultyVariant}` : gameKey(mode, effectivePeriod, date)
+  const packVariant = mode === 'game' && packId ? `|pack:${packId}` : ''
+  const baseKey = difficultyVariant ? `${gameKey(mode, effectivePeriod, date)}|diff:${difficultyVariant}${packVariant}` : `${gameKey(mode, effectivePeriod, date)}${packVariant}`
   const key = freePlayLaunch === null
     ? dailySalt === 0 ? baseKey : `${baseKey}|salt:${dailySalt}`
     : freePlayGameKey(baseKey, freePlayLaunch)
@@ -2704,6 +2734,7 @@ function Game({
     saveGame({
       key,
       mode,
+      ...(mode === 'game' && packId ? { variantKey: packId } : {}),
       period: effectivePeriod,
       date,
       answerId: answer.id,
@@ -2808,6 +2839,7 @@ function Game({
     date,
     period: effectivePeriod,
     ...(mode === 'music' ? { difficulty } : {}),
+    ...(mode === 'game' && packId ? { packId } : {}),
     opponentAttempts: Math.max(1, attempts.length),
     from: getInstallationId(),
   })
@@ -3272,7 +3304,15 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Свободная игра или архив'
   const configureLabel = resultConfigureLabel(session.mode)
   const shareText = resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won')
-  const challengeLink = buildChallengeUrl(location.href, { mode: session.mode, date: session.puzzleDate, period: session.period, ...(session.difficulty ? { difficulty: session.difficulty } : {}), opponentAttempts: Math.max(1, attempts.length), from: getInstallationId() })
+  const challengeLink = buildChallengeUrl(location.href, {
+    mode: session.mode,
+    date: session.puzzleDate,
+    period: session.period,
+    ...(session.difficulty ? { difficulty: session.difficulty } : {}),
+    ...(session.mode === 'game' && isPromoVariant(session.variantKey) ? { packId: session.variantKey } : {}),
+    opponentAttempts: Math.max(1, attempts.length),
+    from: getInstallationId(),
+  })
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
   const copyResult = async () => {
     const ok = await copyText(`${shareText}\n${challengeLink}`)
@@ -4077,6 +4117,7 @@ function GameApp() {
       : 'hub')
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
   const [mode, setMode] = useState<TitleMode>(() => challenge?.mode ?? 'movie')
+  const [packId, setPackId] = useState<string | null>(() => challenge?.mode === 'game' && isPromoVariant(challenge.packId) ? challenge.packId : null)
   const [period, setPeriod] = useState<PeriodKey>(() => challenge?.period ?? 'all')
   const [difficulty, setDifficulty] = useState<DifficultyKey>(() => challenge?.difficulty ?? 'medium')
   const [date, setDate] = useState(() => challenge?.date ?? getMoscowDate())
@@ -4141,6 +4182,7 @@ function GameApp() {
     window.sessionStorage.setItem('shoditsa:active-server-session', session.id)
     setGameBackTarget(backTarget)
     setMode(session.mode)
+    setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
     setPeriod(session.period)
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
     setDate(session.puzzleDate)
@@ -4153,6 +4195,7 @@ function GameApp() {
   }, [])
   const syncServerSessionContext = useCallback((session: GameSessionSnapshot) => {
     setMode(session.mode)
+    setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
     setPeriod(session.period)
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
     setDate(session.puzzleDate)
@@ -4294,6 +4337,7 @@ function GameApp() {
     const state = {
       seansScreen: screen,
       mode,
+      packId,
       period,
       difficulty,
       date,
@@ -4318,7 +4362,7 @@ function GameApp() {
       return
     }
     window.history.replaceState(state, '')
-  }, [screen, mode, period, difficulty, date, serverSessionId, gameBackTarget, reviewBackTarget])
+  }, [screen, mode, packId, period, difficulty, date, serverSessionId, gameBackTarget, reviewBackTarget])
 
   useEffect(() => {
     document.body.dataset.seansScreen = screen
@@ -4350,6 +4394,8 @@ function GameApp() {
       setTransition('idle')
       setModal(null)
       if (MODE_TABS.includes(event.state?.mode)) setMode(event.state.mode)
+      if (typeof event.state?.packId === 'string' && isPromoVariant(event.state.packId)) setPackId(event.state.packId)
+      else setPackId(null)
       if (typeof event.state?.period === 'string' && event.state.period in PERIODS) setPeriod(event.state.period as PeriodKey)
       if (typeof event.state?.difficulty === 'string' && event.state.difficulty in DIFFICULTIES) setDifficulty(event.state.difficulty as DifficultyKey)
       if (typeof event.state?.date === 'string') setDate(event.state.date)
@@ -4364,8 +4410,9 @@ function GameApp() {
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
 
-  const setModeSafe = (nextMode: TitleMode) => {
+  const setModeSafe = (nextMode: TitleMode, options?: { preservePack?: boolean }) => {
     setMode(nextMode)
+    if (nextMode !== 'game' || !options?.preservePack) setPackId(null)
     if (nextMode === 'diagnosis' || nextMode === 'game') {
       setPeriod('all')
     }
@@ -4397,6 +4444,12 @@ function GameApp() {
       ...(serverArchive.data?.items ?? []).map(archiveItemToSavedGame),
     ]
   }, [serverArchive.data, serverRuntime.dashboard])
+  const isAdmin = SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin'
+  const promoSession = useMemo<SavedGame | null>(() => {
+    if (!isAdmin) return null
+    const today = serverRuntime.meta?.moscowDate ?? getMoscowDate()
+    return games.find((game) => game.mode === 'game' && isPromoVariant(game.variantKey) && game.date === today) ?? null
+  }, [games, isAdmin, serverRuntime.meta])
   const currentCompletedPeriods = useMemo(() => {
     if (!canUnlockPeriods(mode)) return [] as PeriodKey[]
     const completed = new Set<PeriodKey>()
@@ -4451,6 +4504,7 @@ function GameApp() {
       window.sessionStorage.setItem('shoditsa:active-server-session', sessionId)
       setGameBackTarget(backTarget)
       setModeSafe(savedGame.mode)
+      setPackId(savedGame.mode === 'game' && isPromoVariant(savedGame.variantKey) ? savedGame.variantKey : null)
       setPeriod(savedGame.period)
       if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
       setDate(savedGame.date)
@@ -4462,6 +4516,7 @@ function GameApp() {
     setGameBackTarget(backTarget)
     setFreePlayLaunch(freePlayLaunchFromGameKey(savedGame.key))
     setModeSafe(savedGame.mode)
+    setPackId(savedGame.mode === 'game' && isPromoVariant(savedGame.variantKey) ? savedGame.variantKey : null)
     setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' || savedGame.mode === 'anime' ? savedGame.period : 'all')
     if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
     setDate(savedGame.date)
@@ -4500,14 +4555,39 @@ function GameApp() {
     window.scrollTo({ top: 0 })
   }
 
+  const selectPromoCategory = () => {
+    if (!isAdmin) return
+    trackMetrikaGoal('select_mode', { mode: 'game', variant: PROMO_PACK_ID })
+    clearTransitionTimer()
+    setTransition('idle')
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (url.searchParams.has('tab')) {
+        url.searchParams.delete('tab')
+        window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+      }
+    }
+    setFreePlayLaunch(null)
+    setFreePlayArmed(false)
+    setModeSafe('game', { preservePack: true })
+    setPackId(PROMO_PACK_ID)
+    setPeriod('all')
+    setDate(getMoscowDate())
+    setScreen('title')
+    setModal(null)
+    window.scrollTo({ top: 0 })
+  }
+
   const acceptChallenge = () => {
     if (!challenge) return
+    const challengePackId = challenge.mode === 'game' && isPromoVariant(challenge.packId) ? challenge.packId : null
     trackMetrikaGoal('challenge_accepted', { mode: challenge.mode, date: challenge.date, from: challenge.from })
     clearTransitionTimer()
     setTransition('idle')
     setFreePlayLaunch(null)
     setFreePlayArmed(false)
-    setModeSafe(challenge.mode)
+    setModeSafe(challenge.mode, { preservePack: true })
+    setPackId(challengePackId)
     setPeriod(challenge.mode === 'movie' || challenge.mode === 'series' || challenge.mode === 'anime' ? challenge.period : 'all')
     if (challenge.difficulty) setDifficulty(challenge.difficulty)
     setDate(challenge.date)
@@ -4522,6 +4602,7 @@ function GameApp() {
           mode: challenge.mode,
           period: challenge.period,
           difficulty: challenge.mode === 'music' ? apiDifficulty(challenge.difficulty ?? 'medium') : null,
+          ...(challenge.mode === 'game' && challengePackId ? { packId: challengePackId } : {}),
           archiveDate: challenge.date === today ? null : challenge.date,
         },
         backTarget: challenge.date === today ? 'hub' : 'rewatch',
@@ -4716,6 +4797,7 @@ function GameApp() {
           mode,
           period,
           difficulty: mode === 'music' ? apiDifficulty(difficulty) : null,
+          ...(mode === 'game' && packId ? { packId } : {}),
           archiveDate: null,
         },
         backTarget,
@@ -4762,6 +4844,7 @@ function GameApp() {
           mode,
           period,
           difficulty: mode === 'music' ? apiDifficulty(difficulty) : null,
+          ...(mode === 'game' && packId ? { packId } : {}),
           archiveDate,
         },
         backTarget: 'rewatch',
@@ -4793,7 +4876,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onOpenSavedSession={(savedGame) => openSavedSession(savedGame, 'hub')} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
@@ -4825,6 +4908,7 @@ function GameApp() {
           : <Game
           titles={data[mode]}
           mode={mode}
+          packId={packId}
           period={period}
           difficulty={difficulty}
           date={date}

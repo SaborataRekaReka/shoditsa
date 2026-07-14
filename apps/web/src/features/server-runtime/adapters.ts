@@ -39,6 +39,7 @@ const placeholderAttempts = (count: number) => Array.from({ length: count }, (_,
 export const activeSessionToSavedGame = (session: ActiveSessionSummary): SavedGame => ({
   key: `server:${session.id}`,
   mode: session.mode,
+  variantKey: session.variantKey,
   period: session.period,
   date: session.puzzleDate,
   answerId: '',
@@ -51,6 +52,7 @@ export const activeSessionToSavedGame = (session: ActiveSessionSummary): SavedGa
 export const archiveItemToSavedGame = (session: ArchiveItem): SavedGame => ({
   key: `server:${session.id}`,
   mode: session.mode,
+  variantKey: session.variantKey,
   period: session.period,
   date: session.puzzleDate,
   answerId: '',

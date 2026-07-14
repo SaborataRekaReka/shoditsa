@@ -99,6 +99,7 @@ export type ActiveSessionSummary = {
   mode: ContentMode
   kind: 'daily' | 'archive' | 'free_play'
   status: ApiGameStatus
+  variantKey: string | null
   period: ApiPeriodKey
   difficulty: ApiDifficultyKey | null
   puzzleDate: string
@@ -125,11 +126,13 @@ export type GameAttemptSnapshot = {
 export type HintCheckpointSnapshot = { round: 5 | 8; state: 'locked' | 'available' | 'opened' }
 export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; response: { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown } }
 export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: string }
+export type PromoPromptSnapshot = { packId: string; title: string; subtitle: string; disclaimer: string }
 
 export type GameSessionSnapshot = {
   id: string
   kind: 'daily' | 'archive' | 'free_play'
   mode: ContentMode
+  variantKey: string | null
   period: ApiPeriodKey
   difficulty: ApiDifficultyKey | null
   puzzleDate: string
@@ -141,6 +144,7 @@ export type GameSessionSnapshot = {
   hintChoices: HintChoiceSnapshot[]
   hintOptions: HintOptionSnapshot[]
   progressiveHints: Array<{ key: string; value: unknown }>
+  promoPrompt: PromoPromptSnapshot | null
   diagnosisVignette: { id: string; text: string } | null
   serverTime: string
   answer?: PublicContentItem
@@ -171,7 +175,7 @@ export type PromoRedeemResponse = { reward?: { type: 'tickets'; amount: number; 
 export type LedgerEntry = { id: string; amount: number; balanceAfter: number; reason: string; type: string; createdAt: string }
 export type LedgerResponse = { items: LedgerEntry[]; nextCursor: string | null }
 export type WalletResponse = { wallet: WalletAccount }
-export type ArchiveItem = { id: string; mode: ContentMode; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null; puzzleDate: string; status: ApiGameStatus; attemptsCount: number; completedAt: string | null }
+export type ArchiveItem = { id: string; mode: ContentMode; variantKey: string | null; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null; puzzleDate: string; status: ApiGameStatus; attemptsCount: number; completedAt: string | null }
 export type ArchiveResponse = { items: ArchiveItem[]; nextCursor: string | null }
 
 export type LegacyImportResponse = {

@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl } from './challenge'
 
 describe('challenge deep links', () => {
-  it('round-trips mode, archive date, period, difficulty and opponent result', () => {
+  it('round-trips mode, archive date, period, pack and opponent result', () => {
     const link = buildChallengeUrl('https://shoditsa.ru/', {
-      mode: 'music', date: '2026-07-10', period: 'all', difficulty: 'hard', opponentAttempts: 4, from: '7f31ad',
+      mode: 'game', date: '2026-07-10', period: 'all', packId: 'dtf-games-promo-30-v1', opponentAttempts: 4, from: '7f31ad',
     })
     expect(parseChallengeUrl(link)).toEqual({
-      mode: 'music', date: '2026-07-10', period: 'all', difficulty: 'hard', opponentAttempts: 4, from: '7f31ad',
+      mode: 'game', date: '2026-07-10', period: 'all', packId: 'dtf-games-promo-30-v1', opponentAttempts: 4, from: '7f31ad',
     })
   })
 

@@ -1,5 +1,7 @@
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { and, asc, eq, sql } from 'drizzle-orm'
-import type { ApiDifficultyKey, AssistHintKey, Hint, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
+import type { ApiDifficultyKey, ApiRole, AssistHintKey, Hint, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
@@ -22,6 +24,197 @@ import { completeGame } from '../stats/rewards.js'
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
 type SessionRow = typeof gameSessions.$inferSelect
+
+type PromoAnswerRef = {
+  mode: 'game'
+  titleRu: string
+  titleOriginal: string
+  year: number
+  legacyReleaseYears?: number[]
+  steamAppIds: number[]
+  aliases: string[]
+}
+
+type PromoHint = {
+  key: string
+  unlockAfterAttempts: 0 | 5 | 8 | 9
+  type: 'archetype_comment' | 'satirical_context' | 'community_meme' | 'factual_rescue'
+  authorArchetype?: string
+  text: string
+  spoilerRisk: 'low' | 'medium' | 'high'
+}
+
+type PromoPackItem = {
+  id: string
+  answerRef: PromoAnswerRef
+  progressiveHints: PromoHint[]
+}
+
+type PromoPackDocument = {
+  pack: {
+    id: string
+    title: string
+    subtitle?: string
+    uiCopy?: { disclaimer?: string }
+  }
+  items: PromoPackItem[]
+}
+
+type ResolvedPromoEntry = {
+  promoId: string
+  answer: TitleItem
+  progressiveHints: PromoHint[]
+}
+
+const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
+const PROMO_PACK_FILENAME = 'dtf-games-promo-30.json'
+const PROMO_PACK_SEARCH_PATHS = [
+  join(process.cwd(), 'data', 'promo', PROMO_PACK_FILENAME),
+  join(process.cwd(), '..', 'data', 'promo', PROMO_PACK_FILENAME),
+]
+const promoPackCache = new Map<string, PromoPackDocument | null>()
+
+const normalizePromoText = (value: unknown) => String(value ?? '')
+  .normalize('NFKD')
+  .toLocaleLowerCase('ru-RU')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/ё/g, 'е')
+  .replace(/[^a-zа-я0-9]+/gi, ' ')
+  .trim()
+
+const numeric = (value: unknown) => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : NaN
+}
+
+const itemSteamAppIds = (item: TitleItem) => {
+  const record = item as Record<string, unknown>
+  const raw = [
+    record.steamAppId,
+    ...(Array.isArray(record.steamAppIds) ? record.steamAppIds : []),
+  ]
+  return raw
+    .map((value) => numeric(value))
+    .filter((value) => Number.isInteger(value) && value > 0)
+}
+
+const itemNames = (item: TitleItem) => {
+  const names = [item.titleRu, item.titleOriginal, ...(item.alternativeTitles ?? [])]
+  const normalized = names.map((value) => normalizePromoText(value)).filter(Boolean)
+  return [...new Set(normalized)]
+}
+
+const refNames = (ref: PromoAnswerRef) => {
+  const names = [ref.titleRu, ref.titleOriginal, ...(ref.aliases ?? [])]
+  const normalized = names.map((value) => normalizePromoText(value)).filter(Boolean)
+  return [...new Set(normalized)]
+}
+
+const hasNameOverlap = (left: string[], right: string[]) => {
+  if (!left.length || !right.length) return false
+  const rightSet = new Set(right)
+  return left.some((value) => rightSet.has(value))
+}
+
+const matchesPromoAnswerRef = (item: TitleItem, ref: PromoAnswerRef) => {
+  if (item.mode !== 'game') return false
+  const sourceSteamIds = new Set(itemSteamAppIds(item))
+  const targetSteamIds = new Set((ref.steamAppIds ?? []).map((value) => numeric(value)).filter((value) => Number.isInteger(value) && value > 0))
+  if (sourceSteamIds.size > 0 && [...targetSteamIds].some((value) => sourceSteamIds.has(value))) return true
+
+  const sourceNames = itemNames(item)
+  const targetNames = refNames(ref)
+  if (!sourceNames.length || !targetNames.length) return false
+
+  const allowedYears = new Set([ref.year, ...(ref.legacyReleaseYears ?? [])].map((value) => numeric(value)).filter((value) => Number.isInteger(value) && value > 0))
+  const itemYear = numeric(item.year)
+  if (allowedYears.size > 0 && Number.isInteger(itemYear) && allowedYears.has(itemYear) && hasNameOverlap(sourceNames, targetNames)) return true
+
+  return hasNameOverlap(sourceNames, targetNames)
+}
+
+const findPromoAnswer = (pool: TitleItem[], ref: PromoAnswerRef) => {
+  const bySteam = pool.find((item) => {
+    const sourceSteam = new Set(itemSteamAppIds(item))
+    if (!sourceSteam.size) return false
+    return (ref.steamAppIds ?? []).some((steamAppId) => sourceSteam.has(numeric(steamAppId)))
+  })
+  if (bySteam) return bySteam
+
+  const targetNames = refNames(ref)
+  const allowedYears = new Set([ref.year, ...(ref.legacyReleaseYears ?? [])].map((value) => numeric(value)).filter((value) => Number.isInteger(value) && value > 0))
+  const byNameAndYear = pool.find((item) => {
+    const year = numeric(item.year)
+    return Number.isInteger(year) && allowedYears.has(year) && hasNameOverlap(itemNames(item), targetNames)
+  })
+  if (byNameAndYear) return byNameAndYear
+
+  return pool.find((item) => hasNameOverlap(itemNames(item), targetNames)) ?? null
+}
+
+const resolvePromoEntries = (pack: PromoPackDocument, pool: TitleItem[]) => pack.items.reduce<ResolvedPromoEntry[]>((result, promoItem) => {
+  const answer = findPromoAnswer(pool, promoItem.answerRef)
+  if (!answer) return result
+  result.push({ promoId: promoItem.id, answer, progressiveHints: promoItem.progressiveHints ?? [] })
+  return result
+}, [])
+
+const selectPromoEntry = (entries: ResolvedPromoEntry[], puzzleDate: string, salt: number, variantKey: string) => {
+  if (!entries.length) return null
+  const pseudoPool = entries.map((entry) => ({ ...entry.answer, id: `promo:${entry.promoId}` }))
+  const picked = dailyTitle(pseudoPool, 'game', 'all', puzzleDate, salt, variantKey)
+  if (!picked) return null
+  return entries.find((entry) => `promo:${entry.promoId}` === picked.id) ?? null
+}
+
+const loadPromoPack = async (packId: string) => {
+  if (packId !== PROMO_PACK_ID) return null
+  if (promoPackCache.has(packId)) return promoPackCache.get(packId) ?? null
+
+  for (const filePath of PROMO_PACK_SEARCH_PATHS) {
+    try {
+      const parsed = JSON.parse(await readFile(filePath, 'utf8')) as PromoPackDocument
+      if (parsed?.pack?.id !== packId || !Array.isArray(parsed.items)) continue
+      promoPackCache.set(packId, parsed)
+      return parsed
+    } catch {
+      // Try next known path.
+    }
+  }
+
+  promoPackCache.set(packId, null)
+  return null
+}
+
+const promoPromptOf = (pack: PromoPackDocument) => ({
+  packId: pack.pack.id,
+  title: pack.pack.title,
+  subtitle: pack.pack.subtitle ?? '',
+  disclaimer: pack.pack.uiCopy?.disclaimer ?? 'Все комментарии вымышлены и созданы для игрового режима.',
+})
+
+const promoSessionPayload = async (mode: TitleMode, variantKey: string | null, answer: TitleItem | undefined, attemptsCount: number) => {
+  if (mode !== 'game' || !variantKey || !answer) return { progressiveHints: [] as Array<{ key: string; value: unknown }>, promoPrompt: null as { packId: string; title: string; subtitle: string; disclaimer: string } | null }
+  const pack = await loadPromoPack(variantKey)
+  if (!pack) return { progressiveHints: [] as Array<{ key: string; value: unknown }>, promoPrompt: null as { packId: string; title: string; subtitle: string; disclaimer: string } | null }
+
+  const entry = pack.items.find((item) => matchesPromoAnswerRef(answer, item.answerRef))
+  const progressiveHints = (entry?.progressiveHints ?? [])
+    .filter((hint) => hint.unlockAfterAttempts <= attemptsCount)
+    .sort((left, right) => left.unlockAfterAttempts - right.unlockAfterAttempts)
+    .map((hint) => ({
+      key: hint.key,
+      value: {
+        unlockAfterAttempts: hint.unlockAfterAttempts,
+        type: hint.type,
+        authorArchetype: hint.authorArchetype ?? null,
+        text: hint.text,
+        spoilerRisk: hint.spoilerRisk,
+      },
+    }))
+
+  return { progressiveHints, promoPrompt: promoPromptOf(pack) }
+}
 
 const legacyMediaUrl = (value: string | null | undefined, mode: TitleMode, itemId: string) => {
   if (!value) return null
@@ -200,10 +393,12 @@ const dailySalt = async (tx: Transaction) => {
 }
 
 export const startGame = async (db: Database, userId: string, input: {
-  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null;
-}, authSessionId: string | null = null) => db.transaction(async (tx) => {
+  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; packId?: string | null;
+}, authSessionId: string | null = null, actorRole: ApiRole = 'player') => db.transaction(async (tx) => {
   const period = ['game', 'music', 'diagnosis'].includes(input.mode) ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
+  const packId = input.mode === 'game' && typeof input.packId === 'string' && input.packId.trim().length ? input.packId.trim() : null
+  if (packId && actorRole !== 'admin') throw new ApiError(403, 'PROMO_PACK_FORBIDDEN', 'Promo-режим доступен только администратору')
   if (period !== 'all' && ['movie', 'series', 'anime'].includes(input.mode)) {
     const entitlement = await tx.select({ userId: periodEntitlements.userId }).from(periodEntitlements).where(and(
       eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, input.mode), eq(periodEntitlements.period, period),
@@ -216,17 +411,33 @@ export const startGame = async (db: Database, userId: string, input: {
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
   const revisionId = await activeRevision(tx)
   const salt = await dailySalt(tx)
-  const variant = difficulty ?? '-'
+  const variant = packId ?? difficulty ?? '-'
   const challengeKey = `${puzzleDate}|${input.mode}|${period}|${variant}|${salt}|v1`
 
   let challenge = await tx.select().from(dailyChallenges).where(eq(dailyChallenges.challengeKey, challengeKey)).limit(1)
   if (!challenge[0]) {
     const pool = await answerPool(tx, revisionId, input.mode, period, difficulty)
-    const answer = dailyTitle(pool.items, input.mode, period, puzzleDate, salt, difficulty ?? '')
-    if (!answer) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для выбранного режима нет доступных вариантов')
+    const answer = packId
+      ? (() => {
+        const resolve = async () => {
+          const pack = await loadPromoPack(packId)
+          if (!pack) throw new ApiError(422, 'PROMO_PACK_NOT_FOUND', 'Указанный promo-пак не найден')
+          const resolved = resolvePromoEntries(pack, pool.items)
+          if (!resolved.length) throw new ApiError(503, 'PROMO_PACK_UNRESOLVED', 'Promo-пак не удалось сопоставить с активным каталогом игр')
+          const selected = selectPromoEntry(resolved, puzzleDate, salt, variant)
+          if (!selected) throw new ApiError(503, 'PROMO_PACK_EMPTY', 'В promo-паке нет доступных элементов для запуска')
+          return selected.answer
+        }
+        return resolve()
+      })()
+      : Promise.resolve(dailyTitle(pool.items, input.mode, period, puzzleDate, salt, difficulty ?? ''))
+    const selectedAnswer = await answer
+    if (!selectedAnswer) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для выбранного режима нет доступных вариантов')
+    const answerItemVersionId = pool.byItemId.get(selectedAnswer.id)
+    if (!answerItemVersionId) throw new ApiError(503, 'CONTENT_VERSION_NOT_FOUND', 'Не удалось определить версию ответа для текущей ревизии')
     const inserted = await tx.insert(dailyChallenges).values({
       challengeKey, puzzleDate, mode: input.mode, period, difficulty, variantKey: variant,
-      revisionId, answerItemVersionId: pool.byItemId.get(answer.id)!, globalSalt: salt, algorithmVersion: 1,
+      revisionId, answerItemVersionId, globalSalt: salt, algorithmVersion: 1,
     }).onConflictDoNothing().returning()
     challenge = inserted[0] ? inserted : await tx.select().from(dailyChallenges).where(eq(dailyChallenges.challengeKey, challengeKey)).limit(1)
   }
@@ -245,6 +456,9 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     .where(eq(gameAttempts.sessionId, session.id)).orderBy(asc(gameAttempts.position))
   const choices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey, response: gameHintChoices.responseSnapshot })
     .from(gameHintChoices).where(eq(gameHintChoices.sessionId, session.id)).orderBy(asc(gameHintChoices.checkpoint))
+  const challengeVariant = session.challengeId
+    ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
+    : null
   let diagnosisVignette: { id: string; text: string } | null = null
   if (session.mode === 'diagnosis') {
     const rows = await tx.select({ id: diagnosisVignettes.id, text: diagnosisVignettes.text }).from(diagnosisVignettes)
@@ -253,9 +467,10 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   }
   const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
+  const promo = await promoSessionPayload(session.mode, challengeVariant, answer, session.attemptsCount)
   const hintOptions = answer ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey) }))) : []
   const result: Record<string, unknown> = {
-    id: session.id, kind: session.kind, mode: session.mode, period: session.period, difficulty: session.difficulty,
+    id: session.id, kind: session.kind, mode: session.mode, variantKey: challengeVariant, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
     attempts: attempts.map((entry) => ({
@@ -273,7 +488,8 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     })),
     hintChoices: choices,
     hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
-    progressiveHints: [],
+    progressiveHints: promo.progressiveHints,
+    promoPrompt: promo.promoPrompt,
     diagnosisVignette,
     serverTime: new Date().toISOString(),
   }
@@ -306,10 +522,14 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   if (duplicate[0]) throw new ApiError(409, 'GAME_DUPLICATE_GUESS', 'Этот вариант уже был в попытках')
   const answers = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answers[0].payload as TitleItem
+  const variantKey = session.challengeId
+    ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
+    : null
   const isCorrect = guess.id === answer.id
   const position = session.attemptsCount + 1
   const status = isCorrect ? 'won' : position >= 10 ? 'lost' : 'playing'
   const hints = normalizeHintPeople(compareTitles(guess, answer) as Hint[])
+  const promo = await promoSessionPayload(session.mode, variantKey, answer, position)
   let reward: Awaited<ReturnType<typeof completeGame>> = null
   if (status !== 'playing') reward = await completeGame(tx, {
     sessionId, userId, kind: session.kind, mode: session.mode, difficulty: session.difficulty,
@@ -322,7 +542,8 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const response: Record<string, unknown> = {
     attempt: { position, item: publicCard(guess), hints },
     session: { status, attemptsCount: position, attemptsRemaining: 10 - position },
-    progressiveHints: [],
+    progressiveHints: promo.progressiveHints,
+    promoPrompt: promo.promoPrompt,
   }
   if (status !== 'playing') { response.answer = publicCard(answer); response.reward = reward }
   await tx.insert(gameAttempts).values({

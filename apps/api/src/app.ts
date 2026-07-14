@@ -22,7 +22,7 @@ import {
 } from '@shoditsa/contracts'
 import {
   account, appSettings, auditLog, authEvents, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
-  createDatabase, gameSessions, playerProfiles, promoCodes, user, userModeStats, walletAccounts, walletLedger,
+  createDatabase, dailyChallenges, gameSessions, playerProfiles, promoCodes, user, userModeStats, walletAccounts, walletLedger,
   type Database,
 } from '@shoditsa/database'
 import { createAuth, type Auth } from './modules/auth/auth.js'
@@ -240,7 +240,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
 
   app.post('/api/v1/games/start', { schema: { body: GameStartBodySchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    return { session: await startGame(db, user!.id, request.body as GameStartBody, user!.authSessionId) }
+    return { session: await startGame(db, user!.id, request.body as GameStartBody, user!.authSessionId, user!.role) }
   })
   app.get('/api/v1/games/:sessionId', { schema: { params: paramsId } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -316,8 +316,10 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const filters = [eq(gameSessions.userId, user!.id), sql`${gameSessions.status} <> 'playing'`]
     if (query.mode) filters.push(eq(gameSessions.mode, query.mode))
     if (query.cursor) filters.push(lt(gameSessions.completedAt, new Date(query.cursor)))
-    const rows = await db.select({ id: gameSessions.id, mode: gameSessions.mode, period: gameSessions.period, difficulty: gameSessions.difficulty, puzzleDate: gameSessions.puzzleDate, status: gameSessions.status, attemptsCount: gameSessions.attemptsCount, completedAt: gameSessions.completedAt })
-      .from(gameSessions).where(and(...filters)).orderBy(desc(gameSessions.completedAt)).limit(limit + 1)
+    const rows = await db.select({ id: gameSessions.id, mode: gameSessions.mode, variantKey: dailyChallenges.variantKey, period: gameSessions.period, difficulty: gameSessions.difficulty, puzzleDate: gameSessions.puzzleDate, status: gameSessions.status, attemptsCount: gameSessions.attemptsCount, completedAt: gameSessions.completedAt })
+      .from(gameSessions)
+      .leftJoin(dailyChallenges, eq(dailyChallenges.id, gameSessions.challengeId))
+      .where(and(...filters)).orderBy(desc(gameSessions.completedAt)).limit(limit + 1)
     return { items: rows.slice(0, limit), nextCursor: rows.length > limit ? rows[limit - 1].completedAt?.toISOString() ?? null : null }
   })
   app.get('/api/v1/archive/:date/status', { schema: { params: ArchiveDateParamsSchema } }, async (request) => {
