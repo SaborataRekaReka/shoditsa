@@ -238,15 +238,16 @@ jobs:
             exit 1
           fi
           MEDIA_SOURCE_ROOT="/opt/repeto/deploy/shoditsa/data/libraries"
-          if [ ! -d "$MEDIA_SOURCE_ROOT" ]; then
-            echo "Content media source is missing: $MEDIA_SOURCE_ROOT" >&2
+          MEDIA_TARGET_ROOT="${DEPLOY_ROOT}/shared/media"
+          if [ ! -d "$MEDIA_SOURCE_ROOT" ] || [ ! -d "$MEDIA_TARGET_ROOT" ]; then
+            echo "Content media source or target is missing: $MEDIA_SOURCE_ROOT -> $MEDIA_TARGET_ROOT" >&2
             rollback_api
             exit 1
           fi
           # Legacy catalog paths deliberately remain private. Rewrite their
           # references only after every source file has been copied to the
           # mounted media volume; database updates are one transaction.
-          if ! api_compose run --rm --no-deps --volume "$MEDIA_SOURCE_ROOT:/source:ro" --entrypoint node "$API_COMPOSE_SERVICE" apps/api/dist/content-migrate-media.js --apply --local-only --source=/source --target=/srv/shoditsa/media </dev/null; then
+          if ! api_compose run --rm --no-deps --volume "$MEDIA_SOURCE_ROOT:/source:ro" --volume "$MEDIA_TARGET_ROOT:/media" --entrypoint node "$API_COMPOSE_SERVICE" apps/api/dist/content-migrate-media.js --apply --local-only --source=/source --target=/media </dev/null; then
             echo "Local content media migration failed" >&2
             rollback_api
             exit 1
