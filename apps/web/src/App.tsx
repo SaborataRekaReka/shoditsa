@@ -789,7 +789,13 @@ const buildInfoHintCandidates = (item: TitleItem) => {
 }
 
 const buildFactHintValue = (item: TitleItem) => {
-  const fact = cleanHintText((item.facts ?? [])[0] ?? '')
+  const modelFacts = item.mode === 'anime'
+    ? new Set([
+      ...buildInfoHintCandidates(item),
+      item.animeEpisodesAired != null ? `Вышло эпизодов: ${item.animeEpisodesAired}` : '',
+    ].map(normalizeTextMatch).filter(Boolean))
+    : new Set<string>()
+  const fact = cleanHintText((item.facts ?? []).find((candidate) => !modelFacts.has(normalizeTextMatch(candidate))) ?? '')
   if (fact) return cropHintText(fact)
   const fallback = cleanHintText(resolvePlotHintText(item))
   return fallback ? cropHintText(fallback) : ''

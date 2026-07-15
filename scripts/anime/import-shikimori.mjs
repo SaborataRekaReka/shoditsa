@@ -498,14 +498,7 @@ for (const [index, row] of listEntries.entries()) {
     const shortDescription = plotHint || (description ? normalizeHint(description, 220) : null)
     const popularityScore = Math.max(1, Math.round(100 - ((rank - 1) * 99) / Math.max(1, maxItems - 1)))
 
-    const facts = createSafeFacts({
-      kindLabel,
-      statusLabel,
-      episodes,
-      episodesAired,
-      sourceLabel,
-      season: seasonLabel,
-    })
+    const facts = createSafeFacts({ season: seasonLabel })
 
     const item = {
       id: `shiki_${id}`,

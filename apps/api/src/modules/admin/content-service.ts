@@ -49,6 +49,16 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   if (mode === 'music' && typeof payload.allowedInGame !== 'boolean') error('allowedInGame', 'required', 'Для музыки нужен явный статус участия в игре')
   if (mode === 'music' && payload.year != null) warning('year', 'legacy_music_year', 'Для музыки используйте activityStartYear; поле year неоднозначно и не показывается игрокам')
   if (mode === 'diagnosis' && !(Array.isArray(payload.icd10) && payload.icd10.length) && !text(payload.icdGroup)) error('icd10', 'required', 'Укажите ICD-10 или группу диагноза')
+  if (mode === 'anime' && Array.isArray(payload.facts)) {
+    const modelFacts = new Set([
+      text(payload.animeKind) ? `Формат: ${text(payload.animeKind)}` : '',
+      text(payload.animeStatus) ? `Статус: ${text(payload.animeStatus)}` : '',
+      number(payload.episodes) != null ? `Эпизоды: ${number(payload.episodes)}` : '',
+      number(payload.animeEpisodesAired) != null ? `Вышло эпизодов: ${number(payload.animeEpisodesAired)}` : '',
+    ].map(normalize).filter(Boolean))
+    const duplicatedFacts = payload.facts.map(text).filter((fact) => fact && modelFacts.has(normalize(fact)))
+    if (duplicatedFacts.length) error('facts', 'duplicate_model_fact', 'Интересные факты не должны повторять формат, статус или количество эпизодов')
+  }
   const hint = text(payload.plotHint)
   if (!hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
   if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')

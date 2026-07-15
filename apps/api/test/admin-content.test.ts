@@ -44,4 +44,22 @@ describe('admin content validation', () => {
     expect(musicIssues).toContainEqual(expect.objectContaining({ field: 'allowedInGame', code: 'required' }))
     expect(diagnosisIssues).toContainEqual(expect.objectContaining({ field: 'icd10', code: 'required' }))
   })
+
+  it('rejects anime facts that duplicate model fields', () => {
+    const issues = validateContentPayload({
+      ...base,
+      mode: 'anime',
+      animeKind: 'TV сериал',
+      animeStatus: 'Вышло',
+      episodes: 12,
+      animeEpisodesAired: 12,
+      facts: ['Формат: TV сериал', 'Статус: Вышло', 'Эпизоды: 12', 'Вышло эпизодов: 12'],
+    }, 'anime')
+
+    expect(issues).toContainEqual(expect.objectContaining({
+      field: 'facts',
+      code: 'duplicate_model_fact',
+      level: 'error',
+    }))
+  })
 })

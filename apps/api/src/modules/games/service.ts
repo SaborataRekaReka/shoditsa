@@ -416,10 +416,21 @@ const infoHintCandidates = (answer: TitleItem) => {
   ].filter(Boolean)
 }
 
+const animeModelFactValues = (answer: TitleItem) => {
+  if (answer.mode !== 'anime') return new Set<string>()
+  return new Set([
+    ...infoHintCandidates(answer),
+    answer.animeEpisodesAired != null ? `Вышло эпизодов: ${answer.animeEpisodesAired}` : '',
+  ].map(normalizeHintMatch).filter(Boolean))
+}
+
 const factHintValue = (answer: TitleItem, matched: Set<string>) => {
+  const modelFacts = animeModelFactValues(answer)
   const fact = (answer.facts ?? []).map(cleanHintText).find((candidate) => {
     const normalized = normalizeHintMatch(candidate)
-    return normalized && ![...matched].some((value) => value.length >= 3 && normalized.includes(value))
+    return normalized
+      && !modelFacts.has(normalized)
+      && ![...matched].some((value) => value.length >= 3 && normalized.includes(value))
   }) ?? ''
   if (fact) return cropHintText(fact)
 

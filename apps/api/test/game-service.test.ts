@@ -97,4 +97,51 @@ describe('server hint options', () => {
     expect(options.find((option) => option.key === 'info')?.value).toBe('Жанры: Action')
     expect(options.find((option) => option.key === 'fact')?.value).toBe('It introduced a new championship mode.')
   })
+
+  it('does not expose anime model fields as interesting facts', () => {
+    const answer = {
+      id: 'anime_1',
+      mode: 'anime',
+      titleRu: 'Пример аниме',
+      titleOriginal: 'Example Anime',
+      alternativeTitles: [],
+      popularityScore: 0,
+      year: 2024,
+      animeKind: 'TV сериал',
+      animeStatus: 'Вышло',
+      episodes: 13,
+      animeEpisodesAired: 12,
+      facts: [
+        'Формат: TV сериал',
+        'Статус: Вышло',
+        'Эпизоды: 13',
+        'Вышло эпизодов: 12',
+        'Настоящий дополнительный факт.',
+      ],
+    } as TitleItem
+
+    const options = buildHintOptions(answer, [])
+
+    expect(options.find((option) => option.key === 'fact')?.value).toBe('Настоящий дополнительный факт.')
+  })
+
+  it('falls back to the plot hint when anime facts only mirror model fields', () => {
+    const answer = {
+      id: 'anime_2',
+      mode: 'anime',
+      titleRu: 'Пример аниме',
+      titleOriginal: 'Example Anime',
+      alternativeTitles: [],
+      popularityScore: 0,
+      animeKind: 'TV сериал',
+      animeStatus: 'Вышло',
+      episodes: 12,
+      facts: ['Формат: TV сериал', 'Статус: Вышло', 'Эпизоды: 12'],
+      plotHint: 'Безопасная сюжетная подсказка.',
+    } as TitleItem
+
+    const options = buildHintOptions(answer, [])
+
+    expect(options.find((option) => option.key === 'fact')?.value).toBe('Безопасная сюжетная подсказка.')
+  })
 })
