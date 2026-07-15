@@ -291,6 +291,12 @@ export const activateContentRevision = async (db: Database, actor: Actor, revisi
   const target = (await tx.select().from(contentRevisions).where(eq(contentRevisions.id, revisionId)).for('update').limit(1))[0]
   if (!target || !['ready', 'retired', 'active'].includes(target.status)) throw new ApiError(422, 'REVISION_NOT_ACTIVATABLE', 'Ревизия не готова к активации или откату')
   const current = (await tx.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).for('update').limit(1))[0]
+  const targetBaseRevisionId = text(asRecord(target.sourceManifest).baseRevisionId)
+  if (target.status === 'ready' && targetBaseRevisionId && current?.id !== targetBaseRevisionId) {
+    throw new ApiError(409, 'REVISION_BASE_CHANGED', 'После сборки активный контент изменился. Пересоберите ревизию на актуальной базе перед активацией.', {
+      builtFromRevisionId: targetBaseRevisionId, currentRevisionId: current?.id ?? null,
+    })
+  }
   const workspace = (await tx.select().from(contentWorkspaces).where(sql`${contentWorkspaces.status} in ('open','building','ready')`).for('update').limit(1))[0]
   let nextWorkspaceId = workspace?.id ?? null
   if (workspace && workspace.baseRevisionId !== revisionId) {

@@ -134,6 +134,13 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-revision-summary strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .admin-revision-summary code { color: var(--a-muted); font-size: 11px; }
 .admin-revision-summary__action { display: flex; align-items: center; gap: 8px; }
+.admin-release-preview { padding: 10px 16px; border-bottom: 1px solid var(--a-line); background: #fbfcf4; display: grid; grid-template-columns: repeat(4,minmax(110px,1fr)) minmax(280px,1.8fr); gap: 7px; align-items: stretch; }
+.admin-release-preview > span { padding: 8px 10px; border: 1px solid var(--a-line); border-radius: 8px; background: var(--a-paper); display: flex; flex-direction: column; }
+.admin-release-preview > span small { color: var(--a-muted); font-size: 11px; }
+.admin-release-preview > span strong { font: 500 20px Oswald,sans-serif; }
+.admin-release-preview > span.is-safe { border-color: #bfd0a9; color: var(--a-green); background: var(--a-green-soft); }
+.admin-release-preview > p { margin: 0; padding: 8px 10px; color: var(--a-muted); display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 1.35; }
+.admin-release-preview > p svg { width: 18px; flex: none; color: var(--a-green); }
 .admin-revision-columns { display: grid; grid-template-columns: minmax(340px,.8fr) minmax(420px,1.2fr); border-bottom: 1px solid var(--a-line); }
 .admin-revision-columns > div:first-child { border-right: 1px solid var(--a-line); }
 .admin-revision-workspace { padding: 12px 16px; }
@@ -868,12 +875,15 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-revision-summary__action { grid-column: 1 / -1; }
   .admin-revision-columns { grid-template-columns: 1fr; }
   .admin-revision-columns > div:first-child { border-right: 0; border-bottom: 1px solid var(--a-line); }
+  .admin-release-preview { grid-template-columns: repeat(4,1fr); }
+  .admin-release-preview > p { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) {
   .admin-sidebar { display: none; }
   .admin-dashboard-grid { grid-template-columns: 1fr; }
   .admin-revision-summary { grid-template-columns: 1fr; }
   .admin-revision-summary__action { grid-column: auto; align-items: stretch; flex-direction: column; }
+  .admin-release-preview { grid-template-columns: repeat(2,1fr); }
   .admin-revision-workspace footer .admin-btn { flex: 1 1 100%; }
   .admin-main { padding-left: 0; }
   .admin-topbar { left: 0; }

@@ -82,14 +82,26 @@ export type ContentExchangePreview = {
 export type ReleaseContentStatus = {
   state: 'active' | 'ready' | 'building' | 'failed' | 'update_available'
   updateAvailable: boolean
+  strategy: 'overlay_preserve_active_only'
   release: {
-    source: 'release_catalog'
+    source: 'release_catalog_merge'
     gitSha: string
     generatedAt: string
     checksumSha256: string
     totalItems: number
     modes: Record<string, { count: number; checksumSha256: string }>
     warnings: string[]
+  }
+  preview: {
+    activeItems: number
+    releaseItems: number
+    updated: number
+    unchanged: number
+    added: number
+    preserved: number
+    deleted: 0
+    finalItems: number
+    modes: Record<string, { active: number; release: number; updated: number; unchanged: number; added: number; preserved: number; final: number }>
   }
   activeRevision: Record<string, unknown> | null
   matchingRevision: Record<string, unknown> | null
