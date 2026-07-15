@@ -1171,12 +1171,35 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
   app.post('/api/v1/admin/pipeline-runs/:id/approve-and-publish', { schema: { params, body: PipelineApprovalBodySchema } }, async (request, reply) => approveToWorkspace(request, reply, true))
   app.post('/api/v1/admin/pipeline-runs/:id/retry-failed', { schema: { params, headers: idempotencyHeaders } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
-    const failed = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
-    if (!failed[0]?.count) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
-    const pipeline = await deps.db.select({ key: pipelineRuns.pipelineKey }).from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
-    const jobType = pipeline[0]?.key === 'movie' ? 'movie_pipeline' : pipeline[0]?.key === 'anime' ? 'anime_pipeline' : pipeline[0]?.key === 'normalization' ? 'normalization_pipeline' : 'music_pipeline'
-    const job = await deps.db.insert(backgroundJobs).values({ type: jobType, idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId, payload: { runId, retryFailed: true } }).onConflictDoNothing().returning()
-    return reply.code(202).send({ job: job[0] ?? (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1))[0] })
+    const existing = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existing[0]) return reply.code(202).send({ job: existing[0], failedCount: Number(asRecord(existing[0].payload).failedCount ?? 0) })
+    const result = await deps.db.transaction(async (tx) => {
+      const run = await tx.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+      if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+      if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Дождитесь завершения текущего запуска')
+      const failed = await tx.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
+      const failedCount = failed[0]?.count ?? 0
+      if (!failedCount) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
+      const jobType = run[0].pipelineKey === 'movie' ? 'movie_pipeline' : run[0].pipelineKey === 'anime' ? 'anime_pipeline' : run[0].pipelineKey === 'normalization' ? 'normalization_pipeline' : run[0].pipelineKey === 'music' ? 'music_pipeline' : null
+      if (!jobType) throw new ApiError(409, 'PIPELINE_RETRY_UNSUPPORTED', 'Повтор ошибок для этого пайплайна недоступен')
+      const active = await tx.select({ id: backgroundJobs.id }).from(backgroundJobs).where(and(
+        eq(backgroundJobs.pipelineRunId, runId),
+        sql`${backgroundJobs.status} in ('queued','running')`,
+        sql`${backgroundJobs.payload}->>'retryFailed' = 'true'`,
+      )).limit(1)
+      if (active[0]) throw new ApiError(409, 'PIPELINE_RETRY_ACTIVE', 'Ошибочные айтемы уже перегенерируются')
+      const job = (await tx.insert(backgroundJobs).values({
+        type: jobType, idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId,
+        payload: { runId, retryFailed: true, failedCount },
+      }).returning())[0]
+      await tx.update(pipelineRuns).set({ status: 'queued', cancelRequestedAt: null, finishedAt: null, heartbeatAt: new Date(), errorCode: null, safeErrorMessage: null }).where(eq(pipelineRuns.id, runId))
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id, action: 'pipeline.failed.retry', entityType: 'pipeline_run', entityId: runId,
+        before: { status: run[0].status, failedCount }, after: { status: 'queued', jobId: job.id }, requestId: request.id,
+      })
+      return { job, failedCount }
+    })
+    return reply.code(202).send(result)
   })
   app.post('/api/v1/admin/pipeline-runs/:id/continue', { schema: { params } }, async (request, reply) => {
     const actor = await admin(request, reply, deps)

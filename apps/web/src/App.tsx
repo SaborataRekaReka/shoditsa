@@ -1370,8 +1370,9 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
   </>
 }
 
-function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
+function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
+  promoPackId: string | null
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
   date: string
@@ -1401,6 +1402,7 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
   difficultyCounts: Record<DifficultyKey, number> | null
   isBusy: boolean
 }) {
+  const isPromoTitle = mode === 'game' && isPromoVariant(promoPackId)
   const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
@@ -1467,11 +1469,11 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
       <section className="title-stage">
         <div className="title-game-mark">
           <span>{modeIcon(mode)}</span>
-          <i>Игра дня · №{dayNumber(date)}</i>
-          <h1>{modeMeta(mode).title}</h1>
+          <i>{isPromoTitle ? 'DTF · промо-игра' : 'Игра дня'} · №{dayNumber(date)}</i>
+          <h1>{isPromoTitle ? 'Срач дня' : modeMeta(mode).title}</h1>
         </div>
         <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
-        <p>Угадайте {modeMeta(mode).subject} дня за десять попыток</p>
+        <p>{isPromoTitle ? 'Угадайте игру по комментариям, которые никто не писал, но все уже читали' : `Угадайте ${modeMeta(mode).subject} дня за десять попыток`}</p>
         {mode === 'diagnosis'
           ? <section className="med-chart">
               <div className="med-chart__stub">
@@ -1492,6 +1494,27 @@ function TitleScreen({ mode, period, setPeriod, date, onHome, onBack, onPlay, on
                 </button>}
               </div>
             </section>
+          : isPromoTitle
+            ? <section className="promo-case">
+                <div className="promo-case__masthead">
+                  <span>DTF</span>
+                  <small>ПРОМО-ИГРА · 30 ИГР</small>
+                  <i aria-hidden="true">///</i>
+                </div>
+                <div className="promo-case__body">
+                  <div className="promo-case__signal"><span>СРАЧ</span><span>ДНЯ</span></div>
+                  <div className="promo-case__copy">
+                    <span className="promo-case__eyebrow">О какой игре спорят?</span>
+                    <h1>Узнайте игру по духу комментариев</h1>
+                    <p>Две стартовые реплики уже доступны. Новые откроются после 5-й, 8-й и 9-й попыток.</p>
+                    <div className="promo-case__facts"><span><strong>30</strong> отдельных карточек</span><span><strong>10</strong> попыток</span></div>
+                  </div>
+                </div>
+                <p className="promo-case__disclaimer">Все комментарии вымышлены. Совпадения с реальными слишком вероятны.</p>
+                <div className="promo-case__actions">
+                  <ActionButton className="promo-case__play" onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
+                </div>
+              </section>
           : mode === 'game'
             ? <section className="game-case">
                 <div className="game-case__spine" aria-hidden="true"><span>Сходится · Игры</span></div>
@@ -4964,7 +4987,7 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

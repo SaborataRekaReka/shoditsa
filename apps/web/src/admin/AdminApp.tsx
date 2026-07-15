@@ -2136,6 +2136,16 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
+  const retryFailedItems = useMutation({
+    mutationFn: () => adminApi.retryFailedPipelineItems(selectedId!),
+    onSuccess: (result) => {
+      notify('success', `Ошибочные айтемы поставлены на перегенерацию: ${result.failedCount}`)
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events', selectedId] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const approve = useMutation({
     mutationFn: ({ publish, itemIds }: { publish: boolean; itemIds?: string[] }) => adminApi.approvePipeline(selectedId!, itemIds?.length ? { itemIds } : {}, publish),
     onSuccess: (result, variables) => {
@@ -2326,6 +2336,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     : Math.min(100, Math.round(Number(selectedRun?.itemsProcessed ?? 0) / Math.max(1, Number(selectedRun?.itemsTotal ?? 1)) * 100))
   const stale = Boolean(events.stale)
   const runStatus = String(selectedRun?.status ?? '')
+  const failedItemCount = Number(statsByStatus.failed ?? 0)
+  const canRetryFailedItems = failedItemCount > 0 && !['queued', 'running'].includes(runStatus)
   const totalItems = Number(selectedRun?.itemsTotal ?? 0)
   const processedItems = Number(selectedRun?.itemsProcessed ?? 0)
   const hasRemainingItems = totalItems > 0 && processedItems < totalItems
@@ -2491,6 +2503,12 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     }
     if (!confirm(`Перегенерировать только ${title(entityKey)}? Будет выполнен один новый платный запрос GPT-5 mini; остальные айтемы не изменятся.`)) return
     regenerateItem.mutate(itemId)
+  }
+
+  const requestRetryFailedItems = () => {
+    if (!canRetryFailedItems) return
+    if (!confirm(`Перегенерировать ${failedItemCount} ошибочных айтемов? Успешные результаты не изменятся. Будут списаны кредиты только за повторные запросы.`)) return
+    retryFailedItems.mutate()
   }
 
   const requestDeleteRun = (rawRun: Record<string, any> | undefined = selectedRun ? record(selectedRun) : undefined) => {
@@ -2785,6 +2803,16 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     <RefreshCw />
                     Перезапустить процесс
                   </button>
+                  {canRetryFailedItems && (
+                    <button
+                      onClick={requestRetryFailedItems}
+                      disabled={retryFailedItems.isPending || continueRun.isPending || removeRun.isPending}
+                      title="Повторить только ошибочные айтемы"
+                    >
+                      <RefreshCw />
+                      Перегенерировать ошибки · {failedItemCount}
+                    </button>
+                  )}
                   {["queued", "running"].includes(
                     String(selectedRun.status),
                   ) && (
