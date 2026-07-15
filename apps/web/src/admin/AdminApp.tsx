@@ -182,6 +182,11 @@ const CONTENT_FIELD_GROUPS: ContentFieldGroup[] = [
   },
 ]
 const CONTENT_FIELD_FILTERS = new Set(CONTENT_FIELD_GROUPS.flatMap((group) => group.options.map((option) => option.value)))
+const CONTENT_NUMERIC_FILTER_FIELDS = new Set([
+  'reports', 'issues', 'year', 'activityStartYear', 'endYear', 'runtime', 'runtimeMinutes',
+  'kinopoiskId', 'episodes', 'seasonsCount', 'episodesAired', 'animeEpisodesAired',
+  'shikimoriId', 'shikimoriScore', 'steamAppId', 'metacritic',
+])
 const CONTENT_FIELD_OPERATORS = [
   { value: 'contains', label: 'Содержит' },
   { value: 'not_contains', label: 'Не содержит' },
@@ -201,7 +206,14 @@ const CONTENT_FIELD_OPERATORS = [
 type ContentFieldOperator = typeof CONTENT_FIELD_OPERATORS[number]['value']
 const CONTENT_FIELD_OPERATOR_VALUES = new Set<string>(CONTENT_FIELD_OPERATORS.map((operator) => operator.value))
 const CONTENT_FIELD_NO_VALUE_OPERATORS = new Set<ContentFieldOperator>(['empty', 'not_empty', 'is_true', 'is_false'])
-const contentFieldOperatorLabel = (operator: ContentFieldOperator) => CONTENT_FIELD_OPERATORS.find((entry) => entry.value === operator)?.label ?? operator
+const CONTENT_FIELD_COMPARISON_OPERATORS = new Set<ContentFieldOperator>(['gt', 'gte', 'lt', 'lte'])
+const CONTENT_LENGTH_OPERATOR_LABELS: Partial<Record<ContentFieldOperator, string>> = {
+  gt: 'Длина больше (>)', gte: 'Длина не меньше (≥)', lt: 'Длина меньше (<)', lte: 'Длина не больше (≤)',
+}
+const contentFieldUsesLength = (field: string, operator: ContentFieldOperator) => CONTENT_FIELD_COMPARISON_OPERATORS.has(operator) && !CONTENT_NUMERIC_FILTER_FIELDS.has(field)
+const contentFieldOperatorLabel = (operator: ContentFieldOperator, field?: string) => field && contentFieldUsesLength(field, operator)
+  ? CONTENT_LENGTH_OPERATOR_LABELS[operator] ?? operator
+  : CONTENT_FIELD_OPERATORS.find((entry) => entry.value === operator)?.label ?? operator
 const REPORT_REASON: Record<string, string> = {
   wrong_fact: 'Неверный факт', disputed_comparison: 'Спорное сравнение', title_not_found: 'Не принимается ответ', bad_hint: 'Плохая подсказка',
   bad_image: 'Плохое изображение', duplicate_card: 'Дубликат', typo_or_translation: 'Опечатка / перевод', technical_error: 'Техническая ошибка', other: 'Другое',
@@ -237,6 +249,30 @@ const pipelineWarnings = (value: unknown) => {
   return [...new Set(labels)]
 }
 const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.message}${error.code ? ` · ${error.code}` : ''}` : error instanceof Error ? error.message : 'Неизвестная ошибка'
+type PipelineApprovalFailure = { invalidCount: number; items: Array<{ itemId: string; entityKey: string; message: string; fieldErrors: Array<{ field: string; message: string }> }> }
+const pipelineApprovalFailure = (error: unknown): PipelineApprovalFailure | null => {
+  if (!(error instanceof AdminApiError) || error.code !== 'PIPELINE_ITEMS_INVALID') return null
+  const items = array(error.details.items).map((raw) => {
+    const item = record(raw)
+    return {
+      itemId: String(item.itemId ?? ''),
+      entityKey: String(item.entityKey ?? ''),
+      message: String(item.message ?? 'Результат нельзя применить'),
+      fieldErrors: array(item.fieldErrors).map((fieldRaw) => {
+        const field = record(fieldRaw)
+        return { field: String(field.field ?? ''), message: String(field.message ?? '') }
+      }),
+    }
+  })
+  return { invalidCount: Number(error.details.invalidCount ?? items.length), items }
+}
+const pipelineApprovalErrorText = (error: unknown) => {
+  const failure = pipelineApprovalFailure(error)
+  if (!failure?.items.length) return errorText(error)
+  const first = failure.items[0]
+  const field = first.fieldErrors[0]
+  return `Не удалось применить: ${first.entityKey || first.itemId} — ${field ? `${field.field}: ${field.message}` : first.message}${failure.invalidCount > 1 ? ` (и ещё ${failure.invalidCount - 1})` : ''}`
+}
 function useDebouncedValue<T>(value: T, delayMs: number) {
   const [debounced, setDebounced] = useState(value)
   useEffect(() => {
@@ -566,6 +602,7 @@ function ContentPreviewModal({
     onSuccess: (_, variables) => {
       setReviewOverrides((current) => ({ ...current, [variables.itemId]: { approved: variables.approved, note: variables.reviewNote.trim() } }))
       void client.invalidateQueries({ queryKey: ['admin', 'item', variables.itemId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'content'] })
       notify(variables.approved ? 'success' : 'info', variables.approved ? 'Карточка отмечена как проверенная' : 'Проблема отмечена и сохранена')
     },
     onError: (error) => notify('error', errorText(error)),
@@ -1346,6 +1383,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     queryFn: adminApi.tags,
   });
   const fieldOperatorNeedsValue = !CONTENT_FIELD_NO_VALUE_OPERATORS.has(fieldFilterOperator);
+  const fieldComparisonUsesLength = contentFieldUsesLength(fieldFilter, fieldFilterOperator);
   const debouncedQ = useDebouncedValue(q.trim(), 300);
   const debouncedFieldFilterValue = useDebouncedValue(fieldFilterValue.trim(), 350);
   const appliedFieldFilterValue = fieldOperatorNeedsValue ? debouncedFieldFilterValue : '';
@@ -1860,6 +1898,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         <label>
           <AlertTriangle />
           <select
+            aria-label="Фильтр качества"
             value={issuesFilter}
             onChange={(event) =>
               setIssuesFilter(event.target.value as "all" | "yes" | "no")
@@ -1971,7 +2010,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                 }}
               >
                 {CONTENT_FIELD_OPERATORS.map((operator) => (
-                  <option key={operator.value} value={operator.value}>{operator.label}</option>
+                  <option key={operator.value} value={operator.value}>{contentFieldOperatorLabel(operator.value, fieldFilter)}</option>
                 ))}
               </select>
             </label>
@@ -1987,7 +2026,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                   setSelectionAnchorIndex(null);
                 }}
                 inputMode={['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'decimal' : 'text'}
-                placeholder={!fieldOperatorNeedsValue ? 'Значение не требуется' : ['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'Введите число…' : fieldFilterOperator === 'equals' || fieldFilterOperator === 'not_equals' ? 'Введите точное значение…' : 'Введите значение…'}
+                placeholder={!fieldOperatorNeedsValue ? 'Значение не требуется' : fieldComparisonUsesLength ? 'Количество символов…' : ['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'Введите число…' : fieldFilterOperator === 'equals' || fieldFilterOperator === 'not_equals' ? 'Введите точное значение…' : 'Введите значение…'}
               />
               {fieldOperatorNeedsValue && fieldFilterValue && (
                 <button aria-label="Очистить значение фильтра" onClick={() => setFieldFilterValue("")}>
@@ -2463,7 +2502,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <span>
               Показано {sortedItems.length} из{" "}
               {totalItems.toLocaleString("ru-RU")}
-              {hasFieldFilter ? ` · ${fieldFilter} · ${contentFieldOperatorLabel(fieldFilterOperator)}${fieldOperatorNeedsValue ? ` · ${fieldFilterValue.trim()}` : ''}` : ""}
+              {hasFieldFilter ? ` · ${fieldFilter} · ${contentFieldOperatorLabel(fieldFilterOperator, fieldFilter)}${fieldOperatorNeedsValue ? ` · ${fieldFilterValue.trim()}` : ''}` : ""}
             </span>
           </footer>
         </div>
@@ -2659,12 +2698,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const [selectedPipelineItems, setSelectedPipelineItems] = useState<Set<string>>(new Set())
   const [pipelineBulkTagIds, setPipelineBulkTagIds] = useState<string[]>([])
   const [activePipelineItemId, setActivePipelineItemId] = useState<string | null>(null)
+  const [approvalFailure, setApprovalFailure] = useState<PipelineApprovalFailure | null>(null)
   const [moderationOpen, setModerationOpen] = useState(false)
   const [moderationIndex, setModerationIndex] = useState(0)
   useEffect(() => {
     setSelectedPipelineItems(new Set())
     setPipelineBulkTagIds([])
     setActivePipelineItemId(null)
+    setApprovalFailure(null)
     setModerationOpen(false)
     setModerationIndex(0)
   }, [selectedId])
@@ -2722,11 +2763,15 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     mutationFn: ({ publish, itemIds }: { publish: boolean; itemIds?: string[] }) => adminApi.approvePipeline(selectedId!, itemIds?.length ? { itemIds } : {}, publish),
     onSuccess: (result, variables) => {
       const publishedTag = record(result).tag
+      setApprovalFailure(null)
       notify('success', variables.publish ? `Изменения опубликованы${publishedTag?.name ? ` · тег «${publishedTag.name}» назначен` : ''}` : 'Изменения добавлены в рабочую версию')
       setSelectedPipelineItems(new Set())
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
-    onError: (error) => notify('error', errorText(error)),
+    onError: (error) => {
+      setApprovalFailure(pipelineApprovalFailure(error))
+      notify('error', pipelineApprovalErrorText(error))
+    },
   })
   const updatePipelineItemTags = useMutation({
     mutationFn: ({ cardId, current, next }: { cardId: string; current: string[]; next: string[] }) => {
@@ -3874,6 +3919,31 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   />
                 )}
               </div>
+              {approvalFailure && (
+                <div className="admin-error admin-pipeline-approval-error" role="alert">
+                  <AlertTriangle />
+                  <div>
+                    <strong>Нельзя применить {approvalFailure.invalidCount} {approvalFailure.invalidCount === 1 ? "результат" : "результата"}</strong>
+                    {approvalFailure.items.slice(0, 5).map((item) => (
+                      <p key={item.itemId}>
+                        <b>{item.entityKey || item.itemId}</b> — {item.fieldErrors.length
+                          ? item.fieldErrors.map((field) => `${field.field}: ${field.message}`).join("; ")
+                          : item.message}
+                      </p>
+                    ))}
+                    {approvalFailure.invalidCount > approvalFailure.items.length && <p>Показаны первые {approvalFailure.items.length} проблемных результатов.</p>}
+                  </div>
+                  {approvedItemIds.some((itemId) => !approvalFailure.items.some((item) => item.itemId === itemId)) && (
+                    <button
+                      className="admin-btn admin-btn--secondary"
+                      onClick={() => setSelectedPipelineItems(new Set(approvedItemIds.filter((itemId) => !approvalFailure.items.some((item) => item.itemId === itemId))))}
+                    >
+                      Выбрать остальные
+                    </button>
+                  )}
+                  <button className="admin-icon-btn" aria-label="Закрыть сообщение" onClick={() => setApprovalFailure(null)}><X /></button>
+                </div>
+              )}
               {approvedItemIds.length > 0 && (
                 <div className="admin-sticky-actions">
                   <span>

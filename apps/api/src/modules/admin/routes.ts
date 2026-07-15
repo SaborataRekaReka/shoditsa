@@ -39,8 +39,8 @@ import { getRequestUser, requireAdmin } from '../auth/session.js'
 import { ApiError, requireIdempotencyKey } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import {
-  activateWorkspaceRevision, buildWorkspaceRevision, discardWorkspaceItem, getOrCreateWorkspace, loadWorkspaceChanges,
-  saveWorkspaceItem, validateContentPayload, validateWorkspace, workspaceSummary,
+  activateWorkspaceRevision, blockingContentValidationIssues, buildWorkspaceRevision, contentPayloadsEqual, discardWorkspaceItem,
+  getOrCreateWorkspace, loadWorkspaceChanges, saveWorkspaceItem, validateWorkspace, workspaceSummary,
 } from './content-service.js'
 import { applyContentExchangeImport, describeContentExchangeSelection, exportContentExchange, previewContentExchangeImport } from './content-exchange.js'
 import { loadAdminTimeline } from './timeline-service.js'
@@ -92,6 +92,11 @@ const posterOf = (payload: unknown) => {
 type CompletionField = { label: string; present: (payload: Record<string, unknown>) => boolean }
 
 const hasTextValue = (value: unknown) => typeof value === 'string' && value.trim().length > 0
+const numericContentFilterFields = new Set([
+  'reports', 'issues', 'year', 'activityStartYear', 'endYear', 'runtime', 'runtimeMinutes',
+  'kinopoiskId', 'episodes', 'seasonsCount', 'episodesAired', 'animeEpisodesAired',
+  'shikimoriId', 'shikimoriScore', 'steamAppId', 'metacritic',
+])
 
 const hasContentValue = (value: unknown): boolean => {
   if (value == null) return false
@@ -323,14 +328,18 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!active) return { items: [], nextCursor: null, total: 0, filters: query }
     const workspace = await getOrCreateWorkspace(deps.db, actor)
     const effectivePayload = sql<Record<string, unknown>>`coalesce((select cwc.after_payload from content_workspace_changes cwc where cwc.workspace_id = ${workspace.id} and cwc.item_id = ${contentItemVersions.itemId} limit 1), ${contentItemVersions.payload})`
+    const openQualityIssueExists = sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`
+    const previewReviewIssueExists = sql`exists (select 1 from content_review_decisions crd where crd.item_id = ${contentItemVersions.itemId} and crd.field = '__card_preview__' and crd.decision @> '{"approved":false}'::jsonb)`
+    const anyIssueExists = sql`(${openQualityIssueExists} or ${previewReviewIssueExists})`
+    const issuesCount = sql<number>`((select count(*) from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open') + case when ${previewReviewIssueExists} then 1 else 0 end)::int`
     const filters = [eq(contentItemVersions.revisionId, active.id)]
     if (query.mode) filters.push(eq(contentItemVersions.mode, query.mode))
     if (query.publication === 'published') filters.push(eq(contentItemVersions.allowedInGame, true))
     if (query.publication === 'hidden') filters.push(eq(contentItemVersions.allowedInGame, false))
     if (query.hasReports === true) filters.push(sql`exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
     if (query.hasReports === false) filters.push(sql`not exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
-    if (query.hasIssues === true) filters.push(sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
-    if (query.hasIssues === false) filters.push(sql`not exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
+    if (query.hasIssues === true) filters.push(anyIssueExists)
+    if (query.hasIssues === false) filters.push(sql`not (${anyIssueExists})`)
     if (query.hasHint === true) filters.push(sql`coalesce(nullif(trim(${effectivePayload}->>'plotHint'), ''), nullif(trim(${effectivePayload}->>'description'), '')) is not null`)
     if (query.hasHint === false) filters.push(sql`coalesce(nullif(trim(${effectivePayload}->>'plotHint'), ''), nullif(trim(${effectivePayload}->>'description'), '')) is null`)
     if (query.source) filters.push(sql`exists (select 1 from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} and cwc.source = ${query.source})`)
@@ -370,7 +379,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
                     : field === 'tags' ? sql<string>`coalesce((select string_agg(ct.name, ' ') from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '')`
                       : field === 'allHints' ? sql<string>`concat_ws(' ', ${effectivePayload}->>'plotHint', ${effectivePayload}->>'description', ${effectivePayload}->>'facts', ${effectivePayload}->>'slogan')`
                         : field === 'reports' ? sql<string>`(select count(*)::text from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`
-                          : field === 'issues' ? sql<string>`(select count(*)::text from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`
+                          : field === 'issues' ? sql<string>`(${issuesCount})::text`
                             : sql<string>`coalesce(${effectivePayload}->>(${field}::text), '')`
       const normalizedFieldText = sql<string>`replace(lower(trim(coalesce(${fieldText}, ''))), 'ё', 'е')`
       const fieldNeedle = fieldValue.toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')
@@ -389,12 +398,15 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       else if (fieldOperator === 'is_false') filters.push(sql`position(' false ' in concat(' ', ${normalizedFieldText}, ' ')) > 0`)
       else if (['gt', 'gte', 'lt', 'lte'].includes(fieldOperator)) {
         const numericNeedle = Number(fieldValue.replaceAll(' ', '').replace(',', '.'))
-        if (!Number.isFinite(numericNeedle)) throw new ApiError(422, 'CONTENT_FIELD_FILTER_VALUE_INVALID', 'Для числового сравнения введите число')
-        const numericField = sql`case when trim(${fieldText}) ~ '^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$' then (trim(${fieldText}))::numeric else null end`
-        if (fieldOperator === 'gt') filters.push(sql`${numericField} > ${numericNeedle}`)
-        if (fieldOperator === 'gte') filters.push(sql`${numericField} >= ${numericNeedle}`)
-        if (fieldOperator === 'lt') filters.push(sql`${numericField} < ${numericNeedle}`)
-        if (fieldOperator === 'lte') filters.push(sql`${numericField} <= ${numericNeedle}`)
+        const compareAsNumber = numericContentFilterFields.has(field)
+        if (!Number.isFinite(numericNeedle) || (!compareAsNumber && numericNeedle < 0)) throw new ApiError(422, 'CONTENT_FIELD_FILTER_VALUE_INVALID', compareAsNumber ? 'Введите число' : 'Введите длину 0 или больше')
+        const comparableField = compareAsNumber
+          ? sql`case when trim(${fieldText}) ~ '^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$' then (trim(${fieldText}))::numeric else null end`
+          : sql`char_length(trim(coalesce(${fieldText}, '')))::numeric`
+        if (fieldOperator === 'gt') filters.push(sql`${comparableField} > ${numericNeedle}`)
+        if (fieldOperator === 'gte') filters.push(sql`${comparableField} >= ${numericNeedle}`)
+        if (fieldOperator === 'lt') filters.push(sql`${comparableField} < ${numericNeedle}`)
+        if (fieldOperator === 'lte') filters.push(sql`${comparableField} <= ${numericNeedle}`)
       } else filters.push(sql`position(${fieldNeedle} in ${normalizedFieldText}) > 0`)
     }
     const tagOffset = query.sort === 'tag' && query.cursor?.startsWith('tag:') ? Math.max(0, Number(query.cursor.slice(4)) || 0) : 0
@@ -414,7 +426,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       pipelineKey: sql<string | null>`(select pr.pipeline_key from content_workspace_changes cwc inner join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1)`,
       updatedAt: sql<Date>`coalesce((select cwc."updatedAt" from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ${contentItemVersions.createdAt})`,
       reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`,
-      issuesCount: sql<number>`(select count(*)::int from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`,
+      issuesCount,
       draftVersion: contentWorkspaceChanges.version,
       tags: sql<Array<{ id: string; name: string; slug: string; color: string }>>`coalesce((select jsonb_agg(jsonb_build_object('id', ct.id, 'name', ct.name, 'slug', ct.slug, 'color', ct.color) order by lower(ct.name)) from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '[]'::jsonb)`,
     }).from(contentItemVersions)
@@ -1189,7 +1201,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const items = await deps.db.select().from(pipelineRunItems).where(and(...filters))
     if (!items.length) throw new ApiError(409, 'PIPELINE_ITEMS_NOT_APPROVED', 'Нет одобренных результатов для применения')
     const targetIds = items.map((item) => item.cardId ?? String(asRecord(item.proposedJson).id ?? item.entityKey))
-    const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode }).from(contentItemVersions)
+    const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode, payload: contentItemVersions.payload }).from(contentItemVersions)
       .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, targetIds))) : []
     const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry]))
     const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
@@ -1200,7 +1212,10 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       const mode = String(active?.mode ?? proposed.mode ?? before.mode ?? '')
       if (!pipelineItemHasResult(item)) return { item, itemId, error: 'У результата отсутствует proposedJson' }
       if (!contentModes.includes(mode as ContentMode)) return { item, itemId, error: 'Не удалось определить допустимую категорию карточки' }
-      if (item.inputItemVersionId && active?.versionId !== item.inputItemVersionId) return { item, itemId, error: 'Карточка изменилась после запуска пайплайна' }
+      if (item.inputItemVersionId && (!active || (active.versionId !== item.inputItemVersionId && !contentPayloadsEqual(
+        { ...before, id: itemId, mode },
+        { ...asRecord(active.payload), id: itemId, mode },
+      )))) return { item, itemId, error: 'Содержимое карточки изменилось после запуска пайплайна' }
       const payload = { ...before }
       for (const [field, rawDecision] of Object.entries(decisions)) {
         const decision = asRecord(rawDecision); const action = decision.action
@@ -1208,7 +1223,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
         if (action === 'edit') payload[field] = decision.value
       }
       payload.id = itemId; payload.mode = mode
-      const fieldErrors = validateContentPayload(payload, mode as ContentMode).filter((issue) => issue.level === 'error')
+      const fieldErrors = blockingContentValidationIssues(Object.keys(before).length ? { ...before, id: itemId, mode } : null, payload, mode as ContentMode)
       if (fieldErrors.length) return { item, itemId, error: 'Карточка не прошла валидацию', fieldErrors }
       return { item, itemId, mode: mode as ContentMode, payload }
     })

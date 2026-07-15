@@ -8,6 +8,7 @@ const payload = { id: 'movie:test-card', mode: 'movie', titleRu: 'Тестова
 
 const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edit?: boolean; normalizationFieldsFail?: boolean } = {}) => {
   let savedPayload: Record<string, unknown> | null = null
+  let previewApproved: boolean | null = null
   let lastContentQuery = new URLSearchParams()
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request(); const url = new URL(request.url()); const path = url.pathname
@@ -28,11 +29,14 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
     if (path === '/api/v1/admin/content/items' && request.method() === 'GET') {
       lastContentQuery = new URLSearchParams(url.search)
       const field = url.searchParams.get('field'); const fieldOp = url.searchParams.get('fieldOp') ?? 'contains'; const fieldQ = url.searchParams.get('fieldQ')?.toLocaleLowerCase('ru-RU') ?? ''
-      const matches = !fieldQ && fieldOp === 'contains'
+      const matchesField = !fieldQ && fieldOp === 'contains'
         || field === 'plotHint' && fieldOp === 'contains' && String(payload.plotHint).toLocaleLowerCase('ru-RU').includes(fieldQ)
+        || field === 'plotHint' && fieldOp === 'gt' && String(payload.plotHint).trim().length > Number(fieldQ)
         || field === 'posterUrl' && fieldOp === 'empty'
         || field === 'year' && fieldOp === 'gt' && Number(payload.year) > Number(fieldQ)
-      const items = matches ? [{ id: 'movie:test-card', versionId: '20000000-0000-4000-8000-000000000001', mode: 'movie', titleRu: String(savedPayload?.titleRu ?? payload.titleRu), titleOriginal: 'Test card', year: 2024, posterUrl: null, allowedInGame: true, reportsCount: 0, issuesCount: 0, completeness: 80, fieldsFilled: 8, fieldsTotal: 10, missingFields: [], hasHint: true, source: null, pipelineKey: null, tags: [], updatedAt: new Date().toISOString(), draftVersion: savedPayload ? 1 : null }] : []
+      const hasPreviewIssue = previewApproved === false; const hasIssues = url.searchParams.get('hasIssues')
+      const matchesIssues = hasIssues === 'true' ? hasPreviewIssue : hasIssues === 'false' ? !hasPreviewIssue : true
+      const items = matchesField && matchesIssues ? [{ id: 'movie:test-card', versionId: '20000000-0000-4000-8000-000000000001', mode: 'movie', titleRu: String(savedPayload?.titleRu ?? payload.titleRu), titleOriginal: 'Test card', year: 2024, posterUrl: null, allowedInGame: true, reportsCount: 0, issuesCount: hasPreviewIssue ? 1 : 0, completeness: 80, fieldsFilled: 8, fieldsTotal: 10, missingFields: [], hasHint: true, source: null, pipelineKey: null, tags: [], updatedAt: new Date().toISOString(), draftVersion: savedPayload ? 1 : null }] : []
       return json(route, { items, nextCursor: null, total: items.length, filters: {} })
     }
     if (path === '/api/v1/admin/content/items/movie%3Atest-card' && request.method() === 'GET') return json(route, {
@@ -40,7 +44,7 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
       draft: savedPayload ? { id: '30000000-0000-4000-8000-000000000001', itemId: 'movie:test-card', mode: 'movie', afterPayload: savedPayload, beforePayload: payload, changedFields: ['titleRu'], version: 1, source: 'manual', validationIssues: [] } : null,
       workspace: { ...workspace, changesCount: savedPayload ? 1 : 0 },
       schema: { mode: 'movie', groups: [{ key: 'identity', title: 'Названия', fields: ['id', 'mode', 'titleRu', 'titleOriginal', 'alternativeTitles'] }, { key: 'game', title: 'Игра', fields: ['year', 'plotHint', 'allowedInGame'] }] },
-      reports: [], issues: [], decisions: [], tags: [],
+      reports: [], issues: [], decisions: previewApproved == null ? [] : [{ field: '__card_preview__', decision: { approved: previewApproved } }], tags: [],
     })
     if (path === '/api/v1/admin/content/items/movie%3Atest-card/history') return json(route, { versions: [], drafts: [] })
     if (path === '/api/v1/admin/content/workspace/items/movie%3Atest-card' && request.method() === 'PUT') {
@@ -48,9 +52,14 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
       savedPayload = body.payload
       return json(route, { id: '30000000-0000-4000-8000-000000000001', itemId: 'movie:test-card', version: 1, afterPayload: savedPayload })
     }
+    if (path.startsWith('/api/v1/admin/content-review/') && request.method() === 'PUT') {
+      const body = request.postDataJSON() as { approved: boolean }
+      previewApproved = body.approved
+      return json(route, { id: '40000000-0000-4000-8000-000000000001', itemId: 'movie:test-card', field: '__card_preview__', decision: body })
+    }
     return json(route, { error: { code: 'UNMOCKED', message: `${request.method()} ${path}`, requestId: 'e2e' } }, 404)
   })
-  return { savedPayload: () => savedPayload, lastContentQuery: () => lastContentQuery }
+  return { savedPayload: () => savedPayload, previewApproved: () => previewApproved, lastContentQuery: () => lastContentQuery }
 }
 
 test('exact server guard denies the admin shell even when /me reports an admin role', async ({ page }) => {
@@ -88,7 +97,7 @@ test('paired content filter sends the selected field and partial value to the se
   await expect(page.getByText('Вся база')).toBeVisible()
 })
 
-test('advanced content filter supports empty fields and numeric comparisons', async ({ page }) => {
+test('advanced content filter supports empty fields, text length and numeric comparisons', async ({ page }) => {
   const state = await installAdminMocks(page)
   await page.goto('/admin/content?mode=movie')
   await page.getByLabel('Поле для фильтрации').selectOption('posterUrl')
@@ -99,12 +108,37 @@ test('advanced content filter supports empty fields and numeric comparisons', as
   await expect(page.getByLabel('Значение поля')).toBeDisabled()
   await expect(page.getByText('Тестовая карточка')).toBeVisible()
 
+  await page.getByLabel('Поле для фильтрации').selectOption('plotHint')
+  await page.getByLabel('Условие фильтрации').selectOption('gt')
+  await expect(page.getByLabel('Условие фильтрации').locator('option:checked')).toHaveText('Длина больше (>)')
+  await expect(page.getByLabel('Значение поля')).toHaveAttribute('placeholder', 'Количество символов…')
+  await page.getByLabel('Значение поля').fill('20')
+  await expect.poll(() => state.lastContentQuery().get('field')).toBe('plotHint')
+  await expect.poll(() => state.lastContentQuery().get('fieldOp')).toBe('gt')
+  await expect.poll(() => state.lastContentQuery().get('fieldQ')).toBe('20')
+  await expect(page.getByText('Тестовая карточка')).toBeVisible()
+
   await page.getByLabel('Поле для фильтрации').selectOption('year')
+  await expect(page.getByLabel('Условие фильтрации').locator('option:checked')).toHaveText('Больше (>)')
   await page.getByLabel('Условие фильтрации').selectOption('gt')
   await page.getByLabel('Значение поля').fill('2020')
   await expect.poll(() => state.lastContentQuery().get('fieldOp')).toBe('gt')
   await expect.poll(() => state.lastContentQuery().get('fieldQ')).toBe('2020')
   await expect(page.getByText('Тестовая карточка')).toBeVisible()
+})
+
+test('preview issue mark is visible through the quality filter and table counter', async ({ page }) => {
+  const state = await installAdminMocks(page)
+  await page.goto('/admin/content?mode=movie')
+  await page.locator('.admin-title-preview[aria-label="Предпросмотр Тестовая карточка"]').click()
+  await expect(page.getByRole('dialog', { name: 'Предпросмотр Тестовая карточка' })).toBeVisible()
+  await page.getByRole('button', { name: 'Есть проблема', exact: true }).click()
+  await expect.poll(() => state.previewApproved()).toBe(false)
+  await page.getByRole('button', { name: 'Закрыть предпросмотр' }).click()
+  await page.getByLabel('Фильтр качества').selectOption('yes')
+  await expect.poll(() => state.lastContentQuery().get('hasIssues')).toBe('true')
+  await expect(page.getByText('Тестовая карточка')).toBeVisible()
+  await expect(page.locator('.admin-count--danger')).toHaveText('1')
 })
 
 test('normalization field selector stays populated for movies when the fields endpoint fails', async ({ page }) => {

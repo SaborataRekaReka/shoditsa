@@ -165,6 +165,9 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-error > svg { width: 20px; }
 .admin-error > div { flex: 1; }
 .admin-error p { margin: 2px 0 0; font-size: 12px; }
+.admin-pipeline-approval-error { min-height: 0; margin: 10px 18px; align-items: flex-start; }
+.admin-pipeline-approval-error > .admin-btn { align-self: center; white-space: nowrap; }
+.admin-pipeline-approval-error > .admin-icon-btn { flex: 0 0 auto; }
 .admin-workspace-bar { min-height: 58px; margin-bottom: 11px; padding: 8px 10px 8px 14px; border: 1px solid #cbc9a7; border-radius: 11px; background: #fffef3; box-shadow: 0 5px 18px rgba(30,30,25,.06); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .admin-workspace-bar__state { display: flex; align-items: center; gap: 10px; }
 .admin-workspace-bar__state > span { color: var(--a-muted); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }

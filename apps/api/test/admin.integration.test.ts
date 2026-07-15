@@ -133,6 +133,21 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(filtered.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ id: candidate!.id })]))
     expect(filtered.json().total).toBeGreaterThanOrEqual(1)
 
+    const exactCardQuery = encodeURIComponent(`"${candidate!.id}"`)
+    const longerThanPreviousCharacter = await app.inject({
+      method: 'GET',
+      url: `/api/v1/admin/content/items?q=${exactCardQuery}&field=plotHint&fieldOp=gt&fieldQ=${plotHint.trim().length - 1}`,
+    })
+    expect(longerThanPreviousCharacter.statusCode, longerThanPreviousCharacter.body).toBe(200)
+    expect(longerThanPreviousCharacter.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ id: candidate!.id })]))
+
+    const longerThanExactLength = await app.inject({
+      method: 'GET',
+      url: `/api/v1/admin/content/items?q=${exactCardQuery}&field=plotHint&fieldOp=gt&fieldQ=${plotHint.trim().length}`,
+    })
+    expect(longerThanExactLength.statusCode, longerThanExactLength.body).toBe(200)
+    expect(longerThanExactLength.json().items).toEqual([])
+
     const absent = await app.inject({
       method: 'GET',
       url: `/api/v1/admin/content/items?field=all&fieldQ=${encodeURIComponent(`absent-${crypto.randomUUID()}`)}`,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateContentPayload } from '../src/modules/admin/content-service.js'
+import { blockingContentValidationIssues, contentPayloadsEqual, validateContentPayload } from '../src/modules/admin/content-service.js'
 
 const base = {
   id: 'admin-test-card',
@@ -61,5 +61,23 @@ describe('admin content validation', () => {
       code: 'duplicate_model_fact',
       level: 'error',
     }))
+  })
+
+  it('allows normalization to fix another field without inheriting an unrelated legacy error', () => {
+    const legacy = { ...base, titleOriginal: null, plotHint: 'Старая достаточно длинная подсказка без ответа.' }
+    const normalized = { ...legacy, year: 2025 }
+
+    expect(validateContentPayload(normalized, 'movie')).toContainEqual(expect.objectContaining({ field: 'titleOriginal', code: 'invalid_type' }))
+    expect(blockingContentValidationIssues(legacy, normalized, 'movie')).toEqual([])
+  })
+
+  it('still blocks a new error in the field changed by normalization', () => {
+    const normalized = { ...base, plotHint: 'Ответ — Тестовая карточка.' }
+    expect(blockingContentValidationIssues(base, normalized, 'movie')).toContainEqual(expect.objectContaining({ field: 'plotHint', code: 'answer_leak' }))
+  })
+
+  it('compares pipeline source payloads semantically instead of by object key order', () => {
+    expect(contentPayloadsEqual({ titleRu: 'Карточка', nested: { b: 2, a: 1 } }, { nested: { a: 1, b: 2 }, titleRu: 'Карточка' })).toBe(true)
+    expect(contentPayloadsEqual({ titleRu: 'Карточка' }, { titleRu: 'Другая' })).toBe(false)
   })
 })

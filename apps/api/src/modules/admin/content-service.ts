@@ -72,6 +72,31 @@ const changedFields = (before: Record<string, unknown> | null, after: Record<str
   return [...keys].filter((key) => JSON.stringify(before?.[key]) !== JSON.stringify(after[key])).sort()
 }
 
+const validationIssueKey = (issue: ValidationIssue) => `${issue.field}:${issue.code}`
+const validationIssueDependsOnChangedField = (issue: ValidationIssue, fields: Set<string>) => {
+  if (fields.has(issue.field)) return true
+  if (issue.field === 'media') return ['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'].some((field) => fields.has(field))
+  if (issue.field === 'plotHint') return fields.has('titleRu')
+  return false
+}
+
+/**
+ * Existing content predates some of the current validation rules. Editing one
+ * field must not be blocked by an unrelated legacy defect, while a new defect
+ * (or a still-invalid field that was edited) must remain a hard error.
+ */
+export const blockingContentValidationIssues = (
+  before: Record<string, unknown> | null,
+  after: Record<string, unknown>,
+  mode: ContentMode,
+) => {
+  const afterErrors = validateContentPayload(after, mode).filter((issue) => issue.level === 'error')
+  if (!before) return afterErrors
+  const beforeErrors = new Set(validateContentPayload(before, mode).filter((issue) => issue.level === 'error').map(validationIssueKey))
+  const fields = new Set(changedFields(before, after))
+  return afterErrors.filter((issue) => !beforeErrors.has(validationIssueKey(issue)) || validationIssueDependsOnChangedField(issue, fields))
+}
+
 const activeRevision = async (db: Database) => {
   const rows = await db.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1)
   if (!rows[0]) throw new ApiError(409, 'ACTIVE_REVISION_REQUIRED', 'Активная ревизия контента не найдена')
@@ -115,7 +140,8 @@ export const saveWorkspaceItem = async (db: Database, actor: Actor, itemId: stri
   const beforePayload = base[0] ? asRecord(base[0].payload) : null
   const payload = { ...input.payload, id: itemId, mode: input.mode }
   const issues = validateContentPayload(payload, input.mode)
-  if (issues.some((issue) => issue.level === 'error')) throw new ApiError(422, 'CONTENT_VALIDATION_FAILED', 'Карточка содержит ошибки', { fieldErrors: issues })
+  const blockingIssues = blockingContentValidationIssues(beforePayload, payload, input.mode)
+  if (blockingIssues.length) throw new ApiError(422, 'CONTENT_VALIDATION_FAILED', 'Карточка содержит новые ошибки в изменённых полях', { fieldErrors: blockingIssues })
   if (base[0] && base[0].mode !== input.mode) throw new ApiError(409, 'CONTENT_MODE_IMMUTABLE', 'Категорию существующей карточки изменить нельзя')
   if (!base[0]) {
     await tx.insert(contentItems).values({ id: itemId, mode: input.mode }).onConflictDoNothing()
@@ -169,6 +195,7 @@ const stable = (value: unknown): unknown => Array.isArray(value) ? value.map(sta
   ? Object.fromEntries(Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, stable(item)]))
   : value
 const sha256 = (value: unknown) => createHash('sha256').update(JSON.stringify(stable(value))).digest('hex')
+export const contentPayloadsEqual = (left: unknown, right: unknown) => sha256(left) === sha256(right)
 
 const aliasesFor = (payload: Record<string, unknown>) => {
   const entries: Array<[unknown, string]> = [
@@ -205,8 +232,10 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
       for (const change of changes) if (!baseByItem.has(change.itemId)) merged.push({ base: null as never, change, payload: asRecord(change.afterPayload) })
       // The active revision can contain legacy records created before a newer validation rule.
       // A workspace build must block regressions in changed cards, not unrelated unchanged records.
-      const changedIssues = merged.filter((entry) => entry.change).flatMap((entry) => validateContentPayload(entry.payload, entry.change!.mode as ContentMode).map((issue) => ({ ...issue, itemId: text(entry.payload.id) })))
-      if (changedIssues.some((issue) => issue.level === 'error')) throw new ApiError(422, 'WORKSPACE_VALIDATION_FAILED', 'Сборка остановлена из-за ошибок карточек', { fieldErrors: changedIssues.slice(0, 200) })
+      const changedEntries = merged.filter((entry) => entry.change)
+      const changedIssues = changedEntries.flatMap((entry) => validateContentPayload(entry.payload, entry.change!.mode as ContentMode).map((issue) => ({ ...issue, itemId: text(entry.payload.id) })))
+      const blockingIssues = changedEntries.flatMap((entry) => blockingContentValidationIssues(entry.change!.beforePayload ? asRecord(entry.change!.beforePayload) : null, entry.payload, entry.change!.mode as ContentMode).map((issue) => ({ ...issue, itemId: text(entry.payload.id) })))
+      if (blockingIssues.length) throw new ApiError(422, 'WORKSPACE_VALIDATION_FAILED', 'Сборка остановлена из-за новых ошибок в изменённых полях', { fieldErrors: blockingIssues.slice(0, 200) })
       const changedWarnings = changedIssues.filter((issue) => issue.level === 'warning')
       const baseModeCounts = new Map<ContentMode, number>()
       const nextModeCounts = new Map<ContentMode, number>()
