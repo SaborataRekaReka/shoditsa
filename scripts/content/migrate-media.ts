@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, extname, relative as relativePath, resolve } from 'node:path'
 import { and, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
@@ -33,7 +33,7 @@ const migrateUrl = async (url: string, mode: string, itemId: string, kind: strin
     const peopleMatch = local.match(/^data\/libraries\/people\/img\/(.+)$/)
     const relative = peopleMatch ? `people/${peopleMatch[1]}` : `content/${mode}/${local.replace(/^data\/libraries\/[^/]+\/img\//, '')}`
     const destination = resolve(targetRoot, relative)
-    if (apply) { await mkdir(dirname(destination), { recursive: true }); await copyFile(source, destination) }
+    if (apply) { await mkdir(dirname(destination), { recursive: true }); await writeFile(destination, bytes) }
     return { url: `/media/${relative.replaceAll('\\', '/')}`, source, bytes: bytes.length, checksum: createHash('sha256').update(bytes).digest('hex') }
   }
   if (!/^https?:\/\//.test(url)) return { url, source: url, bytes: 0, checksum: null, warning: 'unsupported URL' }

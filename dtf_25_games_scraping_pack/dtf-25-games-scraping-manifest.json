@@ -1,0 +1,918 @@
+{
+  "schemaVersion": 1,
+  "packId": "dtf-25-games-scraping-v1",
+  "createdAt": "2026-07-15",
+  "purpose": "Сбор сырого публичного корпуса DTF для последующей нормализации мотивов и генерации проморежима Сходится!",
+  "baseRules": {
+    "target_candidate_posts": 30,
+    "target_selected_posts": "8-12",
+    "comment_threshold": "Сначала посты с 100+ комментариями; если их мало — топ по комментариям, но не ниже 30, затем 5-8 наиболее содержательных независимо от порога.",
+    "phase_requirement": "По возможности минимум по 2 материала из разных фаз: до релиза/релиз/после релиза или поздняя переоценка.",
+    "post_types": [
+      "редакционная новость с большой дискуссией",
+      "пользовательский обзор или мнение",
+      "мемный/локальный пост с узнаваемой веткой",
+      "пост поздней переоценки, патча или DLC"
+    ],
+    "comments_sampling": "До 100 уникальных комментариев на пост: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток, до 20 отрицательно оценённых или несогласных корневых комментариев. Дедуплицировать."
+  },
+  "games": [
+    {
+      "id": "cyberpunk-2077",
+      "title": "Cyberpunk 2077",
+      "aliases": [
+        "Киберпанк 2077",
+        "Cyberpunk",
+        "CP2077"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/cyberpunk2077"
+      ],
+      "angles": [
+        "анонс и предрелизный хайп",
+        "релиз и версии PS4/Xbox One",
+        "возвраты, удаление из PS Store и техническое состояние",
+        "патчи и постепенная реабилитация",
+        "Cyberpunk: Edgerunners",
+        "Phantom Liberty и переоценка игры"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Cyberpunk+2077",
+        "https://dtf.ru/search?query=%D0%9A%D0%B8%D0%B1%D0%B5%D1%80%D0%BF%D0%B0%D0%BD%D0%BA+2077",
+        "https://dtf.ru/search?query=Cyberpunk+2077+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Cyberpunk+2077+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/cyberpunk2077",
+        "https://dtf.ru/search?query=Cyberpunk+2077",
+        "https://dtf.ru/search?query=%D0%9A%D0%B8%D0%B1%D0%B5%D1%80%D0%BF%D0%B0%D0%BD%D0%BA+2077",
+        "https://dtf.ru/search?query=Cyberpunk+2077+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Cyberpunk+2077+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Cyberpunk 2077».\n\nСтартовые URL:\n- https://dtf.ru/tag/cyberpunk2077\n- https://dtf.ru/search?query=Cyberpunk+2077\n- https://dtf.ru/search?query=%D0%9A%D0%B8%D0%B1%D0%B5%D1%80%D0%BF%D0%B0%D0%BD%D0%BA+2077\n- https://dtf.ru/search?query=Cyberpunk+2077+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Cyberpunk+2077+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Киберпанк 2077, Cyberpunk, CP2077.\nОбязательные углы покрытия: анонс и предрелизный хайп; релиз и версии PS4/Xbox One; возвраты, удаление из PS Store и техническое состояние; патчи и постепенная реабилитация; Cyberpunk: Edgerunners; Phantom Liberty и переоценка игры.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `cyberpunk-2077/manifest.json`, `cyberpunk-2077/posts.jsonl`, `cyberpunk-2077/comments.jsonl`."
+    },
+    {
+      "id": "starfield",
+      "title": "Starfield",
+      "aliases": [
+        "Старфилд",
+        "Star Field"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/starfield"
+      ],
+      "angles": [
+        "презентации и ожидания от новой IP Bethesda",
+        "релиз, оценки и ранний доступ",
+        "структура исследования космоса и загрузки",
+        "Creation Engine и «формула Bethesda»",
+        "моды и Creation Kit",
+        "Shattered Space, обновления и поздняя переоценка"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Starfield",
+        "https://dtf.ru/search?query=%D0%A1%D1%82%D0%B0%D1%80%D1%84%D0%B8%D0%BB%D0%B4",
+        "https://dtf.ru/search?query=Starfield+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Starfield+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/starfield",
+        "https://dtf.ru/search?query=Starfield",
+        "https://dtf.ru/search?query=%D0%A1%D1%82%D0%B0%D1%80%D1%84%D0%B8%D0%BB%D0%B4",
+        "https://dtf.ru/search?query=Starfield+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Starfield+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Starfield».\n\nСтартовые URL:\n- https://dtf.ru/tag/starfield\n- https://dtf.ru/search?query=Starfield\n- https://dtf.ru/search?query=%D0%A1%D1%82%D0%B0%D1%80%D1%84%D0%B8%D0%BB%D0%B4\n- https://dtf.ru/search?query=Starfield+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Starfield+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Старфилд, Star Field.\nОбязательные углы покрытия: презентации и ожидания от новой IP Bethesda; релиз, оценки и ранний доступ; структура исследования космоса и загрузки; Creation Engine и «формула Bethesda»; моды и Creation Kit; Shattered Space, обновления и поздняя переоценка.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `starfield/manifest.json`, `starfield/posts.jsonl`, `starfield/comments.jsonl`."
+    },
+    {
+      "id": "atomic-heart",
+      "title": "Atomic Heart",
+      "aliases": [
+        "Атомик Харт",
+        "Атомное сердце"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/atomicheart"
+      ],
+      "angles": [
+        "сомнения и обсуждения разработки до релиза",
+        "региональная дистрибуция и VK Play",
+        "релиз и техническое состояние",
+        "сравнения с BioShock",
+        "диалоги, юмор и советский ретрофутуризм",
+        "Близняшки, саундтрек и DLC"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Atomic+Heart",
+        "https://dtf.ru/search?query=%D0%90%D1%82%D0%BE%D0%BC%D0%B8%D0%BA+%D0%A5%D0%B0%D1%80%D1%82",
+        "https://dtf.ru/search?query=Atomic+Heart+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Atomic+Heart+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/atomicheart",
+        "https://dtf.ru/search?query=Atomic+Heart",
+        "https://dtf.ru/search?query=%D0%90%D1%82%D0%BE%D0%BC%D0%B8%D0%BA+%D0%A5%D0%B0%D1%80%D1%82",
+        "https://dtf.ru/search?query=Atomic+Heart+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Atomic+Heart+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Atomic Heart».\n\nСтартовые URL:\n- https://dtf.ru/tag/atomicheart\n- https://dtf.ru/search?query=Atomic+Heart\n- https://dtf.ru/search?query=%D0%90%D1%82%D0%BE%D0%BC%D0%B8%D0%BA+%D0%A5%D0%B0%D1%80%D1%82\n- https://dtf.ru/search?query=Atomic+Heart+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Atomic+Heart+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Атомик Харт, Атомное сердце.\nОбязательные углы покрытия: сомнения и обсуждения разработки до релиза; региональная дистрибуция и VK Play; релиз и техническое состояние; сравнения с BioShock; диалоги, юмор и советский ретрофутуризм; Близняшки, саундтрек и DLC.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `atomic-heart/manifest.json`, `atomic-heart/posts.jsonl`, `atomic-heart/comments.jsonl`."
+    },
+    {
+      "id": "the-last-of-us-part-ii",
+      "title": "The Last of Us Part II",
+      "aliases": [
+        "The Last of Us 2",
+        "TLOU2",
+        "Одни из нас 2",
+        "Последние из нас 2"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/thelastofus"
+      ],
+      "angles": [
+        "утечки до релиза",
+        "релизные обзоры и пользовательские оценки",
+        "споры о сюжете, Джоэле и Эбби",
+        "насилие и авторский замысел",
+        "репрезентация и культурные споры",
+        "ремастер и сравнения с сериалом HBO"
+      ],
+      "spoiler": true,
+      "search_urls": [
+        "https://dtf.ru/search?query=The+Last+of+Us+Part+II",
+        "https://dtf.ru/search?query=The+Last+of+Us+2",
+        "https://dtf.ru/search?query=The+Last+of+Us+Part+II+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Last+of+Us+Part+II+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/thelastofus",
+        "https://dtf.ru/search?query=The+Last+of+Us+Part+II",
+        "https://dtf.ru/search?query=The+Last+of+Us+2",
+        "https://dtf.ru/search?query=The+Last+of+Us+Part+II+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Last+of+Us+Part+II+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «The Last of Us Part II».\n\nСтартовые URL:\n- https://dtf.ru/tag/thelastofus\n- https://dtf.ru/search?query=The+Last+of+Us+Part+II\n- https://dtf.ru/search?query=The+Last+of+Us+2\n- https://dtf.ru/search?query=The+Last+of+Us+Part+II+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=The+Last+of+Us+Part+II+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: The Last of Us 2, TLOU2, Одни из нас 2, Последние из нас 2.\nОбязательные углы покрытия: утечки до релиза; релизные обзоры и пользовательские оценки; споры о сюжете, Джоэле и Эбби; насилие и авторский замысел; репрезентация и культурные споры; ремастер и сравнения с сериалом HBO. Не извлекай и не пересказывай сюжетные спойлеры без поля spoiler=true.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `the-last-of-us-part-ii/manifest.json`, `the-last-of-us-part-ii/posts.jsonl`, `the-last-of-us-part-ii/comments.jsonl`."
+    },
+    {
+      "id": "baldurs-gate-3",
+      "title": "Baldur's Gate 3",
+      "aliases": [
+        "Baldurs Gate 3",
+        "BG3",
+        "Балдурс Гейт 3",
+        "Балдура 3"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/baldursgate3"
+      ],
+      "angles": [
+        "ранний доступ и ожидания",
+        "мем с медведем и романтические линии",
+        "релиз и феноменальный онлайн",
+        "технические проблемы третьего акта",
+        "GOTY и сравнения с другими RPG",
+        "фанатская культура, спутники и переизбыток обсуждений"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Baldur%27s+Gate+3",
+        "https://dtf.ru/search?query=Baldurs+Gate+3",
+        "https://dtf.ru/search?query=Baldur%27s+Gate+3+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Baldur%27s+Gate+3+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/baldursgate3",
+        "https://dtf.ru/search?query=Baldur%27s+Gate+3",
+        "https://dtf.ru/search?query=Baldurs+Gate+3",
+        "https://dtf.ru/search?query=Baldur%27s+Gate+3+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Baldur%27s+Gate+3+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Baldur's Gate 3».\n\nСтартовые URL:\n- https://dtf.ru/tag/baldursgate3\n- https://dtf.ru/search?query=Baldur%27s+Gate+3\n- https://dtf.ru/search?query=Baldurs+Gate+3\n- https://dtf.ru/search?query=Baldur%27s+Gate+3+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Baldur%27s+Gate+3+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Baldurs Gate 3, BG3, Балдурс Гейт 3, Балдура 3.\nОбязательные углы покрытия: ранний доступ и ожидания; мем с медведем и романтические линии; релиз и феноменальный онлайн; технические проблемы третьего акта; GOTY и сравнения с другими RPG; фанатская культура, спутники и переизбыток обсуждений.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `baldurs-gate-3/manifest.json`, `baldurs-gate-3/posts.jsonl`, `baldurs-gate-3/comments.jsonl`."
+    },
+    {
+      "id": "death-stranding",
+      "title": "Death Stranding",
+      "aliases": [
+        "Дес Стрендинг",
+        "Смертельная связь"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/deathstranding"
+      ],
+      "angles": [
+        "анонсы Кодзимы и теория вокруг трейлеров",
+        "спор «симулятор ходьбы или новое слово»",
+        "релизные обзоры и поляризация",
+        "социальные механики и доставки",
+        "ПК-релиз и пандемийные ассоциации",
+        "Death Stranding 2 и переоценка первой игры"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Death+Stranding",
+        "https://dtf.ru/search?query=%D0%94%D0%B5%D1%81+%D0%A1%D1%82%D1%80%D0%B5%D0%BD%D0%B4%D0%B8%D0%BD%D0%B3",
+        "https://dtf.ru/search?query=Death+Stranding+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Death+Stranding+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/deathstranding",
+        "https://dtf.ru/search?query=Death+Stranding",
+        "https://dtf.ru/search?query=%D0%94%D0%B5%D1%81+%D0%A1%D1%82%D1%80%D0%B5%D0%BD%D0%B4%D0%B8%D0%BD%D0%B3",
+        "https://dtf.ru/search?query=Death+Stranding+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Death+Stranding+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Death Stranding».\n\nСтартовые URL:\n- https://dtf.ru/tag/deathstranding\n- https://dtf.ru/search?query=Death+Stranding\n- https://dtf.ru/search?query=%D0%94%D0%B5%D1%81+%D0%A1%D1%82%D1%80%D0%B5%D0%BD%D0%B4%D0%B8%D0%BD%D0%B3\n- https://dtf.ru/search?query=Death+Stranding+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Death+Stranding+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Дес Стрендинг, Смертельная связь.\nОбязательные углы покрытия: анонсы Кодзимы и теория вокруг трейлеров; спор «симулятор ходьбы или новое слово»; релизные обзоры и поляризация; социальные механики и доставки; ПК-релиз и пандемийные ассоциации; Death Stranding 2 и переоценка первой игры.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `death-stranding/manifest.json`, `death-stranding/posts.jsonl`, `death-stranding/comments.jsonl`."
+    },
+    {
+      "id": "elden-ring",
+      "title": "Elden Ring",
+      "aliases": [
+        "Элден Ринг",
+        "ER"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/eldenring"
+      ],
+      "angles": [
+        "ожидание и мемы до релиза",
+        "сложность, доступность и призывы",
+        "открытый мир против классической структуры Souls",
+        "техническое состояние ПК-версии",
+        "GOTY и культурный статус",
+        "Shadow of the Erdtree и новый спор о сложности"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Elden+Ring",
+        "https://dtf.ru/search?query=%D0%AD%D0%BB%D0%B4%D0%B5%D0%BD+%D0%A0%D0%B8%D0%BD%D0%B3",
+        "https://dtf.ru/search?query=Elden+Ring+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Elden+Ring+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/eldenring",
+        "https://dtf.ru/search?query=Elden+Ring",
+        "https://dtf.ru/search?query=%D0%AD%D0%BB%D0%B4%D0%B5%D0%BD+%D0%A0%D0%B8%D0%BD%D0%B3",
+        "https://dtf.ru/search?query=Elden+Ring+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Elden+Ring+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Elden Ring».\n\nСтартовые URL:\n- https://dtf.ru/tag/eldenring\n- https://dtf.ru/search?query=Elden+Ring\n- https://dtf.ru/search?query=%D0%AD%D0%BB%D0%B4%D0%B5%D0%BD+%D0%A0%D0%B8%D0%BD%D0%B3\n- https://dtf.ru/search?query=Elden+Ring+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Elden+Ring+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Элден Ринг, ER.\nОбязательные углы покрытия: ожидание и мемы до релиза; сложность, доступность и призывы; открытый мир против классической структуры Souls; техническое состояние ПК-версии; GOTY и культурный статус; Shadow of the Erdtree и новый спор о сложности.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `elden-ring/manifest.json`, `elden-ring/posts.jsonl`, `elden-ring/comments.jsonl`."
+    },
+    {
+      "id": "bloodborne",
+      "title": "Bloodborne",
+      "aliases": [
+        "Бладборн",
+        "Бладборне"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/bloodborne"
+      ],
+      "angles": [
+        "культовый статус и лор",
+        "30 FPS и технические ограничения",
+        "ожидание ПК-порта, ремастера или ремейка",
+        "отношение Sony к игре",
+        "эмуляция и фанатские проекты",
+        "сравнения с Dark Souls и другими играми FromSoftware"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Bloodborne",
+        "https://dtf.ru/search?query=%D0%91%D0%BB%D0%B0%D0%B4%D0%B1%D0%BE%D1%80%D0%BD",
+        "https://dtf.ru/search?query=Bloodborne+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Bloodborne+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/bloodborne",
+        "https://dtf.ru/search?query=Bloodborne",
+        "https://dtf.ru/search?query=%D0%91%D0%BB%D0%B0%D0%B4%D0%B1%D0%BE%D1%80%D0%BD",
+        "https://dtf.ru/search?query=Bloodborne+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Bloodborne+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Bloodborne».\n\nСтартовые URL:\n- https://dtf.ru/tag/bloodborne\n- https://dtf.ru/search?query=Bloodborne\n- https://dtf.ru/search?query=%D0%91%D0%BB%D0%B0%D0%B4%D0%B1%D0%BE%D1%80%D0%BD\n- https://dtf.ru/search?query=Bloodborne+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Bloodborne+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Бладборн, Бладборне.\nОбязательные углы покрытия: культовый статус и лор; 30 FPS и технические ограничения; ожидание ПК-порта, ремастера или ремейка; отношение Sony к игре; эмуляция и фанатские проекты; сравнения с Dark Souls и другими играми FromSoftware.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `bloodborne/manifest.json`, `bloodborne/posts.jsonl`, `bloodborne/comments.jsonl`."
+    },
+    {
+      "id": "red-dead-redemption-2",
+      "title": "Red Dead Redemption 2",
+      "aliases": [
+        "RDR2",
+        "Red Dead 2",
+        "РДР 2"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/rdr2"
+      ],
+      "angles": [
+        "релиз и уровень детализации",
+        "медленный темп и длинные анимации",
+        "реализм против удобства",
+        "сюжет и образ Артура Моргана",
+        "состояние Red Dead Online",
+        "ожидание 60 FPS, обновления или переиздания"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Red+Dead+Redemption+2",
+        "https://dtf.ru/search?query=RDR2",
+        "https://dtf.ru/search?query=Red+Dead+Redemption+2+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Red+Dead+Redemption+2+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/rdr2",
+        "https://dtf.ru/search?query=Red+Dead+Redemption+2",
+        "https://dtf.ru/search?query=RDR2",
+        "https://dtf.ru/search?query=Red+Dead+Redemption+2+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Red+Dead+Redemption+2+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Red Dead Redemption 2».\n\nСтартовые URL:\n- https://dtf.ru/tag/rdr2\n- https://dtf.ru/search?query=Red+Dead+Redemption+2\n- https://dtf.ru/search?query=RDR2\n- https://dtf.ru/search?query=Red+Dead+Redemption+2+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Red+Dead+Redemption+2+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: RDR2, Red Dead 2, РДР 2.\nОбязательные углы покрытия: релиз и уровень детализации; медленный темп и длинные анимации; реализм против удобства; сюжет и образ Артура Моргана; состояние Red Dead Online; ожидание 60 FPS, обновления или переиздания.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `red-dead-redemption-2/manifest.json`, `red-dead-redemption-2/posts.jsonl`, `red-dead-redemption-2/comments.jsonl`."
+    },
+    {
+      "id": "the-witcher-3",
+      "title": "The Witcher 3: Wild Hunt",
+      "aliases": [
+        "The Witcher 3",
+        "Ведьмак 3",
+        "Дикая охота"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/witcher3"
+      ],
+      "angles": [
+        "графический даунгрейд до релиза",
+        "релиз, локализация и культурный успех в СНГ",
+        "критика боевой системы",
+        "дополнения и статус эталонной RPG",
+        "сравнения с Cyberpunk 2077",
+        "next-gen обновление, баги и переоценка"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt",
+        "https://dtf.ru/search?query=The+Witcher+3",
+        "https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/witcher3",
+        "https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt",
+        "https://dtf.ru/search?query=The+Witcher+3",
+        "https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «The Witcher 3: Wild Hunt».\n\nСтартовые URL:\n- https://dtf.ru/tag/witcher3\n- https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt\n- https://dtf.ru/search?query=The+Witcher+3\n- https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=The+Witcher+3%3A+Wild+Hunt+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: The Witcher 3, Ведьмак 3, Дикая охота.\nОбязательные углы покрытия: графический даунгрейд до релиза; релиз, локализация и культурный успех в СНГ; критика боевой системы; дополнения и статус эталонной RPG; сравнения с Cyberpunk 2077; next-gen обновление, баги и переоценка.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `the-witcher-3/manifest.json`, `the-witcher-3/posts.jsonl`, `the-witcher-3/comments.jsonl`."
+    },
+    {
+      "id": "disco-elysium",
+      "title": "Disco Elysium",
+      "aliases": [
+        "Диско Элизиум",
+        "DE"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/discoelysium"
+      ],
+      "angles": [
+        "релиз и необычная RPG без традиционных боёв",
+        "политика и идеологические трактовки",
+        "русская локализация",
+        "The Final Cut и озвучка",
+        "конфликт вокруг ZA/UM и прав на игру",
+        "отменённые проекты и судьба команды"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Disco+Elysium",
+        "https://dtf.ru/search?query=%D0%94%D0%B8%D1%81%D0%BA%D0%BE+%D0%AD%D0%BB%D0%B8%D0%B7%D0%B8%D1%83%D0%BC",
+        "https://dtf.ru/search?query=Disco+Elysium+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Disco+Elysium+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/discoelysium",
+        "https://dtf.ru/search?query=Disco+Elysium",
+        "https://dtf.ru/search?query=%D0%94%D0%B8%D1%81%D0%BA%D0%BE+%D0%AD%D0%BB%D0%B8%D0%B7%D0%B8%D1%83%D0%BC",
+        "https://dtf.ru/search?query=Disco+Elysium+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Disco+Elysium+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Disco Elysium».\n\nСтартовые URL:\n- https://dtf.ru/tag/discoelysium\n- https://dtf.ru/search?query=Disco+Elysium\n- https://dtf.ru/search?query=%D0%94%D0%B8%D1%81%D0%BA%D0%BE+%D0%AD%D0%BB%D0%B8%D0%B7%D0%B8%D1%83%D0%BC\n- https://dtf.ru/search?query=Disco+Elysium+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Disco+Elysium+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Диско Элизиум, DE.\nОбязательные углы покрытия: релиз и необычная RPG без традиционных боёв; политика и идеологические трактовки; русская локализация; The Final Cut и озвучка; конфликт вокруг ZA/UM и прав на игру; отменённые проекты и судьба команды.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `disco-elysium/manifest.json`, `disco-elysium/posts.jsonl`, `disco-elysium/comments.jsonl`."
+    },
+    {
+      "id": "skyrim",
+      "title": "The Elder Scrolls V: Skyrim",
+      "aliases": [
+        "Skyrim",
+        "Скайрим",
+        "TES V"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/skyrim"
+      ],
+      "angles": [
+        "релиз и культурный статус",
+        "баги и роль модов",
+        "стелс-лучник и повторяющиеся мемы",
+        "переиздания и Anniversary Edition",
+        "«формула Bethesda»",
+        "долголетие игры и ожидание TES VI"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim",
+        "https://dtf.ru/search?query=Skyrim",
+        "https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/skyrim",
+        "https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim",
+        "https://dtf.ru/search?query=Skyrim",
+        "https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «The Elder Scrolls V: Skyrim».\n\nСтартовые URL:\n- https://dtf.ru/tag/skyrim\n- https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim\n- https://dtf.ru/search?query=Skyrim\n- https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=The+Elder+Scrolls+V%3A+Skyrim+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Skyrim, Скайрим, TES V.\nОбязательные углы покрытия: релиз и культурный статус; баги и роль модов; стелс-лучник и повторяющиеся мемы; переиздания и Anniversary Edition; «формула Bethesda»; долголетие игры и ожидание TES VI.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `skyrim/manifest.json`, `skyrim/posts.jsonl`, `skyrim/comments.jsonl`."
+    },
+    {
+      "id": "fallout-76",
+      "title": "Fallout 76",
+      "aliases": [
+        "Фоллаут 76",
+        "F76"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/fallout76"
+      ],
+      "angles": [
+        "анонс онлайнового Fallout",
+        "релиз без NPC и технические проблемы",
+        "возвраты и скандалы с коллекционными изданиями",
+        "Fallout 1st и монетизация",
+        "Wastelanders и постепенное исправление",
+        "современное состояние и поздние отзывы игроков"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Fallout+76",
+        "https://dtf.ru/search?query=%D0%A4%D0%BE%D0%BB%D0%BB%D0%B0%D1%83%D1%82+76",
+        "https://dtf.ru/search?query=Fallout+76+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Fallout+76+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/fallout76",
+        "https://dtf.ru/search?query=Fallout+76",
+        "https://dtf.ru/search?query=%D0%A4%D0%BE%D0%BB%D0%BB%D0%B0%D1%83%D1%82+76",
+        "https://dtf.ru/search?query=Fallout+76+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Fallout+76+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Fallout 76».\n\nСтартовые URL:\n- https://dtf.ru/tag/fallout76\n- https://dtf.ru/search?query=Fallout+76\n- https://dtf.ru/search?query=%D0%A4%D0%BE%D0%BB%D0%BB%D0%B0%D1%83%D1%82+76\n- https://dtf.ru/search?query=Fallout+76+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Fallout+76+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Фоллаут 76, F76.\nОбязательные углы покрытия: анонс онлайнового Fallout; релиз без NPC и технические проблемы; возвраты и скандалы с коллекционными изданиями; Fallout 1st и монетизация; Wastelanders и постепенное исправление; современное состояние и поздние отзывы игроков.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `fallout-76/manifest.json`, `fallout-76/posts.jsonl`, `fallout-76/comments.jsonl`."
+    },
+    {
+      "id": "no-mans-sky",
+      "title": "No Man's Sky",
+      "aliases": [
+        "No Mans Sky",
+        "NMS",
+        "Но Мэнс Скай"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/nomanssky"
+      ],
+      "angles": [
+        "предрелизные обещания",
+        "релиз, возвраты и разочарование",
+        "процедурная генерация и повторяемость",
+        "многолетние бесплатные обновления",
+        "история реабилитации Hello Games",
+        "сравнения со Starfield и современная критика «солянки механик»"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=No+Man%27s+Sky",
+        "https://dtf.ru/search?query=No+Mans+Sky",
+        "https://dtf.ru/search?query=No+Man%27s+Sky+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=No+Man%27s+Sky+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/nomanssky",
+        "https://dtf.ru/search?query=No+Man%27s+Sky",
+        "https://dtf.ru/search?query=No+Mans+Sky",
+        "https://dtf.ru/search?query=No+Man%27s+Sky+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=No+Man%27s+Sky+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «No Man's Sky».\n\nСтартовые URL:\n- https://dtf.ru/tag/nomanssky\n- https://dtf.ru/search?query=No+Man%27s+Sky\n- https://dtf.ru/search?query=No+Mans+Sky\n- https://dtf.ru/search?query=No+Man%27s+Sky+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=No+Man%27s+Sky+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: No Mans Sky, NMS, Но Мэнс Скай.\nОбязательные углы покрытия: предрелизные обещания; релиз, возвраты и разочарование; процедурная генерация и повторяемость; многолетние бесплатные обновления; история реабилитации Hello Games; сравнения со Starfield и современная критика «солянки механик».\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `no-mans-sky/manifest.json`, `no-mans-sky/posts.jsonl`, `no-mans-sky/comments.jsonl`."
+    },
+    {
+      "id": "grand-theft-auto-v",
+      "title": "Grand Theft Auto V",
+      "aliases": [
+        "GTA V",
+        "GTA 5",
+        "ГТА 5"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/gta5"
+      ],
+      "angles": [
+        "релиз на разных поколениях",
+        "многократные переиздания",
+        "GTA Online и монетизация",
+        "отсутствие сюжетных DLC",
+        "RP-серверы и пользовательские истории",
+        "ожидание GTA VI и усталость от пятой части"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Grand+Theft+Auto+V",
+        "https://dtf.ru/search?query=GTA+V",
+        "https://dtf.ru/search?query=Grand+Theft+Auto+V+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Grand+Theft+Auto+V+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/gta5",
+        "https://dtf.ru/search?query=Grand+Theft+Auto+V",
+        "https://dtf.ru/search?query=GTA+V",
+        "https://dtf.ru/search?query=Grand+Theft+Auto+V+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Grand+Theft+Auto+V+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Grand Theft Auto V».\n\nСтартовые URL:\n- https://dtf.ru/tag/gta5\n- https://dtf.ru/search?query=Grand+Theft+Auto+V\n- https://dtf.ru/search?query=GTA+V\n- https://dtf.ru/search?query=Grand+Theft+Auto+V+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Grand+Theft+Auto+V+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: GTA V, GTA 5, ГТА 5.\nОбязательные углы покрытия: релиз на разных поколениях; многократные переиздания; GTA Online и монетизация; отсутствие сюжетных DLC; RP-серверы и пользовательские истории; ожидание GTA VI и усталость от пятой части.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `grand-theft-auto-v/manifest.json`, `grand-theft-auto-v/posts.jsonl`, `grand-theft-auto-v/comments.jsonl`."
+    },
+    {
+      "id": "stalker-2",
+      "title": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+      "aliases": [
+        "STALKER 2",
+        "Сталкер 2",
+        "Heart of Chornobyl",
+        "Сердце Чернобыля"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/stalker2"
+      ],
+      "angles": [
+        "долгая история разработки и перезапуски",
+        "трейлеры, переносы и ожидания",
+        "контекст войны и судьба студии",
+        "Xbox-эксклюзивность и платформенные споры",
+        "релизное техническое состояние",
+        "атмосфера, локализация, патчи и поздняя оценка"
+      ],
+      "spoiler": false,
+      "search_urls": [
+        "https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl",
+        "https://dtf.ru/search?query=STALKER+2",
+        "https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/stalker2",
+        "https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl",
+        "https://dtf.ru/search?query=STALKER+2",
+        "https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «S.T.A.L.K.E.R. 2: Heart of Chornobyl».\n\nСтартовые URL:\n- https://dtf.ru/tag/stalker2\n- https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl\n- https://dtf.ru/search?query=STALKER+2\n- https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=S.T.A.L.K.E.R.+2%3A+Heart+of+Chornobyl+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: STALKER 2, Сталкер 2, Heart of Chornobyl, Сердце Чернобыля.\nОбязательные углы покрытия: долгая история разработки и перезапуски; трейлеры, переносы и ожидания; контекст войны и судьба студии; Xbox-эксклюзивность и платформенные споры; релизное техническое состояние; атмосфера, локализация, патчи и поздняя оценка.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `stalker-2/manifest.json`, `stalker-2/posts.jsonl`, `stalker-2/comments.jsonl`."
+    },
+    {
+      "id": "hogwarts-legacy",
+      "title": "Hogwarts Legacy",
+      "aliases": [
+        "Хогвартс Наследие",
+        "Наследие Хогвартса"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/hogwartslegacy"
+      ],
+      "angles": [
+        "бойкот и споры вокруг Дж. К. Роулинг",
+        "релиз, продажи и пользовательские оценки",
+        "ностальгия по Хогвартсу",
+        "структура открытого мира и повторяемость активностей",
+        "отсутствие квиддича",
+        "производительность ПК-версии и моды"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Hogwarts+Legacy",
+        "https://dtf.ru/search?query=%D0%A5%D0%BE%D0%B3%D0%B2%D0%B0%D1%80%D1%82%D1%81+%D0%9D%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%B8%D0%B5",
+        "https://dtf.ru/search?query=Hogwarts+Legacy+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Hogwarts+Legacy+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/hogwartslegacy",
+        "https://dtf.ru/search?query=Hogwarts+Legacy",
+        "https://dtf.ru/search?query=%D0%A5%D0%BE%D0%B3%D0%B2%D0%B0%D1%80%D1%82%D1%81+%D0%9D%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%B8%D0%B5",
+        "https://dtf.ru/search?query=Hogwarts+Legacy+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Hogwarts+Legacy+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Hogwarts Legacy».\n\nСтартовые URL:\n- https://dtf.ru/tag/hogwartslegacy\n- https://dtf.ru/search?query=Hogwarts+Legacy\n- https://dtf.ru/search?query=%D0%A5%D0%BE%D0%B3%D0%B2%D0%B0%D1%80%D1%82%D1%81+%D0%9D%D0%B0%D1%81%D0%BB%D0%B5%D0%B4%D0%B8%D0%B5\n- https://dtf.ru/search?query=Hogwarts+Legacy+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Hogwarts+Legacy+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Хогвартс Наследие, Наследие Хогвартса.\nОбязательные углы покрытия: бойкот и споры вокруг Дж. К. Роулинг; релиз, продажи и пользовательские оценки; ностальгия по Хогвартсу; структура открытого мира и повторяемость активностей; отсутствие квиддича; производительность ПК-версии и моды.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `hogwarts-legacy/manifest.json`, `hogwarts-legacy/posts.jsonl`, `hogwarts-legacy/comments.jsonl`."
+    },
+    {
+      "id": "helldivers-2",
+      "title": "Helldivers 2",
+      "aliases": [
+        "Helldivers II",
+        "Хеллдайверс 2",
+        "HD2"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/helldivers2"
+      ],
+      "angles": [
+        "неожиданный успех и перегрузка серверов",
+        "мемы о демократии и Супер-Земле",
+        "friendly fire и кооперативные истории",
+        "требование PSN и волна отзывов",
+        "баланс, нерфы и отношения с разработчиками",
+        "возвращение игроков после патчей и обновлений"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Helldivers+2",
+        "https://dtf.ru/search?query=Helldivers+II",
+        "https://dtf.ru/search?query=Helldivers+2+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Helldivers+2+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/helldivers2",
+        "https://dtf.ru/search?query=Helldivers+2",
+        "https://dtf.ru/search?query=Helldivers+II",
+        "https://dtf.ru/search?query=Helldivers+2+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Helldivers+2+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Helldivers 2».\n\nСтартовые URL:\n- https://dtf.ru/tag/helldivers2\n- https://dtf.ru/search?query=Helldivers+2\n- https://dtf.ru/search?query=Helldivers+II\n- https://dtf.ru/search?query=Helldivers+2+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Helldivers+2+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Helldivers II, Хеллдайверс 2, HD2.\nОбязательные углы покрытия: неожиданный успех и перегрузка серверов; мемы о демократии и Супер-Земле; friendly fire и кооперативные истории; требование PSN и волна отзывов; баланс, нерфы и отношения с разработчиками; возвращение игроков после патчей и обновлений.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `helldivers-2/manifest.json`, `helldivers-2/posts.jsonl`, `helldivers-2/comments.jsonl`."
+    },
+    {
+      "id": "dragon-age-the-veilguard",
+      "title": "Dragon Age: The Veilguard",
+      "aliases": [
+        "Dragon Age Veilguard",
+        "The Veilguard",
+        "Вейлгард",
+        "Драгон Эйдж Вейлгард"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/dragonage"
+      ],
+      "angles": [
+        "первый трейлер и визуальный стиль",
+        "возвращение BioWare и сравнение с Origins/Inquisition",
+        "компаньоны, романтика и тон диалогов",
+        "культурно-политические споры вокруг игры",
+        "релизные обзоры и пользовательская реакция",
+        "продажи, раннее появление в подписках и будущее серии"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard",
+        "https://dtf.ru/search?query=Dragon+Age+Veilguard",
+        "https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/dragonage",
+        "https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard",
+        "https://dtf.ru/search?query=Dragon+Age+Veilguard",
+        "https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Dragon Age: The Veilguard».\n\nСтартовые URL:\n- https://dtf.ru/tag/dragonage\n- https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard\n- https://dtf.ru/search?query=Dragon+Age+Veilguard\n- https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Dragon+Age%3A+The+Veilguard+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Dragon Age Veilguard, The Veilguard, Вейлгард, Драгон Эйдж Вейлгард.\nОбязательные углы покрытия: первый трейлер и визуальный стиль; возвращение BioWare и сравнение с Origins/Inquisition; компаньоны, романтика и тон диалогов; культурно-политические споры вокруг игры; релизные обзоры и пользовательская реакция; продажи, раннее появление в подписках и будущее серии.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `dragon-age-the-veilguard/manifest.json`, `dragon-age-the-veilguard/posts.jsonl`, `dragon-age-the-veilguard/comments.jsonl`."
+    },
+    {
+      "id": "the-day-before",
+      "title": "The Day Before",
+      "aliases": [
+        "Дэй Бефор",
+        "The Day Before game"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/thedaybefore"
+      ],
+      "angles": [
+        "первые трейлеры и подозрения в подлинности",
+        "переносы и спор о товарном знаке",
+        "коммуникация Fntastic",
+        "релиз и фактический жанр игры",
+        "закрытие студии и серверов",
+        "возвраты и последующие заявления разработчиков"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=The+Day+Before",
+        "https://dtf.ru/search?query=%D0%94%D1%8D%D0%B9+%D0%91%D0%B5%D1%84%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Day+Before+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Day+Before+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/thedaybefore",
+        "https://dtf.ru/search?query=The+Day+Before",
+        "https://dtf.ru/search?query=%D0%94%D1%8D%D0%B9+%D0%91%D0%B5%D1%84%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Day+Before+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=The+Day+Before+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «The Day Before».\n\nСтартовые URL:\n- https://dtf.ru/tag/thedaybefore\n- https://dtf.ru/search?query=The+Day+Before\n- https://dtf.ru/search?query=%D0%94%D1%8D%D0%B9+%D0%91%D0%B5%D1%84%D0%BE%D1%80\n- https://dtf.ru/search?query=The+Day+Before+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=The+Day+Before+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Дэй Бефор, The Day Before game.\nОбязательные углы покрытия: первые трейлеры и подозрения в подлинности; переносы и спор о товарном знаке; коммуникация Fntastic; релиз и фактический жанр игры; закрытие студии и серверов; возвраты и последующие заявления разработчиков.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `the-day-before/manifest.json`, `the-day-before/posts.jsonl`, `the-day-before/comments.jsonl`."
+    },
+    {
+      "id": "concord",
+      "title": "Concord",
+      "aliases": [
+        "Конкорд",
+        "Concord Sony"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/concord"
+      ],
+      "angles": [
+        "анонс и реакция на дизайн персонажей",
+        "бета и низкий интерес",
+        "релиз и показатели онлайна",
+        "закрытие, возвраты и стоимость проекта",
+        "дискуссия о сервисных играх Sony",
+        "мемы после закрытия и эпизод Secret Level"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Concord",
+        "https://dtf.ru/search?query=%D0%9A%D0%BE%D0%BD%D0%BA%D0%BE%D1%80%D0%B4",
+        "https://dtf.ru/search?query=Concord+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Concord+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/concord",
+        "https://dtf.ru/search?query=Concord",
+        "https://dtf.ru/search?query=%D0%9A%D0%BE%D0%BD%D0%BA%D0%BE%D1%80%D0%B4",
+        "https://dtf.ru/search?query=Concord+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Concord+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Concord».\n\nСтартовые URL:\n- https://dtf.ru/tag/concord\n- https://dtf.ru/search?query=Concord\n- https://dtf.ru/search?query=%D0%9A%D0%BE%D0%BD%D0%BA%D0%BE%D1%80%D0%B4\n- https://dtf.ru/search?query=Concord+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Concord+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Конкорд, Concord Sony.\nОбязательные углы покрытия: анонс и реакция на дизайн персонажей; бета и низкий интерес; релиз и показатели онлайна; закрытие, возвраты и стоимость проекта; дискуссия о сервисных играх Sony; мемы после закрытия и эпизод Secret Level.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `concord/manifest.json`, `concord/posts.jsonl`, `concord/comments.jsonl`."
+    },
+    {
+      "id": "assassins-creed-shadows",
+      "title": "Assassin's Creed Shadows",
+      "aliases": [
+        "AC Shadows",
+        "Assassins Creed Shadows",
+        "Кредо убийцы Тени"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/assassinscreed"
+      ],
+      "angles": [
+        "анонс японского сеттинга",
+        "Ясукэ и спор об историчности",
+        "две игровые роли и сравнения с Ghost of Tsushima",
+        "переносы и положение Ubisoft",
+        "культурно-политические дискуссии",
+        "релиз, продажи и оценка самой игры отдельно от предрелизного срача"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Assassin%27s+Creed+Shadows",
+        "https://dtf.ru/search?query=AC+Shadows",
+        "https://dtf.ru/search?query=Assassin%27s+Creed+Shadows+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Assassin%27s+Creed+Shadows+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/assassinscreed",
+        "https://dtf.ru/search?query=Assassin%27s+Creed+Shadows",
+        "https://dtf.ru/search?query=AC+Shadows",
+        "https://dtf.ru/search?query=Assassin%27s+Creed+Shadows+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Assassin%27s+Creed+Shadows+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Assassin's Creed Shadows».\n\nСтартовые URL:\n- https://dtf.ru/tag/assassinscreed\n- https://dtf.ru/search?query=Assassin%27s+Creed+Shadows\n- https://dtf.ru/search?query=AC+Shadows\n- https://dtf.ru/search?query=Assassin%27s+Creed+Shadows+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Assassin%27s+Creed+Shadows+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: AC Shadows, Assassins Creed Shadows, Кредо убийцы Тени.\nОбязательные углы покрытия: анонс японского сеттинга; Ясукэ и спор об историчности; две игровые роли и сравнения с Ghost of Tsushima; переносы и положение Ubisoft; культурно-политические дискуссии; релиз, продажи и оценка самой игры отдельно от предрелизного срача.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `assassins-creed-shadows/manifest.json`, `assassins-creed-shadows/posts.jsonl`, `assassins-creed-shadows/comments.jsonl`."
+    },
+    {
+      "id": "silent-hill-2-remake",
+      "title": "Silent Hill 2 Remake",
+      "aliases": [
+        "Silent Hill 2 remake",
+        "SH2 Remake",
+        "Сайлент Хилл 2 ремейк"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/silenthill"
+      ],
+      "angles": [
+        "недоверие к Bloober Team",
+        "первые трейлеры и боевой интерфейс",
+        "внешность персонажей и сравнение с оригиналом",
+        "релизные обзоры и неожиданно тёплый приём",
+        "изменения сцен, атмосферы и музыки",
+        "моды и дальнейшая переоценка ремейка"
+      ],
+      "spoiler": true,
+      "search_urls": [
+        "https://dtf.ru/search?query=Silent+Hill+2+Remake",
+        "https://dtf.ru/search?query=Silent+Hill+2+remake",
+        "https://dtf.ru/search?query=Silent+Hill+2+Remake+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Silent+Hill+2+Remake+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/silenthill",
+        "https://dtf.ru/search?query=Silent+Hill+2+Remake",
+        "https://dtf.ru/search?query=Silent+Hill+2+remake",
+        "https://dtf.ru/search?query=Silent+Hill+2+Remake+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Silent+Hill+2+Remake+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Silent Hill 2 Remake».\n\nСтартовые URL:\n- https://dtf.ru/tag/silenthill\n- https://dtf.ru/search?query=Silent+Hill+2+Remake\n- https://dtf.ru/search?query=Silent+Hill+2+remake\n- https://dtf.ru/search?query=Silent+Hill+2+Remake+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Silent+Hill+2+Remake+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Silent Hill 2 remake, SH2 Remake, Сайлент Хилл 2 ремейк.\nОбязательные углы покрытия: недоверие к Bloober Team; первые трейлеры и боевой интерфейс; внешность персонажей и сравнение с оригиналом; релизные обзоры и неожиданно тёплый приём; изменения сцен, атмосферы и музыки; моды и дальнейшая переоценка ремейка. Не извлекай и не пересказывай сюжетные спойлеры без поля spoiler=true.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `silent-hill-2-remake/manifest.json`, `silent-hill-2-remake/posts.jsonl`, `silent-hill-2-remake/comments.jsonl`."
+    },
+    {
+      "id": "kingdom-come-deliverance-ii",
+      "title": "Kingdom Come: Deliverance II",
+      "aliases": [
+        "Kingdom Come 2",
+        "KCD2",
+        "KCD II",
+        "Кингдом Кам 2"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/kingdomcome"
+      ],
+      "angles": [
+        "ожидания после первой части",
+        "историзм, реализм и роль Даниэля Вавры",
+        "сложность, сохранения и боевая система",
+        "предрелизные культурные споры",
+        "релиз, продажи и техническое состояние",
+        "сравнения с RDR2 и другими RPG, пользовательские прохождения"
+      ],
+      "search_urls": [
+        "https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II",
+        "https://dtf.ru/search?query=Kingdom+Come+2",
+        "https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/kingdomcome",
+        "https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II",
+        "https://dtf.ru/search?query=Kingdom+Come+2",
+        "https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Kingdom Come: Deliverance II».\n\nСтартовые URL:\n- https://dtf.ru/tag/kingdomcome\n- https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II\n- https://dtf.ru/search?query=Kingdom+Come+2\n- https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Kingdom+Come%3A+Deliverance+II+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Kingdom Come 2, KCD2, KCD II, Кингдом Кам 2.\nОбязательные углы покрытия: ожидания после первой части; историзм, реализм и роль Даниэля Вавры; сложность, сохранения и боевая система; предрелизные культурные споры; релиз, продажи и техническое состояние; сравнения с RDR2 и другими RPG, пользовательские прохождения.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `kingdom-come-deliverance-ii/manifest.json`, `kingdom-come-deliverance-ii/posts.jsonl`, `kingdom-come-deliverance-ii/comments.jsonl`."
+    },
+    {
+      "id": "clair-obscur-expedition-33",
+      "title": "Clair Obscur: Expedition 33",
+      "aliases": [
+        "Expedition 33",
+        "Экспедиция 33",
+        "Clair Obscur",
+        "Клэр Обскур"
+      ],
+      "tag": [
+        "https://dtf.ru/tag/clairobscur",
+        "https://dtf.ru/tag/expedition33"
+      ],
+      "angles": [
+        "первые показы и ожидания",
+        "неожиданный успех после релиза",
+        "пошаговая система с активными уклонениями",
+        "французская команда и сравнительно небольшой бюджет",
+        "сюжет и эмоциональная реакция без раскрытия спойлеров",
+        "GOTY-дискуссии, чрезмерная заметность фанатов и сравнения с AAA"
+      ],
+      "spoiler": true,
+      "search_urls": [
+        "https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33",
+        "https://dtf.ru/search?query=Expedition+33",
+        "https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "all_urls": [
+        "https://dtf.ru/tag/clairobscur",
+        "https://dtf.ru/tag/expedition33",
+        "https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33",
+        "https://dtf.ru/search?query=Expedition+33",
+        "https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80",
+        "https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7"
+      ],
+      "scraping_prompt": "Собери сырой исследовательский корпус публичных материалов DTF по игре «Clair Obscur: Expedition 33».\n\nСтартовые URL:\n- https://dtf.ru/tag/clairobscur\n- https://dtf.ru/tag/expedition33\n- https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33\n- https://dtf.ru/search?query=Expedition+33\n- https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33+%D0%BC%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%BE%D0%B1%D0%B7%D0%BE%D1%80\n- https://dtf.ru/search?query=Clair+Obscur%3A+Expedition+33+%D1%80%D0%B5%D0%BB%D0%B8%D0%B7\n\nПоисковые алиасы: Expedition 33, Экспедиция 33, Clair Obscur, Клэр Обскур.\nОбязательные углы покрытия: первые показы и ожидания; неожиданный успех после релиза; пошаговая система с активными уклонениями; французская команда и сравнительно небольшой бюджет; сюжет и эмоциональная реакция без раскрытия спойлеров; GOTY-дискуссии, чрезмерная заметность фанатов и сравнения с AAA. Не извлекай и не пересказывай сюжетные спойлеры без поля spoiler=true.\n\nСначала собери минимум 30 релевантных кандидатов. Затем выбери 8–12 публикаций преимущественно по числу комментариев, но обеспечь разнообразие: редакционные новости, пользовательские обзоры/мнения, мемные посты и поздняя переоценка. По возможности охвати минимум три фазы обсуждения. Не включай гайды, распродажи, скриншот-посты и фан-арт, если вокруг них нет содержательной дискуссии или локального мема.\n\nДля каждого поста сохрани URL, ID, заголовок, дату, раздел, теги, просмотры, число комментариев, реакции, тип материала, фазу обсуждения, полный текст для внутреннего анализа и ссылки/описания медиа. Публичное имя автора замени стабильным хешем; профили и личные данные не собирай.\n\nДля каждого выбранного поста выгрузи до 100 уникальных комментариев: 40 самых рейтинговых, 20 ранних корневых, 20 из самых длинных веток и до 20 несогласных/отрицательно оценённых корневых. Сохраняй parent_id, depth, рейтинг, дату и reply_count. Не обходи авторизацию, закрытые страницы или технические ограничения; соблюдай разумный rate limit.\n\nНе делай выводов о «мнении DTF», не нормализуй мотивы и не генерируй шутки. Задача — только сырой корпус. Выгрузи UTF-8 файлы `clair-obscur-expedition-33/manifest.json`, `clair-obscur-expedition-33/posts.jsonl`, `clair-obscur-expedition-33/comments.jsonl`."
+    }
+  ],
+  "outputContract": {
+    "folder": "<game_id>/",
+    "files": {
+      "manifest.json": [
+        "game_id",
+        "canonical_title",
+        "aliases",
+        "source_urls",
+        "scraped_at",
+        "selection_notes",
+        "errors"
+      ],
+      "posts.jsonl": [
+        "post_id",
+        "canonical_url",
+        "title",
+        "published_at",
+        "section",
+        "tags",
+        "author_hash",
+        "views",
+        "comment_count",
+        "reaction_counts",
+        "post_type",
+        "discussion_phase",
+        "body_text",
+        "media_urls",
+        "search_origin"
+      ],
+      "comments.jsonl": [
+        "comment_id",
+        "post_id",
+        "parent_id",
+        "depth",
+        "published_at",
+        "author_hash",
+        "rating",
+        "reply_count",
+        "text",
+        "is_deleted",
+        "sampling_bucket"
+      ]
+    },
+    "encoding": "UTF-8"
+  }
+}
