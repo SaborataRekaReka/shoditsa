@@ -79,6 +79,22 @@ export type ContentExchangePreview = {
   items: Array<{ id: string; mode: ContentMode; status: 'create' | 'update' | 'unchanged' | 'conflict' | 'invalid'; title: string; changedFields: string[]; conflicts: string[]; issues: Array<Record<string, unknown>>; message: string | null }>
 }
 
+export type ReleaseContentStatus = {
+  state: 'active' | 'ready' | 'building' | 'failed' | 'update_available'
+  updateAvailable: boolean
+  release: {
+    source: 'release_catalog'
+    gitSha: string
+    generatedAt: string
+    checksumSha256: string
+    totalItems: number
+    modes: Record<string, { count: number; checksumSha256: string }>
+    warnings: string[]
+  }
+  activeRevision: Record<string, unknown> | null
+  matchingRevision: Record<string, unknown> | null
+}
+
 export const adminApi = {
   me: () => request<MeResponse>('/me'),
   dashboard: () => request<AdminDashboardResponse>('/admin/dashboard'),
@@ -88,6 +104,8 @@ export const adminApi = {
   contentItem: (id: string) => request<AdminItemDetail>(`/admin/content/items/${encodeURIComponent(id)}`),
   contentHistory: (id: string) => request<{ versions: Array<Record<string, unknown>>; drafts: Array<Record<string, unknown>> }>(`/admin/content/items/${encodeURIComponent(id)}/history`),
   workspace: () => request<AdminWorkspaceSummary>('/admin/content/workspace'),
+  releaseContent: () => request<ReleaseContentStatus>('/admin/content/release'),
+  buildReleaseContent: () => request<{ job: Record<string, unknown> }>('/admin/content/release/build', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: '{}' }),
   saveItem: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/content/workspace/items/${encodeURIComponent(id)}`, { method: 'PUT', body: json(body) }),
   discardItem: (id: string) => request<{ discarded: boolean }>(`/admin/content/workspace/items/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   uploadMedia: async (id: string, file: File, purpose: 'posterUrl' | 'headerUrl' | 'backdropUrl' | 'screenshot') => request<{ url: string; width: number; height: number; bytes: number }>(`/admin/content/items/${encodeURIComponent(id)}/media`, { method: 'POST', body: json({ fileName: file.name, contentType: file.type, base64: await fileBase64(file), purpose }), timeoutMs: 60_000 }),

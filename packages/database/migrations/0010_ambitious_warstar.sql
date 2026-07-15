@@ -1,0 +1,2 @@
+ALTER TABLE "background_jobs" DROP CONSTRAINT "background_job_type_check";--> statement-breakpoint
+ALTER TABLE "background_jobs" ADD CONSTRAINT "background_job_type_check" CHECK ("background_jobs"."type" in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention'));

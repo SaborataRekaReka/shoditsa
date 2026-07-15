@@ -8,7 +8,11 @@ test-results
 playwright-report
 archive
 docs
-public
+public/*
+!public/data/
+public/data/*
+!public/data/libraries/
+!public/data/libraries/**
 test
 apps/web/src
 apps/web/index.html

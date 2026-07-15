@@ -8,7 +8,7 @@ import {
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
-import type { AdminContentListItem, AdminContentTag, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
+import type { AdminContentListItem, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
 import './admin.css'
@@ -52,6 +52,7 @@ const STATUS_LABEL: Record<string, string> = {
   queued: 'В очереди', running: 'Выполняется', completed: 'Готово', failed: 'Ошибка', review_required: 'Нужна проверка',
   partially_failed: 'Частично с ошибками', approved: 'Одобрено', staged: 'В рабочей версии', published: 'Опубликовано', partially_published: 'Частично опубликовано', cancelled: 'Отменено',
   create: 'Добавить', update: 'Изменить', unchanged: 'Без изменений', conflict: 'Конфликт', invalid: 'Ошибка',
+  update_available: 'Доступно обновление', building: 'Собирается', active: 'Активно', ready: 'Готово', retired: 'Архив',
 }
 
 const formatDate = (value: unknown) => value ? new Intl.DateTimeFormat('ru-RU', {
@@ -78,15 +79,19 @@ const pipelineWarnings = (value: unknown) => {
 }
 const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.message}${error.code ? ` · ${error.code}` : ''}` : error instanceof Error ? error.message : 'Неизвестная ошибка'
 const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid'].includes(String(status)) ? 'danger'
-  : ['running', 'in_progress', 'warning', 'partially_failed'].includes(String(status)) ? 'warning'
+  : ['running', 'in_progress', 'warning', 'partially_failed', 'building', 'update_available'].includes(String(status)) ? 'warning'
     : ['completed', 'published', 'resolved', 'active', 'ready'].includes(String(status)) ? 'success' : 'neutral'
 const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => typeof value === 'string' && value in MODE_LABEL ? value as ContentMode : fallback
 
-const sectionFromPath = (): { section: Section; id: string | null } => {
+const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
   const candidate = (parts[0] || 'dashboard') as Section
   const allowed: Section[] = ['dashboard', 'content', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'integrations', 'system', 'audit']
-  return { section: allowed.includes(candidate) ? candidate : 'dashboard', id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null }
+  return {
+    section: allowed.includes(candidate) ? candidate : 'dashboard',
+    id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null,
+    search: window.location.search,
+  }
 }
 
 function useRoute() {
@@ -94,9 +99,15 @@ function useRoute() {
   useEffect(() => { const onPop = () => setRoute(sectionFromPath()); addEventListener('popstate', onPop); return () => removeEventListener('popstate', onPop) }, [])
   const navigate = (section: Section, id?: string | null) => {
     const url = `/admin/${section}${id ? `/${encodeURIComponent(id)}` : ''}`
-    history.pushState({}, '', url); setRoute({ section, id: id ?? null }); scrollTo({ top: 0 })
+    history.pushState({}, '', url); setRoute({ section, id: id ?? null, search: '' }); scrollTo({ top: 0 })
   }
-  return { ...route, navigate }
+  const navigateContentMode = (mode: ContentMode) => {
+    const search = `?mode=${encodeURIComponent(mode)}`
+    history.pushState({}, '', `/admin/content${search}`)
+    setRoute({ section: 'content', id: null, search })
+    scrollTo({ top: 0 })
+  }
+  return { ...route, navigate, navigateContentMode }
 }
 
 function Status({ value, children }: { value: unknown; children?: ReactNode }) {
@@ -119,7 +130,73 @@ function ErrorState({ error, retry }: { error: unknown; retry?: () => void }) {
   return <div className="admin-error" role="alert"><AlertTriangle /><div><strong>Не удалось загрузить данные</strong><p>{errorText(error)}</p></div>{retry && <button className="admin-btn admin-btn--secondary" onClick={retry}><RefreshCw />Повторить</button>}</div>
 }
 
-function DashboardPage({ navigate }: { navigate: (section: Section, id?: string | null) => void }) {
+function ContentRevisionControl({ activeRevision, navigate, notify }: {
+  activeRevision: AdminDashboardResponse['activeRevision']
+  navigate: (section: Section, id?: string | null) => void
+  notify: (tone: Notice['tone'], text: string) => void
+}) {
+  const client = useQueryClient()
+  const release = useQuery({ queryKey: ['admin', 'release-content'], queryFn: adminApi.releaseContent, refetchInterval: 5_000 })
+  const revisions = useQuery({ queryKey: ['admin', 'revisions'], queryFn: adminApi.revisions, refetchInterval: 10_000 })
+  const workspace = useQuery({ queryKey: ['admin', 'workspace'], queryFn: adminApi.workspace, refetchInterval: 5_000 })
+  const refreshContentState = () => {
+    void client.invalidateQueries({ queryKey: ['admin', 'release-content'] })
+    void client.invalidateQueries({ queryKey: ['admin', 'revisions'] })
+    void client.invalidateQueries({ queryKey: ['admin', 'dashboard'] })
+    void client.invalidateQueries({ queryKey: ['admin', 'workspace'] })
+  }
+  const buildRelease = useMutation({
+    mutationFn: async () => {
+      if (!confirm('Создать новую ревизию из каталогов текущего релиза? Активный контент не изменится до отдельной активации.')) throw new Error('Действие отменено')
+      return adminApi.buildReleaseContent()
+    },
+    onSuccess: () => { notify('info', 'Сборка ревизии из релиза поставлена в очередь'); refreshContentState(); void client.invalidateQueries({ queryKey: ['admin', 'jobs'] }) },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const activateRevision = useMutation({
+    mutationFn: async (revision: Record<string, unknown>) => {
+      const rollback = revision.status === 'retired'
+      const reason = rollback ? prompt('Причина отката на эту ревизию') : undefined
+      if ((rollback && !reason?.trim()) || !confirm(rollback ? 'Откат немедленно изменит активный игровой контент. Продолжить?' : 'Активировать эту ревизию как игровой контент?')) throw new Error('Действие отменено')
+      return adminApi.activateRevision(String(revision.id), reason?.trim())
+    },
+    onSuccess: () => { notify('success', 'Активная ревизия обновлена'); refreshContentState() },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const validateWorkspace = useMutation({
+    mutationFn: adminApi.validateWorkspace,
+    onSuccess: (data) => { refreshContentState(); notify(Number(data.errors ?? 0) ? 'error' : 'success', Number(data.errors ?? 0) ? `Найдено ошибок: ${data.errors}` : `Проверка завершена · предупреждений: ${data.warnings ?? 0}`) },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const buildWorkspace = useMutation({
+    mutationFn: adminApi.buildWorkspace,
+    onSuccess: () => { notify('info', 'Сборка рабочей ревизии поставлена в очередь'); refreshContentState(); void client.invalidateQueries({ queryKey: ['admin', 'jobs'] }) },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const activateWorkspace = useMutation({
+    mutationFn: adminApi.activateWorkspace,
+    onSuccess: () => { notify('success', 'Рабочая ревизия опубликована'); refreshContentState() },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const releaseState = release.data?.state
+  const releaseLabel = releaseState === 'active' ? 'Каталог релиза активен' : releaseState === 'ready' ? 'Ревизия готова к активации' : releaseState === 'building' ? 'Ревизия собирается' : releaseState === 'failed' ? 'Сборка завершилась ошибкой' : 'Доступно обновление из релиза'
+  const workspaceData = workspace.data
+  return <section className="admin-panel admin-revision-control"><header><div><span>Управление контентом</span><h2>Ревизии и публикация</h2></div><button onClick={() => { void release.refetch(); void revisions.refetch(); void workspace.refetch() }}>Обновить <RefreshCw /></button></header>
+    <div className="admin-revision-summary">
+      <div><small>Активная ревизия БД</small><strong>{activeRevision?.version ?? 'Не определена'}</strong><code>{String(release.data?.activeRevision?.checksumSha256 ?? '').slice(0, 12) || '—'}</code></div>
+      <div><small>Каталог в текущем релизе</small><strong>{release.isLoading ? 'Проверяем…' : release.error ? 'Недоступен' : releaseLabel}</strong><code>{release.data ? `${release.data.release.gitSha.slice(0, 10)} · ${release.data.release.checksumSha256.slice(0, 12)} · ${release.data.release.totalItems.toLocaleString('ru-RU')} карточек` : '—'}</code></div>
+      <div className="admin-revision-summary__action"><Status value={releaseState ?? (release.error ? 'failed' : 'neutral')} />{release.data?.updateAvailable && <button className="admin-btn admin-btn--primary" disabled={buildRelease.isPending} onClick={() => buildRelease.mutate()}><Rocket />{releaseState === 'failed' ? 'Повторить сборку' : 'Создать ревизию из релиза'}</button>}</div>
+    </div>
+    {release.error && <ErrorState error={release.error} retry={() => void release.refetch()} />}
+    <div className="admin-revision-columns">
+      <div className="admin-revision-workspace"><header><span><strong>Рабочая версия</strong><small>Ручные правки карточек</small></span><Status value={workspaceData?.status} /></header><div><span><small>Изменений</small><strong>{workspaceData?.changesCount ?? 0}</strong></span><span><small>Ошибок</small><strong>{workspaceData?.errorsCount ?? 0}</strong></span><span><small>Предупреждений</small><strong>{workspaceData?.warningsCount ?? 0}</strong></span></div><footer><button className="admin-btn admin-btn--secondary" disabled={!workspaceData || validateWorkspace.isPending} onClick={() => validateWorkspace.mutate()}><ListChecks />Проверить</button>{workspaceData?.status === 'ready' ? <button className="admin-btn admin-btn--primary" disabled={activateWorkspace.isPending} onClick={() => activateWorkspace.mutate()}><Rocket />Опубликовать</button> : <button className="admin-btn admin-btn--primary" disabled={!workspaceData?.changesCount || workspaceData.status !== 'open' || buildWorkspace.isPending} onClick={() => buildWorkspace.mutate()}><Rocket />Собрать ревизию</button>}<button className="admin-btn admin-btn--secondary" onClick={() => navigate('content')}>Открыть карточки <ChevronRight /></button></footer></div>
+      <div className="admin-revisions"><header><strong>Последние ревизии</strong><small>Готовые можно активировать, retired — вернуть откатом</small></header>{revisions.data?.items.slice(0, 8).map((raw) => { const revision = record(raw); return <article key={String(revision.id)}><span><strong>{title(revision.version)}</strong><small>{compactDate(revision.createdAt)} · {String(revision.checksumSha256).slice(0, 10)}</small></span><Status value={revision.status} />{['ready', 'retired'].includes(String(revision.status)) && <button disabled={activateRevision.isPending} onClick={() => activateRevision.mutate(revision)}>{revision.status === 'retired' ? 'Откатить' : 'Активировать'}</button>}</article> })}</div>
+    </div>
+    <div className="admin-mode-counts">{activeRevision?.counts.map((mode) => <div key={mode.mode}><span>{MODE_LABEL[mode.mode]}</span><strong>{mode.count.toLocaleString('ru-RU')}</strong></div>)}</div>
+  </section>
+}
+
+function DashboardPage({ navigate, notify }: { navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const dashboard = useQuery({ queryKey: ['admin', 'dashboard'], queryFn: adminApi.dashboard, refetchInterval: 15_000 })
   if (dashboard.isLoading) return <Loading />
   if (dashboard.error || !dashboard.data) return <ErrorState error={dashboard.error} retry={() => void dashboard.refetch()} />
@@ -136,10 +213,7 @@ function DashboardPage({ navigate }: { navigate: (section: Section, id?: string 
       <section className="admin-panel admin-attention"><header><div><span>Требует внимания</span><h2>Очередь на сегодня</h2></div><button onClick={() => navigate('reports')}>Вся очередь <ChevronRight /></button></header>
         {dashboard.data.recentReports.length ? <div className="admin-feed">{dashboard.data.recentReports.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('reports', String(item.id))}><span className="admin-feed__icon"><Bug /></span><span><strong>{REPORT_REASON[String(item.reason)] ?? title(item.reason)}</strong><small>{title(item.itemId)} · {compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Очередь пуста" text="Новых сообщений от игроков нет." icon={<BadgeCheck />} />}
       </section>
-      <section className="admin-panel"><header><div><span>Контент</span><h2>Рабочая версия</h2></div><button onClick={() => navigate('content')}>Открыть <ChevronRight /></button></header>
-        <div className="admin-workspace-card"><div><span>Базовая ревизия</span><strong>{dashboard.data.activeRevision?.version ?? 'Не определена'}</strong></div><div><span>Изменений</span><strong>{dashboard.data.workspace?.changesCount ?? 0}</strong></div><div><span>Ошибок</span><strong>{dashboard.data.workspace?.errorsCount ?? 0}</strong></div><Status value={dashboard.data.workspace?.status} /></div>
-        <div className="admin-mode-counts">{dashboard.data.activeRevision?.counts.map((mode) => <div key={mode.mode}><span>{MODE_LABEL[mode.mode]}</span><strong>{mode.count.toLocaleString('ru-RU')}</strong></div>)}</div>
-      </section>
+      <ContentRevisionControl activeRevision={dashboard.data.activeRevision} navigate={navigate} notify={notify} />
       <section className="admin-panel"><header><div><span>Последние изменения</span><h2>Карточки</h2></div></header>
         {dashboard.data.recentChanges.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentChanges.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('content', String(item.itemId))}><span><strong>{title(item.itemId)}</strong><small>{array(item.changedFields).join(', ') || 'Изменение карточки'} · {compactDate(item.updatedAt)}</small></span><Status value={item.source}>{String(item.source)}</Status></button> })}</div> : <Empty title="Изменений нет" text="Сохранённые правки появятся здесь." />}
       </section>
@@ -721,6 +795,10 @@ function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: strin
 function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient();
   const params = new URLSearchParams(location.search);
+  const routeMode = params.get('mode');
+  const scopedMode = MODES.some((entry) => entry.value === routeMode)
+    ? (routeMode as ContentMode)
+    : null;
 
   type ContentSortKey =
     | "titleRu"
@@ -809,7 +887,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   };
 
   const [q, setQ] = useState(params.get("q") ?? "");
-  const [mode, setMode] = useState(params.get("mode") ?? "");
+  const [mode, setMode] = useState(scopedMode ?? params.get("mode") ?? "");
   const [publication, setPublication] = useState(
     params.get("publication") ?? "all",
   );
@@ -1188,7 +1266,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
 
   const resetFilters = () => {
     setQ("");
-    setMode("");
+    setMode(scopedMode ?? "");
     setPublication("all");
     setSource("");
     setPipelineFilter("");
@@ -1213,8 +1291,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     <>
       <PageHead
         eyebrow="Контент"
-        title="Карточки"
-        description="Поиск, проверка и публикация всех шести игровых библиотек."
+        title={scopedMode ? `Карточки · ${MODE_LABEL[scopedMode]}` : "Карточки"}
+        description={scopedMode ? `Поиск, проверка и публикация карточек категории «${MODE_LABEL[scopedMode]}».` : "Поиск, проверка и публикация всех шести игровых библиотек."}
         actions={
           <>
             <div className="admin-view-switch">
@@ -1281,7 +1359,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             </button>
           )}
         </label>
-        <label>
+        {!scopedMode && <label>
           <Filter />
           <select
             value={mode}
@@ -1294,7 +1372,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
               </option>
             ))}
           </select>
-        </label>
+        </label>}
         <label>
           <Archive />
           <select
@@ -1395,107 +1473,127 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         >
           <RefreshCw />
         </button>
-      </div>
-
-      <div className="admin-toolbar admin-toolbar--content admin-toolbar--sub">
-        <TagPicker
-          tags={tags.data?.items ?? []}
-          value={includeTagIds}
-          onChange={(ids) => {
-            setIncludeTagIds(ids);
-            setSelected(new Set());
-          }}
-          label="С тегами"
-        />
-        <label>
-          <Tags />
-          <select
-            value={tagMatch}
-            onChange={(event) =>
-              setTagMatch(event.target.value as "all" | "any")
-            }
-          >
-            <option value="all">Должны быть все</option>
-            <option value="any">Достаточно любого</option>
-          </select>
-        </label>
-        <TagPicker
-          tags={tags.data?.items ?? []}
-          value={excludeTagIds}
-          onChange={(ids) => {
-            setExcludeTagIds(ids);
-            setSelected(new Set());
-          }}
-          label="Исключить теги"
-        />
-        <label>
-          <Tags />
-          <select
-            value={sortBy}
-            onChange={(event) =>
-              setSortBy(event.target.value as ContentSortKey)
-            }
-          >
-            <option value="updatedAt">Сортировка: изменено</option>
-            <option value="titleRu">Сортировка: название</option>
-            <option value="tags">Сортировка: тег</option>
-          </select>
-        </label>
-        <label>
-          <ChevronDown />
-          <select
-            value={sortOrder}
-            onChange={(event) =>
-              setSortOrder(event.target.value as "asc" | "desc")
-            }
-          >
-            <option value="asc">По возрастанию</option>
-            <option value="desc">По убыванию</option>
-          </select>
-        </label>
-        <label>
-          <Filter />
-          <select
-            value={fieldFilter}
-            onChange={(event) =>
-              setFieldFilter(event.target.value as ContentFieldFilter)
-            }
-          >
-            <option value="all">Локальный фильтр: все поля</option>
-            <option value="title">Название</option>
-            <option value="id">ID</option>
-            <option value="mode">Категория</option>
-            <option value="status">Статус</option>
-            <option value="source">Источник</option>
-            <option value="pipeline">Пайплайн</option>
-            <option value="fields">Заполнено полей</option>
-            <option value="hint">Подсказка</option>
-            <option value="reports">Репорты</option>
-            <option value="issues">Качество</option>
-            <option value="completeness">Полнота</option>
-            <option value="missing">Чего не хватает</option>
-          </select>
-        </label>
-        <label className="admin-search admin-search--compact">
-          <Search />
-          <input
-            value={fieldFilterValue}
-            onChange={(event) => setFieldFilterValue(event.target.value)}
-            placeholder="Фильтр по выбранному полю"
-          />
-          {fieldFilterValue && (
-            <button onClick={() => setFieldFilterValue("")}>
-              <X />
-            </button>
-          )}
-        </label>
         <button
           className="admin-btn admin-btn--secondary"
-          onClick={resetFilters}
+          disabled={!sortedItems.length}
+          title="Выбирает все загруженные карточки по текущим фильтрам"
+          onClick={() => {
+            setSelected((current) => {
+              const next = new Set(current);
+              for (const item of sortedItems) next.add(item.id);
+              return next;
+            });
+            setSelectionAnchorIndex(null);
+          }}
         >
-          Сбросить фильтры
+          <ListChecks />
+          Выбрать все{sortedItems.length ? ` · ${sortedItems.length}` : ""}
         </button>
       </div>
+
+      <section className="admin-content-filter-panel" aria-label="Фильтры карточек">
+        <div className="admin-content-tag-filters">
+          <TagPicker
+            tags={tags.data?.items ?? []}
+            value={includeTagIds}
+            onChange={(ids) => {
+              setIncludeTagIds(ids);
+              setSelected(new Set());
+            }}
+            label="С тегами"
+          />
+          <label>
+            <Tags />
+            <select
+              value={tagMatch}
+              onChange={(event) =>
+                setTagMatch(event.target.value as "all" | "any")
+              }
+            >
+              <option value="all">Должны быть все</option>
+              <option value="any">Достаточно любого</option>
+            </select>
+          </label>
+          <TagPicker
+            tags={tags.data?.items ?? []}
+            value={excludeTagIds}
+            onChange={(ids) => {
+              setExcludeTagIds(ids);
+              setSelected(new Set());
+            }}
+            label="Исключить теги"
+          />
+        </div>
+        <div className="admin-content-local-filters">
+          <label>
+            <Filter />
+            <select
+              value={fieldFilter}
+              onChange={(event) =>
+                setFieldFilter(event.target.value as ContentFieldFilter)
+              }
+            >
+              <option value="all">Локальный фильтр: все поля</option>
+              <option value="title">Название</option>
+              <option value="id">ID</option>
+              <option value="mode">Категория</option>
+              <option value="status">Статус</option>
+              <option value="source">Источник</option>
+              <option value="pipeline">Пайплайн</option>
+              <option value="fields">Заполнено полей</option>
+              <option value="hint">Подсказка</option>
+              <option value="reports">Репорты</option>
+              <option value="issues">Качество</option>
+              <option value="completeness">Полнота</option>
+              <option value="missing">Чего не хватает</option>
+            </select>
+          </label>
+          <label className="admin-search admin-search--compact">
+            <Search />
+            <input
+              value={fieldFilterValue}
+              onChange={(event) => setFieldFilterValue(event.target.value)}
+              placeholder="Фильтр по выбранному полю"
+            />
+            {fieldFilterValue && (
+              <button onClick={() => setFieldFilterValue("")}>
+                <X />
+              </button>
+            )}
+          </label>
+          <label>
+            <Tags />
+            <select
+              value={sortBy}
+              onChange={(event) =>
+                setSortBy(event.target.value as ContentSortKey)
+              }
+            >
+              <option value="updatedAt">Сортировка: изменено</option>
+              <option value="titleRu">Сортировка: название</option>
+              <option value="tags">Сортировка: тег</option>
+            </select>
+          </label>
+          <label>
+            <ChevronDown />
+            <select
+              value={sortOrder}
+              onChange={(event) =>
+                setSortOrder(event.target.value as "asc" | "desc")
+              }
+            >
+              <option value="asc">По возрастанию</option>
+              <option value="desc">По убыванию</option>
+            </select>
+          </label>
+          <button
+            className="admin-btn admin-btn--secondary"
+            onClick={resetFilters}
+          >
+            Сбросить фильтры
+          </button>
+        </div>
+      </section>
 
       {selected.size > 0 && (
         <div className="admin-bulk">
@@ -1512,18 +1610,23 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <Archive />
             Скрыть
           </button>
-          <TagPicker compact label="Массовые теги" tags={tags.data?.items ?? []} value={bulkTagIds} onChange={setBulkTagIds} onCreate={createTag} />
-          <button disabled={!bulkTagIds.length} onClick={() => bulk.mutate("add_tag")}>
-            <Tags />
-            Назначить теги · {bulkTagIds.length}
-          </button>
-          <button
-            disabled={!bulkTagIds.length}
-            onClick={() => bulk.mutate("remove_tag")}
-          >
-            <X />
-            Снять теги · {bulkTagIds.length}
-          </button>
+          <details className="admin-bulk-tags">
+            <summary><Tags />Теги{bulkTagIds.length ? ` · ${bulkTagIds.length}` : ""}</summary>
+            <div>
+              <TagPicker compact label="Массовые теги" tags={tags.data?.items ?? []} value={bulkTagIds} onChange={setBulkTagIds} onCreate={createTag} />
+              <button disabled={!bulkTagIds.length} onClick={() => bulk.mutate("add_tag")}>
+                <Tags />
+                Назначить · {bulkTagIds.length}
+              </button>
+              <button
+                disabled={!bulkTagIds.length}
+                onClick={() => bulk.mutate("remove_tag")}
+              >
+                <X />
+                Снять · {bulkTagIds.length}
+              </button>
+            </div>
+          </details>
           <button
             onClick={() => {
               setSelected(new Set());
@@ -4251,17 +4354,19 @@ const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> 
 ]
 
 export default function AdminApp() {
-  const route = useRoute(); const [notices, setNotices] = useState<Notice[]>([]); const [global, setGlobal] = useState(''); const searchRef = useRef<HTMLInputElement>(null)
+  const route = useRoute(); const [notices, setNotices] = useState<Notice[]>([]); const [global, setGlobal] = useState(''); const [contentMenuOpen, setContentMenuOpen] = useState(route.section === 'content'); const searchRef = useRef<HTMLInputElement>(null)
   const me = useQuery({ queryKey: ['admin', 'me'], queryFn: adminApi.me, retry: false }); const access = useQuery({ queryKey: ['admin', 'access'], queryFn: adminApi.health, enabled: me.data?.user.role === 'admin', retry: false }); const jobs = useQuery({ queryKey: ['admin', 'jobs', 'header'], queryFn: adminApi.jobs, enabled: access.isSuccess, refetchInterval: 5_000 })
   const globalResults = useQuery({ queryKey: ['admin', 'global-search', global], enabled: global.trim().length >= 2, queryFn: async () => { const [content, users, reports] = await Promise.all([adminApi.contentItems({ q: global, limit: 6 }), adminApi.users({ q: global, limit: 5 }), adminApi.reports({ q: global, limit: 5 })]); return { content: content.items, users: users.items, reports: reports.items } } })
   const notify = (tone: Notice['tone'], text: string) => { const id = crypto.randomUUID(); setNotices((current) => [...current, { id, tone, text }]); setTimeout(() => setNotices((current) => current.filter((notice) => notice.id !== id)), 4500) }
   useEffect(() => { const shortcut = (event: KeyboardEvent) => { if ((event.ctrlKey || event.metaKey) && event.key === 'k') { event.preventDefault(); searchRef.current?.focus() } }; addEventListener('keydown', shortcut); return () => removeEventListener('keydown', shortcut) }, [])
+  useEffect(() => { if (route.section === 'content') setContentMenuOpen(true) }, [route.section])
   if (me.isLoading || (me.data?.user.role === 'admin' && access.isLoading)) return <div className="admin-gate"><div className="admin-gate__brand"><img src="/images/logo.svg" alt="Сходится!" /><LoaderCircle /></div><p>Проверяем административный доступ…</p></div>
   if (me.error || me.data?.user.role !== 'admin' || access.error) return <div className="admin-gate admin-gate--denied"><span><ShieldCheck /></span><h1>Административный доступ закрыт</h1><p>Войдите как разрешённый владелец проекта. Сервер дополнительно проверяет роль, UUID и email.</p><a className="admin-btn admin-btn--primary" href="/">Вернуться в игру</a>{(me.error || access.error) && <code>{errorText(me.error || access.error)}</code>}</div>
   const activeJobs = jobs.data?.items.filter((item) => ['queued', 'running'].includes(String(item.status))).length ?? 0
-  return <div className="admin-root"><aside className="admin-sidebar"><a className="admin-brand" href="/" aria-label="Сходится! — игра"><img src="/images/logo.svg" alt="Сходится!" /><span>ADMIN</span></a><nav>{MENU.map(({ id, label, icon: Icon }) => <button key={id} className={route.section === id ? 'is-active' : ''} onClick={() => route.navigate(id)}><Icon /><span>{label}</span>{id === 'reports' && <i />}</button>)}</nav><footer><div className="admin-admin-card"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>{me.data.user.email}</small></div></div><a href="/"><ArrowLeft />Вернуться в игру</a></footer></aside><div className="admin-main"><header className="admin-topbar"><div className="admin-global-search"><Search /><input ref={searchRef} value={global} onChange={(event) => setGlobal(event.target.value)} placeholder="Глобальный поиск" /><kbd>Ctrl K</kbd>{globalResults.data && global.trim().length >= 2 && <div className="admin-search-results"><section><span>Карточки</span>{globalResults.data.content.map((item: AdminContentListItem) => <button key={item.id} onClick={() => { route.navigate('content', item.id); setGlobal('') }}><Boxes /><span><strong>{item.titleRu}</strong><small>{MODE_LABEL[item.mode]} · {item.id}</small></span></button>)}</section><section><span>Пользователи</span>{globalResults.data.users.map((item) => <button key={item.id} onClick={() => { route.navigate('users', item.id); setGlobal('') }}><UserRound /><span><strong>{item.isAnonymous ? 'Гость' : item.displayName || item.name}</strong><small>{item.email}</small></span></button>)}</section><section><span>Репорты</span>{globalResults.data.reports.map((entry) => <button key={String(entry.report.id)} onClick={() => { route.navigate('reports', String(entry.report.id)); setGlobal('') }}><Bug /><span><strong>{REPORT_REASON[String(entry.report.reason)]}</strong><small>{entry.titleRu}</small></span></button>)}</section></div>}</div><button className="admin-job-indicator" onClick={() => route.navigate('system')}><Activity />{activeJobs ? <><strong>{activeJobs}</strong><span>задач выполняется</span></> : <span>Фоновых задач нет</span>}</button><div className="admin-topbar-user"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>Asia/Almaty</small></div></div></header><main className="admin-content">
-    {route.section === 'dashboard' && <DashboardPage navigate={route.navigate} />}
-    {route.section === 'content' && <ContentPage selectedId={route.id} navigate={route.navigate} notify={notify} />}
+  const activeContentMode = new URLSearchParams(route.search).get('mode')
+  return <div className="admin-root"><aside className="admin-sidebar"><a className="admin-brand" href="/" aria-label="Сходится! — игра"><img src="/images/logo.svg" alt="Сходится!" /><span>ADMIN</span></a><nav>{MENU.map(({ id, label, icon: Icon }) => id === 'content' ? <div key={id} className={`admin-nav-group ${contentMenuOpen ? 'is-open' : ''}`}><button className={route.section === id ? 'is-active' : ''} aria-expanded={contentMenuOpen} onClick={() => { setContentMenuOpen((isOpen) => !isOpen); if (route.section !== 'content') route.navigate('content') }}><Icon /><span>{label}</span><ChevronDown className="admin-nav-group__chevron" /></button><div className="admin-nav-group__children">{MODES.map((entry) => <button key={entry.value} className={activeContentMode === entry.value ? 'is-active' : ''} onClick={() => route.navigateContentMode(entry.value)}><span>{entry.label}</span></button>)}</div></div> : <button key={id} className={route.section === id ? 'is-active' : ''} onClick={() => route.navigate(id)}><Icon /><span>{label}</span>{id === 'reports' && <i />}</button>)}</nav><footer><div className="admin-admin-card"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>{me.data.user.email}</small></div></div><a href="/"><ArrowLeft />Вернуться в игру</a></footer></aside><div className="admin-main"><header className="admin-topbar"><div className="admin-global-search"><Search /><input ref={searchRef} value={global} onChange={(event) => setGlobal(event.target.value)} placeholder="Глобальный поиск" /><kbd>Ctrl K</kbd>{globalResults.data && global.trim().length >= 2 && <div className="admin-search-results"><section><span>Карточки</span>{globalResults.data.content.map((item: AdminContentListItem) => <button key={item.id} onClick={() => { route.navigate('content', item.id); setGlobal('') }}><Boxes /><span><strong>{item.titleRu}</strong><small>{MODE_LABEL[item.mode]} · {item.id}</small></span></button>)}</section><section><span>Пользователи</span>{globalResults.data.users.map((item) => <button key={item.id} onClick={() => { route.navigate('users', item.id); setGlobal('') }}><UserRound /><span><strong>{item.isAnonymous ? 'Гость' : item.displayName || item.name}</strong><small>{item.email}</small></span></button>)}</section><section><span>Репорты</span>{globalResults.data.reports.map((entry) => <button key={String(entry.report.id)} onClick={() => { route.navigate('reports', String(entry.report.id)); setGlobal('') }}><Bug /><span><strong>{REPORT_REASON[String(entry.report.reason)]}</strong><small>{entry.titleRu}</small></span></button>)}</section></div>}</div><button className="admin-job-indicator" onClick={() => route.navigate('system')}><Activity />{activeJobs ? <><strong>{activeJobs}</strong><span>задач выполняется</span></> : <span>Фоновых задач нет</span>}</button><div className="admin-topbar-user"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>Asia/Almaty</small></div></div></header><main className="admin-content">
+    {route.section === 'dashboard' && <DashboardPage navigate={route.navigate} notify={notify} />}
+    {route.section === 'content' && <ContentPage key={route.search} selectedId={route.id} navigate={route.navigate} notify={notify} />}
     {route.section === 'reports' && <ReportsPage selectedId={route.id} navigate={route.navigate} notify={notify} />}
     {route.section === 'pipelines' && <PipelinesPage selectedId={route.id} navigate={route.navigate} notify={notify} />}
     {route.section === 'users' && <UsersPage selectedId={route.id} navigate={route.navigate} notify={notify} />}

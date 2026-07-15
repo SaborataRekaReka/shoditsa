@@ -85,6 +85,7 @@ export const loadConfig = () => {
     gitSha: process.env.GIT_SHA?.trim() || 'dev',
     metricsToken: process.env.METRICS_TOKEN?.trim() || '',
     enrichmentDataRoot: process.env.ENRICHMENT_DATA_ROOT?.trim() || './data/enrichment-agent',
+    contentReleaseRoot: process.env.CONTENT_RELEASE_ROOT?.trim() || (production ? '/app/release-content/libraries' : './public/data/libraries'),
     workerId: process.env.WORKER_ID?.trim() || `worker-${process.pid}`,
     workerPollIntervalMs: integer('WORKER_POLL_INTERVAL_MS', 2_000, 250),
     workerHeartbeatIntervalMs: integer('WORKER_HEARTBEAT_INTERVAL_MS', 5_000, 1_000),

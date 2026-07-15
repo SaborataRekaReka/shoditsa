@@ -47,6 +47,7 @@ import { loadAdminTimeline } from './timeline-service.js'
 import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironment, saveIntegrationSecret } from './integration-secrets.js'
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
+import { inspectReleaseContent } from './release-content-service.js'
 import {
   assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, normalizationContextOptions,
   normalizationDefaultContextFields, normalizationFields, normalizationTemplateVariables, renderNormalizationPrompt,
@@ -422,6 +423,30 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
   })
 
   app.get('/api/v1/admin/content/workspace', async (request, reply) => workspaceSummary(deps.db, await admin(request, reply, deps)))
+
+  app.get('/api/v1/admin/content/release', async (request, reply) => {
+    await admin(request, reply, deps)
+    return inspectReleaseContent(deps.db, deps.config.contentReleaseRoot, deps.config.gitSha)
+  })
+
+  app.post('/api/v1/admin/content/release/build', { schema: { headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const key = requireIdempotencyKey(request)
+    const existingByKey = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingByKey[0]) return reply.code(202).send({ job: existingByKey[0] })
+    const activeJob = await deps.db.select().from(backgroundJobs).where(and(
+      eq(backgroundJobs.type, 'content_release_import'), inArray(backgroundJobs.status, ['queued', 'running']),
+    )).limit(1)
+    if (activeJob[0]) return reply.code(202).send({ job: activeJob[0] })
+    const job = (await deps.db.insert(backgroundJobs).values({
+      type: 'content_release_import', idempotencyKey: key, createdBy: actor.id, payload: { requestId: request.id },
+    }).returning())[0]
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id, action: 'content.release.build.enqueue', entityType: 'background_job', entityId: job.id,
+      before: null, after: { gitSha: deps.config.gitSha }, requestId: request.id,
+    })
+    return reply.code(202).send({ job })
+  })
 
   app.post('/api/v1/admin/content/exchange/selection', { schema: { body: ContentExchangeSelectionBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps)

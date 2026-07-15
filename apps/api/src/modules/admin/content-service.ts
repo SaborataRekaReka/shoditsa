@@ -291,13 +291,23 @@ export const activateContentRevision = async (db: Database, actor: Actor, revisi
   const target = (await tx.select().from(contentRevisions).where(eq(contentRevisions.id, revisionId)).for('update').limit(1))[0]
   if (!target || !['ready', 'retired', 'active'].includes(target.status)) throw new ApiError(422, 'REVISION_NOT_ACTIVATABLE', 'Ревизия не готова к активации или откату')
   const current = (await tx.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).for('update').limit(1))[0]
+  const workspace = (await tx.select().from(contentWorkspaces).where(sql`${contentWorkspaces.status} in ('open','building','ready')`).for('update').limit(1))[0]
+  let nextWorkspaceId = workspace?.id ?? null
+  if (workspace && workspace.baseRevisionId !== revisionId) {
+    const changes = (await tx.select({ count: sql<number>`count(*)::int` }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id)))[0]?.count ?? 0
+    if (changes > 0) throw new ApiError(409, 'CONTENT_WORKSPACE_CHANGES_PENDING', 'В рабочей версии есть несохранённые правки. Сначала опубликуйте их или удалите, затем переключите ревизию.', { workspaceId: workspace.id, changes })
+    await tx.update(contentWorkspaces).set({ status: 'abandoned', lockedAt: null, updatedAt: new Date() }).where(eq(contentWorkspaces.id, workspace.id))
+    nextWorkspaceId = (await tx.insert(contentWorkspaces).values({ baseRevisionId: revisionId, createdBy: actor.id }).returning({ id: contentWorkspaces.id }))[0].id
+  } else if (!workspace) {
+    nextWorkspaceId = (await tx.insert(contentWorkspaces).values({ baseRevisionId: revisionId, createdBy: actor.id }).returning({ id: contentWorkspaces.id }))[0].id
+  }
   if (current?.id !== revisionId) {
     await tx.update(contentRevisions).set({ status: 'retired' }).where(eq(contentRevisions.status, 'active'))
     await tx.update(contentRevisions).set({ status: 'active', activatedAt: new Date() }).where(eq(contentRevisions.id, revisionId))
   }
   await tx.insert(appSettings).values({ key: 'active_content_revision_id', value: revisionId, updatedBy: actor.id }).onConflictDoUpdate({ target: appSettings.key, set: { value: revisionId, updatedBy: actor.id, updatedAt: new Date(), version: sql`${appSettings.version} + 1` } })
-  await tx.insert(auditLog).values({ actorUserId: actor.id, action: current?.id === revisionId ? 'content.revision.activate.noop' : target.status === 'retired' ? 'content.revision.rollback' : 'content.revision.activate', entityType: 'content_revision', entityId: revisionId, before: current ?? null, after: { ...target, status: 'active' }, reason, requestId })
-  return { activated: revisionId, previousRevisionId: current?.id ?? null, rollback: target.status === 'retired' }
+  await tx.insert(auditLog).values({ actorUserId: actor.id, action: current?.id === revisionId ? 'content.revision.activate.noop' : target.status === 'retired' ? 'content.revision.rollback' : 'content.revision.activate', entityType: 'content_revision', entityId: revisionId, before: current ?? null, after: { ...target, status: 'active', workspaceId: nextWorkspaceId }, reason, requestId })
+  return { activated: revisionId, previousRevisionId: current?.id ?? null, rollback: target.status === 'retired', workspaceId: nextWorkspaceId }
 })
 
 export const loadWorkspaceChanges = (db: Database, workspaceId: string, itemIds?: string[]) => {

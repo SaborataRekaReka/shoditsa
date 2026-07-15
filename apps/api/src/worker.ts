@@ -10,6 +10,7 @@ import {
   pipelineRunItems, pipelineRuns, playerProfiles, session, user, walletAccounts,
 } from '@shoditsa/database'
 import { buildWorkspaceRevision, validateContentPayload } from './modules/admin/content-service.js'
+import { buildReleaseContentRevision } from './modules/admin/release-content-service.js'
 import { loadAdminTimeline } from './modules/admin/timeline-service.js'
 import type { AdminEventsQuery, ContentMode } from '@shoditsa/contracts'
 import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.js'
@@ -782,6 +783,10 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
     const payload = record(job.payload); const workspaceId = text(payload.workspaceId)
     if (!job.createdBy || !workspaceId) throw new Error('Revision build job is incomplete')
     return buildWorkspaceRevision(db, { id: job.createdBy }, workspaceId, text(payload.requestId) || `job:${job.id}`)
+  }
+  if (job.type === 'content_release_import') {
+    if (!job.createdBy) throw new Error('Release content build job is incomplete')
+    return buildReleaseContentRevision(db, { id: job.createdBy }, config.contentReleaseRoot, config.gitSha, text(record(job.payload).requestId) || `job:${job.id}`)
   }
   if (job.type === 'content_quality_check' || job.type === 'media_check') return handleQuality()
   if (job.type === 'music_pipeline') return handleMusic(job)
