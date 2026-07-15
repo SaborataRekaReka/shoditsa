@@ -735,18 +735,24 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
   let normalizationFieldCache: { expiresAt: number; fields: string[] } | null = null
   const normalizationAvailableFields = async () => {
     if (normalizationFieldCache && normalizationFieldCache.expiresAt > Date.now()) return normalizationFieldCache.fields
-    const discovered = await deps.db.execute(sql`
-      select distinct keys.field
-      from content_item_versions civ
-      inner join content_revisions cr on cr.id = civ.revision_id
-      cross join lateral jsonb_object_keys(civ.payload) as keys(field)
-      where cr.status = 'active' and keys.field ~ '^[A-Za-z][A-Za-z0-9_]{0,79}$'
-      order by keys.field
-      limit 500
-    `)
-    const fields = Array.from(discovered as Iterable<{ field: string }>).map((entry) => entry.field)
-    normalizationFieldCache = { expiresAt: Date.now() + 60_000, fields }
-    return fields
+    try {
+      const discovered = await deps.db.execute(sql`
+        select distinct keys.field
+        from content_item_versions civ
+        inner join content_revisions cr on cr.id = civ.revision_id
+        cross join lateral jsonb_object_keys(civ.payload) as keys(field)
+        where cr.status = 'active' and keys.field ~ '^[A-Za-z][A-Za-z0-9_]{0,79}$'
+        order by keys.field
+        limit 500
+      `)
+      const fields = Array.from(discovered as Iterable<{ field: string }>).map((entry) => entry.field)
+      normalizationFieldCache = { expiresAt: Date.now() + 60_000, fields }
+      return fields
+    } catch (error) {
+      app.log.warn({ err: error }, 'Could not discover extra normalization fields; using the built-in schema')
+      normalizationFieldCache = { expiresAt: Date.now() + 10_000, fields: [] }
+      return []
+    }
   }
   app.get('/api/v1/admin/pipelines/normalization/fields', { schema: { querystring: normalizationModeQuery } }, async (request, reply) => {
     await admin(request, reply, deps)

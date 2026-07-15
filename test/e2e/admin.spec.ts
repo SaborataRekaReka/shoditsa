@@ -6,7 +6,7 @@ const me = { user: { id: '07533c59-de3e-43f8-b40a-5a0fee06f557', email: 'breneiz
 const workspace = { id: '10000000-0000-4000-8000-000000000001', status: 'open', baseRevisionId: '10000000-0000-4000-8000-000000000002', builtRevisionId: null, version: 1, changesCount: 0, errorsCount: 0, warningsCount: 0 }
 const payload = { id: 'movie:test-card', mode: 'movie', titleRu: 'Тестовая карточка', titleOriginal: 'Test card', alternativeTitles: [], year: 2024, plotHint: 'История разворачивается под открытым небом.', allowedInGame: true }
 
-const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edit?: boolean } = {}) => {
+const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edit?: boolean; normalizationFieldsFail?: boolean } = {}) => {
   let savedPayload: Record<string, unknown> | null = null
   let lastContentQuery = new URLSearchParams()
   await page.route('**/api/v1/**', async (route) => {
@@ -16,6 +16,14 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
       ? json(route, { error: { code: 'ADMIN_REQUIRED', message: 'Недостаточно прав', requestId: 'e2e' } }, 403)
       : json(route, { status: 'ok', checks: { database: true, queueDepth: 0, mediaRootConfigured: true, enrichmentRootConfigured: true }, app: { version: 'e2e', gitSha: 'e2e' } })
     if (path === '/api/v1/admin/jobs') return json(route, { items: [] })
+    if (path === '/api/v1/admin/pipelines') return json(route, { items: [] })
+    if (path === '/api/v1/admin/pipeline-runs') return json(route, { items: [] })
+    if (path === '/api/v1/admin/content/tags') return json(route, { items: [] })
+    if (path === '/api/v1/admin/pipelines/normalization/fields') return options.normalizationFieldsFail
+      ? json(route, { error: { code: 'NORMALIZATION_FIELDS_UNAVAILABLE', message: 'Временная ошибка', requestId: 'e2e' } }, 500)
+      : json(route, { mode: url.searchParams.get('mode'), items: [], variables: [], contextOptions: [], defaultContextFields: [] })
+    if (path === '/api/v1/admin/pipelines/normalization/estimate') return json(route, { estimatedItems: 1, estimatedCostUsd: 0.01 })
+    if (path === '/api/v1/admin/pipelines/normalization/preview') return json(route, { item: { id: 'movie:test-card', titleRu: payload.titleRu, titleOriginal: payload.titleOriginal }, renderedPrompt: 'preview', context: {} })
     if (path === '/api/v1/admin/content/workspace') return json(route, { ...workspace, changesCount: savedPayload ? 1 : 0 })
     if (path === '/api/v1/admin/content/items' && request.method() === 'GET') {
       lastContentQuery = new URLSearchParams(url.search)
@@ -73,4 +81,18 @@ test('paired content filter sends the selected field and partial value to the se
   await expect.poll(() => state.lastContentQuery().get('fieldQ')).toBe('небо')
   await expect(page.getByText('Тестовая карточка')).toBeVisible()
   await expect(page.getByText('Вся база')).toBeVisible()
+})
+
+test('normalization field selector stays populated for movies when the fields endpoint fails', async ({ page }) => {
+  await installAdminMocks(page, { normalizationFieldsFail: true })
+  await page.goto('/admin/pipelines')
+  await page.getByRole('button', { name: 'Нормализовать поле', exact: true }).click()
+  const dialog = page.locator('.admin-modal--pipeline')
+  await expect(dialog).toBeVisible()
+  await dialog.getByLabel('Категория').selectOption('movie')
+  const field = dialog.getByLabel('Поле')
+  await expect(field.locator('option')).not.toHaveCount(0)
+  await expect(field.locator('option[value="plotHint"]')).toHaveText('Подсказка · plotHint')
+  await field.selectOption('plotHint')
+  await expect(field).toHaveValue('plotHint')
 })

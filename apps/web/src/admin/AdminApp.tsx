@@ -2499,6 +2499,27 @@ function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | nu
 
 type PipelineKey = 'music' | 'movie' | 'anime' | 'normalization'
 
+const NORMALIZATION_COMMON_FIELDS = ['titleRu', 'titleOriginal', 'alternativeTitles', 'year', 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame', 'posterUrl', 'headerUrl', 'backdropUrl', 'screenshots']
+const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
+  movie: ['runtimeMinutes', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId', 'ratings', 'awards'],
+  series: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId'],
+  anime: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'studios', 'countries', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'],
+  game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
+  music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
+  diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
+}
+const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
+  activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Год окончания', titleRu: 'Русское название',
+  titleOriginal: 'Оригинальное название', alternativeTitles: 'Альтернативные названия', plotHint: 'Подсказка', slogan: 'Слоган',
+  facts: 'Факты', genres: 'Жанры', countries: 'Страны', allowedInGame: 'Допуск в игру', posterUrl: 'Постер',
+  headerUrl: 'Обложка', backdropUrl: 'Фон', screenshots: 'Скриншоты', runtimeMinutes: 'Длительность', ageRating: 'Возрастной рейтинг',
+  directors: 'Режиссёры', writers: 'Сценаристы', cast: 'Актёры', ratings: 'Рейтинги', awards: 'Награды',
+}
+const normalizationFallbackFields = (mode: ContentMode) => [...new Set([
+  ...NORMALIZATION_COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year')),
+  ...NORMALIZATION_MODE_FIELDS[mode],
+])].map((field) => ({ field, label: NORMALIZATION_FIELD_LABELS[field] ?? field }))
+
 function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient()
   const pipelines = useQuery({ queryKey: ['admin', 'pipelines'], queryFn: adminApi.pipelines })
@@ -2537,7 +2558,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const selectedPipelineIds = useMemo(() => [...new Set(selectedPipelineIdsText.split(/\r?\n|,/).map((entry) => entry.trim()).filter(Boolean))].slice(0, 20), [selectedPipelineIdsText])
   const manualPayload = pipelineKey === 'music' ? { artists, includeExisting } : pipelineKey === 'movie' ? { movies, includeExisting } : { anime, includeExisting }
   const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && pipelineKey !== 'normalization' && scenario === 'manual' && manualItems.length > 0 })
-  const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization' })
+  const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization', retry: 1, staleTime: 5 * 60_000 })
+  const normalizationFieldOptions = useMemo(() => {
+    const remote = normalizationFieldsQuery.data?.mode === normalizationMode ? normalizationFieldsQuery.data.items : []
+    return remote.length ? remote : normalizationFallbackFields(normalizationMode)
+  }, [normalizationFieldsQuery.data, normalizationMode])
+  useEffect(() => {
+    if (!normalizationFieldOptions.some((entry) => entry.field === normalizationField)) setNormalizationField(normalizationFieldOptions[0]?.field ?? '')
+  }, [normalizationField, normalizationFieldOptions])
   useEffect(() => {
     if (starting && pipelineKey === 'normalization' && !normalizationPrefilled && normalizationFieldsQuery.data?.mode === normalizationMode) {
       setNormalizationContextFields(normalizationFieldsQuery.data.defaultContextFields)
@@ -4215,12 +4243,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                         setNormalizationField(event.target.value)
                       }
                     >
-                      {normalizationFieldsQuery.data?.items.map((entry) => (
+                      {normalizationFieldOptions.map((entry) => (
                         <option key={entry.field} value={entry.field}>
                           {entry.label} · {entry.field}
                         </option>
                       ))}
                     </select>
+                    {normalizationFieldsQuery.isFetching && <small>Проверяем доступные поля на сервере…</small>}
+                    {normalizationFieldsQuery.isError && <small>Серверный список временно недоступен — показаны безопасные поля категории.</small>}
                   </label>
                   <div className="admin-field admin-field--wide admin-normalization-template">
                     <span>Инструкция модели</span>
