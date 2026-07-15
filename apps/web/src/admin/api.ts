@@ -114,6 +114,7 @@ export const adminApi = {
   tags: () => request<{ items: AdminContentTag[] }>('/admin/content/tags'),
   createTag: (name: string, color?: string) => request<AdminContentTag>('/admin/content/tags', { method: 'POST', body: json({ name, ...(color ? { color } : {}) }) }),
   contentItem: (id: string) => request<AdminItemDetail>(`/admin/content/items/${encodeURIComponent(id)}`),
+  reviewDecision: (itemId: string, field: string, decision: { approved: boolean; note?: string }) => request<Record<string, unknown>>(`/admin/content-review/${encodeURIComponent(itemId)}/${encodeURIComponent(field)}`, { method: 'PUT', headers: { 'Idempotency-Key': idempotencyKey() }, body: json(decision) }),
   contentHistory: (id: string) => request<{ versions: Array<Record<string, unknown>>; drafts: Array<Record<string, unknown>> }>(`/admin/content/items/${encodeURIComponent(id)}/history`),
   workspace: () => request<AdminWorkspaceSummary>('/admin/content/workspace'),
   releaseContent: () => request<ReleaseContentStatus>('/admin/content/release'),

@@ -258,6 +258,257 @@ function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode
   return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>Подсказка о сюжете</button><button>Интересный факт</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
 }
 
+const previewValue = (value: unknown): string => {
+  if (value == null || value === '') return ''
+  if (typeof value === 'boolean') return value ? 'Да' : 'Нет'
+  if (Array.isArray(value)) return value.map((entry) => previewValue(entry)).filter(Boolean).join(', ')
+  if (typeof value === 'object') {
+    const entry = record(value)
+    return previewValue(entry.name ?? entry.titleRu ?? entry.title ?? entry.value ?? '')
+  }
+  return String(value).trim()
+}
+
+const previewPath = (payload: Record<string, unknown>, path: string): unknown => {
+  let value: unknown = payload
+  for (const part of path.split('.')) {
+    value = Array.isArray(value) ? value[Number(part)] : record(value)[part]
+  }
+  return value
+}
+
+const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMode) => {
+  const shared: Array<[string, string[]]> = [
+    ['Год', ['year', 'releaseYear', 'startYear']],
+    ['Страна', ['country', 'countries']],
+    ['Жанры', ['genres']],
+  ]
+  const byMode: Record<ContentMode, Array<[string, string[]]>> = {
+    movie: [
+      ['Кинопоиск', ['ratings.kp', 'kinopoiskRating', 'ratingKinopoisk']],
+      ['IMDb', ['ratings.imdb', 'imdbRating']],
+      ['Хронометраж', ['runtimeMinutes', 'runtime']],
+      ['Возраст', ['ageRating', 'age']],
+      ['Режиссёр', ['directors', 'director']],
+      ['Актёры', ['cast', 'actors']],
+    ],
+    series: [
+      ['Кинопоиск', ['ratings.kp', 'kinopoiskRating', 'ratingKinopoisk']],
+      ['IMDb', ['ratings.imdb', 'imdbRating']],
+      ['Сезоны', ['seasonsCount', 'seasons']],
+      ['Эпизоды', ['episodesCount', 'episodes']],
+      ['Статус', ['seriesStatus', 'status']],
+      ['Возраст', ['ageRating', 'age']],
+    ],
+    anime: [
+      ['Оценка', ['shikimoriScore', 'score', 'ratings.shikimori']],
+      ['Эпизоды', ['episodes', 'animeEpisodesAired']],
+      ['Студия', ['studios', 'studio']],
+      ['Статус', ['animeStatus', 'status']],
+      ['Источник', ['animeSource', 'sourceMaterial']],
+      ['Возраст', ['ageRating', 'rating']],
+    ],
+    game: [
+      ['Платформы', ['platforms']],
+      ['Разработчик', ['developers', 'developer']],
+      ['Издатель', ['publishers', 'publisher']],
+      ['Metacritic', ['metacritic', 'ratings.metacritic']],
+      ['Категории', ['steamCategories', 'categories']],
+      ['Возраст', ['ageRating', 'requiredAge']],
+    ],
+    music: [
+      ['Тип', ['musicType', 'artistType', 'type']],
+      ['Активен', ['musicIsActive', 'isActive']],
+      ['Популярный трек', ['topTracks.0.title', 'topTracks.0.name']],
+      ['Популярный альбом', ['topAlbums.0.title', 'topAlbums.0.name']],
+      ['Похожие исполнители', ['similarArtists']],
+      ['Слушатели', ['listeners', 'votes.gamesPlayed']],
+    ],
+    diagnosis: [
+      ['МКБ-10', ['icd10', 'icdCode']],
+      ['Группа', ['icdGroup']],
+      ['Система организма', ['bodySystems']],
+      ['Тип', ['diseaseTypes']],
+      ['Течение', ['course']],
+      ['Симптомы', ['keySymptoms', 'symptoms']],
+    ],
+  }
+  return [...shared, ...byMode[mode]].map(([label, paths]) => {
+    const value = paths.map((path) => previewValue(previewPath(payload, path))).find(Boolean) ?? ''
+    return { label, value }
+  }).filter((entry) => entry.value).slice(0, 9)
+}
+
+function ContentPreviewModal({
+  items,
+  currentId,
+  onChange,
+  onClose,
+  onEdit,
+  notify,
+}: {
+  items: AdminContentListItem[]
+  currentId: string
+  onChange: (itemId: string) => void
+  onClose: () => void
+  onEdit: (itemId: string) => void
+  notify: (tone: Notice['tone'], text: string) => void
+}) {
+  const client = useQueryClient()
+  const currentIndex = Math.max(0, items.findIndex((item) => item.id === currentId))
+  const currentItem = items[currentIndex]
+  const detail = useQuery({
+    queryKey: ['admin', 'item', currentId],
+    queryFn: () => adminApi.contentItem(currentId),
+    enabled: Boolean(currentId),
+  })
+  const [note, setNote] = useState('')
+  const [reviewOverrides, setReviewOverrides] = useState<Record<string, { approved: boolean; note: string }>>({})
+  const serverReview = detail.data?.decisions.map(record).find((entry) => entry.field === '__card_preview__')
+  const serverDecision = record(serverReview?.decision)
+  const savedReview = reviewOverrides[currentId] ?? (typeof serverDecision.approved === 'boolean'
+    ? { approved: serverDecision.approved, note: String(serverDecision.note ?? '') }
+    : null)
+  const reviewStatus = savedReview ? (savedReview.approved ? 'approved' : 'issue') : 'pending'
+
+  useEffect(() => {
+    setNote(savedReview?.note ?? '')
+  }, [currentId, savedReview?.note])
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = previousOverflow }
+  }, [])
+
+  useEffect(() => {
+    if (currentItem || !items.length) return
+    onChange(items[0].id)
+  }, [currentItem, items, onChange])
+
+  useEffect(() => {
+    for (const neighbor of [items[currentIndex - 1], items[currentIndex + 1]]) {
+      if (!neighbor) continue
+      void client.prefetchQuery({ queryKey: ['admin', 'item', neighbor.id], queryFn: () => adminApi.contentItem(neighbor.id), staleTime: 30_000 })
+    }
+  }, [client, currentIndex, items])
+
+  const review = useMutation({
+    mutationFn: ({ itemId, approved, reviewNote }: { itemId: string; approved: boolean; reviewNote: string }) =>
+      adminApi.reviewDecision(itemId, '__card_preview__', { approved, ...(reviewNote.trim() ? { note: reviewNote.trim() } : {}) }),
+    onSuccess: (_, variables) => {
+      setReviewOverrides((current) => ({ ...current, [variables.itemId]: { approved: variables.approved, note: variables.reviewNote.trim() } }))
+      void client.invalidateQueries({ queryKey: ['admin', 'item', variables.itemId] })
+      notify(variables.approved ? 'success' : 'info', variables.approved ? 'Карточка отмечена как проверенная' : 'Проблема отмечена и сохранена')
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+
+  const move = (direction: -1 | 1) => {
+    const target = items[currentIndex + direction]
+    if (target) onChange(target.id)
+  }
+  const submitReview = (approved: boolean) => {
+    if (!currentItem || review.isPending) return
+    review.mutate({ itemId: currentItem.id, approved, reviewNote: note })
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null
+      if (target?.matches('input, textarea, select, [contenteditable="true"]') || event.metaKey || event.ctrlKey || event.altKey) return
+      if (event.key === 'Escape') onClose()
+      if (event.key === 'ArrowLeft') move(-1)
+      if (event.key === 'ArrowRight') move(1)
+      if (event.key.toLocaleLowerCase() === 'x') submitReview(false)
+      if (event.key.toLocaleLowerCase() === 'c') submitReview(true)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  })
+
+  if (!currentItem) return null
+  const payload = detail.data?.draft?.afterPayload ?? detail.data?.active?.payload ?? {}
+  const mode = detail.data ? asContentMode(detail.data.draft?.mode ?? detail.data.active?.mode, currentItem.mode) : currentItem.mode
+  const poster = [payload.posterUrl, payload.headerUrl, payload.backdropUrl, currentItem.posterUrl].map(previewValue).find(Boolean) ?? ''
+  const hint = [payload.plotHint, array(payload.facts)[0], payload.shortDescription, payload.description].map(previewValue).find(Boolean) ?? 'Подсказка не заполнена'
+  const originalTitle = previewValue(payload.titleOriginal) || currentItem.titleOriginal
+  const year = previewValue(payload.year) || previewValue(currentItem.year)
+  const country = previewValue(payload.country ?? payload.countries)
+  const genres = array(payload.genres).map(previewValue).filter(Boolean).slice(0, 6)
+  const fields = contentPreviewFields(payload, mode)
+  const warnings = [
+    !poster ? 'Нет изображения' : '',
+    hint === 'Подсказка не заполнена' ? 'Нет игровой подсказки' : '',
+    currentItem.issuesCount ? `Открытые проблемы качества: ${currentItem.issuesCount}` : '',
+    detail.data?.issues.length ? `Детальных замечаний: ${detail.data.issues.length}` : '',
+  ].filter(Boolean)
+
+  return <div className="admin-modal-backdrop admin-modal-backdrop--moderation admin-content-preview-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div className="admin-modal admin-modal--moderation admin-content-preview-modal" role="dialog" aria-modal="true" aria-label={`Предпросмотр ${currentItem.titleRu}`}>
+      <header>
+        <div><span>{MODE_LABEL[mode]} · Предпросмотр текущей выборки</span><h2>Карточка как в игре</h2></div>
+        <div className="admin-content-preview-header-actions">
+          <button className="admin-content-preview-edit" onClick={() => onEdit(currentItem.id)}><SquarePen />Редактировать</button>
+          <button className="admin-content-preview-close" aria-label="Закрыть предпросмотр" onClick={onClose}><X /></button>
+        </div>
+      </header>
+      <div className="admin-modal__body admin-modal__body--moderation">
+        <section className="review-stats admin-review-stats">
+          <article><small>Позиция</small><strong>{currentIndex + 1}/{items.length}</strong></article>
+          <article><small>Загружено в таблице</small><strong>{items.length}</strong></article>
+          <article><small>Результат проверки</small><strong>{reviewStatus === 'approved' ? 'Всё в порядке' : reviewStatus === 'issue' ? 'Есть проблема' : 'Не проверена'}</strong></article>
+          <article><small>Горячие клавиши</small><strong>← → · X / C</strong></article>
+        </section>
+        {detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} retry={() => void detail.refetch()} /> : <>
+          <section className={`attempt-card attempt-card--screen admin-attempt-card ${warnings.length ? 'has-conflict' : ''}`}>
+            <div className="attempt-card__header admin-attempt-card__header">
+              <span className="attempt-card__number">{String(currentIndex + 1).padStart(2, '0')}</span>
+              {poster ? <img className="review-card__poster" src={poster} alt="" /> : <div className="review-card__poster admin-review-poster-fallback"><ImageIcon /></div>}
+              <div className="attempt-card__identity">
+                <span className="attempt-label">Попытка воспроизведения · {MODE_LABEL[mode]}</span>
+                <h2>{previewValue(payload.titleRu) || currentItem.titleRu}</h2>
+                <p className="gm-head__sub">
+                  {originalTitle && <span className="gm-head__orig">{originalTitle}</span>}
+                  {year && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{year}</span></>}
+                  {country && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{country}</span></>}
+                </p>
+                {!!genres.length && <div className="gm-genres">{genres.map((genre) => <span key={genre} className="gm-genre">{genre}</span>)}</div>}
+              </div>
+              <div className={`review-approval-badge admin-content-preview-status is-${reviewStatus}`}><small>Проверка</small><strong>{reviewStatus === 'approved' ? 'В порядке' : reviewStatus === 'issue' ? 'Проблема' : 'Ожидает'}</strong></div>
+            </div>
+            {!!warnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Проверьте карточку</strong><span>{warnings.join(' • ')}</span></div>}
+            <div className="admin-attempt-fields">{fields.length ? fields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
+          </section>
+          <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{hint}</p></article></section>
+          <section className={`admin-content-preview-review is-${reviewStatus}`}>
+            <label>
+              <input type="checkbox" checked={reviewStatus === 'issue'} disabled={review.isPending} onChange={(event) => submitReview(!event.target.checked)} />
+              <span><strong><Bug /> Есть проблема</strong><small>Отметка сохранится в журнале ревью карточки.</small></span>
+            </label>
+            <div>
+              <textarea value={note} onChange={(event) => setNote(event.target.value)} maxLength={1000} placeholder="Что именно нужно исправить? Например: неверный постер, обрезан текст, плохая подсказка…" />
+              <button className="ui-button ui-button--secondary" onClick={() => submitReview(false)} disabled={review.isPending || !note.trim()}><Save />Сохранить комментарий</button>
+            </div>
+          </section>
+          <section className="admin-moderation-meta">
+            <article><small>Полнота</small><strong>{currentItem.completeness}%</strong></article>
+            <article><small>Источник</small><strong>{currentItem.draftVersion ? `Draft v${currentItem.draftVersion}` : 'Active'}</strong></article>
+            <article><small>ID карточки</small><strong>{currentItem.id}</strong></article>
+            <article><small>Репорты / качество</small><strong>{currentItem.reportsCount} / {currentItem.issuesCount}</strong></article>
+          </section>
+        </>}
+      </div>
+      <footer className="admin-review-footer">
+        <button className="ui-button ui-button--ghost" onClick={() => move(-1)} disabled={currentIndex === 0 || review.isPending}><ChevronLeft />Назад<span className="keycap-hint keycap-hint--inline" aria-hidden="true">←</span></button>
+        <button className={`ui-button ui-button--secondary admin-content-preview-issue ${reviewStatus === 'issue' ? 'is-active' : ''}`} onClick={() => submitReview(false)} disabled={review.isPending}><Bug />Есть проблема<span className="keycap-hint keycap-hint--inline" aria-hidden="true">X</span></button>
+        <button className={`ui-button ui-button--primary ${reviewStatus === 'approved' ? 'is-active' : ''}`} onClick={() => submitReview(true)} disabled={review.isPending}><BadgeCheck />Всё в порядке<span className="keycap-hint keycap-hint--inline" aria-hidden="true">C</span></button>
+        <button className="ui-button ui-button--ghost" onClick={() => move(1)} disabled={currentIndex >= items.length - 1 || review.isPending}>Дальше<ChevronRight /><span className="keycap-hint keycap-hint--inline" aria-hidden="true">→</span></button>
+      </footer>
+    </div>
+  </div>
+}
+
 function MediaUpload({ itemId, field, onUploaded, notify }: { itemId: string; field: string; onUploaded: (url: string) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const input = useRef<HTMLInputElement>(null)
   const purpose = field === 'screenshots' ? 'screenshot' : field as 'posterUrl' | 'headerUrl' | 'backdropUrl'
@@ -933,10 +1184,11 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     const value = Number(params.get('limit'))
     return [20, 40, 60, 100].includes(value) ? value as 20 | 40 | 60 | 100 : 60
   });
-  const [view, setView] = useState<"table" | "grid" | "review">(() => {
+  const [view, setView] = useState<"table" | "grid">(() => {
     const value = params.get('view')
-    return value === 'grid' || value === 'review' ? value : 'table'
+    return value === 'grid' ? value : 'table'
   });
+  const [previewId, setPreviewId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [selectionAnchorIndex, setSelectionAnchorIndex] = useState<
     number | null
@@ -1301,6 +1553,10 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     Boolean(fieldFilterValue.trim()) || fieldFilter !== "all";
   const openItem = (itemId: string) => navigate('content', itemId, location.search);
   const closeItem = () => navigate('content', null, location.search);
+  const openPreview = (itemId?: string) => {
+    const target = itemId ? sortedItems.find((item) => item.id === itemId) : sortedItems[0];
+    if (target) setPreviewId(target.id);
+  };
 
   return (
     <>
@@ -1326,8 +1582,9 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                 Карточки
               </button>
               <button
-                className={view === "review" ? "is-active" : ""}
-                onClick={() => setView("review")}
+                className={previewId ? "is-active" : ""}
+                onClick={() => openPreview()}
+                disabled={!sortedItems.length}
               >
                 <Eye />
                 Проверка
@@ -1692,7 +1949,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       ) : view === "grid" ? (
         <div className="admin-content-grid">
           {sortedItems.map((item) => (
-            <button key={item.id} onClick={() => openItem(item.id)}>
+            <button key={item.id} onClick={() => openPreview(item.id)} title="Открыть предпросмотр карточки">
               <div>
                 {item.posterUrl ? (
                   <img src={item.posterUrl} alt="" />
@@ -1936,25 +2193,28 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                     />
                   </td>
                   <td>
-                    <button
-                      className="admin-title-cell"
-                      onClick={() => openItem(item.id)}
-                    >
-                      {item.posterUrl ? (
-                        <img src={item.posterUrl} alt="" />
-                      ) : (
+                    <div className="admin-title-actions">
+                      <button
+                        className="admin-title-cell"
+                        onClick={() => openItem(item.id)}
+                      >
+                        {item.posterUrl ? (
+                          <img src={item.posterUrl} alt="" />
+                        ) : (
+                          <span>
+                            <ImageIcon />
+                          </span>
+                        )}
                         <span>
-                          <ImageIcon />
+                          <strong>{item.titleRu}</strong>
+                          <small>
+                            {item.titleOriginal || "Без оригинального названия"}
+                            {item.year ? ` · ${item.year}` : ""}
+                          </small>
                         </span>
-                      )}
-                      <span>
-                        <strong>{item.titleRu}</strong>
-                        <small>
-                          {item.titleOriginal || "Без оригинального названия"}
-                          {item.year ? ` · ${item.year}` : ""}
-                        </small>
-                      </span>
-                    </button>
+                      </button>
+                      <button className="admin-title-preview" title="Предпросмотр как в игре" aria-label={`Предпросмотр ${item.titleRu}`} onClick={() => openPreview(item.id)}><Eye /></button>
+                    </div>
                   </td>
                   <td>
                     <code>{item.id}</code>
@@ -2035,12 +2295,10 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                   </td>
                   <td>{compactDate(item.updatedAt)}</td>
                   <td>
-                    <button
-                      className="admin-icon-btn"
-                      onClick={() => openItem(item.id)}
-                    >
-                      <ChevronRight />
-                    </button>
+                    <div className="admin-row-actions">
+                      <button className="admin-icon-btn" title="Предпросмотр как в игре" aria-label={`Предпросмотр ${item.titleRu}`} onClick={() => openPreview(item.id)}><Eye /></button>
+                      <button className="admin-icon-btn" title="Открыть редактор" aria-label={`Редактировать ${item.titleRu}`} onClick={() => openItem(item.id)}><ChevronRight /></button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -2068,6 +2326,19 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         <ItemEditor
           itemId={selectedId}
           onClose={closeItem}
+          notify={notify}
+        />
+      )}
+      {previewId && (
+        <ContentPreviewModal
+          items={sortedItems}
+          currentId={previewId}
+          onChange={setPreviewId}
+          onClose={() => setPreviewId(null)}
+          onEdit={(itemId) => {
+            setPreviewId(null);
+            openItem(itemId);
+          }}
           notify={notify}
         />
       )}

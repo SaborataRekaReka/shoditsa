@@ -1,0 +1,13 @@
+{
+  "started_at": "2026-07-15T07:23:47.551237Z",
+  "config": "dtf-25-games-scraping-manifest.json",
+  "games": {
+    "starfield": {
+      "candidates": 101,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    }
+  },
+  "finished_at": "2026-07-15T07:24:17.216164Z"
+}
