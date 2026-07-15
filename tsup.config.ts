@@ -5,6 +5,7 @@ export default defineConfig({
     worker: 'apps/api/src/worker.ts',
     migrate: 'packages/database/src/migrate.ts',
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
+    'content-migrate-media': 'scripts/content/migrate-media.ts',
   },
   format: ['esm'], platform: 'node', target: 'node24', outDir: 'apps/api/dist', clean: true,
 })

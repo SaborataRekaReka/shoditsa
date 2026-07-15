@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises'
-import { basename, dirname, extname, resolve } from 'node:path'
+import { dirname, extname, relative as relativePath, resolve } from 'node:path'
 import { and, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import type { TitleItem } from '@shoditsa/contracts'
@@ -9,7 +9,9 @@ import { arg, hasArg } from './lib.js'
 
 const config = loadConfig()
 const targetRoot = resolve(arg('--target') ?? config.mediaRoot)
+const sourceRoot = resolve(arg('--source') ?? config.contentReleaseRoot)
 const apply = hasArg('--apply')
+const localOnly = hasArg('--local-only')
 const { db, client } = createDatabase(config)
 
 const mimeExtension = (contentType: string | null, url: string) => {
@@ -25,7 +27,8 @@ const migrateUrl = async (url: string, mode: string, itemId: string, kind: strin
   if (url.startsWith('/media/')) return { url, source: url, bytes: 0, checksum: null }
   const local = url.replace(/^\.\//, '')
   if (local.startsWith('data/libraries/')) {
-    const source = resolve('./public', local)
+    const source = resolve(sourceRoot, local.slice('data/libraries/'.length))
+    if (relativePath(sourceRoot, source).startsWith('..')) throw new Error(`Media path escapes source root: ${url}`)
     const bytes = await readFile(source)
     const peopleMatch = local.match(/^data\/libraries\/people\/img\/(.+)$/)
     const relative = peopleMatch ? `people/${peopleMatch[1]}` : `content/${mode}/${local.replace(/^data\/libraries\/[^/]+\/img\//, '')}`
@@ -34,6 +37,7 @@ const migrateUrl = async (url: string, mode: string, itemId: string, kind: strin
     return { url: `/media/${relative.replaceAll('\\', '/')}`, source, bytes: bytes.length, checksum: createHash('sha256').update(bytes).digest('hex') }
   }
   if (!/^https?:\/\//.test(url)) return { url, source: url, bytes: 0, checksum: null, warning: 'unsupported URL' }
+  if (localOnly) return { url, source: url, bytes: 0, checksum: null, skipped: 'remote URL' }
   const response = await fetch(url, { signal: AbortSignal.timeout(20_000), headers: { 'User-Agent': 'ShoditsaMediaMigration/1.0' } })
   if (!response.ok) return { url, source: url, bytes: 0, checksum: null, warning: `HTTP ${response.status}` }
   const bytes = Buffer.from(await response.arrayBuffer())
@@ -66,13 +70,21 @@ try {
   if (!revision[0]) throw new Error('No active content revision')
   const rows = await db.select({ id: contentItemVersions.id, itemId: contentItemVersions.itemId, mode: contentItemVersions.mode, payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.revisionId, revision[0].id))
   const manifest: unknown[] = []
+  const updates: Array<{ id: string; payload: TitleItem }> = []
   for (const [index, row] of rows.entries()) {
     const payload = await walk(row.payload, row.mode, row.itemId, [], manifest) as TitleItem
-    if (apply) await db.update(contentItemVersions).set({ payload }).where(and(eq(contentItemVersions.id, row.id), eq(contentItemVersions.revisionId, revision[0].id)))
+    if (JSON.stringify(payload) !== JSON.stringify(row.payload)) updates.push({ id: row.id, payload })
     if ((index + 1) % 100 === 0) console.log(`Processed ${index + 1}/${rows.length}`)
   }
-  const report = { revisionId: revision[0].id, apply, targetRoot, entries: manifest.length, files: manifest }
+  const report = { revisionId: revision[0].id, apply, localOnly, sourceRoot, targetRoot, entries: manifest.length, changedItems: updates.length, files: manifest }
   const reportPath = resolve(arg('--report') ?? './data/media-migration-report.json')
   await mkdir(dirname(reportPath), { recursive: true }); await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
-  console.log(`Media ${apply ? 'migration' : 'dry-run'} complete: ${manifest.length} references`)
+  if (apply && updates.length) {
+    await db.transaction(async (tx) => {
+      for (const update of updates) {
+        await tx.update(contentItemVersions).set({ payload: update.payload }).where(and(eq(contentItemVersions.id, update.id), eq(contentItemVersions.revisionId, revision[0].id)))
+      }
+    })
+  }
+  console.log(`Media ${apply ? 'migration' : 'dry-run'} complete: ${manifest.length} references, ${updates.length} item payloads changed`)
 } finally { await client.end() }

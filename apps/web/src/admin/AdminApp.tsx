@@ -97,9 +97,10 @@ const sectionFromPath = (): { section: Section; id: string | null; search: strin
 function useRoute() {
   const [route, setRoute] = useState(sectionFromPath)
   useEffect(() => { const onPop = () => setRoute(sectionFromPath()); addEventListener('popstate', onPop); return () => removeEventListener('popstate', onPop) }, [])
-  const navigate = (section: Section, id?: string | null) => {
-    const url = `/admin/${section}${id ? `/${encodeURIComponent(id)}` : ''}`
-    history.pushState({}, '', url); setRoute({ section, id: id ?? null, search: '' }); scrollTo({ top: 0 })
+  const navigate = (section: Section, id?: string | null, search = '') => {
+    const normalizedSearch = search ? (search.startsWith('?') ? search : `?${search}`) : ''
+    const url = `/admin/${section}${id ? `/${encodeURIComponent(id)}` : ''}${normalizedSearch}`
+    history.pushState({}, '', url); setRoute({ section, id: id ?? null, search: normalizedSearch }); scrollTo({ top: 0 })
   }
   const navigateContentMode = (mode: ContentMode) => {
     const search = `?mode=${encodeURIComponent(mode)}`
@@ -794,7 +795,7 @@ function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: strin
   );
 }
 
-function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
+function ContentPage({ selectedId, navigate, notify }: { selectedId: string | null; navigate: (section: Section, id?: string | null, search?: string) => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient();
   const params = new URLSearchParams(location.search);
   const routeMode = params.get('mode');
@@ -928,8 +929,14 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
     parseSortOrder(params.get("sortOrder")),
   );
-  const [pageSize, setPageSize] = useState<20 | 40 | 60 | 100>(60);
-  const [view, setView] = useState<"table" | "grid" | "review">("table");
+  const [pageSize, setPageSize] = useState<20 | 40 | 60 | 100>(() => {
+    const value = Number(params.get('limit'))
+    return [20, 40, 60, 100].includes(value) ? value as 20 | 40 | 60 | 100 : 60
+  });
+  const [view, setView] = useState<"table" | "grid" | "review">(() => {
+    const value = params.get('view')
+    return value === 'grid' || value === 'review' ? value : 'table'
+  });
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [selectionAnchorIndex, setSelectionAnchorIndex] = useState<
     number | null
@@ -959,6 +966,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     if (fieldFilterValue.trim()) next.set("fieldQ", fieldFilterValue.trim());
     if (sortBy !== "updatedAt") next.set("sortBy", sortBy);
     if (sortOrder !== "desc") next.set("sortOrder", sortOrder);
+    if (pageSize !== 60) next.set('limit', String(pageSize));
+    if (view !== 'table') next.set('view', view);
     history.replaceState(
       {},
       "",
@@ -980,6 +989,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     sortOrder,
     source,
     tagMatch,
+    pageSize,
+    view,
   ]);
 
   const items = useInfiniteQuery({
@@ -1288,6 +1299,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
 
   const hasLocalFilter =
     Boolean(fieldFilterValue.trim()) || fieldFilter !== "all";
+  const openItem = (itemId: string) => navigate('content', itemId, location.search);
+  const closeItem = () => navigate('content', null, location.search);
 
   return (
     <>
@@ -1679,7 +1692,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       ) : view === "grid" ? (
         <div className="admin-content-grid">
           {sortedItems.map((item) => (
-            <button key={item.id} onClick={() => navigate("content", item.id)}>
+            <button key={item.id} onClick={() => openItem(item.id)}>
               <div>
                 {item.posterUrl ? (
                   <img src={item.posterUrl} alt="" />
@@ -1925,7 +1938,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                   <td>
                     <button
                       className="admin-title-cell"
-                      onClick={() => navigate("content", item.id)}
+                      onClick={() => openItem(item.id)}
                     >
                       {item.posterUrl ? (
                         <img src={item.posterUrl} alt="" />
@@ -2024,7 +2037,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                   <td>
                     <button
                       className="admin-icon-btn"
-                      onClick={() => navigate("content", item.id)}
+                      onClick={() => openItem(item.id)}
                     >
                       <ChevronRight />
                     </button>
@@ -2054,7 +2067,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       {selectedId && (
         <ItemEditor
           itemId={selectedId}
-          onClose={() => navigate("content")}
+          onClose={closeItem}
           notify={notify}
         />
       )}
@@ -2063,7 +2076,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
           close={() => setAdding(false)}
           done={(id) => {
             setAdding(false);
-            navigate("content", id);
+            openItem(id);
             void client.invalidateQueries({ queryKey: ["admin", "content"] });
             void client.invalidateQueries({ queryKey: ["admin", "workspace"] });
           }}

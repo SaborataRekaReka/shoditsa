@@ -34,6 +34,7 @@ jobs:
           set -euo pipefail
           docker build --build-arg GIT_SHA="$GITHUB_SHA" -f infra/docker/Dockerfile.api -t "shoditsa-api:${GITHUB_SHA}" .
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/server.js
+          docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-migrate-media.js
           docker save "shoditsa-api:${GITHUB_SHA}" | gzip -1 > release-api-image.tar.gz
           test -s release-api-image.tar.gz
       - name: Package web release
@@ -233,6 +234,14 @@ jobs:
           fi
           if ! grep -Fq '"yandex":true' <<<"$API_META"; then
             echo "Shoditsa API does not advertise Yandex OAuth" >&2
+            rollback_api
+            exit 1
+          fi
+          # Legacy catalog paths deliberately remain private. Rewrite their
+          # references only after every source file has been copied to the
+          # mounted media volume; database updates are one transaction.
+          if ! api_compose run --rm --no-deps --entrypoint node "$API_COMPOSE_SERVICE" apps/api/dist/content-migrate-media.js --apply --local-only --target=/srv/shoditsa/media </dev/null; then
+            echo "Local content media migration failed" >&2
             rollback_api
             exit 1
           fi
