@@ -20,6 +20,10 @@ const fileBase64 = (file: File) => new Promise<string>((resolve, reject) => {
 
 const request = async <T>(path: string, init: RequestInit & { timeoutMs?: number } = {}) => {
   const controller = new AbortController(); const timeout = window.setTimeout(() => controller.abort(), init.timeoutMs ?? 30_000)
+  const externalSignal = init.signal
+  const abortFromCaller = () => controller.abort()
+  if (externalSignal?.aborted) controller.abort()
+  else externalSignal?.addEventListener('abort', abortFromCaller, { once: true })
   try {
     const response = await fetch(`${API_BASE}${path}`, {
       ...init, credentials: 'include', signal: controller.signal,
@@ -36,7 +40,31 @@ const request = async <T>(path: string, init: RequestInit & { timeoutMs?: number
     return payload as T
   } catch (error) {
     if (error instanceof AdminApiError) throw error
+    if (error instanceof DOMException && error.name === 'AbortError' && externalSignal?.aborted) throw error
     if (error instanceof DOMException && error.name === 'AbortError') throw new AdminApiError(408, 'TIMEOUT', 'Сервер отвечает слишком долго')
+    throw new AdminApiError(0, 'NETWORK_ERROR', 'Нет связи с сервером')
+  } finally { window.clearTimeout(timeout); externalSignal?.removeEventListener('abort', abortFromCaller) }
+}
+
+const requestDownload = async (path: string, init: RequestInit & { timeoutMs?: number } = {}) => {
+  const controller = new AbortController(); const timeout = window.setTimeout(() => controller.abort(), init.timeoutMs ?? 120_000)
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      ...init, credentials: 'include', signal: controller.signal,
+      headers: { Accept: 'application/json', ...(init.body ? { 'Content-Type': 'application/json' } : {}), ...init.headers },
+    })
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null) as Record<string, unknown> | null
+      const envelope = payload?.error && typeof payload.error === 'object' ? payload.error as Record<string, unknown> : payload
+      throw new AdminApiError(response.status, String(envelope?.code ?? 'HTTP_ERROR'), String(envelope?.message ?? 'Не удалось скачать файл'), (envelope?.details as Record<string, unknown>) ?? {})
+    }
+    const disposition = response.headers.get('content-disposition') ?? ''
+    const encodedName = disposition.match(/filename\*=UTF-8''([^;]+)/i)?.[1]
+    const plainName = disposition.match(/filename="?([^";]+)"?/i)?.[1]
+    return { blob: await response.blob(), fileName: encodedName ? decodeURIComponent(encodedName) : plainName ?? null }
+  } catch (error) {
+    if (error instanceof AdminApiError) throw error
+    if (error instanceof DOMException && error.name === 'AbortError') throw new AdminApiError(408, 'TIMEOUT', 'Экспорт формируется слишком долго')
     throw new AdminApiError(0, 'NETWORK_ERROR', 'Нет связи с сервером')
   } finally { window.clearTimeout(timeout) }
 }
@@ -110,7 +138,7 @@ export type ReleaseContentStatus = {
 export const adminApi = {
   me: () => request<MeResponse>('/me'),
   dashboard: () => request<AdminDashboardResponse>('/admin/dashboard'),
-  contentItems: (filters: Record<string, unknown>) => request<AdminContentItemsResponse>(`/admin/content/items${query(filters)}`),
+  contentItems: (filters: Record<string, unknown>, signal?: AbortSignal) => request<AdminContentItemsResponse>(`/admin/content/items${query(filters)}`, { signal }),
   tags: () => request<{ items: AdminContentTag[] }>('/admin/content/tags'),
   createTag: (name: string, color?: string) => request<AdminContentTag>('/admin/content/tags', { method: 'POST', body: json({ name, ...(color ? { color } : {}) }) }),
   contentItem: (id: string) => request<AdminItemDetail>(`/admin/content/items/${encodeURIComponent(id)}`),
@@ -124,7 +152,7 @@ export const adminApi = {
   uploadMedia: async (id: string, file: File, purpose: 'posterUrl' | 'headerUrl' | 'backdropUrl' | 'screenshot') => request<{ url: string; width: number; height: number; bytes: number }>(`/admin/content/items/${encodeURIComponent(id)}/media`, { method: 'POST', body: json({ fileName: file.name, contentType: file.type, base64: await fileBase64(file), purpose }), timeoutMs: 60_000 }),
   bulkContent: (body: Record<string, unknown>) => request<Record<string, unknown>>('/admin/content/workspace/bulk', { method: 'POST', body: json(body), timeoutMs: 60_000 }),
   contentExchangeSelection: (itemIds: string[]) => request<ContentExchangeSelection>('/admin/content/exchange/selection', { method: 'POST', body: json({ itemIds }) }),
-  exportContentExchange: (itemIds: string[], fields: string[]) => request<Record<string, unknown>>('/admin/content/exchange/export', { method: 'POST', body: json({ itemIds, fields }), timeoutMs: 60_000 }),
+  exportContentExchange: (itemIds: string[], fields: string[]) => requestDownload('/admin/content/exchange/export', { method: 'POST', body: json({ itemIds, fields }), timeoutMs: 120_000 }),
   previewContentExchangeImport: (document: Record<string, unknown>) => request<ContentExchangePreview>('/admin/content/exchange/import/preview', { method: 'POST', body: json({ document }), timeoutMs: 60_000 }),
   applyContentExchangeImport: (body: Record<string, unknown>) => request<{ summary: { requested: number; staged: number; failed: number }; results: Array<Record<string, unknown>> }>('/admin/content/exchange/import/apply', { method: 'POST', body: json(body), timeoutMs: 120_000 }),
   validateWorkspace: () => request<Record<string, unknown>>('/admin/content/workspace/validate', { method: 'POST', body: '{}' }),

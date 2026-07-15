@@ -97,6 +97,10 @@ def html_to_text(value: Any) -> str:
     text = re.sub(r"<(?:br|/p|/div|/li|/h[1-6])\\b[^>]*>", "\n", value, flags=re.I)
     text = re.sub(r"<[^>]+>", " ", text)
     text = html.unescape(text)
+    # U+0085/U+2028/U+2029 are valid JSON string characters, but a number of
+    # JSONL readers treat them as physical line separators.  Normalize them
+    # before json.dumps escapes the resulting ordinary newline.
+    text = text.replace("\u0085", "\n").replace("\u2028", "\n").replace("\u2029", "\n")
     text = re.sub(r"[ \t\r\f\v]+", " ", text)
     text = re.sub(r" *\n *", "\n", text)
     return re.sub(r"\n{3,}", "\n\n", text).strip()
@@ -496,8 +500,15 @@ def main() -> int:
     for game_index, game in enumerate(games, start=1):
         game_dir = args.output / game["id"]
         if args.skip_complete and complete_game(game_dir):
+            completed_manifest = json.loads((game_dir / "manifest.json").read_text(encoding="utf-8"))
             print(f"[{game_index}/{len(games)}] {game['id']}: skipped completed", flush=True)
-            summary["games"][game["id"]] = {"skipped": True}
+            summary["games"][game["id"]] = {
+                "skipped": True,
+                "candidates": completed_manifest.get("selection_notes", {}).get("candidate_count", 0),
+                "posts": completed_manifest.get("selected_post_count", 0),
+                "comments": completed_manifest.get("sampled_comment_count", 0),
+                "errors": len(completed_manifest.get("errors", [])),
+            }
             continue
         print(f"[{game_index}/{len(games)}] {game['id']}: collecting public DTF corpus", flush=True)
         try:

@@ -1,0 +1,51 @@
+{
+  "gameId": "baldurs-gate-3",
+  "revisionScope": "Re-audit of existing pilot artifacts only; source and cleaned corpora were not re-cleaned or extended.",
+  "dtfSpecificEnough": true,
+  "dtfSpecificityAssessment": "yes_with_caveat",
+  "dtfSpecificityReason": "The selected sequence uses the form of recurring DTF discussion—industry lectures, award backlash and obligatory third-act counterarguments—rather than generic praise alone.",
+  "coreMotifCount": 7,
+  "coreMotifsUsedInPuzzle": [
+    "player_agency_and_consequences",
+    "dice_and_randomness",
+    "companions_and_romance",
+    "classic_crpg_mainstream_breakthrough",
+    "third_act_and_late_game",
+    "awards_and_backlash",
+    "crpg_comparisons"
+  ],
+  "hintIndependentEvidencePostCounts": {
+    "opening_1": 6,
+    "opening_2": 5,
+    "after_third_attempt": 6,
+    "after_fifth_attempt": 7,
+    "after_eighth_attempt": 3,
+    "after_ninth_attempt": 7
+  },
+  "ordinaryTriviaRiskByHint": {
+    "opening_1": "high",
+    "opening_2": "high",
+    "after_third_attempt": "medium",
+    "after_fifth_attempt": "medium",
+    "after_eighth_attempt": "low",
+    "after_ninth_attempt": "low"
+  },
+  "canPublishWithoutSpoilerWarning": "no_for_full_sequence; yes_for_opening_four_after_manual_review",
+  "spoilerReason": "The eighth and ninth hints refer to the recurring late-game/third-act criticism; they do not reveal plot events, but the topic is spoiler-sensitive.",
+  "formulationsRequiringManualRewrite": [
+    "after_eighth_attempt.sharp_dtf_satirical",
+    "after_ninth_attempt.sharp_dtf_satirical",
+    "after_fifth_attempt.sharp_dtf_satirical"
+  ],
+  "publicPuzzleViability": 0.82,
+  "motifAuditConfidence": 0.79,
+  "unsupportedClaimsFound": [],
+  "manualReviewItems": [
+    "Проверить, что мемная формулировка не узнаваема как дословная паста из исходных комментариев.",
+    "Решить, нужен ли spoiler tag на подсказках после восьмой попытки.",
+    "Проверить, что первые две подсказки оставляют 3–5 партийных RPG-кандидатов.",
+    "Проверить, что после пятой попытки остаются 2–3 кандидата, а не только BG3.",
+    "Не показывать DTF-мотивы в обычной сравнительной таблице."
+  ],
+  "mainQuestionAnswer": "Для проморежима лучше оставить обычное сравнение игр после каждой попытки, а DTF-мотивы использовать только в стартовых репликах, открывающихся подсказках и финальном объяснении. Так сохраняется понятный игровой интерфейс, а локальная сатира остаётся доказательной и не превращается в спорную метрику."
+}

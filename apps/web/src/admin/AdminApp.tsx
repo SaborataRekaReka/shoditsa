@@ -43,6 +43,145 @@ const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' },
 ]
 const MODE_LABEL = Object.fromEntries(MODES.map((mode) => [mode.value, mode.label])) as Record<ContentMode, string>
+type ContentFieldFilter = string
+type ContentFieldOption = { value: string; label: string }
+type ContentFieldGroup = { label: string; options: ContentFieldOption[] }
+
+const CONTENT_FIELD_GROUPS: ContentFieldGroup[] = [
+  {
+    label: 'По всей карточке',
+    options: [
+      { value: 'all', label: 'Все поля карточки и метаданные' },
+      { value: 'title', label: 'Все варианты названия' },
+      { value: 'id', label: 'id — внутренний ID' },
+      { value: 'mode', label: 'mode — категория' },
+      { value: 'publicationStatus', label: 'publicationStatus — статус в игре' },
+      { value: 'changeSource', label: 'changeSource — источник изменения' },
+      { value: 'pipeline', label: 'pipeline — пайплайн' },
+      { value: 'tags', label: 'tags — теги' },
+      { value: 'allHints', label: 'Все подсказки, описание и факты' },
+      { value: 'reports', label: 'reports — количество репортов' },
+      { value: 'issues', label: 'issues — количество проблем' },
+    ],
+  },
+  {
+    label: 'Общие поля payload',
+    options: [
+      { value: 'titleRu', label: 'titleRu — русское название' },
+      { value: 'titleOriginal', label: 'titleOriginal — оригинальное название' },
+      { value: 'alternativeTitles', label: 'alternativeTitles — другие названия' },
+      { value: 'year', label: 'year — год' },
+      { value: 'activityStartYear', label: 'activityStartYear — начало активности' },
+      { value: 'endYear', label: 'endYear — год окончания' },
+      { value: 'releaseDate', label: 'releaseDate — дата выхода' },
+      { value: 'countries', label: 'countries — страны' },
+      { value: 'originalLanguage', label: 'originalLanguage — язык оригинала' },
+      { value: 'genres', label: 'genres — жанры' },
+      { value: 'plotHint', label: 'plotHint — сюжетная подсказка' },
+      { value: 'description', label: 'description — описание' },
+      { value: 'shortDescription', label: 'shortDescription — краткое описание' },
+      { value: 'slogan', label: 'slogan — слоган' },
+      { value: 'facts', label: 'facts — факты' },
+      { value: 'allowedInGame', label: 'allowedInGame — допуск в игру' },
+    ],
+  },
+  {
+    label: 'Изображения payload',
+    options: [
+      { value: 'posterUrl', label: 'posterUrl — постер' },
+      { value: 'headerUrl', label: 'headerUrl — обложка' },
+      { value: 'backdropUrl', label: 'backdropUrl — фон' },
+      { value: 'screenshots', label: 'screenshots — скриншоты' },
+    ],
+  },
+  {
+    label: 'Кино и сериалы payload',
+    options: [
+      { value: 'runtime', label: 'runtime — длительность' },
+      { value: 'runtimeMinutes', label: 'runtimeMinutes — длительность, мин.' },
+      { value: 'ageRating', label: 'ageRating — возрастной рейтинг' },
+      { value: 'budget', label: 'budget — бюджет' },
+      { value: 'directors', label: 'directors — режиссёры' },
+      { value: 'writers', label: 'writers — сценаристы' },
+      { value: 'cast', label: 'cast — актёры' },
+      { value: 'supportingCast', label: 'supportingCast — второй план' },
+      { value: 'kinopoiskId', label: 'kinopoiskId — ID Кинопоиска' },
+      { value: 'imdbId', label: 'imdbId — ID IMDb' },
+      { value: 'ratings', label: 'ratings — рейтинги' },
+      { value: 'awards', label: 'awards — награды' },
+      { value: 'episodes', label: 'episodes — эпизоды' },
+      { value: 'seasonsCount', label: 'seasonsCount — сезоны' },
+      { value: 'seriesStatus', label: 'seriesStatus — статус сериала' },
+      { value: 'showrunners', label: 'showrunners — шоураннеры' },
+    ],
+  },
+  {
+    label: 'Аниме payload',
+    options: [
+      { value: 'kind', label: 'kind — формат аниме' },
+      { value: 'status', label: 'status — статус аниме' },
+      { value: 'episodesAired', label: 'episodesAired — вышедшие эпизоды' },
+      { value: 'source', label: 'source — первоисточник аниме' },
+      { value: 'studios', label: 'studios — студии' },
+      { value: 'shikimoriId', label: 'shikimoriId — ID Shikimori' },
+      { value: 'shikimoriScore', label: 'shikimoriScore — рейтинг Shikimori' },
+      { value: 'shikimoriUrl', label: 'shikimoriUrl — ссылка Shikimori' },
+    ],
+  },
+  {
+    label: 'Игры payload',
+    options: [
+      { value: 'developers', label: 'developers — разработчики' },
+      { value: 'publishers', label: 'publishers — издатели' },
+      { value: 'platforms', label: 'platforms — платформы' },
+      { value: 'steamCategories', label: 'steamCategories — категории Steam' },
+      { value: 'steamTags', label: 'steamTags — теги Steam' },
+      { value: 'steamAppId', label: 'steamAppId — ID Steam' },
+      { value: 'steamUrl', label: 'steamUrl — ссылка Steam' },
+      { value: 'price', label: 'price — цена' },
+      { value: 'metacritic', label: 'metacritic — рейтинг Metacritic' },
+    ],
+  },
+  {
+    label: 'Музыка payload',
+    options: [
+      { value: 'canonicalId', label: 'canonicalId — канонический ID' },
+      { value: 'aliases', label: 'aliases — псевдонимы' },
+      { value: 'gameTier', label: 'gameTier — уровень узнаваемости' },
+      { value: 'contentStatus', label: 'contentStatus — готовность контента' },
+      { value: 'musicIsActive', label: 'musicIsActive — активность исполнителя' },
+      { value: 'musicOrigin', label: 'musicOrigin — происхождение' },
+      { value: 'musicType', label: 'musicType — тип исполнителя' },
+      { value: 'topTracks', label: 'topTracks — популярные треки' },
+      { value: 'topAlbums', label: 'topAlbums — популярные альбомы' },
+      { value: 'similarArtists', label: 'similarArtists — похожие исполнители' },
+      { value: 'members', label: 'members — участники' },
+      { value: 'associatedActs', label: 'associatedActs — связанные проекты' },
+      { value: 'musicLinks', label: 'musicLinks — ссылки' },
+      { value: 'dataQuality', label: 'dataQuality — качество данных' },
+    ],
+  },
+  {
+    label: 'Диагнозы payload',
+    options: [
+      { value: 'icd10', label: 'icd10 — МКБ-10' },
+      { value: 'icdGroup', label: 'icdGroup — группа МКБ' },
+      { value: 'bodySystems', label: 'bodySystems — системы организма' },
+      { value: 'diseaseTypes', label: 'diseaseTypes — типы заболевания' },
+      { value: 'course', label: 'course — течение' },
+      { value: 'contagiousness', label: 'contagiousness — заразность' },
+      { value: 'symptoms', label: 'symptoms — симптомы' },
+      { value: 'keySymptoms', label: 'keySymptoms — ключевые симптомы' },
+      { value: 'diagnostics', label: 'diagnostics — диагностика' },
+      { value: 'risks', label: 'risks — риски' },
+      { value: 'severity', label: 'severity — тяжесть' },
+      { value: 'urgency', label: 'urgency — срочность' },
+      { value: 'safetyDisclaimer', label: 'safetyDisclaimer — предупреждение' },
+      { value: 'caseVignettes', label: 'caseVignettes — клинические случаи' },
+    ],
+  },
+]
+const CONTENT_FIELD_FILTERS = new Set(CONTENT_FIELD_GROUPS.flatMap((group) => group.options.map((option) => option.value)))
 const REPORT_REASON: Record<string, string> = {
   wrong_fact: 'Неверный факт', disputed_comparison: 'Спорное сравнение', title_not_found: 'Не принимается ответ', bad_hint: 'Плохая подсказка',
   bad_image: 'Плохое изображение', duplicate_card: 'Дубликат', typo_or_translation: 'Опечатка / перевод', technical_error: 'Техническая ошибка', other: 'Другое',
@@ -78,6 +217,14 @@ const pipelineWarnings = (value: unknown) => {
   return [...new Set(labels)]
 }
 const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.message}${error.code ? ` · ${error.code}` : ''}` : error instanceof Error ? error.message : 'Неизвестная ошибка'
+function useDebouncedValue<T>(value: T, delayMs: number) {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebounced(value), delayMs)
+    return () => window.clearTimeout(timeout)
+  }, [delayMs, value])
+  return debounced
+}
 const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid'].includes(String(status)) ? 'danger'
   : ['running', 'in_progress', 'warning', 'partially_failed', 'building', 'update_available'].includes(String(status)) ? 'warning'
     : ['completed', 'published', 'resolved', 'active', 'ready'].includes(String(status)) ? 'success' : 'neutral'
@@ -594,11 +741,10 @@ function NewCardDialog({ close, done, notify }: { close: () => void; done: (id: 
 
 const exchangeItemKey = (mode: ContentMode, id: string) => JSON.stringify([mode, id])
 
-const downloadJson = (document: Record<string, unknown>) => {
-  const blob = new Blob([`${JSON.stringify(document, null, 2)}\n`], { type: 'application/json;charset=utf-8' })
+const downloadBlob = (blob: Blob, fileName: string | null) => {
   const url = URL.createObjectURL(blob); const anchor = window.document.createElement('a')
-  anchor.href = url; anchor.download = `shoditsa-content-${new Date().toISOString().slice(0, 10)}-${String(document.exportId ?? 'export').slice(0, 8)}.json`
-  anchor.click(); URL.revokeObjectURL(url)
+  anchor.href = url; anchor.download = fileName || `shoditsa-content-${new Date().toISOString().slice(0, 10)}.json`
+  anchor.click(); window.setTimeout(() => URL.revokeObjectURL(url), 1_000)
 }
 
 function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { initialTab: 'export' | 'import'; itemIds: string[]; close: () => void; notify: (tone: Notice['tone'], text: string) => void; done: () => void }) {
@@ -606,13 +752,18 @@ function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { i
   const [fields, setFields] = useState<Set<string>>(new Set()); const fieldsInitialized = useRef(false)
   const [document, setDocument] = useState<Record<string, unknown> | null>(null); const [fileName, setFileName] = useState('')
   const [parseError, setParseError] = useState(''); const [importItems, setImportItems] = useState<Set<string>>(new Set()); const [reason, setReason] = useState('Импорт карточек из JSON')
-  const selection = useQuery({ queryKey: ['admin', 'content-exchange-selection', itemIds], queryFn: () => adminApi.contentExchangeSelection(itemIds), enabled: tab === 'export' && itemIds.length > 0 })
+  const selectionKey = useMemo(() => {
+    let hash = 2_166_136_261
+    for (const id of itemIds) for (let index = 0; index < id.length; index += 1) hash = Math.imul(hash ^ id.charCodeAt(index), 16_777_619)
+    return `${itemIds.length}:${hash >>> 0}`
+  }, [itemIds])
+  const selection = useQuery({ queryKey: ['admin', 'content-exchange-selection', selectionKey], queryFn: () => adminApi.contentExchangeSelection(itemIds), enabled: tab === 'export' && itemIds.length > 0, staleTime: 30_000 })
   useEffect(() => {
     if (!fieldsInitialized.current && selection.data) { setFields(new Set(selection.data.fields.map((entry) => entry.field))); fieldsInitialized.current = true }
   }, [selection.data])
   const exportMutation = useMutation({
     mutationFn: () => adminApi.exportContentExchange(itemIds, [...fields]),
-    onSuccess: (result) => { downloadJson(result); notify('success', `Экспортировано карточек: ${itemIds.length}`) },
+    onSuccess: ({ blob, fileName: exportedFileName }) => { downloadBlob(blob, exportedFileName); notify('success', `Экспортировано карточек: ${itemIds.length} · ${(blob.size / 1024 / 1024).toFixed(1)} МБ`) },
     onError: (error) => notify('error', errorText(error)),
   })
   const preview = useMutation({
@@ -657,7 +808,7 @@ function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { i
         </>}
       </>}
     </div>
-    <footer><button className="admin-btn admin-btn--secondary" onClick={close}>Отмена</button>{tab === 'export' ? <button className="admin-btn admin-btn--primary" disabled={!itemIds.length || !fields.size || exportMutation.isPending} onClick={() => exportMutation.mutate()}><Download />Скачать JSON</button> : <button className="admin-btn admin-btn--primary" disabled={!document || !preview.data || !actionableCount || reason.trim().length < 3 || apply.isPending} onClick={() => apply.mutate()}><Check />Добавить {actionableCount} в рабочую версию</button>}</footer>
+    <footer><button className="admin-btn admin-btn--secondary" onClick={close}>Отмена</button>{tab === 'export' ? <button className="admin-btn admin-btn--primary" disabled={!itemIds.length || !fields.size || exportMutation.isPending} onClick={() => exportMutation.mutate()}>{exportMutation.isPending ? <LoaderCircle /> : <Download />}{exportMutation.isPending ? 'Собираем файл…' : 'Скачать JSON'}</button> : <button className="admin-btn admin-btn--primary" disabled={!document || !preview.data || !actionableCount || reason.trim().length < 3 || apply.isPending} onClick={() => apply.mutate()}><Check />Добавить {actionableCount} в рабочую версию</button>}</footer>
   </div></div>
 }
 
@@ -1068,21 +1219,6 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     | "reportsCount"
     | "issuesCount"
     | "updatedAt";
-  type ContentFieldFilter =
-    | "all"
-    | "title"
-    | "id"
-    | "mode"
-    | "status"
-    | "source"
-    | "pipeline"
-    | "tags"
-    | "fields"
-    | "hint"
-    | "reports"
-    | "issues"
-    | "completeness"
-    | "missing";
   const sortableKeys: ContentSortKey[] = [
     "titleRu",
     "id",
@@ -1098,27 +1234,11 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     "issuesCount",
     "updatedAt",
   ];
-  const validFieldFilters: ContentFieldFilter[] = [
-    "all",
-    "title",
-    "id",
-    "mode",
-    "status",
-    "source",
-    "pipeline",
-    "tags",
-    "fields",
-    "hint",
-    "reports",
-    "issues",
-    "completeness",
-    "missing",
-  ];
   const parseTriState = (value: string | null): "all" | "yes" | "no" =>
     value === "yes" || value === "no" ? value : "all";
   const parseFieldFilter = (value: string | null): ContentFieldFilter =>
-    value && validFieldFilters.includes(value as ContentFieldFilter)
-      ? (value as ContentFieldFilter)
+    value && CONTENT_FIELD_FILTERS.has(value)
+      ? value
       : "all";
   const parseSortKey = (value: string | null): ContentSortKey =>
     value && sortableKeys.includes(value as ContentSortKey)
@@ -1200,6 +1320,9 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     queryKey: ["admin", "content-tags"],
     queryFn: adminApi.tags,
   });
+  const debouncedQ = useDebouncedValue(q.trim(), 300);
+  const debouncedFieldFilterValue = useDebouncedValue(fieldFilterValue.trim(), 350);
+  const filtersPending = q.trim() !== debouncedQ || fieldFilterValue.trim() !== debouncedFieldFilterValue;
 
   useEffect(() => {
     const next = new URLSearchParams();
@@ -1250,7 +1373,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       "admin",
       "content",
       {
-        q,
+        q: debouncedQ,
         mode,
         publication,
         pageSize,
@@ -1262,14 +1385,16 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         includeTagIds,
         excludeTagIds,
         tagMatch,
+        fieldFilter,
+        fieldFilterValue: debouncedFieldFilterValue,
         sortBy,
         sortOrder,
       },
     ],
     initialPageParam: null as string | null,
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam, signal }) =>
       adminApi.contentItems({
-        q,
+        q: debouncedQ,
         mode,
         publication,
         source,
@@ -1291,12 +1416,16 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         includeTagIds: includeTagIds.join(",") || undefined,
         excludeTagIds: excludeTagIds.join(",") || undefined,
         tagMatch,
+        field: fieldFilter,
+        fieldQ: debouncedFieldFilterValue || undefined,
         sort: sortBy === "tags" ? "tag" : undefined,
         order: sortBy === "tags" ? sortOrder : undefined,
         limit: pageSize,
         cursor: pageParam ?? undefined,
-      }),
+      }, signal),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    placeholderData: (previous) => previous,
+    staleTime: 15_000,
   });
 
   const listedItems = useMemo(
@@ -1307,6 +1436,43 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     [items.data],
   );
   const totalItems = items.data?.pages[0]?.total ?? 0;
+  const selectAllMatching = useMutation({
+    mutationFn: async () => {
+      const ids: string[] = [];
+      let cursor: string | undefined;
+      do {
+        const page = await adminApi.contentItems({
+          q: debouncedQ,
+          mode,
+          publication,
+          source,
+          pipelineKey: pipelineFilter || undefined,
+          hasHint: hintFilter === "yes" ? true : hintFilter === "no" ? false : undefined,
+          hasReports: reportsFilter === "yes" ? true : reportsFilter === "no" ? false : undefined,
+          hasIssues: issuesFilter === "yes" ? true : issuesFilter === "no" ? false : undefined,
+          includeTagIds: includeTagIds.join(",") || undefined,
+          excludeTagIds: excludeTagIds.join(",") || undefined,
+          tagMatch,
+          field: fieldFilter,
+          fieldQ: debouncedFieldFilterValue || undefined,
+          sort: sortBy === "tags" ? "tag" : undefined,
+          order: sortBy === "tags" ? sortOrder : undefined,
+          limit: 100,
+          cursor,
+        });
+        if (page.total > 5_000) throw new AdminApiError(422, "CONTENT_BULK_LIMIT", `Найдено ${page.total.toLocaleString("ru-RU")} карточек. Уточните фильтр до 5 000 элементов для массового действия.`);
+        ids.push(...page.items.map((item) => item.id));
+        cursor = page.nextCursor ?? undefined;
+      } while (cursor);
+      return ids;
+    },
+    onSuccess: (ids) => {
+      setSelected(new Set(ids));
+      setSelectionAnchorIndex(null);
+      notify("success", `Выбраны все карточки по фильтру: ${ids.length}`);
+    },
+    onError: (error) => notify("error", errorText(error)),
+  });
 
   useEffect(() => {
     const target = loadMoreRef.current;
@@ -1321,64 +1487,12 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     return () => observer.disconnect();
   }, [items.fetchNextPage, items.hasNextPage, items.isFetchingNextPage]);
 
-  const text = (value: unknown) =>
-    String(value ?? "")
-      .toLocaleLowerCase("ru-RU")
-      .trim();
   const sourceLabel = (value: AdminContentListItem["source"]) =>
     value ? (sourceLabelMap[value] ?? value) : "—";
   const pipelineLabel = (value: AdminContentListItem["pipelineKey"]) =>
     value ? (pipelineLabelMap[value] ?? value) : "—";
   const asNumber = (value: unknown) =>
     Number.isFinite(Number(value)) ? Number(value) : 0;
-
-  const filteredItems = useMemo(() => {
-    const needle = text(fieldFilterValue);
-    if (!needle) return listedItems;
-    const byField = (item: AdminContentListItem) => {
-      const title = `${item.titleRu} ${item.titleOriginal}`;
-      const status = item.allowedInGame ? "в игре active" : "скрыта hidden";
-      const fields = `${item.fieldsFilled}/${item.fieldsTotal}`;
-      const hint = item.hasHint ? "есть yes true" : "нет no false";
-      const reports = String(item.reportsCount);
-      const issues = String(item.issuesCount);
-      const completeness = String(item.completeness);
-      const sourceValue = sourceLabel(item.source);
-      const pipelineValue = pipelineLabel(item.pipelineKey);
-      const missing = item.missingFields.join(" ");
-      const tagValue = item.tags.map((tag) => tag.name).join(" ");
-      const all = [
-        title,
-        item.id,
-        MODE_LABEL[item.mode],
-        status,
-        sourceValue,
-        pipelineValue,
-        tagValue,
-        fields,
-        hint,
-        reports,
-        issues,
-        completeness,
-        missing,
-      ];
-      if (fieldFilter === "all") return all.join(" ");
-      if (fieldFilter === "title") return title;
-      if (fieldFilter === "id") return item.id;
-      if (fieldFilter === "mode") return MODE_LABEL[item.mode];
-      if (fieldFilter === "status") return status;
-      if (fieldFilter === "source") return sourceValue;
-      if (fieldFilter === "pipeline") return pipelineValue;
-      if (fieldFilter === "tags") return tagValue;
-      if (fieldFilter === "fields") return fields;
-      if (fieldFilter === "hint") return hint;
-      if (fieldFilter === "reports") return reports;
-      if (fieldFilter === "issues") return issues;
-      if (fieldFilter === "completeness") return completeness;
-      return missing;
-    };
-    return listedItems.filter((item) => text(byField(item)).includes(needle));
-  }, [fieldFilter, fieldFilterValue, listedItems]);
 
   const sortedItems = useMemo(() => {
     const compareText = (left: string, right: string) =>
@@ -1426,12 +1540,12 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       );
     };
     const direction = sortOrder === "asc" ? 1 : -1;
-    return [...filteredItems].sort((left, right) => {
+    return [...listedItems].sort((left, right) => {
       const result = compare(left, right);
       if (result !== 0) return result * direction;
       return left.id.localeCompare(right.id, "ru-RU", { sensitivity: "base" });
     });
-  }, [filteredItems, sortBy, sortOrder]);
+  }, [listedItems, sortBy, sortOrder]);
 
   const selectedVisibleCount = useMemo(
     () =>
@@ -1441,6 +1555,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       ),
     [selected, sortedItems],
   );
+  const selectedItemIds = useMemo(() => [...selected], [selected]);
 
   const bulk = useMutation({
     mutationFn: async (operation: "allow" | "disallow" | "add_tag" | "remove_tag") => {
@@ -1549,8 +1664,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     setSelectionAnchorIndex(null);
   };
 
-  const hasLocalFilter =
-    Boolean(fieldFilterValue.trim()) || fieldFilter !== "all";
+  const hasFieldFilter = Boolean(fieldFilterValue.trim());
   const openItem = (itemId: string) => navigate('content', itemId, location.search);
   const closeItem = () => navigate('content', null, location.search);
   const openPreview = (itemId?: string) => {
@@ -1747,19 +1861,12 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         </button>
         <button
           className="admin-btn admin-btn--secondary"
-          disabled={!sortedItems.length}
-          title="Выбирает все загруженные карточки по текущим фильтрам"
-          onClick={() => {
-            setSelected((current) => {
-              const next = new Set(current);
-              for (const item of sortedItems) next.add(item.id);
-              return next;
-            });
-            setSelectionAnchorIndex(null);
-          }}
+          disabled={!totalItems || filtersPending || selectAllMatching.isPending}
+          title="Выбирает все карточки из базы, совпавшие с текущими фильтрами"
+          onClick={() => selectAllMatching.mutate()}
         >
-          <ListChecks />
-          Выбрать все{sortedItems.length ? ` · ${sortedItems.length}` : ""}
+          {selectAllMatching.isPending ? <LoaderCircle /> : <ListChecks />}
+          {selectAllMatching.isPending ? "Собираем выборку…" : `Выбрать все · ${totalItems}`}
         </button>
       </div>
 
@@ -1797,42 +1904,50 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
           />
         </div>
         <div className="admin-content-local-filters">
-          <label>
-            <Filter />
-            <select
-              value={fieldFilter}
-              onChange={(event) =>
-                setFieldFilter(event.target.value as ContentFieldFilter)
-              }
-            >
-              <option value="all">Локальный фильтр: все поля</option>
-              <option value="title">Название</option>
-              <option value="id">ID</option>
-              <option value="mode">Категория</option>
-              <option value="status">Статус</option>
-              <option value="source">Источник</option>
-              <option value="pipeline">Пайплайн</option>
-              <option value="fields">Заполнено полей</option>
-              <option value="hint">Подсказка</option>
-              <option value="reports">Репорты</option>
-              <option value="issues">Качество</option>
-              <option value="completeness">Полнота</option>
-              <option value="missing">Чего не хватает</option>
-            </select>
-          </label>
-          <label className="admin-search admin-search--compact">
-            <Search />
-            <input
-              value={fieldFilterValue}
-              onChange={(event) => setFieldFilterValue(event.target.value)}
-              placeholder="Фильтр по выбранному полю"
-            />
-            {fieldFilterValue && (
-              <button onClick={() => setFieldFilterValue("")}>
-                <X />
-              </button>
-            )}
-          </label>
+          <div className="admin-content-field-filter" title="Ищет совпадения по всей базе, а не только среди загруженных строк">
+            <label>
+              <Filter />
+              <select
+                aria-label="Поле для фильтрации"
+                value={fieldFilter}
+                onChange={(event) => {
+                  setFieldFilter(event.target.value as ContentFieldFilter);
+                  setSelected(new Set());
+                  setSelectionAnchorIndex(null);
+                }}
+              >
+                {CONTENT_FIELD_GROUPS.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.options.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </label>
+            <label className="admin-search admin-search--compact">
+              <Search />
+              <input
+                aria-label="Значение поля"
+                value={fieldFilterValue}
+                onChange={(event) => {
+                  setFieldFilterValue(event.target.value);
+                  setSelected(new Set());
+                  setSelectionAnchorIndex(null);
+                }}
+                placeholder="Содержит значение…"
+              />
+              {fieldFilterValue && (
+                <button aria-label="Очистить значение фильтра" onClick={() => setFieldFilterValue("")}>
+                  <X />
+                </button>
+              )}
+            </label>
+            <span className={filtersPending || (items.isFetching && !items.isFetchingNextPage) ? 'is-loading' : undefined}>
+              {filtersPending || (items.isFetching && !items.isFetchingNextPage) ? <LoaderCircle /> : <Database />}
+              {filtersPending ? 'Применяем…' : items.isFetching && !items.isFetchingNextPage ? 'Обновляем…' : 'Вся база'}
+            </span>
+          </div>
           <label>
             <Tags />
             <select
@@ -1917,32 +2032,20 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         <ErrorState error={items.error} retry={() => void items.refetch()} />
       ) : !listedItems.length ? (
         <Empty
-          title="Ничего не найдено"
-          text="Измените запрос или сбросьте фильтры."
-          icon={<Search />}
-          action={
-            <button
-              className="admin-btn admin-btn--secondary"
-              onClick={resetFilters}
-            >
-              Сбросить фильтры
-            </button>
-          }
-        />
-      ) : !sortedItems.length ? (
-        <Empty
-          title="По локальному фильтру совпадений нет"
-          text="Измените поле/значение локального фильтра или сбросьте его."
-          icon={<Filter />}
+          title={hasFieldFilter ? "По выбранному полю совпадений нет" : "Ничего не найдено"}
+          text={hasFieldFilter ? "Измените поле или искомое значение. Поиск выполняется по всей базе карточек." : "Измените запрос или сбросьте фильтры."}
+          icon={hasFieldFilter ? <Filter /> : <Search />}
           action={
             <button
               className="admin-btn admin-btn--secondary"
               onClick={() => {
-                setFieldFilter("all");
-                setFieldFilterValue("");
+                if (hasFieldFilter) {
+                  setFieldFilter("all");
+                  setFieldFilterValue("");
+                } else resetFilters();
               }}
             >
-              Сбросить локальный фильтр
+              {hasFieldFilter ? "Сбросить фильтр по полю" : "Сбросить фильтры"}
             </button>
           }
         />
@@ -1952,7 +2055,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <button key={item.id} onClick={() => openPreview(item.id)} title="Открыть предпросмотр карточки">
               <div>
                 {item.posterUrl ? (
-                  <img src={item.posterUrl} alt="" />
+                  <img src={item.posterUrl} alt="" loading="lazy" decoding="async" />
                 ) : (
                   <ImageIcon />
                 )}
@@ -2199,7 +2302,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                         onClick={() => openItem(item.id)}
                       >
                         {item.posterUrl ? (
-                          <img src={item.posterUrl} alt="" />
+                          <img src={item.posterUrl} alt="" loading="lazy" decoding="async" />
                         ) : (
                           <span>
                             <ImageIcon />
@@ -2308,7 +2411,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <span>
               Показано {sortedItems.length} из{" "}
               {totalItems.toLocaleString("ru-RU")}
-              {hasLocalFilter ? " · локальный фильтр включён" : ""}
+              {hasFieldFilter ? ` · серверный фильтр: ${fieldFilter}` : ""}
             </span>
           </footer>
         </div>
@@ -2357,7 +2460,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       {exchange && (
         <ContentExchangeDialog
           initialTab={exchange}
-          itemIds={[...selected]}
+          itemIds={selectedItemIds}
           close={() => setExchange(null)}
           notify={notify}
           done={() => {

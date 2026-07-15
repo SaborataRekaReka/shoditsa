@@ -1,0 +1,64 @@
+{
+  "gameId": "baldurs-gate-3",
+  "phases": [
+    {
+      "phase": "pre_release",
+      "postIds": [
+        "1977565"
+      ],
+      "summary": "В выборке есть один июльский материал до релиза; он фиксирует ожидание спроса на классические RPG, но не даёт полноценного ранне-доступного дневника.",
+      "motifs": [
+        "classic_crpg_mainstream_breakthrough",
+        "developer_early_access_and_community"
+      ]
+    },
+    {
+      "phase": "release_or_early_response",
+      "postIds": [
+        "2059618"
+      ],
+      "summary": "Релизная дискуссия быстро смещается к смешанному обзору, вариативности, третьему акту и сравнению с другими CRPG.",
+      "motifs": [
+        "player_agency_and_consequences",
+        "third_act_and_late_game",
+        "turn_based_combat_and_builds"
+      ]
+    },
+    {
+      "phase": "retrospective",
+      "postIds": [
+        "2254962",
+        "2370927",
+        "2376144",
+        "2968530",
+        "3083243"
+      ],
+      "summary": "Награды конца 2023 года и рейтинг 2024 года превращают игру в объект долгой переоценки и спора о каноне лучших игр.",
+      "motifs": [
+        "awards_and_backlash",
+        "community_pasta_and_hater_banter"
+      ]
+    }
+  ],
+  "appearedImmediately": [
+    "classic_crpg_mainstream_breakthrough",
+    "player_agency_and_consequences",
+    "turn_based_combat_and_builds"
+  ],
+  "strengthenedLater": [
+    "awards_and_backlash",
+    "patches_and_mod_support",
+    "community_pasta_and_hater_banter"
+  ],
+  "lateClaimsOrCriticism": [
+    "third_act_and_late_game",
+    "turn_based_combat_and_builds"
+  ],
+  "overallModel": "mixed_without_clear_shift",
+  "modelConfidence": 0.78,
+  "modelReason": "Корпус содержит устойчивую защиту и повторяющуюся критику поздней части; поздние награды и патч меняют темы, но не устраняют поляризацию.",
+  "limitations": [
+    "Нет полноценного набора раннего доступа и нет постов о каждом крупном DLC.",
+    "Фазы двух наградных постов определены по датам события, а не по исходной грубой метке очистки."
+  ]
+}

@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import sharp from 'sharp'
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray, sql } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
 import {
   auditLog, clientEvents, contentItems, contentItemVersions, contentRevisions, contentWorkspaceChanges, contentWorkspaces,
@@ -112,6 +112,33 @@ describe('admin API guard, workspace and telemetry', () => {
     expect(denied.statusCode).toBe(403)
     expect(denied.json().error.code).toBe('ADMIN_REQUIRED')
     currentUser = { id: adminId, email: 'breneize@yandex.ru', name: 'Integration Admin', isAnonymous: false }
+  })
+
+  it('filters the complete content catalog by an exact payload field and substring', async () => {
+    const candidate = (await database.db.select({
+      id: contentItemVersions.itemId,
+      payload: contentItemVersions.payload,
+    }).from(contentItemVersions)
+      .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
+      .where(and(eq(contentRevisions.status, 'active'), sql`length(trim(coalesce(${contentItemVersions.payload}->>'plotHint', ''))) >= 4`))
+      .limit(1))[0] as { id: string; payload: Record<string, unknown> } | undefined
+    expect(candidate).toBeDefined()
+    const plotHint = String(candidate!.payload.plotHint)
+    const needle = plotHint.trim().replace(/\s+/g, ' ').slice(0, 24)
+    const filtered = await app.inject({
+      method: 'GET',
+      url: `/api/v1/admin/content/items?field=plotHint&fieldQ=${encodeURIComponent(needle)}&limit=100`,
+    })
+    expect(filtered.statusCode, filtered.body).toBe(200)
+    expect(filtered.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ id: candidate!.id })]))
+    expect(filtered.json().total).toBeGreaterThanOrEqual(1)
+
+    const absent = await app.inject({
+      method: 'GET',
+      url: `/api/v1/admin/content/items?field=all&fieldQ=${encodeURIComponent(`absent-${crypto.randomUUID()}`)}`,
+    })
+    expect(absent.statusCode, absent.body).toBe(200)
+    expect(absent.json()).toMatchObject({ items: [], total: 0 })
   })
 
   it('keeps edits in a versioned workspace without changing the active revision', async () => {

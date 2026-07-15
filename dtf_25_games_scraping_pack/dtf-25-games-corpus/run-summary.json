@@ -1,13 +1,182 @@
 {
-  "started_at": "2026-07-15T07:23:47.551237Z",
+  "started_at": "2026-07-15T07:41:46.617862Z",
   "config": "dtf-25-games-scraping-manifest.json",
   "games": {
+    "cyberpunk-2077": {
+      "skipped": true,
+      "candidates": 95,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
     "starfield": {
+      "skipped": true,
       "candidates": 101,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "atomic-heart": {
+      "skipped": true,
+      "candidates": 104,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "the-last-of-us-part-ii": {
+      "skipped": true,
+      "candidates": 84,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "baldurs-gate-3": {
+      "skipped": true,
+      "candidates": 96,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "death-stranding": {
+      "skipped": true,
+      "candidates": 92,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "elden-ring": {
+      "skipped": true,
+      "candidates": 107,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "bloodborne": {
+      "skipped": true,
+      "candidates": 99,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "red-dead-redemption-2": {
+      "skipped": true,
+      "candidates": 88,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "the-witcher-3": {
+      "skipped": true,
+      "candidates": 75,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "disco-elysium": {
+      "skipped": true,
+      "candidates": 100,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "skyrim": {
+      "skipped": true,
+      "candidates": 73,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "fallout-76": {
+      "skipped": true,
+      "candidates": 71,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "no-mans-sky": {
+      "skipped": true,
+      "candidates": 76,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "grand-theft-auto-v": {
+      "skipped": true,
+      "candidates": 78,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "stalker-2": {
+      "skipped": true,
+      "candidates": 73,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "hogwarts-legacy": {
+      "skipped": true,
+      "candidates": 76,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "helldivers-2": {
+      "skipped": true,
+      "candidates": 100,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "dragon-age-the-veilguard": {
+      "skipped": true,
+      "candidates": 89,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "the-day-before": {
+      "skipped": true,
+      "candidates": 52,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "concord": {
+      "skipped": true,
+      "candidates": 96,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "assassins-creed-shadows": {
+      "skipped": true,
+      "candidates": 74,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "silent-hill-2-remake": {
+      "skipped": true,
+      "candidates": 44,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "kingdom-come-deliverance-ii": {
+      "skipped": true,
+      "candidates": 66,
+      "posts": 10,
+      "comments": 1000,
+      "errors": 0
+    },
+    "clair-obscur-expedition-33": {
+      "skipped": true,
+      "candidates": 76,
       "posts": 10,
       "comments": 1000,
       "errors": 0
     }
   },
-  "finished_at": "2026-07-15T07:24:17.216164Z"
+  "finished_at": "2026-07-15T07:41:46.629536Z"
 }

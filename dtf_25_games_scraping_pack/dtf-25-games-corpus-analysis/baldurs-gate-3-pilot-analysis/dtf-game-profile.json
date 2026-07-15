@@ -1,0 +1,252 @@
+{
+  "gameId": "baldurs-gate-3",
+  "title": "Baldur’s Gate 3",
+  "corpusScope": {
+    "postCount": 7,
+    "commentCount": 217,
+    "phases": [
+      "pre_release",
+      "release_or_early_response",
+      "retrospective"
+    ]
+  },
+  "strongMotifs": [
+    {
+      "key": "classic_crpg_mainstream_breakthrough",
+      "label": "Классическая CRPG выходит к широкой аудитории",
+      "neutralSummary": "Участники связывают успех игры с тем, что изометрическая партийная RPG и D&D-подобные системы получили массовое внимание.",
+      "category": "genre_and_comparisons",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 62,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    },
+    {
+      "key": "developer_early_access_and_community",
+      "label": "Larian, ранний доступ и контакт с сообществом",
+      "neutralSummary": "В обсуждении связывают результат с опытом Larian, длительным ранним доступом и взаимодействием с игроками.",
+      "category": "developer_and_publisher",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 61,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    },
+    {
+      "key": "turn_based_combat_and_builds",
+      "label": "Пошаговые бои, классы и сборки",
+      "neutralSummary": "Комментарии сравнивают пошаговую боевую систему, информативность интерфейса и свободу сборок с другими RPG.",
+      "category": "gameplay_and_systems",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 60,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    },
+    {
+      "key": "crpg_comparisons",
+      "label": "Сравнение с другими партийными RPG",
+      "neutralSummary": "Baldur’s Gate 3 сопоставляют с Rogue Trader, Divinity, Pathfinder и более широким полем современных RPG.",
+      "category": "genre_and_comparisons",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 50,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    },
+    {
+      "key": "awards_and_backlash",
+      "label": "Награды, рейтинги и обратная реакция на успех",
+      "neutralSummary": "Награды и первые места в рейтингах становятся поводом спорить о масштабе заслуг, вкусе и реакции на успех игры.",
+      "category": "community_meme",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 49,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2254962",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    },
+    {
+      "key": "patches_and_mod_support",
+      "label": "Патчи, моды и продолжающаяся поддержка",
+      "neutralSummary": "Позднее обсуждение связывает возвращение к игре с крупными патчами, модами и доработками после релиза.",
+      "category": "technical_state",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 31,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144",
+        "2968530"
+      ]
+    },
+    {
+      "key": "dice_and_randomness",
+      "label": "Кубики, проверки и управляемая случайность",
+      "neutralSummary": "Кубики и проверки рассматриваются как видимый механизм риска, который меняет темп и направление решений.",
+      "category": "gameplay_and_systems",
+      "strength": "strong",
+      "postCount": 4,
+      "commentCount": 29,
+      "confidence": 0.91,
+      "evidencePostIds": [
+        "1977565",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    },
+    {
+      "key": "community_pasta_and_hater_banter",
+      "label": "Пасты, мемы и перепалки вокруг хейта",
+      "neutralSummary": "Часть веток поддерживает узнаваемые пасты и иронические перепалки между защитниками игры и её критиками.",
+      "category": "community_meme",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 22,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144",
+        "2968530"
+      ]
+    },
+    {
+      "key": "third_act_and_late_game",
+      "label": "Неровность поздней части и третьего акта",
+      "neutralSummary": "Часть участников противопоставляет отполированные ранние акты более спорному темпу, завершению и плотности поздней игры.",
+      "category": "technical_state",
+      "strength": "strong",
+      "postCount": 2,
+      "commentCount": 20,
+      "confidence": 0.81,
+      "evidencePostIds": [
+        "2059618",
+        "2370927"
+      ]
+    },
+    {
+      "key": "companions_and_romance",
+      "label": "Спутники, отношения и романтические линии",
+      "neutralSummary": "Обсуждение уделяет внимание спутникам, их характерам, отношениям с игроком и романтическим выборам.",
+      "category": "characters_and_relationships",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 19,
+      "confidence": 0.95,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144"
+      ]
+    },
+    {
+      "key": "player_agency_and_consequences",
+      "label": "Свобода решений и последствия выбора",
+      "neutralSummary": "Участники обсуждают, насколько игра превращает выборы, проверки и последствия в заметную часть прохождения.",
+      "category": "narrative_and_choices",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 17,
+      "confidence": 0.94,
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2370927",
+        "2376144",
+        "3083243"
+      ]
+    }
+  ],
+  "mediumMotifs": [],
+  "singleThreadMotifs": [],
+  "mainDebates": [
+    "late_game_quality",
+    "turn_based_combat",
+    "awards_and_overexposure",
+    "genre_mainstreaming"
+  ],
+  "commonPraise": [
+    "classic_crpg_mainstream_breakthrough",
+    "developer_early_access_and_community",
+    "turn_based_combat_and_builds",
+    "crpg_comparisons",
+    "patches_and_mod_support",
+    "dice_and_randomness",
+    "third_act_and_late_game",
+    "companions_and_romance"
+  ],
+  "commonCriticism": [
+    "developer_early_access_and_community",
+    "patches_and_mod_support",
+    "community_pasta_and_hater_banter",
+    "third_act_and_late_game",
+    "player_agency_and_consequences"
+  ],
+  "defenceArguments": [
+    "strengths_outweigh_flaws",
+    "genre_not_for_everyone",
+    "community_overreacted",
+    "patches_improved_it"
+  ],
+  "comparisonTargets": [],
+  "recurringMemes": [
+    "awards_and_backlash",
+    "community_pasta_and_hater_banter"
+  ],
+  "discussionArc": "mixed_without_clear_shift",
+  "spoilerSensitiveMotifs": [
+    "companions_and_romance",
+    "third_act_and_late_game"
+  ],
+  "genericMotifsToAvoid": [
+    "game_is_good_or_bad",
+    "there_are_bugs",
+    "fans_defend_the_game",
+    "characters_are_good",
+    "somebody_calls_it_overrated"
+  ],
+  "scopeNote": "Профиль относится только к выбранным публичным DTF-веткам, а не ко всему DTF."
+}

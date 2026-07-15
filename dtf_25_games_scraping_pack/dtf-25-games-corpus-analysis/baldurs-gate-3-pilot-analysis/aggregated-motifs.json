@@ -1,0 +1,798 @@
+{
+  "gameId": "baldurs-gate-3",
+  "motifs": [
+    {
+      "key": "classic_crpg_mainstream_breakthrough",
+      "label": "Классическая CRPG выходит к широкой аудитории",
+      "neutralSummary": "Участники связывают успех игры с тем, что изометрическая партийная RPG и D&D-подобные системы получили массовое внимание.",
+      "category": "genre_and_comparisons",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 62,
+      "independentThreadCount": 50,
+      "highRatedCommentCount": 23,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 6,
+        "supportive": 25,
+        "mixed": 17,
+        "neutral": 7,
+        "ironic": 7
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "high",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27410199,
+            27410229,
+            27409902,
+            27410951
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28710215,
+            28700052,
+            28715381,
+            28715322
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31863100,
+            31857905
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33635835,
+            33641386,
+            33636313,
+            33635967
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904329,
+            33904347,
+            33904493,
+            33904468
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44334960,
+            44333510,
+            44338288
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "developer_early_access_and_community",
+      "label": "Larian, ранний доступ и контакт с сообществом",
+      "neutralSummary": "В обсуждении связывают результат с опытом Larian, длительным ранним доступом и взаимодействием с игроками.",
+      "category": "developer_and_publisher",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 61,
+      "independentThreadCount": 49,
+      "highRatedCommentCount": 22,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 6,
+        "supportive": 19,
+        "mixed": 19,
+        "neutral": 15,
+        "ironic": 2
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "medium",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27410229,
+            27411039,
+            27409902,
+            27411747
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28691839,
+            28692201,
+            28691943,
+            28693879
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31852563,
+            31852364,
+            31852811,
+            31854702
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33636072,
+            33637623,
+            33635835,
+            33637751
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33908451,
+            33918051
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44335051,
+            44335257,
+            44342461
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "turn_based_combat_and_builds",
+      "label": "Пошаговые бои, классы и сборки",
+      "neutralSummary": "Комментарии сравнивают пошаговую боевую систему, информативность интерфейса и свободу сборок с другими RPG.",
+      "category": "gameplay_and_systems",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 60,
+      "independentThreadCount": 48,
+      "highRatedCommentCount": 20,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 2,
+        "supportive": 26,
+        "mixed": 16,
+        "neutral": 14,
+        "ironic": 2
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "medium",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27410350,
+            27412280,
+            27411718,
+            27424565
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28692201,
+            28696071,
+            28782322,
+            28790879
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33637623,
+            33635835,
+            33637751,
+            33635648
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904329,
+            33904347,
+            33904493,
+            33904468
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44334433,
+            44335051,
+            44335257,
+            44334960
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "crpg_comparisons",
+      "label": "Сравнение с другими партийными RPG",
+      "neutralSummary": "Baldur’s Gate 3 сопоставляют с Rogue Trader, Divinity, Pathfinder и более широким полем современных RPG.",
+      "category": "genre_and_comparisons",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 50,
+      "independentThreadCount": 45,
+      "highRatedCommentCount": 11,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 2,
+        "supportive": 20,
+        "mixed": 15,
+        "neutral": 12,
+        "ironic": 1
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "high",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27411039,
+            27409902,
+            27411747,
+            27411343
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28696071,
+            28691993
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31854702,
+            31859655
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33637623,
+            33635835,
+            33637751,
+            33641386
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33908757,
+            33905077,
+            33908451,
+            34037488
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44342461,
+            44338534,
+            44338568,
+            44338450
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "awards_and_backlash",
+      "label": "Награды, рейтинги и обратная реакция на успех",
+      "neutralSummary": "Награды и первые места в рейтингах становятся поводом спорить о масштабе заслуг, вкусе и реакции на успех игры.",
+      "category": "community_meme",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 49,
+      "independentThreadCount": 37,
+      "highRatedCommentCount": 24,
+      "phases": [
+        "pre_release",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 1,
+        "supportive": 20,
+        "mixed": 17,
+        "neutral": 2,
+        "ironic": 9
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": true,
+      "gameSpecificity": "medium",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27412280,
+            27424565,
+            27423744,
+            27423278
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31852358,
+            31852563,
+            31852356,
+            31852133
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33636273,
+            33640017,
+            33695732,
+            33650854
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904329,
+            33904347,
+            33904468,
+            33904415
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44334433,
+            44335051,
+            44334711,
+            44335257
+          ]
+        }
+      ],
+      "puzzleSafe": false
+    },
+    {
+      "key": "patches_and_mod_support",
+      "label": "Патчи, моды и продолжающаяся поддержка",
+      "neutralSummary": "Позднее обсуждение связывает возвращение к игре с крупными патчами, модами и доработками после релиза.",
+      "category": "technical_state",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 31,
+      "independentThreadCount": 23,
+      "highRatedCommentCount": 17,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 1,
+        "supportive": 10,
+        "mixed": 13,
+        "neutral": 4,
+        "ironic": 3
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "medium",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27424565,
+            27423744,
+            27423278,
+            27422653
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28692201,
+            28696071
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31854702,
+            31893854
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33636072,
+            33635835,
+            33636313,
+            33636273
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904329,
+            33904347,
+            33904468,
+            33904415
+          ]
+        },
+        {
+          "postId": "2968530",
+          "commentIds": [
+            42794457,
+            42794366,
+            42799378
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "dice_and_randomness",
+      "label": "Кубики, проверки и управляемая случайность",
+      "neutralSummary": "Кубики и проверки рассматриваются как видимый механизм риска, который меняет темп и направление решений.",
+      "category": "gameplay_and_systems",
+      "strength": "strong",
+      "postCount": 4,
+      "commentCount": 29,
+      "independentThreadCount": 20,
+      "highRatedCommentCount": 13,
+      "phases": [
+        "pre_release",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 3,
+        "supportive": 14,
+        "mixed": 1,
+        "neutral": 8,
+        "ironic": 3
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "high",
+      "confidence": 0.91,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27410229,
+            27411747,
+            27411343,
+            27410350
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33636440,
+            33647093
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904329,
+            33904347,
+            33904493,
+            33904468
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44338173,
+            44338145,
+            44338534,
+            44338568
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "community_pasta_and_hater_banter",
+      "label": "Пасты, мемы и перепалки вокруг хейта",
+      "neutralSummary": "Часть веток поддерживает узнаваемые пасты и иронические перепалки между защитниками игры и её критиками.",
+      "category": "community_meme",
+      "strength": "strong",
+      "postCount": 6,
+      "commentCount": 22,
+      "independentThreadCount": 18,
+      "highRatedCommentCount": 15,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 0,
+        "supportive": 1,
+        "mixed": 2,
+        "neutral": 3,
+        "ironic": 16
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": true,
+      "gameSpecificity": "medium",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27410229,
+            27410563
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28692231,
+            28692145,
+            28692214,
+            28693022
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31852358,
+            31852133,
+            31852369,
+            31852472
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33645522,
+            33670348
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904468,
+            33905588,
+            33906464,
+            33905988
+          ]
+        },
+        {
+          "postId": "2968530",
+          "commentIds": [
+            42799378,
+            42819913,
+            42811863
+          ]
+        }
+      ],
+      "puzzleSafe": false
+    },
+    {
+      "key": "third_act_and_late_game",
+      "label": "Неровность поздней части и третьего акта",
+      "neutralSummary": "Часть участников противопоставляет отполированные ранние акты более спорному темпу, завершению и плотности поздней игры.",
+      "category": "technical_state",
+      "strength": "strong",
+      "postCount": 2,
+      "commentCount": 20,
+      "independentThreadCount": 15,
+      "highRatedCommentCount": 8,
+      "phases": [
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 0,
+        "supportive": 7,
+        "mixed": 8,
+        "neutral": 3,
+        "ironic": 2
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "high",
+      "confidence": 0.81,
+      "evidence": [
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28692110,
+            28691839,
+            28692231,
+            28691793
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33636072,
+            33636273,
+            33643060
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "companions_and_romance",
+      "label": "Спутники, отношения и романтические линии",
+      "neutralSummary": "Обсуждение уделяет внимание спутникам, их характерам, отношениям с игроком и романтическим выборам.",
+      "category": "characters_and_relationships",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 19,
+      "independentThreadCount": 14,
+      "highRatedCommentCount": 10,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 1,
+        "supportive": 7,
+        "mixed": 4,
+        "neutral": 4,
+        "ironic": 3
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "high",
+      "confidence": 0.95,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27410199,
+            27413481
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28696071
+          ]
+        },
+        {
+          "postId": "2254962",
+          "commentIds": [
+            31854404
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33636440,
+            33639194,
+            33645522,
+            33648761
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33904329,
+            33904347,
+            33904468,
+            33904415
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    },
+    {
+      "key": "player_agency_and_consequences",
+      "label": "Свобода решений и последствия выбора",
+      "neutralSummary": "Участники обсуждают, насколько игра превращает выборы, проверки и последствия в заметную часть прохождения.",
+      "category": "narrative_and_choices",
+      "strength": "strong",
+      "postCount": 5,
+      "commentCount": 17,
+      "independentThreadCount": 16,
+      "highRatedCommentCount": 6,
+      "phases": [
+        "pre_release",
+        "release_or_early_response",
+        "retrospective"
+      ],
+      "stanceCounts": {
+        "critical": 1,
+        "supportive": 7,
+        "mixed": 7,
+        "neutral": 2,
+        "ironic": 0
+      },
+      "origin": "recurring_in_dtf_corpus",
+      "likelyGeneralGamingMeme": false,
+      "gameSpecificity": "high",
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "postId": "1977565",
+          "commentIds": [
+            27409863,
+            27412280
+          ]
+        },
+        {
+          "postId": "2059618",
+          "commentIds": [
+            28692201,
+            28696071
+          ]
+        },
+        {
+          "postId": "2370927",
+          "commentIds": [
+            33641386,
+            33636313,
+            33636440,
+            33639194
+          ]
+        },
+        {
+          "postId": "2376144",
+          "commentIds": [
+            33921327
+          ]
+        },
+        {
+          "postId": "3083243",
+          "commentIds": [
+            44334433,
+            44335051,
+            44335257,
+            44334960
+          ]
+        }
+      ],
+      "puzzleSafe": true
+    }
+  ]
+}

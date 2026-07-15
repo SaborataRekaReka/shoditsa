@@ -157,8 +157,21 @@ test('server exposes the first assist checkpoint after five attempts', async ({ 
   await expect(page.locator('.hint-modal-backdrop')).toBeHidden()
   await page.locator('.hint-trigger').first().click()
   await expect(page.getByRole('heading', { name: 'Выберите подсказку' })).toBeVisible()
+  let releaseHintRequest: () => void = () => undefined
+  const hintRequestGate = new Promise<void>((resolve) => { releaseHintRequest = resolve })
+  await page.route('**/api/v1/games/*/hints', async (route) => {
+    await hintRequestGate
+    await route.continue()
+  }, { times: 1 })
   await page.locator('.hint-modal__options button').first().click()
+  await expect(page.getByRole('heading', { name: 'Открываем подсказку' })).toBeVisible()
+  await expect(page.locator('.hint-modal__options')).toHaveCount(0)
+  releaseHintRequest()
+  await expect(page.getByRole('heading', { name: 'Подсказка открыта' })).toBeVisible()
   await expect(page.locator('.assist-reveal-card')).toBeVisible()
+  await expect(page.locator('.hint-modal-backdrop')).toBeVisible()
+  await page.getByRole('button', { name: 'Понятно' }).click()
+  await expect(page.locator('.hint-modal-backdrop')).toBeHidden()
 })
 
 test('guest economy is server-backed and invalid promo errors are visible', async ({ page }) => {

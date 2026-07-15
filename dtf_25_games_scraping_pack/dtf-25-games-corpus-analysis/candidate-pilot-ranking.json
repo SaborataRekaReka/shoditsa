@@ -1,0 +1,475 @@
+{
+  "generatedAt": "2026-07-15T09:31:14.171875Z",
+  "ranking": [
+    {
+      "gameId": "dragon-age-the-veilguard",
+      "score": 0.87,
+      "selectedPostCount": 8,
+      "selectedCommentCount": 284,
+      "phaseDiversity": 3,
+      "stanceDiversity": 1.0,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 8 релевантных публикаций и 284 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 1.00."
+      ],
+      "risks": [
+        "Серия Dragon Age и ранние части не смешиваются с Veilguard без явного сравнения."
+      ]
+    },
+    {
+      "gameId": "baldurs-gate-3",
+      "score": 0.809,
+      "selectedPostCount": 7,
+      "selectedCommentCount": 217,
+      "phaseDiversity": 3,
+      "stanceDiversity": 1.0,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 7 релевантных публикаций и 217 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 1.00."
+      ],
+      "risks": [
+        "Общих с другими папками сохранённых постов: 1."
+      ]
+    },
+    {
+      "gameId": "assassins-creed-shadows",
+      "score": 0.796,
+      "selectedPostCount": 8,
+      "selectedCommentCount": 186,
+      "phaseDiversity": 3,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 8 релевантных публикаций и 186 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Новости всей серии Assassin's Creed не равны материалу о Shadows."
+      ]
+    },
+    {
+      "gameId": "the-day-before",
+      "score": 0.791,
+      "selectedPostCount": 9,
+      "selectedCommentCount": 165,
+      "phaseDiversity": 3,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 9 релевантных публикаций и 165 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": []
+    },
+    {
+      "gameId": "concord",
+      "score": 0.785,
+      "selectedPostCount": 8,
+      "selectedCommentCount": 201,
+      "phaseDiversity": 3,
+      "stanceDiversity": 1.0,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 8 релевантных публикаций и 201 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 1.00."
+      ],
+      "risks": [
+        "Concord — обычное английское слово; одиночное совпадение без Firewalk, PlayStation или игры считается неоднозначным."
+      ]
+    },
+    {
+      "gameId": "clair-obscur-expedition-33",
+      "score": 0.777,
+      "selectedPostCount": 8,
+      "selectedCommentCount": 265,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "high",
+      "reasons": [
+        "Сохранено 8 релевантных публикаций и 265 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Общих с другими папками сохранённых постов: 1."
+      ]
+    },
+    {
+      "gameId": "atomic-heart",
+      "score": 0.775,
+      "selectedPostCount": 8,
+      "selectedCommentCount": 180,
+      "phaseDiversity": 3,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 8 релевантных публикаций и 180 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Общих с другими папками сохранённых постов: 1."
+      ]
+    },
+    {
+      "gameId": "hogwarts-legacy",
+      "score": 0.703,
+      "selectedPostCount": 6,
+      "selectedCommentCount": 179,
+      "phaseDiversity": 3,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 6 релевантных публикаций и 179 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Новости франшизы Harry Potter без Legacy требуют отдельного подтверждения."
+      ]
+    },
+    {
+      "gameId": "elden-ring",
+      "score": 0.688,
+      "selectedPostCount": 6,
+      "selectedCommentCount": 150,
+      "phaseDiversity": 3,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 6 релевантных публикаций и 150 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": []
+    },
+    {
+      "gameId": "cyberpunk-2077",
+      "score": 0.642,
+      "selectedPostCount": 6,
+      "selectedCommentCount": 172,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 6 релевантных публикаций и 172 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": []
+    },
+    {
+      "gameId": "starfield",
+      "score": 0.614,
+      "selectedPostCount": 5,
+      "selectedCommentCount": 143,
+      "phaseDiversity": 3,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 5 релевантных публикаций и 143 комментариев.",
+        "Подтверждено фаз обсуждения: 3.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": []
+    },
+    {
+      "gameId": "bloodborne",
+      "score": 0.605,
+      "selectedPostCount": 6,
+      "selectedCommentCount": 156,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 6 релевантных публикаций и 156 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Сравнения с другими Souls-играми не всегда относятся к Bloodborne как к самостоятельному объекту.",
+        "Общих с другими папками сохранённых постов: 1."
+      ]
+    },
+    {
+      "gameId": "no-mans-sky",
+      "score": 0.6,
+      "selectedPostCount": 6,
+      "selectedCommentCount": 196,
+      "phaseDiversity": 1,
+      "stanceDiversity": 0.6,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 6 релевантных публикаций и 196 комментариев.",
+        "Подтверждено фаз обсуждения: 1.",
+        "Разнообразие позиций в очищенной выборке: 0.60."
+      ],
+      "risks": [
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций."
+      ]
+    },
+    {
+      "gameId": "grand-theft-auto-v",
+      "score": 0.549,
+      "selectedPostCount": 4,
+      "selectedCommentCount": 98,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.6,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 4 релевантных публикаций и 98 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.60."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Посты о GTA VI и GTA Online отдельно маркируются, если GTA V не является темой."
+      ]
+    },
+    {
+      "gameId": "kingdom-come-deliverance-ii",
+      "score": 0.542,
+      "selectedPostCount": 3,
+      "selectedCommentCount": 88,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 3 релевантных публикаций и 88 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Первая часть Kingdom Come не считается второй частью без явного сравнения."
+      ]
+    },
+    {
+      "gameId": "the-last-of-us-part-ii",
+      "score": 0.504,
+      "selectedPostCount": 3,
+      "selectedCommentCount": 109,
+      "phaseDiversity": 1,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "high",
+      "reasons": [
+        "Сохранено 3 релевантных публикаций и 109 комментариев.",
+        "Подтверждено фаз обсуждения: 1.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Материалы о сериале HBO, первой части и ремастере не равны обсуждению Part II; возможны сюжетные спойлеры."
+      ]
+    },
+    {
+      "gameId": "death-stranding",
+      "score": 0.487,
+      "selectedPostCount": 3,
+      "selectedCommentCount": 85,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "medium",
+      "reasons": [
+        "Сохранено 3 релевантных публикаций и 85 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Отделяйте обсуждения второй части от первой, если связь не пояснена.",
+        "Общих с другими папками сохранённых постов: 1."
+      ]
+    },
+    {
+      "gameId": "helldivers-2",
+      "score": 0.477,
+      "selectedPostCount": 4,
+      "selectedCommentCount": 101,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.4,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 4 релевантных публикаций и 101 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.40."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев."
+      ]
+    },
+    {
+      "gameId": "stalker-2",
+      "score": 0.463,
+      "selectedPostCount": 2,
+      "selectedCommentCount": 41,
+      "phaseDiversity": 2,
+      "stanceDiversity": 0.6,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 2 релевантных публикаций и 41 комментариев.",
+        "Подтверждено фаз обсуждения: 2.",
+        "Разнообразие позиций в очищенной выборке: 0.60."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Посты о классической трилогии и модах на неё не считаются автоматически релевантными второй части."
+      ]
+    },
+    {
+      "gameId": "skyrim",
+      "score": 0.434,
+      "selectedPostCount": 4,
+      "selectedCommentCount": 99,
+      "phaseDiversity": 1,
+      "stanceDiversity": 0.8,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 4 релевантных публикаций и 99 комментариев.",
+        "Подтверждено фаз обсуждения: 1.",
+        "Разнообразие позиций в очищенной выборке: 0.80."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Материалы о TES в целом и других частях серии не принимаются за материалы именно о Skyrim."
+      ]
+    },
+    {
+      "gameId": "red-dead-redemption-2",
+      "score": 0.372,
+      "selectedPostCount": 1,
+      "selectedCommentCount": 32,
+      "phaseDiversity": 1,
+      "stanceDiversity": 0.6,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 1 релевантных публикаций и 32 комментариев.",
+        "Подтверждено фаз обсуждения: 1.",
+        "Разнообразие позиций в очищенной выборке: 0.60."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев."
+      ]
+    },
+    {
+      "gameId": "silent-hill-2-remake",
+      "score": 0.31,
+      "selectedPostCount": 1,
+      "selectedCommentCount": 18,
+      "phaseDiversity": 1,
+      "stanceDiversity": 0.2,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "high",
+      "reasons": [
+        "Сохранено 1 релевантных публикаций и 18 комментариев.",
+        "Подтверждено фаз обсуждения: 1.",
+        "Разнообразие позиций в очищенной выборке: 0.20."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Оригинал Silent Hill 2 и ремейк считаются разными объектами; имя Maria само по себе неоднозначно."
+      ]
+    },
+    {
+      "gameId": "disco-elysium",
+      "score": 0.278,
+      "selectedPostCount": 1,
+      "selectedCommentCount": 8,
+      "phaseDiversity": 0,
+      "stanceDiversity": 0.4,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "medium",
+      "reasons": [
+        "Сохранено 1 релевантных публикаций и 8 комментариев.",
+        "Подтверждено фаз обсуждения: 0.",
+        "Разнообразие позиций в очищенной выборке: 0.40."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев."
+      ]
+    },
+    {
+      "gameId": "fallout-76",
+      "score": 0.127,
+      "selectedPostCount": 1,
+      "selectedCommentCount": 16,
+      "phaseDiversity": 1,
+      "stanceDiversity": 0.2,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "low",
+      "reasons": [
+        "Сохранено 1 релевантных публикаций и 16 комментариев.",
+        "Подтверждено фаз обсуждения: 1.",
+        "Разнообразие позиций в очищенной выборке: 0.20."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Серия Fallout и сериал Fallout не эквивалентны Fallout 76."
+      ]
+    },
+    {
+      "gameId": "the-witcher-3",
+      "score": 0.004,
+      "selectedPostCount": 0,
+      "selectedCommentCount": 0,
+      "phaseDiversity": 0,
+      "stanceDiversity": 0.0,
+      "estimatedUniqueMotifPotential": "low",
+      "spoilerRisk": "medium",
+      "reasons": [
+        "Сохранено 0 релевантных публикаций и 0 комментариев.",
+        "Подтверждено фаз обсуждения: 0.",
+        "Разнообразие позиций в очищенной выборке: 0.00."
+      ],
+      "risks": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Посты о сериале, книгах и четвёртой части отделяются от Wild Hunt."
+      ]
+    }
+  ]
+}

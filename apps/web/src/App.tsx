@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameSessionSnapshot, GameStartBody, PublicContentItem } from '@shoditsa/contracts'
+import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameResponse, GameSessionSnapshot, GameStartBody, HintResponse, PublicContentItem } from '@shoditsa/contracts'
 import {
   AlertTriangle,
   ArrowDown,
@@ -3223,6 +3223,24 @@ const publicItemToTitle = (item: PublicContentItem): TitleItem => {
 
 const serverAttemptToLegacy = (entry: GameAttemptSnapshot): Attempt => ({ titleId: entry.item.id, hints: entry.hints })
 
+const withRevealedServerHint = (current: GameResponse | undefined, response: HintResponse): GameResponse | undefined => {
+  if (!current) return current
+  const nextChoice = { checkpoint: response.checkpoint, hintKey: response.hintKey, response }
+  const hintChoices = current.session.hintChoices.some((choice) => choice.checkpoint === response.checkpoint)
+    ? current.session.hintChoices.map((choice) => choice.checkpoint === response.checkpoint ? nextChoice : choice)
+    : [...current.session.hintChoices, nextChoice].sort((left, right) => left.checkpoint - right.checkpoint)
+  return {
+    ...current,
+    session: {
+      ...current.session,
+      hintChoices,
+      hintCheckpoints: current.session.hintCheckpoints.map((checkpoint) => checkpoint.round === response.checkpoint
+        ? { ...checkpoint, state: 'opened' }
+        : checkpoint),
+    },
+  }
+}
+
 function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, onConfigureMode, onSessionLoaded }: {
   sessionId: string
   onHome: () => void
@@ -3243,6 +3261,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const [copied, setCopied] = useState(false)
   const [gameMatchStripOpen, setGameMatchStripOpen] = useState(false)
   const [hintModalRound, setHintModalRound] = useState<5 | 8 | null>(null)
+  const [revealedHint, setRevealedHint] = useState<HintResponse | null>(null)
   const [dismissedHintRounds, setDismissedHintRounds] = useState<Array<5 | 8>>([])
   const [lastAward, setLastAward] = useState<AttemptResponse['reward'] | null>(null)
   const attemptKeyRef = useRef<string | null>(null)
@@ -3278,9 +3297,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const hint = useMutation({
     mutationFn: ({ checkpoint, hintKey, key }: { checkpoint: 5 | 8; hintKey: AssistHintKey; key: string }) => api.hint(sessionId, checkpoint, hintKey, key),
     retry: (count, error) => count < 1 && error instanceof ApiClientError && error.code === 'NETWORK_TIMEOUT',
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       hintKeyRef.current = null
-      setHintModalRound(null)
+      client.setQueryData<GameResponse>(queryKeys.game(sessionId), (current) => withRevealedServerHint(current, response))
+      setRevealedHint(response)
       setMessage('')
       await client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
     },
@@ -3292,6 +3312,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   useEffect(() => {
     setHintModalRound(null)
+    setRevealedHint(null)
     setDismissedHintRounds([])
   }, [sessionId])
 
@@ -3310,13 +3331,20 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const canUseHint = session?.status === 'playing' && hintOptions.length > 0 && pendingHintRounds.length > 0
   const availableHintRound = pendingHintRounds[0] ?? null
   const dismissHintModal = useCallback(() => {
+    if (hint.isPending) return
+    if (revealedHint) {
+      setRevealedHint(null)
+      setHintModalRound(null)
+      return
+    }
     if (hintModalRound) {
       setDismissedHintRounds((current) => current.includes(hintModalRound) ? current : [...current, hintModalRound])
     }
     setHintModalRound(null)
-  }, [hintModalRound])
+  }, [hint.isPending, hintModalRound, revealedHint])
 
   useEffect(() => {
+    if (revealedHint) return
     if (!canUseHint) {
       if (hintModalRound) setHintModalRound(null)
       return
@@ -3328,7 +3356,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     if (!hintModalRound && nextUndismissedHintRound) {
       setHintModalRound(nextUndismissedHintRound)
     }
-  }, [canUseHint, hintModalRound, nextUndismissedHintRound, pendingHintRounds])
+  }, [canUseHint, hintModalRound, nextUndismissedHintRound, pendingHintRounds, revealedHint])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -3381,11 +3409,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     attempt.mutate({ itemId: item.id, key })
   }
   const revealHint = (hintKey: AssistHintKey) => {
-    if (!hintModalRound || hint.isPending) return
+    if (!hintModalRound || hint.isPending || revealedHint) return
     const key = hintKeyRef.current ?? crypto.randomUUID()
     hintKeyRef.current = key
     hint.mutate({ checkpoint: hintModalRound, hintKey, key })
   }
+  const pendingHintOption = hintOptions.find((option) => option.key === hint.variables?.hintKey) ?? null
   const completedModes = dashboard.data?.today?.completedModes ?? []
   const completedToday = new Set(completedModes).size
   const nextMode = nextDailyMode(session.mode, completedModes)
@@ -3434,7 +3463,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {isPromoSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
       {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => setHintModalRound(availableHintRound)}><Sparkles /> Подсказка</ActionButton>}</div>
+      <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
@@ -3476,7 +3505,30 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         return item.mode === 'diagnosis' ? <DiagnosisAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'game' ? <GameAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'music' ? <MusicAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : <AttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
       })}</section>}
     </main>
-    {hintModalRound && hintOptions.length > 0 && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}><section className="hint-modal" role="dialog" aria-modal="true"><div className="hint-modal__head"><span><Sparkles /> Возможность · попытка {hintModalRound}</span><button onClick={dismissHintModal} aria-label="Закрыть"><X /></button></div><h2>Выберите подсказку</h2><div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)} disabled={hint.isPending}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div><button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button></section></div>}
+    {hintModalRound && (hintOptions.length > 0 || revealedHint) && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
+      <section className="hint-modal" role="dialog" aria-modal="true">
+        <div className="hint-modal__head">
+          <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
+          <button onClick={dismissHintModal} aria-label="Закрыть" disabled={hint.isPending}><X /></button>
+        </div>
+        {hint.isPending ? <div className="hint-modal__state" role="status" aria-live="polite">
+          <Sparkles className="hint-modal__spinner" />
+          <h2>Открываем подсказку</h2>
+          <p>{pendingHintOption?.title ?? 'Проверяем доступную информацию'}…</p>
+        </div> : revealedHint ? <>
+          <h2>Подсказка открыта</h2>
+          <article className="hint-modal__reveal">
+            <span><Sparkles /> {revealedHint.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {revealedHint.checkpoint} попыток</span>
+            <p>{Array.isArray(revealedHint.value) ? revealedHint.value.join(', ') : String(revealedHint.value ?? '—')}</p>
+          </article>
+          <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>
+        </> : <>
+          <h2>Выберите подсказку</h2>
+          <div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div>
+          <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
+        </>}
+      </section>
+    </div>}
   </>
 }
 

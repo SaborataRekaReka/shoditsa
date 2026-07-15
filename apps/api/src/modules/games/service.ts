@@ -342,84 +342,135 @@ const normalizeHintPeople = (hints: Hint[]) => hints.map((hint) => (
 
 const cleanHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
 const cropHintText = (value: string, max = 190) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
-const compactList = (label: string, values: Array<string | null | undefined>, limit = 3) => {
-  const normalized = values.map((value) => cleanHintText(value)).filter(Boolean)
-  if (!normalized.length) return ''
-  return `${label}: ${normalized.slice(0, limit).join(', ')}`
-}
-
 const normalizeHintMatch = (value: unknown) => cleanHintText(value).toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
-const matchedAttemptValues = (attempts: Array<{ hints: Hint[] }>) => new Set(attempts.flatMap((attempt) => attempt.hints.flatMap((hint) => [
-  ...(hint.status === 'match' ? [hint.value] : []),
-  ...(hint.matchedValues ?? []),
-]).map(normalizeHintMatch).filter(Boolean)))
 
-const removeMatchedCandidateValues = (candidate: string, matched: Set<string>) => {
-  const separator = candidate.indexOf(':')
-  if (separator < 0) return matched.has(normalizeHintMatch(candidate)) ? '' : candidate
-  const label = candidate.slice(0, separator)
-  const values = candidate.slice(separator + 1).split(',').map((value) => value.trim()).filter(Boolean)
-  const remaining = values.filter((value) => !matched.has(normalizeHintMatch(value)))
-  return remaining.length ? `${label}: ${remaining.join(', ')}` : ''
+type RevealedFieldEvidence = { fullyRevealed: boolean; values: Set<string> }
+type RevealedAttemptEvidence = { byHintKey: Map<string, RevealedFieldEvidence>; values: Set<string> }
+type InfoHintCandidate = { sourceKey: string | null; label: string; values: string[] }
+
+const addRevealedValue = (target: Set<string>, value: unknown) => {
+  const normalized = normalizeHintMatch(value)
+  if (normalized) target.add(normalized)
 }
 
-const infoHintCandidates = (answer: TitleItem) => {
+const addRevealedDisplayValues = (target: Set<string>, value: unknown) => {
+  for (const part of cleanHintText(value).split(',').map((entry) => entry.trim()).filter(Boolean)) {
+    addRevealedValue(target, part)
+  }
+}
+
+const revealedAttemptEvidence = (attempts: Array<{ hints: Hint[] }>): RevealedAttemptEvidence => {
+  const byHintKey = new Map<string, RevealedFieldEvidence>()
+  const values = new Set<string>()
+
+  for (const attempt of attempts) {
+    for (const hint of attempt.hints) {
+      const field = byHintKey.get(hint.key) ?? { fullyRevealed: false, values: new Set<string>() }
+      if (hint.status === 'match') {
+        field.fullyRevealed = true
+        addRevealedValue(values, hint.value)
+        addRevealedDisplayValues(values, hint.value)
+      } else if (hint.status === 'partial') {
+        addRevealedDisplayValues(field.values, hint.value)
+        addRevealedDisplayValues(values, hint.value)
+      }
+      for (const value of hint.matchedValues ?? []) {
+        addRevealedValue(field.values, value)
+        addRevealedValue(values, value)
+      }
+      for (const person of hint.people ?? []) {
+        if (!person.matched) continue
+        addRevealedValue(field.values, person.nameRu)
+        addRevealedValue(field.values, person.nameOriginal)
+        addRevealedValue(values, person.nameRu)
+        addRevealedValue(values, person.nameOriginal)
+      }
+      byHintKey.set(hint.key, field)
+    }
+  }
+
+  return { byHintKey, values }
+}
+
+const infoListCandidate = (sourceKey: string | null, label: string, values: Array<string | null | undefined>, limit = 3): InfoHintCandidate | null => {
+  const normalized = values.map((value) => cleanHintText(value)).filter(Boolean).slice(0, limit)
+  return normalized.length ? { sourceKey, label, values: normalized } : null
+}
+
+const infoScalarCandidate = (sourceKey: string | null, label: string, value: unknown): InfoHintCandidate | null => {
+  const normalized = cleanHintText(value)
+  return normalized ? { sourceKey, label, values: [normalized] } : null
+}
+
+const presentInfoCandidates = (candidates: Array<InfoHintCandidate | null>): InfoHintCandidate[] =>
+  candidates.filter((candidate): candidate is InfoHintCandidate => candidate !== null)
+
+const renderInfoCandidate = (candidate: InfoHintCandidate, evidence: RevealedAttemptEvidence) => {
+  const field = candidate.sourceKey ? evidence.byHintKey.get(candidate.sourceKey) : null
+  if (field?.fullyRevealed) return ''
+  const remaining = candidate.values.filter((value) => !field?.values.has(normalizeHintMatch(value)))
+  return remaining.length ? `${candidate.label}: ${remaining.join(', ')}` : ''
+}
+
+const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
   if (answer.mode === 'music') {
-    return [
-      compactList('Страна', (answer.countries ?? []).map(localizeMusicCountry), 2),
-      answer.activityStartYear ? `Начало деятельности: ${answer.activityStartYear}` : '',
-      `Тип: ${musicTypeLabel(answer.musicType)}`,
-      answer.musicOrigin ? `Сцена: ${musicOriginLabel(answer.musicOrigin)}` : '',
-      compactList('Жанры', answer.genres ?? [], 3),
-      compactList('Топ-треки', (answer.topTracks ?? []).map((track) => track.title), 2),
-    ].filter(Boolean)
+    return presentInfoCandidates([
+      infoListCandidate('country', 'Страна', (answer.countries ?? []).map(localizeMusicCountry), 2),
+      infoScalarCandidate('activity_start_year', 'Начало деятельности', answer.activityStartYear),
+      infoScalarCandidate('music_type', 'Тип', musicTypeLabel(answer.musicType)),
+      answer.musicOrigin ? infoScalarCandidate('music_origin', 'Сцена', musicOriginLabel(answer.musicOrigin)) : null,
+      infoListCandidate('genres', 'Жанры', answer.genres ?? [], 3),
+      infoListCandidate(null, 'Топ-треки', (answer.topTracks ?? []).map((track) => track.title), 2),
+    ])
   }
 
   if (answer.mode === 'game') {
-    return [
-      answer.year ? `Год релиза: ${answer.year}` : '',
-      compactList('Жанры', answer.genres ?? [], 3),
-      compactList('Платформы', answer.platforms ?? [], 3),
-      compactList('Разработчики', answer.developers ?? [], 2),
-      answer.topRank ? `Позиция в топе: #${answer.topRank}` : '',
-      answer.ratings?.metacritic != null || answer.metacritic != null ? `Metacritic: ${answer.ratings?.metacritic ?? answer.metacritic}` : '',
-    ].filter(Boolean)
+    return presentInfoCandidates([
+      answer.year ? infoScalarCandidate('year', 'Год релиза', answer.year) : null,
+      infoListCandidate('genres', 'Жанры', answer.genres ?? [], 3),
+      infoListCandidate('platforms', 'Платформы', answer.platforms ?? [], 3),
+      infoListCandidate('developer', 'Разработчики', answer.developers ?? [], 2),
+      answer.topRank ? infoScalarCandidate('rank', 'Позиция в топе', `#${answer.topRank}`) : null,
+      answer.ratings?.metacritic != null || answer.metacritic != null
+        ? infoScalarCandidate('metacritic', 'Metacritic', answer.ratings?.metacritic ?? answer.metacritic)
+        : null,
+    ])
   }
 
   if (answer.mode === 'diagnosis') {
-    return [
-      compactList('Системы организма', answer.bodySystems ?? [], 3),
-      compactList('Ключевые симптомы', answer.keySymptoms ?? [], 3),
-      compactList('Диагностика', answer.diagnostics ?? [], 3),
-      compactList('МКБ-10', answer.icd10 ?? [], 3),
-      answer.icdGroup ? `Группа: ${answer.icdGroup}` : '',
-    ].filter(Boolean)
+    return presentInfoCandidates([
+      infoListCandidate('body_systems', 'Системы организма', answer.bodySystems ?? [], 3),
+      infoListCandidate('symptoms', 'Ключевые симптомы', answer.keySymptoms ?? [], 3),
+      infoListCandidate('diagnostics', 'Диагностика', answer.diagnostics ?? [], 3),
+      infoListCandidate('icd', 'МКБ-10', answer.icd10 ?? [], 3),
+      answer.icdGroup ? infoScalarCandidate('icd', 'Группа', answer.icdGroup) : null,
+    ])
   }
 
   if (answer.mode === 'anime') {
-    return [
-      answer.animeKind ? `Формат: ${answer.animeKind}` : '',
-      answer.animeStatus ? `Статус: ${answer.animeStatus}` : '',
-      answer.episodes ? `Эпизоды: ${answer.episodes}` : '',
-      compactList('Студии', answer.studios ?? [], 2),
-      compactList('Жанры', answer.genres ?? [], 3),
-      answer.year ? `Год релиза: ${answer.year}` : '',
-    ].filter(Boolean)
+    return presentInfoCandidates([
+      answer.animeKind ? infoScalarCandidate('anime_kind', 'Формат', answer.animeKind) : null,
+      answer.animeStatus ? infoScalarCandidate('anime_status', 'Статус', answer.animeStatus) : null,
+      answer.episodes ? infoScalarCandidate('episodes', 'Эпизоды', answer.episodes) : null,
+      infoListCandidate('studio', 'Студии', answer.studios ?? [], 2),
+      infoListCandidate('genres', 'Жанры', answer.genres ?? [], 3),
+      answer.year ? infoScalarCandidate('year', 'Год релиза', answer.year) : null,
+    ])
   }
 
-  return [
-    answer.year ? `Год релиза: ${answer.year}` : '',
-    compactList('Страны', answer.countries ?? [], 2),
-    compactList('Жанры', answer.genres ?? [], 3),
-    compactList('Режиссёры', (answer.directors ?? []).map((person) => person.nameRu || person.nameOriginal), 2),
-    compactList('Каст', (answer.cast ?? []).map((person) => person.nameRu || person.nameOriginal), 3),
-  ].filter(Boolean)
+  return presentInfoCandidates([
+    answer.year ? infoScalarCandidate('year', 'Год релиза', answer.year) : null,
+    infoListCandidate('country', 'Страны', answer.countries ?? [], 2),
+    infoListCandidate('genres', 'Жанры', answer.genres ?? [], 3),
+    infoListCandidate('creator', 'Режиссёры', (answer.directors ?? []).map((person) => person.nameRu || person.nameOriginal), 2),
+    infoListCandidate('cast', 'Каст', (answer.cast ?? []).map((person) => person.nameRu || person.nameOriginal), 3),
+  ])
 }
 
 const animeModelFactValues = (answer: TitleItem) => {
   if (answer.mode !== 'anime') return new Set<string>()
   return new Set([
-    ...infoHintCandidates(answer),
+    ...infoHintCandidates(answer).map((candidate) => `${candidate.label}: ${candidate.values.join(', ')}`),
     answer.animeEpisodesAired != null ? `Вышло эпизодов: ${answer.animeEpisodesAired}` : '',
   ].map(normalizeHintMatch).filter(Boolean))
 }
@@ -443,25 +494,42 @@ type BuiltHintOption = {
   title: string
   subtitle: string
   value: string
+  sourceKey?: string
 }
 
-export const buildHintOptions = (answer: TitleItem, choices: Array<{ hintKey: string }>, attempts: Array<{ hints: Hint[] }> = []): BuiltHintOption[] => {
-  const options: BuiltHintOption[] = []
-  const matched = matchedAttemptValues(attempts)
+type ExistingHintChoice = { hintKey: string; response?: unknown }
 
-  const infoUsedCount = choices.filter((choice) => choice.hintKey === 'info').length
-  const infoValue = cleanHintText(infoHintCandidates(answer).map((candidate) => removeMatchedCandidateValues(candidate, matched)).filter(Boolean)[infoUsedCount] ?? '')
-  if (infoValue) {
+const hintChoiceSourceKey = (choice: ExistingHintChoice) => {
+  if (!choice.response || typeof choice.response !== 'object') return null
+  const sourceKey = (choice.response as { sourceKey?: unknown }).sourceKey
+  return typeof sourceKey === 'string' && sourceKey ? sourceKey : null
+}
+
+export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = []): BuiltHintOption[] => {
+  const options: BuiltHintOption[] = []
+  const evidence = revealedAttemptEvidence(attempts)
+
+  const openedInfoSourceKeys = new Set(choices
+    .filter((choice) => choice.hintKey === 'info')
+    .map(hintChoiceSourceKey)
+    .filter((sourceKey): sourceKey is string => Boolean(sourceKey)))
+  const legacyInfoUsedCount = choices.filter((choice) => choice.hintKey === 'info' && !hintChoiceSourceKey(choice)).length
+  const infoCandidate = infoHintCandidates(answer)
+    .filter((candidate) => !candidate.sourceKey || !openedInfoSourceKeys.has(candidate.sourceKey))
+    .map((candidate) => ({ candidate, value: cleanHintText(renderInfoCandidate(candidate, evidence)) }))
+    .filter((entry) => Boolean(entry.value))[legacyInfoUsedCount]
+  if (infoCandidate) {
     options.push({
       key: 'info',
       title: 'Неоткрытая информация',
       subtitle: 'Деталь о правильном ответе, которая ещё не показывалась',
-      value: infoValue,
+      value: infoCandidate.value,
+      ...(infoCandidate.candidate.sourceKey ? { sourceKey: infoCandidate.candidate.sourceKey } : {}),
     })
   }
 
   const factAlreadyOpened = choices.some((choice) => choice.hintKey === 'fact')
-  const factValue = factAlreadyOpened ? '' : factHintValue(answer, matched)
+  const factValue = factAlreadyOpened ? '' : factHintValue(answer, evidence.values)
   if (factValue) {
     options.push({
       key: 'fact',
@@ -600,7 +668,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   const hintOptions = isPromoSession
     ? []
     : answer
-      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey) })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
+      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
       : []
   const result: Record<string, unknown> = {
     id: session.id, kind: session.kind, mode: session.mode, variantKey: challengeVariant, period: session.period, difficulty: session.difficulty,
@@ -700,14 +768,19 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   if (isPromoSessionVariant(session.mode, variantKey)) {
     throw new ApiError(422, 'HINT_DISABLED_FOR_PROMO', 'В промо-режиме доступны только подсказки из пакета')
   }
-  const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))
+  const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey, response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))
   if (existingChoices.some((choice) => choice.checkpoint === checkpoint)) throw new ApiError(409, 'HINT_ALREADY_CHOSEN', 'Подсказка на этом этапе уже выбрана')
   const answers = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const priorAttempts = await tx.select({ hints: gameAttempts.hintsSnapshot }).from(gameAttempts).where(eq(gameAttempts.sessionId, session.id)).orderBy(asc(gameAttempts.position))
-  const options = buildHintOptions(answers[0].payload as TitleItem, existingChoices.map((choice) => ({ hintKey: String(choice.hintKey) })), priorAttempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
+  const options = buildHintOptions(answers[0].payload as TitleItem, existingChoices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), priorAttempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
   const selectedOption = options.find((option) => option.key === hintKey)
   if (!selectedOption) throw new ApiError(422, 'HINT_NOT_AVAILABLE', 'Для этого этапа нет доступных вариантов подсказки')
-  const response = { checkpoint, hintKey: selectedOption.key, value: selectedOption.value }
+  const response = {
+    checkpoint,
+    hintKey: selectedOption.key,
+    value: selectedOption.value,
+    ...(selectedOption.sourceKey ? { sourceKey: selectedOption.sourceKey } : {}),
+  }
   await tx.insert(gameHintChoices).values({ sessionId, checkpoint, hintKey, responseSnapshot: response, idempotencyKey })
   return response
 })

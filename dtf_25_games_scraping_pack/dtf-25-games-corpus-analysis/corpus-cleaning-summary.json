@@ -1,0 +1,897 @@
+{
+  "generatedAt": "2026-07-15T09:31:14.171637Z",
+  "gamesProcessed": 25,
+  "sourcePosts": 250,
+  "uniqueSourcePosts": 218,
+  "sharedPosts": 19,
+  "selectedPostAssignments": 118,
+  "sourceComments": 25000,
+  "uniqueSourceComments": 21800,
+  "selectedCommentAssignments": 3189,
+  "games": [
+    {
+      "gameId": "assassins-creed-shadows",
+      "canonicalTitle": "Assassin's Creed Shadows",
+      "sourcePosts": 10,
+      "selectedPosts": 8,
+      "sourceComments": 1000,
+      "selectedComments": 186,
+      "primaryPosts": 8,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.259,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.858,
+      "warnings": [
+        "Новости всей серии Assassin's Creed не равны материалу о Shadows."
+      ],
+      "sourcePostClasses": {
+        "incidental": 2,
+        "primary": 8
+      },
+      "sourceCommentClasses": {
+        "adaptation_or_franchise_context": 4,
+        "developer_context": 9,
+        "general_industry": 8,
+        "offtopic": 251,
+        "platform_context": 2,
+        "publisher_context": 1,
+        "target_game": 170,
+        "unclear": 555
+      }
+    },
+    {
+      "gameId": "atomic-heart",
+      "canonicalTitle": "Atomic Heart",
+      "sourcePosts": 10,
+      "selectedPosts": 8,
+      "sourceComments": 1000,
+      "selectedComments": 180,
+      "primaryPosts": 7,
+      "comparativePosts": 1,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.143,
+      "sharedSelectedPosts": 1,
+      "qualityScore": 0.83,
+      "warnings": [],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 1,
+        "primary": 7,
+        "unclear": 1
+      },
+      "sourceCommentClasses": {
+        "developer_context": 5,
+        "general_industry": 4,
+        "offtopic": 139,
+        "platform_context": 10,
+        "target_game": 172,
+        "unclear": 670
+      }
+    },
+    {
+      "gameId": "baldurs-gate-3",
+      "canonicalTitle": "Baldur's Gate 3",
+      "sourcePosts": 10,
+      "selectedPosts": 7,
+      "sourceComments": 1000,
+      "selectedComments": 217,
+      "primaryPosts": 7,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 1.0,
+      "offtopicRate": 0.235,
+      "sharedSelectedPosts": 1,
+      "qualityScore": 0.846,
+      "warnings": [],
+      "sourcePostClasses": {
+        "incidental": 2,
+        "primary": 7,
+        "unclear": 1
+      },
+      "sourceCommentClasses": {
+        "developer_context": 11,
+        "general_industry": 11,
+        "offtopic": 224,
+        "platform_context": 7,
+        "publisher_context": 4,
+        "target_game": 206,
+        "unclear": 537
+      }
+    },
+    {
+      "gameId": "bloodborne",
+      "canonicalTitle": "Bloodborne",
+      "sourcePosts": 10,
+      "selectedPosts": 6,
+      "sourceComments": 1000,
+      "selectedComments": 156,
+      "primaryPosts": 4,
+      "comparativePosts": 2,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.402,
+      "sharedSelectedPosts": 1,
+      "qualityScore": 0.637,
+      "warnings": [
+        "Сравнения с другими Souls-играми не всегда относятся к Bloodborne как к самостоятельному объекту."
+      ],
+      "sourcePostClasses": {
+        "comparative": 2,
+        "incidental": 4,
+        "primary": 4
+      },
+      "sourceCommentClasses": {
+        "general_industry": 3,
+        "offtopic": 399,
+        "platform_context": 39,
+        "target_game": 124,
+        "unclear": 435
+      }
+    },
+    {
+      "gameId": "clair-obscur-expedition-33",
+      "canonicalTitle": "Clair Obscur: Expedition 33",
+      "sourcePosts": 10,
+      "selectedPosts": 8,
+      "sourceComments": 1000,
+      "selectedComments": 265,
+      "primaryPosts": 8,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.237,
+      "sharedSelectedPosts": 1,
+      "qualityScore": 0.848,
+      "warnings": [],
+      "sourcePostClasses": {
+        "incidental": 2,
+        "primary": 8
+      },
+      "sourceCommentClasses": {
+        "general_industry": 7,
+        "offtopic": 230,
+        "platform_context": 11,
+        "publisher_context": 2,
+        "target_game": 255,
+        "unclear": 495
+      }
+    },
+    {
+      "gameId": "concord",
+      "canonicalTitle": "Concord",
+      "sourcePosts": 10,
+      "selectedPosts": 8,
+      "sourceComments": 1000,
+      "selectedComments": 201,
+      "primaryPosts": 6,
+      "comparativePosts": 1,
+      "showcasePosts": 1,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 1.0,
+      "offtopicRate": 0.256,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.817,
+      "warnings": [
+        "Concord — обычное английское слово; одиночное совпадение без Firewalk, PlayStation или игры считается неоднозначным."
+      ],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 2,
+        "primary": 6,
+        "showcase_segment": 1
+      },
+      "sourceCommentClasses": {
+        "developer_context": 2,
+        "general_industry": 14,
+        "offtopic": 242,
+        "platform_context": 21,
+        "publisher_context": 5,
+        "target_game": 180,
+        "unclear": 536
+      }
+    },
+    {
+      "gameId": "cyberpunk-2077",
+      "canonicalTitle": "Cyberpunk 2077",
+      "sourcePosts": 10,
+      "selectedPosts": 6,
+      "sourceComments": 1000,
+      "selectedComments": 172,
+      "primaryPosts": 5,
+      "comparativePosts": 1,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.382,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.685,
+      "warnings": [],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 4,
+        "primary": 5
+      },
+      "sourceCommentClasses": {
+        "comparison": 1,
+        "general_industry": 6,
+        "offtopic": 376,
+        "platform_context": 11,
+        "publisher_context": 2,
+        "target_game": 161,
+        "unclear": 443
+      }
+    },
+    {
+      "gameId": "death-stranding",
+      "canonicalTitle": "Death Stranding",
+      "sourcePosts": 10,
+      "selectedPosts": 3,
+      "sourceComments": 1000,
+      "selectedComments": 85,
+      "primaryPosts": 2,
+      "comparativePosts": 0,
+      "showcasePosts": 1,
+      "phaseCoverage": [
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.384,
+      "sharedSelectedPosts": 1,
+      "qualityScore": 0.492,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Отделяйте обсуждения второй части от первой, если связь не пояснена."
+      ],
+      "sourcePostClasses": {
+        "incidental": 4,
+        "primary": 2,
+        "showcase_segment": 1,
+        "unclear": 3
+      },
+      "sourceCommentClasses": {
+        "developer_context": 1,
+        "general_industry": 9,
+        "offtopic": 375,
+        "platform_context": 9,
+        "publisher_context": 6,
+        "target_game": 124,
+        "unclear": 476
+      }
+    },
+    {
+      "gameId": "disco-elysium",
+      "canonicalTitle": "Disco Elysium",
+      "sourcePosts": 10,
+      "selectedPosts": 1,
+      "sourceComments": 1000,
+      "selectedComments": 8,
+      "primaryPosts": 1,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [],
+      "stanceDiversity": 0.4,
+      "offtopicRate": 0.717,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.339,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев."
+      ],
+      "sourcePostClasses": {
+        "incidental": 8,
+        "primary": 1,
+        "unclear": 1
+      },
+      "sourceCommentClasses": {
+        "general_industry": 7,
+        "offtopic": 710,
+        "platform_context": 3,
+        "target_game": 34,
+        "unclear": 246
+      }
+    },
+    {
+      "gameId": "dragon-age-the-veilguard",
+      "canonicalTitle": "Dragon Age: The Veilguard",
+      "sourcePosts": 10,
+      "selectedPosts": 8,
+      "sourceComments": 1000,
+      "selectedComments": 284,
+      "primaryPosts": 8,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 1.0,
+      "offtopicRate": 0.19,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.913,
+      "warnings": [
+        "Серия Dragon Age и ранние части не смешиваются с Veilguard без явного сравнения."
+      ],
+      "sourcePostClasses": {
+        "incidental": 2,
+        "primary": 8
+      },
+      "sourceCommentClasses": {
+        "developer_context": 6,
+        "general_industry": 2,
+        "offtopic": 188,
+        "platform_context": 10,
+        "publisher_context": 6,
+        "target_game": 267,
+        "unclear": 521
+      }
+    },
+    {
+      "gameId": "elden-ring",
+      "canonicalTitle": "Elden Ring",
+      "sourcePosts": 10,
+      "selectedPosts": 6,
+      "sourceComments": 1000,
+      "selectedComments": 150,
+      "primaryPosts": 5,
+      "comparativePosts": 1,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.394,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.717,
+      "warnings": [],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 4,
+        "primary": 5
+      },
+      "sourceCommentClasses": {
+        "comparison": 4,
+        "developer_context": 1,
+        "general_industry": 17,
+        "offtopic": 377,
+        "platform_context": 1,
+        "target_game": 165,
+        "unclear": 435
+      }
+    },
+    {
+      "gameId": "fallout-76",
+      "canonicalTitle": "Fallout 76",
+      "sourcePosts": 10,
+      "selectedPosts": 1,
+      "sourceComments": 1000,
+      "selectedComments": 16,
+      "primaryPosts": 0,
+      "comparativePosts": 1,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal"
+      ],
+      "stanceDiversity": 0.2,
+      "offtopicRate": 0.768,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.113,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Серия Fallout и сериал Fallout не эквивалентны Fallout 76."
+      ],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 9
+      },
+      "sourceCommentClasses": {
+        "adaptation_or_franchise_context": 2,
+        "comparison": 2,
+        "general_industry": 2,
+        "offtopic": 766,
+        "publisher_context": 2,
+        "target_game": 22,
+        "unclear": 204
+      }
+    },
+    {
+      "gameId": "grand-theft-auto-v",
+      "canonicalTitle": "Grand Theft Auto V",
+      "sourcePosts": 10,
+      "selectedPosts": 4,
+      "sourceComments": 1000,
+      "selectedComments": 98,
+      "primaryPosts": 4,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release"
+      ],
+      "stanceDiversity": 0.6,
+      "offtopicRate": 0.524,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.597,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Посты о GTA VI и GTA Online отдельно маркируются, если GTA V не является темой."
+      ],
+      "sourcePostClasses": {
+        "incidental": 6,
+        "primary": 4
+      },
+      "sourceCommentClasses": {
+        "general_industry": 2,
+        "offtopic": 522,
+        "platform_context": 12,
+        "target_game": 102,
+        "unclear": 362
+      }
+    },
+    {
+      "gameId": "helldivers-2",
+      "canonicalTitle": "Helldivers 2",
+      "sourcePosts": 10,
+      "selectedPosts": 4,
+      "sourceComments": 1000,
+      "selectedComments": 101,
+      "primaryPosts": 3,
+      "comparativePosts": 1,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.4,
+      "offtopicRate": 0.559,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.518,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев."
+      ],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 6,
+        "primary": 3
+      },
+      "sourceCommentClasses": {
+        "comparison": 1,
+        "developer_context": 4,
+        "general_industry": 7,
+        "offtopic": 552,
+        "platform_context": 12,
+        "target_game": 92,
+        "unclear": 332
+      }
+    },
+    {
+      "gameId": "hogwarts-legacy",
+      "canonicalTitle": "Hogwarts Legacy",
+      "sourcePosts": 10,
+      "selectedPosts": 6,
+      "sourceComments": 1000,
+      "selectedComments": 179,
+      "primaryPosts": 5,
+      "comparativePosts": 1,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.325,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.731,
+      "warnings": [
+        "Новости франшизы Harry Potter без Legacy требуют отдельного подтверждения."
+      ],
+      "sourcePostClasses": {
+        "comparative": 1,
+        "incidental": 4,
+        "primary": 5
+      },
+      "sourceCommentClasses": {
+        "general_industry": 4,
+        "offtopic": 321,
+        "platform_context": 34,
+        "target_game": 146,
+        "unclear": 495
+      }
+    },
+    {
+      "gameId": "kingdom-come-deliverance-ii",
+      "canonicalTitle": "Kingdom Come: Deliverance II",
+      "sourcePosts": 10,
+      "selectedPosts": 3,
+      "sourceComments": 1000,
+      "selectedComments": 88,
+      "primaryPosts": 3,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.583,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.567,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Первая часть Kingdom Come не считается второй частью без явного сравнения."
+      ],
+      "sourcePostClasses": {
+        "incidental": 7,
+        "primary": 3
+      },
+      "sourceCommentClasses": {
+        "general_industry": 6,
+        "offtopic": 577,
+        "platform_context": 2,
+        "target_game": 91,
+        "unclear": 324
+      }
+    },
+    {
+      "gameId": "no-mans-sky",
+      "canonicalTitle": "No Man's Sky",
+      "sourcePosts": 10,
+      "selectedPosts": 6,
+      "sourceComments": 1000,
+      "selectedComments": 196,
+      "primaryPosts": 6,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "pre_release"
+      ],
+      "stanceDiversity": 0.6,
+      "offtopicRate": 0.371,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.68,
+      "warnings": [
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций."
+      ],
+      "sourcePostClasses": {
+        "incidental": 4,
+        "primary": 6
+      },
+      "sourceCommentClasses": {
+        "developer_context": 3,
+        "general_industry": 5,
+        "offtopic": 366,
+        "platform_context": 9,
+        "publisher_context": 2,
+        "target_game": 185,
+        "unclear": 430
+      }
+    },
+    {
+      "gameId": "red-dead-redemption-2",
+      "canonicalTitle": "Red Dead Redemption 2",
+      "sourcePosts": 10,
+      "selectedPosts": 1,
+      "sourceComments": 1000,
+      "selectedComments": 32,
+      "primaryPosts": 1,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal"
+      ],
+      "stanceDiversity": 0.6,
+      "offtopicRate": 0.696,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.405,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев."
+      ],
+      "sourcePostClasses": {
+        "incidental": 8,
+        "primary": 1,
+        "unclear": 1
+      },
+      "sourceCommentClasses": {
+        "adaptation_or_franchise_context": 1,
+        "developer_context": 1,
+        "general_industry": 6,
+        "offtopic": 690,
+        "target_game": 37,
+        "unclear": 265
+      }
+    },
+    {
+      "gameId": "silent-hill-2-remake",
+      "canonicalTitle": "Silent Hill 2 Remake",
+      "sourcePosts": 10,
+      "selectedPosts": 1,
+      "sourceComments": 1000,
+      "selectedComments": 18,
+      "primaryPosts": 1,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal"
+      ],
+      "stanceDiversity": 0.2,
+      "offtopicRate": 0.725,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.366,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Оригинал Silent Hill 2 и ремейк считаются разными объектами; имя Maria само по себе неоднозначно."
+      ],
+      "sourcePostClasses": {
+        "incidental": 8,
+        "primary": 1,
+        "unclear": 1
+      },
+      "sourceCommentClasses": {
+        "general_industry": 1,
+        "offtopic": 724,
+        "target_game": 56,
+        "unclear": 219
+      }
+    },
+    {
+      "gameId": "skyrim",
+      "canonicalTitle": "The Elder Scrolls V: Skyrim",
+      "sourcePosts": 10,
+      "selectedPosts": 4,
+      "sourceComments": 1000,
+      "selectedComments": 99,
+      "primaryPosts": 2,
+      "comparativePosts": 2,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.461,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.452,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Материалы о TES в целом и других частях серии не принимаются за материалы именно о Skyrim."
+      ],
+      "sourcePostClasses": {
+        "comparative": 2,
+        "incidental": 6,
+        "primary": 2
+      },
+      "sourceCommentClasses": {
+        "comparison": 3,
+        "developer_context": 4,
+        "general_industry": 5,
+        "offtopic": 456,
+        "platform_context": 1,
+        "target_game": 128,
+        "unclear": 403
+      }
+    },
+    {
+      "gameId": "stalker-2",
+      "canonicalTitle": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+      "sourcePosts": 10,
+      "selectedPosts": 2,
+      "sourceComments": 1000,
+      "selectedComments": 41,
+      "primaryPosts": 2,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.6,
+      "offtopicRate": 0.625,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.492,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Посты о классической трилогии и модах на неё не считаются автоматически релевантными второй части."
+      ],
+      "sourcePostClasses": {
+        "incidental": 8,
+        "primary": 2
+      },
+      "sourceCommentClasses": {
+        "comparison": 1,
+        "developer_context": 8,
+        "general_industry": 4,
+        "offtopic": 621,
+        "target_game": 65,
+        "unclear": 301
+      }
+    },
+    {
+      "gameId": "starfield",
+      "canonicalTitle": "Starfield",
+      "sourcePosts": 10,
+      "selectedPosts": 5,
+      "sourceComments": 1000,
+      "selectedComments": 143,
+      "primaryPosts": 3,
+      "comparativePosts": 2,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.386,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.616,
+      "warnings": [],
+      "sourcePostClasses": {
+        "comparative": 2,
+        "incidental": 4,
+        "primary": 3,
+        "unclear": 1
+      },
+      "sourceCommentClasses": {
+        "developer_context": 4,
+        "general_industry": 10,
+        "offtopic": 376,
+        "platform_context": 2,
+        "target_game": 141,
+        "unclear": 467
+      }
+    },
+    {
+      "gameId": "the-day-before",
+      "canonicalTitle": "The Day Before",
+      "sourcePosts": 10,
+      "selectedPosts": 9,
+      "sourceComments": 1000,
+      "selectedComments": 165,
+      "primaryPosts": 9,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "post_release_update_or_reappraisal",
+        "pre_release",
+        "release_or_early_response"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.144,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.856,
+      "warnings": [],
+      "sourcePostClasses": {
+        "incidental": 1,
+        "primary": 9
+      },
+      "sourceCommentClasses": {
+        "developer_context": 22,
+        "general_industry": 11,
+        "offtopic": 133,
+        "platform_context": 2,
+        "target_game": 143,
+        "unclear": 689
+      }
+    },
+    {
+      "gameId": "the-last-of-us-part-ii",
+      "canonicalTitle": "The Last of Us Part II",
+      "sourcePosts": 10,
+      "selectedPosts": 3,
+      "sourceComments": 1000,
+      "selectedComments": 109,
+      "primaryPosts": 3,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [
+        "pre_release"
+      ],
+      "stanceDiversity": 0.8,
+      "offtopicRate": 0.347,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.546,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Материалы о сериале HBO, первой части и ремастере не равны обсуждению Part II; возможны сюжетные спойлеры."
+      ],
+      "sourcePostClasses": {
+        "incidental": 4,
+        "primary": 3,
+        "unclear": 3
+      },
+      "sourceCommentClasses": {
+        "adaptation_or_franchise_context": 2,
+        "developer_context": 1,
+        "general_industry": 2,
+        "offtopic": 345,
+        "platform_context": 19,
+        "publisher_context": 1,
+        "target_game": 141,
+        "unclear": 489
+      }
+    },
+    {
+      "gameId": "the-witcher-3",
+      "canonicalTitle": "The Witcher 3: Wild Hunt",
+      "sourcePosts": 10,
+      "selectedPosts": 0,
+      "sourceComments": 1000,
+      "selectedComments": 0,
+      "primaryPosts": 0,
+      "comparativePosts": 0,
+      "showcasePosts": 0,
+      "phaseCoverage": [],
+      "stanceDiversity": 0.0,
+      "offtopicRate": 0.877,
+      "sharedSelectedPosts": 0,
+      "qualityScore": 0.006,
+      "warnings": [
+        "Меньше пяти постов прошли порог релевантности; для расширения корпуса нужен дополнительный скрапинг.",
+        "Подтверждено меньше двух фаз обсуждения среди отобранных публикаций.",
+        "Высока доля индустриального или платформенного офтопа среди исходной выборки комментариев.",
+        "Посты о сериале, книгах и четвёртой части отделяются от Wild Hunt."
+      ],
+      "sourcePostClasses": {
+        "incidental": 10
+      },
+      "sourceCommentClasses": {
+        "comparison": 1,
+        "general_industry": 6,
+        "offtopic": 871,
+        "target_game": 5,
+        "unclear": 117
+      }
+    }
+  ],
+  "method": "Rule-based first-pass classification with title/text/context signals, comment parent chains, conservative unclear outcomes, and no source-corpus mutation."
+}

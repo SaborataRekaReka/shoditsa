@@ -1,0 +1,52 @@
+{
+  "answerId": "baldurs-gate-3",
+  "guessId": "divinity-original-sin-2",
+  "guessReason": "Похожая партийная CRPG от Larian, прямо присутствующая в сравнительном поле исходных веток.",
+  "standardComparison": [
+    {
+      "axis": "developer",
+      "answer": "Larian Studios",
+      "guess": "Larian Studios",
+      "match": true
+    },
+    {
+      "axis": "format",
+      "answer": "party-based turn-based CRPG",
+      "guess": "party-based turn-based CRPG",
+      "match": true
+    },
+    {
+      "axis": "choice_and_builds",
+      "answer": "high player agency with checks and multiclassing",
+      "guess": "high player agency with systemic builds",
+      "match": "similar"
+    },
+    {
+      "axis": "release_context",
+      "answer": "2023 breakout and awards cycle",
+      "guess": "earlier Larian CRPG",
+      "match": false
+    }
+  ],
+  "dtfComparison": [
+    {
+      "field": "player_agency_and_consequences",
+      "answerValue": "supported_in_bg3_pilot",
+      "guessValue": "pending_other_game_analysis",
+      "status": "pending_other_game_analysis"
+    },
+    {
+      "field": "companions_and_romance",
+      "answerValue": "supported_in_bg3_pilot",
+      "guessValue": "pending_other_game_analysis",
+      "status": "pending_other_game_analysis"
+    },
+    {
+      "field": "late_game_consistency",
+      "answerValue": "mixed_with_third_act_criticism",
+      "guessValue": "pending_other_game_analysis",
+      "status": "pending_other_game_analysis"
+    }
+  ],
+  "summary": "Обычные признаки дают сильное сходство, но DTF-сравнение нельзя объявлять результатом без отдельного очищенного анализа Divinity: Original Sin 2."
+}

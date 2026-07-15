@@ -1,0 +1,93 @@
+{
+  "gameId": "baldurs-gate-3",
+  "answerId": "baldurs-gate-3",
+  "publicMode": "dtf_promo",
+  "hints": [
+    {
+      "key": "opening_1",
+      "unlockAfterAttempts": 0,
+      "text": "Ты придумал план. Игра придумала кубик.",
+      "style": "dtf_satirical",
+      "basedOnMotifs": [
+        "player_agency_and_consequences",
+        "dice_and_randomness"
+      ],
+      "spoilerRisk": "low",
+      "manualReviewRequired": true
+    },
+    {
+      "key": "opening_2",
+      "unlockAfterAttempts": 0,
+      "text": "Собрал отряд — получил ещё несколько мнений о каждом своём решении.",
+      "style": "dtf_satirical",
+      "basedOnMotifs": [
+        "companions_and_romance"
+      ],
+      "spoilerRisk": "low",
+      "manualReviewRequired": true
+    },
+    {
+      "key": "after_third_attempt",
+      "unlockAfterAttempts": 3,
+      "text": "Классическая изометрия вышла из ниши и теперь сама объясняет индустрии, как делать RPG.",
+      "style": "dtf_satirical",
+      "basedOnMotifs": [
+        "classic_crpg_mainstream_breakthrough",
+        "developer_early_access_and_community"
+      ],
+      "spoilerRisk": "low",
+      "manualReviewRequired": true
+    },
+    {
+      "key": "after_fifth_attempt",
+      "unlockAfterAttempts": 5,
+      "text": "Каждый новый рейтинг запускает бонусную схватку: кто именно дал ей первое место и почему это всех задело.",
+      "style": "sharp_dtf_satirical",
+      "basedOnMotifs": [
+        "awards_and_backlash",
+        "crpg_comparisons"
+      ],
+      "spoilerRisk": "low",
+      "manualReviewRequired": true
+    },
+    {
+      "key": "after_eighth_attempt",
+      "unlockAfterAttempts": 8,
+      "text": "Первые акты уже получили пятёрку, а третий всё ещё сдаёт пересдачу.",
+      "style": "dtf_satirical",
+      "basedOnMotifs": [
+        "third_act_and_late_game"
+      ],
+      "spoilerRisk": "medium",
+      "manualReviewRequired": true
+    },
+    {
+      "key": "after_ninth_attempt",
+      "unlockAfterAttempts": 9,
+      "text": "Это Baldur’s Gate 3 — та самая CRPG, после которой любой спор о RPG приходит с кубиком, спутником и обязательным «третий акт…».",
+      "style": "sharp_dtf_satirical",
+      "basedOnMotifs": [
+        "developer_early_access_and_community",
+        "dice_and_randomness",
+        "companions_and_romance",
+        "third_act_and_late_game",
+        "awards_and_backlash",
+        "classic_crpg_mainstream_breakthrough"
+      ],
+      "spoilerRisk": "medium",
+      "manualReviewRequired": true
+    }
+  ],
+  "publicComparisonFields": [
+    "year",
+    "genres",
+    "platforms",
+    "developer",
+    "publisher",
+    "gameFormat",
+    "ratings"
+  ],
+  "dtfMotifsInComparisonTable": false,
+  "openingCandidateGuidance": "Стартовые две реплики не называют Larian, D&D, конкретный класс или персонажа; они оставляют несколько партийных RPG-кандидатов.",
+  "finalScreenUsesMotifs": true
+}

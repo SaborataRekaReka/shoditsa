@@ -4,10 +4,11 @@ const json = (route: Route, body: unknown, status = 200) => route.fulfill({ stat
 
 const me = { user: { id: '07533c59-de3e-43f8-b40a-5a0fee06f557', email: 'breneize@yandex.ru', name: 'Владелец', role: 'admin', isAnonymous: false }, profile: {}, auth: { providers: ['credential'], hasPassword: true } }
 const workspace = { id: '10000000-0000-4000-8000-000000000001', status: 'open', baseRevisionId: '10000000-0000-4000-8000-000000000002', builtRevisionId: null, version: 1, changesCount: 0, errorsCount: 0, warningsCount: 0 }
-const payload = { id: 'movie:test-card', mode: 'movie', titleRu: 'Тестовая карточка', titleOriginal: 'Test card', alternativeTitles: [], year: 2024, plotHint: 'Достаточно длинная подсказка без ответа.', allowedInGame: true }
+const payload = { id: 'movie:test-card', mode: 'movie', titleRu: 'Тестовая карточка', titleOriginal: 'Test card', alternativeTitles: [], year: 2024, plotHint: 'История разворачивается под открытым небом.', allowedInGame: true }
 
 const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edit?: boolean } = {}) => {
   let savedPayload: Record<string, unknown> | null = null
+  let lastContentQuery = new URLSearchParams()
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request(); const url = new URL(request.url()); const path = url.pathname
     if (path === '/api/v1/me') return json(route, me)
@@ -16,13 +17,19 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
       : json(route, { status: 'ok', checks: { database: true, queueDepth: 0, mediaRootConfigured: true, enrichmentRootConfigured: true }, app: { version: 'e2e', gitSha: 'e2e' } })
     if (path === '/api/v1/admin/jobs') return json(route, { items: [] })
     if (path === '/api/v1/admin/content/workspace') return json(route, { ...workspace, changesCount: savedPayload ? 1 : 0 })
-    if (path === '/api/v1/admin/content/items' && request.method() === 'GET') return json(route, { items: [{ id: 'movie:test-card', versionId: '20000000-0000-4000-8000-000000000001', mode: 'movie', titleRu: String(savedPayload?.titleRu ?? payload.titleRu), titleOriginal: 'Test card', year: 2024, posterUrl: null, allowedInGame: true, reportsCount: 0, issuesCount: 0, completeness: 80, updatedAt: new Date().toISOString(), draftVersion: savedPayload ? 1 : null }], nextCursor: null, total: 1, filters: {} })
+    if (path === '/api/v1/admin/content/items' && request.method() === 'GET') {
+      lastContentQuery = new URLSearchParams(url.search)
+      const field = url.searchParams.get('field'); const fieldQ = url.searchParams.get('fieldQ')?.toLocaleLowerCase('ru-RU') ?? ''
+      const matches = !fieldQ || (field === 'plotHint' && String(payload.plotHint).toLocaleLowerCase('ru-RU').includes(fieldQ))
+      const items = matches ? [{ id: 'movie:test-card', versionId: '20000000-0000-4000-8000-000000000001', mode: 'movie', titleRu: String(savedPayload?.titleRu ?? payload.titleRu), titleOriginal: 'Test card', year: 2024, posterUrl: null, allowedInGame: true, reportsCount: 0, issuesCount: 0, completeness: 80, fieldsFilled: 8, fieldsTotal: 10, missingFields: [], hasHint: true, source: null, pipelineKey: null, tags: [], updatedAt: new Date().toISOString(), draftVersion: savedPayload ? 1 : null }] : []
+      return json(route, { items, nextCursor: null, total: items.length, filters: {} })
+    }
     if (path === '/api/v1/admin/content/items/movie%3Atest-card' && request.method() === 'GET') return json(route, {
       active: { id: '20000000-0000-4000-8000-000000000001', itemId: 'movie:test-card', mode: 'movie', payload, createdAt: new Date().toISOString(), revisionId: workspace.baseRevisionId },
       draft: savedPayload ? { id: '30000000-0000-4000-8000-000000000001', itemId: 'movie:test-card', mode: 'movie', afterPayload: savedPayload, beforePayload: payload, changedFields: ['titleRu'], version: 1, source: 'manual', validationIssues: [] } : null,
       workspace: { ...workspace, changesCount: savedPayload ? 1 : 0 },
       schema: { mode: 'movie', groups: [{ key: 'identity', title: 'Названия', fields: ['id', 'mode', 'titleRu', 'titleOriginal', 'alternativeTitles'] }, { key: 'game', title: 'Игра', fields: ['year', 'plotHint', 'allowedInGame'] }] },
-      reports: [], issues: [], decisions: [],
+      reports: [], issues: [], decisions: [], tags: [],
     })
     if (path === '/api/v1/admin/content/items/movie%3Atest-card/history') return json(route, { versions: [], drafts: [] })
     if (path === '/api/v1/admin/content/workspace/items/movie%3Atest-card' && request.method() === 'PUT') {
@@ -32,7 +39,7 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
     }
     return json(route, { error: { code: 'UNMOCKED', message: `${request.method()} ${path}`, requestId: 'e2e' } }, 404)
   })
-  return { savedPayload: () => savedPayload }
+  return { savedPayload: () => savedPayload, lastContentQuery: () => lastContentQuery }
 }
 
 test('exact server guard denies the admin shell even when /me reports an admin role', async ({ page }) => {
@@ -46,7 +53,7 @@ test('exact server guard denies the admin shell even when /me reports an admin r
 test('admin searches, opens and saves a card into the workspace', async ({ page }) => {
   const state = await installAdminMocks(page, { edit: true })
   await page.goto('/admin/content/movie%3Atest-card')
-  await expect(page.getByRole('heading', { name: 'Карточки' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Карточки', exact: true })).toBeVisible()
   await expect(page.getByRole('complementary', { name: 'Карточка movie:test-card' })).toBeVisible()
   const titleInput = page.locator('.admin-field').filter({ hasText: 'Title Ru' }).locator('input')
   await titleInput.fill('Исправленная карточка')
@@ -54,4 +61,16 @@ test('admin searches, opens and saves a card into the workspace', async ({ page 
   await expect(page.getByText('Карточка сохранена в рабочую версию')).toBeVisible()
   await expect.poll(() => String(state.savedPayload()?.titleRu ?? '')).toBe('Исправленная карточка')
   await expect(page.getByText('1 изменений')).toBeVisible()
+})
+
+test('paired content filter sends the selected field and partial value to the server', async ({ page }) => {
+  const state = await installAdminMocks(page)
+  await page.goto('/admin/content?mode=movie')
+  await expect(page.getByRole('heading', { name: 'Карточки · Кино' })).toBeVisible()
+  await page.getByLabel('Поле для фильтрации').selectOption('plotHint')
+  await page.getByLabel('Значение поля').fill('небо')
+  await expect.poll(() => state.lastContentQuery().get('field')).toBe('plotHint')
+  await expect.poll(() => state.lastContentQuery().get('fieldQ')).toBe('небо')
+  await expect(page.getByText('Тестовая карточка')).toBeVisible()
+  await expect(page.getByText('Вся база')).toBeVisible()
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { TitleItem } from '@shoditsa/contracts'
+import type { Hint, TitleItem } from '@shoditsa/contracts'
 import { buildHintOptions, publicCard } from '../src/modules/games/service.js'
 
 describe('public game card', () => {
@@ -71,6 +71,98 @@ describe('public game card', () => {
 })
 
 describe('server hint options', () => {
+  it('applies the resolved-field rule across every game mode', () => {
+    const cases: Array<{ answer: TitleItem; hints: Hint[]; expected: string }> = [
+      {
+        answer: {
+          id: 'movie_1', mode: 'movie', titleRu: 'Фильм', titleOriginal: 'Movie', alternativeTitles: [], popularityScore: 0,
+          year: 2003, countries: ['США', 'Канада'], genres: ['драма'],
+        } as TitleItem,
+        hints: [
+          { key: 'year', label: 'Год', value: '2003', status: 'match', direction: null },
+          { key: 'country', label: 'Страна', value: 'США, Канада', status: 'match', direction: null },
+        ],
+        expected: 'Жанры: драма',
+      },
+      {
+        answer: {
+          id: 'anime_1', mode: 'anime', titleRu: 'Аниме', titleOriginal: 'Anime', alternativeTitles: [], popularityScore: 0,
+          animeKind: 'Фильм', animeStatus: 'Вышло', episodes: 1, studios: ['Studio A'], genres: ['Драма'], year: 2020,
+        } as TitleItem,
+        hints: [
+          { key: 'anime_kind', label: 'Формат', value: 'Фильм', status: 'match', direction: null },
+          { key: 'anime_status', label: 'Статус', value: 'Вышло', status: 'match', direction: null },
+          { key: 'episodes', label: 'Эпизоды', value: '1', status: 'match', direction: null },
+        ],
+        expected: 'Студии: Studio A',
+      },
+      {
+        answer: {
+          id: 'diagnosis_1', mode: 'diagnosis', titleRu: 'Диагноз', titleOriginal: 'Diagnosis', alternativeTitles: [], popularityScore: 0,
+          bodySystems: ['Нервная система'], keySymptoms: ['Головная боль'], diagnostics: ['МРТ'],
+        } as TitleItem,
+        hints: [
+          { key: 'body_systems', label: 'Система', value: 'Нервная система', status: 'match', direction: null },
+        ],
+        expected: 'Ключевые симптомы: Головная боль',
+      },
+      {
+        answer: {
+          id: 'music_1', mode: 'music', titleRu: 'Артист', titleOriginal: 'Artist', alternativeTitles: [], popularityScore: 0,
+          countries: ['US'], activityStartYear: 2000, musicType: 'group', genres: ['Rock'],
+        } as TitleItem,
+        hints: [
+          { key: 'country', label: 'Страна', value: 'США', status: 'match', direction: null },
+          { key: 'activity_start_year', label: 'Начало деятельности', value: '2000', status: 'match', direction: null },
+          { key: 'music_type', label: 'Тип артиста', value: 'Группа', status: 'match', direction: null },
+        ],
+        expected: 'Жанры: Rock',
+      },
+    ]
+
+    for (const testCase of cases) {
+      const options = buildHintOptions(testCase.answer, [], [{ hints: testCase.hints }])
+      expect(options.find((option) => option.key === 'info')?.value).toBe(testCase.expected)
+    }
+  })
+
+  it('removes already matched people from partially revealed fields', () => {
+    const answer = {
+      id: 'movie_people', mode: 'movie', titleRu: 'Фильм', titleOriginal: 'Movie', alternativeTitles: [], popularityScore: 0,
+      year: 2003,
+      countries: ['США'],
+      genres: ['драма'],
+      directors: [{ nameRu: 'Первый режиссёр', nameOriginal: '' }, { nameRu: 'Второй режиссёр', nameOriginal: '' }],
+    } as TitleItem
+    const hints: Hint[] = [
+      { key: 'year', label: 'Год', value: '2003', status: 'match', direction: null },
+      { key: 'country', label: 'Страна', value: 'США', status: 'match', direction: null },
+      { key: 'genres', label: 'Жанры', value: 'драма', status: 'match', direction: null },
+      {
+        key: 'creator', label: 'Режиссёр', value: 'Первый режиссёр', status: 'partial', direction: null,
+        people: [{ nameRu: 'Первый режиссёр', nameOriginal: '', matched: true }],
+      },
+    ]
+
+    const options = buildHintOptions(answer, [], [{ hints }])
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Режиссёры: Второй режиссёр')
+  })
+
+  it('tracks the revealed source field instead of skipping by a mutable list index', () => {
+    const answer = {
+      id: 'game_source', mode: 'game', titleRu: 'Игра', titleOriginal: 'Game', alternativeTitles: [], popularityScore: 0,
+      year: 1998, genres: ['Racing'], platforms: ['Nintendo 64'], developers: ['Nintendo EAD'],
+    } as TitleItem
+    const attempts = [{
+      hints: [{ key: 'year', label: 'Год', value: '1998', status: 'match' as const, direction: null }],
+    }]
+
+    const options = buildHintOptions(answer, [{ hintKey: 'info', response: { sourceKey: 'genres', value: 'Жанры: Racing' } }], attempts)
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Платформы: Nintendo 64')
+  })
+
   it('does not repeat matched facts and removes matched values from list facts', () => {
     const answer = {
       id: 'game_1',

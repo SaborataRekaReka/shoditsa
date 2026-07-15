@@ -322,6 +322,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     const active = (await deps.db.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
     if (!active) return { items: [], nextCursor: null, total: 0, filters: query }
     const workspace = await getOrCreateWorkspace(deps.db, actor)
+    const effectivePayload = sql<Record<string, unknown>>`coalesce((select cwc.after_payload from content_workspace_changes cwc where cwc.workspace_id = ${workspace.id} and cwc.item_id = ${contentItemVersions.itemId} limit 1), ${contentItemVersions.payload})`
     const filters = [eq(contentItemVersions.revisionId, active.id)]
     if (query.mode) filters.push(eq(contentItemVersions.mode, query.mode))
     if (query.publication === 'published') filters.push(eq(contentItemVersions.allowedInGame, true))
@@ -330,8 +331,8 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     if (query.hasReports === false) filters.push(sql`not exists (select 1 from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`)
     if (query.hasIssues === true) filters.push(sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
     if (query.hasIssues === false) filters.push(sql`not exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`)
-    if (query.hasHint === true) filters.push(sql`coalesce(nullif(trim(${contentItemVersions.payload}->>'plotHint'), ''), nullif(trim(${contentItemVersions.payload}->>'description'), '')) is not null`)
-    if (query.hasHint === false) filters.push(sql`coalesce(nullif(trim(${contentItemVersions.payload}->>'plotHint'), ''), nullif(trim(${contentItemVersions.payload}->>'description'), '')) is null`)
+    if (query.hasHint === true) filters.push(sql`coalesce(nullif(trim(${effectivePayload}->>'plotHint'), ''), nullif(trim(${effectivePayload}->>'description'), '')) is not null`)
+    if (query.hasHint === false) filters.push(sql`coalesce(nullif(trim(${effectivePayload}->>'plotHint'), ''), nullif(trim(${effectivePayload}->>'description'), '')) is null`)
     if (query.source) filters.push(sql`exists (select 1 from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} and cwc.source = ${query.source})`)
     if (query.pipelineKey) filters.push(sql`exists (select 1 from content_workspace_changes cwc inner join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} and pr.pipeline_key = ${query.pipelineKey})`)
     const includedTags = tagIds(query.includeTagIds); const excludedTags = tagIds(query.excludeTagIds)
@@ -343,7 +344,30 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       const needle = raw.replace(/^"|"$/g, '').replaceAll('ё', 'е').replaceAll('Ё', 'Е')
       filters.push(exact
         ? sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or ${contentItemVersions.itemId} = ${needle})`
-        : sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or ${contentItemVersions.itemId} ilike ${`%${needle}%`} or exists (select 1 from content_aliases ca where ca.item_version_id = ${contentItemVersions.id} and replace(lower(ca.alias), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`}))`)
+        : sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or ${contentItemVersions.itemId} ilike ${`%${needle}%`} or replace(lower(coalesce(${effectivePayload}->>'alternativeTitles', '')), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(coalesce(${effectivePayload}->>'aliases', '')), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`})`)
+    }
+    if (query.field && query.fieldQ?.trim()) {
+      const fieldNeedle = query.fieldQ.trim().toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')
+      const field = query.field
+      if (field === 'all') filters.push(sql`position(${fieldNeedle} in replace(lower(concat_ws(' ',
+        ${contentItemVersions.itemId}, ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${contentItemVersions.mode}::text,
+        case when ${contentItemVersions.allowedInGame} then 'в игре active published разрешена' else 'скрыта hidden blocked запрещена' end,
+        ${effectivePayload}::text,
+        coalesce((select string_agg(ct.name, ' ') from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), ''),
+        coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ''),
+        coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')
+      )), 'ё', 'е')) > 0`)
+      else if (field === 'title') filters.push(sql`position(${fieldNeedle} in replace(lower(concat_ws(' ', ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${effectivePayload}->>'alternativeTitles', ${effectivePayload}->>'aliases')), 'ё', 'е')) > 0`)
+      else if (field === 'id') filters.push(sql`position(${fieldNeedle} in lower(${contentItemVersions.itemId})) > 0`)
+      else if (field === 'mode') filters.push(sql`position(${fieldNeedle} in lower(concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' end))) > 0`)
+      else if (field === 'publicationStatus' || field === 'allowedInGame') filters.push(sql`position(${fieldNeedle} in case when coalesce((${effectivePayload}->>'allowedInGame')::boolean, ${contentItemVersions.allowedInGame}) then 'в игре active published true да разрешена' else 'скрыта hidden blocked false нет запрещена' end) > 0`)
+      else if (field === 'changeSource') filters.push(sql`position(${fieldNeedle} in lower(coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ''))) > 0`)
+      else if (field === 'pipeline') filters.push(sql`position(${fieldNeedle} in lower(coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ''))) > 0`)
+      else if (field === 'tags') filters.push(sql`position(${fieldNeedle} in replace(lower(coalesce((select string_agg(ct.name, ' ') from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '')), 'ё', 'е')) > 0`)
+      else if (field === 'allHints') filters.push(sql`position(${fieldNeedle} in replace(lower(concat_ws(' ', ${effectivePayload}->>'plotHint', ${effectivePayload}->>'description', ${effectivePayload}->>'facts', ${effectivePayload}->>'slogan')), 'ё', 'е')) > 0`)
+      else if (field === 'reports') filters.push(sql`position(${fieldNeedle} in (select count(*)::text from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))) > 0`)
+      else if (field === 'issues') filters.push(sql`position(${fieldNeedle} in (select count(*)::text from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')) > 0`)
+      else filters.push(sql`position(${fieldNeedle} in replace(lower(coalesce(${effectivePayload}->>(${field}::text), '')), 'ё', 'е')) > 0`)
     }
     const tagOffset = query.sort === 'tag' && query.cursor?.startsWith('tag:') ? Math.max(0, Number(query.cursor.slice(4)) || 0) : 0
     if (query.cursor && query.sort !== 'tag') filters.push(gt(contentItemVersions.itemId, query.cursor))
@@ -369,7 +393,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       .leftJoin(contentWorkspaceChanges, and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, contentItemVersions.itemId)))
       .where(and(...filters)).orderBy(order, asc(contentItemVersions.itemId)).limit(limit + 1).offset(tagOffset)
     const totalFilters = filters.filter((_, index) => !(query.cursor && query.sort !== 'tag' && index === filters.length - 1))
-    const total = await deps.db.select({ count: sql<number>`count(*)::int` }).from(contentItemVersions).where(and(...totalFilters))
+    const total = query.cursor ? null : await deps.db.select({ count: sql<number>`count(*)::int` }).from(contentItemVersions).where(and(...totalFilters))
     return {
       items: selected.slice(0, limit).map(({ payload, mode, ...item }) => {
         const completion = completionMeta(payload, mode as ContentMode)
@@ -385,7 +409,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
         }
       }),
       nextCursor: selected.length > limit ? (query.sort === 'tag' ? `tag:${tagOffset + limit}` : selected[limit - 1].id) : null,
-      total: total[0]?.count ?? 0,
+      total: total?.[0]?.count ?? 0,
       filters: query,
     }
   })
@@ -460,6 +484,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       actorUserId: actor.id, action: 'content.exchange.export', entityType: 'content_workspace', entityId: document.source.workspaceId ?? 'unknown',
       before: null, after: { exportId: document.exportId, itemCount: document.items.length, fields: document.fields }, requestId: request.id,
     })
+    reply.header('Content-Disposition', `attachment; filename="shoditsa-content-${new Date().toISOString().slice(0, 10)}-${document.exportId.slice(0, 8)}.json"`)
     return document
   })
 

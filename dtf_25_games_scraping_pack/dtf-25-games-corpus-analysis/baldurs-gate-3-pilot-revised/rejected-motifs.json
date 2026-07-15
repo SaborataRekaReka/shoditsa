@@ -1,0 +1,77 @@
+{
+  "gameId": "baldurs-gate-3",
+  "motifs": [
+    {
+      "key": "community_pasta_and_hater_banter",
+      "label": "Пасты и перепалки вокруг хейта",
+      "originalCategory": "community_meme",
+      "revisedCategory": "community_meme",
+      "classification": "reject",
+      "uniquePostCount": 7,
+      "uniqueCommentCount": 23,
+      "independentRootBranchCount": 15,
+      "commentOverlapAcrossMotifs": 20,
+      "retrospectiveShare": 0.714,
+      "bg3Specificity": 0.64,
+      "dtfSpecificity": 0.68,
+      "sourceAggregateStrength": "strong",
+      "evidencePostIds": [
+        "1977565",
+        "2059618",
+        "2254962",
+        "2370927",
+        "2376144",
+        "2968530",
+        "3083243"
+      ],
+      "evidenceCommentIds": [
+        "27410229",
+        "27410563",
+        "28692145",
+        "28692214",
+        "28692231",
+        "28693022",
+        "31852133",
+        "31852358",
+        "31852369",
+        "31852472",
+        "31854404",
+        "31854702",
+        "31859655",
+        "33645522",
+        "33670348",
+        "33904468",
+        "33905588",
+        "33905988",
+        "33906464",
+        "42799378",
+        "42811863",
+        "42819913",
+        "44342461"
+      ],
+      "warnings": [
+        "Недостаточно оснований считать формат уникальным локальным DTF-мемом; исключено из публичной загадки."
+      ],
+      "overlapMethod": "unique selected comment IDs matched by more than one revised audit pattern",
+      "reason": "Повторяется, но не доказан как локальный DTF-формат; слишком близок к общему интернет-мему и исключён из публичной загадки."
+    },
+    {
+      "key": "patches_and_mod_support_as_single_motif",
+      "status": "rejected_as_conflated",
+      "reason": "Исходный мотив одновременно смешивал фактическую поддержку после релиза и защитные аргументы; его заменили двумя facet-строками.",
+      "replacementKeys": [
+        "post_release_support_and_mods",
+        "defence_by_patches"
+      ]
+    },
+    {
+      "key": "developer_early_access_and_community_as_quality_claim",
+      "status": "rejected_as_conflated",
+      "reason": "Фактический контекст разработки нельзя автоматически превращать в оценку качества; добавлены отдельные facet-строки.",
+      "replacementKeys": [
+        "developer_context_and_early_access",
+        "quality_defence_by_larian_track_record"
+      ]
+    }
+  ]
+}

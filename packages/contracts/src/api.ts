@@ -124,7 +124,7 @@ export type GameAttemptSnapshot = {
 }
 
 export type HintCheckpointSnapshot = { round: 5 | 8; state: 'locked' | 'available' | 'opened' }
-export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; response: { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown } }
+export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; response: { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string } }
 export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: string }
 export type PromoPromptSnapshot = { packId: string; title: string; subtitle: string; disclaimer: string }
 
@@ -166,7 +166,7 @@ export type AttemptResponse = {
     components: { completion: number; win: number; speed: number; firstCompletion: number; fullHouse: number }
   }
 }
-export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown }
+export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string }
 export type GuestResponse = { user?: ApiUser; session?: unknown }
 export type PeriodUnlockResponse = { entitlement: PeriodEntitlement; balanceAfter?: number; alreadyUnlocked: boolean }
 export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string }
