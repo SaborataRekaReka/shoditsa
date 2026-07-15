@@ -207,7 +207,7 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-content-tag-filters .admin-tag-picker { min-width: 0; }
 .admin-content-local-filters .admin-search { min-width: 0; }
 .admin-content-local-filters .admin-btn { white-space: nowrap; }
-.admin-content-field-filter { min-width: 0; padding: 4px; border: 1px solid var(--a-line-strong); border-radius: 10px; background: var(--a-primary-soft); display: grid; grid-template-columns: minmax(230px, .8fr) minmax(250px, 1.2fr) auto; gap: 5px; align-items: center; }
+.admin-content-field-filter { min-width: 0; padding: 4px; border: 1px solid var(--a-line-strong); border-radius: 10px; background: var(--a-primary-soft); display: grid; grid-template-columns: minmax(210px, .9fr) minmax(175px, .65fr) minmax(220px, 1fr) auto; gap: 5px; align-items: center; }
 .admin-content-field-filter > label { height: 34px; background: var(--a-paper); }
 .admin-content-field-filter > span { padding: 0 7px 0 3px; color: var(--a-muted); display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800; white-space: nowrap; text-transform: uppercase; }
 .admin-content-field-filter > span svg { width: 13px; color: var(--a-green); }

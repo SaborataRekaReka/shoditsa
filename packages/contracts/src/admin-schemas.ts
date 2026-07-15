@@ -7,6 +7,11 @@ export const AdminItemParamsSchema = Type.Object({ itemId: Type.String({ minLeng
 export const AdminContentItemsQuerySchema = Type.Object({
   q: Type.Optional(Type.String({ maxLength: 160 })),
   field: Type.Optional(Type.String({ minLength: 1, maxLength: 80, pattern: '^[A-Za-z][A-Za-z0-9_]*$' })),
+  fieldOp: Type.Optional(Type.Union([
+    Type.Literal('contains'), Type.Literal('not_contains'), Type.Literal('equals'), Type.Literal('not_equals'),
+    Type.Literal('starts_with'), Type.Literal('ends_with'), Type.Literal('empty'), Type.Literal('not_empty'),
+    Type.Literal('gt'), Type.Literal('gte'), Type.Literal('lt'), Type.Literal('lte'), Type.Literal('is_true'), Type.Literal('is_false'),
+  ])),
   fieldQ: Type.Optional(Type.String({ maxLength: 500 })),
   mode: Type.Optional(ContentModeSchema),
   publication: Type.Optional(Type.Union([Type.Literal('published'), Type.Literal('hidden'), Type.Literal('all')])),

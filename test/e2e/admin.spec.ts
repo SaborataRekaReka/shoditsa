@@ -27,8 +27,11 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
     if (path === '/api/v1/admin/content/workspace') return json(route, { ...workspace, changesCount: savedPayload ? 1 : 0 })
     if (path === '/api/v1/admin/content/items' && request.method() === 'GET') {
       lastContentQuery = new URLSearchParams(url.search)
-      const field = url.searchParams.get('field'); const fieldQ = url.searchParams.get('fieldQ')?.toLocaleLowerCase('ru-RU') ?? ''
-      const matches = !fieldQ || (field === 'plotHint' && String(payload.plotHint).toLocaleLowerCase('ru-RU').includes(fieldQ))
+      const field = url.searchParams.get('field'); const fieldOp = url.searchParams.get('fieldOp') ?? 'contains'; const fieldQ = url.searchParams.get('fieldQ')?.toLocaleLowerCase('ru-RU') ?? ''
+      const matches = !fieldQ && fieldOp === 'contains'
+        || field === 'plotHint' && fieldOp === 'contains' && String(payload.plotHint).toLocaleLowerCase('ru-RU').includes(fieldQ)
+        || field === 'posterUrl' && fieldOp === 'empty'
+        || field === 'year' && fieldOp === 'gt' && Number(payload.year) > Number(fieldQ)
       const items = matches ? [{ id: 'movie:test-card', versionId: '20000000-0000-4000-8000-000000000001', mode: 'movie', titleRu: String(savedPayload?.titleRu ?? payload.titleRu), titleOriginal: 'Test card', year: 2024, posterUrl: null, allowedInGame: true, reportsCount: 0, issuesCount: 0, completeness: 80, fieldsFilled: 8, fieldsTotal: 10, missingFields: [], hasHint: true, source: null, pipelineKey: null, tags: [], updatedAt: new Date().toISOString(), draftVersion: savedPayload ? 1 : null }] : []
       return json(route, { items, nextCursor: null, total: items.length, filters: {} })
     }
@@ -76,11 +79,32 @@ test('paired content filter sends the selected field and partial value to the se
   await page.goto('/admin/content?mode=movie')
   await expect(page.getByRole('heading', { name: 'Карточки · Кино' })).toBeVisible()
   await page.getByLabel('Поле для фильтрации').selectOption('plotHint')
+  await page.getByLabel('Условие фильтрации').selectOption('contains')
   await page.getByLabel('Значение поля').fill('небо')
   await expect.poll(() => state.lastContentQuery().get('field')).toBe('plotHint')
+  await expect.poll(() => state.lastContentQuery().has('fieldOp')).toBe(false)
   await expect.poll(() => state.lastContentQuery().get('fieldQ')).toBe('небо')
   await expect(page.getByText('Тестовая карточка')).toBeVisible()
   await expect(page.getByText('Вся база')).toBeVisible()
+})
+
+test('advanced content filter supports empty fields and numeric comparisons', async ({ page }) => {
+  const state = await installAdminMocks(page)
+  await page.goto('/admin/content?mode=movie')
+  await page.getByLabel('Поле для фильтрации').selectOption('posterUrl')
+  await page.getByLabel('Условие фильтрации').selectOption('empty')
+  await expect.poll(() => state.lastContentQuery().get('field')).toBe('posterUrl')
+  await expect.poll(() => state.lastContentQuery().get('fieldOp')).toBe('empty')
+  await expect.poll(() => state.lastContentQuery().has('fieldQ')).toBe(false)
+  await expect(page.getByLabel('Значение поля')).toBeDisabled()
+  await expect(page.getByText('Тестовая карточка')).toBeVisible()
+
+  await page.getByLabel('Поле для фильтрации').selectOption('year')
+  await page.getByLabel('Условие фильтрации').selectOption('gt')
+  await page.getByLabel('Значение поля').fill('2020')
+  await expect.poll(() => state.lastContentQuery().get('fieldOp')).toBe('gt')
+  await expect.poll(() => state.lastContentQuery().get('fieldQ')).toBe('2020')
+  await expect(page.getByText('Тестовая карточка')).toBeVisible()
 })
 
 test('normalization field selector stays populated for movies when the fields endpoint fails', async ({ page }) => {

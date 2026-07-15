@@ -182,6 +182,26 @@ const CONTENT_FIELD_GROUPS: ContentFieldGroup[] = [
   },
 ]
 const CONTENT_FIELD_FILTERS = new Set(CONTENT_FIELD_GROUPS.flatMap((group) => group.options.map((option) => option.value)))
+const CONTENT_FIELD_OPERATORS = [
+  { value: 'contains', label: 'Содержит' },
+  { value: 'not_contains', label: 'Не содержит' },
+  { value: 'equals', label: 'Равно (=)' },
+  { value: 'not_equals', label: 'Не равно (≠)' },
+  { value: 'starts_with', label: 'Начинается с' },
+  { value: 'ends_with', label: 'Заканчивается на' },
+  { value: 'empty', label: 'Пустое' },
+  { value: 'not_empty', label: 'Не пустое' },
+  { value: 'gt', label: 'Больше (>)' },
+  { value: 'gte', label: 'Больше или равно (≥)' },
+  { value: 'lt', label: 'Меньше (<)' },
+  { value: 'lte', label: 'Меньше или равно (≤)' },
+  { value: 'is_true', label: 'Истина / Да' },
+  { value: 'is_false', label: 'Ложь / Нет' },
+] as const
+type ContentFieldOperator = typeof CONTENT_FIELD_OPERATORS[number]['value']
+const CONTENT_FIELD_OPERATOR_VALUES = new Set<string>(CONTENT_FIELD_OPERATORS.map((operator) => operator.value))
+const CONTENT_FIELD_NO_VALUE_OPERATORS = new Set<ContentFieldOperator>(['empty', 'not_empty', 'is_true', 'is_false'])
+const contentFieldOperatorLabel = (operator: ContentFieldOperator) => CONTENT_FIELD_OPERATORS.find((entry) => entry.value === operator)?.label ?? operator
 const REPORT_REASON: Record<string, string> = {
   wrong_fact: 'Неверный факт', disputed_comparison: 'Спорное сравнение', title_not_found: 'Не принимается ответ', bad_hint: 'Плохая подсказка',
   bad_image: 'Плохое изображение', duplicate_card: 'Дубликат', typo_or_translation: 'Опечатка / перевод', technical_error: 'Техническая ошибка', other: 'Другое',
@@ -1240,6 +1260,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     value && CONTENT_FIELD_FILTERS.has(value)
       ? value
       : "all";
+  const parseFieldOperator = (value: string | null): ContentFieldOperator =>
+    value && CONTENT_FIELD_OPERATOR_VALUES.has(value) ? value as ContentFieldOperator : 'contains';
   const parseSortKey = (value: string | null): ContentSortKey =>
     value && sortableKeys.includes(value as ContentSortKey)
       ? (value as ContentSortKey)
@@ -1291,6 +1313,9 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const [fieldFilter, setFieldFilter] = useState<ContentFieldFilter>(
     parseFieldFilter(params.get("field")),
   );
+  const [fieldFilterOperator, setFieldFilterOperator] = useState<ContentFieldOperator>(
+    parseFieldOperator(params.get('fieldOp')),
+  );
   const [fieldFilterValue, setFieldFilterValue] = useState(
     params.get("fieldQ") ?? "",
   );
@@ -1320,9 +1345,11 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     queryKey: ["admin", "content-tags"],
     queryFn: adminApi.tags,
   });
+  const fieldOperatorNeedsValue = !CONTENT_FIELD_NO_VALUE_OPERATORS.has(fieldFilterOperator);
   const debouncedQ = useDebouncedValue(q.trim(), 300);
   const debouncedFieldFilterValue = useDebouncedValue(fieldFilterValue.trim(), 350);
-  const filtersPending = q.trim() !== debouncedQ || fieldFilterValue.trim() !== debouncedFieldFilterValue;
+  const appliedFieldFilterValue = fieldOperatorNeedsValue ? debouncedFieldFilterValue : '';
+  const filtersPending = q.trim() !== debouncedQ || (fieldOperatorNeedsValue && fieldFilterValue.trim() !== debouncedFieldFilterValue);
 
   useEffect(() => {
     const next = new URLSearchParams();
@@ -1338,7 +1365,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     if (excludeTagIds.length) next.set("excludeTags", excludeTagIds.join(","));
     if (tagMatch !== "all") next.set("tagMatch", tagMatch);
     if (fieldFilter !== "all") next.set("field", fieldFilter);
-    if (fieldFilterValue.trim()) next.set("fieldQ", fieldFilterValue.trim());
+    if (fieldFilterOperator !== 'contains') next.set('fieldOp', fieldFilterOperator);
+    if (fieldOperatorNeedsValue && fieldFilterValue.trim()) next.set("fieldQ", fieldFilterValue.trim());
     if (sortBy !== "updatedAt") next.set("sortBy", sortBy);
     if (sortOrder !== "desc") next.set("sortOrder", sortOrder);
     if (pageSize !== 60) next.set('limit', String(pageSize));
@@ -1351,7 +1379,9 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   }, [
     excludeTagIds,
     fieldFilter,
+    fieldFilterOperator,
     fieldFilterValue,
+    fieldOperatorNeedsValue,
     hintFilter,
     includeTagIds,
     issuesFilter,
@@ -1386,7 +1416,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         excludeTagIds,
         tagMatch,
         fieldFilter,
-        fieldFilterValue: debouncedFieldFilterValue,
+        fieldFilterOperator,
+        fieldFilterValue: appliedFieldFilterValue,
         sortBy,
         sortOrder,
       },
@@ -1417,7 +1448,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         excludeTagIds: excludeTagIds.join(",") || undefined,
         tagMatch,
         field: fieldFilter,
-        fieldQ: debouncedFieldFilterValue || undefined,
+        fieldOp: fieldFilterOperator !== 'contains' ? fieldFilterOperator : undefined,
+        fieldQ: appliedFieldFilterValue || undefined,
         sort: sortBy === "tags" ? "tag" : undefined,
         order: sortBy === "tags" ? sortOrder : undefined,
         limit: pageSize,
@@ -1454,7 +1486,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
           excludeTagIds: excludeTagIds.join(",") || undefined,
           tagMatch,
           field: fieldFilter,
-          fieldQ: debouncedFieldFilterValue || undefined,
+          fieldOp: fieldFilterOperator !== 'contains' ? fieldFilterOperator : undefined,
+          fieldQ: appliedFieldFilterValue || undefined,
           sort: sortBy === "tags" ? "tag" : undefined,
           order: sortBy === "tags" ? sortOrder : undefined,
           limit: 100,
@@ -1657,6 +1690,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     setExcludeTagIds([]);
     setTagMatch("all");
     setFieldFilter("all");
+    setFieldFilterOperator('contains');
     setFieldFilterValue("");
     setSortBy("updatedAt");
     setSortOrder("desc");
@@ -1664,7 +1698,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     setSelectionAnchorIndex(null);
   };
 
-  const hasFieldFilter = Boolean(fieldFilterValue.trim());
+  const hasFieldFilter = fieldOperatorNeedsValue ? Boolean(fieldFilterValue.trim()) : true;
   const openItem = (itemId: string) => navigate('content', itemId, location.search);
   const closeItem = () => navigate('content', null, location.search);
   const openPreview = (itemId?: string) => {
@@ -1925,19 +1959,37 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                 ))}
               </select>
             </label>
+            <label>
+              <Settings2 />
+              <select
+                aria-label="Условие фильтрации"
+                value={fieldFilterOperator}
+                onChange={(event) => {
+                  setFieldFilterOperator(event.target.value as ContentFieldOperator);
+                  setSelected(new Set());
+                  setSelectionAnchorIndex(null);
+                }}
+              >
+                {CONTENT_FIELD_OPERATORS.map((operator) => (
+                  <option key={operator.value} value={operator.value}>{operator.label}</option>
+                ))}
+              </select>
+            </label>
             <label className="admin-search admin-search--compact">
               <Search />
               <input
                 aria-label="Значение поля"
                 value={fieldFilterValue}
+                disabled={!fieldOperatorNeedsValue}
                 onChange={(event) => {
                   setFieldFilterValue(event.target.value);
                   setSelected(new Set());
                   setSelectionAnchorIndex(null);
                 }}
-                placeholder="Содержит значение…"
+                inputMode={['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'decimal' : 'text'}
+                placeholder={!fieldOperatorNeedsValue ? 'Значение не требуется' : ['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'Введите число…' : fieldFilterOperator === 'equals' || fieldFilterOperator === 'not_equals' ? 'Введите точное значение…' : 'Введите значение…'}
               />
-              {fieldFilterValue && (
+              {fieldOperatorNeedsValue && fieldFilterValue && (
                 <button aria-label="Очистить значение фильтра" onClick={() => setFieldFilterValue("")}>
                   <X />
                 </button>
@@ -2411,7 +2463,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <span>
               Показано {sortedItems.length} из{" "}
               {totalItems.toLocaleString("ru-RU")}
-              {hasFieldFilter ? ` · серверный фильтр: ${fieldFilter}` : ""}
+              {hasFieldFilter ? ` · ${fieldFilter} · ${contentFieldOperatorLabel(fieldFilterOperator)}${fieldOperatorNeedsValue ? ` · ${fieldFilterValue.trim()}` : ''}` : ""}
             </span>
           </footer>
         </div>

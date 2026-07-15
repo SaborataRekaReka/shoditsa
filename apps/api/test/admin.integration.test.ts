@@ -127,7 +127,7 @@ describe('admin API guard, workspace and telemetry', () => {
     const needle = plotHint.trim().replace(/\s+/g, ' ').slice(0, 24)
     const filtered = await app.inject({
       method: 'GET',
-      url: `/api/v1/admin/content/items?field=plotHint&fieldQ=${encodeURIComponent(needle)}&limit=100`,
+      url: `/api/v1/admin/content/items?field=plotHint&fieldOp=contains&fieldQ=${encodeURIComponent(needle)}&limit=100`,
     })
     expect(filtered.statusCode, filtered.body).toBe(200)
     expect(filtered.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ id: candidate!.id })]))
@@ -139,6 +139,22 @@ describe('admin API guard, workspace and telemetry', () => {
     })
     expect(absent.statusCode, absent.body).toBe(200)
     expect(absent.json()).toMatchObject({ items: [], total: 0 })
+
+    const emptyPosters = await app.inject({
+      method: 'GET',
+      url: '/api/v1/admin/content/items?field=posterUrl&fieldOp=empty&limit=20',
+    })
+    expect(emptyPosters.statusCode, emptyPosters.body).toBe(200)
+    expect(emptyPosters.json().items.length).toBeGreaterThan(0)
+    expect(emptyPosters.json().items.every((item: { posterUrl: string | null }) => !item.posterUrl)).toBe(true)
+
+    const recentYears = await app.inject({
+      method: 'GET',
+      url: '/api/v1/admin/content/items?field=year&fieldOp=gte&fieldQ=2000&limit=20',
+    })
+    expect(recentYears.statusCode, recentYears.body).toBe(200)
+    expect(recentYears.json().items.length).toBeGreaterThan(0)
+    expect(recentYears.json().items.every((item: { year: number | null }) => Number(item.year) >= 2000)).toBe(true)
   })
 
   it('keeps edits in a versioned workspace without changing the active revision', async () => {

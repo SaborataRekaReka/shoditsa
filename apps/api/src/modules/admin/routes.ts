@@ -346,28 +346,56 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
         ? sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') = replace(lower(${needle}), 'ё', 'е') or ${contentItemVersions.itemId} = ${needle})`
         : sql`(replace(lower(${contentItemVersions.titleRu}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(${contentItemVersions.titleOriginal}), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or ${contentItemVersions.itemId} ilike ${`%${needle}%`} or replace(lower(coalesce(${effectivePayload}->>'alternativeTitles', '')), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`} or replace(lower(coalesce(${effectivePayload}->>'aliases', '')), 'ё', 'е') like ${`%${needle.toLocaleLowerCase('ru-RU')}%`})`)
     }
-    if (query.field && query.fieldQ?.trim()) {
-      const fieldNeedle = query.fieldQ.trim().toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')
+    const fieldOperator = query.fieldOp ?? 'contains'
+    const fieldValue = query.fieldQ?.trim() ?? ''
+    const fieldOperatorNeedsValue = !['empty', 'not_empty', 'is_true', 'is_false'].includes(fieldOperator)
+    if (query.field && (!fieldOperatorNeedsValue || fieldValue)) {
       const field = query.field
-      if (field === 'all') filters.push(sql`position(${fieldNeedle} in replace(lower(concat_ws(' ',
+      const serviceFields = new Set(['all', 'title', 'id', 'mode', 'publicationStatus', 'allowedInGame', 'changeSource', 'pipeline', 'tags', 'allHints', 'reports', 'issues'])
+      const isPayloadField = !serviceFields.has(field)
+      const fieldText = field === 'all' ? sql<string>`concat_ws(' ',
         ${contentItemVersions.itemId}, ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${contentItemVersions.mode}::text,
-        case when ${contentItemVersions.allowedInGame} then 'в игре active published разрешена' else 'скрыта hidden blocked запрещена' end,
+        case when ${contentItemVersions.allowedInGame} then 'в игре active published true да разрешена' else 'скрыта hidden blocked false нет запрещена' end,
         ${effectivePayload}::text,
         coalesce((select string_agg(ct.name, ' ') from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), ''),
         coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ''),
         coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')
-      )), 'ё', 'е')) > 0`)
-      else if (field === 'title') filters.push(sql`position(${fieldNeedle} in replace(lower(concat_ws(' ', ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${effectivePayload}->>'alternativeTitles', ${effectivePayload}->>'aliases')), 'ё', 'е')) > 0`)
-      else if (field === 'id') filters.push(sql`position(${fieldNeedle} in lower(${contentItemVersions.itemId})) > 0`)
-      else if (field === 'mode') filters.push(sql`position(${fieldNeedle} in lower(concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' end))) > 0`)
-      else if (field === 'publicationStatus' || field === 'allowedInGame') filters.push(sql`position(${fieldNeedle} in case when coalesce((${effectivePayload}->>'allowedInGame')::boolean, ${contentItemVersions.allowedInGame}) then 'в игре active published true да разрешена' else 'скрыта hidden blocked false нет запрещена' end) > 0`)
-      else if (field === 'changeSource') filters.push(sql`position(${fieldNeedle} in lower(coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ''))) > 0`)
-      else if (field === 'pipeline') filters.push(sql`position(${fieldNeedle} in lower(coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ''))) > 0`)
-      else if (field === 'tags') filters.push(sql`position(${fieldNeedle} in replace(lower(coalesce((select string_agg(ct.name, ' ') from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '')), 'ё', 'е')) > 0`)
-      else if (field === 'allHints') filters.push(sql`position(${fieldNeedle} in replace(lower(concat_ws(' ', ${effectivePayload}->>'plotHint', ${effectivePayload}->>'description', ${effectivePayload}->>'facts', ${effectivePayload}->>'slogan')), 'ё', 'е')) > 0`)
-      else if (field === 'reports') filters.push(sql`position(${fieldNeedle} in (select count(*)::text from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))) > 0`)
-      else if (field === 'issues') filters.push(sql`position(${fieldNeedle} in (select count(*)::text from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')) > 0`)
-      else filters.push(sql`position(${fieldNeedle} in replace(lower(coalesce(${effectivePayload}->>(${field}::text), '')), 'ё', 'е')) > 0`)
+      )`
+        : field === 'title' ? sql<string>`concat_ws(' ', ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${effectivePayload}->>'alternativeTitles', ${effectivePayload}->>'aliases')`
+          : field === 'id' ? sql<string>`${contentItemVersions.itemId}`
+            : field === 'mode' ? sql<string>`concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' end)`
+              : field === 'publicationStatus' || field === 'allowedInGame' ? sql<string>`case when coalesce((${effectivePayload}->>'allowedInGame')::boolean, ${contentItemVersions.allowedInGame}) then 'true да yes 1 в игре active published разрешена' else 'false нет no 0 скрыта hidden blocked запрещена' end`
+                : field === 'changeSource' ? sql<string>`coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')`
+                  : field === 'pipeline' ? sql<string>`coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')`
+                    : field === 'tags' ? sql<string>`coalesce((select string_agg(ct.name, ' ') from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '')`
+                      : field === 'allHints' ? sql<string>`concat_ws(' ', ${effectivePayload}->>'plotHint', ${effectivePayload}->>'description', ${effectivePayload}->>'facts', ${effectivePayload}->>'slogan')`
+                        : field === 'reports' ? sql<string>`(select count(*)::text from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`
+                          : field === 'issues' ? sql<string>`(select count(*)::text from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`
+                            : sql<string>`coalesce(${effectivePayload}->>(${field}::text), '')`
+      const normalizedFieldText = sql<string>`replace(lower(trim(coalesce(${fieldText}, ''))), 'ё', 'е')`
+      const fieldNeedle = fieldValue.toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')
+      const payloadJson = sql`${effectivePayload}->(${field}::text)`
+      const isEmpty = isPayloadField
+        ? sql`(${payloadJson} is null or ${payloadJson} = 'null'::jsonb or ${payloadJson} = '[]'::jsonb or ${payloadJson} = '{}'::jsonb or (jsonb_typeof(${payloadJson}) = 'string' and trim(coalesce(${fieldText}, '')) = ''))`
+        : sql`trim(coalesce(${fieldText}, '')) = ''`
+      if (fieldOperator === 'empty') filters.push(isEmpty)
+      else if (fieldOperator === 'not_empty') filters.push(sql`not (${isEmpty})`)
+      else if (fieldOperator === 'equals') filters.push(sql`${normalizedFieldText} = ${fieldNeedle}`)
+      else if (fieldOperator === 'not_equals') filters.push(sql`${normalizedFieldText} <> ${fieldNeedle}`)
+      else if (fieldOperator === 'not_contains') filters.push(sql`position(${fieldNeedle} in ${normalizedFieldText}) = 0`)
+      else if (fieldOperator === 'starts_with') filters.push(sql`left(${normalizedFieldText}, length(${fieldNeedle})) = ${fieldNeedle}`)
+      else if (fieldOperator === 'ends_with') filters.push(sql`right(${normalizedFieldText}, length(${fieldNeedle})) = ${fieldNeedle}`)
+      else if (fieldOperator === 'is_true') filters.push(sql`position(' true ' in concat(' ', ${normalizedFieldText}, ' ')) > 0`)
+      else if (fieldOperator === 'is_false') filters.push(sql`position(' false ' in concat(' ', ${normalizedFieldText}, ' ')) > 0`)
+      else if (['gt', 'gte', 'lt', 'lte'].includes(fieldOperator)) {
+        const numericNeedle = Number(fieldValue.replaceAll(' ', '').replace(',', '.'))
+        if (!Number.isFinite(numericNeedle)) throw new ApiError(422, 'CONTENT_FIELD_FILTER_VALUE_INVALID', 'Для числового сравнения введите число')
+        const numericField = sql`case when trim(${fieldText}) ~ '^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$' then (trim(${fieldText}))::numeric else null end`
+        if (fieldOperator === 'gt') filters.push(sql`${numericField} > ${numericNeedle}`)
+        if (fieldOperator === 'gte') filters.push(sql`${numericField} >= ${numericNeedle}`)
+        if (fieldOperator === 'lt') filters.push(sql`${numericField} < ${numericNeedle}`)
+        if (fieldOperator === 'lte') filters.push(sql`${numericField} <= ${numericNeedle}`)
+      } else filters.push(sql`position(${fieldNeedle} in ${normalizedFieldText}) > 0`)
     }
     const tagOffset = query.sort === 'tag' && query.cursor?.startsWith('tag:') ? Math.max(0, Number(query.cursor.slice(4)) || 0) : 0
     if (query.cursor && query.sort !== 'tag') filters.push(gt(contentItemVersions.itemId, query.cursor))
