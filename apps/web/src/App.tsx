@@ -741,7 +741,6 @@ const buildInfoHintCandidates = (item: TitleItem) => {
       compactAssistList('Страна', (item.countries ?? []).map(localizeMusicCountry), 2),
       item.activityStartYear ? `Начало деятельности: ${item.activityStartYear}` : '',
       `Тип: ${musicTypeLabel(item.musicType)}`,
-      item.musicOrigin ? `Сцена: ${musicOriginLabel(item.musicOrigin)}` : '',
       compactAssistList('Жанры', item.genres ?? [], 3),
       compactAssistList('Топ-треки', (item.topTracks ?? []).map((track) => track.title), 2),
     ].filter(Boolean)
@@ -770,8 +769,6 @@ const buildInfoHintCandidates = (item: TitleItem) => {
 
   if (item.mode === 'anime') {
     return [
-      item.animeKind ? `Формат: ${item.animeKind}` : '',
-      item.animeStatus ? `Статус: ${item.animeStatus}` : '',
       item.episodes ? `Эпизоды: ${item.episodes}` : '',
       compactAssistList('Студии', item.studios ?? [], 2),
       compactAssistList('Жанры', item.genres ?? [], 3),
@@ -789,16 +786,18 @@ const buildInfoHintCandidates = (item: TitleItem) => {
 }
 
 const buildFactHintValue = (item: TitleItem) => {
-  const modelFacts = item.mode === 'anime'
-    ? new Set([
-      ...buildInfoHintCandidates(item),
-      item.animeEpisodesAired != null ? `Вышло эпизодов: ${item.animeEpisodesAired}` : '',
-    ].map(normalizeTextMatch).filter(Boolean))
-    : new Set<string>()
-  const fact = cleanHintText((item.facts ?? []).find((candidate) => !modelFacts.has(normalizeTextMatch(candidate))) ?? '')
+  const modelFacts = new Set([
+    ...buildInfoHintCandidates(item),
+    item.mode === 'music' && item.musicOrigin ? `Сцена: ${musicOriginLabel(item.musicOrigin)}` : '',
+    item.mode === 'anime' && item.animeKind ? `Формат: ${item.animeKind}` : '',
+    item.mode === 'anime' && item.animeStatus ? `Статус: ${item.animeStatus}` : '',
+    item.mode === 'anime' && item.animeEpisodesAired != null ? `Вышло эпизодов: ${item.animeEpisodesAired}` : '',
+  ].map(normalizeTextMatch).filter(Boolean))
+  const isModeledField = (candidate: string) => modelFacts.has(normalizeTextMatch(candidate))
+  const fact = cleanHintText((item.facts ?? []).find((candidate) => !isModeledField(candidate)) ?? '')
   if (fact) return cropHintText(fact)
   const fallback = cleanHintText(resolvePlotHintText(item))
-  return fallback ? cropHintText(fallback) : ''
+  return fallback && !isModeledField(fallback) ? cropHintText(fallback) : ''
 }
 
 const buildAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {

@@ -217,6 +217,94 @@ describe('server hint options', () => {
     expect(options.find((option) => option.key === 'fact')?.value).toBe('Настоящий дополнительный факт.')
   })
 
+  it('does not spend a hint on a binary value already implied by a miss', () => {
+    const answer = {
+      id: 'anime_binary',
+      mode: 'anime',
+      titleRu: 'Пример аниме',
+      titleOriginal: 'Example Anime',
+      alternativeTitles: [],
+      popularityScore: 0,
+      animeKind: 'Фильм',
+      animeStatus: 'Вышло',
+      episodes: 1,
+      studios: ['Studio A'],
+      plotHint: 'Формат: Фильм',
+    } as TitleItem
+    const attempts = [{
+      hints: [
+        { key: 'anime_kind', label: 'Формат', value: 'TV сериал', status: 'miss' as const, direction: null },
+        { key: 'anime_status', label: 'Статус', value: 'Вышло', status: 'match' as const, direction: null },
+      ],
+    }]
+
+    const options = buildHintOptions(answer, [], attempts)
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Эпизоды: 1')
+    expect(options.find((option) => option.key === 'fact')).toBeUndefined()
+  })
+
+  it('keeps a categorical hint when the answer is outside the small inferred pair', () => {
+    const answer = {
+      id: 'anime_ova',
+      mode: 'anime',
+      titleRu: 'Пример OVA',
+      titleOriginal: 'Example OVA',
+      alternativeTitles: [],
+      popularityScore: 0,
+      animeKind: 'OVA',
+    } as TitleItem
+    const attempts = [{
+      hints: [{ key: 'anime_kind', label: 'Формат', value: 'Фильм', status: 'miss' as const, direction: null }],
+    }]
+
+    const options = buildHintOptions(answer, [], attempts)
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Формат: OVA')
+  })
+
+  it('applies the same binary inference rule outside anime', () => {
+    const answer = {
+      id: 'music_binary',
+      mode: 'music',
+      titleRu: 'Пример артиста',
+      titleOriginal: 'Example Artist',
+      alternativeTitles: [],
+      popularityScore: 0,
+      musicType: 'group',
+      musicOrigin: 'intl',
+      genres: ['Rock'],
+    } as TitleItem
+    const attempts = [{
+      hints: [
+        { key: 'music_type', label: 'Тип артиста', value: 'Группа', status: 'match' as const, direction: null },
+        { key: 'music_origin', label: 'Сцена', value: 'Русскоязычная сцена', status: 'miss' as const, direction: null },
+      ],
+    }]
+
+    const options = buildHintOptions(answer, [], attempts)
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Жанры: Rock')
+  })
+
+  it('does not repeat any modeled field as an interesting fact', () => {
+    const answer = {
+      id: 'movie_model_fact',
+      mode: 'movie',
+      titleRu: 'Пример фильма',
+      titleOriginal: 'Example Movie',
+      alternativeTitles: [],
+      popularityScore: 0,
+      year: 2003,
+      plotHint: 'Год релиза: 2003',
+    } as TitleItem
+
+    const options = buildHintOptions(answer, [])
+
+    expect(options.find((option) => option.key === 'info')?.value).toBe('Год релиза: 2003')
+    expect(options.find((option) => option.key === 'fact')).toBeUndefined()
+  })
+
   it('falls back to the plot hint when anime facts only mirror model fields', () => {
     const answer = {
       id: 'anime_2',

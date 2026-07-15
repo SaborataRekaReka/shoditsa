@@ -344,7 +344,7 @@ const cleanHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' 
 const cropHintText = (value: string, max = 190) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const normalizeHintMatch = (value: unknown) => cleanHintText(value).toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 
-type RevealedFieldEvidence = { fullyRevealed: boolean; values: Set<string> }
+type RevealedFieldEvidence = { fullyRevealed: boolean; values: Set<string>; excludedValues: Set<string> }
 type RevealedAttemptEvidence = { byHintKey: Map<string, RevealedFieldEvidence>; values: Set<string> }
 type InfoHintCandidate = { sourceKey: string | null; label: string; values: string[] }
 
@@ -365,7 +365,7 @@ const revealedAttemptEvidence = (attempts: Array<{ hints: Hint[] }>): RevealedAt
 
   for (const attempt of attempts) {
     for (const hint of attempt.hints) {
-      const field = byHintKey.get(hint.key) ?? { fullyRevealed: false, values: new Set<string>() }
+      const field = byHintKey.get(hint.key) ?? { fullyRevealed: false, values: new Set<string>(), excludedValues: new Set<string>() }
       if (hint.status === 'match') {
         field.fullyRevealed = true
         addRevealedValue(values, hint.value)
@@ -373,6 +373,8 @@ const revealedAttemptEvidence = (attempts: Array<{ hints: Hint[] }>): RevealedAt
       } else if (hint.status === 'partial') {
         addRevealedDisplayValues(field.values, hint.value)
         addRevealedDisplayValues(values, hint.value)
+      } else if (hint.status === 'miss' && hint.direction == null) {
+        addRevealedDisplayValues(field.excludedValues, hint.value)
       }
       for (const value of hint.matchedValues ?? []) {
         addRevealedValue(field.values, value)
@@ -405,9 +407,52 @@ const infoScalarCandidate = (sourceKey: string | null, label: string, value: unk
 const presentInfoCandidates = (candidates: Array<InfoHintCandidate | null>): InfoHintCandidate[] =>
   candidates.filter((candidate): candidate is InfoHintCandidate => candidate !== null)
 
+const SMALL_CATEGORICAL_DOMAINS: Record<string, string[][]> = {
+  anime_kind: [
+    ['tv сериал', 'tv-сериал', 'сериал', 'tv'],
+    ['фильм', 'movie'],
+  ],
+  anime_status: [
+    ['вышло', 'released', 'завершен', 'завершён'],
+    ['онгоинг', 'ongoing', 'выходит'],
+  ],
+  series_status: [
+    ['вышло', 'released', 'завершен', 'завершён'],
+    ['онгоинг', 'ongoing', 'выходит'],
+  ],
+  music_active: [
+    ['продолжает карьеру', 'активен', 'активна', 'active'],
+    ['завершил карьеру', 'завершила карьеру', 'не активен', 'не активна', 'inactive'],
+  ],
+  music_origin: [
+    ['русскоязычная сцена', 'ru'],
+    ['международная сцена', 'intl'],
+  ],
+}
+
+const categoricalGroup = (groups: string[][], value: string) => {
+  const normalized = normalizeHintMatch(value)
+  return groups.findIndex((group) => group.some((entry) => normalizeHintMatch(entry) === normalized))
+}
+
+const isTriviallyInferredCandidate = (candidate: InfoHintCandidate, evidence: RevealedAttemptEvidence) => {
+  if (!candidate.sourceKey || candidate.values.length !== 1) return false
+  const groups = SMALL_CATEGORICAL_DOMAINS[candidate.sourceKey]
+  const field = evidence.byHintKey.get(candidate.sourceKey)
+  if (!groups || !field?.excludedValues.size) return false
+
+  const answerGroup = categoricalGroup(groups, candidate.values[0])
+  if (answerGroup < 0) return false
+  const excludedGroups = new Set([...field.excludedValues]
+    .map((value) => categoricalGroup(groups, value))
+    .filter((group) => group >= 0))
+  return groups.every((_, group) => group === answerGroup || excludedGroups.has(group))
+}
+
 const renderInfoCandidate = (candidate: InfoHintCandidate, evidence: RevealedAttemptEvidence) => {
   const field = candidate.sourceKey ? evidence.byHintKey.get(candidate.sourceKey) : null
   if (field?.fullyRevealed) return ''
+  if (isTriviallyInferredCandidate(candidate, evidence)) return ''
   const remaining = candidate.values.filter((value) => !field?.values.has(normalizeHintMatch(value)))
   return remaining.length ? `${candidate.label}: ${remaining.join(', ')}` : ''
 }
@@ -467,26 +512,24 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
   ])
 }
 
-const animeModelFactValues = (answer: TitleItem) => {
-  if (answer.mode !== 'anime') return new Set<string>()
-  return new Set([
+const modelFactValues = (answer: TitleItem) => new Set([
     ...infoHintCandidates(answer).map((candidate) => `${candidate.label}: ${candidate.values.join(', ')}`),
-    answer.animeEpisodesAired != null ? `Вышло эпизодов: ${answer.animeEpisodesAired}` : '',
+    answer.mode === 'anime' && answer.animeEpisodesAired != null ? `Вышло эпизодов: ${answer.animeEpisodesAired}` : '',
   ].map(normalizeHintMatch).filter(Boolean))
-}
 
 const factHintValue = (answer: TitleItem, matched: Set<string>) => {
-  const modelFacts = animeModelFactValues(answer)
-  const fact = (answer.facts ?? []).map(cleanHintText).find((candidate) => {
+  const modelFacts = modelFactValues(answer)
+  const isRedundant = (candidate: string) => {
     const normalized = normalizeHintMatch(candidate)
-    return normalized
-      && !modelFacts.has(normalized)
-      && ![...matched].some((value) => value.length >= 3 && normalized.includes(value))
-  }) ?? ''
+    return !normalized
+      || modelFacts.has(normalized)
+      || [...matched].some((value) => value.length >= 3 && normalized.includes(value))
+  }
+  const fact = (answer.facts ?? []).map(cleanHintText).find((candidate) => !isRedundant(candidate)) ?? ''
   if (fact) return cropHintText(fact)
 
   const fallback = cleanHintText(answer.plotHint ?? answer.shortDescription ?? answer.description ?? '')
-  return fallback ? cropHintText(fallback) : ''
+  return fallback && !isRedundant(fallback) ? cropHintText(fallback) : ''
 }
 
 type BuiltHintOption = {
