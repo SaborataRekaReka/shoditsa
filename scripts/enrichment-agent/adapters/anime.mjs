@@ -83,6 +83,26 @@ const parseRoles = (roles) => {
   return { creators: dedupe(creators, 4), cast: dedupe(cast, 8), characterNames: unique(characterNames) }
 }
 
+const characterRolePriority = (role) => {
+  const labels = [...(role?.roles ?? []), ...(role?.roles_russian ?? [])].join(' ').toLowerCase()
+  return /\bmain\b|главн/i.test(labels) ? 0 : 1
+}
+
+const fetchVoiceCast = async (roles) => {
+  const characterRoles = (Array.isArray(roles) ? roles : [])
+    .filter((role) => integer(role?.character?.id))
+    .sort((left, right) => characterRolePriority(left) - characterRolePriority(right))
+
+  const characterIds = [...new Set(characterRoles.map((role) => integer(role.character.id)).filter(Boolean))].slice(0, 8)
+  const cast = []
+  for (const characterId of characterIds) {
+    const character = await requestShikimori(`/api/characters/${characterId}`).catch(() => null)
+    const primaryVoiceActor = Array.isArray(character?.seyu) ? character.seyu[0] : null
+    if (primaryVoiceActor) cast.push(person(primaryVoiceActor))
+  }
+  return [...new Map(cast.filter((item) => item.nameRu || item.nameOriginal).map((item) => [`${item.nameRu}|${item.nameOriginal}`, item])).values()].slice(0, 8)
+}
+
 const forbiddenValues = (anime, characterNames = []) => unique([
   anime.titleRu, anime.titleOriginal, ...(anime.alternativeTitles ?? []), ...characterNames,
   ...(anime.creators ?? anime.directors ?? []).flatMap((entry) => [entry.nameRu, entry.nameOriginal]),
@@ -215,8 +235,9 @@ const callAiReviewer = async ({ anime, options }) => {
   } finally { clearTimeout(timeout) }
 }
 
-const buildAnime = ({ id, details, roles, rank }) => {
+const buildAnime = ({ id, details, roles, voiceCast, rank }) => {
   const roleData = parseRoles(roles)
+  roleData.cast = [...new Map([...roleData.cast, ...(voiceCast ?? [])].map((item) => [`${item.nameRu}|${item.nameOriginal}`, item])).values()].slice(0, 8)
   const titleRu = cleanText(details?.russian || details?.name || `Anime #${id}`)
   const titleOriginal = cleanText(details?.name || details?.russian)
   const alternativeTitles = unique([...(details?.synonyms ?? []), ...(details?.english ?? []), ...(details?.japanese ?? [])]).filter((value) => value !== titleRu && value !== titleOriginal)
@@ -266,7 +287,8 @@ export const animeAdapter = {
   async process({ queueItem, options, aiReviewAllowed }) {
     const id = queueItem.item.shikimoriId
     const [details, roles] = await Promise.all([requestShikimori(`/api/animes/${id}`), requestShikimori(`/api/animes/${id}/roles`).catch(() => [])])
-    const built = buildAnime({ id, details, roles, rank: queueItem.item.rank })
+    const voiceCast = await fetchVoiceCast(roles)
+    const built = buildAnime({ id, details, roles, voiceCast, rank: queueItem.item.rank })
     const hardFailure = built.ratingCode === 'rx' || !ALLOWED_KINDS.has(built.kindCode)
     const reviewReasons = [...(hardFailure ? ['unsupported_or_nsfw_kind'] : []), ...built.anime.dataQuality.missingFields.map((field) => `missing_${field}`)]
     const assessment = { accepted: !hardFailure && built.anime.dataQuality.missingFields.length <= 1, hardFailure, reviewReasons }

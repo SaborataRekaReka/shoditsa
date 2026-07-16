@@ -4,16 +4,17 @@ import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
   Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye,
   Download, FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
-  LoaderCircle, LockKeyhole, Menu, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
+  LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
 import type { AdminContentListItem, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
+import { GameBuilderPage } from './GameBuilderPage'
 import './admin.css'
 
-type Section = 'dashboard' | 'content' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'integrations' | 'system' | 'audit'
+type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
 
 function TagPicker({ tags, value, onChange, label, onCreate, compact = false, disabled = false }: { tags: AdminContentTag[]; value: string[]; onChange: (ids: string[]) => void; label: string; onCreate?: (name: string) => Promise<AdminContentTag>; compact?: boolean; disabled?: boolean }) {
@@ -289,7 +290,7 @@ const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => ty
 const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
   const candidate = (parts[0] || 'dashboard') as Section
-  const allowed: Section[] = ['dashboard', 'content', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'integrations', 'system', 'audit']
+  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'integrations', 'system', 'audit']
   return {
     section: allowed.includes(candidate) ? candidate : 'dashboard',
     id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null,
@@ -4888,6 +4889,7 @@ function AuditPage() {
 
 const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: 'dashboard', label: 'Обзор', icon: LayoutDashboard }, { id: 'content', label: 'Карточки', icon: Boxes },
+  { id: 'builder', label: 'Конструктор игры', icon: LayoutTemplate },
   { id: 'reports', label: 'Баг-репорты', icon: Bug }, { id: 'pipelines', label: 'ИИ-пайплайны', icon: WandSparkles },
   { id: 'users', label: 'Пользователи', icon: UsersRound }, { id: 'events', label: 'События', icon: Activity },
   { id: 'quality', label: 'Контроль качества', icon: ListChecks }, { id: 'economy', label: 'Экономика', icon: CircleDollarSign },
@@ -4908,6 +4910,7 @@ export default function AdminApp() {
   return <div className="admin-root"><aside className="admin-sidebar"><a className="admin-brand" href="/" aria-label="Сходится! — игра"><img src="/images/logo.svg" alt="Сходится!" /><span>ADMIN</span></a><nav>{MENU.map(({ id, label, icon: Icon }) => id === 'content' ? <div key={id} className={`admin-nav-group ${contentMenuOpen ? 'is-open' : ''}`}><button className={route.section === id ? 'is-active' : ''} aria-expanded={contentMenuOpen} onClick={() => { setContentMenuOpen((isOpen) => !isOpen); if (route.section !== 'content') route.navigate('content') }}><Icon /><span>{label}</span><ChevronDown className="admin-nav-group__chevron" /></button><div className="admin-nav-group__children">{MODES.map((entry) => <button key={entry.value} className={activeContentMode === entry.value ? 'is-active' : ''} onClick={() => route.navigateContentMode(entry.value)}><span>{entry.label}</span></button>)}</div></div> : <button key={id} className={route.section === id ? 'is-active' : ''} onClick={() => route.navigate(id)}><Icon /><span>{label}</span>{id === 'reports' && <i />}</button>)}</nav><footer><div className="admin-admin-card"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>{me.data.user.email}</small></div></div><a href="/"><ArrowLeft />Вернуться в игру</a></footer></aside><div className="admin-main"><header className="admin-topbar"><div className="admin-global-search"><Search /><input ref={searchRef} value={global} onChange={(event) => setGlobal(event.target.value)} placeholder="Глобальный поиск" /><kbd>Ctrl K</kbd>{globalResults.data && global.trim().length >= 2 && <div className="admin-search-results"><section><span>Карточки</span>{globalResults.data.content.map((item: AdminContentListItem) => <button key={item.id} onClick={() => { route.navigate('content', item.id); setGlobal('') }}><Boxes /><span><strong>{item.titleRu}</strong><small>{MODE_LABEL[item.mode]} · {item.id}</small></span></button>)}</section><section><span>Пользователи</span>{globalResults.data.users.map((item) => <button key={item.id} onClick={() => { route.navigate('users', item.id); setGlobal('') }}><UserRound /><span><strong>{item.isAnonymous ? 'Гость' : item.displayName || item.name}</strong><small>{item.email}</small></span></button>)}</section><section><span>Репорты</span>{globalResults.data.reports.map((entry) => <button key={String(entry.report.id)} onClick={() => { route.navigate('reports', String(entry.report.id)); setGlobal('') }}><Bug /><span><strong>{REPORT_REASON[String(entry.report.reason)]}</strong><small>{entry.titleRu}</small></span></button>)}</section></div>}</div><button className="admin-job-indicator" onClick={() => route.navigate('system')}><Activity />{activeJobs ? <><strong>{activeJobs}</strong><span>задач выполняется</span></> : <span>Фоновых задач нет</span>}</button><div className="admin-topbar-user"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>Asia/Almaty</small></div></div></header><main className="admin-content">
     {route.section === 'dashboard' && <DashboardPage navigate={route.navigate} notify={notify} />}
     {route.section === 'content' && <ContentPage key={route.search} selectedId={route.id} navigate={route.navigate} notify={notify} />}
+    {route.section === 'builder' && <GameBuilderPage notify={notify} onNavigateContent={() => route.navigate('content')} />}
     {route.section === 'reports' && <ReportsPage selectedId={route.id} navigate={route.navigate} notify={notify} />}
     {route.section === 'pipelines' && <PipelinesPage selectedId={route.id} navigate={route.navigate} notify={notify} />}
     {route.section === 'users' && <UsersPage selectedId={route.id} navigate={route.navigate} notify={notify} />}

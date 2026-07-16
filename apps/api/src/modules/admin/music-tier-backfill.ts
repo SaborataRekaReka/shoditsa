@@ -18,43 +18,21 @@ export const musicTierForPercentile = (percentile: number): BackfillMusicTier =>
   return 'niche'
 }
 
-export type MusicTierBackfillInput = {
-  itemId: string
-  popularityScore: number
-  payload: TitleItem
-}
-
-export type MusicTierBackfillProposal = MusicTierBackfillInput & {
-  percentile: number
-  tier: BackfillMusicTier
-  afterPayload: TitleItem
-}
+export type MusicTierBackfillInput = { itemId: string; popularityScore: number; payload: TitleItem }
+export type MusicTierBackfillProposal = MusicTierBackfillInput & { percentile: number; tier: BackfillMusicTier; afterPayload: TitleItem }
 
 export const proposeMusicTierBackfill = (items: MusicTierBackfillInput[]): MusicTierBackfillProposal[] => {
   const eligible = items
     .filter((item) => item.payload.allowedInGame === true)
     .sort((left, right) => right.popularityScore - left.popularityScore || left.itemId.localeCompare(right.itemId, 'en-US'))
-
   const total = eligible.length
   if (!total) return []
-
   return eligible.flatMap((item, index) => {
     if (String(item.payload.gameTier ?? '').trim()) return []
     const percentile = (index + 1) / total
     const tier = musicTierForPercentile(percentile)
     const meta = tierMeta[tier]
-    return [{
-      ...item,
-      percentile,
-      tier,
-      afterPayload: {
-        ...item.payload,
-        gameTier: tier,
-        gameDifficulty: meta.gameDifficulty,
-        gameWeight: meta.gameWeight,
-        contentStatus: 'ready',
-      },
-    }]
+    return [{ ...item, percentile, tier, afterPayload: { ...item.payload, gameTier: tier, gameDifficulty: meta.gameDifficulty, gameWeight: meta.gameWeight, contentStatus: 'ready' } }]
   })
 }
 

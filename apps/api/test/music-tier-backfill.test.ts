@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { TitleItem } from '@shoditsa/contracts'
-import { musicTierForPercentile, proposeMusicTierBackfill, summarizeMusicTierProposals } from '../../../scripts/content/music-tier-backfill-lib.js'
+import { musicTierForPercentile, proposeMusicTierBackfill, summarizeMusicTierProposals } from '../src/modules/admin/music-tier-backfill.js'
 
 const item = (index: number, gameTier?: TitleItem['gameTier']): { itemId: string; popularityScore: number; payload: TitleItem } => ({
   itemId: `music:${String(index).padStart(3, '0')}`,

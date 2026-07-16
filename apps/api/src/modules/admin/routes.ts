@@ -74,6 +74,21 @@ const pipelineFieldDecisions = (item: { beforeJson: unknown; proposedJson: unkno
   return Object.fromEntries(fields.map((field) => [field, { action: approved ? 'accept' : 'keep' }]))
 }
 const pipelineItemHasResult = (item: { proposedJson: unknown }) => Boolean(item.proposedJson && typeof item.proposedJson === 'object' && !Array.isArray(item.proposedJson))
+const persistAdminMedia = async (body: AdminMediaUploadBody, config: AppConfig) => {
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(body.base64) || body.base64.length % 4 !== 0) throw new ApiError(422, 'MEDIA_BASE64_INVALID', 'Файл изображения повреждён')
+  const input = Buffer.from(body.base64, 'base64')
+  if (!input.length || input.length > 5 * 1024 * 1024) throw new ApiError(413, 'MEDIA_TOO_LARGE', 'Размер изображения не должен превышать 5 МБ')
+  const image = sharp(input, { failOn: 'warning', limitInputPixels: 40_000_000 }).rotate()
+  const metadata = await image.metadata().catch(() => null)
+  if (!metadata?.width || !metadata.height || metadata.width < 320 || metadata.height < 180) throw new ApiError(422, 'MEDIA_RESOLUTION_TOO_SMALL', 'Минимальное разрешение изображения — 320×180')
+  if (!['jpeg', 'png', 'webp'].includes(metadata.format ?? '')) throw new ApiError(422, 'MEDIA_FORMAT_UNSUPPORTED', 'Допустимы JPEG, PNG и WebP')
+  const output = await image.webp({ quality: 88, effort: 4 }).toBuffer()
+  const digest = createHash('sha256').update(output).digest('hex'); const directory = join(config.mediaRoot, 'admin', digest.slice(0, 2)); const file = join(directory, `${digest}.webp`)
+  await mkdir(directory, { recursive: true })
+  await writeFile(file, output, { flag: 'wx' }).catch((error: NodeJS.ErrnoException) => { if (error.code !== 'EEXIST') throw error })
+  const base = config.publicMediaBaseUrl.replace(/\/$/, '')
+  return { url: `${base}/admin/${digest.slice(0, 2)}/${digest}.webp`, width: metadata.width, height: metadata.height, bytes: output.length, digest, sourceExtension: extname(body.fileName).toLocaleLowerCase('en-US') }
+}
 const assertPipelineItemReviewable = (item: { id: string; status: string; workspaceChangeId: string | null; appliedRevisionId: string | null }) => {
   if (item.workspaceChangeId || item.appliedRevisionId || ['staged', 'published'].includes(item.status)) {
     throw new ApiError(409, 'PIPELINE_ITEM_ALREADY_APPLIED', 'Опубликованный или перенесённый в рабочую область результат нельзя пересмотреть', { itemId: item.id })
@@ -551,6 +566,26 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     deps.db, await admin(request, reply, deps), (request.params as { itemId: string }).itemId, request.id,
   ))
 
+  app.post('/api/v1/admin/content/builder/media', {
+    schema: { body: AdminMediaUploadBodySchema },
+    bodyLimit: 8 * 1024 * 1024,
+  }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const body = request.body as AdminMediaUploadBody
+    if (body.purpose !== 'posterUrl' && body.purpose !== 'headerUrl') throw new ApiError(422, 'BUILDER_MEDIA_PURPOSE_INVALID', 'В конструкторе можно загрузить постер или титульный фон')
+    const media = await persistAdminMedia(body, deps.config)
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'content.media.upload',
+      entityType: 'content_builder',
+      entityId: media.digest,
+      before: null,
+      after: { purpose: body.purpose, url: media.url, width: media.width, height: media.height, bytes: media.bytes, sourceExtension: media.sourceExtension },
+      reason: `Builder upload ${body.purpose}`,
+      requestId: request.id,
+    })
+    return reply.code(201).send({ url: media.url, purpose: body.purpose, width: media.width, height: media.height, bytes: media.bytes })
+  })
+
   app.post('/api/v1/admin/content/items/:itemId/media', {
     schema: { params: AdminItemParamsSchema, body: AdminMediaUploadBodySchema },
     bodyLimit: 8 * 1024 * 1024,
@@ -558,29 +593,18 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     const actor = await admin(request, reply, deps); const itemId = (request.params as { itemId: string }).itemId; const body = request.body as AdminMediaUploadBody
     const identity = await deps.db.select({ id: contentItems.id }).from(contentItems).where(eq(contentItems.id, itemId)).limit(1)
     if (!identity[0]) throw new ApiError(404, 'CONTENT_ITEM_NOT_FOUND', 'Карточка не найдена')
-    if (!/^[A-Za-z0-9+/]+={0,2}$/.test(body.base64) || body.base64.length % 4 !== 0) throw new ApiError(422, 'MEDIA_BASE64_INVALID', 'Файл изображения повреждён')
-    const input = Buffer.from(body.base64, 'base64')
-    if (!input.length || input.length > 5 * 1024 * 1024) throw new ApiError(413, 'MEDIA_TOO_LARGE', 'Размер изображения не должен превышать 5 МБ')
-    const image = sharp(input, { failOn: 'warning', limitInputPixels: 40_000_000 }).rotate()
-    const metadata = await image.metadata().catch(() => null)
-    if (!metadata?.width || !metadata.height || metadata.width < 320 || metadata.height < 180) throw new ApiError(422, 'MEDIA_RESOLUTION_TOO_SMALL', 'Минимальное разрешение изображения — 320×180')
-    if (!['jpeg', 'png', 'webp'].includes(metadata.format ?? '')) throw new ApiError(422, 'MEDIA_FORMAT_UNSUPPORTED', 'Допустимы JPEG, PNG и WebP')
-    const output = await image.webp({ quality: 88, effort: 4 }).toBuffer()
-    const digest = createHash('sha256').update(output).digest('hex'); const directory = join(deps.config.mediaRoot, 'admin', digest.slice(0, 2)); const file = join(directory, `${digest}.webp`)
-    await mkdir(directory, { recursive: true })
-    await writeFile(file, output, { flag: 'wx' }).catch((error: NodeJS.ErrnoException) => { if (error.code !== 'EEXIST') throw error })
-    const base = deps.config.publicMediaBaseUrl.replace(/\/$/, ''); const url = `${base}/admin/${digest.slice(0, 2)}/${digest}.webp`
+    const media = await persistAdminMedia(body, deps.config)
     await deps.db.insert(auditLog).values({
       actorUserId: actor.id,
       action: 'content.media.upload',
       entityType: 'content_item',
       entityId: itemId,
       before: null,
-      after: { purpose: body.purpose, url, width: metadata.width, height: metadata.height, bytes: output.length, sourceExtension: extname(body.fileName).toLocaleLowerCase('en-US') },
+      after: { purpose: body.purpose, url: media.url, width: media.width, height: media.height, bytes: media.bytes, sourceExtension: media.sourceExtension },
       reason: `Upload ${body.purpose}`,
       requestId: request.id,
     })
-    return reply.code(201).send({ url, purpose: body.purpose, width: metadata.width, height: metadata.height, bytes: output.length })
+    return reply.code(201).send({ url: media.url, purpose: body.purpose, width: media.width, height: media.height, bytes: media.bytes })
   })
 
   app.post('/api/v1/admin/content/workspace/bulk', { schema: { body: AdminWorkspaceBulkBodySchema } }, async (request, reply) => {

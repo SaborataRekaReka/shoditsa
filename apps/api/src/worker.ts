@@ -19,6 +19,7 @@ import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
 import { assertNormalizationField, isNormalizationRateLimitError, mergeNormalizationUsage, normalizationPendingItemIds, normalizeProposedValue, requestNormalization, runNormalizationPool } from './modules/admin/normalization-pipeline.js'
+import { apiBackfillFields, buildMissingFieldsProposal } from './modules/admin/pipeline-backfill.js'
 import { ApiError } from './lib/errors.js'
 
 type Json = Record<string, unknown>
@@ -461,7 +462,10 @@ const handleMovie = async (job: typeof backgroundJobs.$inferSelect) => {
       const mapped = mapMovieRecord(entry.raw); const itemId = text(mapped.id)
       const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
       const beforePayload = record(before[0]?.payload)
-      const proposed = before[0] ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame } : mapped
+      const patchFields = apiBackfillFields('movie', input)
+      const patch = before[0] && patchFields.length ? buildMissingFieldsProposal(beforePayload, mapped, patchFields) : null
+      if (patch && !patch.changedFields.length) throw new Error('API did not return any missing movie fields requested by this backfill')
+      const proposed = patch?.proposed ?? (before[0] ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame } : mapped)
       await db.insert(pipelineRunItems).values({
         runId: run.id, entityKey, cardId: before[0] ? itemId : null, inputItemVersionId: before[0]?.id ?? null,
         status: 'review_required', beforeJson: before[0]?.payload ?? null, proposedJson: proposed, warningsJson: warnings,
@@ -580,7 +584,10 @@ const handleAnime = async (job: typeof backgroundJobs.$inferSelect) => {
       const mapped = mapAnimeRecord(entry.raw); const itemId = text(mapped.id)
       const before = await db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload }).from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.itemId, itemId))).limit(1)
       const beforePayload = record(before[0]?.payload)
-      const proposed = before[0] ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame } : mapped
+      const patchFields = apiBackfillFields('anime', input)
+      const patch = before[0] && patchFields.length ? buildMissingFieldsProposal(beforePayload, mapped, patchFields) : null
+      if (patch && !patch.changedFields.length) throw new Error('API did not return any missing anime fields requested by this backfill')
+      const proposed = patch?.proposed ?? (before[0] ? { ...beforePayload, ...mapped, allowedInGame: beforePayload.allowedInGame ?? mapped.allowedInGame } : mapped)
       await db.insert(pipelineRunItems).values({
         runId: run.id, entityKey, cardId: before[0] ? itemId : null, inputItemVersionId: before[0]?.id ?? null,
         status: 'review_required', beforeJson: before[0]?.payload ?? null, proposedJson: proposed, warningsJson: warnings,

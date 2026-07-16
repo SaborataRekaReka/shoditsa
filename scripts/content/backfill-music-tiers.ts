@@ -11,7 +11,7 @@ import {
 import { arg, hasArg } from './lib.js'
 import {
   MUSIC_TIER_BACKFILL_VERSION, MUSIC_TIER_THRESHOLDS, proposeMusicTierBackfill, summarizeMusicTierProposals,
-} from './music-tier-backfill-lib.js'
+} from '../../apps/api/src/modules/admin/music-tier-backfill.js'
 
 const apply = hasArg('--apply')
 const activate = hasArg('--activate')
