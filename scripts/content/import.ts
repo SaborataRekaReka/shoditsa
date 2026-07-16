@@ -6,7 +6,7 @@ import {
   contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   createDatabase, diagnosisVignettes,
 } from '@shoditsa/database'
-import { normalize } from '@shoditsa/game-core'
+import { isAllowedInRegularGame, normalize } from '@shoditsa/game-core'
 import { aliasesFor, arg, hasArg, loadLibraries } from './lib.js'
 
 const loaded = await loadLibraries(arg('--source'))
@@ -52,7 +52,7 @@ try {
           itemId: item.id, revisionId: revisionId!, mode: library.mode, titleRu: item.titleRu,
           titleOriginal: item.titleOriginal ?? '', normalizedTitle: normalize(item.titleRu), year: item.year,
           endYear: item.endYear ?? null, popularityScore: Number.isFinite(item.popularityScore) ? item.popularityScore : 0, topRank: item.topRank ?? null,
-          sortOrder: offset + index, allowedInGame: item.allowedInGame ?? true, contentStatus: item.contentStatus ?? null, payload: item,
+          sortOrder: offset + index, allowedInGame: isAllowedInRegularGame(item), contentStatus: item.contentStatus ?? null, payload: item,
         }))).returning({ id: contentItemVersions.id, itemId: contentItemVersions.itemId })
         const itemMap = new Map(chunk.map((item) => [item.id, item]))
         const aliases = versions.flatMap((row) => aliasesFor(itemMap.get(row.itemId)!).map((alias) => ({ itemVersionId: row.id, ...alias })))

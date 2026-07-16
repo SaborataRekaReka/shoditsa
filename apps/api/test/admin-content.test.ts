@@ -29,6 +29,16 @@ describe('admin content validation', () => {
     ]))
   })
 
+  it('rejects hints that end with an ellipsis', () => {
+    for (const plotHint of ['Обрезанная подсказка заканчивается тремя точками...', 'Обрезанная подсказка заканчивается многоточием…']) {
+      expect(validateContentPayload({ ...base, plotHint }, 'movie')).toContainEqual(expect.objectContaining({
+        field: 'plotHint',
+        code: 'truncated_hint',
+        level: 'error',
+      }))
+    }
+  })
+
   it('accepts legacy internal media paths rooted with dot slash', () => {
     const issues = validateContentPayload({
       ...base,

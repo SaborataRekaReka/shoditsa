@@ -369,16 +369,9 @@ const cleanHintText = (value: string) => {
     .trim()
 }
 const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
-const TRUNCATED_HINT_END_RE = /(?:\.\.\.|…)\s*$/
-const resolvePlotHintText = (item: TitleItem) => {
-  const plotHint = cleanHintText(item.plotHint || '')
-  const description = cleanHintText(item.description || '')
-
-  if (!plotHint) return description
-  if (item.mode === 'anime') return plotHint
-  if (TRUNCATED_HINT_END_RE.test(plotHint) && description && !/\[+\s*REDACTED\s*\]+/i.test(plotHint)) return description
-  return plotHint
-}
+const invalidFactFallback = (value: string) => value.length < 30
+  || /(?:\.\.\.|…)\s*$/.test(value)
+  || /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(value)
 const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
 const isRedactedToken = (value: string) => /^\[+\s*REDACTED\s*\]+$/i.test(value)
 const renderHintBody = (value: string): ReactNode => {
@@ -796,8 +789,8 @@ const buildFactHintValue = (item: TitleItem) => {
   const isModeledField = (candidate: string) => modelFacts.has(normalizeTextMatch(candidate))
   const fact = cleanHintText((item.facts ?? []).find((candidate) => !isModeledField(candidate)) ?? '')
   if (fact) return cropHintText(fact)
-  const fallback = cleanHintText(resolvePlotHintText(item))
-  return fallback && !isModeledField(fallback) ? cropHintText(fallback) : ''
+  const fallback = cleanHintText(item.plotHint || '')
+  return fallback && !invalidFactFallback(fallback) && !isModeledField(fallback) ? cropHintText(fallback) : ''
 }
 
 const buildAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {

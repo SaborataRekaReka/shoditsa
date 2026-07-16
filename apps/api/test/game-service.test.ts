@@ -324,4 +324,17 @@ describe('server hint options', () => {
 
     expect(options.find((option) => option.key === 'fact')?.value).toBe('Безопасная сюжетная подсказка.')
   })
+
+  it('never substitutes descriptions for plotHint and hides invalid plot hints', () => {
+    const baseAnswer = {
+      id: 'game_bad_hint', mode: 'game', titleRu: 'Example', titleOriginal: 'Example', alternativeTitles: [], popularityScore: 0,
+      description: 'A long description that must never become an in-game fact hint.',
+      shortDescription: 'A short description that must never become an in-game fact hint.',
+    } as TitleItem
+
+    expect(buildHintOptions(baseAnswer, []).find((option) => option.key === 'fact')).toBeUndefined()
+    for (const plotHint of ['This imported hint was visibly truncated...', 'Too short', 'Text with _KEEP_1_ service marker inside']) {
+      expect(buildHintOptions({ ...baseAnswer, plotHint }, []).find((option) => option.key === 'fact')).toBeUndefined()
+    }
+  })
 })

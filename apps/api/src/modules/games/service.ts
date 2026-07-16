@@ -528,8 +528,11 @@ const factHintValue = (answer: TitleItem, matched: Set<string>) => {
   const fact = (answer.facts ?? []).map(cleanHintText).find((candidate) => !isRedundant(candidate)) ?? ''
   if (fact) return cropHintText(fact)
 
-  const fallback = cleanHintText(answer.plotHint ?? answer.shortDescription ?? answer.description ?? '')
-  return fallback && !isRedundant(fallback) ? cropHintText(fallback) : ''
+  const fallback = cleanHintText(answer.plotHint ?? '')
+  const invalidFallback = fallback.length < 30
+    || /(?:\.\.\.|…)\s*$/.test(fallback)
+    || /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(fallback)
+  return fallback && !invalidFallback && !isRedundant(fallback) ? cropHintText(fallback) : ''
 }
 
 type BuiltHintOption = {

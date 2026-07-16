@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import type { TitleItem, TitleMode } from '@shoditsa/contracts'
-import { calculateCompletionReward, compareTitles, dailyTitle, normalize, poolFor } from '../src/index.js'
+import { calculateCompletionReward, compareTitles, dailyTitle, isAllowedInRegularGame, normalize, poolFor } from '../src/index.js'
 
 const libraryDirs: Record<TitleMode, string> = { movie: 'movies', series: 'series', anime: 'animes', game: 'games', music: 'music', diagnosis: 'diagnoses' }
 const fixtures = JSON.parse(readFileSync(new URL('./fixtures/compare-golden.json', import.meta.url), 'utf8')) as Record<TitleMode, { answerId: string; cases: Array<{ guessId: string; digest: string }> }>
@@ -28,6 +28,16 @@ describe('deterministic rules', () => {
   it('filters years for a period', () => {
     const items = [{ id: '1', mode: 'movie', titleRu: 'A', titleOriginal: '', alternativeTitles: [], popularityScore: 1, year: 1999 }, { id: '2', mode: 'movie', titleRu: 'B', titleOriginal: '', alternativeTitles: [], popularityScore: 1, year: 2021 }] as TitleItem[]
     expect(poolFor(items, 'movie', 'from_2020').map((item) => item.id)).toEqual(['2'])
+  })
+  it('never includes promo cards in the regular games pool', () => {
+    const regular = { id: 'tgdb_1', mode: 'game', titleRu: 'Regular', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }
+    const promoById = { ...regular, id: 'promo:dtf-test', titleRu: 'Promo by id' }
+    const promoByStatus = { ...regular, id: 'game-promo-copy', titleRu: 'Promo by status', contentStatus: 'promo_pack' }
+    const items = [regular, promoById, promoByStatus] as TitleItem[]
+
+    expect(poolFor(items, 'game', 'all').map((item) => item.id)).toEqual(['tgdb_1'])
+    expect(isAllowedInRegularGame(promoById as TitleItem)).toBe(false)
+    expect(isAllowedInRegularGame(promoByStatus as TitleItem)).toBe(false)
   })
 })
 

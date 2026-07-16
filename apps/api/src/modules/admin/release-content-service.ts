@@ -4,7 +4,7 @@ import {
   auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   diagnosisVignettes, type Database,
 } from '@shoditsa/database'
-import { normalize } from '@shoditsa/game-core'
+import { isAllowedInRegularGame, normalize } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 import { loadReleaseLibraries, releaseAliasesFor } from './release-content-loader.js'
 import { buildReleaseMergePlan, releaseMergeChecksum, releaseMergeModeChecksum, type ActiveReleaseRow, type ReleaseMergeEntry } from './release-content-merge.js'
@@ -116,7 +116,7 @@ const insertContentVersions = async (tx: Parameters<Parameters<Database['transac
         popularityScore: Number.isFinite(item.popularityScore) ? item.popularityScore : 0,
         topRank: item.topRank ?? null,
         sortOrder,
-        allowedInGame: item.allowedInGame ?? true,
+        allowedInGame: isAllowedInRegularGame(item),
         contentStatus: item.contentStatus ?? null,
         payload: item,
       }

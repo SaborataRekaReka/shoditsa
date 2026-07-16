@@ -5,7 +5,7 @@ import {
   appSettings, auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   contentWorkspaceChanges, contentWorkspaces, diagnosisVignettes, type Database,
 } from '@shoditsa/database'
-import { normalize } from '@shoditsa/game-core'
+import { isAllowedInRegularGame, normalize } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 
 type Actor = { id: string }
@@ -62,6 +62,7 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   const hint = text(payload.plotHint)
   if (!hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
   if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
+  if (hint && /(?:\.\.\.|…)\s*$/.test(hint)) error('plotHint', 'truncated_hint', 'Подсказка не должна заканчиваться многоточием')
   if (hint && text(payload.titleRu) && normalize(hint).includes(normalize(text(payload.titleRu)))) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')
   if (hint && /(?:json|undefined|null|nan|stack trace|exception|http(?:s)?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) error('plotHint', 'technical_leak', 'Подсказка содержит технический текст')
   return issues
@@ -271,7 +272,7 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
             itemId: text(payload.id), revisionId: revision.id, mode,
             titleRu: text(payload.titleRu), titleOriginal: text(payload.titleOriginal), normalizedTitle: normalize(text(payload.titleRu)),
             year: number(payload.year), endYear: number(payload.endYear), popularityScore: number(payload.popularityScore) ?? 0,
-            topRank: number(payload.topRank), sortOrder, allowedInGame: payload.allowedInGame !== false,
+            topRank: number(payload.topRank), sortOrder, allowedInGame: isAllowedInRegularGame(payload as TitleItem),
             contentStatus: text(payload.contentStatus) || null, payload,
           }
         })
