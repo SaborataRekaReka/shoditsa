@@ -56,4 +56,17 @@ describe('JSON game builder model', () => {
     const items = ensureUniqueItemIds(analysed.records.map((record, index) => mapRecordToItem({ record, index, fields: analysed.fields, targets, mapping, mode: 'movie' })))
     expect(items.map((item) => item.id)).toEqual(['import-одна-карточка-1', 'import-одна-карточка-2'])
   })
+
+  it('builds the nested movie fields expected by the real attempt card', () => {
+    const analysed = analyseUnknownJson([{ title: 'Брат', duration: 96, kp: 8.3, imdb: 7.8, director: 'Алексей Балабанов', actors: ['Сергей Бодров мл.'] }])
+    const targets = targetsForMode('movie')
+    const mapping = autoMapFields(analysed.fields, targets)
+    const item = mapRecordToItem({ record: analysed.records[0], index: 0, fields: analysed.fields, targets, mapping, mode: 'movie' })
+    expect(item.data).toMatchObject({
+      runtimeMinutes: 96,
+      ratings: { kinopoisk: 8.3, imdb: 7.8 },
+      directors: [{ nameRu: 'Алексей Балабанов', nameOriginal: '', photoUrl: null }],
+      cast: [{ nameRu: 'Сергей Бодров мл.', nameOriginal: '', photoUrl: null }],
+    })
+  })
 })

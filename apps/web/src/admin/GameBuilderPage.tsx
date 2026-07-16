@@ -1,13 +1,13 @@
-import { useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react'
+import { useMemo, useRef, useState, type DragEvent } from 'react'
 import type { ContentMode } from '@shoditsa/contracts'
 import {
-  ArrowLeft, ArrowRight, BadgeCheck, Braces, Check, ChevronDown, CircleAlert, CloudUpload, Download, Eye, FileJson,
-  GripVertical, Image as ImageIcon, Layers3, LayoutTemplate, LoaderCircle, Plus, RefreshCw, Save, Search, Sparkles, Trash2, Upload, X,
+  ArrowLeft, ArrowRight, BadgeCheck, Braces, Check, ChevronDown, ChevronRight, CircleAlert, Clapperboard, CloudUpload, Download, Eye, FileJson,
+  GripVertical, Image as ImageIcon, Layers3, LayoutTemplate, LoaderCircle, Play, Plus, RefreshCw, Save, Search, Sparkles, Ticket, Trash2, Upload, X,
 } from 'lucide-react'
 import { adminApi, type ContentExchangePreview } from './api'
 import {
   analyseUnknownJson, autoMapFields, createExchangeDocument, displayValue, ensureUniqueItemIds, inferContentMode, mapRecordToItem,
-  readDetectedValue, targetsForMode, type AnalysedJson, type DetectedField, type FieldMapping, type JsonRecord, type TargetDefinition,
+  readDetectedValue, readPayloadValue, targetsForMode, type AnalysedJson, type DetectedField, type FieldMapping, type JsonRecord, type TargetDefinition,
 } from './game-builder-model'
 import './game-builder.css'
 
@@ -35,9 +35,9 @@ const STATUS_LABEL: Record<string, string> = { create: 'Новая', update: 'О
 const sampleJson = {
   catalog: {
     movies: [
-      { slug: 'arrival-2016', title_ru: 'Прибытие', original_title: 'Arrival', year: 2016, genres: ['фантастика', 'драма'], director: 'Дени Вильнёв', poster: 'https://images.kinorium.com/movie/1080/566896.jpg', backdrop: 'https://images.kinorium.com/movie/background/566896.jpg', hint: 'Лингвист пытается понять язык гостей, для которых время устроено иначе.', facts: ['Основано на рассказе Теда Чана', 'Музыку написал Йоханн Йоханнссон'] },
-      { slug: 'blade-runner-2049', title_ru: 'Бегущий по лезвию 2049', original_title: 'Blade Runner 2049', year: 2017, genres: ['фантастика', 'неонуар'], director: 'Дени Вильнёв', hint: 'Открытие репликанта-полицейского может изменить хрупкий порядок будущего.', facts: ['Продолжение фильма 1982 года'] },
-      { slug: 'dune-part-two', title_ru: 'Дюна: Часть вторая', original_title: 'Dune: Part Two', year: 2024, genres: ['фантастика', 'приключения'], director: 'Дени Вильнёв', hint: 'Наследник великого дома принимает культуру пустыни и ведёт борьбу за её будущее.', facts: ['Съёмки проходили в Иордании и Абу-Даби'] },
+      { slug: 'arrival-2016', title_ru: 'Прибытие', original_title: 'Arrival', year: 2016, age_rating: '16+', genres: ['фантастика', 'драма'], country: 'США', duration: 116, kp: 7.5, imdb: 7.9, director: 'Дени Вильнёв', actors: ['Эми Адамс', 'Джереми Реннер', 'Форест Уитакер'], poster: 'https://images.kinorium.com/movie/1080/566896.jpg', backdrop: 'https://images.kinorium.com/movie/background/566896.jpg', hint: 'Лингвист пытается понять язык гостей, для которых время устроено иначе.', facts: ['Основано на рассказе Теда Чана', 'Музыку написал Йоханн Йоханнссон'] },
+      { slug: 'blade-runner-2049', title_ru: 'Бегущий по лезвию 2049', original_title: 'Blade Runner 2049', year: 2017, age_rating: '18+', genres: ['фантастика', 'неонуар'], country: ['США', 'Канада'], duration: 164, kp: 7.8, imdb: 8.0, director: 'Дени Вильнёв', actors: ['Райан Гослинг', 'Харрисон Форд'], hint: 'Открытие репликанта-полицейского может изменить хрупкий порядок будущего.', facts: ['Продолжение фильма 1982 года'] },
+      { slug: 'dune-part-two', title_ru: 'Дюна: Часть вторая', original_title: 'Dune: Part Two', year: 2024, age_rating: '16+', genres: ['фантастика', 'приключения'], country: 'США', duration: 166, kp: 8.2, imdb: 8.5, director: 'Дени Вильнёв', actors: ['Тимоти Шаламе', 'Зендея'], hint: 'Наследник великого дома принимает культуру пустыни и ведёт борьбу за её будущее.', facts: ['Съёмки проходили в Иордании и Абу-Даби'] },
     ],
   },
 }
@@ -77,16 +77,37 @@ function DropSlot({ target, mapping, fieldById, record, visibility, onDropField,
   const source = fieldById.get(mapping[target.key] ?? '')
   const value = record && source ? readDetectedValue(record, source) : undefined
   const drop = (event: DragEvent<HTMLDivElement>) => { event.preventDefault(); const fieldId = event.dataTransfer.getData('application/x-shoditsa-json-field') || event.dataTransfer.getData('text/plain'); if (fieldId) onDropField(target.key, fieldId) }
-  return <div className={`game-builder-map-slot ${source ? 'is-mapped' : ''} ${visibility[target.key] === false ? 'is-hidden' : ''}`} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' }} onDrop={drop}>
-    <button className="game-builder-map-slot__visibility" onClick={() => onToggle(target.key)} aria-label={visibility[target.key] === false ? `Показывать ${target.label}` : `Скрыть ${target.label}`} title={visibility[target.key] === false ? 'Показывать в карточке' : 'Скрыть в карточке'}><Eye /></button>
+  return <div className={`game-builder-map-slot ${source ? 'is-mapped' : ''} ${visibility[target.key] === false ? 'is-hidden' : ''} ${!target.visual ? 'is-data-only' : ''}`} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' }} onDrop={drop}>
+    {target.visual ? <button className="game-builder-map-slot__visibility" onClick={() => onToggle(target.key)} aria-label={visibility[target.key] === false ? `Показывать ${target.label}` : `Скрыть ${target.label}`} title={visibility[target.key] === false ? 'Показывать в карточке' : 'Скрыть в карточке'}><Eye /></button> : <span className="game-builder-map-slot__data" title="Сохраняется в данные, но не показывается в кино-макете"><Braces /></span>}
     <div><span>{target.label}{target.required && <b>обязательно</b>}</span><strong>{source?.label ?? 'Перетащите поле сюда'}</strong><small>{source ? compactSample(value) : target.hint}</small></div>
     {source ? <button className="game-builder-map-slot__clear" onClick={() => onClear(target.key)} aria-label={`Убрать ${target.label}`}><X /></button> : <GripVertical />}
   </div>
 }
 
-function PreviewDrop({ targetKey, mapped, children, className = '', onDropField }: { targetKey: string; mapped: boolean; children: ReactNode; className?: string; onDropField: (targetKey: string, fieldId: string) => void }) {
+const recordValue = (value: unknown): JsonRecord => value && typeof value === 'object' && !Array.isArray(value) ? value as JsonRecord : {}
+const listValue = (value: unknown) => Array.isArray(value) ? value : value == null || value === '' ? [] : [value]
+const previewPerson = (value: unknown) => {
+  const person = recordValue(value)
+  const name = displayValue(person.nameRu ?? person.name ?? person.title ?? value, 'Нет данных')
+  return { name, photoUrl: typeof (person.photoUrl ?? person.image ?? person.avatar) === 'string' ? String(person.photoUrl ?? person.image ?? person.avatar) : '' }
+}
+const ratingText = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value.toFixed(1) : displayValue(value, '—')
+
+function MoviePeopleGroup({ targetKey, label, value, mapped, onDropField }: { targetKey: string; label: string; value: unknown; mapped: boolean; onDropField: (targetKey: string, fieldId: string) => void }) {
+  const people = listValue(value).map(previewPerson).slice(0, targetKey === 'cast' ? 6 : 3)
   const drop = (event: DragEvent<HTMLDivElement>) => { event.preventDefault(); const fieldId = event.dataTransfer.getData('application/x-shoditsa-json-field') || event.dataTransfer.getData('text/plain'); if (fieldId) onDropField(targetKey, fieldId) }
-  return <div className={`game-builder-preview-drop ${mapped ? 'is-mapped' : ''} ${className}`} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' }} onDrop={drop}>{children}</div>
+  return <div className={`people-group unknown people-${targetKey === 'directors' ? 'creator' : 'cast'} game-builder-native-drop ${mapped ? 'is-mapped' : ''}`} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' }} onDrop={drop} title={`Перетащите поле: ${label}`}>
+    <div className="people-group__head"><span>{label}</span></div>
+    <div className="people-row">{people.length ? people.map((person, index) => {
+      const initials = person.name.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU')
+      return <div className="hint-person" key={`${person.name}-${index}`}><div className="hint-person__portrait">{person.photoUrl ? <img src={person.photoUrl} alt={person.name} /> : <span>{initials || '—'}</span>}</div><strong>{person.name}</strong></div>
+    }) : <span className="people-empty">Перетащите поле</span>}</div>
+  </div>
+}
+
+function MovieClueTile({ targetKey, label, value, mapped, onDropField }: { targetKey: string; label: string; value: unknown; mapped: boolean; onDropField: (targetKey: string, fieldId: string) => void }) {
+  const drop = (event: DragEvent<HTMLDivElement>) => { event.preventDefault(); const fieldId = event.dataTransfer.getData('application/x-shoditsa-json-field') || event.dataTransfer.getData('text/plain'); if (fieldId) onDropField(targetKey, fieldId) }
+  return <div className={`clue-tile unknown clue-${targetKey === 'ratingKinopoisk' ? 'kp' : targetKey === 'ratingImdb' ? 'imdb' : targetKey} game-builder-native-drop ${mapped ? 'is-mapped' : ''}`} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' }} onDrop={drop} title={`Перетащите поле: ${label}`}><div className="clue-tile__top"><span>{label}</span></div><strong>{displayValue(value)}</strong></div>
 }
 
 export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: NoticeTone, text: string) => void; onNavigateContent: () => void }) {
@@ -251,12 +272,25 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
   </>
 
   const poster = typeof currentData.posterUrl === 'string' ? currentData.posterUrl : ''
-  const header = typeof currentData.headerUrl === 'string' ? currentData.headerUrl : ''
   const title = displayValue(currentData.titleRu, 'Название карточки')
   const originalTitle = displayValue(currentData.titleOriginal, 'Оригинальное название')
-  const hint = displayValue(currentData.plotHint, 'Перетащите сюда подсказку или описание')
-  const facts = Array.isArray(currentData.facts) ? currentData.facts.slice(0, 3) : []
-  const metaTargets = targets.filter((target) => target.group === 'attempt' && !['plotHint', 'facts'].includes(target.payloadKey) && visibility[target.key] !== false && (mapping[target.key] || ['year', 'genres'].includes(target.key))).slice(0, 6)
+  const year = currentData.year
+  const ageRating = currentData.ageRating
+  const genres = listValue(currentData.genres).map((entry) => displayValue(entry)).filter(Boolean).slice(0, 4)
+  const country = currentData.countries
+  const runtime = readPayloadValue(currentData, 'runtimeMinutes')
+  const kinopoiskRating = readPayloadValue(currentData, 'ratings.kinopoisk')
+  const imdbRating = readPayloadValue(currentData, 'ratings.imdb')
+  const directors = currentData.directors
+  const cast = currentData.cast
+  const today = new Date()
+  const prettyToday = new Intl.DateTimeFormat('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }).format(today)
+  const gameSubject: Record<ContentMode, string> = { movie: 'фильм', series: 'сериал', anime: 'аниме', game: 'игру', music: 'артиста', diagnosis: 'диагноз' }
+  const nativeDrop = (targetKey: string) => ({
+    onDragOver: (event: DragEvent<HTMLElement>) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' },
+    onDrop: (event: DragEvent<HTMLElement>) => { event.preventDefault(); const fieldId = event.dataTransfer.getData('application/x-shoditsa-json-field') || event.dataTransfer.getData('text/plain'); if (fieldId) setTargetMapping(targetKey, fieldId) },
+    title: `Перетащите поле в ячейку «${targets.find((target) => target.key === targetKey)?.label ?? targetKey}»`,
+  })
 
   return <>
     <div className="game-builder-page-head game-builder-page-head--loaded"><div><span>Игровой контент</span><h1>Конструктор игры</h1><p><FileJson />{fileName} <b>{dataset.records.length.toLocaleString('ru-RU')} карточек</b> <b>{dataset.fields.length} полей</b></p></div><div className="game-builder-head-actions"><button className="admin-btn admin-btn--secondary" onClick={saveTemplate}><Save />Сохранить шаблон</button><button className="admin-btn admin-btn--secondary" onClick={exportTemplate}><Download />Экспорт схемы</button><button className="admin-btn admin-btn--primary" onClick={() => void checkImport()} disabled={!canCheck || checking}>{checking ? <LoaderCircle /> : <BadgeCheck />}{checking ? 'Проверяем…' : 'Проверить импорт'}</button></div></div>
@@ -279,21 +313,39 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
       <section className="game-builder-canvas">
         <header><div className="game-builder-scene-switch"><button className={scene === 'title' ? 'is-active' : ''} onClick={() => setScene('title')}>Титульник</button><button className={scene === 'attempt' ? 'is-active' : ''} onClick={() => setScene('attempt')}>Карточка попытки</button></div><div className="game-builder-record-nav"><button disabled={recordIndex === 0} onClick={() => setRecordIndex((value) => Math.max(0, value - 1))}><ArrowLeft /></button><span><strong>{recordIndex + 1}</strong> / {dataset.records.length}</span><button disabled={recordIndex === dataset.records.length - 1} onClick={() => setRecordIndex((value) => Math.min(dataset.records.length - 1, value + 1))}><ArrowRight /></button></div></header>
         <div className={`game-builder-stage is-${scene}`}>
-          {scene === 'title' ? <article className="game-builder-title-card" style={header ? { backgroundImage: `linear-gradient(90deg, rgba(9,10,8,.94), rgba(9,10,8,.28)), url(${JSON.stringify(header).slice(1, -1)})` } : undefined}>
-            <PreviewDrop targetKey="headerUrl" mapped={Boolean(mapping.headerUrl || header)} className="game-builder-title-card__backdrop" onDropField={setTargetMapping}><span><ImageIcon />{header ? 'Титульный фон' : 'Перетащите широкий фон'}</span>{renderMediaUpload('headerUrl', true)}</PreviewDrop>
-            <div className="game-builder-title-card__content"><span>{MODE_LABEL[mode]} · КАРТОЧКА {recordIndex + 1}</span><PreviewDrop targetKey="titleRu" mapped={Boolean(mapping.titleRu)} onDropField={setTargetMapping}><h2>{title}</h2></PreviewDrop><PreviewDrop targetKey="titleOriginal" mapped={Boolean(mapping.titleOriginal)} onDropField={setTargetMapping}><p>{originalTitle}</p></PreviewDrop><div className="game-builder-title-card__meta">{displayValue(currentData.year, 'Год')}<i />{displayValue(currentData.genres, 'Жанр')}</div></div>
-            <PreviewDrop targetKey="posterUrl" mapped={Boolean(mapping.posterUrl || poster)} className="game-builder-title-card__poster" onDropField={setTargetMapping}>{poster ? <img src={poster} alt="" /> : <ImageIcon />}{renderMediaUpload('posterUrl', true)}</PreviewDrop>
-          </article> : <article className="game-builder-attempt-card">
-            <header><div><span>ПОПЫТКА</span><strong>01 / 10</strong></div><i>{MODE_LABEL[mode]}</i></header>
-            <PreviewDrop targetKey="posterUrl" mapped={Boolean(mapping.posterUrl || poster)} className="game-builder-attempt-card__media" onDropField={setTargetMapping}>{poster ? <img src={poster} alt="" /> : <><ImageIcon /><span>Иллюстрация карточки</span></>}{renderMediaUpload('posterUrl', true)}</PreviewDrop>
-            <PreviewDrop targetKey="plotHint" mapped={Boolean(mapping.plotHint)} className="game-builder-attempt-card__hint" onDropField={setTargetMapping}><small>ОСНОВНАЯ ПОДСКАЗКА</small><h3>{hint}</h3></PreviewDrop>
-            <div className="game-builder-attempt-card__meta">{metaTargets.map((target) => <PreviewDrop key={target.key} targetKey={target.key} mapped={Boolean(mapping[target.key])} onDropField={setTargetMapping}><small>{target.label}</small><strong>{displayValue(currentData[target.payloadKey])}</strong></PreviewDrop>)}</div>
-            {(mapping.facts || facts.length) && visibility.facts !== false && <PreviewDrop targetKey="facts" mapped={Boolean(mapping.facts)} className="game-builder-attempt-card__facts" onDropField={setTargetMapping}><small>ДОПОЛНИТЕЛЬНО</small>{facts.length ? facts.map((fact, index) => <p key={index}>{displayValue(fact)}</p>) : <p>Перетащите список фактов</p>}</PreviewDrop>}
-            {customSlots.filter((slot) => visibility[slot.key] !== false && mapping[slot.key]).map((slot) => <PreviewDrop key={slot.key} targetKey={slot.key} mapped onDropField={setTargetMapping} className="game-builder-attempt-card__custom"><small>{slot.label}</small><strong>{displayValue(currentData[slot.payloadKey])}</strong></PreviewDrop>)}
-            <div className="game-builder-attempt-card__answer"><Search /><span>Введите вариант ответа</span><kbd>ENTER</kbd></div>
+          {scene === 'title' ? <section className="title-stage game-builder-film-title">
+            <div className="title-game-mark"><span><Clapperboard /></span><i>Игра дня · №{String(today.getDate()).padStart(2, '0')}</i><h1>{MODE_LABEL[mode]}</h1></div>
+            <time>{prettyToday} · {today.getFullYear()}</time><p>Угадайте {gameSubject[mode]} дня за десять попыток</p>
+            <section className="admit-ticket">
+              <div className="admit-ticket__stub"><span>ВХОД</span><strong>ОДИН</strong><small>№ {String(today.getDate()).padStart(2, '0')}</small><em>{String(today.getDate()).padStart(2, '0')}.{String(today.getMonth() + 1).padStart(2, '0')}</em><i /></div>
+              <div className="admit-ticket__body"><div className="ticket-kicker"><span>Ежедневная премьера</span><i /><small>полночный сеанс</small></div><h1>Ежедневная игра: {MODE_LABEL[mode].toLocaleLowerCase('ru-RU')}</h1><p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p><div className="ticket-settings"><div className="period-select-wrap"><button type="button" className="period-control period-control--custom"><span className="period-control__top"><span>Период</span><strong><Ticket /> 3</strong></span><span className="period-control__value"><span>За всё время</span><ChevronRight /></span></button><p className="period-control__note">Период открыт. Можно начинать сеанс.</p></div></div></div>
+            </section>
+            <button type="button" className="ui-button ui-button--primary play-button"><Play />Начать игру <span className="keycap-hint keycap-hint--inline">Enter</span></button>
+          </section> : <article className={`attempt-card attempt-card--screen game-builder-film-attempt ${visibility.posterUrl === false ? 'is-poster-hidden' : ''}`}>
+            <div className="attempt-card__header">
+              <span className="attempt-card__number">01</span>
+              {visibility.posterUrl !== false && (poster ? <img className={`game-builder-native-drop ${mapping.posterUrl ? 'is-mapped' : ''}`} src={poster} alt="" {...nativeDrop('posterUrl')} /> : <div className={`poster-fallback game-builder-native-drop ${mapping.posterUrl ? 'is-mapped' : ''}`} {...nativeDrop('posterUrl')}><ImageIcon /><span>Нет постера</span></div>)}
+              <div className="attempt-card__identity">
+                <span className="attempt-label">Попытка 1</span>
+                {visibility.titleRu !== false && <h2 className={`game-builder-native-drop ${mapping.titleRu ? 'is-mapped' : ''}`} {...nativeDrop('titleRu')}>{title}</h2>}
+                <p className="gm-head__sub">{visibility.titleOriginal !== false && <span className={`gm-head__orig game-builder-native-drop ${mapping.titleOriginal ? 'is-mapped' : ''}`} {...nativeDrop('titleOriginal')}>{originalTitle}</span>}{visibility.year !== false && <><i className="gm-head__dot" aria-hidden="true">·</i><span className={`gm-year game-builder-native-drop ${mapping.year ? 'is-mapped' : ''}`} {...nativeDrop('year')}>{displayValue(year, 'Год')}</span></>}{visibility.ageRating !== false && <><i className="gm-head__dot" aria-hidden="true">·</i><span className={`gm-year gm-year--age game-builder-native-drop ${mapping.ageRating ? 'is-mapped' : ''}`} {...nativeDrop('ageRating')}>{displayValue(ageRating, 'Возраст')}</span></>}</p>
+                {visibility.genres !== false && <div className={`gm-genres game-builder-native-drop ${mapping.genres ? 'is-mapped' : ''}`} {...nativeDrop('genres')}>{genres.length ? genres.map((genre) => <span className="gm-genre" key={genre}>{genre}</span>) : <span className="gm-genre">Жанры</span>}</div>}
+              </div>
+              {visibility.ratingKinopoisk !== false && <div className={`rating-badge game-builder-native-drop ${mapping.ratingKinopoisk ? 'is-mapped' : ''}`} {...nativeDrop('ratingKinopoisk')}><small>КП</small><strong>{ratingText(kinopoiskRating)}</strong></div>}
+            </div>
+            <div className="dx-score dx-score--miss" aria-label="Совпадений: 0"><span>Совпадений</span><div className="dx-score__bar">{Array.from({ length: 6 }, (_, index) => <i key={index} />)}</div><strong>0</strong></div>
+            <div className="attempt-clue-grid">
+              {visibility.countries !== false && <MovieClueTile targetKey="countries" label="Страна" value={country} mapped={Boolean(mapping.countries)} onDropField={setTargetMapping} />}
+              {visibility.runtime !== false && <MovieClueTile targetKey="runtime" label="Хронометраж" value={runtime == null ? null : `${displayValue(runtime)} мин`} mapped={Boolean(mapping.runtime)} onDropField={setTargetMapping} />}
+              {visibility.ratingKinopoisk !== false && <MovieClueTile targetKey="ratingKinopoisk" label="Кинопоиск" value={ratingText(kinopoiskRating)} mapped={Boolean(mapping.ratingKinopoisk)} onDropField={setTargetMapping} />}
+              {visibility.ratingImdb !== false && <MovieClueTile targetKey="ratingImdb" label="IMDb" value={ratingText(imdbRating)} mapped={Boolean(mapping.ratingImdb)} onDropField={setTargetMapping} />}
+              {visibility.directors !== false && <MoviePeopleGroup targetKey="directors" label="Режиссёр" value={directors} mapped={Boolean(mapping.directors)} onDropField={setTargetMapping} />}
+              {visibility.cast !== false && <MoviePeopleGroup targetKey="cast" label="В ролях" value={cast} mapped={Boolean(mapping.cast)} onDropField={setTargetMapping} />}
+              {customSlots.filter((slot) => visibility[slot.key] !== false && mapping[slot.key]).map((slot) => <MovieClueTile key={slot.key} targetKey={slot.key} label={slot.label} value={currentData[slot.payloadKey]} mapped onDropField={setTargetMapping} />)}
+            </div>
           </article>}
         </div>
-        <footer><span><Eye />Живое превью построено из карточки <code>{currentItem?.id}</code></span><div>{renderMediaUpload('headerUrl')}{renderMediaUpload('posterUrl')}</div></footer>
+        <footer><span><Eye />Используется оригинальный кино-макет из игры · <code>{currentItem?.id}</code></span><div>{renderMediaUpload('posterUrl')}</div></footer>
       </section>
 
       <aside className="game-builder-mapping">

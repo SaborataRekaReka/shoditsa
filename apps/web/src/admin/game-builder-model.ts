@@ -19,7 +19,7 @@ export type AnalysedJson = {
   schemaKey: string
 }
 
-export type TargetValueType = 'string' | 'number' | 'boolean' | 'array' | 'media' | 'unknown'
+export type TargetValueType = 'string' | 'number' | 'boolean' | 'array' | 'people' | 'media' | 'unknown'
 export type TargetGroup = 'identity' | 'title' | 'attempt' | 'media' | 'extra'
 
 export type TargetDefinition = {
@@ -137,13 +137,16 @@ const commonTargets: TargetDefinition[] = [
 
 const modeTargets: Partial<Record<ContentMode, TargetDefinition[]>> = {
   movie: [
-    { key: 'directors', payloadKey: 'directors', label: 'Режиссёр', hint: 'Режиссёр или режиссёры', group: 'attempt', valueType: 'array', visual: true, aliases: ['directors', 'director', 'режиссер', 'режиссёры'] },
-    { key: 'cast', payloadKey: 'cast', label: 'В ролях', hint: 'Основной актёрский состав', group: 'attempt', valueType: 'array', visual: true, aliases: ['cast', 'actors', 'stars', 'актеры', 'актёры', 'вролях'] },
-    { key: 'runtime', payloadKey: 'runtime', label: 'Хронометраж', hint: 'Длительность в минутах', group: 'attempt', valueType: 'number', visual: true, aliases: ['runtime', 'duration', 'runtimeMinutes', 'длительность', 'хронометраж'] },
+    { key: 'ageRating', payloadKey: 'ageRating', label: 'Возраст', hint: 'Возрастной рейтинг', group: 'attempt', valueType: 'string', visual: true, aliases: ['agerating', 'age', 'mpaa', 'возраст', 'возрастнойрейтинг'] },
+    { key: 'runtime', payloadKey: 'runtimeMinutes', label: 'Хронометраж', hint: 'Длительность в минутах', group: 'attempt', valueType: 'number', visual: true, aliases: ['runtime', 'duration', 'runtimeminutes', 'длительность', 'хронометраж'] },
+    { key: 'ratingKinopoisk', payloadKey: 'ratings.kinopoisk', label: 'Кинопоиск', hint: 'Рейтинг Кинопоиска', group: 'attempt', valueType: 'number', visual: true, aliases: ['kinopoiskrating', 'kprating', 'ratingkp', 'ratingkinopoisk', 'kinopoisk', 'kp', 'рейтингкинопоиска'] },
+    { key: 'ratingImdb', payloadKey: 'ratings.imdb', label: 'IMDb', hint: 'Рейтинг IMDb', group: 'attempt', valueType: 'number', visual: true, aliases: ['imdbrating', 'ratingimdb', 'imdb', 'рейтингimdb'] },
+    { key: 'directors', payloadKey: 'directors', label: 'Режиссёр', hint: 'Режиссёр или режиссёры', group: 'attempt', valueType: 'people', visual: true, aliases: ['directors', 'director', 'creator', 'режиссер', 'режиссёры'] },
+    { key: 'cast', payloadKey: 'cast', label: 'В ролях', hint: 'Основной актёрский состав', group: 'attempt', valueType: 'people', visual: true, aliases: ['cast', 'actors', 'stars', 'актеры', 'актёры', 'вролях'] },
   ],
   series: [
     { key: 'seasonsCount', payloadKey: 'seasonsCount', label: 'Сезоны', hint: 'Количество сезонов', group: 'attempt', valueType: 'number', visual: true, aliases: ['seasonscount', 'seasons', 'сезоны'] },
-    { key: 'showrunners', payloadKey: 'showrunners', label: 'Шоураннеры', hint: 'Создатели сериала', group: 'attempt', valueType: 'array', visual: true, aliases: ['showrunners', 'creators', 'creator', 'создатели'] },
+    { key: 'showrunners', payloadKey: 'showrunners', label: 'Шоураннеры', hint: 'Создатели сериала', group: 'attempt', valueType: 'people', visual: true, aliases: ['showrunners', 'creators', 'creator', 'создатели'] },
   ],
   anime: [
     { key: 'studios', payloadKey: 'studios', label: 'Студия', hint: 'Студия производства', group: 'attempt', valueType: 'array', visual: true, aliases: ['studios', 'studio', 'студия'] },
@@ -165,7 +168,11 @@ const modeTargets: Partial<Record<ContentMode, TargetDefinition[]>> = {
   ],
 }
 
-export const targetsForMode = (mode: ContentMode) => [...commonTargets, ...(modeTargets[mode] ?? [])]
+const movieLayoutDataOnly = new Set(['plotHint', 'facts', 'headerUrl'])
+export const targetsForMode = (mode: ContentMode) => [
+  ...commonTargets.map((target) => movieLayoutDataOnly.has(target.key) ? { ...target, visual: false } : target),
+  ...(modeTargets[mode] ?? []),
+]
 
 const normalizedName = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^a-zа-я0-9]/g, '')
 const compatible = (field: DetectedField, target: TargetDefinition) => {
@@ -231,6 +238,17 @@ const arrayValue = (value: unknown): unknown[] => {
 const transformedValue = (value: unknown, type: TargetValueType) => {
   if (type === 'unknown') return value
   if (type === 'array') return arrayValue(value)
+  if (type === 'people') {
+    const entries = Array.isArray(value) ? value : typeof value === 'string' ? value.split(/[,;|\n]/).map((entry) => entry.trim()).filter(Boolean) : value == null ? [] : [value]
+    return entries.map((entry) => {
+    if (isRecord(entry)) return {
+      nameRu: scalarText(entry.nameRu ?? entry.name ?? entry.title ?? entry.label),
+      nameOriginal: scalarText(entry.nameOriginal ?? entry.originalName),
+      photoUrl: scalarText(entry.photoUrl ?? entry.image ?? entry.avatar) || null,
+    }
+    return { nameRu: scalarText(entry), nameOriginal: '', photoUrl: null }
+    }).filter((entry) => entry.nameRu || entry.nameOriginal)
+  }
   if (type === 'number') {
     const parsed = typeof value === 'number' ? value : Number(String(value ?? '').replace(',', '.').match(/-?\d+(?:\.\d+)?/)?.[0])
     return Number.isFinite(parsed) ? parsed : null
@@ -242,6 +260,20 @@ const transformedValue = (value: unknown, type: TargetValueType) => {
   }
   return scalarText(value)
 }
+
+const setPayloadValue = (payload: JsonRecord, path: string, value: unknown) => {
+  const parts = path.split('.')
+  if (parts.length === 1) { payload[path] = value; return }
+  let cursor = payload
+  for (const part of parts.slice(0, -1)) {
+    const existing = cursor[part]
+    if (!isRecord(existing)) cursor[part] = {}
+    cursor = cursor[part] as JsonRecord
+  }
+  cursor[parts.at(-1)!] = value
+}
+
+export const readPayloadValue = (payload: JsonRecord, path: string) => path.split('.').reduce<unknown>((value, part) => isRecord(value) ? value[part] : undefined, payload)
 
 export const slugifyId = (value: unknown) => scalarText(value).toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
   .replace(/[^a-zа-я0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 180)
@@ -263,7 +295,7 @@ export const mapRecordToItem = (options: {
     const field = fieldById.get(mapping[target.key] ?? '')
     if (!field) continue
     const value = transformedValue(readDetectedValue(record, field), target.valueType)
-    if (value !== '' && value != null && (!Array.isArray(value) || value.length)) data[target.payloadKey] = value
+    if (value !== '' && value != null && (!Array.isArray(value) || value.length)) setPayloadValue(data, target.payloadKey, value)
   }
   const title = scalarText(data.titleRu)
   const mappedIdTarget = targets.find((target) => target.payloadKey === 'id')
