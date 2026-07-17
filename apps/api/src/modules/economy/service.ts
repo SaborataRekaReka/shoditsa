@@ -12,7 +12,7 @@ import { activeRevision, answerPool, buildSessionSnapshot } from '../games/servi
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 const UNLOCKABLE: ContentMode[] = ['movie', 'series', 'anime']
-const FREE_PLAY: ContentMode[] = ['movie', 'series', 'anime', 'music']
+const FREE_PLAY: ContentMode[] = ['movie', 'series', 'anime', 'music', 'diagnosis']
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()

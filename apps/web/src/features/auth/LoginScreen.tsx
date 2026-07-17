@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { ArrowLeft, Eye, EyeOff, LoaderCircle, Target, Ticket } from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ApiClientError, api } from '../../api/client'
 import { BrandLogo } from '../../components/app-shell/AppShell'
@@ -262,35 +262,36 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     removeResetTokenFromAddress()
   }
 
-  const title = resetMode ? 'ВОССТАНОВИТЕ ДОСТУП' : register ? 'СОЗДАЙТЕ АККАУНТ' : 'С ВОЗВРАЩЕНИЕМ!'
+  const title = resetMode ? 'Новый пароль' : forgotMode ? 'Восстановление' : register ? 'Создать аккаунт' : 'Войти'
+  const eyebrow = resetMode ? 'Безопасность' : forgotMode ? 'Вернуть доступ' : register ? 'Новый аккаунт' : 'Личный кабинет'
   const description = resetMode
-    ? 'Задайте новый пароль, чтобы вернуться к своим играм, билетам и статистике.'
+    ? 'Задайте новый пароль и вернитесь к своим играм.'
+    : forgotMode
+      ? 'Укажите email — мы отправим ссылку для смены пароля.'
     : register
-      ? 'Закрепите серию, билеты и статистику за своим аккаунтом.'
-      : 'Войдите, чтобы продолжить серию, копить билеты и видеть свою статистику.'
-  const submitLabel = resetMode ? 'СОХРАНИТЬ ПАРОЛЬ' : register ? 'СОЗДАТЬ АККАУНТ' : 'ВОЙТИ'
-  const statusMessage = notice || error
+      ? 'Сохраните серию, билеты и статистику на любом устройстве.'
+      : 'Продолжите с того места, где остановились.'
+  const submitLabel = resetMode ? 'Сохранить пароль' : register ? 'Создать аккаунт' : 'Войти'
 
   return <div className="login-page">
-    <header className="login-header">
-      <div className="login-header__inner">
-        <a className="login-brand" href="/" aria-label="Сходится! — на главную"><BrandLogo /></a>
-        <a className="login-back" href="/">
-          <ArrowLeft aria-hidden="true" />
-          <span>Вернуться к играм</span>
-        </a>
-      </div>
-    </header>
-
     <main className="login-main">
-      <section className="login-hero" aria-labelledby="login-title">
+      <section className="login-card" aria-labelledby="login-title">
+        <div className="login-art-panel">
+          <a className="login-brand" href="/" aria-label="Сходится! — на главную"><BrandLogo /></a>
+          <img className="login-art" src="/images/login_illustration.webp" srcSet="/images/login_illustration.webp 1536w" sizes="(max-width: 767px) 100vw, 580px" alt="" width="1536" height="1024" fetchPriority="high" />
+          <div className="login-art-copy">
+            <span>Ваш игровой профиль</span>
+            <strong>Весь прогресс<br />в одном месте</strong>
+            <p>Серия, билеты, достижения и история игр всегда под рукой.</p>
+          </div>
+        </div>
         <div className="login-form-column">
+          <a className="login-back" href="/">
+            <ArrowLeft aria-hidden="true" />
+            <span>К играм</span>
+          </a>
           <div className="login-form-wrap">
-            <div className="login-badges" aria-label="Возможности аккаунта">
-              <span><Ticket aria-hidden="true" /> 6 ИГР</span>
-              <span><Target aria-hidden="true" /> 10 ПОПЫТОК</span>
-            </div>
-
+            <span className="login-eyebrow">{eyebrow}</span>
             <h1 id="login-title">{title}</h1>
             <p className="login-description">{description}</p>
 
@@ -334,14 +335,13 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 </div>}
 
                 {!register && !resetMode && !forgotMode && <button className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</button>}
-                {forgotMode && <p className="login-form-hint">Отправим ссылку для восстановления на указанный email.</p>}
                 {register && !resetMode && <p className="login-form-hint">После регистрации проверьте почту, если подтверждение email включено на сервере.</p>}
 
                 {error && <div className="login-error" role="alert" aria-live="polite">{error}</div>}
 
                 <button className="login-submit" type="submit" disabled={pending || (!emailAuthEnabled && !resetMode && !forgotMode)}>
                   {pending && <LoaderCircle className="login-spinner" aria-hidden="true" />}
-                  <span>{pending ? resetMode ? 'СОХРАНЯЕМ…' : forgotMode ? 'ОТПРАВЛЯЕМ…' : register ? 'СОЗДАЁМ…' : 'ВХОДИМ…' : forgotMode ? 'ОТПРАВИТЬ ССЫЛКУ' : submitLabel}</span>
+                  <span>{pending ? resetMode ? 'Сохраняем…' : forgotMode ? 'Отправляем…' : register ? 'Создаём…' : 'Входим…' : forgotMode ? 'Отправить ссылку' : submitLabel}</span>
                 </button>
 
                 {notice && <div className="login-notice" role="status" aria-live="polite">{notice}</div>}
@@ -350,7 +350,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                   <div className="login-divider" aria-hidden="true"><span />ИЛИ<span /></div>
                   <button className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending || !yandexAuthEnabled}>
                     <span className="login-yandex-mark" aria-hidden="true">Я</span>
-                    <span>{pending ? 'ПЕРЕХОДИМ…' : 'ВОЙТИ ЧЕРЕЗ ЯНДЕКС'}</span>
+                    <span>{pending ? 'Переходим…' : 'Войти через Яндекс'}</span>
                   </button>
                 </>}
 
@@ -359,11 +359,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!register && !resetMode && !forgotMode && <p className="login-register-line">Нет аккаунта? <a href={authHref('/register', returnUrl)}>Зарегистрироваться</a></p>}
               </form>}
             {!serverRuntime.loading && !emailAuthEnabled && !resetMode && !forgotMode && <p className="login-form-hint login-form-hint--warning">Вход по email временно недоступен на этом окружении.</p>}
-            {!statusMessage && !serverRuntime.loading && error && <span className="sr-only">Ошибка авторизации</span>}
           </div>
-        </div>
-        <div className="login-art-column" aria-hidden="true">
-          <img className="login-art" src="/images/login_illustration.webp" srcSet="/images/login_illustration.webp 1536w" sizes="(max-width: 767px) 120vw, 860px" alt="" width="1536" height="1024" fetchPriority="high" />
         </div>
       </section>
     </main>

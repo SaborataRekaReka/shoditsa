@@ -122,7 +122,7 @@ const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series', 'anime'])
-const FREE_PLAY_MODES = new Set<TitleMode>(['movie', 'series', 'anime', 'music'])
+const FREE_PLAY_MODES = new Set<TitleMode>(['movie', 'series', 'anime', 'music', 'diagnosis'])
 const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
 const PROMO_POOL_COUNT = 30
 const isPromoVariant = (value: string | null | undefined) => value === PROMO_PACK_ID
@@ -1369,7 +1369,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
   </>
 }
 
-function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBack, onPlay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
+function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
   promoPackId: string | null
   period: PeriodKey
@@ -1378,6 +1378,7 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
   onHome: () => void
   onBack: () => void
   onPlay: () => void
+  onReplay: () => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1386,6 +1387,7 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
   onLeaveComplete?: () => void
   onReadAnamnesis: () => void
   hasAnamnesis: boolean
+  todayCompleted: boolean
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
   completedPeriods: PeriodKey[]
@@ -1402,12 +1404,21 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
   isBusy: boolean
 }) {
   const isPromoTitle = mode === 'game' && isPromoVariant(promoPackId)
+  const isDiagnosisReplay = mode === 'diagnosis' && todayCompleted
   const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
-  const canStart = freePlayArmed ? hasActiveFreePlay || freePlayShortage === 0 : !periodLocked || periodShortage === 0
+  const canStart = isDiagnosisReplay || freePlayArmed
+    ? hasActiveFreePlay || freePlayShortage === 0
+    : !periodLocked || periodShortage === 0
   const canTriggerStart = canStart && !isBusy
-  const playButtonLabel = freePlayArmed
+  const playButtonLabel = isDiagnosisReplay
+    ? hasActiveFreePlay
+      ? 'Продолжить'
+      : freePlayShortage > 0
+        ? `Не хватает ${formatTickets(freePlayShortage)}`
+        : `Сыграть ещё раз · ${formatTickets(freePlayCostValue)}`
+    : freePlayArmed
     ? hasActiveFreePlay
       ? 'Продолжить'
       : freePlayShortage > 0
@@ -1421,6 +1432,10 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
   const playButtonText = isBusy ? 'Запускаем…' : playButtonLabel
   const startSelectedPeriod = async () => {
     if (!canTriggerStart) return
+    if (isDiagnosisReplay) {
+      onReplay()
+      return
+    }
     if (freePlayArmed) {
       onPlay()
       return
@@ -1585,7 +1600,7 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
               <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
               <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
             </div>
-          : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
+          : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>{isDiagnosisReplay ? <RotateCcw /> : <Play />} {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
     </main>
   </>
@@ -5065,7 +5080,7 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
