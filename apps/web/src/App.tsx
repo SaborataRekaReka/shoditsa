@@ -5113,7 +5113,6 @@ function GameApp() {
       onModeChange={setCityMode}
       onPlay={() => { setDate(getMoscowDate()); setScreen('city-game'); window.scrollTo({ top: 0 }) }}
       onBack={goHome}
-      navigation={{ onHome: goHome, onArchive: () => setScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }}
     />}
 
     {screen === 'city-game' && <CityGameScreen

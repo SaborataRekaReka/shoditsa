@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Compass,
   Copy,
+  Database,
   Flag,
   Globe2,
   Landmark,
@@ -68,25 +69,38 @@ const CityMark = ({ city }: { city: CityItem }) => {
   </span>
 }
 
-const CityModeTabs = ({ items, value, onChange }: { items: CityItem[]; value: CityPoolMode; onChange: (mode: CityPoolMode) => void }) => (
-  <div className="city-mode-tabs" role="radiogroup" aria-label="Режим городов">
-    {CITY_POOL_OPTIONS.map((entry) => {
-      const count = cityPool(items, entry.mode).length
-      return <button
-        type="button"
-        role="radio"
-        aria-checked={value === entry.mode}
-        className={value === entry.mode ? 'active' : ''}
-        key={entry.mode}
-        onClick={() => onChange(entry.mode)}
-      >
-        <span>{entry.label}</span>
-        <small>{count || '—'} городов</small>
-        <i>{entry.description}</i>
-      </button>
-    })}
+const CityModeControl = ({ items, value, disabled, onChange }: { items: CityItem[]; value: CityPoolMode; disabled: boolean; onChange: (mode: CityPoolMode) => void }) => {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement | null>(null)
+  const current = modeMeta(value)
+
+  useEffect(() => {
+    if (!open) return
+    const close = (event: PointerEvent) => {
+      if (!wrapRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    window.addEventListener('pointerdown', close)
+    return () => window.removeEventListener('pointerdown', close)
+  }, [open])
+
+  return <div ref={wrapRef} className={`city-mode-select ${open ? 'is-open' : ''}`}>
+    <button type="button" className="city-mode-trigger" disabled={disabled} aria-expanded={open} aria-haspopup="listbox" onClick={() => setOpen((value) => !value)}>
+      <span className="city-mode-trigger__label"><MapIcon /> Режим</span>
+      <span className="city-mode-trigger__value"><strong>{current.shortLabel}</strong><ChevronRight /></span>
+    </button>
+    {open && <div className="city-mode-menu" role="listbox" aria-label="Режим городов">
+      <span className="city-mode-menu__head">Круг возможных ответов</span>
+      {CITY_POOL_OPTIONS.map((entry) => {
+        const count = cityPool(items, entry.mode).length
+        const active = value === entry.mode
+        return <button type="button" role="option" aria-selected={active} className={active ? 'active' : ''} key={entry.mode} onClick={() => { onChange(entry.mode); setOpen(false) }}>
+          <span><strong>{entry.label}</strong><small>{count || '—'} городов · {entry.description}</small></span>
+          {active && <Check />}
+        </button>
+      })}
+    </div>}
   </div>
-)
+}
 
 export function CityTitleScreen({
   items,
@@ -97,7 +111,6 @@ export function CityTitleScreen({
   onModeChange,
   onPlay,
   onBack,
-  navigation,
 }: {
   items: CityItem[]
   loading: boolean
@@ -107,7 +120,6 @@ export function CityTitleScreen({
   onModeChange: (mode: CityPoolMode) => void
   onPlay: () => void
   onBack: () => void
-  navigation: CityNavigation
 }) {
   const selectedCount = cityPool(items, mode).length
 
@@ -120,8 +132,7 @@ export function CityTitleScreen({
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [error, loading, onBack, onPlay, selectedCount])
 
-  return <div className="city-surface">
-    <AppHeader {...navigation} />
+  return <div className="city-surface city-surface--title">
     <main className="city-title-screen">
       <div className="screen-back-row">
         <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
@@ -130,45 +141,46 @@ export function CityTitleScreen({
 
       <section className="city-title-stage">
         <div className="city-title-heading">
-          <span><MapPin /> Игра дня · №{dayNumber(date)}</span>
-          <h1>Города</h1>
+          <div className="city-title-mark">
+            <span><MapPin /></span>
+            <div><small>Игра дня · №{dayNumber(date)}</small><h1>Города</h1></div>
+          </div>
           <time>{prettyDate(date)} · {date.slice(0, 4)}</time>
-          <p>Угадайте город за десять попыток по стране, континенту, населению, часовому поясу и мировым рейтингам.</p>
+          <p>Угадайте город дня за десять попыток</p>
         </div>
 
         <article className="city-travel-pass">
-          <div className="city-travel-pass__visual" aria-hidden="true">
-            <img src="./images/cities/city-title-v1.webp" alt="" />
-            <span><Globe2 /> WORLD CITY ROUTE</span>
-          </div>
           <div className="city-travel-pass__body">
             <div className="city-travel-pass__intro">
-              <span className="city-travel-pass__eyebrow"><Compass /> Выберите маршрут</span>
-              <h2>Какой город сегодня?</h2>
-              <p>Режим меняет только круг возможных ответов. В поиске доступны все 980 городов, поэтому сравнивать признаки можно свободно.</p>
+              <span className="city-travel-pass__eyebrow">Ежедневное путешествие</span>
+              <h2>Угадайте город дня</h2>
+              <p>Режим меняет только круг возможных ответов.<br />В поиске доступны все {items.length || 980} городов.</p>
             </div>
-            {loading
-              ? <div className="city-data-state">Загружаем атлас городов…</div>
-              : error
-                ? <div className="city-data-state city-data-state--error">{error}</div>
-                : <CityModeTabs items={items} value={mode} onChange={onModeChange} />}
-            <div className="city-travel-pass__facts">
-              <span><strong>10</strong><small>попыток</small></span>
-              <span><strong>{selectedCount || '—'}</strong><small>в пуле</small></span>
-              <span><strong>10</strong><small>признаков</small></span>
+            <div className="city-travel-pass__visual" aria-hidden="true">
+              <img src="./images/cities/city-title-v2.webp" alt="" />
             </div>
           </div>
           <div className="city-travel-pass__stub" aria-hidden="true">
-            <MapPin />
-            <strong>{date.slice(8, 10)}.{date.slice(5, 7)}</strong>
-            <small>{modeMeta(mode).shortLabel}</small>
+            <span>Вход</span>
+            <strong>Один</strong>
+            <small>№ {dayNumber(date)}</small>
+            <em>{date.slice(8, 10)}.{date.slice(5, 7)}</em>
             <i />
           </div>
         </article>
 
-        <ActionButton className="city-title-play" disabled={loading || Boolean(error) || selectedCount === 0} onClick={onPlay}>
-          <Play /> Начать маршрут <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>
-        </ActionButton>
+        {error && <div className="city-data-state city-data-state--error">{error}</div>}
+        <div className="city-title-actions">
+          <ActionButton className="city-title-play" disabled={loading || Boolean(error) || selectedCount === 0} onClick={onPlay}>
+            <Play /> {loading ? 'Загружаем…' : 'Начать игру'} <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>
+          </ActionButton>
+          <CityModeControl items={items} value={mode} disabled={loading || Boolean(error)} onChange={onModeChange} />
+        </div>
+        <div className="city-title-facts">
+          <span><Compass /><strong>10</strong><small>попыток</small></span>
+          <span><MapPin /><strong>{selectedCount || '—'}</strong><small>городов</small></span>
+          <span><Database /><strong>10</strong><small>признаков</small></span>
+        </div>
       </section>
     </main>
   </div>
