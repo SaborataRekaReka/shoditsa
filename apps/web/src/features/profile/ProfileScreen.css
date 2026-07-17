@@ -471,6 +471,8 @@
   .profile-rewards__grid article { min-height: 74px; }
   .profile-stats-grid, .profile-achievements-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .profile-settings-grid { grid-template-columns: 1fr; }
+  .profile-guest-banner { grid-template-columns: 38px minmax(0, 1fr) auto; }
+  .profile-guest-banner__secondary { grid-column: 3; }
 }
 
 @media (max-width: 560px) {
@@ -538,4 +540,9 @@
   .profile-week__days i { width: 22px; height: 22px; line-height: 20px; }
   .profile-stats-grid, .profile-achievements-grid { grid-template-columns: 1fr; }
   .profile-achievements-grid article { min-height: 120px; }
+  .profile-guest-banner { padding: 13px; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; }
+  .profile-guest-banner > span { width: 36px; height: 36px; }
+  .profile-guest-banner a { width: 100%; }
+  .profile-guest-banner__primary { grid-column: 1 / -1; }
+  .profile-guest-banner__secondary { grid-column: 1 / -1; }
 }

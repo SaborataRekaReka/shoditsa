@@ -28,6 +28,7 @@ import {
   RotateCcw,
   Search,
   Share2,
+  ShieldCheck,
   Sparkles,
   Stethoscope,
   Ticket,
@@ -4033,7 +4034,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
             <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
             <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>Игрок «Сходится!»</i></div>
           </div>
-          <button className="profile-hero__settings" type="button" onClick={() => selectTab('settings')}><UserRound /> Настройки профиля</button>
+          <button className="profile-hero__settings" type="button" onClick={() => session && !session.isAnonymous ? selectTab('settings') : window.location.assign('/register')}><UserRound /> {session && !session.isAnonymous ? 'Настройки профиля' : 'Сохранить прогресс'}</button>
         </div>
         <div className="profile-hero__dossier" aria-label="Иллюстрация игрового профиля">
           <img className="profile-hero__illustration" src="./images/profile-hero-collage.webp" alt="" />
@@ -4045,6 +4046,13 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
           </div>
         </div>
       </section>
+
+      {session?.isAnonymous && <aside className="profile-guest-banner">
+        <span><ShieldCheck /></span>
+        <div><strong>Сохраните игровой прогресс</strong><p>Создайте аккаунт, чтобы не потерять серию, билеты и статистику при смене браузера или устройства.</p></div>
+        <a className="profile-guest-banner__primary" href="/register">Создать аккаунт</a>
+        <a className="profile-guest-banner__secondary" href="/login">Уже есть аккаунт</a>
+      </aside>}
 
       <nav className="profile-tabs" aria-label="Разделы личного кабинета" role="tablist">
         {PROFILE_TABS.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} className={activeTab === tab.id ? 'is-active' : ''} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}
@@ -4121,11 +4129,15 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
       {activeTab === 'settings' && <section className="profile-settings-grid">
         <section className="profile-section">
           <div className="profile-section__head"><div><span>Профиль</span><h2>Основные данные</h2></div><UserRound /></div>
-          {session && !session.isAnonymous && SERVER_RUNTIME ? <form className="profile-settings-form" onSubmit={saveProfileName}><label>Имя игрока<input value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={80} /></label><label>Email<input value={session.email ?? ''} readOnly /></label><ActionButton type="submit">Сохранить имя</ActionButton>{profileNotice && <p className="account-access__notice">{profileNotice}</p>}{profileError && <p className="server-error">{profileError}</p>}</form> : <p className="modal-lead">Войдите в аккаунт, чтобы синхронизировать имя, билеты и игровой прогресс.</p>}
+          {session && !session.isAnonymous && SERVER_RUNTIME ? <form className="profile-settings-form" onSubmit={saveProfileName}><label>Имя игрока<input value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={80} /></label><label>Email<input value={session.email ?? ''} readOnly /></label><ActionButton type="submit">Сохранить имя</ActionButton>{profileNotice && <p className="account-access__notice">{profileNotice}</p>}{profileError && <p className="server-error">{profileError}</p>}</form> : <p className="modal-lead">Настройки профиля станут доступны после создания аккаунта.</p>}
         </section>
         <section className="profile-section profile-auth" id="profile-account-access">
           <div className="profile-section__head"><div><span>Безопасность</span><h2>Вход и пароль</h2></div><Lock /></div>
-          {SERVER_RUNTIME ? <AccountAccessPanel session={session} loadingSession={loading} refreshSession={refreshSession} /> : <p className="modal-lead">Эта сборка работает автономно, поэтому управление серверным аккаунтом недоступно.</p>}
+          {SERVER_RUNTIME && session && !session.isAnonymous
+            ? <AccountAccessPanel session={session} loadingSession={loading} refreshSession={refreshSession} />
+            : SERVER_RUNTIME
+              ? <div className="profile-settings-auth-prompt"><p>Вход и регистрация вынесены на отдельную защищённую страницу.</p><div><a href="/register">Создать аккаунт</a><a href="/login">Войти</a></div></div>
+              : <p className="modal-lead">Эта сборка работает автономно, поэтому управление серверным аккаунтом недоступно.</p>}
         </section>
       </section>}
     </main>
@@ -4413,7 +4425,16 @@ function GameApp() {
   }, [])
 
   useEffect(() => {
-    const openProfile = () => moveToScreen('profile')
+    const openProfile = (event: Event) => {
+      const tab = (event as CustomEvent<{ tab?: ProfileTab }>).detail?.tab
+      if (tab && PROFILE_TABS.some((entry) => entry.id === tab)) {
+        const url = new URL(window.location.href)
+        if (tab === 'overview') url.searchParams.delete('tab')
+        else url.searchParams.set('tab', tab)
+        window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+      }
+      moveToScreen('profile')
+    }
     window.addEventListener(PROFILE_OPEN_EVENT, openProfile)
     return () => window.removeEventListener(PROFILE_OPEN_EVENT, openProfile)
   }, [])

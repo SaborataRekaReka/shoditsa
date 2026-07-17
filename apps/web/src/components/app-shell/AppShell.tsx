@@ -1,13 +1,15 @@
-import { useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, CircleHelp, ShieldCheck, Ticket, Trophy, UserRound, X } from 'lucide-react'
+import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { Archive, BarChart3, ChevronDown, CircleHelp, LayoutDashboard, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
+import { api } from '../../api/client'
 import { EconomyView } from '../../features/economy/EconomyView'
-import { useAuthSession } from '../../features/auth/use-auth-session'
+import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
 import { toLegacyAttendance, toLegacyWallet } from '../../features/server-runtime/adapters'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { loadAttendanceStats, loadWallet } from '../../storage'
 
 export const PROFILE_OPEN_EVENT = 'seans:open-profile'
+export type ProfileMenuTab = 'overview' | 'stats' | 'achievements' | 'settings'
 
 export function BrandLogo({ className = '' }: { className?: string }) {
   return <picture className={className}>
@@ -42,6 +44,9 @@ export type AppHeaderProps = {
 
 export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profileActive = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
+  const profileMenuRef = useRef<HTMLDivElement>(null)
   const { session } = useAuthSession()
   const serverRuntime = useServerRuntime()
   const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
@@ -49,14 +54,43 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profi
   const profileLabel = session && !session.isAnonymous
     ? session.name || session.email?.split('@')[0] || 'Профиль'
     : 'Войти'
-  const openProfile = () => {
+  const signedIn = Boolean(session && !session.isAnonymous)
+  const openProfile = (tab: ProfileMenuTab = 'overview') => {
     trackMetrikaGoal('open_profile')
-    if (SERVER_RUNTIME && (!session || session.isAnonymous)) {
+    if (SERVER_RUNTIME && !signedIn) {
       const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
       window.location.assign(returnUrl === '/' ? '/login' : `/login?returnUrl=${encodeURIComponent(returnUrl)}`)
       return
     }
-    window.dispatchEvent(new Event(PROFILE_OPEN_EVENT))
+    setProfileMenuOpen(false)
+    window.dispatchEvent(new CustomEvent(PROFILE_OPEN_EVENT, { detail: { tab } }))
+  }
+
+  useEffect(() => {
+    if (!profileMenuOpen) return
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!profileMenuRef.current?.contains(event.target as Node)) setProfileMenuOpen(false)
+    }
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setProfileMenuOpen(false)
+    window.addEventListener('pointerdown', closeOnOutsideClick)
+    window.addEventListener('keydown', closeOnEscape)
+    return () => {
+      window.removeEventListener('pointerdown', closeOnOutsideClick)
+      window.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [profileMenuOpen])
+
+  const signOut = async () => {
+    if (signingOut) return
+    setSigningOut(true)
+    try {
+      await api.signOut()
+      notifyAuthSessionChanged()
+      window.location.assign('/')
+    } finally {
+      setSigningOut(false)
+      setProfileMenuOpen(false)
+    }
   }
 
   return <>
@@ -72,9 +106,20 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profi
           <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
           {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
-          <button onClick={openProfile} className={`header-profile ${session && !session.isAnonymous ? 'is-signed-in' : ''} ${profileActive ? 'is-active' : ''}`} aria-label="Профиль" title="Профиль">
-            <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>
-          </button>
+          <div className="header-profile-menu" ref={profileMenuRef}>
+            <button onClick={() => signedIn ? setProfileMenuOpen((value) => !value) : openProfile()} className={`header-profile ${signedIn ? 'is-signed-in' : ''} ${profileActive ? 'is-active' : ''}`} aria-label={signedIn ? 'Открыть меню профиля' : 'Войти'} title={signedIn ? 'Меню профиля' : 'Войти'} aria-haspopup={signedIn ? 'menu' : undefined} aria-expanded={signedIn ? profileMenuOpen : undefined}>
+              <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>{signedIn && <ChevronDown className="header-profile__chevron" />}
+            </button>
+            {signedIn && profileMenuOpen && <div className="header-profile-dropdown" role="menu">
+              <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{session?.name || 'Игрок'}</strong><small>{session?.email}</small></div></div>
+              <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>Обзор профиля</span></button>
+              <button type="button" role="menuitem" onClick={() => openProfile('stats')}><BarChart3 /><span>Статистика</span></button>
+              <button type="button" role="menuitem" onClick={() => openProfile('achievements')}><Trophy /><span>Достижения</span></button>
+              <button type="button" role="menuitem" onClick={() => openProfile('settings')}><Settings /><span>Настройки</span></button>
+              {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button type="button" role="menuitem" onClick={() => window.location.assign('/admin')}><ShieldCheck /><span>Админ-панель</span></button>}
+              <button className="header-profile-dropdown__signout" type="button" role="menuitem" disabled={signingOut} onClick={() => void signOut()}><LogOut /><span>{signingOut ? 'Выходим…' : 'Выйти'}</span></button>
+            </div>}
+          </div>
         </nav>
       </div>
     </header>
