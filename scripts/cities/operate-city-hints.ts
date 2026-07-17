@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import {
@@ -13,9 +15,7 @@ import {
   playerProfiles,
 } from '@shoditsa/database'
 import type { ContentMode } from '@shoditsa/contracts'
-import { buildReleaseContentRevision } from '../../apps/api/src/modules/admin/release-content-service.js'
 import {
-  activateContentRevision,
   activateWorkspaceRevision,
   buildWorkspaceRevision,
   getOrCreateWorkspace,
@@ -90,11 +90,25 @@ const prepare = async () => {
   const admin = await actor()
   const current = await activeCityCards()
   if (current.cards.length === 980) return { skipped: true, revisionId: current.active.id, cityCount: 980 }
-  const built = await buildReleaseContentRevision(db, admin, config.contentReleaseRoot, config.gitSha, requestId)
-  const activated = await activateContentRevision(db, admin, built.revisionId, requestId, 'Publish bundled city library')
+  if (current.cards.length) throw new Error(`Expected no cities before import, found ${current.cards.length}`)
+  const releaseItems = JSON.parse(await readFile(join(config.contentReleaseRoot, 'cities', 'items.json'), 'utf8')) as Array<Record<string, unknown>>
+  if (!Array.isArray(releaseItems) || releaseItems.length !== 980) throw new Error(`Expected 980 bundled cities, found ${releaseItems.length}`)
+  const workspace = await getOrCreateWorkspace(db, admin)
+  const existingCount = (await db.select({ count: sql<number>`count(*)::int` }).from(contentWorkspaceChanges)
+    .where(eq(contentWorkspaceChanges.workspaceId, workspace.id)))[0]?.count ?? 0
+  if (existingCount) throw new Error(`Workspace ${workspace.id} already contains ${existingCount} unrelated changes`)
+  for (const payload of releaseItems) {
+    const itemId = text(payload.id)
+    if (!itemId) throw new Error('Bundled city has no id')
+    await saveWorkspaceItem(db, admin, itemId, {
+      mode: 'city', payload: { ...payload, id: itemId, mode: 'city' }, expectedVersion: 0, source: 'import', reason: 'Import bundled city library',
+    }, requestId)
+  }
+  const built = await buildWorkspaceRevision(db, admin, workspace.id, requestId)
+  const activated = await activateWorkspaceRevision(db, admin, workspace.id, requestId)
   const next = await activeCityCards()
   if (next.cards.length !== 980) throw new Error(`Expected 980 active cities after release import, found ${next.cards.length}`)
-  return { skipped: false, revisionId: activated.revision.id, cityCount: next.cards.length }
+  return { skipped: false, revisionId: activated.revision.id, builtRevisionId: built.revisionId, cityCount: next.cards.length }
 }
 
 const enqueue = async () => {
