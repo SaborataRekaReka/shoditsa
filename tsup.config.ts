@@ -6,6 +6,7 @@ export default defineConfig({
     migrate: 'packages/database/src/migrate.ts',
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
     'content-migrate-media': 'scripts/content/migrate-media.ts',
+    'city-hints': 'scripts/cities/operate-city-hints.ts',
   },
   format: ['esm'], platform: 'node', target: 'node24', outDir: 'apps/api/dist', clean: true,
 })
