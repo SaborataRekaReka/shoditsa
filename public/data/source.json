@@ -66,7 +66,7 @@
   "musicExcludedPendingReview": 0,
   "cityCount": 980,
   "citySource": "data/cities/raw/v2_final.json",
-  "cityGeneratedAt": "2026-07-17T22:21:37.774Z",
+  "cityGeneratedAt": "2026-07-17T23:27:25.133Z",
   "cityModes": {
     "capitals": 143,
     "capitalsAndPopular": 346,

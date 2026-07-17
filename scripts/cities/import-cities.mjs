@@ -27,6 +27,15 @@ const invalidCapitalPairs = new Set([
   'San Jose|США',
   'Georgetown|Малайзия',
 ])
+const continentByCountry = new Map([
+  ['Тайвань', 'Азия'],
+  ['САР Гонконг, Китай', 'Азия'],
+  ['Макао, САР, Китай', 'Азия'],
+  ['Лаосская НДР', 'Азия'],
+  ['Фиджи', 'Океания'],
+  ['Берег Слоновой Кости', 'Африка'],
+  ['Демократическая Республика Конго', 'Африка'],
+])
 const secureUrl = (value) => text(value).replace(/^http:\/\//i, 'https://') || null
 const slug = (value) => text(value)
   .normalize('NFKD')
@@ -61,7 +70,7 @@ const items = parsed.map((entry, index) => {
     titleOriginal,
     country,
     countryFlagUrl: `./images/cities/flags/${countryCode}.svg`,
-    continent: text(entry['Континент']),
+    continent: text(entry['Континент']) || continentByCountry.get(country) || '',
     languages: splitList(entry['Языки']),
     population: integer(entry['Население']),
     cityFlagUrl: secureUrl(entry['Флаг города']),
