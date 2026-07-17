@@ -166,6 +166,18 @@ const modeTargets: Partial<Record<ContentMode, TargetDefinition[]>> = {
     { key: 'icd10', payloadKey: 'icd10', label: 'МКБ-10', hint: 'Один или несколько кодов', group: 'attempt', valueType: 'array', visual: true, aliases: ['icd10', 'icd', 'mkb10', 'мкб10', 'кодмкб'] },
     { key: 'symptoms', payloadKey: 'symptoms', label: 'Симптомы', hint: 'Список симптомов', group: 'attempt', valueType: 'array', visual: true, aliases: ['symptoms', 'signs', 'симптомы', 'признаки'] },
   ],
+  city: [
+    { key: 'country', payloadKey: 'country', label: 'Страна', hint: 'Государство, в котором находится город', group: 'attempt', valueType: 'string', visual: true, aliases: ['country', 'страна'] },
+    { key: 'continent', payloadKey: 'continent', label: 'Континент', hint: 'Континент или часть света', group: 'attempt', valueType: 'string', visual: true, aliases: ['continent', 'континент'] },
+    { key: 'languages', payloadKey: 'languages', label: 'Языки', hint: 'Основные языки', group: 'attempt', valueType: 'array', visual: true, aliases: ['languages', 'language', 'языки', 'язык'] },
+    { key: 'population', payloadKey: 'population', label: 'Население', hint: 'Численность населения', group: 'attempt', valueType: 'number', visual: true, aliases: ['population', 'население'] },
+    { key: 'timezone', payloadKey: 'timezone', label: 'Часовой пояс', hint: 'Часовой пояс GMT', group: 'attempt', valueType: 'string', visual: true, aliases: ['timezone', 'часовойпояс'] },
+    { key: 'capital', payloadKey: 'capital', label: 'Столица', hint: 'Является ли город столицей', group: 'identity', valueType: 'boolean', aliases: ['capital', 'столица'] },
+    { key: 'popular', payloadKey: 'popular', label: 'Популярный', hint: 'Входит ли город в популярный пул', group: 'identity', valueType: 'boolean', aliases: ['popular', 'популярный'] },
+    { key: 'countryFlagUrl', payloadKey: 'countryFlagUrl', label: 'Флаг страны', hint: 'Изображение флага государства', group: 'media', valueType: 'media', visual: true, aliases: ['countryflagurl', 'флагстраны'] },
+    { key: 'cityFlagUrl', payloadKey: 'cityFlagUrl', label: 'Флаг города', hint: 'Изображение городского флага', group: 'media', valueType: 'media', visual: true, aliases: ['cityflagurl', 'флаггорода'] },
+    { key: 'coatOfArmsUrl', payloadKey: 'coatOfArmsUrl', label: 'Герб', hint: 'Изображение герба города', group: 'media', valueType: 'media', visual: true, aliases: ['coatofarmsurl', 'герб'] },
+  ],
 }
 
 const movieLayoutDataOnly = new Set(['plotHint', 'facts', 'headerUrl'])
@@ -209,6 +221,7 @@ export const autoMapFields = (fields: DetectedField[], targets: TargetDefinition
 export const inferContentMode = (fields: DetectedField[]): ContentMode => {
   const names = normalizedName(fields.map((field) => field.path.join(' ')).join(' '))
   const scores: Array<[ContentMode, number]> = [
+    ['city', ['population', 'timezone', 'continent', 'население', 'столица'].filter((token) => names.includes(normalizedName(token))).length],
     ['game', ['steam', 'developer', 'platform', 'разработчик'].filter((token) => names.includes(normalizedName(token))).length],
     ['music', ['artist', 'track', 'album', 'исполнитель'].filter((token) => names.includes(normalizedName(token))).length],
     ['anime', ['shikimori', 'studio', 'episodesaired'].filter((token) => names.includes(normalizedName(token))).length],

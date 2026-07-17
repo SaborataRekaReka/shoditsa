@@ -14,6 +14,7 @@ const searchIndexTarget = path.join(libraryDir, 'search-index.json')
 const sourceTarget = path.join(libraryDir, 'source.json')
 const libraryIndexTarget = path.join(root, 'public', 'data', 'libraries', 'index.json')
 const appSourceTarget = path.join(root, 'public', 'data', 'source.json')
+const countryCodesTarget = path.join(root, 'scripts', 'cities', 'country-codes.json')
 
 const text = (value) => String(value ?? '').trim()
 const splitList = (value) => [...new Set(text(value).split(',').map((entry) => entry.trim()).filter(Boolean))]
@@ -22,6 +23,10 @@ const integer = (value) => {
   return Number.isFinite(parsed) ? parsed : null
 }
 const yes = (value) => text(value).toLocaleLowerCase('ru-RU') === 'да'
+const invalidCapitalPairs = new Set([
+  'San Jose|США',
+  'Georgetown|Малайзия',
+])
 const secureUrl = (value) => text(value).replace(/^http:\/\//i, 'https://') || null
 const slug = (value) => text(value)
   .normalize('NFKD')
@@ -33,12 +38,16 @@ const slug = (value) => text(value)
 const raw = await readFile(sourcePath, 'utf8')
 const parsed = JSON.parse(raw)
 if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('City source must be a non-empty JSON array')
+const countryCodes = JSON.parse(await readFile(countryCodesTarget, 'utf8'))
 
 const seenIds = new Set()
 const items = parsed.map((entry, index) => {
   const titleOriginal = text(entry['Название (EN)'])
   const titleRu = text(entry['Название (RU)'])
+  const country = text(entry['Страна (RU)'])
+  const countryCode = countryCodes[country]
   if (!titleOriginal || !titleRu) throw new Error(`Row ${index + 1}: city names are required`)
+  if (!countryCode) throw new Error(`Row ${index + 1}: ISO code is missing for ${country || 'unknown country'}`)
 
   const baseId = `city:${slug(titleOriginal)}`
   let id = baseId
@@ -50,8 +59,8 @@ const items = parsed.map((entry, index) => {
     id,
     titleRu,
     titleOriginal,
-    country: text(entry['Страна (RU)']),
-    countryFlagUrl: secureUrl(entry['Флаг страны']),
+    country,
+    countryFlagUrl: `./images/cities/flags/${countryCode}.svg`,
     continent: text(entry['Континент']),
     languages: splitList(entry['Языки']),
     population: integer(entry['Население']),
@@ -67,9 +76,35 @@ const items = parsed.map((entry, index) => {
     },
     timezone: text(entry['Часовой пояс']),
     popular: yes(entry['Популярный']),
-    capital: yes(entry['Столица']),
+    // The source contains two duplicate-name false positives: San Jose in
+    // California and Georgetown in Penang. Keep the source untouched and
+    // correct the normalized game data here.
+    capital: yes(entry['Столица']) && !invalidCapitalPairs.has(`${titleOriginal}|${country}`),
+    plotHint: '',
   }
 })
+
+try {
+  const previousItems = JSON.parse(await readFile(clientTarget, 'utf8'))
+  const previousHintById = new Map(previousItems.map((item) => [item.id, text(item.plotHint)]))
+  for (const item of items) item.plotHint = previousHintById.get(item.id) ?? ''
+} catch {}
+
+const libraryItems = items.map((item) => ({
+  ...item,
+  mode: 'city',
+  year: null,
+  endYear: null,
+  genres: [],
+  facts: [],
+  countries: [item.country],
+  posterUrl: item.coatOfArmsUrl ?? item.cityFlagUrl ?? item.countryFlagUrl,
+  headerUrl: null,
+  backdropUrl: null,
+  screenshots: [],
+  allowedInGame: true,
+  popularityScore: item.popular ? 1 : item.capital ? 0.75 : 0.25,
+}))
 
 const generatedAt = new Date().toISOString()
 const tokenToIds = new Map()
@@ -104,6 +139,7 @@ const source = {
   withCountryFlag: items.filter((item) => item.countryFlagUrl).length,
   withCityFlag: items.filter((item) => item.cityFlagUrl).length,
   withCoatOfArms: items.filter((item) => item.coatOfArmsUrl).length,
+  withHint: items.filter((item) => item.plotHint).length,
 }
 
 await mkdir(path.dirname(rawTarget), { recursive: true })
@@ -112,7 +148,7 @@ await mkdir(path.dirname(clientTarget), { recursive: true })
 await writeFile(rawTarget, raw.endsWith('\n') ? raw : `${raw}\n`, 'utf8')
 await writeFile(generatedTarget, `${JSON.stringify(items, null, 2)}\n`, 'utf8')
 await writeFile(clientTarget, `${JSON.stringify(items)}\n`, 'utf8')
-await writeFile(itemsTarget, `${JSON.stringify(items, null, 2)}\n`, 'utf8')
+await writeFile(itemsTarget, `${JSON.stringify(libraryItems, null, 2)}\n`, 'utf8')
 await writeFile(searchIndexTarget, `${JSON.stringify(searchIndex, null, 2)}\n`, 'utf8')
 await writeFile(sourceTarget, `${JSON.stringify(source, null, 2)}\n`, 'utf8')
 

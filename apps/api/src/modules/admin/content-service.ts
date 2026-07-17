@@ -24,7 +24,7 @@ export type ValidationIssue = { level: 'error' | 'warning'; field: string; code:
 const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : ''
 const number = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : null
-const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
 
 export const validateContentPayload = (payload: Record<string, unknown>, mode: ContentMode): ValidationIssue[] => {
   const issues: ValidationIssue[] = []
@@ -49,6 +49,9 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   if (mode === 'music' && typeof payload.allowedInGame !== 'boolean') error('allowedInGame', 'required', 'Для музыки нужен явный статус участия в игре')
   if (mode === 'music' && payload.year != null) warning('year', 'legacy_music_year', 'Для музыки используйте activityStartYear; поле year неоднозначно и не показывается игрокам')
   if (mode === 'diagnosis' && !(Array.isArray(payload.icd10) && payload.icd10.length) && !text(payload.icdGroup)) error('icd10', 'required', 'Укажите ICD-10 или группу диагноза')
+  if (mode === 'city' && !text(payload.country)) error('country', 'required', 'Укажите страну города')
+  if (mode === 'city' && !text(payload.continent)) error('continent', 'required', 'Укажите континент города')
+  if (mode === 'city' && number(payload.population) == null) warning('population', 'missing_population', 'Население города не заполнено')
   if (mode === 'anime' && Array.isArray(payload.facts)) {
     const modelFacts = new Set([
       text(payload.animeKind) ? `Формат: ${text(payload.animeKind)}` : '',
@@ -272,7 +275,7 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
             itemId: text(payload.id), revisionId: revision.id, mode,
             titleRu: text(payload.titleRu), titleOriginal: text(payload.titleOriginal), normalizedTitle: normalize(text(payload.titleRu)),
             year: number(payload.year), endYear: number(payload.endYear), popularityScore: number(payload.popularityScore) ?? 0,
-            topRank: number(payload.topRank), sortOrder, allowedInGame: isAllowedInRegularGame(payload as TitleItem),
+            topRank: number(payload.topRank), sortOrder, allowedInGame: mode === 'city' ? payload.allowedInGame !== false : isAllowedInRegularGame(payload as TitleItem),
             contentStatus: text(payload.contentStatus) || null, payload,
           }
         })

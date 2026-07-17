@@ -4,7 +4,7 @@ import { loadReleaseLibraries } from '../src/modules/admin/release-content-loade
 describe('release content catalog', () => {
   it('loads the deployable catalog as one validated revision source', async () => {
     const release = await loadReleaseLibraries('./public/data/libraries')
-    expect(release.libraries.map((library) => library.mode)).toEqual(['movie', 'series', 'anime', 'game', 'music', 'diagnosis'])
+    expect(release.libraries.map((library) => library.mode)).toEqual(['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'])
     expect(release.manifest.totalItems).toBe(release.libraries.reduce((total, library) => total + library.items.length, 0))
     expect(release.manifest.checksumSha256).toMatch(/^[a-f0-9]{64}$/)
     expect(Object.values(release.manifest.modes).every((mode) => mode.count > 0)).toBe(true)

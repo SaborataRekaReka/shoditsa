@@ -12,6 +12,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
+  city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
 }
 
 const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
@@ -21,6 +22,7 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   game: ['year', 'countries', 'developers', 'publishers', 'steamAppId', 'steamUrl'],
   music: ['year', 'activityStartYear', 'endYear', 'countries', 'musicType', 'musicOrigin', 'members', 'associatedActs', 'musicLinks'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
+  city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'ranks'],
 }
 
 const TEMPLATE_SPECIAL_VARIABLES = [
@@ -52,6 +54,7 @@ const templateValueText = (value: unknown) => {
 const LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Окончание деятельности', titleRu: 'Русское название',
   titleOriginal: 'Оригинальное название', plotHint: 'Подсказка', facts: 'Факты', genres: 'Жанры', countries: 'Страны',
+  country: 'Страна', continent: 'Континент', languages: 'Языки', population: 'Население', timezone: 'Часовой пояс',
 }
 
 export const normalizationFields = (mode: ContentMode) => [...new Set([
