@@ -2,25 +2,16 @@ import { betterAuth } from 'better-auth'
 import { anonymous } from 'better-auth/plugins'
 import { genericOAuth, yandex } from 'better-auth/plugins/generic-oauth'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter'
-import nodemailer from 'nodemailer'
 import type { AppConfig } from '@shoditsa/config'
 import type { Database } from '@shoditsa/database'
 import * as schema from '@shoditsa/database'
 import { mergeAnonymousAccount } from './merge.js'
+import { createAuthEmailSender } from './email.js'
 
 export const createAuth = (config: AppConfig, db: Database) => {
   const smtpConfigured = Boolean(config.smtp.host && config.smtp.from)
   const emailVerificationEnabled = config.authEmailEnabled && smtpConfigured
-  const transport = smtpConfigured ? nodemailer.createTransport({
-    host: config.smtp.host,
-    port: config.smtp.port,
-    secure: config.smtp.port === 465,
-    auth: config.smtp.user ? { user: config.smtp.user, pass: config.smtp.password } : undefined,
-  }) : null
-  const send = async (to: string, subject: string, text: string) => {
-    if (!transport || !config.smtp.from) throw new Error('Email authentication is temporarily unavailable')
-    await transport.sendMail({ from: config.smtp.from, to, subject, text })
-  }
+  const send = createAuthEmailSender(config)
 
   const plugins = [
     ...(config.authYandexEnabled
@@ -58,14 +49,18 @@ export const createAuth = (config: AppConfig, db: Database) => {
       enabled: config.authEmailEnabled,
       requireEmailVerification: emailVerificationEnabled,
       minPasswordLength: 10,
-      sendResetPassword: async ({ user, url }) => send(user.email, 'Сброс пароля — Сходится!', `Откройте ссылку для сброса пароля: ${url}`),
+      sendResetPassword: async ({ user, url }) => {
+        if (!send) throw new Error('Email authentication is temporarily unavailable')
+        await send(user.email, 'password-reset', url)
+      },
     },
     emailVerification: {
       sendOnSignUp: emailVerificationEnabled,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
         if (!emailVerificationEnabled) return
-        await send(user.email, 'Подтвердите email — Сходится!', `Подтвердите адрес: ${url}`)
+        if (!send) throw new Error('Email authentication is temporarily unavailable')
+        await send(user.email, 'verification', url)
       },
     },
     plugins,

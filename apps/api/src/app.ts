@@ -61,7 +61,16 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   const app = Fastify({
     logger: {
       level: config.logLevel,
-      redact: ['req.headers.cookie', 'req.headers.authorization', 'req.body.password', 'req.body.code', 'res.headers.set-cookie'],
+      redact: [
+        'req.headers.cookie',
+        'req.headers.authorization',
+        'req.body.password',
+        'req.body.currentPassword',
+        'req.body.newPassword',
+        'req.body.token',
+        'req.body.code',
+        'res.headers.set-cookie',
+      ],
       base: { appVersion: config.appVersion, gitSha: config.gitSha },
     },
     trustProxy: true,

@@ -35,6 +35,15 @@ export const loadConfig = () => {
   if (authYandexEnabled && (!yandexClientId || !yandexClientSecret)) {
     throw new Error('YANDEX_CLIENT_ID and YANDEX_CLIENT_SECRET are required when AUTH_YANDEX_ENABLED=true')
   }
+  const smtpHost = process.env.SMTP_HOST?.trim() || ''
+  const smtpUser = process.env.SMTP_USER?.trim() || ''
+  const smtpPassword = process.env.SMTP_PASSWORD || ''
+  const smtpFrom = process.env.SMTP_FROM?.trim() || ''
+  const authEmailEnabled = bool('AUTH_EMAIL_ENABLED', !production)
+  if (Boolean(smtpUser) !== Boolean(smtpPassword)) throw new Error('SMTP_USER and SMTP_PASSWORD must be configured together')
+  if (production && authEmailEnabled && (!smtpHost || !smtpFrom || !smtpUser || !smtpPassword)) {
+    throw new Error('SMTP_HOST, SMTP_USER, SMTP_PASSWORD and SMTP_FROM are required when email authentication is enabled in production')
+  }
 
   const authUrl = required('BETTER_AUTH_URL', production ? undefined : 'http://localhost:3001')
   const trustedOrigins = required('TRUSTED_ORIGINS', production ? undefined : 'http://localhost:5173,http://localhost:3001')
@@ -63,16 +72,16 @@ export const loadConfig = () => {
     authUrl,
     trustedOrigins,
     cookieSecure: bool('COOKIE_SECURE', production),
-    authEmailEnabled: bool('AUTH_EMAIL_ENABLED', !production),
+    authEmailEnabled,
     authYandexEnabled,
     yandexClientId,
     yandexClientSecret,
     smtp: {
-      host: process.env.SMTP_HOST?.trim() || '',
+      host: smtpHost,
       port: integer('SMTP_PORT', 587),
-      user: process.env.SMTP_USER?.trim() || '',
-      password: process.env.SMTP_PASSWORD || '',
-      from: process.env.SMTP_FROM?.trim() || '',
+      user: smtpUser,
+      password: smtpPassword,
+      from: smtpFrom,
     },
     adminEmails,
     adminUserIds,
