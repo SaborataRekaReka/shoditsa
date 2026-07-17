@@ -165,6 +165,12 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: 'Системы организма', present: (payload) => hasContentValue(payload.bodySystems) },
     { label: 'Симптомы', present: (payload) => valueFromKeys(payload, ['keySymptoms', 'symptoms']) },
   ],
+  city: [
+    { label: 'Страна', present: (payload) => hasTextValue(payload.country) },
+    { label: 'Континент', present: (payload) => hasTextValue(payload.continent) },
+    { label: 'Население', present: (payload) => hasContentValue(payload.population) },
+    { label: 'Герб / флаг', present: (payload) => valueFromKeys(payload, ['coatOfArmsUrl', 'cityFlagUrl', 'countryFlagUrl']) },
+  ],
 }
 
 const completionMeta = (payload: unknown, mode: ContentMode) => {
@@ -795,7 +801,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     ] }
   })
 
-  const normalizationModeQuery = Type.Object({ mode: Type.Union(['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].map((value) => Type.Literal(value))) }, { additionalProperties: false })
+  const normalizationModeQuery = Type.Object({ mode: Type.Union(['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'].map((value) => Type.Literal(value))) }, { additionalProperties: false })
   let normalizationFieldCache: { expiresAt: number; fields: string[] } | null = null
   const normalizationAvailableFields = async () => {
     if (normalizationFieldCache && normalizationFieldCache.expiresAt > Date.now()) return normalizationFieldCache.fields
@@ -1228,7 +1234,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode, payload: contentItemVersions.payload }).from(contentItemVersions)
       .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, targetIds))) : []
     const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry]))
-    const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+    const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
     const prepared = items.map((item) => {
       const before = asRecord(item.beforeJson); const proposed = asRecord(item.proposedJson); const decisions = asRecord(item.fieldDecisionsJson)
       const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)

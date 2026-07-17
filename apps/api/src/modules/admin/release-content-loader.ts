@@ -7,17 +7,18 @@ import { normalize } from '@shoditsa/game-core'
 export const RELEASE_LIBRARIES: Array<{ dir: string; mode: ContentMode }> = [
   { dir: 'movies', mode: 'movie' }, { dir: 'series', mode: 'series' },
   { dir: 'animes', mode: 'anime' }, { dir: 'games', mode: 'game' },
-  { dir: 'music', mode: 'music' }, { dir: 'diagnoses', mode: 'diagnosis' },
+  { dir: 'music', mode: 'music' }, { dir: 'diagnoses', mode: 'diagnosis' }, { dir: 'cities', mode: 'city' },
 ]
+export type ReleaseContentItem = Omit<TitleItem, 'mode'> & { mode: ContentMode; [key: string]: unknown }
 
 const sha256 = (value: string | Buffer) => createHash('sha256').update(value).digest('hex')
 const validMediaUrl = (value: unknown) => value == null || value === '' || (typeof value === 'string' && (
   /^https?:\/\//.test(value) || /^\.?\/?(?:data|media|images)\//.test(value)
 ))
 
-const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file: string, index: number): TitleItem => {
+const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file: string, index: number): ReleaseContentItem => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${file}[${index}] must be an object`)
-  const item = value as TitleItem
+  const item = value as ReleaseContentItem
   if (!item.id || typeof item.id !== 'string') throw new Error(`${file}[${index}] has no string id`)
   if (seen.has(item.id)) throw new Error(`Duplicate content id: ${item.id}`)
   if (item.mode !== mode) throw new Error(`${item.id}: expected mode ${mode}, got ${String(item.mode)}`)
@@ -33,7 +34,7 @@ const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file
   return item
 }
 
-export type LoadedReleaseLibrary = { mode: ContentMode; dir: string; file: string; checksum: string; items: TitleItem[] }
+export type LoadedReleaseLibrary = { mode: ContentMode; dir: string; file: string; checksum: string; items: ReleaseContentItem[] }
 
 export const loadReleaseLibraries = async (sourceRoot: string) => {
   const source = resolve(sourceRoot)
@@ -65,7 +66,7 @@ export const loadReleaseLibraries = async (sourceRoot: string) => {
   return { source, libraries, vignettes, manifest }
 }
 
-export const releaseAliasesFor = (item: TitleItem) => {
+export const releaseAliasesFor = (item: ReleaseContentItem) => {
   const entries = [
     [item.titleRu, 'ru'], [item.titleOriginal, 'original'],
     ...(item.alternativeTitles ?? []).map((value) => [value, 'alternative']),

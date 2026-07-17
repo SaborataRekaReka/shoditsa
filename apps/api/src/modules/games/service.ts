@@ -709,15 +709,16 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   }
   const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
-  const isPromoSession = isPromoSessionVariant(session.mode, challengeVariant)
-  const promo = await promoSessionPayload(session.mode, challengeVariant, answer, session.attemptsCount)
+  const sessionMode = session.mode as TitleMode
+  const isPromoSession = isPromoSessionVariant(sessionMode, challengeVariant)
+  const promo = await promoSessionPayload(sessionMode, challengeVariant, answer, session.attemptsCount)
   const hintOptions = isPromoSession
     ? []
     : answer
       ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
       : []
   const result: Record<string, unknown> = {
-    id: session.id, kind: session.kind, mode: session.mode, variantKey: challengeVariant, period: session.period, difficulty: session.difficulty,
+    id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
     attempts: attempts.map((entry) => ({
@@ -764,7 +765,8 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const variantKey = session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
     : null
-  const pool = await answerPoolForSession(tx, session.revisionId, session.mode, session.period, session.difficulty, variantKey)
+  const sessionMode = session.mode as TitleMode
+  const pool = await answerPoolForSession(tx, session.revisionId, sessionMode, session.period, session.difficulty, variantKey)
   const guess = pool.items.find((item) => item.id === itemId)
   if (!guess) throw new ApiError(422, 'GAME_ITEM_OUTSIDE_POOL', 'Вариант недоступен в этой игре')
   const guessedVersionId = pool.byItemId.get(guess.id)!
@@ -776,10 +778,10 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const position = session.attemptsCount + 1
   const status = isCorrect ? 'won' : position >= 10 ? 'lost' : 'playing'
   const hints = normalizeHintPeople(compareTitles(guess, answer) as Hint[])
-  const promo = await promoSessionPayload(session.mode, variantKey, answer, position)
+  const promo = await promoSessionPayload(sessionMode, variantKey, answer, position)
   let reward: Awaited<ReturnType<typeof completeGame>> = null
   if (status !== 'playing') reward = await completeGame(tx, {
-    sessionId, userId, kind: session.kind, mode: session.mode, difficulty: session.difficulty,
+    sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, won: status === 'won', attemptsCount: position,
   })
   await tx.update(gameSessions).set({
@@ -811,7 +813,7 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   const variantKey = session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
     : null
-  if (isPromoSessionVariant(session.mode, variantKey)) {
+  if (isPromoSessionVariant(session.mode as TitleMode, variantKey)) {
     throw new ApiError(422, 'HINT_DISABLED_FOR_PROMO', 'В промо-режиме доступны только подсказки из пакета')
   }
   const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey, response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))
@@ -842,7 +844,7 @@ export const searchCatalog = async (db: Database, input: { mode: TitleMode; q: s
     const sessions = await db.select().from(gameSessions).where(eq(gameSessions.id, input.sessionId)).limit(1)
     const session = sessions[0]
     if (!session || (userId && session.userId !== userId)) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
-    mode = session.mode
+    mode = session.mode as TitleMode
     revisionId = session.revisionId; period = session.period; difficulty = session.difficulty
     variantKey = session.challengeId
       ? (await db.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null

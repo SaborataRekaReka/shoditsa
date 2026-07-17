@@ -15,6 +15,8 @@ import {
   MapPin,
   Play,
   Search,
+  Sparkles,
+  Ticket,
 } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { CityRankProfile } from './CityRankProfile'
@@ -84,18 +86,19 @@ const CityModeControl = ({ items, value, disabled, onChange }: { items: CityItem
   }, [open])
 
   return <div ref={wrapRef} className={`city-mode-select ${open ? 'is-open' : ''}`}>
-    <button type="button" className="city-mode-trigger" disabled={disabled} aria-expanded={open} aria-haspopup="listbox" onClick={() => setOpen((value) => !value)}>
+    <button type="button" className="city-mode-trigger" disabled={disabled} aria-expanded={open} aria-haspopup="listbox" onClick={(event) => { event.stopPropagation(); setOpen((value) => !value) }}>
       <span className="city-mode-trigger__label"><MapIcon /> Режим</span>
-      <span className="city-mode-trigger__value"><strong>{current.shortLabel}</strong><ChevronRight /></span>
+      <span className="city-mode-trigger__value"><span className={`city-mode-bars city-mode-bars--${value}`} aria-hidden="true"><i /><i /><i /></span><strong>{current.shortLabel}</strong><ChevronRight /></span>
     </button>
     {open && <div className="city-mode-menu" role="listbox" aria-label="Режим городов">
       <span className="city-mode-menu__head">Круг возможных ответов</span>
       {CITY_POOL_OPTIONS.map((entry) => {
         const count = cityPool(items, entry.mode).length
         const active = value === entry.mode
-        return <button type="button" role="option" aria-selected={active} className={active ? 'active' : ''} key={entry.mode} onClick={() => { onChange(entry.mode); setOpen(false) }}>
-          <span><strong>{entry.label}</strong><small>{count || '—'} городов · {entry.description}</small></span>
-          {active && <Check />}
+        return <button type="button" role="option" aria-selected={active} className={`city-mode-option ${active ? 'active' : ''}`} key={entry.mode} onClick={(event) => { event.stopPropagation(); onChange(entry.mode); setOpen(false) }}>
+          <span className={`city-mode-bars city-mode-bars--${entry.mode}`} aria-hidden="true"><i /><i /><i /></span>
+          <span className="city-mode-option__copy"><strong>{entry.label}</strong><small>{count || '—'} городов · {entry.description}</small></span>
+          {active && <Check className="city-mode-option__check" />}
         </button>
       })}
     </div>}
@@ -126,7 +129,9 @@ export function CityTitleScreen({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onBack()
-      if (event.key === 'Enter' && selectedCount > 0 && !loading && !error) onPlay()
+      const target = event.target as HTMLElement | null
+      const isInteractiveTarget = Boolean(target?.closest('button, input, select, textarea, [role="option"]'))
+      if (event.key === 'Enter' && !isInteractiveTarget && selectedCount > 0 && !loading && !error) onPlay()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
@@ -204,26 +209,33 @@ const CityAttemptCard = ({ city, answer, index }: { city: CityItem; answer: City
   const hints = compareCities(city, answer)
   const primaryHints = hints.slice(0, 5)
   const rankHints = hints.slice(5)
-  return <article className={`city-attempt-card ${city.id === answer.id ? 'is-correct' : ''}`}>
-    <header>
-      <span className="city-attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+  const matchedFields = hints.filter((hint) => hint.status === 'match').length
+  const scoreTone = matchedFields === 0 ? 'miss' : 'match'
+  return <article className={`attempt-card attempt-card--city city-attempt-card ${city.id === answer.id ? 'is-correct' : ''}`}>
+    <header className="attempt-card__header city-attempt-card__header">
+      <span className="attempt-card__number city-attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
       <CityMark city={city} />
-      <span className="city-attempt-card__identity">
-        <small>{city.capital ? 'Столица' : city.popular ? 'Популярный город' : 'Город'}</small>
-        <strong>{city.titleRu}</strong>
+      <span className="attempt-card__identity city-attempt-card__identity">
+        <span className="attempt-label">Попытка {index + 1} · {city.capital ? 'столица' : city.popular ? 'популярный город' : 'город'}</span>
+        <h2>{city.titleRu}</h2>
         <i>{city.titleOriginal}</i>
         <span className="city-attempt-card__country"><span><CityAsset src={city.countryFlagUrl} alt={`Флаг: ${city.country}`} /><Flag /></span>{city.country} · {city.continent}</span>
+        {city.id === answer.id && <span className="city-attempt-card__correct"><Check /> Найден</span>}
       </span>
-      {city.id === answer.id && <span className="city-attempt-card__correct"><Check /> Найден</span>}
+      <CityRankProfile ranks={city.ranks} hints={rankHints} compact />
     </header>
-    <div className="city-clue-grid">{primaryHints.map((hint) => <CityClue hint={hint} key={hint.key} />)}</div>
-    <CityRankProfile ranks={city.ranks} hints={rankHints} />
+    <div className={`dx-score dx-score--${scoreTone}`} aria-label={`Совпадений: ${matchedFields}; полей с совпадениями: ${matchedFields} из ${hints.length}`}>
+      <span>Совпадений</span>
+      <div className="dx-score__bar">{hints.map((_, hintIndex) => <i className={hintIndex < matchedFields ? 'on' : ''} key={hintIndex} />)}</div>
+      <strong>{matchedFields}</strong>
+    </div>
+    <div className="attempt-clue-grid city-clue-grid">{primaryHints.map((hint) => <CityClue hint={hint} key={hint.key} />)}</div>
   </article>
 }
 
-const CityProgress = ({ attempts }: { attempts: number }) => <div className="city-progress">
-  <span>Попытка <strong>{Math.min(attempts + 1, 10)}</strong> из 10</span>
-  <div aria-label={`Использовано попыток: ${attempts} из 10`}>
+const CityProgress = ({ attempts }: { attempts: number }) => <div className="progress-block">
+  <div className="progress-copy"><span>Попытка</span><strong>{Math.min(attempts + 1, 10)} <i>из 10</i></strong></div>
+  <div className="progress-track" aria-label={`Использовано попыток: ${attempts} из 10`}>
     {Array.from({ length: 10 }, (_, index) => <i key={index} className={index < attempts ? 'used' : index === attempts ? 'current' : ''} />)}
   </div>
 </div>
@@ -302,11 +314,34 @@ export function CityGameScreen({
   const [status, setStatus] = useState<CitySessionStatus>('playing')
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState('')
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0)
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false)
+  const [matchStripOpen, setMatchStripOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
+  const searchPickerRef = useRef<HTMLDivElement>(null)
   const byId = useMemo(() => new Map(items.map((item) => [item.id, item])), [items])
   const attempts = useMemo(() => attemptIds.map((id) => byId.get(id)).filter((item): item is CityItem => Boolean(item)), [attemptIds, byId])
   const used = useMemo(() => new Set(attemptIds), [attemptIds])
   const suggestions = useMemo(() => searchCities(items, query, used), [items, query, used])
+  const latestMatchCount = useMemo(() => {
+    const latest = attempts.at(-1)
+    return latest && answer ? compareCities(latest, answer).filter((hint) => hint.status === 'match').length : 0
+  }, [answer, attempts])
+  const matchedTags = useMemo(() => {
+    if (!answer) return []
+    const seen = new Set<string>()
+    const tags: string[] = []
+    for (const city of attempts) {
+      for (const hint of compareCities(city, answer)) {
+        if (hint.status !== 'match' || hint.value === 'Нет данных') continue
+        const tag = `${hint.label}: ${hint.value}`
+        if (seen.has(tag)) continue
+        seen.add(tag)
+        tags.push(tag)
+      }
+    }
+    return tags
+  }, [answer, attempts])
 
   useEffect(() => {
     if (!answer) return
@@ -320,7 +355,18 @@ export function CityGameScreen({
     }
     setQuery('')
     setMessage('')
+    setIsSearchDropdownOpen(false)
+    setMatchStripOpen(false)
   }, [answer, byId, date, mode])
+
+  useEffect(() => {
+    if (!isSearchDropdownOpen) return
+    const close = (event: PointerEvent) => {
+      if (!searchPickerRef.current?.contains(event.target as Node)) setIsSearchDropdownOpen(false)
+    }
+    window.addEventListener('pointerdown', close)
+    return () => window.removeEventListener('pointerdown', close)
+  }, [isSearchDropdownOpen])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -346,9 +392,11 @@ export function CityGameScreen({
     setStatus(nextStatus)
     setQuery('')
     setMessage('')
+    setIsSearchDropdownOpen(false)
+    setMatchStripOpen(true)
     saveCitySession({ mode, date, answerId: answer.id, attemptIds: nextAttemptIds, status: nextStatus, updatedAt: Date.now() })
     onProgress()
-    window.requestAnimationFrame(() => document.querySelector('.city-attempt-list article:last-child')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    window.requestAnimationFrame(() => document.querySelector('.city-attempt-list article:first-child')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
   }
 
   const submitForm = (event: FormEvent) => {
@@ -358,30 +406,37 @@ export function CityGameScreen({
 
   return <div className="city-surface">
     <AppHeader {...navigation} />
-    <main className="city-game-screen">
+    <main className="game-shell city-game-screen">
       <div className="screen-back-row">
         <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
         <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
 
-      <header className="city-game-heading">
-        <span><MapPin /> Город дня</span>
-        <div><h1>Найдите город</h1><strong>{modeMeta(mode).label}</strong></div>
-        <p>{prettyDate(date)} · сравнивайте признаки после каждой попытки</p>
-      </header>
+      <section className="game-heading city-game-heading">
+        <div>
+          <div className="game-heading__kicker">Сегодня · Сеанс №{dayNumber(date)} · {modeMeta(mode).shortLabel}</div>
+          <h1>Город дня</h1>
+          <p>{prettyDate(date)} · обновление в 00:00 МСК</p>
+        </div>
+        <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>
+      </section>
 
       {loading && <section className="city-game-state">Открываем атлас городов…</section>}
       {error && <section className="city-game-state city-data-state--error">{error}</section>}
       {!loading && !error && !answer && <section className="city-game-state city-data-state--error">В выбранном режиме нет городов</section>}
 
       {answer && <>
-        {status === 'playing' && <CityProgress attempts={attemptIds.length} />}
+        {status === 'playing' && <div className="progress-row"><CityProgress attempts={attemptIds.length} /></div>}
 
         {status !== 'playing' && <CityResult city={answer} status={status} attempts={attemptIds.length} mode={mode} date={date} onHome={navigation.onHome} onChooseMode={onChooseMode} />}
 
-        {status === 'playing' && <form className="city-search" onSubmit={submitForm}>
-          <div className="city-search__status"><span>Введите название города</span><strong>{attemptIds.length}/10</strong></div>
-          <div className="city-search__box">
+        {status === 'playing' && <form className="search-area search-area--sticky city-search" onSubmit={submitForm}>
+          <div className="sticky-composer__status">
+            <span>Попытка {Math.min(attemptIds.length + 1, 10)} из 10</span>
+            {!!attempts.length && <strong>{latestMatchCount} {latestMatchCount === 1 ? 'признак совпал' : latestMatchCount >= 2 && latestMatchCount <= 4 ? 'признака совпали' : 'признаков совпали'}</strong>}
+          </div>
+          <div className="search-picker" ref={searchPickerRef}>
+          <div className="search-box city-search__box">
             <Search />
             <input
               ref={searchRef}
@@ -389,28 +444,53 @@ export function CityGameScreen({
               autoComplete="off"
               aria-label="Введите название города"
               placeholder="Например, Алматы или Buenos Aires…"
-              onChange={(event) => { setQuery(event.target.value); setMessage('') }}
+              onFocus={() => setIsSearchDropdownOpen(true)}
+              onChange={(event) => { setQuery(event.target.value); setMessage(''); setActiveSuggestionIndex(0); setIsSearchDropdownOpen(true) }}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape' && isSearchDropdownOpen) { event.preventDefault(); setIsSearchDropdownOpen(false); return }
+                if (event.key === 'ArrowDown') { event.preventDefault(); setActiveSuggestionIndex((index) => Math.min(index + 1, suggestions.length - 1)); return }
+                if (event.key === 'ArrowUp') { event.preventDefault(); setActiveSuggestionIndex((index) => Math.max(index - 1, 0)); return }
+                if (event.key === 'Enter') { event.preventDefault(); submit(suggestions[activeSuggestionIndex]); }
+              }}
             />
             <button type="submit" aria-label="Проверить город"><ChevronRight /></button>
           </div>
-          {query && <div className="city-suggestions">
-            {suggestions.length ? suggestions.map((city) => <button type="button" key={city.id} onClick={() => submit(city)}>
+          {query && isSearchDropdownOpen && <div className="suggestions city-suggestions">
+            {suggestions.length ? suggestions.map((city, index) => <button type="button" className={index === activeSuggestionIndex ? 'is-active' : ''} key={city.id} onMouseEnter={() => setActiveSuggestionIndex(index)} onClick={() => submit(city)}>
               <span className="city-suggestions__flag"><CityAsset src={city.countryFlagUrl} alt="" /><MapPin /></span>
               <span><strong>{city.titleRu}</strong><small>{city.titleOriginal} · {city.country}</small></span>
               <em>{city.capital ? 'СТОЛИЦА' : city.continent}</em>
             </button>) : <div>Ничего не найдено</div>}
           </div>}
-          {message && <p>{message}</p>}
+          </div>
+          {!!attempts.length && <div className={`game-match-strip ${matchStripOpen ? 'is-open' : ''}`}>
+            <button type="button" className="game-match-strip__toggle" onClick={() => setMatchStripOpen((open) => !open)} aria-expanded={matchStripOpen} aria-controls="city-match-strip-panel">
+              <span className="game-match-strip__logo" aria-hidden="true"><img src="./images/symbol.svg" alt="" /></span>
+              <span className="game-match-strip__title">Что сходится</span>
+              <ChevronRight aria-hidden="true" />
+            </button>
+            <div className="game-match-strip__panel" id="city-match-strip-panel" aria-hidden={!matchStripOpen}>
+              <div className="game-match-strip__tags">
+                {matchedTags.length ? matchedTags.map((tag) => <span key={tag} className="dx-chip match game-match-strip__tag">{tag}</span>) : <span className="game-match-strip__empty">Пока совпадений нет</span>}
+              </div>
+            </div>
+          </div>}
+          {message && <div className="search-meta"><strong>{message}</strong></div>}
         </form>}
 
-        {!attempts.length && status === 'playing' && <section className="city-empty-card">
-          <span><Globe2 /></span>
+        {status === 'playing' && attemptIds.length >= 5 && answer.plotHint && <section className="city-answer-hint">
+          <span><Sparkles /> Подсказка маршрута</span>
+          <p>{answer.plotHint}</p>
+        </section>}
+
+        {!attempts.length && status === 'playing' && <section className="empty-card city-empty-card">
+          <div className="empty-card__icon"><Globe2 /></div>
           <div><h2>Начните с любого города</h2><p>Стрелка вверх означает, что у ответа больше население, более поздний часовой пояс или более высокое место в рейтинге. Точное совпадение станет зелёным.</p></div>
         </section>}
 
-        {!!attempts.length && <section className="city-attempt-list">
+        {!!attempts.length && <section className="attempt-list city-attempt-list">
           <div className="section-title"><span>Ваши попытки</span><strong>{attempts.length}/10</strong></div>
-          {attempts.map((city, index) => <CityAttemptCard city={city} answer={answer} index={index} key={`${city.id}-${index}`} />)}
+          {attempts.map((city, index) => ({ city, index })).reverse().map(({ city, index }) => <CityAttemptCard city={city} answer={answer} index={index} key={`${city.id}-${index}`} />)}
         </section>}
       </>}
     </main>

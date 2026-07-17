@@ -7,8 +7,9 @@ import { normalize } from '@shoditsa/game-core'
 export const LIBRARIES: Array<{ dir: string; mode: ContentMode }> = [
   { dir: 'movies', mode: 'movie' }, { dir: 'series', mode: 'series' },
   { dir: 'animes', mode: 'anime' }, { dir: 'games', mode: 'game' },
-  { dir: 'music', mode: 'music' }, { dir: 'diagnoses', mode: 'diagnosis' },
+  { dir: 'music', mode: 'music' }, { dir: 'diagnoses', mode: 'diagnosis' }, { dir: 'cities', mode: 'city' },
 ]
+export type ContentLibraryItem = Omit<TitleItem, 'mode'> & { mode: ContentMode; [key: string]: unknown }
 
 export const sha256 = (value: string | Buffer) => createHash('sha256').update(value).digest('hex')
 export const arg = (name: string) => {
@@ -23,9 +24,9 @@ const validMediaUrl = (value: unknown) => value == null || value === '' || (type
   /^https?:\/\//.test(value) || /^\.?\/?(?:data|media|images)\//.test(value)
 ))
 
-const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file: string, index: number): TitleItem => {
+const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file: string, index: number): ContentLibraryItem => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${file}[${index}] must be an object`)
-  const item = value as TitleItem
+  const item = value as ContentLibraryItem
   if (!item.id || typeof item.id !== 'string') throw new Error(`${file}[${index}] has no string id`)
   if (seen.has(item.id)) throw new Error(`Duplicate content id: ${item.id}`)
   if (item.mode !== mode) throw new Error(`${item.id}: expected mode ${mode}, got ${String(item.mode)}`)
@@ -41,7 +42,7 @@ const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file
   return item
 }
 
-export type LoadedLibrary = { mode: ContentMode; dir: string; file: string; checksum: string; items: TitleItem[] }
+export type LoadedLibrary = { mode: ContentMode; dir: string; file: string; checksum: string; items: ContentLibraryItem[] }
 export type ImportManifest = {
   generatedAt: string
   sourceRoot: string
@@ -79,7 +80,7 @@ export const loadLibraries = async (sourceArg?: string) => {
   return { source, libraries, vignettes, vignetteChecksum: sha256(vignetteRaw), manifest }
 }
 
-export const aliasesFor = (item: TitleItem) => {
+export const aliasesFor = (item: ContentLibraryItem) => {
   const entries = [
     [item.titleRu, 'ru'], [item.titleOriginal, 'original'],
     ...(item.alternativeTitles ?? []).map((value) => [value, 'alternative']),

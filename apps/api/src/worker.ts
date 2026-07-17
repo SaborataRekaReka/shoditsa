@@ -674,7 +674,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   const mode = text(input.mode) as ContentMode; const field = text(input.field); const prompt = text(input.prompt)
   const contextFields = Array.isArray(input.contextFields) ? strings(input.contextFields) : undefined
   const availableFields = Array.isArray(input.availableFields) ? strings(input.availableFields) : undefined
-  if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis'].includes(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
+  if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'].includes(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
   assertNormalizationField(mode, field)
   const runItemIds = strings(input.itemIds)
   if (!runItemIds.length) throw new ApiError(422, 'NORMALIZATION_ITEMS_EMPTY', 'В запуске нет карточек')

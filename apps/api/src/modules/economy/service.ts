@@ -1,7 +1,7 @@
 import { createHmac, randomInt } from 'node:crypto'
 import { and, asc, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import type { ApiDifficultyKey, ContentMode, PeriodKey } from '@shoditsa/contracts'
+import type { ApiDifficultyKey, PeriodKey, PlayableMode } from '@shoditsa/contracts'
 import {
   attendanceStats, dailyAttendance, dailyChallenges, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
   promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
@@ -11,8 +11,8 @@ import { getMoscowDate } from '../../lib/time.js'
 import { activeRevision, answerPool, buildSessionSnapshot } from '../games/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
-const UNLOCKABLE: ContentMode[] = ['movie', 'series', 'anime']
-const FREE_PLAY: ContentMode[] = ['movie', 'series', 'anime', 'music', 'diagnosis']
+const UNLOCKABLE: PlayableMode[] = ['movie', 'series', 'anime']
+const FREE_PLAY: PlayableMode[] = ['movie', 'series', 'anime', 'music', 'diagnosis']
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
@@ -32,7 +32,7 @@ const replayFreePlay = async (tx: Transaction, userId: string, session: typeof g
   }
 }
 
-export const unlockPeriod = async (db: Database, userId: string, mode: ContentMode, period: PeriodKey, idempotencyKey: string) => db.transaction(async (tx) => {
+export const unlockPeriod = async (db: Database, userId: string, mode: PlayableMode, period: PeriodKey, idempotencyKey: string) => db.transaction(async (tx) => {
   if (!UNLOCKABLE.includes(mode) || period === 'all') throw new ApiError(422, 'PERIOD_NOT_UNLOCKABLE', 'Этот период нельзя разблокировать')
   const existing = await tx.select().from(periodEntitlements).where(and(eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, mode), eq(periodEntitlements.period, period))).limit(1)
   if (existing[0]) return { entitlement: existing[0], alreadyUnlocked: true }
@@ -50,7 +50,7 @@ export const unlockPeriod = async (db: Database, userId: string, mode: ContentMo
   return { entitlement: entitlement[0], balanceAfter, alreadyUnlocked: false }
 })
 
-export const startFreePlay = async (db: Database, userId: string, mode: ContentMode, difficulty: ApiDifficultyKey | null, idempotencyKey: string, authSessionId: string | null = null) => db.transaction(async (tx) => {
+export const startFreePlay = async (db: Database, userId: string, mode: PlayableMode, difficulty: ApiDifficultyKey | null, idempotencyKey: string, authSessionId: string | null = null) => db.transaction(async (tx) => {
   if (!FREE_PLAY.includes(mode)) throw new ApiError(422, 'FREE_PLAY_MODE_NOT_ALLOWED', 'Свободная игра недоступна для этого режима')
   const replay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
   if (replay[0]) return replayFreePlay(tx, userId, replay[0], idempotencyKey)

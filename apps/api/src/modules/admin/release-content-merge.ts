@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
-import type { ContentMode, TitleItem } from '@shoditsa/contracts'
-import type { LoadedReleaseLibrary } from './release-content-loader.js'
+import type { ContentMode } from '@shoditsa/contracts'
+import type { LoadedReleaseLibrary, ReleaseContentItem } from './release-content-loader.js'
 
 export type ActiveReleaseRow = {
   id: string
@@ -15,7 +15,7 @@ export type ReleaseMergeEntry = {
   activeVersionId: string | null
   itemId: string
   mode: ContentMode
-  payload: TitleItem
+  payload: ReleaseContentItem
 }
 
 export type ReleaseMergeModePreview = {
@@ -40,7 +40,7 @@ export type ReleaseMergePreview = {
   modes: Record<ContentMode, ReleaseMergeModePreview>
 }
 
-const MODES: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+const MODES: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
 const emptyModePreview = (): ReleaseMergeModePreview => ({ active: 0, release: 0, updated: 0, unchanged: 0, added: 0, preserved: 0, final: 0 })
 const canonicalize = (value: unknown): unknown => Array.isArray(value)
   ? value.map(canonicalize)
@@ -48,9 +48,9 @@ const canonicalize = (value: unknown): unknown => Array.isArray(value)
     ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalize((value as Record<string, unknown>)[key])]))
     : value
 const canonicalJson = (value: unknown) => JSON.stringify(canonicalize(value))
-const asTitleItem = (row: ActiveReleaseRow): TitleItem => {
+const asTitleItem = (row: ActiveReleaseRow): ReleaseContentItem => {
   if (!row.payload || typeof row.payload !== 'object' || Array.isArray(row.payload)) throw new Error(`Active content payload is invalid: ${row.itemId}`)
-  return row.payload as TitleItem
+  return row.payload as ReleaseContentItem
 }
 
 export const buildReleaseMergePlan = (activeRows: ActiveReleaseRow[], libraries: LoadedReleaseLibrary[]) => {

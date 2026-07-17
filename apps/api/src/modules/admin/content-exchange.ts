@@ -13,7 +13,7 @@ type Actor = { id: string }
 type Json = Record<string, unknown>
 type ImportStatus = 'create' | 'update' | 'unchanged' | 'conflict' | 'invalid'
 
-const modes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+const modes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
 const fieldNamePattern = /^[A-Za-z][A-Za-z0-9_]*$/
 const asRecord = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
 const hasOwn = (value: Json, field: string) => Object.prototype.hasOwnProperty.call(value, field)

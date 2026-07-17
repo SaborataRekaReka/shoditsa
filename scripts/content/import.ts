@@ -37,7 +37,11 @@ try {
 
   const existing = await db.select({ id: contentRevisions.id, status: contentRevisions.status }).from(contentRevisions)
     .where(eq(contentRevisions.checksumSha256, loaded.manifest.checksumSha256)).limit(1)
-  if (existing[0]) throw new Error(`Revision for checksum already exists: ${existing[0].id} (${existing[0].status})`)
+  if (existing[0]?.status === 'failed') {
+    await db.delete(contentRevisions).where(eq(contentRevisions.id, existing[0].id))
+  } else if (existing[0]) {
+    throw new Error(`Revision for checksum already exists: ${existing[0].id} (${existing[0].status})`)
+  }
   const inserted = await db.insert(contentRevisions).values({ version, checksumSha256: loaded.manifest.checksumSha256, sourceManifest: loaded.manifest, status: 'importing' }).returning({ id: contentRevisions.id })
   revisionId = inserted[0].id
 
@@ -52,7 +56,11 @@ try {
           itemId: item.id, revisionId: revisionId!, mode: library.mode, titleRu: item.titleRu,
           titleOriginal: item.titleOriginal ?? '', normalizedTitle: normalize(item.titleRu), year: item.year,
           endYear: item.endYear ?? null, popularityScore: Number.isFinite(item.popularityScore) ? item.popularityScore : 0, topRank: item.topRank ?? null,
-          sortOrder: offset + index, allowedInGame: isAllowedInRegularGame(item), contentStatus: item.contentStatus ?? null, payload: item,
+          sortOrder: offset + index,
+          allowedInGame: library.mode === 'city'
+            ? item.allowedInGame !== false
+            : isAllowedInRegularGame(item as Parameters<typeof isAllowedInRegularGame>[0]),
+          contentStatus: item.contentStatus ?? null, payload: item,
         }))).returning({ id: contentItemVersions.id, itemId: contentItemVersions.itemId })
         const itemMap = new Map(chunk.map((item) => [item.id, item]))
         const aliases = versions.flatMap((row) => aliasesFor(itemMap.get(row.itemId)!).map((alias) => ({ itemVersionId: row.id, ...alias })))
@@ -62,7 +70,12 @@ try {
     const diagnosisVersions = await tx.select({ id: contentItemVersions.id, itemId: contentItemVersions.itemId }).from(contentItemVersions)
       .where(and(eq(contentItemVersions.revisionId, revisionId!), eq(contentItemVersions.mode, 'diagnosis')))
     const versionByItem = new Map(diagnosisVersions.map((row) => [row.itemId, row.id]))
-    const vignetteRows = loaded.vignettes.flatMap((group) => group.caseVignettes.map((entry, sortOrder) => ({ id: entry.id, itemVersionId: versionByItem.get(group.diagnosisId)!, text: entry.text, sortOrder })))
+    const vignetteRows = loaded.vignettes.flatMap((group) => group.caseVignettes.map((entry, sortOrder) => ({
+      id: `${revisionId!.slice(0, 8)}:${entry.id}`,
+      itemVersionId: versionByItem.get(group.diagnosisId)!,
+      text: entry.text,
+      sortOrder,
+    })))
     for (let offset = 0; offset < vignetteRows.length; offset += 500) await tx.insert(diagnosisVignettes).values(vignetteRows.slice(offset, offset + 500))
     await tx.update(contentRevisions).set({ status: 'ready' }).where(eq(contentRevisions.id, revisionId!))
   })

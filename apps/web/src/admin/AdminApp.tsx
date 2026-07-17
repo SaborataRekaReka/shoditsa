@@ -41,7 +41,7 @@ const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admi
 
 const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
-  { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' },
+  { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' },
 ]
 const MODE_LABEL = Object.fromEntries(MODES.map((mode) => [mode.value, mode.label])) as Record<ContentMode, string>
 type ContentFieldFilter = string
@@ -93,6 +93,22 @@ const CONTENT_FIELD_GROUPS: ContentFieldGroup[] = [
       { value: 'headerUrl', label: 'headerUrl — обложка' },
       { value: 'backdropUrl', label: 'backdropUrl — фон' },
       { value: 'screenshots', label: 'screenshots — скриншоты' },
+    ],
+  },
+  {
+    label: 'Города payload',
+    options: [
+      { value: 'country', label: 'country — страна' },
+      { value: 'continent', label: 'continent — континент' },
+      { value: 'languages', label: 'languages — языки' },
+      { value: 'population', label: 'population — население' },
+      { value: 'timezone', label: 'timezone — часовой пояс' },
+      { value: 'capital', label: 'capital — столица' },
+      { value: 'popular', label: 'popular — популярный город' },
+      { value: 'countryFlagUrl', label: 'countryFlagUrl — флаг страны' },
+      { value: 'cityFlagUrl', label: 'cityFlagUrl — флаг города' },
+      { value: 'coatOfArmsUrl', label: 'coatOfArmsUrl — герб' },
+      { value: 'ranks', label: 'ranks — городской профиль' },
     ],
   },
   {
@@ -536,6 +552,14 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Течение', ['course']],
       ['Симптомы', ['keySymptoms', 'symptoms']],
     ],
+    city: [
+      ['Страна', ['country', 'countries']],
+      ['Континент', ['continent']],
+      ['Языки', ['languages']],
+      ['Население', ['population']],
+      ['Часовой пояс', ['timezone']],
+      ['Столица', ['capital']],
+    ],
   }
   return [...shared, ...byMode[mode]].map(([label, paths]) => {
     const value = paths.map((path) => previewValue(previewPath(payload, path))).find(Boolean) ?? ''
@@ -884,7 +908,7 @@ function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: strin
       <PageHead
         eyebrow="Контент"
         title="Карточки"
-        description="Поиск, проверка и публикация всех шести игровых библиотек."
+        description="Поиск, проверка и публикация всех семи игровых библиотек."
         actions={
           <>
             <div className="admin-view-switch">
@@ -1750,7 +1774,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       <PageHead
         eyebrow="Контент"
         title={scopedMode ? `Карточки · ${MODE_LABEL[scopedMode]}` : "Карточки"}
-        description={scopedMode ? `Поиск, проверка и публикация карточек категории «${MODE_LABEL[scopedMode]}».` : "Поиск, проверка и публикация всех шести игровых библиотек."}
+        description={scopedMode ? `Поиск, проверка и публикация карточек категории «${MODE_LABEL[scopedMode]}».` : "Поиск, проверка и публикация всех семи игровых библиотек."}
         actions={
           <>
             <div className="admin-view-switch">
@@ -2599,6 +2623,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
+  city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
 }
 const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Год окончания', titleRu: 'Русское название',
@@ -2606,6 +2631,8 @@ const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   facts: 'Факты', genres: 'Жанры', countries: 'Страны', allowedInGame: 'Допуск в игру', posterUrl: 'Постер',
   headerUrl: 'Обложка', backdropUrl: 'Фон', screenshots: 'Скриншоты', runtimeMinutes: 'Длительность', ageRating: 'Возрастной рейтинг',
   directors: 'Режиссёры', writers: 'Сценаристы', cast: 'Актёры', ratings: 'Рейтинги', awards: 'Награды',
+  country: 'Страна', continent: 'Континент', languages: 'Языки', population: 'Население', timezone: 'Часовой пояс',
+  capital: 'Столица', popular: 'Популярный город', countryFlagUrl: 'Флаг страны', cityFlagUrl: 'Флаг города', coatOfArmsUrl: 'Герб', ranks: 'Городской профиль',
 }
 const normalizationFallbackFields = (mode: ContentMode) => [...new Set([
   ...NORMALIZATION_COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year')),

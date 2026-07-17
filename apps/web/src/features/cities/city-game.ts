@@ -24,6 +24,7 @@ export type CityItem = {
   timezone: string
   popular: boolean
   capital: boolean
+  plotHint?: string
 }
 
 export type CityHintStatus = 'match' | 'close' | 'partial' | 'miss' | 'unknown'

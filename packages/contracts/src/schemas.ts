@@ -1,10 +1,12 @@
 import { Type, type Static, type TSchema } from '@sinclair/typebox'
 
-export const CONTENT_MODES = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis'] as const
+export const CONTENT_MODES = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'] as const
+export const PLAYABLE_MODES = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis'] as const
 export const PERIOD_KEYS = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'] as const
 export const DIFFICULTY_KEYS = ['easy', 'medium', 'hard', 'expert'] as const
 
 export const ContentModeSchema = Type.Union(CONTENT_MODES.map((value) => Type.Literal(value)))
+export const PlayableModeSchema = Type.Union(PLAYABLE_MODES.map((value) => Type.Literal(value)))
 export const PeriodKeySchema = Type.Union(PERIOD_KEYS.map((value) => Type.Literal(value)))
 export const DifficultyKeySchema = Type.Union(DIFFICULTY_KEYS.map((value) => Type.Literal(value)))
 export const NullableDifficultySchema = Type.Union([DifficultyKeySchema, Type.Null()])
@@ -23,7 +25,7 @@ export const ErrorEnvelopeSchema = Type.Object({
 
 export const PublicContentItemSchema = Type.Object({
   id: Type.String({ minLength: 1 }),
-  mode: ContentModeSchema,
+  mode: PlayableModeSchema,
   titleRu: Type.String(),
   titleOriginal: Type.String(),
   year: Type.Union([Type.Integer(), Type.Null()]),
@@ -32,7 +34,7 @@ export const PublicContentItemSchema = Type.Object({
 }, { additionalProperties: true })
 
 export const CatalogSearchQuerySchema = Type.Object({
-  mode: ContentModeSchema,
+  mode: PlayableModeSchema,
   q: Type.String({ minLength: 1, maxLength: 100 }),
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(DifficultyKeySchema),
@@ -46,7 +48,7 @@ export const CatalogSearchResponseSchema = Type.Object({
 
 export const GameStartBodySchema = Type.Object({
   kind: Type.Union([Type.Literal('daily'), Type.Literal('archive')]),
-  mode: ContentModeSchema,
+  mode: PlayableModeSchema,
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),
   packId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
@@ -68,12 +70,12 @@ export const ProfilePatchSchema = Type.Partial(Type.Object({
   timezone: Type.String({ minLength: 1, maxLength: 64 }),
 }, { additionalProperties: false }))
 
-export const PeriodUnlockBodySchema = Type.Object({ mode: ContentModeSchema, period: PeriodKeySchema }, { additionalProperties: false })
-export const FreePlayBodySchema = Type.Object({ mode: ContentModeSchema, difficulty: Type.Optional(NullableDifficultySchema) }, { additionalProperties: false })
+export const PeriodUnlockBodySchema = Type.Object({ mode: PlayableModeSchema, period: PeriodKeySchema }, { additionalProperties: false })
+export const FreePlayBodySchema = Type.Object({ mode: PlayableModeSchema, difficulty: Type.Optional(NullableDifficultySchema) }, { additionalProperties: false })
 export const PromoRedeemBodySchema = Type.Object({ code: Type.String({ minLength: 1, maxLength: 64 }) }, { additionalProperties: false })
 
 export const ArchiveQuerySchema = Type.Object({
-  mode: Type.Optional(ContentModeSchema),
+  mode: Type.Optional(PlayableModeSchema),
   cursor: Type.Optional(DateTimeSchema),
   limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 30 })),
 }, { additionalProperties: false })
@@ -112,7 +114,7 @@ export const LegacyImportBodySchema = Type.Object({
   deviceId: UuidSchema,
   schemaVersion: Type.Integer({ minimum: 1, maximum: 100 }),
   games: Type.Array(Type.Object({
-    mode: ContentModeSchema,
+    mode: PlayableModeSchema,
     period: PeriodKeySchema,
     date: DateSchema,
     difficulty: Type.Optional(Type.Union([DifficultyKeySchema, Type.Null()])),
@@ -163,6 +165,7 @@ export const AdminContentReviewDecisionSchema = Type.Object({
 }, { additionalProperties: false, minProperties: 1 })
 
 export type ContentMode = Static<typeof ContentModeSchema>
+export type PlayableMode = Static<typeof PlayableModeSchema>
 export type ApiPeriodKey = Static<typeof PeriodKeySchema>
 export type ApiDifficultyKey = Static<typeof DifficultyKeySchema>
 export type CatalogSearchQuery = Static<typeof CatalogSearchQuerySchema>

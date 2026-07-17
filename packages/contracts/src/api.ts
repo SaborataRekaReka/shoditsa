@@ -1,5 +1,5 @@
 import type { AssistHintKey, Hint, TitleItem } from './legacy-types.js'
-import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason } from './schemas.js'
+import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason, PlayableMode } from './schemas.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'won' | 'lost'
@@ -23,7 +23,7 @@ export type PlayerProfile = {
 
 export type PublicContentItem = {
   id: string
-  mode: ContentMode
+  mode: PlayableMode
   titleRu: string
   titleOriginal: string
   year: number | null
@@ -37,7 +37,7 @@ export type MetaResponse = {
   apiVersion: string
   rulesVersion: number
   activeRevision: { id: string; version: string } | null
-  modes: Array<{ mode: ContentMode; count: number }>
+  modes: Array<{ mode: PlayableMode; count: number }>
   minimumFrontendVersion: string
   buildSha: string
   auth: {
@@ -78,13 +78,13 @@ export type AttendanceSummary = {
 
 export type TodayAttendance = {
   activityDate: string
-  completedModes: ContentMode[]
-  wonModes: ContentMode[]
+  completedModes: PlayableMode[]
+  wonModes: PlayableMode[]
   fullHouse: boolean
 }
 
 export type ModeStats = {
-  mode: ContentMode
+  mode: PlayableMode
   difficultyKey: string
   played: number
   won: number
@@ -93,10 +93,10 @@ export type ModeStats = {
   distribution: number[]
 }
 
-export type PeriodEntitlement = { mode: ContentMode; period: ApiPeriodKey; source: string; unlockedAt?: string }
+export type PeriodEntitlement = { mode: PlayableMode; period: ApiPeriodKey; source: string; unlockedAt?: string }
 export type ActiveSessionSummary = {
   id: string
-  mode: ContentMode
+  mode: PlayableMode
   kind: 'daily' | 'archive' | 'free_play'
   status: ApiGameStatus
   variantKey: string | null
@@ -131,7 +131,7 @@ export type PromoPromptSnapshot = { packId: string; title: string; subtitle: str
 export type GameSessionSnapshot = {
   id: string
   kind: 'daily' | 'archive' | 'free_play'
-  mode: ContentMode
+  mode: PlayableMode
   variantKey: string | null
   period: ApiPeriodKey
   difficulty: ApiDifficultyKey | null
@@ -175,7 +175,7 @@ export type PromoRedeemResponse = { reward?: { type: 'tickets'; amount: number; 
 export type LedgerEntry = { id: string; amount: number; balanceAfter: number; reason: string; type: string; createdAt: string }
 export type LedgerResponse = { items: LedgerEntry[]; nextCursor: string | null }
 export type WalletResponse = { wallet: WalletAccount }
-export type ArchiveItem = { id: string; mode: ContentMode; variantKey: string | null; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null; puzzleDate: string; status: ApiGameStatus; attemptsCount: number; completedAt: string | null }
+export type ArchiveItem = { id: string; mode: PlayableMode; variantKey: string | null; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null; puzzleDate: string; status: ApiGameStatus; attemptsCount: number; completedAt: string | null }
 export type ArchiveResponse = { items: ArchiveItem[]; nextCursor: string | null }
 
 export type LegacyImportResponse = {

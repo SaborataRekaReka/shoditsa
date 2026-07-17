@@ -15,6 +15,7 @@ try {
     .from(contentItemVersions).where(and(eq(contentItemVersions.revisionId, revision[0].id), eq(contentItemVersions.allowedInGame, true))).orderBy(asc(contentItemVersions.sortOrder))
   const byMode = new Map<TitleMode, Array<{ id: string; item: TitleItem }>>()
   for (const row of rows) {
+    if (row.mode === 'city') continue
     const list = byMode.get(row.mode) ?? []
     list.push({ id: row.id, item: row.payload as TitleItem }); byMode.set(row.mode, list)
   }

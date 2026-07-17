@@ -116,7 +116,9 @@ const insertContentVersions = async (tx: Parameters<Parameters<Database['transac
         popularityScore: Number.isFinite(item.popularityScore) ? item.popularityScore : 0,
         topRank: item.topRank ?? null,
         sortOrder,
-        allowedInGame: isAllowedInRegularGame(item),
+        allowedInGame: entry.mode === 'city'
+          ? item.allowedInGame !== false
+          : isAllowedInRegularGame(item as Parameters<typeof isAllowedInRegularGame>[0]),
         contentStatus: item.contentStatus ?? null,
         payload: item,
       }
