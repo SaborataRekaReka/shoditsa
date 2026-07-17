@@ -29,7 +29,7 @@ const sourceChecks = [
     required: [
       ['profile route', /type AppScreen[^\n]*'profile'/],
       ['profile screen', /function ProfileScreen\s*\(/],
-      ['footer render', /screen !== 'game'\s*&&\s*<AppFooter/],
+      ['footer render', /screen !== 'game'\s*&&\s*screen !== 'city-game'\s*&&\s*<AppFooter/],
     ],
   },
   {
