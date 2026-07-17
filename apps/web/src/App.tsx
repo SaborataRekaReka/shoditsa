@@ -21,7 +21,6 @@ import {
   Lock,
   LockOpen,
   Mail,
-  MapPin,
   Music2,
   NotebookText,
   Play,
@@ -59,6 +58,9 @@ import type { ContentReportReason } from './features/content-report/ContentRepor
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
 import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
+import { CityGameScreen, CityTitleScreen } from './features/cities/CityScreens'
+import { CITY_POOL_OPTIONS, cityDailySummary, type CityDailySummary, type CityPoolMode } from './features/cities/city-game'
+import { useCityData } from './features/cities/use-city-data'
 import {
   canUseAsArtistPortrait,
   canonicalMusicId,
@@ -266,8 +268,8 @@ type AssistHintView = {
   available: boolean
 }
 
-type AppScreen = 'hub' | 'title' | 'game' | 'rewatch' | 'review' | 'profile'
-const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'rewatch' || value === 'review' || value === 'profile'
+type AppScreen = 'hub' | 'title' | 'game' | 'city-title' | 'city-game' | 'rewatch' | 'review' | 'profile'
+const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'city-title' || value === 'city-game' || value === 'rewatch' || value === 'review' || value === 'profile'
 type AdminWindow = Window & {
   __SEANS_ADMIN_NEW_DAILY__?: (saltStep?: number | string) => number
   __SEANS_ADMIN_SET_DAILY_SALT__?: (saltValue?: number | string) => number
@@ -1258,8 +1260,9 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectCity, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, citySummary, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
+  onSelectCity: () => void
   onSelectPromo: () => void
   onRewatch: () => void
   onStats: () => void
@@ -1271,13 +1274,11 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
   activeSessionsCount: number
   games: SavedGame[]
   preferredMode: TitleMode
-  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; music: number | null; diagnosis: number | null }
+  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; city: number | null; music: number | null; diagnosis: number | null }
+  citySummary: CityDailySummary
   todayAttendance: DailyAttendance
   globalDailySalt: number
 }) {
-  const futureCategories = [
-    { title: 'Города', copy: 'Найдите город по его признакам', icon: <MapPin /> },
-  ]
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   const nonPromoGames = useMemo(() => games.filter((game) => !isPromoVariant(game.variantKey)), [games])
   const dailyState = useMemo(
@@ -1324,9 +1325,19 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
         <div className="category-heading"><span>ИГРЫ НА СЕГОДНЯ</span></div>
         <div className="category-grid category-grid--active">
           {CATEGORY_TICKET_CONFIG.map((config) => {
-            const activeGame = dailyState.activeGamesByMode[config.mode] ?? null
-            const completedGame = dailyState.finishedGamesByMode[config.mode] ?? null
-            const completed = todayAttendance.completedModes.includes(config.mode) || Boolean(completedGame)
+            if (config.mode === 'city') {
+              const handleCityClick = () => {
+                trackMetrikaGoal(citySummary.status === 'active' ? 'category_ticket_resume' : citySummary.status === 'completed' ? 'category_ticket_result' : 'category_ticket_play', {
+                  mode: 'city', status: citySummary.status, attempts: citySummary.attempts ?? 0, date: todayAttendance.date,
+                })
+                onSelectCity()
+              }
+              return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts.city} status={citySummary.status} attempts={citySummary.attempts} onClick={handleCityClick} />
+            }
+            const configMode = config.mode as TitleMode
+            const activeGame = dailyState.activeGamesByMode[configMode] ?? null
+            const completedGame = dailyState.finishedGamesByMode[configMode] ?? null
+            const completed = todayAttendance.completedModes.includes(configMode) || Boolean(completedGame)
             const status = activeGame ? 'active' : completed ? 'completed' : 'new'
             const savedGame = activeGame ?? completedGame
             const handleClick = () => {
@@ -1334,9 +1345,9 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
               trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGameAttemptCount(savedGame), date: todayAttendance.date })
               // Opening a category is always configuration first. Resuming a
               // saved session remains an explicit action in the resume list.
-              onSelect(config.mode)
+              onSelect(configMode)
             }
-            return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[config.mode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
+            return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
           {isAdmin && <CategoryTicket
             mode="game"
@@ -1353,16 +1364,6 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
               onSelectPromo()
             }}
           />}
-        </div>
-      </section>
-
-      <section className="category-section category-section--future">
-        <div className="category-heading"><span>Следующие темы</span><small>в разработке</small></div>
-        <div className="category-grid category-grid--future">
-          {futureCategories.map((category) => <article className="category-card category-card--locked" key={category.title}>
-            <span className="category-card__icon">{category.icon}</span><span className="category-card__lock"><Lock /> Скоро</span>
-            <h3>{category.title}</h3><p>{category.copy}</p>
-          </article>)}
         </div>
       </section>
     </main>
@@ -4030,9 +4031,10 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
   const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
   const nearestProgress = `${nearestAchievement.current}/${nearestAchievement.target}`
   const nearestProgressPercent = Math.min(100, Math.round(nearestAchievement.current / nearestAchievement.target * 100))
-  const nextDailyCategory = CATEGORY_TICKET_CONFIG.find((category) => category.mode === activeSession?.mode)
-    ?? CATEGORY_TICKET_CONFIG.find((category) => !today.completedModes.includes(category.mode))
-    ?? CATEGORY_TICKET_CONFIG[0]
+  const profileCategoryConfig = CATEGORY_TICKET_CONFIG.filter((category): category is typeof category & { mode: TitleMode } => category.mode !== 'city')
+  const nextDailyCategory = profileCategoryConfig.find((category) => category.mode === activeSession?.mode)
+    ?? profileCategoryConfig.find((category) => !today.completedModes.includes(category.mode))
+    ?? profileCategoryConfig[0]
   const openDailyMode = (mode: TitleMode) => onSelectMode(mode)
 
   return <>
@@ -4084,7 +4086,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
         <div className="profile-overview-layout">
           <section className="profile-section profile-route">
             <div className="profile-section__head"><div><span>Сегодня</span><h2>Ваш игровой маршрут</h2><p>Выберите любую категорию и начните первую серию</p></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
-            <div className="profile-route__grid">{CATEGORY_TICKET_CONFIG.map((category) => {
+            <div className="profile-route__grid">{profileCategoryConfig.map((category) => {
               const isComplete = today.completedModes.includes(category.mode)
               const isActive = activeSession?.mode === category.mode
               const Icon = category.icon
@@ -4316,6 +4318,8 @@ function GameApp() {
   const [packId, setPackId] = useState<string | null>(() => challenge?.mode === 'game' && isPromoVariant(challenge.packId) ? challenge.packId : null)
   const [period, setPeriod] = useState<PeriodKey>(() => challenge?.period ?? 'all')
   const [difficulty, setDifficulty] = useState<DifficultyKey>(() => challenge?.difficulty ?? 'medium')
+  const [cityMode, setCityMode] = useState<CityPoolMode>('capitals')
+  const [cityProgressVersion, setCityProgressVersion] = useState(0)
   const [date, setDate] = useState(() => challenge?.date ?? getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [freePlayLaunch, setFreePlayLaunch] = useState<number | null>(null)
@@ -4325,6 +4329,7 @@ function GameApp() {
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
   const { data, titleCounts: localTitleCounts, caseVignettes, loading, loadError, retryLoading, globalDailySalt, searchIndex } = useDataLoader(mode, !SERVER_RUNTIME)
+  const cityData = useCityData()
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const [economyVersion, setEconomyVersion] = useState(0)
   const transitionTimerRef = useRef<number | null>(null)
@@ -4339,7 +4344,11 @@ function GameApp() {
   const todayAttendance = useMemo<DailyAttendance>(() => SERVER_RUNTIME
     ? toLegacyDailyAttendance(serverRuntime.dashboard?.today, serverRuntime.meta?.moscowDate ?? getMoscowDate())
     : loadDailyAttendance(getMoscowDate()), [economyVersion, serverRuntime.dashboard, serverRuntime.meta])
-  const titleCounts = useMemo(() => SERVER_RUNTIME ? serverTitleCounts(serverRuntime.meta) : localTitleCounts, [localTitleCounts, serverRuntime.meta])
+  const titleCounts = useMemo(() => ({
+    ...(SERVER_RUNTIME ? serverTitleCounts(serverRuntime.meta) : localTitleCounts),
+    city: cityData.items.length || null,
+  }), [cityData.items.length, localTitleCounts, serverRuntime.meta])
+  const currentCitySummary = useMemo(() => cityDailySummary(getMoscowDate()), [cityProgressVersion])
   const freePlayLaunchesToday = useMemo(() => SERVER_RUNTIME
     ? serverRuntime.dashboard?.freePlayLaunchesToday ?? 0
     : loadFreePlayUsage(getMoscowDate()), [economyVersion, serverRuntime.dashboard])
@@ -4542,6 +4551,7 @@ function GameApp() {
       packId,
       period,
       difficulty,
+      cityMode,
       date,
       serverSessionId,
       gameBackTarget,
@@ -4564,14 +4574,14 @@ function GameApp() {
       return
     }
     window.history.replaceState(state, '')
-  }, [screen, mode, packId, period, difficulty, date, serverSessionId, gameBackTarget, reviewBackTarget])
+  }, [screen, mode, packId, period, difficulty, cityMode, date, serverSessionId, gameBackTarget, reviewBackTarget])
 
   useEffect(() => {
     document.body.dataset.seansScreen = screen
     if (lastTrackedScreenRef.current === screen) return
     lastTrackedScreenRef.current = screen
     trackMetrikaScreen(screen, {
-      mode,
+      mode: screen === 'city-title' || screen === 'city-game' ? 'city' : mode,
       period,
       date,
     })
@@ -4600,6 +4610,7 @@ function GameApp() {
       else setPackId(null)
       if (typeof event.state?.period === 'string' && event.state.period in PERIODS) setPeriod(event.state.period as PeriodKey)
       if (typeof event.state?.difficulty === 'string' && event.state.difficulty in DIFFICULTIES) setDifficulty(event.state.difficulty as DifficultyKey)
+      if (CITY_POOL_OPTIONS.some((entry) => entry.mode === event.state?.cityMode)) setCityMode(event.state.cityMode as CityPoolMode)
       if (typeof event.state?.date === 'string') setDate(event.state.date)
       if (typeof event.state?.serverSessionId === 'string' || event.state?.serverSessionId === null) setServerSessionId(event.state.serverSessionId)
       if (event.state?.gameBackTarget === 'title' || event.state?.gameBackTarget === 'rewatch' || event.state?.gameBackTarget === 'hub') setGameBackTarget(event.state.gameBackTarget)
@@ -4753,6 +4764,19 @@ function GameApp() {
     setModeSafe(nextMode)
     setDate(getMoscowDate())
     setScreen('title')
+    setModal(null)
+    window.scrollTo({ top: 0 })
+  }
+
+  const selectCityCategory = () => {
+    trackMetrikaGoal('select_mode', { mode: 'city' })
+    clearTransitionTimer()
+    setTransition('idle')
+    setFreePlayLaunch(null)
+    setFreePlayArmed(false)
+    if (currentCitySummary.mode) setCityMode(currentCitySummary.mode)
+    setDate(getMoscowDate())
+    setScreen('city-title')
     setModal(null)
     window.scrollTo({ top: 0 })
   }
@@ -5078,7 +5102,31 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectCity={selectCityCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} citySummary={currentCitySummary} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+
+    {screen === 'city-title' && <CityTitleScreen
+      items={cityData.items}
+      loading={cityData.loading}
+      error={cityData.error}
+      mode={cityMode}
+      date={getMoscowDate()}
+      onModeChange={setCityMode}
+      onPlay={() => { setDate(getMoscowDate()); setScreen('city-game'); window.scrollTo({ top: 0 }) }}
+      onBack={goHome}
+      navigation={{ onHome: goHome, onArchive: () => setScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }}
+    />}
+
+    {screen === 'city-game' && <CityGameScreen
+      items={cityData.items}
+      loading={cityData.loading}
+      error={cityData.error}
+      mode={cityMode}
+      date={date}
+      onBack={() => { setScreen('city-title'); window.scrollTo({ top: 0 }) }}
+      onChooseMode={() => { setScreen('city-title'); window.scrollTo({ top: 0 }) }}
+      onProgress={() => setCityProgressVersion((version) => version + 1)}
+      navigation={{ onHome: goHome, onArchive: () => setScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }}
+    />}
 
     {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
@@ -5134,7 +5182,7 @@ function GameApp() {
           onConfigureMode={() => moveToScreen('title')}
             />)}
 
-    {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
+    {screen !== 'game' && screen !== 'city-game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} difficulty={mode === 'music' ? difficulty : undefined} /></Modal>}

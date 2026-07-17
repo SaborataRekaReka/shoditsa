@@ -27,6 +27,11 @@ const LIBRARIES = [
     idKey: 'id',
   },
   {
+    key: 'cities',
+    sourceFile: 'cities.generated.json',
+    idKey: 'id',
+  },
+  {
     key: 'diagnoses',
     sourceFile: 'diagnoses.generated.json',
     idKey: 'id',

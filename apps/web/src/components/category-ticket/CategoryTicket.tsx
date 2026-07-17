@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react'
 import { ChevronRight } from 'lucide-react'
-import type { TitleMode } from '../../types'
 import type { CategoryTicketConfig } from './category-ticket.config'
 import './CategoryTicket.css'
 

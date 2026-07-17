@@ -63,5 +63,13 @@
   "musicCount": 409,
   "musicSource": "data/music/normalized/music_artists_enriched_first500_merged_retry_batched.resolved.json",
   "musicGeneratedAt": "2026-07-11T14:22:08.647Z",
-  "musicExcludedPendingReview": 0
+  "musicExcludedPendingReview": 0,
+  "cityCount": 980,
+  "citySource": "data/cities/raw/v2_final.json",
+  "cityGeneratedAt": "2026-07-17T20:14:51.090Z",
+  "cityModes": {
+    "capitals": 145,
+    "capitalsAndPopular": 347,
+    "all": 980
+  }
 }

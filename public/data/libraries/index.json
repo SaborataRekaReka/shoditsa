@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T12:28:40.714Z",
+  "generatedAt": "2026-07-17T20:14:51.090Z",
   "root": "public/data/libraries",
   "libraries": [
     {
@@ -36,6 +36,13 @@
       "itemsFile": "public/data/libraries/diagnoses/items.json",
       "searchIndexFile": "public/data/libraries/diagnoses/search-index.json",
       "count": 120
+    },
+    {
+      "key": "cities",
+      "source": "data/cities/raw/v2_final.json",
+      "itemsFile": "public/data/libraries/cities/items.json",
+      "searchIndexFile": "public/data/libraries/cities/search-index.json",
+      "count": 980
     }
   ]
 }
