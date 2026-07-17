@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, CircleHelp, LayoutDashboard, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, CircleHelp, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { api } from '../../api/client'
 import { EconomyView } from '../../features/economy/EconomyView'
@@ -53,15 +53,10 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profi
   const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
   const profileLabel = session && !session.isAnonymous
     ? session.name || session.email?.split('@')[0] || 'Профиль'
-    : 'Войти'
+    : 'Гость'
   const signedIn = Boolean(session && !session.isAnonymous)
   const openProfile = (tab: ProfileMenuTab = 'overview') => {
     trackMetrikaGoal('open_profile')
-    if (SERVER_RUNTIME && !signedIn) {
-      const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
-      window.location.assign(returnUrl === '/' ? '/login' : `/login?returnUrl=${encodeURIComponent(returnUrl)}`)
-      return
-    }
     setProfileMenuOpen(false)
     window.dispatchEvent(new CustomEvent(PROFILE_OPEN_EVENT, { detail: { tab } }))
   }
@@ -107,17 +102,24 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profi
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
           {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
           <div className="header-profile-menu" ref={profileMenuRef}>
-            <button onClick={() => signedIn ? setProfileMenuOpen((value) => !value) : openProfile()} className={`header-profile ${signedIn ? 'is-signed-in' : ''} ${profileActive ? 'is-active' : ''}`} aria-label={signedIn ? 'Открыть меню профиля' : 'Войти'} title={signedIn ? 'Меню профиля' : 'Войти'} aria-haspopup={signedIn ? 'menu' : undefined} aria-expanded={signedIn ? profileMenuOpen : undefined}>
-              <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong>{signedIn && <ChevronDown className="header-profile__chevron" />}
+            <button onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label="Открыть меню профиля" title="Меню профиля" aria-haspopup="menu" aria-expanded={profileMenuOpen}>
+              <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
             </button>
-            {signedIn && profileMenuOpen && <div className="header-profile-dropdown" role="menu">
-              <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{session?.name || 'Игрок'}</strong><small>{session?.email}</small></div></div>
-              <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>Обзор профиля</span></button>
+            {profileMenuOpen && <div className="header-profile-dropdown" role="menu">
+              <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{signedIn ? session?.name || 'Игрок' : 'Гость кинозала'}</strong><small>{signedIn ? session?.email : 'Прогресс хранится в этом браузере'}</small></div></div>
+              <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>{signedIn ? 'Обзор профиля' : 'Гостевой кабинет'}</span></button>
               <button type="button" role="menuitem" onClick={() => openProfile('stats')}><BarChart3 /><span>Статистика</span></button>
               <button type="button" role="menuitem" onClick={() => openProfile('achievements')}><Trophy /><span>Достижения</span></button>
-              <button type="button" role="menuitem" onClick={() => openProfile('settings')}><Settings /><span>Настройки</span></button>
-              {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button type="button" role="menuitem" onClick={() => window.location.assign('/admin')}><ShieldCheck /><span>Админ-панель</span></button>}
-              <button className="header-profile-dropdown__signout" type="button" role="menuitem" disabled={signingOut} onClick={() => void signOut()}><LogOut /><span>{signingOut ? 'Выходим…' : 'Выйти'}</span></button>
+              {signedIn
+                ? <>
+                  <button type="button" role="menuitem" onClick={() => openProfile('settings')}><Settings /><span>Настройки</span></button>
+                  {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button type="button" role="menuitem" onClick={() => window.location.assign('/admin')}><ShieldCheck /><span>Админ-панель</span></button>}
+                  <button className="header-profile-dropdown__signout" type="button" role="menuitem" disabled={signingOut} onClick={() => void signOut()}><LogOut /><span>{signingOut ? 'Выходим…' : 'Выйти'}</span></button>
+                </>
+                : <>
+                  <button className="header-profile-dropdown__account" type="button" role="menuitem" onClick={() => window.location.assign('/register')}><UserPlus /><span>Сохранить прогресс</span></button>
+                  <button type="button" role="menuitem" onClick={() => window.location.assign('/login')}><LogIn /><span>Войти</span></button>
+                </>}
             </div>}
           </div>
         </nav>

@@ -139,6 +139,7 @@
   white-space: nowrap;
 }
 .header-profile.is-signed-in .header-profile__avatar { background: var(--color-primary-soft); color: var(--color-primary); }
+.header-profile.is-guest .header-profile__avatar { color: var(--color-accent); }
 .header-profile__chevron { width: 13px !important; height: 13px !important; color: var(--color-muted); transition: transform .18s ease; }
 .header-profile[aria-expanded='true'] .header-profile__chevron { transform: rotate(180deg); }
 .header-profile-dropdown {
@@ -167,6 +168,8 @@
 .app-header nav .header-profile-dropdown > button span { font-size: 12px; font-weight: 700; }
 .app-header nav .header-profile-dropdown > .header-profile-dropdown__signout { margin-top: 6px; border-top: 1px solid var(--color-line); border-radius: 0 0 9px 9px; color: #e89a82; }
 .app-header nav .header-profile-dropdown > .header-profile-dropdown__signout svg { color: #e89a82; }
+.app-header nav .header-profile-dropdown > .header-profile-dropdown__account { margin-top: 6px; border-top: 1px solid var(--color-line); border-radius: 0; color: var(--color-primary); }
+.app-header nav .header-profile-dropdown > .header-profile-dropdown__account svg { color: var(--color-primary); }
 
 .screen-back-row {
   width: 100%;
