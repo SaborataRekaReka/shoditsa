@@ -1842,7 +1842,7 @@
     "titleOriginal": "Taipei",
     "country": "Тайвань",
     "countryFlagUrl": "./images/cities/flags/tw.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Китайский"
     ],
@@ -2207,7 +2207,7 @@
     "titleOriginal": "Hong Kong",
     "country": "САР Гонконг, Китай",
     "countryFlagUrl": "./images/cities/flags/hk.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Нет данных"
     ],
@@ -6142,7 +6142,7 @@
     "titleOriginal": "Hsinchu",
     "country": "Тайвань",
     "countryFlagUrl": "./images/cities/flags/tw.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Китайский"
     ],
@@ -6812,7 +6812,7 @@
     "titleOriginal": "Taichung",
     "country": "Тайвань",
     "countryFlagUrl": "./images/cities/flags/tw.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Китайский"
     ],
@@ -7051,7 +7051,7 @@
     "titleOriginal": "Kaohsiung",
     "country": "Тайвань",
     "countryFlagUrl": "./images/cities/flags/tw.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Китайский"
     ],
@@ -7424,7 +7424,7 @@
     "titleOriginal": "Macau",
     "country": "Макао, САР, Китай",
     "countryFlagUrl": "./images/cities/flags/mo.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Нет данных"
     ],
@@ -8231,7 +8231,7 @@
     "titleOriginal": "Tainan",
     "country": "Тайвань",
     "countryFlagUrl": "./images/cities/flags/tw.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Китайский"
     ],
@@ -9835,7 +9835,7 @@
     "titleOriginal": "Suwa",
     "country": "Фиджи",
     "countryFlagUrl": "./images/cities/flags/fj.svg",
-    "continent": "",
+    "continent": "Океания",
     "languages": [
       "Английский",
       "Фиджийский",
@@ -11480,7 +11480,7 @@
     "titleOriginal": "Chiayi City",
     "country": "Тайвань",
     "countryFlagUrl": "./images/cities/flags/tw.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Китайский"
     ],
@@ -20871,7 +20871,7 @@
     "titleOriginal": "Vientiane",
     "country": "Лаосская НДР",
     "countryFlagUrl": "./images/cities/flags/la.svg",
-    "continent": "",
+    "continent": "Азия",
     "languages": [
       "Нет данных"
     ],
@@ -22883,7 +22883,7 @@
     "titleOriginal": "Abidjan",
     "country": "Берег Слоновой Кости",
     "countryFlagUrl": "./images/cities/flags/ci.svg",
-    "continent": "",
+    "continent": "Африка",
     "languages": [
       "Нет данных"
     ],
@@ -23462,7 +23462,7 @@
     "titleOriginal": "Kinshasa",
     "country": "Демократическая Республика Конго",
     "countryFlagUrl": "./images/cities/flags/cd.svg",
-    "continent": "",
+    "continent": "Африка",
     "languages": [
       "Нет данных"
     ],
@@ -24736,7 +24736,7 @@
     "titleOriginal": "Yamoussoukro",
     "country": "Берег Слоновой Кости",
     "countryFlagUrl": "./images/cities/flags/ci.svg",
-    "continent": "",
+    "continent": "Африка",
     "languages": [
       "Нет данных"
     ],
@@ -29305,7 +29305,7 @@
     "titleOriginal": "Lubumbashi",
     "country": "Демократическая Республика Конго",
     "countryFlagUrl": "./images/cities/flags/cd.svg",
-    "continent": "",
+    "continent": "Африка",
     "languages": [
       "Нет данных"
     ],
@@ -29705,7 +29705,7 @@
     "titleOriginal": "Mbuji-Mayi",
     "country": "Демократическая Республика Конго",
     "countryFlagUrl": "./images/cities/flags/cd.svg",
-    "continent": "",
+    "continent": "Африка",
     "languages": [
       "Нет данных"
     ],

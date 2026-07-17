@@ -94,12 +94,15 @@ const prepare = async () => {
   const releaseItems = JSON.parse(await readFile(join(config.contentReleaseRoot, 'cities', 'items.json'), 'utf8')) as Array<Record<string, unknown>>
   if (!Array.isArray(releaseItems) || releaseItems.length !== 980) throw new Error(`Expected 980 bundled cities, found ${releaseItems.length}`)
   const workspace = await getOrCreateWorkspace(db, admin)
-  const existingCount = (await db.select({ count: sql<number>`count(*)::int` }).from(contentWorkspaceChanges)
-    .where(eq(contentWorkspaceChanges.workspaceId, workspace.id)))[0]?.count ?? 0
-  if (existingCount) throw new Error(`Workspace ${workspace.id} already contains ${existingCount} unrelated changes`)
+  const existingChanges = await db.select({ itemId: contentWorkspaceChanges.itemId, mode: contentWorkspaceChanges.mode, source: contentWorkspaceChanges.source, reason: contentWorkspaceChanges.reason })
+    .from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id))
+  const unrelated = existingChanges.filter((change) => change.mode !== 'city' || change.source !== 'import' || change.reason !== 'Import bundled city library')
+  if (unrelated.length) throw new Error(`Workspace ${workspace.id} contains ${unrelated.length} unrelated changes`)
+  const importedIds = new Set(existingChanges.map((change) => change.itemId))
   for (const payload of releaseItems) {
     const itemId = text(payload.id)
     if (!itemId) throw new Error('Bundled city has no id')
+    if (importedIds.has(itemId)) continue
     await saveWorkspaceItem(db, admin, itemId, {
       mode: 'city', payload: { ...payload, id: itemId, mode: 'city' }, expectedVersion: 0, source: 'import', reason: 'Import bundled city library',
     }, requestId)
