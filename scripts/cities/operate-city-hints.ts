@@ -24,7 +24,7 @@ import {
 } from '../../apps/api/src/modules/admin/content-service.js'
 import { loadIntegrationEnvironment } from '../../apps/api/src/modules/admin/integration-secrets.js'
 
-const ACTIONS = ['prepare', 'enqueue', 'status', 'retry', 'publish'] as const
+const ACTIONS = ['prepare', 'probe', 'enqueue', 'status', 'retry', 'publish'] as const
 type Action = typeof ACTIONS[number]
 
 const action = process.argv[2] as Action | undefined
@@ -114,33 +114,34 @@ const prepare = async () => {
   return { skipped: false, revisionId: activated.revision.id, builtRevisionId: built.revisionId, cityCount: next.cards.length }
 }
 
-const enqueue = async () => {
+const enqueue = async (probe = false) => {
   const admin = await actor()
   const integrations = await loadIntegrationEnvironment(db, config)
   if (!integrations.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured in production integrations')
   const { cards } = await activeCityCards()
   if (cards.length !== 980) throw new Error(`Expected 980 active cities, found ${cards.length}`)
+  const operation = probe ? 'city-hints-nano-probe-v2' : 'city-hints-nano-v2'
   const existing = await db.select({ id: pipelineRuns.id, status: pipelineRuns.status }).from(pipelineRuns)
-    .where(and(eq(pipelineRuns.pipelineKey, 'normalization'), sql`${pipelineRuns.inputDefinitionJson}->>'operation' = 'city-hints-v1'`))
+    .where(and(eq(pipelineRuns.pipelineKey, 'normalization'), sql`${pipelineRuns.inputDefinitionJson}->>'operation' = ${operation}`))
     .orderBy(sql`${pipelineRuns.createdAt} desc`).limit(1)
   if (existing[0] && !['failed', 'cancelled', 'published', 'partially_published'].includes(existing[0].status)) {
     return { skipped: true, runId: existing[0].id, status: existing[0].status }
   }
-  const itemIds = cards.map((card) => card.itemId)
+  const itemIds = (probe ? cards.slice(0, 1) : cards).map((card) => card.itemId)
   const run = (await db.insert(pipelineRuns).values({
-    pipelineKey: 'normalization', pipelineVersion: 'city-hints-v1', status: 'queued', createdBy: admin.id, itemsTotal: itemIds.length,
+    pipelineKey: 'normalization', pipelineVersion: operation, status: 'queued', createdBy: admin.id, itemsTotal: itemIds.length,
     inputDefinitionJson: {
-      operation: 'city-hints-v1', scenario: 'normalize', mode: 'city', field: 'plotHint', prompt: PROMPT,
+      operation, scenario: 'normalize', mode: 'city', field: 'plotHint', prompt: PROMPT,
       contextFields: ['country', 'continent', 'languages', 'capital', 'popular', 'population', 'timezone'],
       availableFields: [], scope: 'all', query: '', includeTagIds: [], excludeTagIds: [], tagMatch: 'all', itemIds,
     },
-    settingsJson: { maxItems: itemIds.length, model: 'gpt-5-mini', webSearch: true, concurrency: Math.min(6, config.normalizationConcurrency) },
-    estimatedCost: String((itemIds.length * 0.02).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+    settingsJson: { maxItems: itemIds.length, model: 'gpt-5-nano', webSearch: false, concurrency: probe ? 1 : Math.min(6, config.normalizationConcurrency) },
+    estimatedCost: String((itemIds.length * 0.001).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
   }).returning())[0]
   const job = (await db.insert(backgroundJobs).values({
-    type: 'normalization_pipeline', idempotencyKey: `city-hints-v1:${run.id}`, createdBy: admin.id, pipelineRunId: run.id, payload: { runId: run.id },
+    type: 'normalization_pipeline', idempotencyKey: `${operation}:${run.id}`, createdBy: admin.id, pipelineRunId: run.id, payload: { runId: run.id },
   }).returning())[0]
-  return { skipped: false, runId: run.id, jobId: job.id, items: itemIds.length, estimatedUpperBoundUsd: 19.6 }
+  return { skipped: false, runId: run.id, jobId: job.id, items: itemIds.length, model: 'gpt-5-nano', webSearch: false, estimatedUpperBoundUsd: itemIds.length * 0.001 }
 }
 
 const status = async () => {
@@ -224,7 +225,8 @@ const publish = async () => {
 
 try {
   const result = action === 'prepare' ? await prepare()
-    : action === 'enqueue' ? await enqueue()
+    : action === 'probe' ? await enqueue(true)
+      : action === 'enqueue' ? await enqueue()
       : action === 'status' ? await status()
         : action === 'retry' ? await retry()
           : await publish()

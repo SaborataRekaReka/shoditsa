@@ -9,6 +9,13 @@ describe('music pipeline OpenAI cost accounting', () => {
     })?.costUsd).toBe(0.425)
   })
 
+  it('uses the lower GPT-5 nano token rates', () => {
+    expect(calculateResponseCost({
+      responseId: 'resp_nano', model: 'gpt-5-nano',
+      usage: { input_tokens: 1_000_000, input_tokens_details: { cached_tokens: 200_000 }, output_tokens: 100_000 },
+    })?.costUsd).toBe(0.081)
+  })
+
   it('deduplicates one discovery response copied into several candidates', () => {
     const discovery = { responseId: 'resp_discovery', model: 'gpt-5-mini', webSearchCalls: 1, usage: { input_tokens: 1_000, output_tokens: 500 } }
     const result = collectMusicRecordUsage([

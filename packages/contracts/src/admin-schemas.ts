@@ -260,7 +260,7 @@ const NormalizationPipelineRequestProperties = {
   excludeTagIds: Type.Optional(Type.Array(UuidSchema, { maxItems: 30, uniqueItems: true })),
   tagMatch: Type.Optional(Type.Union([Type.Literal('all'), Type.Literal('any')])),
   maxItems: Type.Integer({ minimum: 1, maximum: 500, default: 100 }),
-  model: Type.Optional(Type.Literal('gpt-5-mini')),
+  model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini'), Type.Literal('gpt-5-nano')])),
   webSearch: Type.Optional(Type.Boolean()),
 }
 

@@ -15,6 +15,7 @@ const number = (value: unknown) => Number.isFinite(Number(value)) ? Math.max(0, 
 
 export const OPENAI_PRICING_USD = Object.freeze({
   'gpt-5-mini': { inputPerMillion: 0.25, cachedInputPerMillion: 0.025, outputPerMillion: 2, webSearchPerCall: 0.01 },
+  'gpt-5-nano': { inputPerMillion: 0.05, cachedInputPerMillion: 0.005, outputPerMillion: 0.4, webSearchPerCall: 0.01 },
 })
 
 export const calculateResponseCost = (value: { model?: unknown; usage?: unknown; webSearchCalls?: unknown; responseId?: unknown }): OpenAiUsageEntry | null => {
