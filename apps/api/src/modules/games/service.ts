@@ -688,6 +688,7 @@ export const startGame = async (db: Database, userId: string, input: {
     puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: 1,
   }).onConflictDoNothing().returning()
   const session = insertedSession[0] ?? (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.challengeId, challenge[0].id))).limit(1))[0]
+  if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   return buildSessionSnapshot(tx, session)
 })
 
