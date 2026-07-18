@@ -14,4 +14,9 @@ if (!/(?:src|href)="\/assets\//.test(indexHtml) || /(?:src|href)="\.\/assets\//.
   throw new Error('Production index must use root-relative /assets/ URLs for SPA deep-link refreshes')
 }
 
+const buildMeta = `<meta name="shoditsa-build-sha" content="${commitSha}">`
+const versionedIndexHtml = indexHtml.replace('</head>', `  ${buildMeta}\n</head>`)
+if (versionedIndexHtml === indexHtml) throw new Error('Production index is missing </head> for the build marker')
+
+await writeFile(resolve('dist/index.html'), versionedIndexHtml, 'utf8')
 await writeFile(resolve('dist/build-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')

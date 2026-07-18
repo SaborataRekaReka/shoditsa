@@ -18,6 +18,9 @@ for (const marker of ['profile', 'footer', 'serverAuthoritative', 'noPublicAnswe
 
 const html = await fetchText(`/?smoke=${Date.now()}`)
 if (html.includes('<script src="/sdk.js"></script>')) throw new Error('Server production HTML unexpectedly loads the Yandex Games SDK')
+if (!html.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) {
+  throw new Error('Production HTML build marker does not match expected main SHA')
+}
 
 const meta = JSON.parse(await fetchText(`/api/v1/meta?smoke=${Date.now()}`))
 if (meta.buildSha !== expectedSha) throw new Error(`Production API SHA ${meta.buildSha ?? 'missing'} does not match expected main SHA ${expectedSha}`)

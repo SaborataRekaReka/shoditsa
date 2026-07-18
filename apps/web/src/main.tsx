@@ -8,12 +8,14 @@ import { AppErrorBoundary } from './components/app-shell/AppErrorBoundary'
 import './styles.css'
 import { initClientEvents } from './app/client-events'
 import { applyRuntimeSeo } from './app/seo'
+import { initReleaseUpdateWatcher } from './app/release-update'
 
 markAppBootStart()
 initMetrikaDataLayer()
 initWebVitalsObservers()
 initClientEvents()
 applyRuntimeSeo()
+initReleaseUpdateWatcher()
 
 // Initialize Yandex Games SDK before mounting the app.
 // YaGames is injected globally by /sdk.js loaded in index.html.
