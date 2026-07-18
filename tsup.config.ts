@@ -9,6 +9,8 @@ export default defineConfig({
     'city-hints': 'scripts/cities/operate-city-hints.ts',
     'city-facts': 'scripts/cities/operate-city-facts.ts',
     'city-facts-web': 'scripts/cities/review-city-facts.ts',
+    'city-facts-final': 'scripts/cities/consolidate-city-facts.ts',
+    'city-content-finalize': 'scripts/cities/finalize-city-content.ts',
   },
   format: ['esm'], platform: 'node', target: 'node24', outDir: 'apps/api/dist', clean: true,
 })

@@ -27,6 +27,19 @@ const invalidCapitalPairs = new Set([
   'San Jose|США',
   'Georgetown|Малайзия',
 ])
+// Eight source rows combine the Russian identity/country of one city with
+// English-source fields from another. Preserve their stable IDs, but repair
+// the corrupted identity fields at the normalization boundary.
+const sourceCorrections = new Map([
+  ['city:san-jose-2', { titleOriginal: 'San José', population: 342188, timezone: 'GMT-06:00', alternativeTitles: ['Chepe', 'San Jose'] }],
+  ['city:portland-2', { titleOriginal: 'Bridgetown', population: 110000, timezone: 'GMT-04:00', alternativeTitles: [], cityFlagUrl: null, coatOfArmsUrl: null }],
+  ['city:bordeaux-2', { titleOriginal: 'Porto', population: 231800, timezone: 'GMT+00:00', alternativeTitles: ['Oporto'] }],
+  ['city:jerusalem-2', { titleOriginal: 'Salem', population: 917414, timezone: 'GMT+05:30', alternativeTitles: [] }],
+  ['city:tijuana', { titleOriginal: 'Zaragoza', population: 682513, timezone: 'GMT+01:00', alternativeTitles: ['Saragossa', 'Saragosa'] }],
+  ['city:dayton-2', { titleOriginal: 'Venice', population: 249466, timezone: 'GMT+01:00', alternativeTitles: ['Venezia', 'Venise'] }],
+  ['city:changchun', { titleOriginal: 'Cancún', population: 888797, timezone: 'GMT-05:00', alternativeTitles: ['Cancun'] }],
+  ['city:chattogram', { titleOriginal: 'Islamabad–Rawalpindi', population: 3113056, timezone: 'GMT+05:00', alternativeTitles: ['Islamabad-Rawalpindi', 'Twin Cities'] }],
+])
 const continentByCountry = new Map([
   ['Тайвань', 'Азия'],
   ['САР Гонконг, Китай', 'Азия'],
@@ -64,7 +77,7 @@ const items = parsed.map((entry, index) => {
   while (seenIds.has(id)) id = `${baseId}-${suffix++}`
   seenIds.add(id)
 
-  return {
+  const item = {
     id,
     titleRu,
     titleOriginal,
@@ -90,13 +103,22 @@ const items = parsed.map((entry, index) => {
     // correct the normalized game data here.
     capital: yes(entry['Столица']) && !invalidCapitalPairs.has(`${titleOriginal}|${country}`),
     plotHint: '',
+    facts: [],
   }
+  return Object.assign(item, sourceCorrections.get(id))
 })
 
 try {
   const previousItems = JSON.parse(await readFile(clientTarget, 'utf8'))
-  const previousHintById = new Map(previousItems.map((item) => [item.id, text(item.plotHint)]))
-  for (const item of items) item.plotHint = previousHintById.get(item.id) ?? ''
+  const previousContentById = new Map(previousItems.map((item) => [item.id, {
+    plotHint: text(item.plotHint),
+    facts: Array.isArray(item.facts) ? item.facts.map(text).filter(Boolean) : [],
+  }]))
+  for (const item of items) {
+    const previous = previousContentById.get(item.id)
+    item.plotHint = previous?.plotHint ?? ''
+    item.facts = previous?.facts ?? []
+  }
 } catch {}
 
 const libraryItems = items.map((item) => ({
@@ -105,7 +127,7 @@ const libraryItems = items.map((item) => ({
   year: null,
   endYear: null,
   genres: [],
-  facts: [],
+  facts: item.facts,
   countries: [item.country],
   posterUrl: item.coatOfArmsUrl ?? item.cityFlagUrl ?? item.countryFlagUrl,
   headerUrl: null,
@@ -149,6 +171,7 @@ const source = {
   withCityFlag: items.filter((item) => item.cityFlagUrl).length,
   withCoatOfArms: items.filter((item) => item.coatOfArmsUrl).length,
   withHint: items.filter((item) => item.plotHint).length,
+  withFacts: items.filter((item) => item.facts.length).length,
 }
 
 await mkdir(path.dirname(rawTarget), { recursive: true })

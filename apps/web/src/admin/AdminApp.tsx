@@ -2981,12 +2981,18 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     : Math.min(100, Math.round(Number(selectedRun?.itemsProcessed ?? 0) / Math.max(1, Number(selectedRun?.itemsTotal ?? 1)) * 100))
   const stale = Boolean(events.stale)
   const runStatus = String(selectedRun?.status ?? '')
+  const selectedRunInput = record(selectedRun?.inputDefinitionJson)
+  const selectedRunScenario = String(selectedRunInput.scenario ?? '')
+  const isGenericNormalizationRun = selectedRun?.pipelineKey !== 'normalization' || selectedRunScenario === 'normalize'
+  const supportsGenericContinue = selectedRun?.pipelineKey === 'normalization'
+    ? selectedRunScenario === 'normalize'
+    : ['music', 'movie', 'anime'].includes(String(selectedRun?.pipelineKey)) && selectedRunScenario === 'manual'
   const failedItemCount = Number(statsByStatus.failed ?? 0)
-  const canRetryFailedItems = failedItemCount > 0 && !['queued', 'running'].includes(runStatus)
+  const canRetryFailedItems = isGenericNormalizationRun && failedItemCount > 0 && !['queued', 'running'].includes(runStatus)
   const totalItems = Number(selectedRun?.itemsTotal ?? 0)
   const processedItems = Number(selectedRun?.itemsProcessed ?? 0)
   const hasRemainingItems = totalItems > 0 && processedItems < totalItems
-  const canContinueRun = hasRemainingItems && (
+  const canContinueRun = supportsGenericContinue && hasRemainingItems && (
     (['queued', 'running'].includes(runStatus) && stale)
     || ['failed', 'partially_failed', 'cancelled'].includes(runStatus)
   )

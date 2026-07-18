@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cityPool, compareCities, dailyCity, searchCities, type CityItem } from './city-game'
+import { availableCityHintRounds, cityAssistHintOptions, cityPool, compareCities, dailyCity, searchCities, type CityItem } from './city-game'
 
 const city = (overrides: Partial<CityItem>): CityItem => ({
   id: 'city:test', titleRu: 'Тест', titleOriginal: 'Test', country: 'Страна', countryFlagUrl: null,
@@ -36,5 +36,29 @@ describe('city game', () => {
     const hints = compareCities(guess, answer)
     expect(hints.find((hint) => hint.key === 'population')?.direction).toBe('up')
     expect(hints.find((hint) => hint.key === 'economy')?.direction).toBe('up')
+  })
+
+  it('unlocks independent hint choices after attempts five and eight', () => {
+    expect(availableCityHintRounds(4, [])).toEqual([])
+    expect(availableCityHintRounds(5, [])).toEqual([5])
+    expect(availableCityHintRounds(8, [{ checkpoint: 5, key: 'description', value: 'Описание' }])).toEqual([8])
+  })
+
+  it('offers description, fact and only information not revealed by attempts', () => {
+    const answer = city({
+      id: 'city:answer',
+      plotHint: 'Город стоит у широкой реки и известен выразительной архитектурой.',
+      facts: ['Здесь сохранился необычный инженерный памятник начала прошлого века.'],
+      continent: 'Европа',
+      languages: ['Русский'],
+    })
+    const matchingContinent = city({ id: 'city:guess', continent: 'Европа', languages: ['Другой язык'] })
+    const options = cityAssistHintOptions(answer, [matchingContinent], [])
+
+    expect(options.map((option) => option.key)).toEqual(['description', 'fact', 'info'])
+    expect(options.find((option) => option.key === 'info')?.sourceKey).toBe('languages')
+    expect(cityAssistHintOptions(answer, [matchingContinent], [
+      { checkpoint: 5, key: 'fact', value: answer.facts![0] },
+    ]).some((option) => option.key === 'fact')).toBe(false)
   })
 })

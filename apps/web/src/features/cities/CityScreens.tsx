@@ -16,6 +16,7 @@ import {
   Search,
   Sparkles,
   Ticket,
+  X,
 } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { HorizontalScrollLane } from '../../components/horizontal-scroll-lane/HorizontalScrollLane'
@@ -23,6 +24,8 @@ import { GameResult } from '../result/GameResult'
 import { CityRankProfile } from './CityRankProfile'
 import {
   CITY_POOL_OPTIONS,
+  availableCityHintRounds,
+  cityAssistHintOptions,
   cityPool,
   compareCities,
   dailyCity,
@@ -30,6 +33,9 @@ import {
   saveCitySession,
   searchCities,
   type CityHint,
+  type CityAssistHintChoice,
+  type CityAssistHintKey,
+  type CityHintCheckpoint,
   type CityItem,
   type CityPoolMode,
   type CitySessionStatus,
@@ -315,6 +321,10 @@ export function CityGameScreen({
 }) {
   const answer = useMemo(() => dailyCity(items, mode, date), [date, items, mode])
   const [attemptIds, setAttemptIds] = useState<string[]>([])
+  const [hintChoices, setHintChoices] = useState<CityAssistHintChoice[]>([])
+  const [dismissedHintRounds, setDismissedHintRounds] = useState<CityHintCheckpoint[]>([])
+  const [hintModalRound, setHintModalRound] = useState<CityHintCheckpoint | null>(null)
+  const [revealedHint, setRevealedHint] = useState<CityAssistHintChoice | null>(null)
   const [status, setStatus] = useState<CitySessionStatus>('playing')
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState('')
@@ -325,6 +335,14 @@ export function CityGameScreen({
   const searchPickerRef = useRef<HTMLDivElement>(null)
   const byId = useMemo(() => new Map(items.map((item) => [item.id, item])), [items])
   const attempts = useMemo(() => attemptIds.map((id) => byId.get(id)).filter((item): item is CityItem => Boolean(item)), [attemptIds, byId])
+  const hintOptions = useMemo(() => answer ? cityAssistHintOptions(answer, attempts, hintChoices) : [], [answer, attempts, hintChoices])
+  const availableHintRounds = useMemo(() => availableCityHintRounds(attemptIds.length, hintChoices), [attemptIds.length, hintChoices])
+  const nextUndismissedHintRound = useMemo(
+    () => availableHintRounds.find((round) => !dismissedHintRounds.includes(round)) ?? null,
+    [availableHintRounds, dismissedHintRounds],
+  )
+  const availableHintRound = availableHintRounds[0] ?? null
+  const canUseHint = status === 'playing' && hintOptions.length > 0 && availableHintRound !== null
   const used = useMemo(() => new Set(attemptIds), [attemptIds])
   const suggestions = useMemo(() => searchCities(items, query, used), [items, query, used])
   const latestMatchCount = useMemo(() => {
@@ -347,16 +365,54 @@ export function CityGameScreen({
     return tags
   }, [answer, attempts])
 
+  const dismissHintModal = () => {
+    if (revealedHint) {
+      setRevealedHint(null)
+      setHintModalRound(null)
+      return
+    }
+    if (hintModalRound && answer) {
+      const nextDismissed = dismissedHintRounds.includes(hintModalRound)
+        ? dismissedHintRounds
+        : [...dismissedHintRounds, hintModalRound]
+      setDismissedHintRounds(nextDismissed)
+      saveCitySession({ mode, date, answerId: answer.id, attemptIds, hintChoices, dismissedHintRounds: nextDismissed, status, updatedAt: Date.now() })
+    }
+    setHintModalRound(null)
+  }
+
+  const revealCityHint = (key: CityAssistHintKey) => {
+    if (!answer || !hintModalRound) return
+    const option = hintOptions.find((entry) => entry.key === key)
+    if (!option) return
+    const choice: CityAssistHintChoice = {
+      checkpoint: hintModalRound,
+      key: option.key,
+      value: option.value,
+      ...(option.sourceKey ? { sourceKey: option.sourceKey } : {}),
+    }
+    const nextChoices = [...hintChoices, choice]
+    setHintChoices(nextChoices)
+    setRevealedHint(choice)
+    saveCitySession({ mode, date, answerId: answer.id, attemptIds, hintChoices: nextChoices, dismissedHintRounds, status, updatedAt: Date.now() })
+  }
+
   useEffect(() => {
     if (!answer) return
     const saved = loadCitySession(mode, date)
     if (saved?.answerId === answer.id) {
       setAttemptIds(saved.attemptIds.filter((id) => byId.has(id)))
+      setHintChoices(saved.hintChoices)
+      setDismissedHintRounds(saved.dismissedHintRounds)
       setStatus(saved.status)
     } else {
       setAttemptIds([])
+      setHintChoices([])
+      setDismissedHintRounds([])
       setStatus('playing')
     }
+    setHintModalRound(null)
+    setRevealedHint(null)
     setQuery('')
     setMessage('')
     setIsSearchDropdownOpen(false)
@@ -373,12 +429,23 @@ export function CityGameScreen({
   }, [isSearchDropdownOpen])
 
   useEffect(() => {
+    if (revealedHint || status !== 'playing') return
+    if (!canUseHint) {
+      if (hintModalRound) setHintModalRound(null)
+      return
+    }
+    if (!hintModalRound && nextUndismissedHintRound) setHintModalRound(nextUndismissedHintRound)
+  }, [canUseHint, hintModalRound, nextUndismissedHintRound, revealedHint, status])
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onBack()
+      if (event.key !== 'Escape') return
+      if (hintModalRound) dismissHintModal()
+      else onBack()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onBack])
+  }, [hintModalRound, revealedHint, dismissedHintRounds, hintChoices, attemptIds, status, onBack])
 
   const submit = (city?: CityItem) => {
     const selected = city ?? suggestions[0]
@@ -398,7 +465,7 @@ export function CityGameScreen({
     setMessage('')
     setIsSearchDropdownOpen(false)
     setMatchStripOpen(true)
-    saveCitySession({ mode, date, answerId: answer.id, attemptIds: nextAttemptIds, status: nextStatus, updatedAt: Date.now() })
+    saveCitySession({ mode, date, answerId: answer.id, attemptIds: nextAttemptIds, hintChoices, dismissedHintRounds, status: nextStatus, updatedAt: Date.now() })
     onProgress()
     if (nextStatus === 'playing') {
       window.requestAnimationFrame(() => document.querySelector('.city-attempt-list article:first-child')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
@@ -434,7 +501,17 @@ export function CityGameScreen({
       {!loading && !error && !answer && <section className="city-game-state city-data-state--error">В выбранном режиме нет городов</section>}
 
       {answer && <>
-        {status === 'playing' && <div className="progress-row"><CityProgress attempts={attemptIds.length} /></div>}
+        {status === 'playing' && <div className="progress-row">
+          <CityProgress attempts={attemptIds.length} />
+          {canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}
+        </div>}
+
+        {!!hintChoices.length && <section className="assist-revealed" aria-label="Открытые подсказки">
+          {[...hintChoices].sort((left, right) => left.checkpoint - right.checkpoint).map((choice) => <article key={choice.checkpoint} className="assist-reveal-card">
+            <span><Sparkles /> {choice.key === 'description' ? 'Описание города' : choice.key === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span>
+            <p>{choice.value}</p>
+          </article>)}
+        </section>}
 
         {status !== 'playing' && <CityResult city={answer} status={status} attempts={attemptIds.length} mode={mode} date={date} onHome={navigation.onHome} onChooseMode={onChooseMode} />}
 
@@ -486,11 +563,6 @@ export function CityGameScreen({
           {message && <div className="search-meta"><strong>{message}</strong></div>}
         </form>}
 
-        {status === 'playing' && attemptIds.length >= 5 && answer.plotHint && <section className="city-answer-hint">
-          <span><Sparkles /> Подсказка маршрута</span>
-          <p>{answer.plotHint}</p>
-        </section>}
-
         {!attempts.length && status === 'playing' && <section className="empty-card city-empty-card">
           <div className="empty-card__icon"><Globe2 /></div>
           <div><h2>Начните с любого города</h2><p>Стрелка вверх означает, что у ответа больше население, более поздний часовой пояс или более высокое место в рейтинге. Точное совпадение станет зелёным.</p></div>
@@ -502,5 +574,32 @@ export function CityGameScreen({
         </section>}
       </>}
     </main>
+    {hintModalRound && (hintOptions.length > 0 || revealedHint) && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
+      <section className="hint-modal" role="dialog" aria-modal="true" aria-label={`Подсказка после ${hintModalRound} попыток`}>
+        <div className="hint-modal__head">
+          <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
+          <button onClick={dismissHintModal} aria-label="Закрыть"><X /></button>
+        </div>
+        {revealedHint ? <>
+          <h2>Подсказка открыта</h2>
+          <article className="hint-modal__reveal">
+            <span><Sparkles /> {revealedHint.key === 'description' ? 'Описание города' : revealedHint.key === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {revealedHint.checkpoint} попыток</span>
+            <p>{revealedHint.value}</p>
+          </article>
+          <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>
+        </> : <>
+          <h2>Выберите подсказку</h2>
+          <p>На этом рубеже можно открыть один из доступных вариантов.</p>
+          <div className="hint-modal__options">
+            {hintOptions.map((option, index) => <button key={option.key} onClick={() => revealCityHint(option.key)}>
+              <i>0{index + 1}</i>
+              <span><strong>{option.title}</strong><small>{option.subtitle}</small></span>
+              <ChevronRight />
+            </button>)}
+          </div>
+          <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
+        </>}
+      </section>
+    </div>}
   </div>
 }

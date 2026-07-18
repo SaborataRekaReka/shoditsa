@@ -1336,6 +1336,10 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       const run = await tx.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
       if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
       if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Дождитесь завершения текущего запуска')
+      const input = asRecord(run[0].inputDefinitionJson)
+      if (run[0].pipelineKey === 'normalization' && String(input.scenario || '') !== 'normalize') {
+        throw new ApiError(409, 'PIPELINE_RETRY_CUSTOM_UNSUPPORTED', 'Этот специальный запуск повторяется собственным воркером; универсальный повтор к нему неприменим')
+      }
       const failed = await tx.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
       const failedCount = failed[0]?.count ?? 0
       if (!failedCount) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
@@ -1372,7 +1376,8 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
     const input = asRecord(run[0].inputDefinitionJson)
     const scenario = String(input.scenario || 'discover')
-    if (pipelineKey !== 'normalization' && scenario !== 'manual') throw new ApiError(409, 'PIPELINE_CONTINUE_MANUAL_ONLY', 'Продолжение доступно только для ручного сценария')
+    const resumableScenario = pipelineKey === 'normalization' ? scenario === 'normalize' : scenario === 'manual'
+    if (!resumableScenario) throw new ApiError(409, 'PIPELINE_CONTINUE_MANUAL_ONLY', 'Этот запуск нельзя продолжить универсальным воркером')
 
     const nonResumableStatuses = new Set(['review_required', 'approved', 'staged', 'published', 'partially_published'])
     if (nonResumableStatuses.has(run[0].status)) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Запуск уже завершён; продолжать нечего')

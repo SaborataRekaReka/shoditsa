@@ -1,9 +1,9 @@
 {
   "version": 1,
   "library": "cities",
-  "generatedAt": "2026-07-17T23:27:25.133Z",
+  "generatedAt": "2026-07-18T17:22:48.029Z",
   "totalItems": 980,
-  "tokensCount": 5198,
+  "tokensCount": 5208,
   "docs": [
     {
       "id": "city:new-york-city",
@@ -2324,12 +2324,9 @@
     {
       "id": "city:bordeaux-2",
       "titleRu": "Порту",
-      "titleOriginal": "Bordeaux",
+      "titleOriginal": "Porto",
       "alternativeTitles": [
-        "Bardo",
-        "Bordele",
-        "Bordeos",
-        "Bordo"
+        "Oporto"
       ],
       "country": "Португалия"
     },
@@ -2890,12 +2887,10 @@
     {
       "id": "city:tijuana",
       "titleRu": "Сарагоса",
-      "titleOriginal": "Tijuana",
+      "titleOriginal": "Zaragoza",
       "alternativeTitles": [
-        "Tichouana",
-        "Tikhuanae",
-        "Tykhuana",
-        "Zaragoza"
+        "Saragossa",
+        "Saragosa"
       ],
       "country": "Испания"
     },
@@ -3866,12 +3861,10 @@
     {
       "id": "city:dayton-2",
       "titleRu": "Венеция",
-      "titleOriginal": "Dayton",
+      "titleOriginal": "Venice",
       "alternativeTitles": [
-        "Cabintown",
-        "Dehjton",
-        "Deitonas",
-        "Dejtun"
+        "Venezia",
+        "Venise"
       ],
       "country": "Италия"
     },
@@ -4812,11 +4805,10 @@
     {
       "id": "city:san-jose-2",
       "titleRu": "Сан-Хосе",
-      "titleOriginal": "San Jose",
+      "titleOriginal": "San José",
       "alternativeTitles": [
-        "Iosephopolis",
-        "Pueblo De Alvarado",
-        "San Choze"
+        "Chepe",
+        "San Jose"
       ],
       "country": "Коста-Рика"
     },
@@ -5879,12 +5871,8 @@
     {
       "id": "city:portland-2",
       "titleRu": "Бриджтаун",
-      "titleOriginal": "Portland",
-      "alternativeTitles": [
-        "Bridgetown",
-        "P-town",
-        "Puddletown"
-      ],
+      "titleOriginal": "Bridgetown",
+      "alternativeTitles": [],
       "country": "Барбадос"
     },
     {
@@ -6516,12 +6504,9 @@
     {
       "id": "city:changchun",
       "titleRu": "Канкун",
-      "titleOriginal": "Changchun",
+      "titleOriginal": "Cancún",
       "alternativeTitles": [
-        "Cancun",
-        "Cancuna",
-        "Cangcunas",
-        "Cangcuno"
+        "Cancun"
       ],
       "country": "Мексика"
     },
@@ -6911,12 +6896,10 @@
     {
       "id": "city:chattogram",
       "titleRu": "Исламабад-Равалпинди",
-      "titleOriginal": "Chattogram",
+      "titleOriginal": "Islamabad–Rawalpindi",
       "alternativeTitles": [
-        "Cetagons",
-        "Chitagong",
-        "Chittagong",
-        "Chittagong Ghat"
+        "Islamabad-Rawalpindi",
+        "Twin Cities"
       ],
       "country": "Пакистан"
     },
@@ -7319,14 +7302,8 @@
     {
       "id": "city:jerusalem-2",
       "titleRu": "Салем",
-      "titleOriginal": "Jerusalem",
-      "alternativeTitles": [
-        "Aelia Capitolina",
-        "Al Quds",
-        "Al-Kuds",
-        "Al-Qudis",
-        "Al-Quds"
-      ],
+      "titleOriginal": "Salem",
+      "alternativeTitles": [],
       "country": "Индия"
     },
     {
@@ -14802,8 +14779,7 @@
       "city:edinburgh"
     ],
     "aelia": [
-      "city:jerusalem",
-      "city:jerusalem-2"
+      "city:jerusalem"
     ],
     "aemona": [
       "city:ljubljana"
@@ -14973,7 +14949,6 @@
       "city:al-hufuf",
       "city:alexandria",
       "city:suez",
-      "city:jerusalem-2",
       "city:luxor",
       "city:khartoum",
       "city:basrah"
@@ -15093,8 +15068,7 @@
       "city:san-luis-potosi"
     ],
     "alvarado": [
-      "city:san-jose",
-      "city:san-jose-2"
+      "city:san-jose"
     ],
     "alwrn": [
       "city:ilorin"
@@ -15986,8 +15960,7 @@
       "city:barcelona"
     ],
     "bardo": [
-      "city:bordeaux",
-      "city:bordeaux-2"
+      "city:bordeaux"
     ],
     "bareilly": [
       "city:bareilly"
@@ -16628,20 +16601,16 @@
       "city:port-said"
     ],
     "bordeaux": [
-      "city:bordeaux",
-      "city:bordeaux-2"
+      "city:bordeaux"
     ],
     "bordele": [
-      "city:bordeaux",
-      "city:bordeaux-2"
+      "city:bordeaux"
     ],
     "bordeos": [
-      "city:bordeaux",
-      "city:bordeaux-2"
+      "city:bordeaux"
     ],
     "bordo": [
-      "city:bordeaux",
-      "city:bordeaux-2"
+      "city:bordeaux"
     ],
     "bornmut": [
       "city:bournemouth"
@@ -16988,8 +16957,7 @@
       "city:oklahoma-city"
     ],
     "cabintown": [
-      "city:dayton",
-      "city:dayton-2"
+      "city:dayton"
     ],
     "cabo": [
       "city:cape-town"
@@ -17118,7 +17086,6 @@
       "city:changchun-2"
     ],
     "cancuna": [
-      "city:changchun",
       "city:changchun-2"
     ],
     "candhigad": [
@@ -17138,11 +17105,9 @@
       "city:zhangjiakou"
     ],
     "cangcunas": [
-      "city:changchun",
       "city:changchun-2"
     ],
     "cangcuno": [
-      "city:changchun",
       "city:changchun-2"
     ],
     "cangdzou": [
@@ -17212,8 +17177,7 @@
       "city:mendoza"
     ],
     "capitolina": [
-      "city:jerusalem",
-      "city:jerusalem-2"
+      "city:jerusalem"
     ],
     "cappadocia": [
       "city:kayseri"
@@ -17435,7 +17399,6 @@
       "city:novosibirsk"
     ],
     "cetagons": [
-      "city:chattogram",
       "city:chattogram-2"
     ],
     "ch": [
@@ -17522,7 +17485,6 @@
       "city:zhangzhou"
     ],
     "changchun": [
-      "city:changchun",
       "city:changchun-2"
     ],
     "changde": [
@@ -17584,7 +17546,6 @@
       "city:hartford"
     ],
     "chattogram": [
-      "city:chattogram",
       "city:chattogram-2"
     ],
     "chau": [
@@ -17664,6 +17625,9 @@
     ],
     "cheongju": [
       "city:cheongju-si"
+    ],
+    "chepe": [
+      "city:san-jose-2"
     ],
     "cheribon": [
       "city:cirebon"
@@ -17867,11 +17831,9 @@
       "city:chisinau"
     ],
     "chitagong": [
-      "city:chattogram",
       "city:chattogram-2"
     ],
     "chittagong": [
-      "city:chattogram",
       "city:chattogram-2"
     ],
     "chiu": [
@@ -17958,8 +17920,7 @@
       "city:zhoukou"
     ],
     "choze": [
-      "city:san-jose",
-      "city:san-jose-2"
+      "city:san-jose"
     ],
     "christchurch": [
       "city:christchurch"
@@ -18107,6 +18068,9 @@
     ],
     "cita": [
       "city:cape-town"
+    ],
+    "cities": [
+      "city:chattogram"
     ],
     "citta": [
       "city:guatemala-city"
@@ -18681,8 +18645,7 @@
       "city:dazhou"
     ],
     "dayton": [
-      "city:dayton",
-      "city:dayton-2"
+      "city:dayton"
     ],
     "dazhou": [
       "city:dazhou"
@@ -18713,7 +18676,6 @@
       "city:medellin",
       "city:tirana",
       "city:san-juan",
-      "city:san-jose-2",
       "city:tehran",
       "city:rio-de-janeiro",
       "city:merida",
@@ -18754,19 +18716,16 @@
       "city:deyang"
     ],
     "dehjton": [
-      "city:dayton",
-      "city:dayton-2"
+      "city:dayton"
     ],
     "dehradun": [
       "city:dehradun"
     ],
     "deitonas": [
-      "city:dayton",
-      "city:dayton-2"
+      "city:dayton"
     ],
     "dejtun": [
-      "city:dayton",
-      "city:dayton-2"
+      "city:dayton"
     ],
     "del": [
       "city:ciudad-juarez",
@@ -20055,7 +20014,6 @@
       "city:mannheim"
     ],
     "ghat": [
-      "city:chattogram",
       "city:chattogram-2"
     ],
     "ghrynfyl": [
@@ -21204,8 +21162,7 @@
       "city:nanyang"
     ],
     "iosephopolis": [
-      "city:san-jose",
-      "city:san-jose-2"
+      "city:san-jose"
     ],
     "ipitoli": [
       "city:pretoria"
@@ -21248,6 +21205,9 @@
     ],
     "iskandariyah": [
       "city:alexandria"
+    ],
+    "islamabad": [
+      "city:chattogram"
     ],
     "isnimid": [
       "city:izmit"
@@ -21408,8 +21368,7 @@
       "city:jeonju"
     ],
     "jerusalem": [
-      "city:jerusalem",
-      "city:jerusalem-2"
+      "city:jerusalem"
     ],
     "jesselton": [
       "city:kota-kinabalu"
@@ -22373,8 +22332,7 @@
       "city:mangaluru"
     ],
     "kuds": [
-      "city:jerusalem",
-      "city:jerusalem-2"
+      "city:jerusalem"
     ],
     "kuehrnavaka": [
       "city:cuernavaca"
@@ -25008,6 +24966,9 @@
     "oodeypore": [
       "city:udaipur"
     ],
+    "oporto": [
+      "city:bordeaux-2"
+    ],
     "oran": [
       "city:oran"
     ],
@@ -25553,10 +25514,10 @@
       "city:akron"
     ],
     "portland": [
-      "city:portland",
-      "city:portland-2"
+      "city:portland"
     ],
     "porto": [
+      "city:bordeaux-2",
       "city:porto-alegre"
     ],
     "portorico": [
@@ -25682,8 +25643,7 @@
       "city:valladolid"
     ],
     "puddletown": [
-      "city:portland",
-      "city:portland-2"
+      "city:portland"
     ],
     "puducherry": [
       "city:puducherry"
@@ -25692,8 +25652,7 @@
       "city:puebla"
     ],
     "pueblo": [
-      "city:san-jose",
-      "city:san-jose-2"
+      "city:san-jose"
     ],
     "puehbla": [
       "city:puebla"
@@ -25780,12 +25739,10 @@
       "city:gujranwala"
     ],
     "qudis": [
-      "city:jerusalem",
-      "city:jerusalem-2"
+      "city:jerusalem"
     ],
     "quds": [
-      "city:jerusalem",
-      "city:jerusalem-2"
+      "city:jerusalem"
     ],
     "quebec": [
       "city:quebec"
@@ -25898,6 +25855,9 @@
     ],
     "ratehrdam": [
       "city:rotterdam"
+    ],
+    "rawalpindi": [
+      "city:chattogram"
     ],
     "ray": [
       "city:raipur"
@@ -26274,7 +26234,8 @@
       "city:saratov"
     ],
     "salem": [
-      "city:winston-salem"
+      "city:winston-salem",
+      "city:jerusalem-2"
     ],
     "salisbury": [
       "city:harare"
@@ -26418,7 +26379,11 @@
       "city:sapporo"
     ],
     "saragosa": [
+      "city:tijuana",
       "city:puebla"
+    ],
+    "saragossa": [
+      "city:tijuana"
     ],
     "sarai": [
       "city:sarajevo"
@@ -27456,7 +27421,6 @@
       "city:tbilisi"
     ],
     "tichouana": [
-      "city:tijuana",
       "city:tijuana-2"
     ],
     "tien": [
@@ -27467,11 +27431,9 @@
       "city:tbilisi"
     ],
     "tijuana": [
-      "city:tijuana",
       "city:tijuana-2"
     ],
     "tikhuanae": [
-      "city:tijuana",
       "city:tijuana-2"
     ],
     "tin": [
@@ -27626,8 +27588,7 @@
       "city:portland",
       "city:baltimore",
       "city:detroit",
-      "city:cape-town",
-      "city:portland-2"
+      "city:cape-town"
     ],
     "towne": [
       "city:charleston"
@@ -27773,6 +27734,9 @@
     "tuxtla": [
       "city:tuxtla"
     ],
+    "twin": [
+      "city:chattogram"
+    ],
     "twla": [
       "city:tula"
     ],
@@ -27780,7 +27744,6 @@
       "city:torreon"
     ],
     "tykhuana": [
-      "city:tijuana",
       "city:tijuana-2"
     ],
     "tyne": [
@@ -28005,6 +27968,15 @@
     ],
     "venc": [
       "city:vientiane"
+    ],
+    "venezia": [
+      "city:dayton-2"
+    ],
+    "venice": [
+      "city:dayton-2"
+    ],
+    "venise": [
+      "city:dayton-2"
     ],
     "veracruz": [
       "city:veracruz"

@@ -25,6 +25,7 @@ export type CityItem = {
   popular: boolean
   capital: boolean
   plotHint?: string
+  facts?: string[]
 }
 
 export type CityHintStatus = 'match' | 'close' | 'partial' | 'miss' | 'unknown'
@@ -37,11 +38,28 @@ export type CityHint = {
 }
 
 export type CitySessionStatus = 'playing' | 'won' | 'lost'
+export type CityAssistHintKey = 'description' | 'fact' | 'info'
+export type CityHintCheckpoint = 5 | 8
+export type CityAssistHintChoice = {
+  checkpoint: CityHintCheckpoint
+  key: CityAssistHintKey
+  value: string
+  sourceKey?: string
+}
+export type CityAssistHintOption = {
+  key: CityAssistHintKey
+  title: string
+  subtitle: string
+  value: string
+  sourceKey?: string
+}
 export type CitySession = {
   mode: CityPoolMode
   date: string
   answerId: string
   attemptIds: string[]
+  hintChoices: CityAssistHintChoice[]
+  dismissedHintRounds: CityHintCheckpoint[]
   status: CitySessionStatus
   updatedAt: number
 }
@@ -181,6 +199,74 @@ export const compareCities = (guess: CityItem, answer: CityItem): CityHint[] => 
   ]
 }
 
+const cleanAssistText = (value: unknown) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : ''
+const formatPopulation = (value: number) => new Intl.NumberFormat('ru-RU').format(value)
+
+const cityInfoCandidates = (answer: CityItem) => [
+  answer.continent ? { sourceKey: 'continent', value: `Континент: ${answer.continent}` } : null,
+  answer.languages.length ? { sourceKey: 'languages', value: `Языки: ${answer.languages.join(', ')}` } : null,
+  answer.timezone ? { sourceKey: 'timezone', value: `Часовой пояс: ${answer.timezone}` } : null,
+  answer.population != null ? { sourceKey: 'population', value: `Население: ${formatPopulation(answer.population)}` } : null,
+  answer.country ? { sourceKey: 'country', value: `Страна: ${answer.country}` } : null,
+  answer.ranks.economy != null ? { sourceKey: 'economy', value: `Экономика: № ${answer.ranks.economy}` } : null,
+  answer.ranks.humanCapital != null ? { sourceKey: 'humanCapital', value: `Человеческий капитал: № ${answer.ranks.humanCapital}` } : null,
+  answer.ranks.qualityOfLife != null ? { sourceKey: 'qualityOfLife', value: `Качество жизни: № ${answer.ranks.qualityOfLife}` } : null,
+  answer.ranks.ecology != null ? { sourceKey: 'ecology', value: `Экология: № ${answer.ranks.ecology}` } : null,
+  answer.ranks.governance != null ? { sourceKey: 'governance', value: `Работа властей: № ${answer.ranks.governance}` } : null,
+].filter((candidate): candidate is { sourceKey: string; value: string } => Boolean(candidate))
+
+export const cityAssistHintOptions = (
+  answer: CityItem,
+  attempts: CityItem[],
+  choices: CityAssistHintChoice[],
+): CityAssistHintOption[] => {
+  const options: CityAssistHintOption[] = []
+  const usedKeys = new Set(choices.map((choice) => choice.key))
+  const description = cleanAssistText(answer.plotHint)
+  if (description && !usedKeys.has('description')) {
+    options.push({
+      key: 'description',
+      title: 'Описание города',
+      subtitle: 'Атмосферная подсказка без названия и прямого спойлера',
+      value: description,
+    })
+  }
+
+  const descriptionMatch = normalize(description)
+  const fact = (answer.facts ?? []).map(cleanAssistText)
+    .find((candidate) => candidate && normalize(candidate) !== descriptionMatch) ?? ''
+  if (fact && !usedKeys.has('fact')) {
+    options.push({
+      key: 'fact',
+      title: 'Интересный факт',
+      subtitle: 'Характерная деталь, подтверждённая источником',
+      value: fact,
+    })
+  }
+
+  const revealedKeys = new Set(attempts.flatMap((attempt) => compareCities(attempt, answer)
+    .filter((hint) => hint.status === 'match')
+    .map((hint) => hint.key)))
+  const openedInfoKeys = new Set(choices.flatMap((choice) => choice.key === 'info' && choice.sourceKey ? [choice.sourceKey] : []))
+  const info = cityInfoCandidates(answer).find((candidate) => !revealedKeys.has(candidate.sourceKey) && !openedInfoKeys.has(candidate.sourceKey))
+  if (info) {
+    options.push({
+      key: 'info',
+      title: 'Неоткрытая информация',
+      subtitle: 'Точный признак, который ещё не совпадал в ваших попытках',
+      value: info.value,
+      sourceKey: info.sourceKey,
+    })
+  }
+  return options
+}
+
+export const availableCityHintRounds = (
+  attemptsCount: number,
+  choices: CityAssistHintChoice[],
+): CityHintCheckpoint[] => ([5, 8] as CityHintCheckpoint[])
+  .filter((round) => attemptsCount >= round && !choices.some((choice) => choice.checkpoint === round))
+
 const storageKey = (mode: CityPoolMode, date: string) => `shoditsa:city:v1:${date}:${mode}`
 
 export const loadCitySession = (mode: CityPoolMode, date: string): CitySession | null => {
@@ -194,6 +280,17 @@ export const loadCitySession = (mode: CityPoolMode, date: string): CitySession |
       date,
       answerId: parsed.answerId,
       attemptIds: parsed.attemptIds.filter((value): value is string => typeof value === 'string').slice(0, 10),
+      hintChoices: Array.isArray(parsed.hintChoices) ? parsed.hintChoices.flatMap((choice) => {
+        if (!choice || typeof choice !== 'object') return []
+        const value = choice as Partial<CityAssistHintChoice>
+        if ((value.checkpoint !== 5 && value.checkpoint !== 8)
+          || (value.key !== 'description' && value.key !== 'fact' && value.key !== 'info')
+          || typeof value.value !== 'string' || !value.value.trim()) return []
+        return [{ checkpoint: value.checkpoint, key: value.key, value: value.value.trim(), ...(typeof value.sourceKey === 'string' && value.sourceKey ? { sourceKey: value.sourceKey } : {}) }]
+      }).slice(0, 2) : [],
+      dismissedHintRounds: Array.isArray(parsed.dismissedHintRounds)
+        ? parsed.dismissedHintRounds.filter((round): round is CityHintCheckpoint => round === 5 || round === 8)
+        : [],
       status: parsed.status,
       updatedAt: Number(parsed.updatedAt) || 0,
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T23:27:25.133Z",
+  "generatedAt": "2026-07-18T17:23:35.061Z",
   "importedFrom": "C:\\Users\\brene\\Downloads\\Telegram Desktop\\v2_final.json",
   "sourceFile": "v2_final.json",
   "total": 980,
@@ -7,7 +7,8 @@
   "popular": 217,
   "capitalsAndPopular": 346,
   "withCountryFlag": 980,
-  "withCityFlag": 334,
-  "withCoatOfArms": 345,
-  "withHint": 0
+  "withCityFlag": 333,
+  "withCoatOfArms": 344,
+  "withHint": 980,
+  "withFacts": 980
 }
