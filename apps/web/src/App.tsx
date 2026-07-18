@@ -1601,7 +1601,7 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
               <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
               <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
             </div>
-          : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>{isDiagnosisReplay ? <RotateCcw /> : <Play />} {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
+          : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>{isDiagnosisReplay ? <RotateCcw className="play-button__replay-icon" /> : <Play />} {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
     </main>
   </>
