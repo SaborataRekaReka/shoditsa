@@ -928,6 +928,7 @@
 .play-button { min-width: 220px; min-height: 58px; margin-top: 22px; font-size: 12px; }
 .play-button { position: relative; z-index: 1; }
 .play-button svg { fill: currentColor; }
+.play-button .play-button__replay-icon { fill: none; }
 .admit-ticket {
   width: min(100%, 600px);
   margin-top: 24px;
