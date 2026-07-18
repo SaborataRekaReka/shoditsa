@@ -746,7 +746,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
     try {
       const result = await requestNormalization({
         apiKey: environment.OPENAI_API_KEY, proxyUrl: environment.OPENAI_OUTBOUND_PROXY_URL || environment.MUSIC_OUTBOUND_PROXY_URL,
-        model: 'gpt-5-mini', webSearch: settings.webSearch !== false, mode, field, prompt, payload: before, contextFields, cardId: itemId, availableFields,
+        model: settings.model === 'gpt-5-nano' ? 'gpt-5-nano' : 'gpt-5-mini', webSearch: settings.webSearch !== false, mode, field, prompt, payload: before, contextFields, cardId: itemId, availableFields,
       })
       const proposed = { ...before }
       const warnings: string[] = []

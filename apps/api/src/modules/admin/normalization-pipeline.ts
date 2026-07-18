@@ -239,8 +239,10 @@ export type NormalizationResult = {
   usage: OpenAiUsageEntry | null
 }
 
+export type NormalizationModel = 'gpt-5-mini' | 'gpt-5-nano'
+
 export const requestNormalization = async (options: {
-  apiKey: string; proxyUrl?: string; model: 'gpt-5-mini'; webSearch: boolean; mode: ContentMode; field: string; prompt: string; payload: Json; contextFields?: string[]; cardId?: string; availableFields?: string[]
+  apiKey: string; proxyUrl?: string; model: NormalizationModel; webSearch: boolean; mode: ContentMode; field: string; prompt: string; payload: Json; contextFields?: string[]; cardId?: string; availableFields?: string[]
 }): Promise<NormalizationResult> => {
   assertNormalizationField(options.mode, options.field)
   const rendered = renderNormalizationPrompt(options)
