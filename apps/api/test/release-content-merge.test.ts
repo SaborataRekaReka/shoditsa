@@ -31,9 +31,15 @@ describe('release content merge', () => {
     expect(releaseMergeChecksum(plan.entries)).toMatch(/^[a-f0-9]{64}$/)
   })
 
-  it('rejects a release ID that changes content mode', () => {
+  it('preserves the active card when a release ID has the wrong content mode', () => {
     const active = [{ id: 'v1', itemId: 'same-id', mode: 'music' as const, payload: item('same-id', 'music'), sortOrder: 0 }]
-    expect(() => buildReleaseMergePlan(active, [library('movie', [item('same-id', 'movie')])])).toThrow('Content mode mismatch')
+    const plan = buildReleaseMergePlan(active, [library('movie', [item('same-id', 'movie')])])
+
+    expect(plan.preview).toMatchObject({ releaseItems: 1, conflicted: 1, preserved: 1, finalItems: 1 })
+    expect(plan.preview.modeConflicts).toEqual([{ itemId: 'same-id', activeMode: 'music', releaseMode: 'movie' }])
+    expect(plan.preview.modes.movie).toMatchObject({ release: 1, conflicted: 1, final: 0 })
+    expect(plan.preview.modes.music).toMatchObject({ active: 1, preserved: 1, final: 1 })
+    expect(plan.entries).toEqual([expect.objectContaining({ source: 'active', itemId: 'same-id', mode: 'music' })])
   })
 
   it('treats JSON objects with different key order as unchanged', () => {

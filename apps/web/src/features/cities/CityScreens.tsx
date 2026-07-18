@@ -6,7 +6,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Compass,
-  Copy,
   Database,
   Flag,
   Globe2,
@@ -19,6 +18,8 @@ import {
   Ticket,
 } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
+import { HorizontalScrollLane } from '../../components/horizontal-scroll-lane/HorizontalScrollLane'
+import { GameResult } from '../result/GameResult'
 import { CityRankProfile } from './CityRankProfile'
 import {
   CITY_POOL_OPTIONS,
@@ -250,11 +251,7 @@ const CityResult = ({ city, status, attempts, mode, date, onHome, onChooseMode }
   onChooseMode: () => void
 }) => {
   const [copied, setCopied] = useState(false)
-  const assets = [
-    city.countryFlagUrl ? { src: city.countryFlagUrl, alt: `Флаг страны: ${city.country}`, label: 'Флаг страны' } : null,
-    city.cityFlagUrl ? { src: city.cityFlagUrl, alt: `Флаг города: ${city.titleRu}`, label: 'Флаг города' } : null,
-    city.coatOfArmsUrl ? { src: city.coatOfArmsUrl, alt: `Герб города: ${city.titleRu}`, label: 'Герб города' } : null,
-  ].filter((entry): entry is { src: string; alt: string; label: string } => Boolean(entry))
+  const primaryAsset = city.coatOfArmsUrl ?? city.cityFlagUrl ?? city.countryFlagUrl
   const copyResult = async () => {
     const text = `Сходится! · Города · ${modeMeta(mode).label}\n${status === 'won' ? `Угадано за ${attempts}/10` : 'Не угадано за 10 попыток'}\n${prettyDate(date)}`
     try {
@@ -266,26 +263,33 @@ const CityResult = ({ city, status, attempts, mode, date, onHome, onChooseMode }
     }
   }
 
-  return <section className={`city-result city-result--${status}`}>
-    <div className="city-result__copy">
-      <span>{status === 'won' ? <Check /> : <MapPin />} {status === 'won' ? 'Маршрут найден' : 'Маршрут завершён'}</span>
-      <h2>{city.titleRu}</h2>
-      <p>{city.titleOriginal} · {city.country} · {new Intl.NumberFormat('ru-RU').format(city.population ?? 0)} жителей</p>
-      <div className="city-result__tags">
-        {city.capital && <span><Landmark /> Столица</span>}
-        {city.popular && <span><Globe2 /> Популярный</span>}
-        <span><Compass /> {city.timezone}</span>
-      </div>
-    </div>
-    <div className="city-result__assets">
-      {assets.map((asset) => <span key={asset.label}><CityAsset src={asset.src} alt={asset.alt} /><small>{asset.label}</small></span>)}
-    </div>
-    <div className="city-result__actions">
-      <ActionButton onClick={onChooseMode}><MapIcon /> Другой режим</ActionButton>
-      <ActionButton variant="secondary" onClick={copyResult}><Copy /> {copied ? 'Скопировано' : 'Поделиться'}</ActionButton>
-      <ActionButton variant="ghost" onClick={onHome}>На главную</ActionButton>
-    </div>
-  </section>
+  const tags = [
+    city.country,
+    city.capital ? 'Столица' : null,
+    city.popular ? 'Популярный город' : null,
+    city.timezone,
+    city.population != null ? `${new Intl.NumberFormat('ru-RU').format(city.population)} жителей` : null,
+  ].filter((tag): tag is string => Boolean(tag))
+
+  return <GameResult
+    mode="city"
+    won={status === 'won'}
+    attempts={attempts}
+    poster={<div className="poster-fallback poster-fallback--city city-result-poster">
+      {primaryAsset ? <CityAsset src={primaryAsset} alt={`Символ города: ${city.titleRu}`} /> : <MapPin aria-hidden="true" />}
+      {city.countryFlagUrl && primaryAsset !== city.countryFlagUrl && <CityAsset className="city-result-poster__flag" src={city.countryFlagUrl} alt={`Флаг страны: ${city.country}`} />}
+    </div>}
+    title={city.titleRu}
+    meta={[city.titleOriginal, city.country].filter(Boolean).join(' · ')}
+    tags={tags}
+    nextLabel="Другой режим"
+    configureLabel="На главную"
+    award={null}
+    copied={copied}
+    onNext={onChooseMode}
+    onConfigure={onHome}
+    onCopy={() => void copyResult()}
+  />
 }
 
 export function CityGameScreen({
@@ -396,7 +400,11 @@ export function CityGameScreen({
     setMatchStripOpen(true)
     saveCitySession({ mode, date, answerId: answer.id, attemptIds: nextAttemptIds, status: nextStatus, updatedAt: Date.now() })
     onProgress()
-    window.requestAnimationFrame(() => document.querySelector('.city-attempt-list article:first-child')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    if (nextStatus === 'playing') {
+      window.requestAnimationFrame(() => document.querySelector('.city-attempt-list article:first-child')?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    } else {
+      window.setTimeout(() => document.querySelector('.result-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
+    }
   }
 
   const submitForm = (event: FormEvent) => {
@@ -470,9 +478,9 @@ export function CityGameScreen({
               <ChevronRight aria-hidden="true" />
             </button>
             <div className="game-match-strip__panel" id="city-match-strip-panel" aria-hidden={!matchStripOpen}>
-              <div className="game-match-strip__tags">
+              <HorizontalScrollLane className="game-match-strip__tags">
                 {matchedTags.length ? matchedTags.map((tag) => <span key={tag} className="dx-chip match game-match-strip__tag">{tag}</span>) : <span className="game-match-strip__empty">Пока совпадений нет</span>}
-              </div>
+              </HorizontalScrollLane>
             </div>
           </div>}
           {message && <div className="search-meta"><strong>{message}</strong></div>}

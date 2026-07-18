@@ -8,6 +8,7 @@ export default defineConfig({
     'content-migrate-media': 'scripts/content/migrate-media.ts',
     'city-hints': 'scripts/cities/operate-city-hints.ts',
     'city-facts': 'scripts/cities/operate-city-facts.ts',
+    'city-facts-web': 'scripts/cities/review-city-facts.ts',
   },
   format: ['esm'], platform: 'node', target: 'node24', outDir: 'apps/api/dist', clean: true,
 })

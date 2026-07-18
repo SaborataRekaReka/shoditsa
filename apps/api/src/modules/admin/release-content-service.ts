@@ -54,7 +54,10 @@ const releaseManifest = (loaded: LoadedRelease, gitSha: string, baseRevisionId: 
     count: entry.count,
     checksumSha256: entry.checksumSha256,
   }])),
-  warnings: loaded.manifest.warnings,
+  warnings: [
+    ...loaded.manifest.warnings,
+    ...preview.modeConflicts.map((conflict) => `Карточка ${conflict.itemId} сохранена из активной ревизии: режим ${conflict.activeMode} в БД не совпадает с ${conflict.releaseMode} в релизе`),
+  ],
 })
 
 export const inspectReleaseContent = async (db: Database, sourceRoot: string, gitSha: string) => {

@@ -2081,7 +2081,7 @@
   white-space: nowrap;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y;
   cursor: grab;
 }
 .game-match-strip__tags.is-dragging {
@@ -2505,7 +2505,7 @@
 .hint-person > strong { display: -webkit-box; width: 60px; overflow: hidden; color: #c9c1b5; font-size: 12px; font-weight: 500; line-height: 1.25; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .hint-person.matched > strong { color: var(--color-text); font-weight: 600; }
 
-.result-card { position: relative; margin-top: 18px; padding: 12px; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-paper-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-paper); display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 12px 14px; }
+.result-card { position: relative; scroll-margin-top: 76px; margin-top: 18px; padding: 12px; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-paper-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-paper); display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 12px 14px; }
 .result-card.lost { box-shadow: 4px 4px 0 #6a302d; }
 .result-card > .poster-fallback--diagnosis { color: #fff; background: var(--palette-brand-green); }
 .result-card > .poster-fallback--diagnosis .poster-fallback__dx { filter: brightness(0) invert(1); }

@@ -123,13 +123,15 @@ export type ReleaseContentStatus = {
   preview: {
     activeItems: number
     releaseItems: number
+    conflicted: number
+    modeConflicts: Array<{ itemId: string; activeMode: ContentMode; releaseMode: ContentMode }>
     updated: number
     unchanged: number
     added: number
     preserved: number
     deleted: 0
     finalItems: number
-    modes: Record<string, { active: number; release: number; updated: number; unchanged: number; added: number; preserved: number; final: number }>
+    modes: Record<string, { active: number; release: number; conflicted: number; updated: number; unchanged: number; added: number; preserved: number; final: number }>
   }
   activeRevision: Record<string, unknown> | null
   matchingRevision: Record<string, unknown> | null

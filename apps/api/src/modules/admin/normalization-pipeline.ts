@@ -242,7 +242,7 @@ export type NormalizationResult = {
 export type NormalizationModel = 'gpt-5-mini' | 'gpt-5-nano'
 
 export const requestNormalization = async (options: {
-  apiKey: string; proxyUrl?: string; model: NormalizationModel; webSearch: boolean; mode: ContentMode; field: string; prompt: string; payload: Json; contextFields?: string[]; cardId?: string; availableFields?: string[]
+  apiKey: string; proxyUrl?: string; model: NormalizationModel; webSearch: boolean; webSearchRequired?: boolean; mode: ContentMode; field: string; prompt: string; payload: Json; contextFields?: string[]; cardId?: string; availableFields?: string[]
 }): Promise<NormalizationResult> => {
   assertNormalizationField(options.mode, options.field)
   const rendered = renderNormalizationPrompt(options)
@@ -266,6 +266,7 @@ export const requestNormalization = async (options: {
     reasoning: { effort: 'low' },
     max_output_tokens: 1200,
     ...(options.webSearch ? { tools: [{ type: 'web_search', search_context_size: 'low' }] } : {}),
+    ...(options.webSearch && options.webSearchRequired ? { tool_choice: 'required' } : {}),
     text: { format: { type: 'json_schema', name: 'normalization_result', strict: false, schema: {
       type: 'object', additionalProperties: false,
       properties: {

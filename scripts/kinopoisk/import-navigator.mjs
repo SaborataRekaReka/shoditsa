@@ -156,8 +156,18 @@ const MOVIE_TYPES = new Set(['FILM', 'VIDEO', 'TV_MOVIE'])
 const SERIES_TYPES = new Set(['TV_SERIES', 'MINI_SERIES', 'TV_SHOW'])
 
 const detailsType = (details) => String(details?.type || '').toUpperCase().trim()
-const isSeriesDetails = (details) => details?.serial === true || SERIES_TYPES.has(detailsType(details))
-const isMovieDetails = (details) => details?.serial === false || MOVIE_TYPES.has(detailsType(details))
+const isSeriesDetails = (details) => {
+  const type = detailsType(details)
+  if (SERIES_TYPES.has(type)) return true
+  if (MOVIE_TYPES.has(type)) return false
+  return details?.serial === true
+}
+const isMovieDetails = (details) => {
+  const type = detailsType(details)
+  if (MOVIE_TYPES.has(type)) return true
+  if (SERIES_TYPES.has(type)) return false
+  return details?.serial === false
+}
 const hasAnimatedGenre = (genres) => genres.some((genre) => /мультфильм|аниме|animation|anime/i.test(String(genre)))
 
 const missingCore = (item) => {
