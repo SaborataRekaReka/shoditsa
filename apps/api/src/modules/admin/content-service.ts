@@ -349,8 +349,15 @@ export const activateContentRevision = async (db: Database, actor: Actor, revisi
   return { activated: revisionId, previousRevisionId: current?.id ?? null, rollback: target.status === 'retired', workspaceId: nextWorkspaceId }
 })
 
-export const loadWorkspaceChanges = (db: Database, workspaceId: string, itemIds?: string[]) => {
-  const conditions = [eq(contentWorkspaceChanges.workspaceId, workspaceId)]
-  if (itemIds?.length) conditions.push(inArray(contentWorkspaceChanges.itemId, itemIds))
-  return db.select().from(contentWorkspaceChanges).where(and(...conditions))
+export const loadWorkspaceChanges = async (db: Database, workspaceId: string, itemIds?: string[]) => {
+  if (!itemIds?.length) return db.select().from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspaceId))
+  const rows: Array<typeof contentWorkspaceChanges.$inferSelect> = []
+  const uniqueItemIds = [...new Set(itemIds)]
+  for (let offset = 0; offset < uniqueItemIds.length; offset += 500) {
+    rows.push(...await db.select().from(contentWorkspaceChanges).where(and(
+      eq(contentWorkspaceChanges.workspaceId, workspaceId),
+      inArray(contentWorkspaceChanges.itemId, uniqueItemIds.slice(offset, offset + 500)),
+    )))
+  }
+  return rows
 }

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import {
   AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentExchangeDocumentSchema, ContentExchangeExportBodySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
   LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
+  PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema,
 } from '../src/index.js'
 
 FormatRegistry.Set('uuid', (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
@@ -66,5 +67,12 @@ describe('API schemas', () => {
     expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_6')).toBe(false)
     expect(Value.Check(IntegrationKeySchema, 'SHIKIMORI_USER_AGENT')).toBe(true)
     expect(Value.Check(IntegrationKeySchema, 'SHIKIMORI_ACCESS_TOKEN')).toBe(true)
+  })
+  it('accepts pipeline bulk actions larger than the old 500 item limit', () => {
+    const itemIds = Array.from({ length: 501 }, () => crypto.randomUUID())
+    expect(Value.Check(PipelineBulkDecisionBodySchema, { itemIds, approved: true })).toBe(true)
+    expect(Value.Check(PipelineApprovalBodySchema, { itemIds })).toBe(true)
+    expect(Value.Check(PipelineBulkDecisionBodySchema, { itemIds: [itemIds[0], itemIds[0]], approved: true })).toBe(false)
+    expect(Value.Check(PipelineApprovalBodySchema, { itemIds: [itemIds[0], itemIds[0]] })).toBe(false)
   })
 })

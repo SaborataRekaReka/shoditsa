@@ -66,6 +66,10 @@ const runItemParams = Type.Object({ id: UuidSchema, itemId: UuidSchema }, { addi
 const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
 const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
 const rows = <T>(value: unknown) => Array.from(value as Iterable<T>)
+const batches = <T>(values: T[], size: number) => Array.from(
+  { length: Math.ceil(values.length / size) },
+  (_, index) => values.slice(index * size, (index + 1) * size),
+)
 const pipelineFieldDecisions = (item: { beforeJson: unknown; proposedJson: unknown }, approved: boolean) => {
   const before = asRecord(item.beforeJson)
   const proposed = asRecord(item.proposedJson)
@@ -1123,7 +1127,10 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const { id: runId } = request.params as { id: string }
     const body = request.body as PipelineBulkDecisionBody
     const result = await deps.db.transaction(async (tx) => {
-      const selected = await tx.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), inArray(pipelineRunItems.id, body.itemIds)))
+      const selected: Array<typeof pipelineRunItems.$inferSelect> = []
+      for (const itemIds of batches(body.itemIds, 500)) {
+        selected.push(...await tx.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), inArray(pipelineRunItems.id, itemIds))))
+      }
       if (selected.length !== body.itemIds.length) {
         const found = new Set(selected.map((item) => item.id))
         throw new ApiError(404, 'PIPELINE_ITEMS_NOT_FOUND', 'Часть результатов не найдена', { missingItemIds: body.itemIds.filter((itemId) => !found.has(itemId)) })
@@ -1132,33 +1139,39 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
       const now = new Date()
       const changes: Array<{ before: typeof selected[number]; after: typeof selected[number] }> = []
-      for (const item of selected) {
+      for (const batch of batches(selected, 200)) {
+        const decisions = new Map(batch.map((item) => [item.id, pipelineFieldDecisions(item, body.approved)]))
         const updated = await tx.update(pipelineRunItems).set({
           status: body.approved ? 'approved' : 'rejected',
-          fieldDecisionsJson: pipelineFieldDecisions(item, body.approved),
+          fieldDecisionsJson: sql`case ${pipelineRunItems.id} ${sql.join(batch.map((item) => sql`when ${item.id} then ${JSON.stringify(decisions.get(item.id))}::jsonb`), sql` `)} else ${pipelineRunItems.fieldDecisionsJson} end`,
           approvedBy: actor.id,
           approvedAt: now,
           updatedAt: now,
         }).where(and(
-          eq(pipelineRunItems.id, item.id),
+          inArray(pipelineRunItems.id, batch.map((item) => item.id)),
           eq(pipelineRunItems.runId, runId),
           notInArray(pipelineRunItems.status, ['staged', 'published']),
           isNull(pipelineRunItems.workspaceChangeId),
           isNull(pipelineRunItems.appliedRevisionId),
         )).returning()
-        if (!updated[0]) throw new ApiError(409, 'PIPELINE_ITEM_UPDATE_CONFLICT', 'Результат изменился во время массового действия', { itemId: item.id })
-        changes.push({ before: item, after: updated[0] })
+        if (updated.length !== batch.length) {
+          const updatedIds = new Set(updated.map((item) => item.id))
+          throw new ApiError(409, 'PIPELINE_ITEM_UPDATE_CONFLICT', 'Часть результатов изменилась во время массового действия', { itemIds: batch.filter((item) => !updatedIds.has(item.id)).map((item) => item.id) })
+        }
+        const beforeById = new Map(batch.map((item) => [item.id, item]))
+        const batchChanges = updated.map((after) => ({ before: beforeById.get(after.id)!, after }))
+        await tx.insert(auditLog).values(batchChanges.map((change) => ({
+          actorUserId: actor.id,
+          action: 'pipeline.item.decision',
+          entityType: 'pipeline_run_item',
+          entityId: change.after.id,
+          before: change.before,
+          after: change.after,
+          reason: body.note,
+          requestId: request.id,
+        })))
+        changes.push(...batchChanges)
       }
-      await tx.insert(auditLog).values(changes.map((change) => ({
-        actorUserId: actor.id,
-        action: 'pipeline.item.decision',
-        entityType: 'pipeline_run_item',
-        entityId: change.after.id,
-        before: change.before,
-        after: change.after,
-        reason: body.note,
-        requestId: request.id,
-      })))
       return changes
     })
     return { success: result.length, failed: 0, approved: body.approved, itemIds: result.map((change) => change.after.id) }
@@ -1226,13 +1239,25 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const body = request.body as PipelineApprovalBody
     const run = (await deps.db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1))[0]
     if (!run) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
-    const filters = [eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'approved')]
-    if (body.itemIds?.length) filters.push(inArray(pipelineRunItems.id, body.itemIds))
-    const items = await deps.db.select().from(pipelineRunItems).where(and(...filters))
+    const items: Array<typeof pipelineRunItems.$inferSelect> = []
+    if (body.itemIds?.length) {
+      for (const itemIds of batches(body.itemIds, 500)) {
+        items.push(...await deps.db.select().from(pipelineRunItems).where(and(
+          eq(pipelineRunItems.runId, runId),
+          eq(pipelineRunItems.status, 'approved'),
+          inArray(pipelineRunItems.id, itemIds),
+        )))
+      }
+    } else {
+      items.push(...await deps.db.select().from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'approved'))))
+    }
     if (!items.length) throw new ApiError(409, 'PIPELINE_ITEMS_NOT_APPROVED', 'Нет одобренных результатов для применения')
     const targetIds = items.map((item) => item.cardId ?? String(asRecord(item.proposedJson).id ?? item.entityKey))
-    const activeVersions = targetIds.length ? await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode, payload: contentItemVersions.payload }).from(contentItemVersions)
-      .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, targetIds))) : []
+    const activeVersions: Array<{ itemId: string; versionId: string; mode: ContentMode; payload: unknown }> = []
+    for (const itemIds of batches([...new Set(targetIds)], 500)) {
+      activeVersions.push(...await deps.db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode, payload: contentItemVersions.payload }).from(contentItemVersions)
+        .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, itemIds))))
+    }
     const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry]))
     const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
     const prepared = items.map((item) => {
@@ -1267,16 +1292,19 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const existingChanges = await loadWorkspaceChanges(deps.db, workspace.id, targetIds)
     const changeByItem = new Map(existingChanges.map((entry) => [entry.itemId, entry]))
     const results: Array<{ itemId: string; status: string; message?: string }> = []
-    for (const entry of prepared) {
-      const { item, itemId, mode, payload } = entry as typeof entry & { mode: ContentMode; payload: Record<string, unknown> }
-      try {
-        const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode, payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
-        await deps.db.update(pipelineRunItems).set({ status: 'staged', workspaceChangeId: change.id, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
-        results.push({ itemId: item.id, status: 'staged' })
-      } catch (error) {
-        await deps.db.update(pipelineRunItems).set({ status: 'conflict', errorCode: 'WORKSPACE_CONFLICT', safeErrorMessage: error instanceof Error ? error.message : 'Конфликт', updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
-        results.push({ itemId: item.id, status: 'conflict', message: error instanceof Error ? error.message : 'Конфликт' })
-      }
+    for (const batch of batches(prepared, 8)) {
+      results.push(...await Promise.all(batch.map(async (entry) => {
+        const { item, itemId, mode, payload } = entry as typeof entry & { mode: ContentMode; payload: Record<string, unknown> }
+        try {
+          const change = await saveWorkspaceItem(deps.db, actor, itemId, { mode, payload, expectedVersion: changeByItem.get(itemId)?.version ?? 0, source: 'ai_pipeline', reason: `Pipeline ${runId}`, pipelineRunId: runId, pipelineRunItemId: item.id }, request.id)
+          await deps.db.update(pipelineRunItems).set({ status: 'staged', workspaceChangeId: change.id, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
+          return { itemId: item.id, status: 'staged' }
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Конфликт'
+          await deps.db.update(pipelineRunItems).set({ status: 'conflict', errorCode: 'WORKSPACE_CONFLICT', safeErrorMessage: message, updatedAt: new Date() }).where(eq(pipelineRunItems.id, item.id))
+          return { itemId: item.id, status: 'conflict', message }
+        }
+      })))
     }
     await deps.db.update(pipelineRuns).set({ status: results.some((entry) => entry.status === 'conflict') ? 'partially_failed' : 'staged' }).where(eq(pipelineRuns.id, runId))
     if (!publish) return { results, workspace: await workspaceSummary(deps.db, actor) }
@@ -1292,7 +1320,9 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const date = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Asia/Almaty', day: '2-digit', month: '2-digit', year: 'numeric' }).format(run.createdAt)
     await deps.db.insert(contentTags).values({ name: `${pipelineName} · ${date} · ${runId.slice(0, 8)}`, slug: tagSlug, color: '#697f2f', createdBy: actor.id }).onConflictDoNothing()
     const runTag = (await deps.db.select({ id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color }).from(contentTags).where(eq(contentTags.slug, tagSlug)).limit(1))[0]
-    if (runTag && publishedCardIds.length) await deps.db.insert(contentItemTags).values(publishedCardIds.map((itemId) => ({ itemId, tagId: runTag.id, createdBy: actor.id }))).onConflictDoNothing()
+    if (runTag) for (const itemIds of batches(publishedCardIds, 250)) {
+      await deps.db.insert(contentItemTags).values(itemIds.map((itemId) => ({ itemId, tagId: runTag.id, createdBy: actor.id }))).onConflictDoNothing()
+    }
     if (runTag) await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.publish.tag', entityType: 'content_tag', entityId: runTag.id, before: null, after: { runId, itemIds: publishedCardIds }, requestId: request.id })
     return { results, built, activated, tag: runTag ?? null }
   }

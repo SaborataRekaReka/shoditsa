@@ -298,13 +298,13 @@ export const PipelineItemDecisionBodySchema = Type.Object({
 }, { additionalProperties: false })
 
 export const PipelineBulkDecisionBodySchema = Type.Object({
-  itemIds: Type.Array(UuidSchema, { minItems: 1, maxItems: 500, uniqueItems: true }),
+  itemIds: Type.Array(UuidSchema, { minItems: 1, uniqueItems: true }),
   approved: Type.Boolean(),
   note: Type.Optional(Type.String({ maxLength: 1_000 })),
 }, { additionalProperties: false })
 
 export const PipelineApprovalBodySchema = Type.Object({
-  itemIds: Type.Optional(Type.Array(UuidSchema, { minItems: 1, maxItems: 500 })),
+  itemIds: Type.Optional(Type.Array(UuidSchema, { minItems: 1, uniqueItems: true })),
   expectedWorkspaceVersion: Type.Optional(Type.Integer({ minimum: 1 })),
 }, { additionalProperties: false })
 
