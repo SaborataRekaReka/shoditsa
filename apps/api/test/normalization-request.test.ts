@@ -29,7 +29,7 @@ describe('normalization request transport', () => {
       }) as never)
 
     const result = await requestNormalization({
-      apiKey: 'test', model: 'gpt-5-mini', webSearch: true, mode: 'game', field: 'plotHint',
+      apiKey: 'test', model: 'gpt-5-mini', webSearch: true, webSearchRequired: true, mode: 'game', field: 'plotHint',
       prompt: 'Rewrite the hint for %title%', cardId: 'game:1',
       payload: { id: 'game:1', mode: 'game', titleRu: 'Game', titleOriginal: 'Game', plotHint: 'Old hint' },
     })
@@ -38,7 +38,10 @@ describe('normalization request transport', () => {
     expect(undiciFetch).toHaveBeenCalledTimes(3)
     const bodies = vi.mocked(undiciFetch).mock.calls.map((call) => JSON.parse(String(call[1]?.body)))
     expect(bodies[0].tools).toEqual([{ type: 'web_search', search_context_size: 'low' }])
+    expect(bodies[0].tool_choice).toBe('required')
     expect(bodies[1].tools).toEqual([{ type: 'web_search', search_context_size: 'low', external_web_access: false }])
+    expect(bodies[1].tool_choice).toBe('required')
     expect(bodies[2]).not.toHaveProperty('tools')
+    expect(bodies[2]).not.toHaveProperty('tool_choice')
   })
 })

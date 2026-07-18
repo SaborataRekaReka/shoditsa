@@ -304,7 +304,7 @@ export const requestNormalization = async (options: {
       if (/country,\s*region,\s*or\s*territory/i.test(message)) {
         response = await undiciFetch('https://api.openai.com/v1/responses', {
           method: 'POST', headers: { Authorization: `Bearer ${options.apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...body, tools: undefined }), signal: controller.signal,
+          body: JSON.stringify({ ...body, tools: undefined, tool_choice: undefined }), signal: controller.signal,
           ...(dispatcher ? { dispatcher } : {}),
         })
         payload = record(await response.json())

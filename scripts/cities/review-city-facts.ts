@@ -114,15 +114,18 @@ const prepare = async () => {
   return { skipped: false, runId: run.id, total: cards.length, sourceRunId, model: 'gpt-5-nano', webSearch: true }
 }
 
-type ClaimedItem = { id: string; entityKey: string; beforeJson: unknown; sourcesJson: unknown }
+type ClaimedItem = { id: string; entityKey: string; beforeJson: unknown; sourcesJson: unknown; confidenceJson: unknown }
 const claimItem = async (runId: string): Promise<ClaimedItem | null> => {
   const claimed = await db.execute(sql`
     update pipeline_run_items set status = 'running', "updatedAt" = now()
     where id = (
-      select id from pipeline_run_items where run_id = ${runId}::uuid and status = 'pending'
-      order by entity_key for update skip locked limit 1
+      select item.id from pipeline_run_items item
+      join pipeline_runs run on run.id = item.run_id
+      where item.run_id = ${runId}::uuid and item.status = 'pending'
+        and run.cancel_requested_at is null and run.status in ('queued','running')
+      order by item.entity_key for update of item skip locked limit 1
     )
-    returning id, entity_key as "entityKey", before_json as "beforeJson", sources_json as "sourcesJson"
+    returning id, entity_key as "entityKey", before_json as "beforeJson", sources_json as "sourcesJson", confidence_json as "confidenceJson"
   `)
   return Array.from(claimed as Iterable<ClaimedItem>)[0] ?? null
 }
@@ -187,12 +190,21 @@ const generatedFactProblem = (before: Json, result: NormalizationResult) => {
   return null
 }
 
-const usageSummary = (...results: Array<NormalizationResult | null>) => {
-  const entries = results.map((result) => result?.usage).filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+const usageSummary = (previousUsage: unknown, ...results: Array<NormalizationResult | null>) => {
+  const previous = record(previousUsage)
+  const previousEntries = Array.isArray(previous.responses) ? previous.responses.map(record) : []
+  const currentEntries = results.map((result) => result?.usage).filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+  const byResponse = new Map<string, Json>()
+  for (const [index, entry] of [...previousEntries, ...currentEntries].entries()) {
+    const normalizedEntry = record(entry)
+    const identity = text(normalizedEntry.responseId) || `anonymous:${index}`
+    if (!byResponse.has(identity)) byResponse.set(identity, normalizedEntry)
+  }
+  const entries = [...byResponse.values()]
   return {
     responses: entries,
-    costUsd: Number(entries.reduce((sum, entry) => sum + entry.costUsd, 0).toFixed(8)),
-    webSearchCalls: entries.reduce((sum, entry) => sum + entry.webSearchCalls, 0),
+    costUsd: Number(entries.reduce((sum, entry) => sum + Number(entry.costUsd || 0), 0).toFixed(8)),
+    webSearchCalls: entries.reduce((sum, entry) => sum + Number(entry.webSearchCalls || 0), 0),
   }
 }
 
@@ -212,9 +224,10 @@ const updateRunSnapshot = async (runId: string) => {
     update pipeline_runs set
       items_processed = stats.processed, items_succeeded = stats.regenerated + stats.kept, items_failed = stats.failed,
       actual_cost = stats.cost, heartbeat_at = now(), worker_id = ${workerLabel},
-      status = case when stats.pending > 0 or stats.running > 0 then 'running'
+      status = case when pipeline_runs.cancel_requested_at is not null then 'cancelled'
+        when stats.pending > 0 or stats.running > 0 then 'running'
         when stats.failed > 0 then 'partially_failed' else 'review_required' end,
-      finished_at = case when stats.pending = 0 and stats.running = 0 then now() else null end,
+      finished_at = case when pipeline_runs.cancel_requested_at is not null or (stats.pending = 0 and stats.running = 0) then now() else null end,
       log_excerpt = concat('City facts web nano: ', stats.processed, '/', stats.total, ' · оставлено ', stats.kept, ' · перегенерировано ', stats.regenerated, ' · ошибки ', stats.failed)
     from stats where pipeline_runs.id = ${runId}::uuid
   `)
@@ -235,13 +248,17 @@ const work = async () => {
   const runId = await runIdFromArgs()
   const environment = await loadIntegrationEnvironment(db, config)
   if (!environment.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured')
-  await db.update(pipelineRuns).set({ status: 'running', startedAt: new Date(), workerId: workerLabel }).where(eq(pipelineRuns.id, runId))
+  const started = await db.update(pipelineRuns).set({ status: 'running', startedAt: new Date(), workerId: workerLabel })
+    .where(and(eq(pipelineRuns.id, runId), sql`${pipelineRuns.status} in ('queued','running')`, sql`${pipelineRuns.cancelRequestedAt} is null`))
+    .returning({ id: pipelineRuns.id })
+  if (!started.length) return { runId, worker: workerLabel, completed: 0, cancelled: true }
   let completed = 0
   while (!workerMax || completed < workerMax) {
     const item = await claimItem(runId)
     if (!item) break
     const before = record(item.beforeJson)
     const source = record(item.sourcesJson)
+    const previousUsage = record(item.confidenceJson).usage
     const oldFact = text(source.previousFact)
     let critic: NormalizationResult | null = null
     let generation: NormalizationResult | null = null
@@ -257,7 +274,7 @@ const work = async () => {
       }
 
       if (critic && criticKept(before, oldFact, critic)) {
-        const usage = usageSummary(critic)
+        const usage = usageSummary(previousUsage, critic)
         await db.update(pipelineRunItems).set({
           status: 'rejected', warningsJson: ['Существующий факт прошёл строгую редакторскую проверку и оставлен без изменений.'],
           confidenceJson: { outcome: 'kept_existing', critic: { decision: critic.decision, confidence: critic.confidence, reason: critic.reason }, usage },
@@ -280,7 +297,7 @@ const work = async () => {
           contextFields: ['country', 'plotHint', 'evidence'], availableFields: ['evidence'], cardId: item.entityKey,
         }))
         if (!criticKept(before, fact, finalCritic)) throw new Error(`CITY_WEB_FACT_INVALID: final editor rejected: ${finalCritic.reason || finalCritic.decision}`)
-        const usage = usageSummary(critic, generation, finalCritic)
+        const usage = usageSummary(previousUsage, critic, generation, finalCritic)
         await db.update(pipelineRunItems).set({
           status: 'review_required', proposedJson: { ...before, facts: [fact] }, warningsJson: [],
           sourcesJson: { ...source, sourceUrls: generation.sourceUrls, evidence: generation.reason },
@@ -289,7 +306,7 @@ const work = async () => {
         }).where(eq(pipelineRunItems.id, item.id))
       }
     } catch (error) {
-      const usage = usageSummary(critic, generation, finalCritic)
+      const usage = usageSummary(previousUsage, critic, generation, finalCritic)
       await db.update(pipelineRunItems).set({
         status: 'failed', confidenceJson: { outcome: 'failed', usage }, errorCode: /CITY_WEB_FACT_INVALID/.test(safeError(error)) ? 'CITY_WEB_FACT_INVALID' : 'CITY_WEB_FACT_GENERATION_FAILED',
         safeErrorMessage: safeError(error), updatedAt: new Date(),
