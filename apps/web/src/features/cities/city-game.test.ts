@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { availableCityHintRounds, cityAssistHintOptions, cityPool, compareCities, dailyCity, searchCities, type CityItem } from './city-game'
+import { availableCityHintRounds, cityAssistHintOptions, cityPool, compareCities, dailyCity, searchCities, searchCitiesForMode, type CityItem } from './city-game'
 
 const city = (overrides: Partial<CityItem>): CityItem => ({
   id: 'city:test', titleRu: 'Тест', titleOriginal: 'Test', country: 'Страна', countryFlagUrl: null,
@@ -10,9 +10,9 @@ const city = (overrides: Partial<CityItem>): CityItem => ({
 
 describe('city game', () => {
   const items = [
-    city({ id: 'city:capital', titleRu: 'Столица', capital: true }),
-    city({ id: 'city:popular', titleRu: 'Популярный', popular: true }),
-    city({ id: 'city:other', titleRu: 'Обычный' }),
+    city({ id: 'city:capital', titleRu: 'Столица', titleOriginal: 'Capital', capital: true }),
+    city({ id: 'city:popular', titleRu: 'Популярный', titleOriginal: 'Popular', popular: true }),
+    city({ id: 'city:other', titleRu: 'Обычный', titleOriginal: 'Ordinary' }),
   ]
 
   it('builds the three requested pools', () => {
@@ -28,6 +28,11 @@ describe('city game', () => {
   it('searches Russian, original and alternative names', () => {
     const searchable = city({ id: 'city:new-york', titleRu: 'Нью-Йорк', titleOriginal: 'New York City', alternativeTitles: ['Big Apple'] })
     expect(searchCities([searchable], 'big app')).toEqual([searchable])
+  })
+
+  it('limits searchable guesses to the selected pool', () => {
+    expect(searchCitiesForMode(items, 'capitals', 'ordinary')).toEqual([])
+    expect(searchCitiesForMode(items, 'all', 'ordinary').map((item) => item.id)).toEqual(['city:other'])
   })
 
   it('compares city properties and gives useful directions', () => {

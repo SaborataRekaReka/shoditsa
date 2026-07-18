@@ -31,7 +31,7 @@ import {
   dailyCity,
   loadCitySession,
   saveCitySession,
-  searchCities,
+  searchCitiesForMode,
   type CityHint,
   type CityAssistHintChoice,
   type CityAssistHintKey,
@@ -50,6 +50,23 @@ type CityNavigation = {
 }
 
 const modeMeta = (mode: CityPoolMode) => CITY_POOL_OPTIONS.find((entry) => entry.mode === mode) ?? CITY_POOL_OPTIONS[0]
+const citySearchPlaceholder = (mode: CityPoolMode) => mode === 'capitals'
+  ? 'Например, Астана или Buenos Aires…'
+  : 'Например, Алматы или Buenos Aires…'
+const citySearchLead = (mode: CityPoolMode) => mode === 'capitals'
+  ? 'Начните с любой столицы'
+  : mode === 'capitals-popular'
+    ? 'Начните со столицы или популярного города'
+    : 'Начните с любого города'
+const cityCountNoun = (count: number) => {
+  const lastTwo = count % 100
+  if (lastTwo >= 11 && lastTwo <= 14) return 'городов'
+  const last = count % 10
+  if (last === 1) return 'город'
+  if (last >= 2 && last <= 4) return 'города'
+  return 'городов'
+}
+const cityCountLabel = (count: number) => `${count} ${cityCountNoun(count)}`
 const prettyDate = (date: string) => new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'long' }).format(new Date(`${date}T12:00:00+03:00`))
 const dayNumber = (date: string) => {
   const current = new Date(`${date}T12:00:00+03:00`)
@@ -104,7 +121,7 @@ const CityModeControl = ({ items, value, disabled, onChange }: { items: CityItem
         const active = value === entry.mode
         return <button type="button" role="option" aria-selected={active} className={`city-mode-option ${active ? 'active' : ''}`} key={entry.mode} onClick={(event) => { event.stopPropagation(); onChange(entry.mode); setOpen(false) }}>
           <span className={`city-mode-bars city-mode-bars--${entry.mode}`} aria-hidden="true"><i /><i /><i /></span>
-          <span className="city-mode-option__copy"><strong>{entry.label}</strong><small>{count || '—'} городов · {entry.description}</small></span>
+          <span className="city-mode-option__copy"><strong>{entry.label}</strong><small>{count ? cityCountLabel(count) : '—'} · {entry.description}</small></span>
           {active && <Check className="city-mode-option__check" />}
         </button>
       })}
@@ -166,7 +183,7 @@ export function CityTitleScreen({
             <div className="city-travel-pass__intro">
               <span className="city-travel-pass__eyebrow">Ежедневное путешествие</span>
               <h2>Угадайте город дня</h2>
-              <p>Режим меняет только круг возможных ответов.<br />В поиске доступны все {items.length || 980} городов.</p>
+              <p>Режим определяет круг возможных ответов.<br />В поиске доступны {selectedCount ? cityCountLabel(selectedCount) : '—'} выбранного режима.</p>
             </div>
             <div className="city-travel-pass__visual" aria-hidden="true">
               <img src="./images/cities/city-title-v2.webp" alt="" />
@@ -190,7 +207,7 @@ export function CityTitleScreen({
         </div>
         <div className="city-title-facts">
           <span><Compass /><strong>10</strong><small>попыток</small></span>
-          <span><MapPin /><strong>{selectedCount || '—'}</strong><small>городов</small></span>
+          <span><MapPin /><strong>{selectedCount || '—'}</strong><small>{cityCountNoun(selectedCount)}</small></span>
           <span><Database /><strong>10</strong><small>признаков</small></span>
         </div>
       </section>
@@ -334,6 +351,7 @@ export function CityGameScreen({
   const searchRef = useRef<HTMLInputElement>(null)
   const searchPickerRef = useRef<HTMLDivElement>(null)
   const byId = useMemo(() => new Map(items.map((item) => [item.id, item])), [items])
+  const playableIds = useMemo(() => new Set(cityPool(items, mode).map((item) => item.id)), [items, mode])
   const attempts = useMemo(() => attemptIds.map((id) => byId.get(id)).filter((item): item is CityItem => Boolean(item)), [attemptIds, byId])
   const hintOptions = useMemo(() => answer ? cityAssistHintOptions(answer, attempts, hintChoices) : [], [answer, attempts, hintChoices])
   const availableHintRounds = useMemo(() => availableCityHintRounds(attemptIds.length, hintChoices), [attemptIds.length, hintChoices])
@@ -344,7 +362,7 @@ export function CityGameScreen({
   const availableHintRound = availableHintRounds[0] ?? null
   const canUseHint = status === 'playing' && hintOptions.length > 0 && availableHintRound !== null
   const used = useMemo(() => new Set(attemptIds), [attemptIds])
-  const suggestions = useMemo(() => searchCities(items, query, used), [items, query, used])
+  const suggestions = useMemo(() => searchCitiesForMode(items, mode, query, used), [items, mode, query, used])
   const latestMatchCount = useMemo(() => {
     const latest = attempts.at(-1)
     return latest && answer ? compareCities(latest, answer).filter((hint) => hint.status === 'match').length : 0
@@ -401,10 +419,19 @@ export function CityGameScreen({
     if (!answer) return
     const saved = loadCitySession(mode, date)
     if (saved?.answerId === answer.id) {
-      setAttemptIds(saved.attemptIds.filter((id) => byId.has(id)))
+      const validAttemptIds = saved.attemptIds.filter((id) => playableIds.has(id))
+      const validStatus: CitySessionStatus = validAttemptIds.includes(answer.id)
+        ? 'won'
+        : validAttemptIds.length >= 10
+          ? 'lost'
+          : 'playing'
+      setAttemptIds(validAttemptIds)
       setHintChoices(saved.hintChoices)
       setDismissedHintRounds(saved.dismissedHintRounds)
-      setStatus(saved.status)
+      setStatus(validStatus)
+      if (validAttemptIds.length !== saved.attemptIds.length || validStatus !== saved.status) {
+        saveCitySession({ ...saved, attemptIds: validAttemptIds, status: validStatus, updatedAt: Date.now() })
+      }
     } else {
       setAttemptIds([])
       setHintChoices([])
@@ -417,7 +444,7 @@ export function CityGameScreen({
     setMessage('')
     setIsSearchDropdownOpen(false)
     setMatchStripOpen(false)
-  }, [answer, byId, date, mode])
+  }, [answer, byId, date, mode, playableIds])
 
   useEffect(() => {
     if (!isSearchDropdownOpen) return
@@ -451,6 +478,10 @@ export function CityGameScreen({
     const selected = city ?? suggestions[0]
     if (!selected || !answer || status !== 'playing') {
       setMessage('Выберите город из найденного списка')
+      return
+    }
+    if (!playableIds.has(selected.id)) {
+      setMessage('Этот город не входит в выбранный режим')
       return
     }
     if (used.has(selected.id)) {
@@ -528,7 +559,7 @@ export function CityGameScreen({
               value={query}
               autoComplete="off"
               aria-label="Введите название города"
-              placeholder="Например, Алматы или Buenos Aires…"
+              placeholder={citySearchPlaceholder(mode)}
               onFocus={() => setIsSearchDropdownOpen(true)}
               onChange={(event) => { setQuery(event.target.value); setMessage(''); setActiveSuggestionIndex(0); setIsSearchDropdownOpen(true) }}
               onKeyDown={(event) => {
@@ -565,7 +596,7 @@ export function CityGameScreen({
 
         {!attempts.length && status === 'playing' && <section className="empty-card city-empty-card">
           <div className="empty-card__icon"><Globe2 /></div>
-          <div><h2>Начните с любого города</h2><p>Стрелка вверх означает, что у ответа больше население, более поздний часовой пояс или более высокое место в рейтинге. Точное совпадение станет зелёным.</p></div>
+          <div><h2>{citySearchLead(mode)}</h2><p>Стрелка вверх означает, что у ответа больше население, более поздний часовой пояс или более высокое место в рейтинге. Точное совпадение станет зелёным.</p></div>
         </section>}
 
         {!!attempts.length && <section className="attempt-list city-attempt-list">

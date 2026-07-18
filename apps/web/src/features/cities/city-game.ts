@@ -121,6 +121,13 @@ export const searchCities = (items: CityItem[], query: string, used = new Set<st
     .map(({ item }) => item)
 }
 
+export const searchCitiesForMode = (
+  items: CityItem[],
+  mode: CityPoolMode,
+  query: string,
+  used = new Set<string>(),
+) => searchCities(cityPool(items, mode), query, used)
+
 const scalarStatus = (guess: string, answer: string): CityHintStatus => {
   if (!guess || !answer) return 'unknown'
   return normalize(guess) === normalize(answer) ? 'match' : 'miss'
