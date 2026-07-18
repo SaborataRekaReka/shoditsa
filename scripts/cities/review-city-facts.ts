@@ -89,7 +89,7 @@ const prepare = async () => {
   const run = (await db.insert(pipelineRuns).values({
     pipelineKey: 'normalization', pipelineVersion: operation, status: 'queued', createdBy: admin.id, itemsTotal: cards.length,
     inputDefinitionJson: { operation, scenario: 'keep_or_web_regenerate_city_fact', mode: 'city', field: 'facts', sourceRunId },
-    settingsJson: { criticModel: 'gpt-5-nano', generationModel: 'gpt-5-nano', webSearch: true, webSearchRequired: true, workerMode: 'claim_skip_locked' },
+    settingsJson: { criticModel: 'gpt-5-nano', generationModel: 'gpt-5-nano', finalCriticModel: 'gpt-5-mini', webSearch: true, webSearchRequired: true, workerMode: 'claim_skip_locked' },
     estimatedCost: '12.000000', resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
   }).returning())[0]
 
@@ -275,7 +275,7 @@ const work = async () => {
         const fact = text((generation.value as unknown[])[0])
         finalCritic = await requestWithRetries(() => requestNormalization({
           apiKey: environment.OPENAI_API_KEY, proxyUrl: environment.MUSIC_OUTBOUND_PROXY_URL,
-          model: 'gpt-5-nano', webSearch: false, mode: 'city', field: 'facts', prompt: FINAL_CRITIC_PROMPT,
+          model: 'gpt-5-mini', webSearch: false, mode: 'city', field: 'facts', prompt: FINAL_CRITIC_PROMPT,
           payload: { ...before, facts: [fact], evidence: generation!.reason },
           contextFields: ['country', 'plotHint', 'evidence'], availableFields: ['evidence'], cardId: item.entityKey,
         }))
