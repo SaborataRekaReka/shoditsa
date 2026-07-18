@@ -222,7 +222,6 @@ const CityAttemptCard = ({ city, answer, index }: { city: CityItem; answer: City
         <span className="city-attempt-card__country"><span><CityAsset src={city.countryFlagUrl} alt={`Флаг: ${city.country}`} /><Flag /></span>{city.country} · {city.continent}</span>
         {city.id === answer.id && <span className="city-attempt-card__correct"><Check /> Найден</span>}
       </span>
-      <CityRankProfile ranks={city.ranks} hints={rankHints} compact />
     </header>
     <div className={`dx-score dx-score--${scoreTone}`} aria-label={`Совпадений: ${matchedFields}; полей с совпадениями: ${matchedFields} из ${hints.length}`}>
       <span>Совпадений</span>
@@ -230,6 +229,7 @@ const CityAttemptCard = ({ city, answer, index }: { city: CityItem; answer: City
       <strong>{matchedFields}</strong>
     </div>
     <div className="attempt-clue-grid city-clue-grid">{primaryHints.map((hint) => <CityClue hint={hint} key={hint.key} />)}</div>
+    <CityRankProfile ranks={city.ranks} hints={rankHints} />
   </article>
 }
 
