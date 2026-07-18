@@ -150,12 +150,14 @@ const status = async () => {
   if (!run) throw new Error(`Pipeline run ${runId} was not found`)
   const grouped = await db.select({ status: pipelineRunItems.status, count: sql<number>`count(*)::int` }).from(pipelineRunItems)
     .where(eq(pipelineRunItems.runId, runId)).groupBy(pipelineRunItems.status)
+  const errors = await db.select({ entityKey: pipelineRunItems.entityKey, errorCode: pipelineRunItems.errorCode, message: pipelineRunItems.safeErrorMessage })
+    .from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed'))).limit(5)
   const invalid = await db.select({ before: pipelineRunItems.beforeJson, proposed: pipelineRunItems.proposedJson }).from(pipelineRunItems)
     .where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'review_required')))
   return {
     runId, status: run.status, itemsTotal: run.itemsTotal, processed: run.itemsProcessed, succeeded: run.itemsSucceeded, failed: run.itemsFailed,
     actualCost: run.actualCost, heartbeatAt: run.heartbeatAt, log: run.logExcerpt, grouped: Object.fromEntries(grouped.map((row) => [row.status, row.count])),
-    invalidHints: invalid.filter((item) => invalidHintReason(item.before, item.proposed)).length,
+    invalidHints: invalid.filter((item) => invalidHintReason(item.before, item.proposed)).length, errors,
   }
 }
 
