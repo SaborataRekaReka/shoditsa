@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { auditMovieRecord, sanitizeMovieRecord } from '../shared/movie-hint-sanitize.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
-const moviesPath = resolve(root, 'public', 'data', 'movies.generated.json')
+const moviesPath = resolve(root, 'public', 'data', 'libraries', 'movies', 'items.json')
 const reportPath = resolve(root, 'archive', 'reports', 'movie-hints-sanitization-report.json')
 
 const before = JSON.parse(await readFile(moviesPath, 'utf8'))
@@ -53,7 +53,7 @@ const summary = {
   changedFacts: changed.filter((entry) => entry.fields.facts).length,
 }
 
-await writeFile(moviesPath, JSON.stringify(after, null, 2), 'utf8')
-await writeFile(reportPath, JSON.stringify({ summary, changed }, null, 2), 'utf8')
+await writeFile(moviesPath, `${JSON.stringify(after, null, 2)}\n`, 'utf8')
+await writeFile(reportPath, `${JSON.stringify({ summary, changed }, null, 2)}\n`, 'utf8')
 
 console.log(JSON.stringify(summary, null, 2))

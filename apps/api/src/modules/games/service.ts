@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
-import type { ApiDifficultyKey, ApiRole, AssistHintKey, Hint, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
+import { GAME_MODE_MANIFEST, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItems, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
@@ -249,7 +249,7 @@ const answerPoolForSession = async (
   variantKey: string | null,
 ) => isPromoSessionVariant(mode, variantKey)
   ? materializePromoPool(tx, revisionId, String(variantKey))
-  : answerPool(tx, revisionId, mode, period, difficulty)
+  : answerPool(tx, revisionId, mode, period, difficulty, variantKey)
 
 const selectPromoEntry = (entries: ResolvedPromoEntry[], puzzleDate: string, salt: number, variantKey: string) => {
   if (!entries.length) return null
@@ -503,6 +503,19 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
     ])
   }
 
+  if (answer.mode === 'city') {
+    const ranks = answer.ranks
+    return presentInfoCandidates([
+      infoScalarCandidate('country', 'Страна', answer.country),
+      infoScalarCandidate('continent', 'Континент', answer.continent),
+      infoListCandidate('languages', 'Языки', answer.languages ?? [], 3),
+      answer.population != null ? infoScalarCandidate('population', 'Население', new Intl.NumberFormat('ru-RU').format(answer.population)) : null,
+      infoScalarCandidate('timezone', 'Часовой пояс', answer.timezone),
+      ranks?.economy != null ? infoScalarCandidate('economy', 'Экономика', `№ ${ranks.economy}`) : null,
+      ranks?.qualityOfLife != null ? infoScalarCandidate('qualityOfLife', 'Качество жизни', `№ ${ranks.qualityOfLife}`) : null,
+    ])
+  }
+
   return presentInfoCandidates([
     answer.year ? infoScalarCandidate('year', 'Год релиза', answer.year) : null,
     infoListCandidate('country', 'Страны', answer.countries ?? [], 2),
@@ -611,12 +624,12 @@ export const publicCard = (item: TitleItem) => ({
   supportingCast: normalizePeoplePhotos(item.supportingCast),
 })
 
-export const answerPool = async (tx: ReadDatabase, revisionId: string, mode: TitleMode, period: PeriodKey, difficulty: ApiDifficultyKey | null) => {
+export const answerPool = async (tx: ReadDatabase, revisionId: string, mode: TitleMode, period: PeriodKey, difficulty: ApiDifficultyKey | null, variantKey: string | null = null) => {
   const rows = await tx.select({ id: contentItemVersions.id, payload: contentItemVersions.payload })
     .from(contentItemVersions).where(and(
       eq(contentItemVersions.revisionId, revisionId), eq(contentItemVersions.mode, mode), eq(contentItemVersions.allowedInGame, true),
     )).orderBy(asc(contentItemVersions.sortOrder))
-  let items = poolFor(rows.map((row) => row.payload as TitleItem), mode, period)
+  let items = poolFor(rows.map((row) => row.payload as TitleItem), mode, period, variantKey)
   if (mode === 'music') items = musicDifficultyPool(items, difficulty ?? 'medium')
   const byItemId = new Map(rows.map((row) => [(row.payload as TitleItem).id, row.id]))
   return { items, byItemId }
@@ -634,13 +647,19 @@ const dailySalt = async (tx: Transaction) => {
 }
 
 export const startGame = async (db: Database, userId: string, input: {
-  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; packId?: string | null;
+  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null; packId?: string | null;
 }, authSessionId: string | null = null, actorRole: ApiRole = 'player') => db.transaction(async (tx) => {
-  const period = ['game', 'music', 'diagnosis'].includes(input.mode) ? 'all' : input.period ?? 'all'
+  const capabilities = GAME_MODE_MANIFEST[input.mode]
+  const period = capabilities.periodPolicy === 'all' ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
-  const packId = input.mode === 'game' && typeof input.packId === 'string' && input.packId.trim().length ? input.packId.trim() : null
+  const requestedVariant = input.variantKey ?? input.packId ?? null
+  const packId = input.mode === 'game' && typeof requestedVariant === 'string' && requestedVariant.trim().length ? requestedVariant.trim() : null
+  const modeVariant = input.mode === 'city' ? normalizeModeVariant(input.mode, requestedVariant) ?? 'capitals' : packId
+  if (input.mode === 'city' && requestedVariant && !normalizeModeVariant(input.mode, requestedVariant)) {
+    throw new ApiError(422, 'GAME_VARIANT_INVALID', 'Недопустимый вариант режима')
+  }
   if (packId && actorRole !== 'admin') throw new ApiError(403, 'PROMO_PACK_FORBIDDEN', 'Promo-режим доступен только администратору')
-  if (period !== 'all' && ['movie', 'series', 'anime'].includes(input.mode)) {
+  if (period !== 'all' && capabilities.periodPolicy === 'year') {
     const entitlement = await tx.select({ userId: periodEntitlements.userId }).from(periodEntitlements).where(and(
       eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, input.mode), eq(periodEntitlements.period, period),
     )).limit(1)
@@ -652,13 +671,13 @@ export const startGame = async (db: Database, userId: string, input: {
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
   const revisionId = await activeRevision(tx)
   const salt = await dailySalt(tx)
-  const variant = packId ?? difficulty ?? '-'
-  const algorithmVersion = packId ? 2 : 1
+  const variant = modeVariant ?? difficulty ?? '-'
+  const algorithmVersion = modeVariant ? 2 : 1
   const challengeKey = `${puzzleDate}|${input.mode}|${period}|${variant}|${salt}|v${algorithmVersion}`
 
   let challenge = await tx.select().from(dailyChallenges).where(eq(dailyChallenges.challengeKey, challengeKey)).limit(1)
   if (!challenge[0]) {
-    const pool = await answerPoolForSession(tx, revisionId, input.mode, period, difficulty, packId)
+    const pool = await answerPoolForSession(tx, revisionId, input.mode, period, difficulty, modeVariant)
     const answer = packId
       ? (() => {
         const resolve = async () => {
@@ -672,7 +691,7 @@ export const startGame = async (db: Database, userId: string, input: {
         }
         return resolve()
       })()
-      : Promise.resolve(dailyTitle(pool.items, input.mode, period, puzzleDate, salt, difficulty ?? ''))
+      : Promise.resolve(dailyTitle(pool.items, input.mode, period, puzzleDate, salt, input.mode === 'city' ? variant : difficulty ?? ''))
     const selectedAnswer = await answer
     if (!selectedAnswer) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для выбранного режима нет доступных вариантов')
     const answerItemVersionId = pool.byItemId.get(selectedAnswer.id)

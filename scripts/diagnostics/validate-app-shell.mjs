@@ -4,6 +4,10 @@ import { resolve } from 'node:path'
 const root = process.cwd()
 const requiredFiles = [
   'apps/web/src/App.tsx',
+  'apps/web/src/app/router.tsx',
+  'apps/web/src/app/routes.ts',
+  'apps/web/src/app/mode-presentation.ts',
+  'packages/contracts/src/game-modes.ts',
   'apps/web/src/components/app-shell/AppShell.tsx',
   'apps/web/src/features/economy/EconomyView.tsx',
   'apps/web/src/api/client.ts',
@@ -25,11 +29,19 @@ for (const path of requiredFiles) {
 
 const sourceChecks = [
   {
-    path: 'apps/web/src/App.tsx',
+    path: 'apps/web/src/app/router.tsx',
     required: [
-      ['profile route', /type AppScreen[^\n]*'profile'/],
-      ['profile screen', /function ProfileScreen\s*\(/],
-      ['footer render', /screen !== 'game'\s*&&\s*screen !== 'city-game'\s*&&\s*<AppFooter/],
+      ['typed game route', /path:\s*'games\/\$mode'/],
+      ['typed session route', /path:\s*'sessions\/\$sessionId'/],
+      ['autonomous hash history', /createHashHistory\(\)/],
+    ],
+  },
+  {
+    path: 'packages/contracts/src/game-modes.ts',
+    required: [
+      ['canonical playable modes', /PLAYABLE_MODE_IDS\s*=\s*CONTENT_MODE_IDS/],
+      ['city manifest entry', /city:\s*\{/],
+      ['manifest-derived daily order', /DAILY_MODE_IDS\s*=\s*PLAYABLE_MODE_IDS/],
     ],
   },
   {
@@ -65,8 +77,9 @@ const sourceChecks = [
   {
     path: 'scripts/diagnostics/smoke-production-main.mjs',
     required: [
-      ['all production API modes', /\['movie', 'series', 'anime', 'game', 'music', 'diagnosis'\]/],
+      ['manifest-driven production API modes', /for \(const mode of manifest\.playableModes\)/],
       ['legacy answer data blocked', /Legacy answer dataset is publicly reachable/],
+      ['legacy city answer data blocked', /Legacy city answer dataset is publicly reachable/],
     ],
   },
 ]

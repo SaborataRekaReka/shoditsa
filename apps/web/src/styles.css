@@ -5,7 +5,6 @@
 @import './features/daily-progress/daily-progress.css';
 @import './features/auth/LoginScreen.css';
 @import './features/profile/ProfileScreen.css';
-@import './features/cities/city-game.css';
 @import './styles/utilities.css';
 
 .server-brand { font-family: var(--font-display, sans-serif); font-size: 1.4rem; font-weight: 900; color: var(--ink, #171717); }
@@ -34,7 +33,7 @@
 .server-modal-content { display: grid; gap: 16px; }.server-list { display: grid; gap: 8px; max-height: 52vh; overflow: auto; }.server-list article,.server-list button { display: flex; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid rgba(0,0,0,.1); border-radius: 12px; background: #fff; text-align: left; }.server-list span { opacity: .7; }.server-promo,.server-archive-start { display: flex; gap: 8px; flex-wrap: wrap; }.server-promo input,.server-archive-start input,.server-archive-start select { min-height: 44px; flex: 1; border: 1px solid rgba(0,0,0,.18); border-radius: 12px; padding: 0 12px; }.server-promo button,.server-archive-start button { min-height: 44px; border: 0; border-radius: 12px; padding: 0 14px; background: #171717; color: #fff; font-weight: 800; }
 @media (max-width: 640px) { .server-hints { grid-template-columns: repeat(2,minmax(0,1fr)); }.server-game { padding-top: 16px; }.server-assist { align-items: stretch; }.server-assist select,.server-assist button { width: 100%; } }
 
-/* Category tickets: the hub keeps the same content width while showing the six daily modes as a compact archive grid. */
+/* Category tickets follow the canonical daily-mode manifest. */
 #available-games.category-section { margin-top: 0; }
 .category-heading { margin-bottom: 13px; }
 .category-grid.category-grid--active {
@@ -48,3 +47,14 @@
 @media (min-width: 1080px) {
   .category-grid.category-grid--active { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+/* Canonical per-mode variant selector (currently used by Cities). */
+.mode-variant-control { min-width: min(100%, 390px); margin: 0; padding: 0; border: 0; }
+.mode-variant-control legend { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.mode-variant-control legend svg { width: 16px; height: 16px; }
+.mode-variant-control__options { display: grid; gap: 8px; }
+.mode-variant-control__option { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--paper) 88%, transparent); color: inherit; text-align: left; cursor: pointer; }
+.mode-variant-control__option > span { display: grid; gap: 2px; }
+.mode-variant-control__option strong { font: inherit; font-weight: 800; }
+.mode-variant-control__option small { color: var(--muted); }
+.mode-variant-control__option svg { width: 18px; height: 18px; flex: none; }
+.mode-variant-control__option.is-active { border-color: var(--ink); box-shadow: inset 3px 0 0 var(--accent, #ad5e49); }

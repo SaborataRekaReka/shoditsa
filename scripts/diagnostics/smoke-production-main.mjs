@@ -12,7 +12,7 @@ const fetchResponse = (path) => fetch(`${baseUrl}${path}`, { headers: { 'cache-c
 
 const manifest = JSON.parse(await fetchText(`/build-manifest.json?smoke=${Date.now()}`))
 if (manifest.commitSha !== expectedSha) throw new Error(`Production SHA ${manifest.commitSha} does not match expected main SHA ${expectedSha}`)
-for (const marker of ['profile', 'footer', 'serverAuthoritative', 'noPublicAnswerData']) {
+for (const marker of ['profile', 'footer', 'typedRoutes', 'canonicalModeManifest', 'serverAuthoritative', 'noPublicAnswerData']) {
   if (manifest.shell?.[marker] !== true) throw new Error(`Build manifest is missing shell marker: ${marker}`)
 }
 
@@ -26,12 +26,15 @@ const meta = JSON.parse(await fetchText(`/api/v1/meta?smoke=${Date.now()}`))
 if (meta.buildSha !== expectedSha) throw new Error(`Production API SHA ${meta.buildSha ?? 'missing'} does not match expected main SHA ${expectedSha}`)
 if (meta.auth?.yandex !== true) throw new Error('Production API does not advertise Yandex OAuth')
 const modes = new Map((meta.modes ?? []).map((entry) => [entry.mode, entry.count]))
-for (const mode of ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']) {
+if (!Array.isArray(manifest.playableModes) || !manifest.playableModes.length) throw new Error('Build manifest does not expose canonical playable modes')
+for (const mode of manifest.playableModes) {
   if (!Number.isInteger(modes.get(mode)) || modes.get(mode) <= 0) throw new Error(`API content mode ${mode} is empty or invalid`)
 }
 
 const leakedData = await fetchResponse(`/data/libraries/movies/items.json?smoke=${Date.now()}`)
 if (leakedData.status !== 404) throw new Error(`Legacy answer dataset is publicly reachable (HTTP ${leakedData.status})`)
+const leakedCityData = await fetchResponse(`/city-content/cities.json?smoke=${Date.now()}`)
+if (leakedCityData.status !== 404) throw new Error(`Legacy city answer dataset is publicly reachable (HTTP ${leakedCityData.status})`)
 
 const oauthResponse = await fetch(`${baseUrl}/api/auth/sign-in/oauth2`, {
   method: 'POST',

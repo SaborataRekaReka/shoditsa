@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
+import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
 import { Check, ChevronDown, Copy, Send, Share2, Ticket } from 'lucide-react'
 import type { ChallengeOutcome } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
+import type { TitleMode } from '../../types'
 
 const diagnosisSystemRewardIcon = './images/diagnosis-systems/nervous.svg'
 
@@ -19,7 +21,7 @@ export type ResultAward = {
 }
 
 type Props = {
-  mode: 'movie' | 'series' | 'anime' | 'game' | 'music' | 'diagnosis' | 'city'
+  mode: TitleMode
   won: boolean
   attempts: number
   poster: ReactNode
@@ -58,7 +60,7 @@ export function GameResult(props: Props) {
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
       <strong>{props.won ? `${props.attempts}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
-        <strong>Сегодня: {props.completedToday} из 6</strong>
+        <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
         <span>{props.nextRewardText}</span>
       </div>}
       {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>

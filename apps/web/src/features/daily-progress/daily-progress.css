@@ -30,7 +30,7 @@
   .daily-progress-stub { min-height: auto; padding: 18px 20px 20px; grid-template-columns: 1fr; gap: 18px; }
   .daily-progress-summary__value { font-size: 24px; }
   .progress-punches { justify-content: flex-start; gap: clamp(7px,2.5vw,12px); }
-  .progress-punch { width: min(40px,calc((100vw - 104px) / 6)); }
+  .progress-punch { width: min(40px,calc((100vw - 104px) / 7)); }
   .progress-punches__caption { text-align: left; }
   .next-reward { justify-content: flex-start; }
   .next-reward__copy { order: 2; text-align: left; }

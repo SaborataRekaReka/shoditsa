@@ -1,12 +1,22 @@
 import { execFileSync } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
 
 const commitSha = process.env.GITHUB_SHA || execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
 const manifest = {
   commitSha,
   builtAt: new Date().toISOString(),
-  shell: { profile: true, footer: true, yandexSdk: false, serverAuthoritative: true, noPublicAnswerData: true },
+  playableModes: PLAYABLE_MODE_IDS,
+  shell: {
+    profile: true,
+    footer: true,
+    typedRoutes: true,
+    canonicalModeManifest: true,
+    yandexSdk: false,
+    serverAuthoritative: true,
+    noPublicAnswerData: true,
+  },
 }
 
 const indexHtml = await readFile(resolve('dist/index.html'), 'utf8')

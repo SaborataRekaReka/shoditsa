@@ -1,14 +1,13 @@
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
-import type { ContentMode, TitleItem } from '@shoditsa/contracts'
+import { CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type ContentMode, type TitleItem } from '@shoditsa/contracts'
 import { normalize } from '@shoditsa/game-core'
 
-export const RELEASE_LIBRARIES: Array<{ dir: string; mode: ContentMode }> = [
-  { dir: 'movies', mode: 'movie' }, { dir: 'series', mode: 'series' },
-  { dir: 'animes', mode: 'anime' }, { dir: 'games', mode: 'game' },
-  { dir: 'music', mode: 'music' }, { dir: 'diagnoses', mode: 'diagnosis' }, { dir: 'cities', mode: 'city' },
-]
+export const RELEASE_LIBRARIES: Array<{ dir: string; mode: ContentMode }> = CONTENT_MODE_IDS.map((mode) => ({
+  dir: GAME_MODE_MANIFEST[mode].dataDir,
+  mode,
+}))
 export type ReleaseContentItem = Omit<TitleItem, 'mode'> & { mode: ContentMode; [key: string]: unknown }
 
 const sha256 = (value: string | Buffer) => createHash('sha256').update(value).digest('hex')

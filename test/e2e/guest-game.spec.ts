@@ -95,10 +95,10 @@ test('guest uses the polished server game, reloads and keeps the active session'
   await expect(page.locator('.server-lobby, .server-game')).toHaveCount(0)
 })
 
-test('all six modes use the current cards and mobile layout does not overflow', async ({ page }) => {
+test('all canonical modes use the current cards and mobile layout does not overflow', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('.brand img[alt="Сходится!"]')).toBeVisible()
-  for (const title of ['Кино', 'Сериалы', 'Аниме', 'Игры', 'Музыка', 'Диагнозы']) {
+  for (const title of ['Кино', 'Сериалы', 'Аниме', 'Игры', 'Города', 'Музыка', 'Диагнозы']) {
     await page.getByRole('button', { name: new RegExp(title) }).first().click()
     await expect(page.locator('.title-screen')).toBeVisible()
     await page.getByRole('button', { name: 'На главный экран' }).first().click()

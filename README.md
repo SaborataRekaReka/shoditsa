@@ -1,6 +1,6 @@
 # Сходится!
 
-Серверная платформа ежедневных игр с шестью режимами. Веб-версия использует Fastify, PostgreSQL и server-authoritative игровые сессии; автономная сборка Яндекс Игр сохранена как отдельный режим.
+Серверная платформа ежедневных игр с семью режимами. Веб-версия использует Fastify, PostgreSQL и server-authoritative игровые сессии; автономная сборка Яндекс Игр использует те же контракты, режимы и игровое ядро с локальным контроллером хранения.
 
 ## Локальный запуск
 
@@ -61,6 +61,7 @@ npm run content:media:migrate -- --target C:\path\to\media --apply
 ## Архитектура и эксплуатация
 
 - [Архитектура](docs/backend/ARCHITECTURE.md)
+- [Стандарт добавления игрового режима](docs/refactor/GAME_MODE_STANDARD.md)
 - [База данных](docs/backend/DATABASE.md)
 - [API](docs/backend/API.md)
 - [Импорт контента](docs/backend/CONTENT_IMPORT.md)

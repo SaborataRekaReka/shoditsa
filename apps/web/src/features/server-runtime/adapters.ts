@@ -6,6 +6,7 @@ import type {
   MetaResponse,
   TodayAttendance,
 } from '@shoditsa/contracts'
+import { PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
 import type { AttendanceStats, DailyAttendance, SavedGame, TitleMode, Wallet } from '../../types'
 
 export const toLegacyWallet = (dashboard: DashboardResponse | null): Wallet => ({
@@ -63,7 +64,7 @@ export const archiveItemToSavedGame = (session: ArchiveItem): SavedGame => ({
 })
 
 export const serverTitleCounts = (meta: MetaResponse | null): Record<TitleMode, number | null> => {
-  const counts: Record<TitleMode, number | null> = { movie: null, series: null, anime: null, game: null, music: null, diagnosis: null }
+  const counts = Object.fromEntries(PLAYABLE_MODE_IDS.map((mode) => [mode, null])) as Record<TitleMode, number | null>
   for (const entry of meta?.modes ?? []) counts[entry.mode] = entry.count
   return counts
 }

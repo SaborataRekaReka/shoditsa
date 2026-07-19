@@ -28,7 +28,7 @@
       "source": "public/data/games.generated.json",
       "itemsFile": "public/data/libraries/games/items.json",
       "searchIndexFile": "public/data/libraries/games/search-index.json",
-      "count": 1000
+      "count": 999
     },
     {
       "key": "diagnoses",

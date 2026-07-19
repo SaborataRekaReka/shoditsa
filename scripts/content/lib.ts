@@ -1,14 +1,13 @@
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
-import type { ContentMode, TitleItem } from '@shoditsa/contracts'
+import { CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type ContentMode, type TitleItem } from '@shoditsa/contracts'
 import { normalize } from '@shoditsa/game-core'
 
-export const LIBRARIES: Array<{ dir: string; mode: ContentMode }> = [
-  { dir: 'movies', mode: 'movie' }, { dir: 'series', mode: 'series' },
-  { dir: 'animes', mode: 'anime' }, { dir: 'games', mode: 'game' },
-  { dir: 'music', mode: 'music' }, { dir: 'diagnoses', mode: 'diagnosis' }, { dir: 'cities', mode: 'city' },
-]
+export const LIBRARIES: Array<{ dir: string; mode: ContentMode }> = CONTENT_MODE_IDS.map((mode) => ({
+  dir: GAME_MODE_MANIFEST[mode].dataDir,
+  mode,
+}))
 export type ContentLibraryItem = Omit<TitleItem, 'mode'> & { mode: ContentMode; [key: string]: unknown }
 
 export const sha256 = (value: string | Buffer) => createHash('sha256').update(value).digest('hex')
@@ -42,6 +41,14 @@ const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file
   return item
 }
 
+const externalIdentity = (item: ContentLibraryItem) => {
+  if (Number.isFinite(item.externalRanks?.thegamesdb)) return `${item.mode}:thegamesdb:${item.externalRanks!.thegamesdb}`
+  if (Number.isFinite(item.kinopoiskId)) return `${item.mode}:kinopoisk:${item.kinopoiskId}`
+  if (Number.isFinite(item.shikimoriId)) return `${item.mode}:shikimori:${item.shikimoriId}`
+  if (Number.isFinite(item.steamAppId)) return `${item.mode}:steam:${item.steamAppId}`
+  return null
+}
+
 export type LoadedLibrary = { mode: ContentMode; dir: string; file: string; checksum: string; items: ContentLibraryItem[] }
 export type ImportManifest = {
   generatedAt: string
@@ -55,6 +62,7 @@ export type ImportManifest = {
 export const loadLibraries = async (sourceArg?: string) => {
   const source = resolve(sourceArg ?? './public/data/libraries')
   const seen = new Set<string>()
+  const seenExternalIds = new Map<string, string>()
   const warnings: string[] = []
   const libraries: LoadedLibrary[] = []
   for (const library of LIBRARIES) {
@@ -63,6 +71,13 @@ export const loadLibraries = async (sourceArg?: string) => {
     const parsed = JSON.parse(raw.toString('utf8')) as unknown
     if (!Array.isArray(parsed) || parsed.length === 0) throw new Error(`${file}: library must be a non-empty array`)
     const items = parsed.map((value, index) => validateItem(value, library.mode, seen, file, index))
+    for (const item of items) {
+      const identity = externalIdentity(item)
+      if (!identity) continue
+      const previous = seenExternalIds.get(identity)
+      if (previous) throw new Error(`Duplicate external content id ${identity}: ${previous}, ${item.id}`)
+      seenExternalIds.set(identity, item.id)
+    }
     libraries.push({ ...library, file, checksum: sha256(raw), items })
   }
   const diagnosis = libraries.find((library) => library.mode === 'diagnosis')!

@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { buildPlotHint } from '../shared/plot-hint.mjs'
+import { pickBestGameCandidate } from '../shared/game-candidate-match.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
 
@@ -11,8 +12,6 @@ const INDEX_OUTPUT_PATH = resolve(root, 'public', 'data', 'game-search-index.jso
 const CACHE_PATH = resolve(root, 'data', 'games', 'cache', 'thegamesdb-cache.json')
 const STATE_PATH = resolve(root, 'data', 'games', 'logs', 'thegamesdb-progress.json')
 const REPORT_PATH = resolve(root, 'data', 'games', 'logs', 'import-report.thegamesdb.incremental.json')
-
-const EDITION_WORDS = ['edition', 'collection', 'remaster', 'remastered', 'remake', 'definitive', 'goty', 'beta', 'demo', 'pack']
 
 const counters = {
   apiCalls: 0,
@@ -50,13 +49,6 @@ const readJsonIfExists = async (filePath, fallback) => {
 
 const uniq = (items) => [...new Set(items.map((item) => String(item || '').trim()).filter(Boolean))]
 
-const normalize = (value) => String(value || '')
-  .toLowerCase()
-  .replace(/&/g, ' and ')
-  .replace(/[^a-z0-9а-яё\s]/gi, ' ')
-  .replace(/\s+/g, ' ')
-  .trim()
-
 const parseYear = (value) => {
   const text = String(value || '').trim()
   const year = Number(text.slice(0, 4))
@@ -88,40 +80,6 @@ const compactSearchPayload = (payload) => {
     games: compactGames,
     platformData: payload?.include?.platform?.data || {},
   }
-}
-
-const pickBestCandidate = (seed, candidates) => {
-  const seedName = normalize(seed.name)
-
-  const scored = candidates.map((candidate) => {
-    const title = String(candidate.game_title || '')
-    const titleNormalized = normalize(title)
-    const year = parseYear(candidate.release_date)
-
-    let score = 0
-    if (titleNormalized === seedName) score += 100
-    else if (titleNormalized.startsWith(seedName) || seedName.startsWith(titleNormalized)) score += 80
-    else if (titleNormalized.includes(seedName) || seedName.includes(titleNormalized)) score += 60
-
-    if (year != null) {
-      const diff = Math.abs(seed.year - year)
-      if (diff === 0) score += 22
-      else if (diff <= 2) score += 12
-      else if (diff <= 5) score += 5
-      else score -= 10
-    }
-
-    const hasEditionWord = EDITION_WORDS.some((word) => titleNormalized.includes(word))
-    const seedHasEditionWord = EDITION_WORDS.some((word) => seedName.includes(word))
-    if (hasEditionWord && !seedHasEditionWord) score -= 10
-
-    if (year === 1970) score -= 50
-
-    return { candidate, score }
-  })
-
-  scored.sort((a, b) => b.score - a.score)
-  return scored[0]?.candidate ?? null
 }
 
 const chunk = (items, size) => {
@@ -421,7 +379,7 @@ const main = async () => {
       continue
     }
 
-    const best = pickBestCandidate(seed, candidates)
+    const best = pickBestGameCandidate(seed, candidates)
     if (!best) {
       skipped.push({ rank: seed.rank, name: seed.name, reason: 'no_best_candidate' })
       if (pending.length >= 10) await flushPending()

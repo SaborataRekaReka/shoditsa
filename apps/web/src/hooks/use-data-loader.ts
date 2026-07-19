@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import type { CaseVignetteMap, DiagnosisCaseVignettes, LibrarySearchIndex, TitleItem, TitleMode } from '../types'
 import { MODE_CONFIG } from '../app/mode-config'
+import { PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
 
 type ModeData = Record<TitleMode, TitleItem[]>
-type ModeCounts = { movie: number | null; series: number | null; anime: number | null; game: number | null; music: number | null; diagnosis: number | null }
+type ModeCounts = Record<TitleMode, number | null>
 type ModeSearchIndexes = Record<TitleMode, LibrarySearchIndex | null>
 
-const initialData: ModeData = { movie: [], series: [], anime: [], game: [], music: [], diagnosis: [] }
-const initialCounts: ModeCounts = { movie: null, series: null, anime: null, game: null, music: null, diagnosis: null }
-const initialSearchIndexes: ModeSearchIndexes = { movie: null, series: null, anime: null, game: null, music: null, diagnosis: null }
+const modeRecord = <T,>(create: () => T) => Object.fromEntries(PLAYABLE_MODE_IDS.map((mode) => [mode, create()])) as Record<TitleMode, T>
+const initialData: ModeData = modeRecord(() => [])
+const initialCounts: ModeCounts = modeRecord(() => null)
+const initialSearchIndexes: ModeSearchIndexes = modeRecord(() => null)
 const toIntegerOrNull = (value: unknown) => {
   const parsed = Math.trunc(Number(value))
   return Number.isFinite(parsed) ? parsed : null
@@ -132,13 +134,14 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
 
   useEffect(() => {
     if (!enabled) return
-    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; musicCount?: number; diagnosisCount?: number }>('./data/source.json')
+    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; cityCount?: number; musicCount?: number; diagnosisCount?: number }>('./data/source.json')
       .then((source) => {
         setTitleCounts((current) => ({
           movie: Number.isFinite(source.movieCount) ? source.movieCount! : current.movie,
           series: Number.isFinite(source.seriesCount) ? source.seriesCount! : current.series,
           anime: Number.isFinite(source.animeCount) ? source.animeCount! : current.anime,
           game: Number.isFinite(source.gameCount) ? source.gameCount! : current.game,
+          city: Number.isFinite(source.cityCount) ? source.cityCount! : current.city,
           music: Number.isFinite(source.musicCount) ? source.musicCount! : current.music,
           diagnosis: Number.isFinite(source.diagnosisCount) ? source.diagnosisCount! : current.diagnosis,
         }))

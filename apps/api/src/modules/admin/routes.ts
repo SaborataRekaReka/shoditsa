@@ -14,7 +14,7 @@ import {
   MusicPipelineRunBodySchema, MoviePipelineEstimateBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema,
   NormalizationPipelineEstimateBodySchema, NormalizationPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema, PipelineItemDecisionBodySchema,
-  UuidSchema,
+  CONTENT_MODE_IDS, UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody, type AdminTagCreateBody,
   type AdminMediaUploadBody, type AdminQualityIssuePatchBody, type AdminReportBulkResolveBody, type AdminReportQuery, type AdminUserNoteBody, type AdminUsersQuery, type AdminWorkspaceBulkBody,
   type AdminWorkspaceItemBody, type ClientEventsBatchBody, type ContentMode, type IntegrationKey, type IntegrationSecretUpdateBody,
@@ -397,7 +397,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       )`
         : field === 'title' ? sql<string>`concat_ws(' ', ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${effectivePayload}->>'alternativeTitles', ${effectivePayload}->>'aliases')`
           : field === 'id' ? sql<string>`${contentItemVersions.itemId}`
-            : field === 'mode' ? sql<string>`concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' end)`
+            : field === 'mode' ? sql<string>`concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'city' then 'города' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' end)`
               : field === 'publicationStatus' || field === 'allowedInGame' ? sql<string>`case when coalesce((${effectivePayload}->>'allowedInGame')::boolean, ${contentItemVersions.allowedInGame}) then 'true да yes 1 в игре active published разрешена' else 'false нет no 0 скрыта hidden blocked запрещена' end`
                 : field === 'changeSource' ? sql<string>`coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')`
                   : field === 'pipeline' ? sql<string>`coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')`
@@ -805,7 +805,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     ] }
   })
 
-  const normalizationModeQuery = Type.Object({ mode: Type.Union(['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'].map((value) => Type.Literal(value))) }, { additionalProperties: false })
+  const normalizationModeQuery = Type.Object({ mode: Type.Union(CONTENT_MODE_IDS.map((value) => Type.Literal(value))) }, { additionalProperties: false })
   let normalizationFieldCache: { expiresAt: number; fields: string[] } | null = null
   const normalizationAvailableFields = async () => {
     if (normalizationFieldCache && normalizationFieldCache.expiresAt > Date.now()) return normalizationFieldCache.fields
@@ -1259,7 +1259,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
         .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId)).where(and(eq(contentRevisions.status, 'active'), inArray(contentItemVersions.itemId, itemIds))))
     }
     const activeVersionByItem = new Map(activeVersions.map((entry) => [entry.itemId, entry]))
-    const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
+    const contentModes: ContentMode[] = [...CONTENT_MODE_IDS]
     const prepared = items.map((item) => {
       const before = asRecord(item.beforeJson); const proposed = asRecord(item.proposedJson); const decisions = asRecord(item.fieldDecisionsJson)
       const itemId = item.cardId ?? String(proposed.id ?? item.entityKey)

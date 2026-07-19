@@ -2,7 +2,7 @@
   "version": 1,
   "library": "games",
   "generatedAt": "2026-07-08T12:02:01.114Z",
-  "totalItems": 1000,
+  "totalItems": 999,
   "tokensCount": 1246,
   "docs": [
     {
@@ -1767,16 +1767,6 @@
     },
     {
       "id": "tgdb_10221",
-      "titleRu": "Divinity: Original Sin",
-      "titleOriginal": "Divinity: Original Sin",
-      "alternativeTitles": [],
-      "year": 2014,
-      "topRank": 240,
-      "steamAppId": null,
-      "icd10": []
-    },
-    {
-      "id": "tgdb_10221_1",
       "titleRu": "Divinity: Original Sin",
       "titleOriginal": "Divinity: Original Sin",
       "alternativeTitles": [],
@@ -11124,8 +11114,7 @@
       "tgdb_35051"
     ],
     "divinity": [
-      "tgdb_10221",
-      "tgdb_10221_1"
+      "tgdb_10221"
     ],
     "dogs": [
       "tgdb_102133",
@@ -13232,7 +13221,6 @@
     ],
     "original": [
       "tgdb_10221",
-      "tgdb_10221_1",
       "tgdb_4845",
       "tgdb_75030"
     ],
@@ -13992,8 +13980,7 @@
     ],
     "sin": [
       "fallback_seed_829",
-      "tgdb_10221",
-      "tgdb_10221_1"
+      "tgdb_10221"
     ],
     "sins": [
       "tgdb_10998",

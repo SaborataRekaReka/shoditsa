@@ -1,4 +1,5 @@
 import { sql } from 'drizzle-orm'
+import { CONTENT_MODE_IDS } from '@shoditsa/contracts'
 import {
   boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
   numeric, real, smallint, text, timestamp, unique, uniqueIndex, uuid,
@@ -6,7 +7,7 @@ import {
 
 const now = () => timestamp({ withTimezone: true }).notNull().defaultNow()
 
-export const contentMode = pgEnum('content_mode', ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'])
+export const contentMode = pgEnum('content_mode', [...CONTENT_MODE_IDS])
 export const periodKey = pgEnum('period_key', ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'])
 export const difficultyKey = pgEnum('difficulty_key', ['easy', 'medium', 'hard', 'expert'])
 

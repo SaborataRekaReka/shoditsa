@@ -1,6 +1,7 @@
 import type { SavedGame, TitleMode } from '../../types'
 
-export type DailyMilestone = 3 | 6
+// Full-house size comes from the mode manifest and can grow with new modes.
+export type DailyMilestone = number
 
 export type DailyMilestoneClaims = {
   date: string

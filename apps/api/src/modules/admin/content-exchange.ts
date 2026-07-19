@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { and, eq, inArray } from 'drizzle-orm'
-import type {
-  ContentExchangeDocument, ContentExchangeExportBody, ContentExchangeImportApplyBody, ContentMode,
+import {
+  CONTENT_MODE_IDS, type ContentExchangeDocument, type ContentExchangeExportBody, type ContentExchangeImportApplyBody, type ContentMode,
 } from '@shoditsa/contracts'
 import {
   auditLog, contentItems, contentItemVersions, contentRevisions, contentWorkspaceChanges, type Database,
@@ -13,7 +13,7 @@ type Actor = { id: string }
 type Json = Record<string, unknown>
 type ImportStatus = 'create' | 'update' | 'unchanged' | 'conflict' | 'invalid'
 
-const modes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
+const modes: ContentMode[] = [...CONTENT_MODE_IDS]
 const fieldNamePattern = /^[A-Za-z][A-Za-z0-9_]*$/
 const asRecord = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
 const hasOwn = (value: Json, field: string) => Object.prototype.hasOwnProperty.call(value, field)

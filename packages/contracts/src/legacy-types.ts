@@ -1,4 +1,6 @@
-export type TitleMode = 'movie' | 'series' | 'anime' | 'game' | 'music' | 'diagnosis'
+import type { PlayableMode } from './schemas.js'
+
+export type TitleMode = PlayableMode
 export type PeriodKey = 'all' | 'from_1960' | 'from_1980' | 'from_1990' | 'from_2000' | 'from_2010' | 'from_2020'
 export type DifficultyKey = 'easy' | 'medium' | 'hard' | 'expert' | 'experimental'
 export type MusicOrigin = 'ru' | 'intl'
@@ -149,6 +151,24 @@ export type TitleItem = {
   severityTypical?: string | null
   urgencyTypical?: string | null
   safetyDisclaimer?: string | null
+
+  country?: string
+  countryFlagUrl?: string | null
+  continent?: string
+  languages?: string[]
+  population?: number | null
+  cityFlagUrl?: string | null
+  coatOfArmsUrl?: string | null
+  ranks?: {
+    economy: number | null
+    humanCapital: number | null
+    qualityOfLife: number | null
+    ecology: number | null
+    governance: number | null
+  }
+  timezone?: string
+  popular?: boolean
+  capital?: boolean
 }
 
 export type CaseVignette = { id: string; text: string }

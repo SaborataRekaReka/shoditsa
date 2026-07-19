@@ -1,13 +1,15 @@
 import type { AttendanceStats } from '../../types'
+import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
 
 const dateIndex = (date: string) => Math.floor(new Date(`${date}T12:00:00+03:00`).getTime() / 86_400_000)
 
 export const shouldRecordCompletion = (completedSessions: readonly string[], sessionKey: string) => !completedSessions.includes(sessionKey)
 
 export const crossedDailyMilestones = (previousCount: number, nextCount: number, claimed: readonly number[]) => {
-  const result: Array<3 | 6> = []
+  const result: number[] = []
+  const fullHouseTarget = FULL_HOUSE_MODE_IDS.length
   if (previousCount < 3 && nextCount >= 3 && !claimed.includes(3)) result.push(3)
-  if (previousCount < 6 && nextCount >= 6 && !claimed.includes(6)) result.push(6)
+  if (previousCount < fullHouseTarget && nextCount >= fullHouseTarget && !claimed.includes(fullHouseTarget)) result.push(fullHouseTarget)
   return result
 }
 

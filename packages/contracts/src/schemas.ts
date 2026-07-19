@@ -1,7 +1,8 @@
 import { Type, type Static, type TSchema } from '@sinclair/typebox'
+import { CONTENT_MODE_IDS, PLAYABLE_MODE_IDS } from './game-modes.js'
 
-export const CONTENT_MODES = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'] as const
-export const PLAYABLE_MODES = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis'] as const
+export const CONTENT_MODES = CONTENT_MODE_IDS
+export const PLAYABLE_MODES = PLAYABLE_MODE_IDS
 export const PERIOD_KEYS = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'] as const
 export const DIFFICULTY_KEYS = ['easy', 'medium', 'hard', 'expert'] as const
 
@@ -51,6 +52,8 @@ export const GameStartBodySchema = Type.Object({
   mode: PlayableModeSchema,
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),
+  variantKey: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
+  /** @deprecated v1 compatibility; use variantKey. */
   packId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   archiveDate: Type.Optional(Type.Union([DateSchema, Type.Null()])),
 }, { additionalProperties: false })

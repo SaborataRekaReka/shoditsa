@@ -243,6 +243,7 @@ const normalizePunctuation = (text) => text
   .replace(/известн(?:ый|ая|ое|ые|ом|ого|ому|ым|ой)\s+как\s*,/giu, ' ')
   .replace(/\s+([,.;:!?])/g, '$1')
   .replace(/([,.;:!?]){2,}/g, '$1')
+  .replace(/\s*…+$/g, '.')
   .replace(/^[\s,;:!?—-]+/, '')
   .replace(/[\s,;:!?—-]+$/, '')
   .trim()
@@ -272,7 +273,17 @@ const splitSentences = (text) => cleanText(text).match(/[^.!?]+[.!?]?/g) ?? []
 const cropText = (text, maxLength) => {
   const value = normalizePunctuation(text)
   if (!value) return ''
-  return value.length > maxLength ? `${value.slice(0, maxLength).trimEnd()}...` : value
+  if (value.length <= maxLength) return value
+
+  const prefix = value.slice(0, Math.max(1, maxLength - 1)).trimEnd()
+  const lastWordBoundary = prefix.lastIndexOf(' ')
+  const cropped = (lastWordBoundary >= Math.floor(maxLength * 0.6)
+    ? prefix.slice(0, lastWordBoundary)
+    : prefix)
+    .replace(/[\s,;:!?—-]+$/, '')
+    .trim()
+
+  return cropped ? `${cropped}.` : ''
 }
 
 const buildFallbackPlot = (movie) => {
@@ -289,9 +300,11 @@ const buildNarrative = (text, context, { maxLength, maxSentences }) => {
   for (const sentence of splitSentences(sanitized)) {
     const cleanSentence = normalizePunctuation(sentence)
     if (!cleanSentence) continue
+    const candidate = [...picked, cleanSentence].join(' ')
+    if (picked.length && candidate.length > maxLength) break
     picked.push(cleanSentence)
     if (picked.length >= maxSentences) break
-    if (picked.join(' ').length >= maxLength) break
+    if (candidate.length >= maxLength) break
   }
 
   return cropText(picked.join(' '), maxLength)

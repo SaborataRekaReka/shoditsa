@@ -1,5 +1,6 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useRouterState } from '@tanstack/react-router'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameResponse, GameSessionSnapshot, GameStartBody, HintResponse, PublicContentItem } from '@shoditsa/contracts'
 import {
   AlertTriangle,
@@ -38,6 +39,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
+import { FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { ApiClientError, api, queryKeys } from './api/client'
 import { apiErrorMessage } from './api/error-message'
@@ -59,9 +61,6 @@ import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
 import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
-import { CityGameScreen, CityTitleScreen } from './features/cities/CityScreens'
-import { CITY_POOL_OPTIONS, cityDailySummary, type CityDailySummary, type CityPoolMode } from './features/cities/city-game'
-import { useCityData } from './features/cities/use-city-data'
 import {
   canUseAsArtistPortrait,
   canonicalMusicId,
@@ -93,8 +92,10 @@ import { useDebouncedValue } from './hooks/use-debounced-value'
 import { ensureServerSession, SERVER_RUNTIME, useServerRuntime } from './hooks/use-server-runtime'
 import { addTicketLedgerEntry, allGames, claimDailyMilestones, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadDailyMilestoneClaims, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadStats, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
-
-const AdminApp = import.meta.env.VITE_YANDEX_GAMES === 'true' ? null : lazy(() => import('./admin/AdminApp'))
+import { pathnameForPlayerRoute, playerRouteFromPathname, type PlayerScreen } from './app/routes'
+import { MODE_PRESENTATION } from './app/mode-presentation'
+import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
+import { GamePageFrame } from './components/game-shell/GamePageFrame'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -103,17 +104,10 @@ const normalizeTextMatch = (value: string) => value
   .replace(/ё/g, 'е')
   .replace(/[^a-zа-я0-9]+/gi, ' ')
   .trim()
-const modeIcon = (mode: TitleMode) => mode === 'movie'
-  ? <Film />
-  : mode === 'series'
-    ? <Tv />
-    : mode === 'anime'
-      ? <Sparkles />
-      : mode === 'game'
-        ? <Gamepad2 />
-        : mode === 'music'
-          ? <Music2 />
-          : <Stethoscope />
+const modeIcon = (mode: TitleMode) => {
+  const Icon = MODE_PRESENTATION[mode].icon
+  return <Icon />
+}
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
   from_2020: 25,
@@ -124,8 +118,8 @@ const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
   from_1960: 25,
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
-const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(['movie', 'series', 'anime'])
-const FREE_PLAY_MODES = new Set<TitleMode>(['movie', 'series', 'anime', 'music', 'diagnosis'])
+const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS)
+const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS)
 const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
 const PROMO_POOL_COUNT = 30
 const isPromoVariant = (value: string | null | undefined) => value === PROMO_PACK_ID
@@ -269,8 +263,7 @@ type AssistHintView = {
   available: boolean
 }
 
-type AppScreen = 'hub' | 'title' | 'game' | 'city-title' | 'city-game' | 'rewatch' | 'review' | 'profile'
-const isAppScreen = (value: unknown): value is AppScreen => value === 'hub' || value === 'title' || value === 'game' || value === 'city-title' || value === 'city-game' || value === 'rewatch' || value === 'review' || value === 'profile'
+type AppScreen = PlayerScreen
 type AdminWindow = Window & {
   __SEANS_ADMIN_NEW_DAILY__?: (saltStep?: number | string) => number
   __SEANS_ADMIN_SET_DAILY_SALT__?: (saltValue?: number | string) => number
@@ -764,6 +757,17 @@ const buildInfoHintCandidates = (item: TitleItem) => {
     ].filter(Boolean)
   }
 
+  if (item.mode === 'city') {
+    return [
+      item.country ? `Страна: ${item.country}` : '',
+      item.continent ? `Континент: ${item.continent}` : '',
+      compactAssistList('Языки', item.languages ?? [], 3),
+      item.population != null ? `Население: ${new Intl.NumberFormat('ru-RU').format(item.population)}` : '',
+      item.timezone ? `Часовой пояс: ${item.timezone}` : '',
+      item.ranks?.economy != null ? `Экономика: № ${item.ranks.economy}` : '',
+    ].filter(Boolean)
+  }
+
   if (item.mode === 'anime') {
     return [
       item.episodes ? `Эпизоды: ${item.episodes}` : '',
@@ -906,9 +910,10 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
   const milestoneClaims = loadDailyMilestoneClaims(date)
   const reachedMilestones = crossedDailyMilestones(previousCompletedCount, nextCompletedCount, milestoneClaims.claimed)
   const reachedThree = reachedMilestones.includes(3)
-  const reachedSix = reachedMilestones.includes(6)
+  const fullHouseTarget = FULL_HOUSE_MODE_IDS.length
+  const reachedFullHouse = reachedMilestones.includes(fullHouseTarget)
   const milestoneBonus = reachedThree ? 10 : 0
-  const fullHouse = reachedSix ? 25 : 0
+  const fullHouse = reachedFullHouse ? 25 : 0
   if (reachedMilestones.length) {
     claimDailyMilestones(date, reachedMilestones)
     for (const milestone of reachedMilestones) {
@@ -916,7 +921,7 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
       const analyticsParams = { mode, completedCount: nextCompletedCount, nextMilestone: milestone, reward, dateMoscow: date }
       trackMetrikaGoal('daily_milestone_reached', analyticsParams)
       trackMetrikaGoal('daily_milestone_claimed', analyticsParams)
-      if (milestone === 6) trackMetrikaGoal('full_house_reached', analyticsParams)
+      if (milestone === fullHouseTarget) trackMetrikaGoal('full_house_reached', analyticsParams)
     }
   }
   const base = completed + win + speed + firstDaily + milestoneBonus + fullHouse
@@ -956,7 +961,9 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
 
 const Poster = ({ item, className = '' }: { item: TitleItem; className?: string }) => {
   const [failed, setFailed] = useState(false)
-  const portraitSource = item.mode === 'music'
+  const portraitSource = item.mode === 'city'
+    ? [item.coatOfArmsUrl, item.cityFlagUrl, item.posterUrl, item.countryFlagUrl].find((url) => Boolean(url)) ?? null
+    : item.mode === 'music'
     ? [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
     : [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => Boolean(url)) ?? null
   const diagnosisIcon = item.mode === 'diagnosis'
@@ -1261,9 +1268,8 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectCity, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, citySummary, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
-  onSelectCity: () => void
   onSelectPromo: () => void
   onRewatch: () => void
   onStats: () => void
@@ -1275,8 +1281,7 @@ function HubScreen({ onSelect, onSelectCity, onSelectPromo, onRewatch, onStats, 
   activeSessionsCount: number
   games: SavedGame[]
   preferredMode: TitleMode
-  titleCounts: { movie: number | null; series: number | null; anime: number | null; game: number | null; city: number | null; music: number | null; diagnosis: number | null }
-  citySummary: CityDailySummary
+  titleCounts: Record<TitleMode, number | null>
   todayAttendance: DailyAttendance
   globalDailySalt: number
 }) {
@@ -1326,16 +1331,7 @@ function HubScreen({ onSelect, onSelectCity, onSelectPromo, onRewatch, onStats, 
         <div className="category-heading"><span>ИГРЫ НА СЕГОДНЯ</span></div>
         <div className="category-grid category-grid--active">
           {CATEGORY_TICKET_CONFIG.map((config) => {
-            if (config.mode === 'city') {
-              const handleCityClick = () => {
-                trackMetrikaGoal(citySummary.status === 'active' ? 'category_ticket_resume' : citySummary.status === 'completed' ? 'category_ticket_result' : 'category_ticket_play', {
-                  mode: 'city', status: citySummary.status, attempts: citySummary.attempts ?? 0, date: todayAttendance.date,
-                })
-                onSelectCity()
-              }
-              return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts.city} status={citySummary.status} attempts={citySummary.attempts} onClick={handleCityClick} />
-            }
-            const configMode = config.mode as TitleMode
+            const configMode = config.mode
             const activeGame = dailyState.activeGamesByMode[configMode] ?? null
             const completedGame = dailyState.finishedGamesByMode[configMode] ?? null
             const completed = todayAttendance.completedModes.includes(configMode) || Boolean(completedGame)
@@ -1371,9 +1367,11 @@ function HubScreen({ onSelect, onSelectCity, onSelectPromo, onRewatch, onStats, 
   </>
 }
 
-function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
+function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
   promoPackId: string | null
+  variantKey: string | null
+  setVariantKey: (variant: string) => void
   period: PeriodKey
   setPeriod: (period: PeriodKey) => void
   date: string
@@ -1593,7 +1591,9 @@ function TitleScreen({ mode, promoPackId, period, setPeriod, date, onHome, onBac
                 <h1>Ежедневная игра: {modeMeta(mode).lower}</h1>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 <div className="ticket-settings">
-                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+                  {GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
+                    ? <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+                    : <ModeVariantControl mode={mode} value={variantKey} onChange={setVariantKey} />}
                 </div>
               </div>
             </section>}
@@ -2458,6 +2458,44 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
   </article>
 }
 
+function CityAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+  const score = progressStats(attempt.hints)
+  return <article className="attempt-card attempt-card--city">
+    <div className="attempt-card__header">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} />
+      <div className="attempt-card__identity">
+        <span className="attempt-label">Попытка {index + 1}</span>
+        <h2>{item.titleRu}</h2>
+        <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || item.country || 'Город'}</span></p>
+        <div className="gm-genres">
+          {item.country && <span className="gm-genre">{item.country}</span>}
+          {item.continent && <span className="gm-genre">{item.continent}</span>}
+        </div>
+      </div>
+    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+    <div className="attempt-clue-grid city-attempt__clues">
+      {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+    </div>
+  </article>
+}
+
+const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
+  movie: AttemptCard,
+  series: AttemptCard,
+  anime: AttemptCard,
+  game: GameAttemptCard,
+  city: CityAttemptCard,
+  music: MusicAttemptCard,
+  diagnosis: DiagnosisAttemptCard,
+}
+
+function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {
+  const Card = ATTEMPT_CARD_BY_MODE[props.item.mode]
+  return <Card {...props} />
+}
+
 function Progress({ attempts }: { attempts: number }) {
   return <div className="progress-block">
     <div className="progress-copy"><span>Попытка</span><strong>{Math.min(attempts + 1, 10)} <i>из 10</i></strong></div>
@@ -2470,7 +2508,7 @@ function Progress({ attempts }: { attempts: number }) {
 function Game({
   titles,
   mode,
-  packId,
+  variantKey,
   period,
   difficulty,
   date,
@@ -2494,7 +2532,7 @@ function Game({
 }: {
   titles: TitleItem[]
   mode: TitleMode
-  packId: string | null
+  variantKey: string | null
   period: PeriodKey
   difficulty: DifficultyKey
   date: string
@@ -2516,14 +2554,15 @@ function Game({
   onReplay: () => void
   onConfigureMode: () => void
 }) {
-  const effectivePeriod: PeriodKey = mode === 'diagnosis' || mode === 'game' || mode === 'music' ? 'all' : period
+  const effectivePeriod: PeriodKey = GAME_MODE_MANIFEST[mode].periodPolicy === 'all' ? 'all' : period
   const difficultyVariant = mode === 'music' ? difficulty : ''
-  const basePool = useMemo(() => poolFor(titles, mode, effectivePeriod), [titles, mode, effectivePeriod])
+  const basePool = useMemo(() => poolFor(titles, mode, effectivePeriod, variantKey), [titles, mode, effectivePeriod, variantKey])
   const pool = useMemo(() => mode === 'music' ? musicDifficultyPool(basePool, difficulty) : basePool, [basePool, mode, difficulty])
   const answerSalt = freePlayLaunch === null ? dailySalt : freePlayAnswerSalt(freePlayLaunch)
-  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, answerSalt, difficultyVariant) : null, [pool, mode, effectivePeriod, date, answerSalt, difficultyVariant])
-  const packVariant = mode === 'game' && packId ? `|pack:${packId}` : ''
-  const baseKey = difficultyVariant ? `${gameKey(mode, effectivePeriod, date)}|diff:${difficultyVariant}${packVariant}` : `${gameKey(mode, effectivePeriod, date)}${packVariant}`
+  const selectionVariant = variantKey ?? difficultyVariant
+  const answer = useMemo(() => pool.length ? dailyTitle(pool, mode, effectivePeriod, date, answerSalt, selectionVariant) : null, [pool, mode, effectivePeriod, date, answerSalt, selectionVariant])
+  const modeVariantSuffix = variantKey ? `|variant:${variantKey}` : ''
+  const baseKey = difficultyVariant ? `${gameKey(mode, effectivePeriod, date)}|diff:${difficultyVariant}${modeVariantSuffix}` : `${gameKey(mode, effectivePeriod, date)}${modeVariantSuffix}`
   const key = freePlayLaunch === null
     ? dailySalt === 0 ? baseKey : `${baseKey}|salt:${dailySalt}`
     : freePlayGameKey(baseKey, freePlayLaunch)
@@ -2736,7 +2775,7 @@ function Game({
     saveGame({
       key,
       mode,
-      ...(mode === 'game' && packId ? { variantKey: packId } : {}),
+      ...(variantKey ? { variantKey } : {}),
       period: effectivePeriod,
       date,
       answerId: answer.id,
@@ -2842,7 +2881,7 @@ function Game({
     date,
     period: effectivePeriod,
     ...(mode === 'music' ? { difficulty } : {}),
-    ...(mode === 'game' && packId ? { packId } : {}),
+    ...(variantKey ? { variantKey } : {}),
     opponentAttempts: Math.max(1, attempts.length),
     from: getInstallationId(),
   })
@@ -2877,6 +2916,8 @@ function Game({
     ? [answer.titleOriginal, ...(answer.icd10 ?? []), answer.icdGroup].filter(Boolean).join(' · ')
     : answer.mode === 'game'
       ? [answer.year, ...(answer.genres ?? []).slice(0, 1)].filter(Boolean).join(' · ')
+      : answer.mode === 'city'
+        ? [answer.country, answer.continent, answer.population ? `${new Intl.NumberFormat('ru-RU').format(answer.population)} жителей` : null].filter(Boolean).join(' · ')
       : answer.mode === 'music'
         ? [answer.year ? `с ${answer.year}` : null, musicTypeLabel(answer.musicType), ...(answer.genres ?? []).slice(0, 1)].filter(Boolean).join(' · ')
         : [answer.year, ...(answer.genres ?? []).slice(0, 1)].filter(Boolean).join(' · ')
@@ -2884,11 +2925,12 @@ function Game({
     ? [...(answer.bodySystems ?? []).slice(0, 2), ...(answer.icd10 ?? []).slice(0, 1)]
     : answer.mode === 'game'
       ? [...(answer.genres ?? []).slice(0, 3), ...dedupeGameCategories(answer.steamCategories ?? [], true).slice(0, 1)]
+      : answer.mode === 'city'
+        ? [...(answer.languages ?? []).slice(0, 3), answer.timezone].filter((value): value is string => Boolean(value))
       : (answer.genres ?? []).slice(0, 3)
 
   return <>
-    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="game-shell">
+    <GamePageFrame controller={{ source: 'local', mode, puzzleDate: date, status, attemptsCount: attempts.length, variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }}>
       <div className="screen-back-row">
         <button className="screen-back" onClick={() => {
           trackMetrikaGoal('game_back_click', { mode, period: effectivePeriod })
@@ -2949,7 +2991,7 @@ function Game({
         meta={resultMeta}
         tags={resultTags}
         completedToday={completedToday}
-        nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : completedToday === 2 ? 'До награды: ещё одна игра' : `До полного маршрута: ещё ${6 - completedToday}`}
+        nextRewardText={completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : completedToday === 2 ? 'До награды: ещё одна игра' : `До полного маршрута: ещё ${FULL_HOUSE_MODE_IDS.length - completedToday}`}
         nextLabel={nextLabel}
         award={lastAward}
         streak={lastAward?.newDailyStreak ?? loadAttendanceStats().currentDailyStreak}
@@ -3092,15 +3134,7 @@ function Game({
 
       {!attempts.length && status === 'playing' && <section className="empty-card">
         <div className="empty-card__icon">{modeIcon(mode)}</div>
-        <div><h2>Начните с {modeMeta(mode).emptyArticle} {modeMeta(mode).subjectGenitive}</h2><p>{mode === 'diagnosis'
-          ? 'После ответа появятся сравнения по системе, симптомам, диагностике и коду МКБ.'
-          : mode === 'anime'
-            ? 'После ответа появятся сравнения по формату, статусу, эпизодам, студии, сэйю и рейтингу Shikimori.'
-          : mode === 'music'
-            ? 'После ответа появятся сравнения по стране, старту карьеры, десятилетию, типу артиста, сцене и жанрам.'
-          : mode === 'game'
-            ? 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.'
-            : 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.'}</p></div>
+        <div><h2>Начните с {modeMeta(mode).emptyArticle} {modeMeta(mode).subjectGenitive}</h2><p>{MODE_PRESENTATION[mode].emptyHint}</p></div>
         <ActionButton variant="secondary" onClick={() => {
           trackMetrikaGoal('open_rules_from_empty', { mode })
           onRules()
@@ -3113,16 +3147,10 @@ function Game({
           const item = titles.find((title) => title.id === attempt.titleId)
           if (!item) return null
           const isCorrectAttempt = answer?.id === attempt.titleId
-          return item.mode === 'diagnosis'
-            ? <DiagnosisAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
-            : item.mode === 'game'
-              ? <GameAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
-              : item.mode === 'music'
-                ? <MusicAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
-              : <AttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
+          return <ModeAttemptCard key={`${attempt.titleId}-${index}`} attempt={attempt} item={item} index={index} isCorrectAttempt={isCorrectAttempt} />
         })}
       </section>}
-    </main>
+    </GamePageFrame>
 
     {hintModalRound && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
       <section className="hint-modal" role="dialog" aria-modal="true" aria-labelledby="hint-modal-title">
@@ -3375,7 +3403,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     date: session.puzzleDate,
     period: session.period,
     ...(session.difficulty ? { difficulty: session.difficulty } : {}),
-    ...(session.mode === 'game' && isPromoVariant(session.variantKey) ? { packId: session.variantKey } : {}),
+    ...(session.variantKey ? { variantKey: session.variantKey } : {}),
     opponentAttempts: Math.max(1, attempts.length),
     from: getInstallationId(),
   })
@@ -3402,10 +3430,17 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     newDailyStreak: dashboard.data?.attendance?.currentDailyStreak ?? 0,
     alreadyClaimed: lastAward.alreadyClaimed,
   } : null
+  const answerMeta = answer
+    ? answer.mode === 'city'
+      ? [answer.country, answer.continent, answer.population ? `${new Intl.NumberFormat('ru-RU').format(answer.population)} жителей` : null].filter(Boolean).join(' · ')
+      : [answer.titleOriginal, answer.year].filter(Boolean).join(' · ')
+    : ''
+  const answerTags = answer?.mode === 'city'
+    ? [...(answer.languages ?? []).slice(0, 3), answer.timezone].filter((value): value is string => Boolean(value))
+    : []
 
   return <>
-    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="game-shell">
+    <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }}>
       <div className="screen-back-row"><button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromoSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromoSession ? 'DTF promo-пак' : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
       {isPromoSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
@@ -3413,7 +3448,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
-      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={[answer.titleOriginal, answer.year].filter(Boolean).join(' · ')} tags={[]} completedToday={completedToday} nextRewardText={completedToday >= 6 ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, 6 - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={completedToday} nextRewardText={completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div>
         <div className="search-picker">
@@ -3450,9 +3485,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         const item = publicItemToTitle(entry.item)
         const attemptValue = serverAttemptToLegacy(entry)
         const correct = answer?.id === item.id
-        return item.mode === 'diagnosis' ? <DiagnosisAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'game' ? <GameAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : item.mode === 'music' ? <MusicAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} /> : <AttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
+        return <ModeAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
       })}</section>}
-    </main>
+    </GamePageFrame>
     {hintModalRound && (hintOptions.length > 0 || revealedHint) && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
       <section className="hint-modal" role="dialog" aria-modal="true">
         <div className="hint-modal__head">
@@ -3958,12 +3993,12 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
   const achievementCards = [
     { key: 'first-game', title: 'Первая игра', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, current: Math.min(completedGames.length, 1), target: 1, image: './images/badges/first-game.webp' },
     { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: './images/badges/bullseye.webp' },
-    { key: 'full-house', title: 'Полный зал', description: 'Закончите все шесть игр за день.', unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: './images/badges/full-house.webp' },
+    { key: 'full-house', title: 'Полный зал', description: `Закончите все ${MODE_TABS.length} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: './images/badges/full-house.webp' },
   ]
   const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
   const nearestProgress = `${nearestAchievement.current}/${nearestAchievement.target}`
   const nearestProgressPercent = Math.min(100, Math.round(nearestAchievement.current / nearestAchievement.target * 100))
-  const profileCategoryConfig = CATEGORY_TICKET_CONFIG.filter((category): category is typeof category & { mode: TitleMode } => category.mode !== 'city')
+  const profileCategoryConfig = CATEGORY_TICKET_CONFIG
   const nextDailyCategory = profileCategoryConfig.find((category) => category.mode === activeSession?.mode)
     ?? profileCategoryConfig.find((category) => !today.completedModes.includes(category.mode))
     ?? profileCategoryConfig[0]
@@ -4036,7 +4071,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
             <section className="profile-section profile-week">
               <div className="profile-week__main">
                 <div className="profile-section__head"><div><span>Серия</span><h2>Неделя в игре</h2></div></div>
-                <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? '6' : day.hasActivity ? '•' : ''}</i></div>)}</div>
+                <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? FULL_HOUSE_MODE_IDS.length : day.hasActivity ? '•' : ''}</i></div>)}</div>
               </div>
               <aside className="profile-week__streak"><Trophy /><strong>{attendance.currentDailyStreak}</strong><span>дней подряд</span><p>{attendance.currentDailyStreak ? 'Серия продолжается' : 'Сыграйте сегодня, чтобы начать серию'}</p></aside>
             </section>
@@ -4232,6 +4267,9 @@ function ResumeSessionsView({ sessions, onOpen }: {
 
 function GameApp() {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const routeLocation = useRouterState({ select: (state) => state.location })
+  const initialPlayerRoute = playerRouteFromPathname(routeLocation.pathname)
   const serverRuntime = useServerRuntime()
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ app: true }),
@@ -4244,30 +4282,27 @@ function GameApp() {
     ? 'profile'
     : typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('tab')
       ? 'profile'
-      : 'hub')
+      : initialPlayerRoute.screen)
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
-  const [mode, setMode] = useState<TitleMode>(() => challenge?.mode ?? 'movie')
-  const [packId, setPackId] = useState<string | null>(() => challenge?.mode === 'game' && isPromoVariant(challenge.packId) ? challenge.packId : null)
+  const [mode, setMode] = useState<TitleMode>(() => challenge?.mode ?? initialPlayerRoute.mode ?? 'movie')
+  const [packId, setPackId] = useState<string | null>(() => challenge?.mode === 'game' && isPromoVariant(challenge.variantKey) ? challenge.variantKey : null)
   const [period, setPeriod] = useState<PeriodKey>(() => challenge?.period ?? 'all')
   const [difficulty, setDifficulty] = useState<DifficultyKey>(() => challenge?.difficulty ?? 'medium')
-  const [cityMode, setCityMode] = useState<CityPoolMode>('capitals')
-  const [cityProgressVersion, setCityProgressVersion] = useState(0)
+  const [modeVariant, setModeVariant] = useState<string | null>(() => GAME_MODE_MANIFEST.city.variants[0].id)
   const [date, setDate] = useState(() => challenge?.date ?? getMoscowDate())
   const [adminDailySalt, setAdminDailySalt] = useState(0)
   const [freePlayLaunch, setFreePlayLaunch] = useState<number | null>(null)
   const [freePlayArmed, setFreePlayArmed] = useState(false)
-  const [serverSessionId, setServerSessionId] = useState<string | null>(null)
+  const [serverSessionId, setServerSessionId] = useState<string | null>(() => initialPlayerRoute.sessionId ?? null)
   const [serverActionError, setServerActionError] = useState('')
   const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
   const { data, titleCounts: localTitleCounts, caseVignettes, loading, loadError, retryLoading, globalDailySalt, searchIndex } = useDataLoader(mode, !SERVER_RUNTIME)
-  const cityData = useCityData()
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
   const [economyVersion, setEconomyVersion] = useState(0)
   const transitionTimerRef = useRef<number | null>(null)
-  const screenHistoryReadyRef = useRef(false)
-  const screenFromPopStateRef = useRef(false)
-  const lastScreenRef = useRef<AppScreen>('hub')
+  const applyingRouteRef = useRef(false)
+  const lastRoutePathRef = useRef(routeLocation.pathname)
   const lastTrackedScreenRef = useRef<AppScreen | null>(null)
   const adminDailySaltRef = useRef(0)
   const globalDailySaltRef = useRef(0)
@@ -4276,11 +4311,9 @@ function GameApp() {
   const todayAttendance = useMemo<DailyAttendance>(() => SERVER_RUNTIME
     ? toLegacyDailyAttendance(serverRuntime.dashboard?.today, serverRuntime.meta?.moscowDate ?? getMoscowDate())
     : loadDailyAttendance(getMoscowDate()), [economyVersion, serverRuntime.dashboard, serverRuntime.meta])
-  const titleCounts = useMemo(() => ({
-    ...(SERVER_RUNTIME ? serverTitleCounts(serverRuntime.meta) : localTitleCounts),
-    city: cityData.items.length || null,
-  }), [cityData.items.length, localTitleCounts, serverRuntime.meta])
-  const currentCitySummary = useMemo(() => cityDailySummary(getMoscowDate()), [cityProgressVersion])
+  const titleCounts = useMemo(() => (
+    SERVER_RUNTIME ? serverTitleCounts(serverRuntime.meta) : localTitleCounts
+  ), [localTitleCounts, serverRuntime.meta])
   const freePlayLaunchesToday = useMemo(() => SERVER_RUNTIME
     ? serverRuntime.dashboard?.freePlayLaunchesToday ?? 0
     : loadFreePlayUsage(getMoscowDate()), [economyVersion, serverRuntime.dashboard])
@@ -4317,6 +4350,7 @@ function GameApp() {
     setGameBackTarget(backTarget)
     setMode(session.mode)
     setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
+    setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
     setPeriod(session.period)
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
     setDate(session.puzzleDate)
@@ -4330,6 +4364,7 @@ function GameApp() {
   const syncServerSessionContext = useCallback((session: GameSessionSnapshot) => {
     setMode(session.mode)
     setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
+    setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
     setPeriod(session.period)
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
     setDate(session.puzzleDate)
@@ -4396,7 +4431,7 @@ function GameApp() {
   }, [])
 
   useEffect(() => {
-    if ((mode === 'diagnosis' || mode === 'game') && period !== 'all') {
+    if (GAME_MODE_MANIFEST[mode].periodPolicy === 'all' && period !== 'all') {
       setPeriod('all')
     }
   }, [mode, period])
@@ -4476,44 +4511,53 @@ function GameApp() {
 
   useEffect(() => clearTransitionTimer, [])
 
+  const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
+    if (target.screen === 'title' && target.mode) return navigate({ to: '/games/$mode', params: { mode: target.mode }, replace })
+    if (target.screen === 'game' && target.sessionId) return navigate({ to: '/sessions/$sessionId', params: { sessionId: target.sessionId }, replace })
+    if (target.screen === 'game' && target.mode) return navigate({ to: '/play/$mode', params: { mode: target.mode }, replace })
+    if (target.screen === 'rewatch') return navigate({ to: '/archive', replace })
+    if (target.screen === 'profile') return navigate({ to: '/profile', replace })
+    if (target.screen === 'review') return navigate({ to: '/review/music', replace })
+    return navigate({ to: '/', replace })
+  }, [navigate])
+
   useEffect(() => {
-    const state = {
-      seansScreen: screen,
-      mode,
-      packId,
-      period,
-      difficulty,
-      cityMode,
-      date,
-      serverSessionId,
-      gameBackTarget,
-      reviewBackTarget,
+    if (lastRoutePathRef.current === routeLocation.pathname) return
+    lastRoutePathRef.current = routeLocation.pathname
+    const target = playerRouteFromPathname(routeLocation.pathname)
+    applyingRouteRef.current = true
+    clearTransitionTimer()
+    setTransition('idle')
+    setModal(null)
+    setScreen(target.screen)
+    if (target.mode) setModeSafe(target.mode)
+    if (target.sessionId) setServerSessionId(target.sessionId)
+    window.scrollTo({ top: 0 })
+  }, [routeLocation.pathname])
+
+  useEffect(() => {
+    const routedScreen: PlayerScreen = screen
+    const target = {
+      screen: routedScreen,
+      mode: routedScreen === 'title' || (routedScreen === 'game' && !serverSessionId) ? mode : undefined,
+      sessionId: routedScreen === 'game' ? serverSessionId ?? undefined : undefined,
     }
-    if (!screenHistoryReadyRef.current) {
-      window.history.replaceState(state, '')
-      screenHistoryReadyRef.current = true
-      lastScreenRef.current = screen
+    const desiredPath = pathnameForPlayerRoute(target)
+    if (applyingRouteRef.current) {
+      applyingRouteRef.current = false
       return
     }
-    if (screenFromPopStateRef.current) {
-      screenFromPopStateRef.current = false
-      lastScreenRef.current = screen
-      return
-    }
-    if (lastScreenRef.current !== screen) {
-      window.history.pushState(state, '')
-      lastScreenRef.current = screen
-      return
-    }
-    window.history.replaceState(state, '')
-  }, [screen, mode, packId, period, difficulty, cityMode, date, serverSessionId, gameBackTarget, reviewBackTarget])
+    if (routeLocation.pathname === desiredPath) return
+    lastRoutePathRef.current = desiredPath
+    void navigateToPlayerRoute(target)
+  }, [mode, navigateToPlayerRoute, routeLocation.pathname, screen, serverSessionId])
 
   useEffect(() => {
     document.body.dataset.seansScreen = screen
     if (lastTrackedScreenRef.current === screen) return
     lastTrackedScreenRef.current = screen
     trackMetrikaScreen(screen, {
-      mode: screen === 'city-title' || screen === 'city-game' ? 'city' : mode,
+      mode,
       period,
       date,
     })
@@ -4525,42 +4569,23 @@ function GameApp() {
     setServerSessionId(null)
   }, [screen, serverSessionId])
 
-  useEffect(() => {
-    const onPopState = (event: PopStateEvent) => {
-      const nextScreen = event.state?.seansScreen
-      if (!isAppScreen(nextScreen)) return
-
-      if (transitionTimerRef.current !== null) {
-        window.clearTimeout(transitionTimerRef.current)
-        transitionTimerRef.current = null
-      }
-      screenFromPopStateRef.current = true
-      setTransition('idle')
-      setModal(null)
-      if (MODE_TABS.includes(event.state?.mode)) setMode(event.state.mode)
-      if (typeof event.state?.packId === 'string' && isPromoVariant(event.state.packId)) setPackId(event.state.packId)
-      else setPackId(null)
-      if (typeof event.state?.period === 'string' && event.state.period in PERIODS) setPeriod(event.state.period as PeriodKey)
-      if (typeof event.state?.difficulty === 'string' && event.state.difficulty in DIFFICULTIES) setDifficulty(event.state.difficulty as DifficultyKey)
-      if (CITY_POOL_OPTIONS.some((entry) => entry.mode === event.state?.cityMode)) setCityMode(event.state.cityMode as CityPoolMode)
-      if (typeof event.state?.date === 'string') setDate(event.state.date)
-      if (typeof event.state?.serverSessionId === 'string' || event.state?.serverSessionId === null) setServerSessionId(event.state.serverSessionId)
-      if (event.state?.gameBackTarget === 'title' || event.state?.gameBackTarget === 'rewatch' || event.state?.gameBackTarget === 'hub') setGameBackTarget(event.state.gameBackTarget)
-      if (event.state?.reviewBackTarget === 'title' || event.state?.reviewBackTarget === 'rewatch' || event.state?.reviewBackTarget === 'hub') setReviewBackTarget(event.state.reviewBackTarget)
-      setScreen(nextScreen)
-      window.scrollTo({ top: 0 })
-    }
-
-    window.addEventListener('popstate', onPopState)
-    return () => window.removeEventListener('popstate', onPopState)
-  }, [])
-
   const setModeSafe = (nextMode: TitleMode, options?: { preservePack?: boolean }) => {
     setMode(nextMode)
     if (nextMode !== 'game' || !options?.preservePack) setPackId(null)
-    if (nextMode === 'diagnosis' || nextMode === 'game') {
+    setModeVariant(nextMode === 'city' ? (current => current ?? GAME_MODE_MANIFEST.city.variants[0].id) : null)
+    if (GAME_MODE_MANIFEST[nextMode].periodPolicy === 'all') {
       setPeriod('all')
     }
+  }
+  const beginTitleTransition = () => {
+    clearTransitionTimer()
+    setTransition('title-to-game')
+    transitionTimerRef.current = window.setTimeout(() => {
+      transitionTimerRef.current = null
+      setScreen('game')
+      setTransition('idle')
+      window.scrollTo({ top: 0 })
+    }, 400)
   }
 
   const moveToScreen = (target: 'hub' | 'title' | 'rewatch' | 'profile') => {
@@ -4650,6 +4675,7 @@ function GameApp() {
       setGameBackTarget(backTarget)
       setModeSafe(savedGame.mode)
       setPackId(savedGame.mode === 'game' && isPromoVariant(savedGame.variantKey) ? savedGame.variantKey : null)
+      setModeVariant(savedGame.mode === 'city' ? savedGame.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
       setPeriod(savedGame.period)
       if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
       setDate(savedGame.date)
@@ -4662,7 +4688,8 @@ function GameApp() {
     setFreePlayLaunch(freePlayLaunchFromGameKey(savedGame.key))
     setModeSafe(savedGame.mode)
     setPackId(savedGame.mode === 'game' && isPromoVariant(savedGame.variantKey) ? savedGame.variantKey : null)
-    setPeriod(savedGame.mode === 'movie' || savedGame.mode === 'series' || savedGame.mode === 'anime' ? savedGame.period : 'all')
+    setModeVariant(savedGame.mode === 'city' ? savedGame.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
+    setPeriod(GAME_MODE_MANIFEST[savedGame.mode].periodPolicy === 'year' ? savedGame.period : 'all')
     if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
     setDate(savedGame.date)
     setScreen('game')
@@ -4700,19 +4727,6 @@ function GameApp() {
     window.scrollTo({ top: 0 })
   }
 
-  const selectCityCategory = () => {
-    trackMetrikaGoal('select_mode', { mode: 'city' })
-    clearTransitionTimer()
-    setTransition('idle')
-    setFreePlayLaunch(null)
-    setFreePlayArmed(false)
-    if (currentCitySummary.mode) setCityMode(currentCitySummary.mode)
-    setDate(getMoscowDate())
-    setScreen('city-title')
-    setModal(null)
-    window.scrollTo({ top: 0 })
-  }
-
   const selectPromoCategory = () => {
     if (!isAdmin) return
     trackMetrikaGoal('select_mode', { mode: 'game', variant: PROMO_PACK_ID })
@@ -4738,7 +4752,7 @@ function GameApp() {
 
   const acceptChallenge = () => {
     if (!challenge) return
-    const challengePackId = challenge.mode === 'game' && isPromoVariant(challenge.packId) ? challenge.packId : null
+    const challengePackId = challenge.mode === 'game' && isPromoVariant(challenge.variantKey) ? challenge.variantKey : null
     trackMetrikaGoal('challenge_accepted', { mode: challenge.mode, date: challenge.date, from: challenge.from })
     clearTransitionTimer()
     setTransition('idle')
@@ -4746,6 +4760,7 @@ function GameApp() {
     setFreePlayArmed(false)
     setModeSafe(challenge.mode, { preservePack: true })
     setPackId(challengePackId)
+    setModeVariant(challenge.mode === 'city' ? challenge.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
     setPeriod(challenge.mode === 'movie' || challenge.mode === 'series' || challenge.mode === 'anime' ? challenge.period : 'all')
     if (challenge.difficulty) setDifficulty(challenge.difficulty)
     setDate(challenge.date)
@@ -4760,6 +4775,7 @@ function GameApp() {
           mode: challenge.mode,
           period: challenge.period,
           difficulty: challenge.mode === 'music' ? apiDifficulty(challenge.difficulty ?? 'medium') : null,
+          ...(challenge.mode === 'city' ? { variantKey: challenge.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id } : {}),
           ...(challenge.mode === 'game' && challengePackId ? { packId: challengePackId } : {}),
           archiveDate: challenge.date === today ? null : challenge.date,
         },
@@ -4934,7 +4950,7 @@ function GameApp() {
       return
     }
 
-    setTransition('title-to-game')
+    beginTitleTransition()
   }
   const playToday = () => {
     if (startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending) return
@@ -4955,6 +4971,7 @@ function GameApp() {
           mode,
           period,
           difficulty: mode === 'music' ? apiDifficulty(difficulty) : null,
+          ...(mode === 'city' && modeVariant ? { variantKey: modeVariant } : {}),
           ...(mode === 'game' && packId ? { packId } : {}),
           archiveDate: null,
         },
@@ -4977,7 +4994,7 @@ function GameApp() {
       setScreen('game')
       return
     }
-    setTransition('title-to-game')
+    beginTitleTransition()
   }
   const startFreePlay = () => {
     if (!FREE_PLAY_MODES.has(mode)) return
@@ -5002,6 +5019,7 @@ function GameApp() {
           mode,
           period,
           difficulty: mode === 'music' ? apiDifficulty(difficulty) : null,
+          ...(mode === 'city' && modeVariant ? { variantKey: modeVariant } : {}),
           ...(mode === 'game' && packId ? { packId } : {}),
           archiveDate,
         },
@@ -5027,6 +5045,7 @@ function GameApp() {
   const titleActionPending = startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending
   const completeTitleTransition = () => {
     if (transition !== 'title-to-game') return
+    clearTransitionTimer()
     setScreen('game')
     setTransition('idle')
     window.scrollTo({ top: 0 })
@@ -5034,32 +5053,9 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectCity={selectCityCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} citySummary={currentCitySummary} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'city-title' && <CityTitleScreen
-      items={cityData.items}
-      loading={cityData.loading}
-      error={cityData.error}
-      mode={cityMode}
-      date={getMoscowDate()}
-      onModeChange={setCityMode}
-      onPlay={() => { setDate(getMoscowDate()); setScreen('city-game'); window.scrollTo({ top: 0 }) }}
-      onBack={goHome}
-    />}
-
-    {screen === 'city-game' && <CityGameScreen
-      items={cityData.items}
-      loading={cityData.loading}
-      error={cityData.error}
-      mode={cityMode}
-      date={date}
-      onBack={() => { setScreen('city-title'); window.scrollTo({ top: 0 }) }}
-      onChooseMode={() => { setScreen('city-title'); window.scrollTo({ top: 0 }) }}
-      onProgress={() => setCityProgressVersion((version) => version + 1)}
-      navigation={{ onHome: goHome, onArchive: () => setScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }}
-    />}
-
-    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
@@ -5090,7 +5086,7 @@ function GameApp() {
           : <Game
           titles={data[mode]}
           mode={mode}
-          packId={packId}
+          variantKey={mode === 'city' ? modeVariant : packId}
           period={period}
           difficulty={difficulty}
           date={date}
@@ -5113,7 +5109,7 @@ function GameApp() {
           onConfigureMode={() => moveToScreen('title')}
             />)}
 
-    {screen !== 'game' && screen !== 'city-game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
+    {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} difficulty={mode === 'music' ? difficulty : undefined} /></Modal>}
@@ -5124,9 +5120,5 @@ function GameApp() {
 }
 
 export default function App() {
-  if (window.location.pathname.startsWith('/admin')) {
-    if (!AdminApp) return <main className="loading loading--error" role="alert"><AlertTriangle /><h1>Раздел недоступен</h1><p>Административная панель не включается в сборку Яндекс Игр.</p><a href="/">Вернуться в игру</a></main>
-    return <Suspense fallback={<main className="loading"><Sparkles /> Загружаем административную панель…</main>}><AdminApp /></Suspense>
-  }
   return <GameApp />
 }

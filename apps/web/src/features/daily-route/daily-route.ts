@@ -1,6 +1,7 @@
 import type { TitleMode } from '../../types'
+import { DAILY_MODE_IDS } from '@shoditsa/contracts'
 
-export const DAILY_MODE_ORDER: TitleMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+export const DAILY_MODE_ORDER: TitleMode[] = [...DAILY_MODE_IDS]
 
 export const nextDailyMode = (
   currentMode: TitleMode,

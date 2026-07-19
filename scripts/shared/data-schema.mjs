@@ -36,7 +36,27 @@ const validateTitleItem = (item, file) => {
 
 const validateTitleDataset = (json, file) => {
   if (!Array.isArray(json)) return [`${file}: root must be an array`]
-  return json.flatMap((item) => validateTitleItem(item, file))
+  const errors = json.flatMap((item) => validateTitleItem(item, file))
+  const seenExternalIds = new Map()
+
+  for (const item of json) {
+    if (!isObject(item)) continue
+    const externalIds = [
+      ['thegamesdb', item.externalRanks?.thegamesdb],
+      ['kinopoisk', item.kinopoiskId],
+      ['shikimori', item.shikimoriId],
+      ['steam', item.steamAppId],
+    ]
+    for (const [source, value] of externalIds) {
+      if (!Number.isFinite(value)) continue
+      const identity = `${item.mode}:${source}:${value}`
+      const previous = seenExternalIds.get(identity)
+      if (previous) errors.push(`${file}: items ${previous} and ${item.id} share external id ${identity}`)
+      else seenExternalIds.set(identity, item.id)
+    }
+  }
+
+  return errors
 }
 
 const validateVignetteMap = (json, file) => {

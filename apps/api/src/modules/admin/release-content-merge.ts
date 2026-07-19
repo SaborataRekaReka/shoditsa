@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import type { ContentMode } from '@shoditsa/contracts'
+import { CONTENT_MODE_IDS, type ContentMode } from '@shoditsa/contracts'
 import type { LoadedReleaseLibrary, ReleaseContentItem } from './release-content-loader.js'
 
 export type ActiveReleaseRow = {
@@ -43,7 +43,7 @@ export type ReleaseMergePreview = {
   modes: Record<ContentMode, ReleaseMergeModePreview>
 }
 
-const MODES: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
+const MODES: ContentMode[] = [...CONTENT_MODE_IDS]
 const emptyModePreview = (): ReleaseMergeModePreview => ({ active: 0, release: 0, conflicted: 0, updated: 0, unchanged: 0, added: 0, preserved: 0, final: 0 })
 const canonicalize = (value: unknown): unknown => Array.isArray(value)
   ? value.map(canonicalize)

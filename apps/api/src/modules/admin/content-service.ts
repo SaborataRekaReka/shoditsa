@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
-import type { ContentMode, TitleItem } from '@shoditsa/contracts'
+import { CONTENT_MODE_IDS, type ContentMode, type TitleItem } from '@shoditsa/contracts'
 import {
   appSettings, auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   contentWorkspaceChanges, contentWorkspaces, diagnosisVignettes, type Database,
@@ -24,7 +24,7 @@ export type ValidationIssue = { level: 'error' | 'warning'; field: string; code:
 const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : ''
 const number = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : null
-const contentModes: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city']
+const contentModes: ContentMode[] = [...CONTENT_MODE_IDS]
 
 export const validateContentPayload = (payload: Record<string, unknown>, mode: ContentMode): ValidationIssue[] => {
   const issues: ValidationIssue[] = []

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { AttendanceStats } from '../../types'
 import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion } from './completion'
+import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
 
 const stats = (overrides: Partial<AttendanceStats> = {}): AttendanceStats => ({
   currentDailyStreak: 0, bestDailyStreak: 0, lastCompletedDate: null, gracePasses: 0, totalActiveDays: 0, fullHouseDays: 0, ...overrides,
@@ -13,11 +14,12 @@ describe('completion idempotence and progression', () => {
     expect(shouldRecordCompletion([key], key)).toBe(false)
   })
 
-  it('recognizes 1/6, 3/6 and 6/6 without reclaiming milestones', () => {
+  it('recognizes the first, three-mode and manifest full-house milestones without reclaiming them', () => {
+    const fullHouse = FULL_HOUSE_MODE_IDS.length
     expect(crossedDailyMilestones(0, 1, [])).toEqual([])
     expect(crossedDailyMilestones(2, 3, [])).toEqual([3])
-    expect(crossedDailyMilestones(5, 6, [])).toEqual([6])
-    expect(crossedDailyMilestones(2, 6, [])).toEqual([3, 6])
+    expect(crossedDailyMilestones(fullHouse - 1, fullHouse, [])).toEqual([fullHouse])
+    expect(crossedDailyMilestones(2, fullHouse, [])).toEqual([3, fullHouse])
     expect(crossedDailyMilestones(2, 3, [3])).toEqual([])
   })
 

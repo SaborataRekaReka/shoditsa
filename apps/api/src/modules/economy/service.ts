@@ -1,7 +1,7 @@
 import { createHmac, randomInt } from 'node:crypto'
 import { and, asc, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import type { ApiDifficultyKey, PeriodKey, PlayableMode } from '@shoditsa/contracts'
+import { FREE_PLAY_MODE_IDS, PERIOD_UNLOCKABLE_MODE_IDS, type ApiDifficultyKey, type PeriodKey, type PlayableMode } from '@shoditsa/contracts'
 import {
   attendanceStats, dailyAttendance, dailyChallenges, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
   promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
@@ -11,8 +11,8 @@ import { getMoscowDate } from '../../lib/time.js'
 import { activeRevision, answerPool, buildSessionSnapshot } from '../games/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
-const UNLOCKABLE: PlayableMode[] = ['movie', 'series', 'anime']
-const FREE_PLAY: PlayableMode[] = ['movie', 'series', 'anime', 'music', 'diagnosis']
+const UNLOCKABLE: PlayableMode[] = [...PERIOD_UNLOCKABLE_MODE_IDS]
+const FREE_PLAY: PlayableMode[] = [...FREE_PLAY_MODE_IDS]
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()

@@ -13,7 +13,7 @@ FormatRegistry.Set('date-time', (value) => !Number.isNaN(Date.parse(value)))
 
 describe('API schemas', () => {
   it('rejects unknown start fields', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'movie', answerId: 'secret' })).toBe(false))
-  it('keeps admin-only city content out of generic game routes', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'city' })).toBe(false))
+  it('accepts city through the canonical game route with a supported variant', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'city', variantKey: 'capitals' })).toBe(true))
   it('rejects invalid attempts', () => expect(Value.Check(AttemptBodySchema, { itemId: '' })).toBe(false))
   it('bounds search limits', () => expect(Value.Check(CatalogSearchQuerySchema, { mode: 'movie', q: 'a', limit: 21 })).toBe(false))
   it('requires explicit consent for a legacy import', () => {

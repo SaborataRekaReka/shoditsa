@@ -1,4 +1,4 @@
-import type { Direction, DifficultyKey, Hint, LibrarySearchIndex, MatchStatus, PeriodKey, Stats, TitleItem, TitleMode } from '@shoditsa/contracts'
+import { GAME_MODE_MANIFEST, type Direction, type DifficultyKey, type Hint, type LibrarySearchIndex, type MatchStatus, type PeriodKey, type Stats, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 
 export const PERIODS: Record<PeriodKey, { label: string; short: string; fromYear: number | null }> = {
   all: { label: 'Все годы', short: 'Весь экран', fromYear: null },
@@ -204,13 +204,14 @@ const isAllowedInMode = (item: TitleItem, mode: TitleMode) => {
   return true
 }
 
-export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey) => {
+export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey, variantKey: string | null = null) => {
   const from = PERIODS[period].fromYear
-  return titles.filter((item) => {
+  const base = titles.filter((item) => {
     if (!isAllowedInMode(item, mode)) return false
-    if (mode === 'diagnosis' || from === null) return true
+    if (from === null) return true
     return typeof item.year === 'number' && item.year >= from
   })
+  return GAME_MODE_RULES[mode].pool(base, variantKey)
 }
 
 const asDifficultyKey = (value: string): DifficultyKey => {
@@ -318,6 +319,18 @@ const distance = (a: string, b: string) => {
   return matrix[b.length][a.length]
 }
 
+const searchIdentity = (item: TitleItem) => {
+  const externalKeys = ['thegamesdb', 'kinopoisk', 'shikimori']
+  for (const key of externalKeys) {
+    const value = item.externalRanks?.[key]
+    if (Number.isFinite(value)) return `${item.mode}:${key}:${value}`
+  }
+  if (Number.isFinite(item.kinopoiskId)) return `${item.mode}:kinopoisk:${item.kinopoiskId}`
+  if (Number.isFinite(item.shikimoriId)) return `${item.mode}:shikimori:${item.shikimoriId}`
+  if (Number.isFinite(item.steamAppId)) return `${item.mode}:steam:${item.steamAppId}`
+  return `${item.mode}:title:${normalize(item.titleRu || item.titleOriginal)}:${item.year ?? ''}`
+}
+
 export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<string>, searchIndex?: LibrarySearchIndex | null) => {
   const q = normalize(query)
   if (!q) return []
@@ -362,6 +375,7 @@ export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<str
     ? pool.filter((item) => candidateIds.has(item.id))
     : pool
 
+  const seenIdentities = new Set<string>()
   return candidatePool.map((item) => {
     const names = [
       item.titleRu,
@@ -383,7 +397,14 @@ export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<str
     if (isBlockedMusic(item)) return false
     return !excludedCanonical.has(canonicalId)
   })
-    .sort((a, b) => a.score - b.score || a.item.titleRu.localeCompare(b.item.titleRu, 'ru-RU')).slice(0, 8).map(({ item }) => item)
+    .sort((a, b) => a.score - b.score || a.item.titleRu.localeCompare(b.item.titleRu, 'ru-RU'))
+    .filter(({ item }) => {
+      const identity = searchIdentity(item)
+      if (seenIdentities.has(identity)) return false
+      seenIdentities.add(identity)
+      return true
+    })
+    .slice(0, 8).map(({ item }) => item)
 }
 
 const setStatus = (guess: string[], answer: string[]): MatchStatus => {
@@ -968,12 +989,104 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
 }
 
+export type CityPoolMode = 'capitals' | 'capitals-popular' | 'all'
+
+export const cityPoolMode = (value: string | null | undefined): CityPoolMode => (
+  value === 'capitals' || value === 'capitals-popular' || value === 'all' ? value : 'capitals'
+)
+
+const filterCityPool = (items: TitleItem[], variantKey: string | null) => {
+  const variant = cityPoolMode(variantKey)
+  if (variant === 'capitals') return items.filter((item) => item.capital === true)
+  if (variant === 'capitals-popular') return items.filter((item) => item.capital === true || item.popular === true)
+  return items
+}
+
+const cityScalarStatus = (guess: string, answer: string): MatchStatus => {
+  if (!guess || !answer) return 'unknown'
+  return normalize(guess) === normalize(answer) ? 'match' : 'miss'
+}
+
+const cityListStatus = (guess: string[], answer: string[]): MatchStatus => {
+  if (!guess.length || !answer.length) return 'unknown'
+  const guessSet = new Set(guess.map(normalize))
+  const answerSet = new Set(answer.map(normalize))
+  const shared = [...guessSet].filter((value) => answerSet.has(value)).length
+  return shared === guessSet.size && shared === answerSet.size ? 'match' : shared ? 'partial' : 'miss'
+}
+
+const cityNumberHint = (
+  key: string,
+  label: string,
+  guess: number | null,
+  answer: number | null,
+  format: (value: number) => string,
+  matchDelta: number,
+  closeDelta: number,
+  lowerIsUp = false,
+): Hint => {
+  if (guess == null || answer == null) return { key, label, value: 'Нет данных', status: 'unknown', direction: null }
+  const delta = Math.abs(guess - answer)
+  const status: MatchStatus = delta <= matchDelta ? 'match' : delta <= closeDelta ? 'close' : 'miss'
+  const direction = status === 'match' ? null : lowerIsUp ? (answer < guess ? 'up' : 'down') : (answer > guess ? 'up' : 'down')
+  return { key, label, value: format(guess), status, direction }
+}
+
+const cityTimezoneHours = (value: string) => {
+  const match = String(value ?? '').match(/GMT\s*([+-])(\d{1,2})(?::(\d{2}))?/i)
+  if (!match) return null
+  const hours = Number(match[2]) + Number(match[3] ?? 0) / 60
+  return match[1] === '-' ? -hours : hours
+}
+
+const cityPopulationHint = (guess: number | null, answer: number | null): Hint => {
+  if (guess == null || answer == null) return { key: 'population', label: 'Население', value: 'Нет данных', status: 'unknown', direction: null }
+  const relativeDelta = Math.abs(guess - answer) / Math.max(answer, 1)
+  const status: MatchStatus = relativeDelta <= 0.05 ? 'match' : relativeDelta <= 0.2 ? 'close' : 'miss'
+  return {
+    key: 'population', label: 'Население', value: new Intl.NumberFormat('ru-RU').format(guess), status,
+    direction: status === 'match' ? null : answer > guess ? 'up' : 'down',
+  }
+}
+
+export const compareCities = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const guessRanks = guess.ranks
+  const answerRanks = answer.ranks
+  const rank = (key: keyof NonNullable<TitleItem['ranks']>, label: string) => cityNumberHint(
+    key, label, guessRanks?.[key] ?? null, answerRanks?.[key] ?? null, (value) => `№ ${value}`, 10, 50, true,
+  )
+  const hints: Hint[] = [
+    { key: 'country', label: 'Страна', value: guess.country || 'Нет данных', status: cityScalarStatus(guess.country ?? '', answer.country ?? ''), direction: null },
+    { key: 'continent', label: 'Континент', value: guess.continent || 'Нет данных', status: cityScalarStatus(guess.continent ?? '', answer.continent ?? ''), direction: null },
+    { key: 'languages', label: 'Языки', value: (guess.languages ?? []).join(', ') || 'Нет данных', status: cityListStatus(guess.languages ?? [], answer.languages ?? []), direction: null },
+    cityPopulationHint(guess.population ?? null, answer.population ?? null),
+    cityNumberHint('timezone', 'Часовой пояс', cityTimezoneHours(guess.timezone ?? ''), cityTimezoneHours(answer.timezone ?? ''), () => guess.timezone || 'Нет данных', 0.25, 2),
+    rank('economy', 'Экономика'), rank('humanCapital', 'Человеческий капитал'), rank('qualityOfLife', 'Качество жизни'),
+    rank('ecology', 'Экология'), rank('governance', 'Работа властей'),
+  ]
+  return guess.id === answer.id ? hints.map((hint) => ({ ...hint, status: 'match', direction: null })) : hints
+}
+
+export type GameModeRules = {
+  pool: (items: TitleItem[], variantKey: string | null) => TitleItem[]
+  compare: (guess: TitleItem, answer: TitleItem) => Hint[]
+}
+
+const unchangedPool: GameModeRules['pool'] = (items) => items
+
+export const GAME_MODE_RULES: Record<TitleMode, GameModeRules> = {
+  movie: { pool: unchangedPool, compare: compareScreenTitles },
+  series: { pool: unchangedPool, compare: compareScreenTitles },
+  anime: { pool: unchangedPool, compare: compareAnimeTitles },
+  game: { pool: unchangedPool, compare: compareGames },
+  city: { pool: filterCityPool, compare: compareCities },
+  music: { pool: unchangedPool, compare: compareMusic },
+  diagnosis: { pool: unchangedPool, compare: compareDiagnoses },
+}
+
 export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
-  if (guess.mode === 'diagnosis' || answer.mode === 'diagnosis') return compareDiagnoses(guess, answer)
-  if (guess.mode === 'game' || answer.mode === 'game') return compareGames(guess, answer)
-  if (guess.mode === 'music' || answer.mode === 'music') return compareMusic(guess, answer)
-  if (guess.mode === 'anime' || answer.mode === 'anime') return compareAnimeTitles(guess, answer)
-  return compareScreenTitles(guess, answer)
+  if (guess.mode !== answer.mode) return []
+  return GAME_MODE_RULES[guess.mode].compare(guess, answer)
 }
 
 export const emptyStats = (): Stats => ({ played: 0, won: 0, currentStreak: 0, bestStreak: 0, distribution: Array(10).fill(0) })
@@ -991,7 +1104,8 @@ export const calculateCompletionReward = (input: { won: boolean; attemptsCount: 
 }
 export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean) => {
   const rows = hints.map((row) => row.map((hint) => hint.status === 'match' ? '🟩' : hint.status === 'close' || hint.status === 'partial' ? '🟨' : hint.status === 'unknown' ? '⬜' : '⬛').join('')).join('\n')
-  const dailyLabel = mode === 'movie' ? 'Фильм дня' : mode === 'series' ? 'Сериал дня' : mode === 'anime' ? 'Аниме дня' : mode === 'game' ? 'Игра дня' : mode === 'music' ? 'Артист дня' : 'Диагноз дня'
-  const icon = mode === 'game' ? '🎮' : mode === 'diagnosis' ? '🩺' : mode === 'anime' ? '🌸' : mode === 'music' ? '🎵' : '🎬'
+  const modeDefinition = GAME_MODE_MANIFEST[mode]
+  const dailyLabel = `${modeDefinition.dailyLabel} дня`
+  const icon = modeDefinition.shareIcon
   return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/10\n${rows}`
 }

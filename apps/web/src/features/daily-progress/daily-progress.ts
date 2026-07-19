@@ -1,14 +1,15 @@
 import type { DailyAttendance, SavedGame, TitleMode } from '../../types'
 import type { DailyHubState, DailyRewardState } from './daily-progress.types'
+import { DAILY_MODE_IDS, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
 
-export const DAILY_MODE_ORDER: TitleMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+export const DAILY_MODE_ORDER: TitleMode[] = [...DAILY_MODE_IDS]
 
-export const DAILY_MODE_LABELS: Record<TitleMode, string> = {
-  movie: 'Кино', series: 'Сериалы', anime: 'Аниме', game: 'Игры', music: 'Музыка', diagnosis: 'Диагнозы',
-}
+export const DAILY_MODE_LABELS = Object.fromEntries(
+  DAILY_MODE_ORDER.map((mode) => [mode, GAME_MODE_MANIFEST[mode].label]),
+) as Record<TitleMode, string>
 
 const MODE_ACCUSATIVE: Record<TitleMode, string> = {
-  movie: 'кино', series: 'сериалы', anime: 'аниме', game: 'игры', music: 'музыку', diagnosis: 'диагнозы',
+  movie: 'кино', series: 'сериалы', anime: 'аниме', game: 'игры', city: 'города', music: 'музыку', diagnosis: 'диагнозы',
 }
 
 const newestFirst = (left: SavedGame, right: SavedGame) => right.updatedAt - left.updatedAt
@@ -30,12 +31,13 @@ export const savedGameAttemptCount = (game: SavedGame | null | undefined) => {
 
 export const dailyCompletedCopy = (count: number) => {
   const suffix = count === 0 ? 'завершено' : count === 1 ? 'завершена' : 'завершены'
-  return `${count} из 6 ${suffix}`
+  return `${count} из ${DAILY_MODE_ORDER.length} ${suffix}`
 }
 
 export const dailyRewardState = (completedCount: number): DailyRewardState => {
-  if (completedCount >= 6) return { fullHouse: true, remaining: 0, reward: 25, milestone: 6 }
-  if (completedCount >= 3) return { fullHouse: false, remaining: 6 - completedCount, reward: 25, milestone: 6 }
+  const fullHouseTarget = DAILY_MODE_ORDER.length
+  if (completedCount >= fullHouseTarget) return { fullHouse: true, remaining: 0, reward: 25, milestone: fullHouseTarget }
+  if (completedCount >= 3) return { fullHouse: false, remaining: fullHouseTarget - completedCount, reward: 25, milestone: fullHouseTarget }
   return { fullHouse: false, remaining: 3 - completedCount, reward: 10, milestone: 3 }
 }
 
@@ -62,7 +64,7 @@ export const buildDailyHubState = (attendance: DailyAttendance, games: SavedGame
     primaryMeta: activeGame ? `${savedGameAttemptCount(activeGame)} из 10 попыток` : null,
     punchesCaption: activeGame
       ? `${DAILY_MODE_LABELS[activeGame.mode]} в процессе`
-      : completedCount === 0 ? 'Выберите первую игру' : completedCount < 6 ? 'Выберите следующую игру' : 'Все игры дня завершены',
+      : completedCount === 0 ? 'Выберите первую игру' : completedCount < DAILY_MODE_ORDER.length ? 'Выберите следующую игру' : 'Все игры дня завершены',
     reward: dailyRewardState(completedCount),
   }
 }

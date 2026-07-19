@@ -7,8 +7,8 @@ describe('daily route', () => {
     expect(nextDailyMode('music', ['movie', 'series', 'anime', 'game', 'music'])).toBe('diagnosis')
   })
 
-  it('wraps around and stops after 6/6', () => {
+  it('wraps around and stops after every manifest mode is complete', () => {
     expect(nextDailyMode('diagnosis', ['diagnosis'])).toBe('movie')
-    expect(nextDailyMode('movie', ['movie', 'series', 'anime', 'game', 'music', 'diagnosis'])).toBeNull()
+    expect(nextDailyMode('movie', ['movie', 'series', 'anime', 'game', 'city', 'music', 'diagnosis'])).toBeNull()
   })
 })

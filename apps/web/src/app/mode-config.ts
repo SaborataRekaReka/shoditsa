@@ -1,4 +1,5 @@
 import type { TitleMode } from '../types'
+import { DAILY_MODE_IDS } from '@shoditsa/contracts'
 
 export type ModeConfig = {
   title: string
@@ -8,7 +9,7 @@ export type ModeConfig = {
   daily: string
   lower: string
   searchPlaceholder: string
-  dataFile: 'movies' | 'series' | 'animes' | 'games' | 'music' | 'diagnoses'
+  dataFile: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses'
   emptyArticle: 'любой' | 'любого'
 }
 
@@ -57,6 +58,17 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     dataFile: 'games',
     emptyArticle: 'любой',
   },
+  city: {
+    title: 'Города',
+    plural: 'Города',
+    subject: 'город',
+    subjectGenitive: 'города',
+    daily: 'Город',
+    lower: 'города',
+    searchPlaceholder: 'Найти город…',
+    dataFile: 'cities',
+    emptyArticle: 'любой',
+  },
   music: {
     title: 'Музыка',
     plural: 'Музыка',
@@ -81,4 +93,4 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
   },
 }
 
-export const MODE_TABS: TitleMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+export const MODE_TABS: TitleMode[] = [...DAILY_MODE_IDS]

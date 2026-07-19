@@ -17,6 +17,7 @@ import type {
   Wallet,
 } from './types'
 import type { DailyMilestone, DailyMilestoneClaims } from './features/daily-progress/daily-progress.types'
+import { FULL_HOUSE_MODE_IDS, PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
 
 const GAME_PREFIX = 'seans:v1:game:'
 const STATS_PREFIX = 'seans:v1:stats:'
@@ -40,7 +41,7 @@ export type MusicReviewConflictChoice = {
 }
 export type MusicReviewConflictChoices = Record<string, Record<string, MusicReviewConflictChoice>>
 
-const TITLE_MODES: TitleMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+const TITLE_MODES: TitleMode[] = [...PLAYABLE_MODE_IDS]
 const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020']
 const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost']
 const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]
@@ -509,7 +510,7 @@ export const loadDailyMilestoneClaims = (date: string): DailyMilestoneClaims => 
     if (!value) return { date, claimed: [] }
     const parsed = JSON.parse(value) as Partial<DailyMilestoneClaims>
     const claimed = Array.isArray(parsed.claimed)
-      ? parsed.claimed.filter((milestone): milestone is DailyMilestone => milestone === 3 || milestone === 6)
+      ? parsed.claimed.filter((milestone): milestone is DailyMilestone => milestone === 3 || milestone === FULL_HOUSE_MODE_IDS.length)
       : []
     return { date, claimed: [...new Set(claimed)] }
   } catch {

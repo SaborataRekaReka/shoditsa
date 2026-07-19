@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { and, eq, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import type { PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
+import { PLAYABLE_MODE_IDS, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   contentItemVersions, dailyChallenges, gameAttempts, gameSessions, legacyImports, periodEntitlements,
   playerProfiles, type Database, userModeStats, walletAccounts, walletLedger,
@@ -11,7 +11,7 @@ import { ApiError } from '../../lib/errors.js'
 
 type LegacyGame = { mode?: unknown; period?: unknown; date?: unknown; difficulty?: unknown; attempts?: unknown; attemptTitleIds?: unknown }
 type LegacyPayload = { consent?: unknown; deviceId?: unknown; schemaVersion?: unknown; games?: unknown; wallet?: unknown; periodUnlocks?: unknown }
-const modes = new Set<TitleMode>(['movie', 'series', 'anime', 'game', 'music', 'diagnosis'])
+const modes = new Set<TitleMode>(PLAYABLE_MODE_IDS)
 const periods = new Set<PeriodKey>(['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'])
 
 export const importLegacy = async (db: Database, config: AppConfig, userId: string, payload: LegacyPayload) => {

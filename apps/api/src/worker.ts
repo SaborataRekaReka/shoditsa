@@ -12,7 +12,7 @@ import {
 import { buildWorkspaceRevision, validateContentPayload } from './modules/admin/content-service.js'
 import { buildReleaseContentRevision } from './modules/admin/release-content-service.js'
 import { loadAdminTimeline } from './modules/admin/timeline-service.js'
-import type { AdminEventsQuery, ContentMode } from '@shoditsa/contracts'
+import { isContentModeId, type AdminEventsQuery, type ContentMode } from '@shoditsa/contracts'
 import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.js'
 import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
@@ -674,7 +674,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   const mode = text(input.mode) as ContentMode; const field = text(input.field); const prompt = text(input.prompt)
   const contextFields = Array.isArray(input.contextFields) ? strings(input.contextFields) : undefined
   const availableFields = Array.isArray(input.availableFields) ? strings(input.availableFields) : undefined
-  if (!['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'].includes(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
+  if (!isContentModeId(mode)) throw new ApiError(422, 'NORMALIZATION_MODE_INVALID', 'Недопустимая категория нормализации')
   assertNormalizationField(mode, field)
   const runItemIds = strings(input.itemIds)
   if (!runItemIds.length) throw new ApiError(422, 'NORMALIZATION_ITEMS_EMPTY', 'В запуске нет карточек')

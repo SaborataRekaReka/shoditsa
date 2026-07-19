@@ -1,5 +1,5 @@
 import { and, eq, sql } from 'drizzle-orm'
-import type { ContentMode } from '@shoditsa/contracts'
+import { FULL_HOUSE_MODE_IDS, type ContentMode } from '@shoditsa/contracts'
 import {
   attendanceStats, dailyAttendance, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
@@ -7,7 +7,7 @@ import { getMoscowDate, previousDate } from '../../lib/time.js'
 import { calculateCompletionReward } from '@shoditsa/game-core'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
-const ALL_MODES: ContentMode[] = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis']
+const ALL_MODES: ContentMode[] = [...FULL_HOUSE_MODE_IDS]
 
 export const completeGame = async (tx: Transaction, input: {
   sessionId: string; userId: string; kind: string; mode: ContentMode; difficulty: string | null;

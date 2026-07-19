@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode }) => {
       if (yandexBuild) return
       server.middlewares.use((request, response, next) => {
         const pathname = String(request.url ?? '').split('?', 1)[0]
-        if (pathname === '/data' || pathname.startsWith('/data/')) {
+        if (pathname === '/data' || pathname.startsWith('/data/') || pathname === '/city-content' || pathname.startsWith('/city-content/')) {
           response.statusCode = 404
           response.end()
           return
@@ -32,8 +32,9 @@ export default defineConfig(({ command, mode }) => {
     async closeBundle() {
       if (yandexBuild) return
       await rm(join(outDir, 'data'), { recursive: true, force: true })
+      await rm(join(outDir, 'city-content'), { recursive: true, force: true })
       for (const entry of await readdir(sharedPublicDir, { withFileTypes: true })) {
-        if (entry.name === 'data') continue
+        if (entry.name === 'data' || entry.name === 'city-content') continue
         await cp(join(sharedPublicDir, entry.name), join(outDir, entry.name), { recursive: entry.isDirectory(), force: true })
       }
     },
