@@ -38,7 +38,6 @@ const sourceChecks = [
     required: [
       ['committed screen scroll reset', /useLayoutEffect\(\(\) => \{[^]*window\.scrollTo\(\{ top: 0, left: 0 \}\)[^]*\}, \[routeLocation\.pathname, screen\]\)/],
       ['admission-ticket guide integration', /<GameArtifactSeoDetails\s+mode=\{mode\}\s*\/>/],
-      ['game-case guide integration', /<GameArtifactSeoDetails\s+mode="game"\s*\/>/],
       ['concert-ticket guide integration', /<GameArtifactSeoDetails\s+mode="music"\s*\/>/],
       ['medical-chart guide integration', /<GameArtifactSeoDetails\s+mode="diagnosis"\s*\/>/],
       ['home guide integrated with hero ticket', /hub-hero-ticket[^]*<DailyProgressStub[^]*<HomeSeoContent/],

@@ -1483,31 +1483,6 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <ActionButton className="promo-case__play" onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
                 </div>
               </section>
-          : mode === 'game'
-            ? <section className="game-case game-case--dossier" aria-labelledby="ticket-game">
-                <div className="game-case__spine" aria-hidden="true"><span>Сходится · Игры</span></div>
-                <div className="game-case__body">
-                  <div className="game-case__band">
-                    <span className="game-case__platform">PC</span>
-                    <span className="game-case__band-title">Игра дня</span>
-                    <span className="game-case__band-no">№ {dayNumber(date)}</span>
-                  </div>
-                  <div className="game-case__cover">
-                    <div className="game-case__poster" aria-hidden="true">
-                      <img className="game-case__poster-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.game)} alt="" decoding="async" />
-                      <span>ИГРОК</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small>
-                    </div>
-                    <span className="game-case__disc cd disc" aria-hidden="true"><i /></span>
-                    <div className="game-case__info">
-                      <div className="game-case__kicker"><span>Ежедневный релиз</span><i /> <small>глобальный чарт</small></div>
-                      <h2 id="ticket-game">Ежедневная игра: игры</h2>
-                      <p>Каждый день — новая игра из мирового чарта. У вас есть <strong>10 попыток</strong>, чтобы узнать её по жанрам, студии и рейтингам.</p>
-                    </div>
-                  </div>
-                  {launchControls}
-                </div>
-                <GameArtifactSeoDetails mode="game" />
-              </section>
           : mode === 'music'
             ? <section className="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music">
                 <div className="concert-ticket__main">

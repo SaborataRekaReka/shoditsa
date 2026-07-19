@@ -210,7 +210,7 @@
 .seo-content__game-links a:hover { border-color: var(--color-primary); color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
 
 /* The guide spans the full artifact below its compact upper controls. */
-:is(.admit-ticket--dossier, .concert-ticket--dossier, .med-chart--dossier, .game-case--dossier) {
+:is(.admit-ticket--dossier, .concert-ticket--dossier, .med-chart--dossier) {
   min-width: 0;
   max-width: 600px;
 }
@@ -244,8 +244,6 @@
 .ticket-dossier--game { --ticket-dossier-accent: #2f6b45; --ticket-dossier-accent-rgb: 47, 107, 69; }
 .ticket-dossier--music { --ticket-dossier-accent: #9a5d24; --ticket-dossier-accent-rgb: 154, 93, 36; }
 .ticket-dossier--diagnosis { --ticket-dossier-accent: #9d3f39; --ticket-dossier-accent-rgb: 157, 63, 57; }
-
-.game-case--dossier > .ticket-dossier { width: calc(100% - 24px); margin-left: 24px; }
 
 .ticket-dossier__summary {
   min-height: 56px;
@@ -342,8 +340,8 @@
 .ticket-dossier__links a:hover { border-color: var(--ticket-dossier-accent); color: var(--ticket-dossier-accent); background: rgba(var(--ticket-dossier-accent-rgb), .06); }
 
 .seo-static-shell--artifact { display: grid; place-items: start center; }
-.seo-static-shell--artifact :is(.admit-ticket, .game-case, .concert-ticket, .med-chart) { margin-top: 0; }
-.seo-static-shell--artifact :is(.admit-ticket, .game-case, .concert-ticket, .med-chart) h1 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
+.seo-static-shell--artifact :is(.admit-ticket, .concert-ticket, .med-chart) { margin-top: 0; }
+.seo-static-shell--artifact :is(.admit-ticket, .concert-ticket, .med-chart) h1 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
 
 @media (max-width: 760px) {
   .seo-content__preview { grid-template-columns: 68px minmax(0, 1fr); }
@@ -401,7 +399,7 @@
 
 @media (min-width: 720px) {
   .med-chart--dossier { grid-template-columns: 112px minmax(0, 1fr); }
-  .seo-static-shell--artifact :is(.admit-ticket, .game-case, .concert-ticket, .med-chart) h1 { font-size: 24px; }
+  .seo-static-shell--artifact :is(.admit-ticket, .concert-ticket, .med-chart) h1 { font-size: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

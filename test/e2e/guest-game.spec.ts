@@ -157,7 +157,7 @@ test('every game guide unfolds inside its own themed artifact', async ({ page })
     { mode: 'movie', artifact: '.admit-ticket--dossier', optionLabel: 'Период', closedLabel: 'Развернуть билет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать фильм' },
     { mode: 'series', artifact: '.admit-ticket--dossier', optionLabel: 'Период', closedLabel: 'Открыть телепрограмму', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать сериал' },
     { mode: 'anime', artifact: '.admit-ticket--dossier', optionLabel: 'Период', closedLabel: 'Развернуть вкладыш', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать аниме' },
-    { mode: 'game', artifact: '.game-case--dossier', optionLabel: null, closedLabel: 'Открыть буклет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать игру' },
+    { mode: 'game', artifact: '.admit-ticket--dossier', optionLabel: null, closedLabel: 'Открыть буклет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать игру' },
     { mode: 'city', artifact: '.admit-ticket--dossier', optionLabel: 'Режим', closedLabel: 'Развернуть маршрут', evidenceTitle: 'Что сверяем', routeTitle: 'Как найти город' },
     { mode: 'music', artifact: '.concert-ticket--dossier', optionLabel: 'Сложность', closedLabel: 'Открыть программу', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать артиста' },
     { mode: 'diagnosis', artifact: '.med-chart--dossier', optionLabel: null, closedLabel: 'Открыть карту', evidenceTitle: 'Что сравниваем', routeTitle: 'Как искать ответ' },
