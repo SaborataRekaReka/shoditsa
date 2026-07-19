@@ -1,5 +1,5 @@
-import { readFile, stat } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { readFile, readdir, stat } from 'node:fs/promises'
+import { relative, resolve } from 'node:path'
 
 const root = process.cwd()
 const requiredFiles = [
@@ -7,6 +7,7 @@ const requiredFiles = [
   'apps/web/src/app/router.tsx',
   'apps/web/src/app/routes.ts',
   'apps/web/src/app/mode-presentation.ts',
+  'apps/web/src/app/public-asset.ts',
   'packages/contracts/src/game-modes.ts',
   'apps/web/src/components/app-shell/AppShell.tsx',
   'apps/web/src/features/economy/EconomyView.tsx',
@@ -28,6 +29,18 @@ for (const path of requiredFiles) {
 }
 
 const sourceChecks = [
+  {
+    path: 'apps/web/index.html',
+    required: [
+      ['route-stable document base', /<base\s+href="%BASE_URL%"\s*\/>/],
+    ],
+  },
+  {
+    path: 'apps/web/src/app/public-asset.ts',
+    required: [
+      ['deployment-aware public asset URL', /import\.meta\.env\.BASE_URL/],
+    ],
+  },
   {
     path: 'apps/web/src/app/router.tsx',
     required: [
@@ -97,6 +110,28 @@ for (const check of sourceChecks) {
   }
 }
 
+async function collectSourceFiles(directory) {
+  const files = []
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = resolve(directory, entry.name)
+    if (entry.isDirectory()) files.push(...await collectSourceFiles(path))
+    else if (/\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name)) files.push(path)
+  }
+  return files
+}
+
+const allowedStaticAssetFiles = new Set([
+  resolve(root, 'apps/web/src/app/public-asset.ts'),
+  resolve(root, 'apps/web/src/app/seo.ts'),
+])
+for (const path of await collectSourceFiles(resolve(root, 'apps/web/src'))) {
+  if (allowedStaticAssetFiles.has(path)) continue
+  const source = await readFile(path, 'utf8')
+  if (/['"](?:\.\/|\/)images\//.test(source)) {
+    failedChecks.push(`${relative(root, path)}: public assets must use publicAssetUrl()`)
+  }
+}
+
 if (missingFiles.length || failedChecks.length) {
   console.error('[app-shell] Critical production capabilities are missing.')
   for (const path of missingFiles) console.error(`  missing file: ${path}`)
@@ -105,4 +140,4 @@ if (missingFiles.length || failedChecks.length) {
   process.exit(1)
 }
 
-console.log('[app-shell] profile, footer, API and production deployment invariants: ok')
+console.log('[app-shell] routes, assets, UI shell, API and production deployment invariants: ok')

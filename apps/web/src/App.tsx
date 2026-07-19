@@ -41,6 +41,7 @@ import {
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
+import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
 import { apiErrorMessage } from './api/error-message'
 import { DailyProgressStub } from './features/daily-progress/DailyProgressStub'
@@ -199,22 +200,22 @@ const toInteger = (value: number | string | undefined, fallback: number) => {
 }
 const normalizeSystemKey = (value: string) => normalizeTextMatch(value).replace(/[^a-zа-я0-9]+/gi, ' ').trim()
 const diagnosisSystemIconByKey = new Map<string, string>([
-  ['дыхательная система', './images/diagnosis-systems/respiratory.svg'],
-  ['пищеварительная система', './images/diagnosis-systems/digestive.svg'],
-  ['психика и поведение', './images/diagnosis-systems/mental.svg'],
-  ['зубы и полость рта', './images/diagnosis-systems/dental.svg'],
-  ['мочевыделительная система', './images/diagnosis-systems/urinary.svg'],
-  ['нервная система', './images/diagnosis-systems/nervous.svg'],
-  ['органы зрения', './images/diagnosis-systems/vision.svg'],
-  ['органы слуха', './images/diagnosis-systems/hearing.svg'],
-  ['кожа и подкожная клетчатка', './images/diagnosis-systems/skin.svg'],
-  ['костно мышечная система', './images/diagnosis-systems/musculoskeletal.svg'],
-  ['кровь и иммунная система', './images/diagnosis-systems/blood-immune.svg'],
-  ['репродуктивная система', './images/diagnosis-systems/reproductive.svg'],
-  ['сердечно сосудистая система', './images/diagnosis-systems/cardiovascular.svg'],
-  ['эндокринная система', './images/diagnosis-systems/endocrine.svg'],
+  ['дыхательная система', publicAssetUrl('images/diagnosis-systems/respiratory.svg')],
+  ['пищеварительная система', publicAssetUrl('images/diagnosis-systems/digestive.svg')],
+  ['психика и поведение', publicAssetUrl('images/diagnosis-systems/mental.svg')],
+  ['зубы и полость рта', publicAssetUrl('images/diagnosis-systems/dental.svg')],
+  ['мочевыделительная система', publicAssetUrl('images/diagnosis-systems/urinary.svg')],
+  ['нервная система', publicAssetUrl('images/diagnosis-systems/nervous.svg')],
+  ['органы зрения', publicAssetUrl('images/diagnosis-systems/vision.svg')],
+  ['органы слуха', publicAssetUrl('images/diagnosis-systems/hearing.svg')],
+  ['кожа и подкожная клетчатка', publicAssetUrl('images/diagnosis-systems/skin.svg')],
+  ['костно мышечная система', publicAssetUrl('images/diagnosis-systems/musculoskeletal.svg')],
+  ['кровь и иммунная система', publicAssetUrl('images/diagnosis-systems/blood-immune.svg')],
+  ['репродуктивная система', publicAssetUrl('images/diagnosis-systems/reproductive.svg')],
+  ['сердечно сосудистая система', publicAssetUrl('images/diagnosis-systems/cardiovascular.svg')],
+  ['эндокринная система', publicAssetUrl('images/diagnosis-systems/endocrine.svg')],
 ])
-const defaultDiagnosisSystemIcon = './images/diagnosis-systems/nervous.svg'
+const defaultDiagnosisSystemIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
 const splitHintValues = (value: string) => value.split(',').map((item) => item.trim()).filter((item) => item && item !== 'Нет данных')
 const visibleMatchedItems = (items: string[], matched: Set<string>, limit: number) =>
   items.filter((item, index) => index < limit || matched.has(normalizeTextMatch(item)))
@@ -1321,7 +1322,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
             </div>
           </div>
           <div className="hub-hero__visual" aria-hidden="true">
-            <img src="./images/hero.webp" alt="" />
+            <img src={publicAssetUrl('images/hero.webp')} alt="" />
           </div>
         </div>
         <DailyProgressStub state={dailyState} />
@@ -1352,7 +1353,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
             description="Промо-режим: угадайте игру по сатирическим комментариям DTF."
             color="#B8655A"
             icon={Gamepad2}
-            watermarkUrl="./images/category-stubs/game-stub.webp"
+            watermarkUrl={publicAssetUrl('images/category-stubs/game-stub.webp')}
             poolCount={PROMO_POOL_COUNT}
             status={promoSession?.status === 'playing' ? 'active' : promoSession ? 'completed' : 'new'}
             attempts={promoSession ? savedGameAttemptCount(promoSession) : null}
@@ -2416,7 +2417,7 @@ function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: 
         const isMatched = matched.has(normalizeTextMatch(value))
         const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
         return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>
-          {icon && <img className="dx-chip__icon" src={icon === 'single' ? './images/steam-icons/single-player.svg' : './images/steam-icons/multi-player.svg'} alt="" aria-hidden="true" />}
+          {icon && <img className="dx-chip__icon" src={publicAssetUrl(icon === 'single' ? 'images/steam-icons/single-player.svg' : 'images/steam-icons/multi-player.svg')} alt="" aria-hidden="true" />}
           {value}
           {isMatched && <Check />}
         </span>
@@ -3117,7 +3118,7 @@ function Game({
             aria-expanded={gameMatchStripOpen}
             aria-controls="game-match-strip-panel"
           >
-            <span className="game-match-strip__logo" aria-hidden="true"><img src="./images/symbol.svg" alt="" /></span>
+            <span className="game-match-strip__logo" aria-hidden="true"><img src={publicAssetUrl('images/symbol.svg')} alt="" /></span>
             <span className="game-match-strip__title">Что сходится</span>
             <ChevronRight aria-hidden="true" />
           </button>
@@ -3466,7 +3467,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             aria-expanded={gameMatchStripOpen}
             aria-controls="game-match-strip-panel"
           >
-            <span className="game-match-strip__logo" aria-hidden="true"><img src="./images/symbol.svg" alt="" /></span>
+            <span className="game-match-strip__logo" aria-hidden="true"><img src={publicAssetUrl('images/symbol.svg')} alt="" /></span>
             <span className="game-match-strip__title">Что сходится</span>
             <ChevronRight aria-hidden="true" />
           </button>
@@ -3991,9 +3992,9 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
   const bullseyeUnlocked = wonGames.some((game) => game.attempts.length === 1)
   const fullHouseProgress = today.fullHouse ? MODE_TABS.length : today.completedModes.length
   const achievementCards = [
-    { key: 'first-game', title: 'Первая игра', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, current: Math.min(completedGames.length, 1), target: 1, image: './images/badges/first-game.webp' },
-    { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: './images/badges/bullseye.webp' },
-    { key: 'full-house', title: 'Полный зал', description: `Закончите все ${MODE_TABS.length} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: './images/badges/full-house.webp' },
+    { key: 'first-game', title: 'Первая игра', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, current: Math.min(completedGames.length, 1), target: 1, image: publicAssetUrl('images/badges/first-game.webp') },
+    { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: publicAssetUrl('images/badges/bullseye.webp') },
+    { key: 'full-house', title: 'Полный зал', description: `Закончите все ${MODE_TABS.length} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: publicAssetUrl('images/badges/full-house.webp') },
   ]
   const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
   const nearestProgress = `${nearestAchievement.current}/${nearestAchievement.target}`
@@ -4021,7 +4022,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
           <button className="profile-hero__settings" type="button" onClick={() => session && !session.isAnonymous ? selectTab('settings') : window.location.assign('/register')}><UserRound /> {session && !session.isAnonymous ? 'Настройки профиля' : 'Сохранить прогресс'}</button>
         </div>
         <div className="profile-hero__dossier" aria-label="Иллюстрация игрового профиля">
-          <img className="profile-hero__illustration" src="./images/profile-hero-collage.webp" alt="" />
+          <img className="profile-hero__illustration" src={publicAssetUrl('images/profile-hero-collage.webp')} alt="" />
           <div className="profile-dossier__stamp">PLAYER {publicPlayerNumber(session?.id)}</div>
           <div className="profile-dossier__ticket"><Ticket /><strong>{wallet.tickets}</strong><span>билетов</span></div>
           <div className="profile-hero__reward">

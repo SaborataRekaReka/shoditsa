@@ -4,8 +4,9 @@ import { Check, ChevronDown, Copy, Send, Share2, Ticket } from 'lucide-react'
 import type { ChallengeOutcome } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 import type { TitleMode } from '../../types'
+import { publicAssetUrl } from '../../app/public-asset'
 
-const diagnosisSystemRewardIcon = './images/diagnosis-systems/nervous.svg'
+const diagnosisSystemRewardIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
 
 export type ResultAward = {
   total: number

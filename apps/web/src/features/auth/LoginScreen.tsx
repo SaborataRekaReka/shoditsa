@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
+import { publicAssetUrl } from '../../app/public-asset'
 import { ApiClientError, api } from '../../api/client'
 import { BrandLogo } from '../../components/app-shell/AppShell'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
@@ -21,6 +22,7 @@ type FieldErrors = {
 
 const emptyFieldErrors: FieldErrors = { name: '', email: '', password: '' }
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const loginIllustrationUrl = publicAssetUrl('images/login_illustration.webp')
 
 const authErrorMessage = (error: unknown) => {
   if (error instanceof ApiClientError) {
@@ -278,7 +280,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       <section className="login-card" aria-labelledby="login-title">
         <div className="login-art-panel">
           <a className="login-brand" href="/" aria-label="Сходится! — на главную"><BrandLogo /></a>
-          <img className="login-art" src="/images/login_illustration.webp" srcSet="/images/login_illustration.webp 1536w" sizes="(max-width: 767px) 100vw, 580px" alt="" width="1536" height="1024" fetchPriority="high" />
+          <img className="login-art" src={loginIllustrationUrl} srcSet={`${loginIllustrationUrl} 1536w`} sizes="(max-width: 767px) 100vw, 580px" alt="" width="1536" height="1024" fetchPriority="high" />
           <div className="login-art-copy">
             <span>Ваш игровой профиль</span>
             <strong>Весь прогресс<br />в одном месте</strong>

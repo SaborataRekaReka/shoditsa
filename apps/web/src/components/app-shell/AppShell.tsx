@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { Archive, BarChart3, ChevronDown, CircleHelp, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
+import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
 import { EconomyView } from '../../features/economy/EconomyView'
 import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
@@ -11,10 +12,13 @@ import { loadAttendanceStats, loadWallet } from '../../storage'
 export const PROFILE_OPEN_EVENT = 'seans:open-profile'
 export type ProfileMenuTab = 'overview' | 'stats' | 'achievements' | 'settings'
 
+const brandSymbolUrl = publicAssetUrl('images/symbol.svg')
+const brandLogoUrl = publicAssetUrl('images/logo.svg')
+
 export function BrandLogo({ className = '' }: { className?: string }) {
   return <picture className={className}>
-    <source media="(max-width: 719px)" srcSet="./images/symbol.svg" />
-    <img src="./images/logo.svg" alt="Сходится!" />
+    <source media="(max-width: 719px)" srcSet={brandSymbolUrl} />
+    <img src={brandLogoUrl} alt="Сходится!" />
   </picture>
 }
 
