@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameResponse, GameSessionSnapshot, GameStartBody, HintResponse, PublicContentItem } from '@shoditsa/contracts'
@@ -62,6 +62,7 @@ import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
 import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
+import { GameSeoContent, HomeSeoContent } from './components/seo-content/SeoContent'
 import {
   canUseAsArtistPortrait,
   canonicalMusicId,
@@ -1322,7 +1323,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
             </div>
           </div>
           <div className="hub-hero__visual" aria-hidden="true">
-            <img src={publicAssetUrl('images/hero.webp')} alt="" />
+            <img src={publicAssetUrl('images/hero.webp')} alt="" width="1122" height="913" fetchPriority="high" decoding="async" />
           </div>
         </div>
         <DailyProgressStub state={dailyState} />
@@ -1345,7 +1346,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
               // saved session remains an explicit action in the resume list.
               onSelect(configMode)
             }
-            return <CategoryTicket key={config.mode} {...config} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
+            return <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
           {isAdmin && <CategoryTicket
             mode="game"
@@ -1364,6 +1365,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
           />}
         </div>
       </section>
+      <HomeSeoContent />
     </main>
   </>
 }
@@ -1500,7 +1502,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
               </div>
               <div className="med-chart__body">
                 <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
-                <h1>Ежедневная игра: диагнозы</h1>
+                <h2>Ежедневная игра: диагнозы</h2>
                 <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
                 {hasAnamnesis && <button type="button" className="med-chart__anamnesis" onClick={onReadAnamnesis}>
                   <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
@@ -1520,7 +1522,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <div className="promo-case__signal"><span>СРАЧ</span><span>ДНЯ</span></div>
                   <div className="promo-case__copy">
                     <span className="promo-case__eyebrow">О какой игре спорят?</span>
-                    <h1>Узнайте игру по духу комментариев</h1>
+                    <h2>Узнайте игру по духу комментариев</h2>
                     <p>Две стартовые реплики уже доступны. Новые откроются после 5-й, 8-й и 9-й попыток.</p>
                     <div className="promo-case__facts"><span><strong>30</strong> отдельных карточек</span><span><strong>10</strong> попыток</span></div>
                   </div>
@@ -1543,7 +1545,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                     <span className="game-case__disc cd disc" aria-hidden="true"><i /></span>
                     <div className="game-case__info">
                       <div className="game-case__kicker"><span>Ежедневный релиз</span><i /> <small>глобальный чарт</small></div>
-                      <h1>Ежедневная игра: игры</h1>
+                      <h2>Ежедневная игра: игры</h2>
                       <p>Каждый день — новая игра из мирового чарта. У вас есть <strong>10 попыток</strong>, чтобы узнать её по жанрам, студии и рейтингам.</p>
                     </div>
                   </div>
@@ -1558,7 +1560,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <div className="concert-ticket__head">
                     <div className="concert-ticket__brand">
                       <span className="concert-ticket__kicker"><Music2 /> Концерт дня</span>
-                      <h1>Артист дня</h1>
+                      <h2>Артист дня</h2>
                       <p className="concert-ticket__venue">Главная сцена · сеанс №{dayNumber(date)}</p>
                     </div>
                     <div className="concert-ticket__when">
@@ -1589,7 +1591,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
               </div>
               <div className="admit-ticket__body">
                 <div className="ticket-kicker"><span>Ежедневная премьера</span><i /> <small>полночный сеанс</small></div>
-                <h1>Ежедневная игра: {modeMeta(mode).lower}</h1>
+                <h2>Ежедневная игра: {modeMeta(mode).lower}</h2>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 <div className="ticket-settings">
                   {GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
@@ -1605,6 +1607,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
             </div>
           : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>{isDiagnosisReplay ? <RotateCcw className="play-button__replay-icon" /> : <Play />} {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
+      {!isPromoTitle && <GameSeoContent mode={mode} />}
     </main>
   </>
 }
@@ -4343,6 +4346,13 @@ function GameApp() {
     }
   }, [data.music])
   const refreshEconomy = () => setEconomyVersion((version) => version + 1)
+
+  // Reset after React has committed the shorter destination screen. Calling
+  // scrollTo only inside click handlers can leave the previous page's offset
+  // clamped to the new document height during an SPA route transition.
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0 })
+  }, [routeLocation.pathname, screen])
 
   const activateServerSession = useCallback((session: GameSessionSnapshot, backTarget: 'title' | 'rewatch' | 'hub') => {
     setServerActionError('')

@@ -124,8 +124,8 @@ elif command -v docker >/dev/null 2>&1; then
   if [ -z "$NGINX_CONTAINER" ] || ! docker exec "$NGINX_CONTAINER" nginx -t; then
     exit 1
   fi
-  if ! docker exec "$NGINX_CONTAINER" grep -Fq "\"commitSha\": \"${GITHUB_SHA}\"" /var/www/shoditsa/build-manifest.json; then
-    echo "Docker Nginx does not see release ${GITHUB_SHA}" >&2
+  if ! docker exec "$NGINX_CONTAINER" grep -Fq "\"commitSha\": \"${BUILD_SHA}\"" /var/www/shoditsa/build-manifest.json; then
+    echo "Docker Nginx does not see build ${BUILD_SHA} from release ${GITHUB_SHA}" >&2
     exit 1
   fi
 else
@@ -134,7 +134,7 @@ else
 fi
 rm -f "$REMOTE_ARCHIVE"
 '@
-  $activationScript | ssh -p $Port $remote "DEPLOY_ROOT='$DeployRoot' GITHUB_SHA='$releaseId' REMOTE_ARCHIVE='$remoteArchive' bash -s"
+  $activationScript | ssh -p $Port $remote "DEPLOY_ROOT='$DeployRoot' GITHUB_SHA='$releaseId' BUILD_SHA='$commitSha' REMOTE_ARCHIVE='$remoteArchive' bash -s"
   if ($LASTEXITCODE -ne 0) { throw "Atomic release activation failed." }
 
   Write-Host "[deploy] Activated $DeployRoot/releases/$releaseId"

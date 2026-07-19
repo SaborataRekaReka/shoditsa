@@ -6,7 +6,7 @@ import { contentItemVersions, createDatabase, gameSessions } from '@shoditsa/dat
 const searchInput = (page: Page) => page.locator('#movie-search')
 
 const openModeLobby = async (page: Page, mode: string) => {
-  await page.getByRole('button', { name: new RegExp(mode) }).first().click()
+  await page.getByRole('link', { name: `Играть: ${mode}`, exact: true }).click()
   await expect(page.getByRole('button', { name: /Начать игру|Открыть за/ })).toBeVisible()
 }
 
@@ -99,16 +99,28 @@ test('all canonical modes use the current cards and mobile layout does not overf
   await page.goto('/')
   await expect(page.locator('.brand img[alt="Сходится!"]')).toBeVisible()
   for (const title of ['Кино', 'Сериалы', 'Аниме', 'Игры', 'Города', 'Музыка', 'Диагнозы']) {
-    await page.getByRole('button', { name: new RegExp(title) }).first().click()
+    await page.getByRole('link', { name: `Играть: ${title}`, exact: true }).click()
     await expect(page.locator('.title-screen')).toBeVisible()
     await page.getByRole('button', { name: 'На главный экран' }).first().click()
     await expect(page.getByRole('heading', { name: 'Все сойдется!' })).toBeVisible()
   }
-  await page.getByRole('button', { name: /Сериалы/ }).first().click()
+  await page.getByRole('link', { name: 'Играть: Сериалы', exact: true }).click()
   await expect(page.locator('.title-screen')).toBeVisible()
   await expect(page.locator('.server-lobby, .server-game')).toHaveCount(0)
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
   expect(overflow).toBe(false)
+})
+
+test('opening a mode from a scrolled hub starts at the top of the title screen', async ({ page }) => {
+  await page.goto('/')
+  const cityCard = page.getByRole('link', { name: 'Играть: Города', exact: true })
+  await cityCard.scrollIntoViewIfNeeded()
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+
+  await cityCard.click()
+  await expect(page).toHaveURL('/games/city')
+  await expect(page.locator('.app-header')).toBeInViewport()
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
 })
 
 test('archive screen starts a server archive session in the polished layout', async ({ page }) => {

@@ -16,12 +16,23 @@ const manifest = {
     yandexSdk: false,
     serverAuthoritative: true,
     noPublicAnswerData: true,
+    seoStaticRoutes: true,
   },
 }
 
 const indexHtml = await readFile(resolve('dist/index.html'), 'utf8')
 if (!/(?:src|href)="\/assets\//.test(indexHtml) || /(?:src|href)="\.\/assets\//.test(indexHtml)) {
   throw new Error('Production index must use root-relative /assets/ URLs for SPA deep-link refreshes')
+}
+
+const verificationTags = [
+  '<meta name="yandex-verification" content="e04b61286a4d3e9d"',
+  '<meta name="google-site-verification" content="GGoM_1EOCbLZl1NAn86xUKod7pSnZJGzgmXFLGjJ2Xo"',
+]
+for (const verificationTag of verificationTags) {
+  if (!indexHtml.includes(verificationTag)) {
+    throw new Error(`Production index is missing required verification tag: ${verificationTag}`)
+  }
 }
 
 const buildMeta = `<meta name="shoditsa-build-sha" content="${commitSha}">`

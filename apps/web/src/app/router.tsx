@@ -1,19 +1,25 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import {
   Outlet,
   createHashHistory,
   createRootRoute,
   createRoute,
   createRouter,
+  useRouterState,
 } from '@tanstack/react-router'
 import App from '../App'
 import { LoginScreen } from '../features/auth/LoginScreen'
 import { SERVER_RUNTIME } from '../hooks/use-server-runtime'
 import { AlertTriangle, Sparkles } from 'lucide-react'
+import { applyRuntimeSeo } from './seo'
 
 const AdminApp = import.meta.env.MODE === 'yandex' ? null : lazy(() => import('../admin/AdminApp'))
 
-const RootView = () => <Outlet />
+const RootView = () => {
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  useEffect(() => applyRuntimeSeo(pathname), [pathname])
+  return <Outlet />
+}
 const PlayerLayout = () => <><App /><Outlet /></>
 const RouteMarker = () => null
 const LoginRoute = ({ mode }: { mode: 'login' | 'register' }) => <LoginScreen mode={mode} />

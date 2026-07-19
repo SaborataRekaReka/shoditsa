@@ -13,6 +13,7 @@
   border-radius: 14px;
   box-shadow: none;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   isolation: isolate;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;

@@ -12,7 +12,7 @@ const fetchResponse = (path) => fetch(`${baseUrl}${path}`, { headers: { 'cache-c
 
 const manifest = JSON.parse(await fetchText(`/build-manifest.json?smoke=${Date.now()}`))
 if (manifest.commitSha !== expectedSha) throw new Error(`Production SHA ${manifest.commitSha} does not match expected main SHA ${expectedSha}`)
-for (const marker of ['profile', 'footer', 'typedRoutes', 'canonicalModeManifest', 'serverAuthoritative', 'noPublicAnswerData']) {
+for (const marker of ['profile', 'footer', 'typedRoutes', 'canonicalModeManifest', 'serverAuthoritative', 'noPublicAnswerData', 'seoStaticRoutes']) {
   if (manifest.shell?.[marker] !== true) throw new Error(`Build manifest is missing shell marker: ${marker}`)
 }
 
@@ -21,6 +21,26 @@ if (html.includes('<script src="/sdk.js"></script>')) throw new Error('Server pr
 if (!html.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) {
   throw new Error('Production HTML build marker does not match expected main SHA')
 }
+
+const sitemap = await fetchText(`/sitemap.xml?smoke=${Date.now()}`)
+if (!sitemap.includes(`<loc>${baseUrl}/</loc>`)) throw new Error('Sitemap is missing the canonical home page')
+for (const mode of manifest.playableModes) {
+  const pathname = `/games/${mode}`
+  if (!sitemap.includes(`<loc>${baseUrl}${pathname}</loc>`)) throw new Error(`Sitemap is missing ${pathname}`)
+  const page = await fetch(`${baseUrl}${pathname}?smoke=${Date.now()}`, { headers: { 'cache-control': 'no-cache' } })
+  if (!page.ok) throw new Error(`${pathname} returned HTTP ${page.status}`)
+  const pageHtml = await page.text()
+  if (!pageHtml.includes(`<link rel="canonical" href="${baseUrl}${pathname}"`)) throw new Error(`${pathname} has no matching canonical URL`)
+  if (!pageHtml.includes('name="robots" content="index,follow')) throw new Error(`${pathname} is not indexable in server HTML`)
+  if (!pageHtml.includes('type="application/ld+json"') || !pageHtml.includes('BreadcrumbList')) throw new Error(`${pathname} has no game structured data`)
+  if (!pageHtml.includes('<h1>')) throw new Error(`${pathname} has no server-rendered heading`)
+  if (!pageHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${pathname} build marker does not match main`)
+}
+
+const invalidGame = await fetchResponse(`/games/not-a-mode?smoke=${Date.now()}`)
+if (invalidGame.status !== 404) throw new Error(`Unknown game route returned HTTP ${invalidGame.status} instead of 404`)
+const profileResponse = await fetchResponse(`/profile?smoke=${Date.now()}`)
+if (!String(profileResponse.headers.get('x-robots-tag')).includes('noindex')) throw new Error('Private profile route is missing X-Robots-Tag: noindex')
 
 const meta = JSON.parse(await fetchText(`/api/v1/meta?smoke=${Date.now()}`))
 if (meta.buildSha !== expectedSha) throw new Error(`Production API SHA ${meta.buildSha ?? 'missing'} does not match expected main SHA ${expectedSha}`)

@@ -978,7 +978,7 @@
 .ticket-kicker span { padding: 4px 7px; border: 1px solid var(--color-paper-line); border-radius: 999px; white-space: nowrap; }
 .ticket-kicker small { white-space: nowrap; }
 .ticket-kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
-.admit-ticket h1 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
+.admit-ticket h2 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
 .admit-ticket__body > p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
 .ticket-settings { display: grid; grid-template-columns: 1fr; gap: 7px; margin-top: 14px; }
 .ticket-mode-tabs {
@@ -1036,7 +1036,7 @@
 .concert-ticket__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .concert-ticket__kicker { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid var(--color-paper-line); border-radius: 999px; color: var(--mode-music-brand); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
 .concert-ticket__kicker svg { width: 12px; height: 12px; }
-.concert-ticket__brand h1 { margin: 9px 0 3px; font: 500 clamp(24px, 8vw, 34px)/.95 Oswald, sans-serif; text-transform: uppercase; letter-spacing: -.01em; }
+.concert-ticket__brand h2 { margin: 9px 0 3px; font: 500 clamp(24px, 8vw, 34px)/.95 Oswald, sans-serif; text-transform: uppercase; letter-spacing: -.01em; }
 .concert-ticket__venue { margin: 0; color: var(--color-paper-muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
 .concert-ticket__when { flex-shrink: 0; text-align: right; line-height: 1.1; }
 .concert-ticket__when strong { display: block; font: 500 22px Oswald, sans-serif; }
@@ -1275,7 +1275,7 @@
 .game-case__kicker { display: flex; align-items: center; gap: 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .game-case__kicker span { padding: 4px 8px; border: 1px solid var(--color-primary-border); border-radius: 999px; color: #2f6b45; background: rgba(87, 183, 119, .14); white-space: nowrap; }
 .game-case__kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
-.game-case h1 { margin: 11px 0 7px; font: 500 22px Oswald, sans-serif; text-transform: uppercase; }
+.game-case h2 { margin: 11px 0 7px; font: 500 22px Oswald, sans-serif; text-transform: uppercase; }
 .game-case__info > p { margin: 0; padding-right: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
 .game-case__actions { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 0 16px 16px; }
 .game-case__play { width: 100%; min-height: 54px; height: 54px; }
@@ -1350,7 +1350,7 @@
 .promo-case__signal span:last-child { writing-mode: vertical-rl; transform: rotate(180deg); align-self: center; letter-spacing: .08em; }
 .promo-case__copy { position: relative; z-index: 1; padding: 18px 17px 16px; }
 .promo-case__eyebrow { color: #d88a7f; font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-.promo-case__copy h1 { max-width: 340px; margin: 9px 0 8px; font: 600 25px/.98 Oswald, sans-serif; letter-spacing: -.02em; text-transform: uppercase; }
+.promo-case__copy h2 { max-width: 340px; margin: 9px 0 8px; font: 600 25px/.98 Oswald, sans-serif; letter-spacing: -.02em; text-transform: uppercase; }
 .promo-case__copy > p { max-width: 370px; margin: 0; color: rgba(255, 255, 255, .7); font-size: 12px; line-height: 1.55; }
 .promo-case__facts { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 7px; }
 .promo-case__facts > span { padding: 6px 9px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 999px; color: rgba(255, 255, 255, .76); font-size: 11px; }
@@ -1409,7 +1409,7 @@
 .med-chart__kicker { display: flex; align-items: center; gap: 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .med-chart__kicker span { padding: 4px 8px; border: 1px solid var(--color-primary-border); border-radius: 999px; color: #2f6b45; background: rgba(87, 183, 119, .14); white-space: nowrap; }
 .med-chart__kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
-.med-chart h1 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
+.med-chart h2 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
 .med-chart__body > p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
 .med-chart__anamnesis { width: 100%; margin-top: 14px; padding: 10px 11px; display: grid; grid-template-columns: 38px 1fr 15px; gap: 11px; align-items: center; text-align: left; color: var(--color-ink); background: var(--color-paper-2); border: 1px solid var(--color-paper-line); border-radius: var(--radius-md); box-shadow: 2px 2px 0 var(--color-shadow); cursor: pointer; transition: transform .2s var(--ease), background .2s ease, border-color .2s ease; }
 .med-chart__anamnesis:hover { transform: translateY(-2px); background: #e6ddc9; border-color: #817660; }
@@ -2742,10 +2742,10 @@
   .admit-ticket { margin-top: 30px; grid-template-columns: 96px 1fr; }
   .admit-ticket::before, .admit-ticket::after { left: 85px; }
   .admit-ticket__body { padding: 18px 21px; }
-  .admit-ticket h1 { font-size: 24px; }
+  .admit-ticket h2 { font-size: 24px; }
   .admit-ticket__body > p { font-size: 12px; }
   .game-case { margin-top: 30px; }
-  .game-case h1 { font-size: 26px; }
+  .game-case h2 { font-size: 26px; }
   .game-case__info > p { font-size: 12px; }
   .game-case__disc { width: 168px; height: 168px; top: -34px; right: -52px; }
   .game-case__info { padding-right: 92px; }
@@ -2755,12 +2755,12 @@
   .promo-case__body { grid-template-columns: 104px minmax(0, 1fr); }
   .promo-case__signal { min-height: 212px; font-size: 29px; }
   .promo-case__copy { padding: 23px 22px 20px; }
-  .promo-case__copy h1 { font-size: 31px; }
+  .promo-case__copy h2 { font-size: 31px; }
   .promo-case__actions { display: flex; justify-content: flex-end; }
   .promo-case__play { width: auto; min-width: 220px; }
   .med-chart { margin-top: 30px; grid-template-columns: 112px 1fr; }
   .med-chart__body { padding: 20px 22px 18px; }
-  .med-chart h1 { font-size: 24px; }
+  .med-chart h2 { font-size: 24px; }
   .med-chart__body > p { font-size: 12px; }
   .rewatch-screen { padding-top: 50px; }
   .review-screen { padding: 44px 28px 84px; }

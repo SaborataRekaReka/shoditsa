@@ -8,6 +8,10 @@ const requiredFiles = [
   'apps/web/src/app/routes.ts',
   'apps/web/src/app/mode-presentation.ts',
   'apps/web/src/app/public-asset.ts',
+  'apps/web/src/app/seo-content.ts',
+  'apps/web/src/app/seo.ts',
+  'apps/web/src/components/seo-content/SeoContent.tsx',
+  'scripts/seo/generate-static-pages.ts',
   'packages/contracts/src/game-modes.ts',
   'apps/web/src/components/app-shell/AppShell.tsx',
   'apps/web/src/features/economy/EconomyView.tsx',
@@ -30,9 +34,17 @@ for (const path of requiredFiles) {
 
 const sourceChecks = [
   {
+    path: 'apps/web/src/App.tsx',
+    required: [
+      ['committed screen scroll reset', /useLayoutEffect\(\(\) => \{[^]*window\.scrollTo\(\{ top: 0, left: 0 \}\)[^]*\}, \[routeLocation\.pathname, screen\]\)/],
+    ],
+  },
+  {
     path: 'apps/web/index.html',
     required: [
       ['route-stable document base', /<base\s+href="%BASE_URL%"\s*\/>/],
+      ['Yandex site verification', /<meta\s+name="yandex-verification"\s+content="e04b61286a4d3e9d"\s*\/>/],
+      ['Google site verification', /<meta\s+name="google-site-verification"\s+content="GGoM_1EOCbLZl1NAn86xUKod7pSnZJGzgmXFLGjJ2Xo"\s*\/>/],
     ],
   },
   {
@@ -47,6 +59,35 @@ const sourceChecks = [
       ['typed game route', /path:\s*'games\/\$mode'/],
       ['typed session route', /path:\s*'sessions\/\$sessionId'/],
       ['autonomous hash history', /createHashHistory\(\)/],
+      ['SEO updates after SPA navigation', /useEffect\(\(\)\s*=>\s*applyRuntimeSeo\(pathname\)/],
+    ],
+  },
+  {
+    path: 'apps/web/src/app/seo-content.ts',
+    required: [
+      ['exhaustive game SEO registry', /satisfies\s+Record<PlayableModeId,\s*GameSeoContent>/],
+      ['manifest-derived indexable games', /DAILY_MODE_IDS\.map\(\(mode\)\s*=>\s*GAME_SEO\[mode\]\)/],
+    ],
+  },
+  {
+    path: 'apps/web/src/app/seo.ts',
+    required: [
+      ['indexable game route resolver', /gameSeoFromPathname\(normalized\)/],
+      ['breadcrumb structured data', /'@type':\s*'BreadcrumbList'/],
+      ['free web application structured data', /isAccessibleForFree:\s*true/],
+    ],
+  },
+  {
+    path: 'apps/web/src/components/category-ticket/CategoryTicket.tsx',
+    required: [
+      ['crawlable game link', /<a\s+href=\{href\}/],
+    ],
+  },
+  {
+    path: 'scripts/seo/generate-static-pages.ts',
+    required: [
+      ['static game HTML generation', /'seo',\s*'games',\s*`\$\{game\.mode\}\.html`/],
+      ['registry-driven sitemap generation', /INDEXABLE_GAME_SEO/],
     ],
   },
   {
@@ -63,6 +104,15 @@ const sourceChecks = [
       ['profile header control', /className=\{`header-profile/],
       ['footer component', /function AppFooter\s*\(/],
       ['current economy view', /<EconomyView\s*\/>/],
+    ],
+  },
+  {
+    path: 'infra/nginx/shoditsa.conf.template',
+    required: [
+      ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
+      ['private route noindex header', /X-Robots-Tag\s+"noindex, follow, noarchive"/],
+      ['invalid game route 404', /location\s+\/games\/\s*\{[^}]*return\s+404/s],
+      ['legacy city dataset 404', /location\s+\^~\s+\/city-content\/\s*\{[^}]*return\s+404/s],
     ],
   },
   {
@@ -122,6 +172,7 @@ async function collectSourceFiles(directory) {
 
 const allowedStaticAssetFiles = new Set([
   resolve(root, 'apps/web/src/app/public-asset.ts'),
+  resolve(root, 'apps/web/src/app/seo-content.ts'),
   resolve(root, 'apps/web/src/app/seo.ts'),
 ])
 for (const path of await collectSourceFiles(resolve(root, 'apps/web/src'))) {

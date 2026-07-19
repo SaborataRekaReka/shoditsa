@@ -29,7 +29,7 @@
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:e2e": "playwright test",
     "build": "npm run validate:shell && npm run typecheck && npm run build:web",
-    "build:web": "vite build apps/web && tsx scripts/diagnostics/write-build-manifest.ts",
+    "build:web": "vite build apps/web && tsx scripts/diagnostics/write-build-manifest.ts && tsx scripts/seo/generate-static-pages.ts",
     "build:api": "tsup --config tsup.config.ts",
     "yandex:build": "npm run validate:shell && npm run typecheck && vite build apps/web --mode yandex",
     "yandex:pack": "node scripts/deploy/package-yandex-archive.mjs",

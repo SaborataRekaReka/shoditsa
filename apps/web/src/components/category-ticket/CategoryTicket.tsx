@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, MouseEvent } from 'react'
 import { ChevronRight } from 'lucide-react'
 import type { CategoryTicketConfig } from './category-ticket.config'
 import './CategoryTicket.css'
@@ -9,6 +9,7 @@ type Props = CategoryTicketConfig & {
   poolCount: number | null
   status: CategoryTicketStatus
   attempts: number | null
+  href?: string
   onClick: () => void
 }
 
@@ -30,7 +31,7 @@ const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number
   return `Играть: ${title}`
 }
 
-export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, onClick }: Props) {
+export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, href, onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
   const badge = status === 'active'
     ? `В ПРОЦЕССЕ · ${attempts ?? 0}/10`
@@ -38,13 +39,7 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
       ? `ГОТОВО · ${attempts ?? 0}/10`
       : null
 
-  return <button
-    type="button"
-    className={`category-ticket category-ticket--${mode} ${status === 'completed' ? 'is-completed' : ''}`}
-    style={style}
-    aria-label={ariaLabel(title, status, attempts)}
-    onClick={onClick}
-  >
+  const content = <>
     <span className="category-ticket__stub" aria-hidden="true">
       <img className="category-ticket__watermark" src={watermarkUrl} alt="" aria-hidden="true" />
     </span>
@@ -61,5 +56,16 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
       </span>
     </span>
     {badge && <span className={`category-ticket__badge ${status === 'completed' ? 'category-ticket__badge--completed' : ''}`}>{badge}</span>}
-  </button>
+  </>
+  const className = `category-ticket category-ticket--${mode} ${status === 'completed' ? 'is-completed' : ''}`
+  const label = ariaLabel(title, status, attempts)
+  const openInApp = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+    event.preventDefault()
+    onClick()
+  }
+
+  return href
+    ? <a href={href} className={className} style={style} aria-label={label} onClick={openInApp}>{content}</a>
+    : <button type="button" className={className} style={style} aria-label={label} onClick={onClick}>{content}</button>
 }

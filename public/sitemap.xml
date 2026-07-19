@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://shoditsa.ru/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://shoditsa.ru/</loc></url>
+  <url><loc>https://shoditsa.ru/games/movie</loc></url>
+  <url><loc>https://shoditsa.ru/games/series</loc></url>
+  <url><loc>https://shoditsa.ru/games/anime</loc></url>
+  <url><loc>https://shoditsa.ru/games/game</loc></url>
+  <url><loc>https://shoditsa.ru/games/city</loc></url>
+  <url><loc>https://shoditsa.ru/games/music</loc></url>
+  <url><loc>https://shoditsa.ru/games/diagnosis</loc></url>
 </urlset>
