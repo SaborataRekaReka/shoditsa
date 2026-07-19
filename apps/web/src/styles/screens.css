@@ -973,11 +973,15 @@
 .admit-ticket__stub em { margin-top: 8px; font-size: 12px; font-style: normal; }
 .admit-ticket__stub i { width: 48px; height: 24px; margin-top: auto; background: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 3px, var(--color-ink) 3px 5px, transparent 5px 7px); }
 .admit-ticket__stub--poster {
+  --title-poster-accent: #d5a33d;
   padding: 12px 8px 11px;
   overflow: hidden;
   isolation: isolate;
   border-radius: calc(var(--radius-md) - 1px) 0 0 calc(var(--radius-md) - 1px);
 }
+.admit-ticket__stub--series { --title-poster-accent: #8099a4; }
+.admit-ticket__stub--anime { --title-poster-accent: #d36d58; }
+.admit-ticket__stub--city { --title-poster-accent: #c98855; }
 .admit-ticket__stub--poster::after {
   content: '';
   position: absolute;
@@ -1013,7 +1017,7 @@
   align-self: flex-start;
   margin-top: 3px;
   padding: 1px 6px 2px;
-  background: #d5a33d;
+  background: var(--title-poster-accent);
   border: 1px solid rgba(23, 25, 20, .55);
   transform: rotate(1deg);
   font-size: 19px;
@@ -1122,6 +1126,70 @@
 .concert-ticket__stub em { margin-top: 4px; font-size: 12px; font-style: normal; }
 .concert-ticket__stub-no { margin-top: 2px; color: var(--color-paper-muted); font-size: 12px; }
 .concert-ticket__barcode--v { width: 32px; height: 44px; margin-top: auto; background: repeating-linear-gradient(0deg, var(--color-ink) 0 2px, transparent 2px 4px, var(--color-ink) 4px 5px, transparent 5px 8px); }
+.concert-ticket__stub--poster {
+  padding: 12px 8px 11px;
+  gap: 3px;
+  overflow: hidden;
+  isolation: isolate;
+  color: #171914;
+  background: transparent;
+}
+.concert-ticket__stub--poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(17, 20, 16, .1) 38%, rgba(17, 20, 16, .72) 100%);
+  box-shadow: inset 1px 0 rgba(239, 231, 211, .24);
+  pointer-events: none;
+}
+.concert-ticket__stub-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.concert-ticket__stub--poster > :not(.concert-ticket__stub-art) { position: relative; box-shadow: 0 2px 0 rgba(17, 20, 16, .22); }
+.concert-ticket__stub--poster .concert-ticket__stub-kicker {
+  align-self: flex-end;
+  padding: 3px 5px 2px;
+  color: #f2ead6;
+  background: #171914;
+  border: 1px solid rgba(242, 234, 214, .45);
+  transform: rotate(2deg);
+}
+.concert-ticket__stub--poster > strong {
+  align-self: flex-end;
+  padding: 2px 5px;
+  background: #8d718f;
+  border: 1px solid rgba(23, 25, 20, .55);
+  transform: rotate(-1deg);
+}
+.concert-ticket__stub--poster > small,
+.concert-ticket__stub--poster > em,
+.concert-ticket__stub--poster .concert-ticket__stub-no {
+  align-self: flex-start;
+  padding: 3px 4px;
+  color: #171914;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+}
+.concert-ticket__stub--poster > small { margin-top: auto; transform: rotate(-1.5deg); }
+.concert-ticket__stub--poster > em { margin-top: 0; transform: rotate(1deg); }
+.concert-ticket__stub--poster .concert-ticket__stub-no { margin-top: 0; transform: rotate(-1deg); }
+.concert-ticket__stub--poster .concert-ticket__barcode--v {
+  width: 28px;
+  height: 36px;
+  margin-top: 4px;
+  padding: 3px 4px;
+  background-color: rgba(239, 231, 211, .94);
+  background-origin: content-box;
+  background-clip: content-box;
+  border: 1px solid rgba(23, 25, 20, .58);
+  transform: rotate(1deg);
+}
 
 /* --- Difficulty selector (music) --- */
 .title-play-row { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 10px; }
@@ -1257,7 +1325,64 @@
 .game-case__platform { padding: 2px 8px; border: 1px solid var(--color-ink); border-radius: 6px; font: 500 12px Oswald, sans-serif; letter-spacing: .08em; }
 .game-case__band-title { flex: 1; color: var(--color-paper-muted); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .game-case__band-no { color: var(--color-paper-muted-2); font-size: 12px; font-weight: 700; }
-.game-case__cover { position: relative; overflow: hidden; padding: 15px 16px; }
+.game-case__cover { position: relative; overflow: hidden; padding: 0; display: grid; grid-template-columns: 86px minmax(0, 1fr); align-items: stretch; }
+.game-case__poster {
+  position: relative;
+  min-height: 196px;
+  padding: 12px 8px 11px;
+  overflow: hidden;
+  isolation: isolate;
+  border-right: 1px dashed var(--color-paper-line);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #171914;
+}
+.game-case__poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(17, 20, 16, .08) 40%, rgba(17, 20, 16, .68) 100%);
+  pointer-events: none;
+}
+.game-case__poster-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.game-case__poster > span,
+.game-case__poster > strong,
+.game-case__poster > small { position: relative; box-shadow: 0 2px 0 rgba(17, 20, 16, .22); }
+.game-case__poster > span {
+  padding: 3px 5px 2px;
+  color: #f2ead6;
+  background: #171914;
+  border: 1px solid rgba(242, 234, 214, .45);
+  font-size: 11px;
+  letter-spacing: .12em;
+  transform: rotate(-2deg);
+}
+.game-case__poster > strong {
+  margin-top: 3px;
+  padding: 1px 6px 2px;
+  background: #7292bb;
+  border: 1px solid rgba(23, 25, 20, .55);
+  font: 500 19px/1.05 Oswald, sans-serif;
+  transform: rotate(1deg);
+}
+.game-case__poster > small {
+  align-self: flex-end;
+  margin-top: auto;
+  padding: 3px 5px;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+  font-size: 12px;
+  transform: rotate(-1deg);
+}
 .game-case__disc {
   position: absolute;
   top: -28px;
@@ -1339,7 +1464,7 @@
 @keyframes gameCaseDiscSpin {
   to { transform: rotate(1turn); }
 }
-.game-case__info { position: relative; z-index: 1; padding-right: 66px; text-align: left; }
+.game-case__info { position: relative; z-index: 1; min-width: 0; padding: 15px 66px 15px 16px; text-align: left; }
 .game-case__kicker { display: flex; align-items: center; gap: 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .game-case__kicker span { padding: 4px 8px; border: 1px solid var(--color-primary-border); border-radius: 999px; color: #2f6b45; background: rgba(87, 183, 119, .14); white-space: nowrap; }
 .game-case__kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
@@ -1473,6 +1598,75 @@
 .med-chart__stub > small { margin-top: 11px; color: #736b5d; font-size: 12px; }
 .med-chart__stub > em { margin-top: 6px; font-size: 12px; font-style: normal; }
 .med-chart__pulse { width: 62px; height: 22px; margin-top: auto; color: var(--color-primary); }
+.med-chart__stub--poster {
+  padding: 18px 9px 12px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: calc(var(--radius-md) - 1px) 0 0 calc(var(--radius-md) - 1px);
+  color: #171914;
+  background: transparent;
+}
+.med-chart__stub--poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(17, 20, 16, .08) 38%, rgba(17, 20, 16, .68) 100%);
+  pointer-events: none;
+}
+.med-chart__stub-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.med-chart__stub--poster .med-chart__cross,
+.med-chart__stub--poster > span:not(.med-chart__cross),
+.med-chart__stub--poster > strong,
+.med-chart__stub--poster > small,
+.med-chart__stub--poster > em,
+.med-chart__stub--poster .med-chart__pulse { position: relative; box-shadow: 0 2px 0 rgba(17, 20, 16, .22); }
+.med-chart__stub--poster .med-chart__cross { flex-shrink: 0; margin-bottom: 8px; }
+.med-chart__stub--poster > span:not(.med-chart__cross) {
+  align-self: flex-start;
+  padding: 3px 5px 2px;
+  color: #f2ead6;
+  background: #171914;
+  border: 1px solid rgba(242, 234, 214, .45);
+  transform: rotate(-2deg);
+}
+.med-chart__stub--poster > strong {
+  align-self: flex-start;
+  margin-top: 3px;
+  padding: 1px 5px 2px;
+  background: #d36d58;
+  border: 1px solid rgba(23, 25, 20, .55);
+  font-size: 18px;
+  line-height: 1.05;
+  transform: rotate(1deg);
+}
+.med-chart__stub--poster > small,
+.med-chart__stub--poster > em {
+  align-self: flex-end;
+  padding: 3px 4px;
+  color: #171914;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+}
+.med-chart__stub--poster > small { margin-top: auto; transform: rotate(1deg); }
+.med-chart__stub--poster > em { margin-top: 3px; transform: rotate(-1deg); }
+.med-chart__stub--poster .med-chart__pulse {
+  width: 54px;
+  height: 18px;
+  margin-top: 7px;
+  padding: 3px;
+  color: #2f6b45;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+  transform: rotate(1deg);
+}
 .med-chart__body { min-width: 0; padding: 18px 16px 16px; text-align: left; }
 .med-chart__kicker { display: flex; align-items: center; gap: 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .med-chart__kicker span { padding: 4px 8px; border: 1px solid var(--color-primary-border); border-radius: 999px; color: #2f6b45; background: rgba(87, 183, 119, .14); white-space: nowrap; }
@@ -2813,6 +3007,7 @@
   .admit-ticket h2 { font-size: 24px; }
   .admit-ticket__body > p { font-size: 12px; }
   .game-case { margin-top: 30px; }
+  .game-case__cover { grid-template-columns: 96px minmax(0, 1fr); }
   .game-case h2 { font-size: 26px; }
   .game-case__info > p { font-size: 12px; }
   .game-case__disc { width: 168px; height: 168px; top: -34px; right: -52px; }

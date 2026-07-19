@@ -112,6 +112,15 @@ const modeIcon = (mode: TitleMode) => {
   return <Icon />
 }
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
+const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
+  movie: 'images/title-posters/movie-ticket-poster.webp',
+  series: 'images/title-posters/series-ticket-poster.webp',
+  anime: 'images/title-posters/anime-ticket-poster.webp',
+  game: 'images/title-posters/game-ticket-poster.webp',
+  city: 'images/title-posters/city-ticket-poster.webp',
+  music: 'images/title-posters/music-ticket-poster.webp',
+  diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
+}
 const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
   from_2020: 25,
   from_2010: 25,
@@ -1432,7 +1441,8 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
         <p>{isPromoTitle ? 'Угадайте игру по комментариям, которые никто не писал, но все уже читали' : `Угадайте ${modeMeta(mode).subject} дня за десять попыток`}</p>
         {mode === 'diagnosis'
           ? <section className="med-chart med-chart--dossier" aria-labelledby="ticket-diagnosis">
-              <div className="med-chart__stub">
+              <div className="med-chart__stub med-chart__stub--poster">
+                <img className="med-chart__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.diagnosis)} alt="" aria-hidden="true" decoding="async" />
                 <span className="med-chart__cross" aria-hidden="true"><i /><i /></span>
                 <span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № {dayNumber(date)}</small><em>{date.slice(8, 10)}.{date.slice(5, 7)}</em>
                 <svg className="med-chart__pulse" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true">
@@ -1483,6 +1493,10 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                     <span className="game-case__band-no">№ {dayNumber(date)}</span>
                   </div>
                   <div className="game-case__cover">
+                    <div className="game-case__poster" aria-hidden="true">
+                      <img className="game-case__poster-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.game)} alt="" decoding="async" />
+                      <span>ИГРОК</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small>
+                    </div>
                     <span className="game-case__disc cd disc" aria-hidden="true"><i /></span>
                     <div className="game-case__info">
                       <div className="game-case__kicker"><span>Ежедневный релиз</span><i /> <small>глобальный чарт</small></div>
@@ -1517,7 +1531,8 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <div className="concert-ticket__barcode" aria-hidden="true" />
                   {launchControls}
                 </div>
-                <div className="concert-ticket__stub" aria-hidden="true">
+                <div className="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">
+                  <img className="concert-ticket__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.music)} alt="" decoding="async" />
                   <span className="concert-ticket__stub-kicker">Концерт дня</span>
                   <strong>Артист дня</strong>
                   <small>Главная сцена</small>
@@ -1528,8 +1543,8 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                 <GameArtifactSeoDetails mode="music" />
               </section>
           : <section className="admit-ticket admit-ticket--dossier" aria-labelledby={`ticket-${mode}`}>
-              <div className={`admit-ticket__stub${mode === 'movie' ? ' admit-ticket__stub--poster' : ''}`}>
-                {mode === 'movie' && <img className="admit-ticket__stub-art" src={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')} alt="" aria-hidden="true" decoding="async" />}
+              <div className={`admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--${mode}`}>
+                <img className="admit-ticket__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS[mode])} alt="" aria-hidden="true" decoding="async" />
                 <span>ВХОД</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small><em>{date.slice(8,10)}.{date.slice(5,7)}</em><i />
               </div>
               <div className="admit-ticket__body">
