@@ -1,0 +1,85 @@
+{
+  "build_date": "2026-07-20",
+  "files": [
+    {
+      "name": "CUSTOM_GPT_INSTRUCTIONS.md",
+      "bytes": 2538,
+      "sha256": "de799fedb395022f56f8f73f234521afb4c47c4c2ab762166ef98fba2700cda2"
+    },
+    {
+      "name": "README.md",
+      "bytes": 3138,
+      "sha256": "cba35a18672b1c1b384e83c000682b3de0c04ed4005a860e077c0a553db942d6"
+    },
+    {
+      "name": "custom_gpt_knowledge_part_001.md",
+      "bytes": 782784,
+      "sha256": "b696993d87c8b45ff3e67135f5620124e96a3bacde632f7927758bbf461f1c68"
+    },
+    {
+      "name": "custom_gpt_knowledge_part_002.md",
+      "bytes": 618035,
+      "sha256": "da8eb99cecd87198632ed5f8e1703a1b73b14c3e7c16d069d7873eb6c58e2567"
+    },
+    {
+      "name": "custom_gpt_knowledge_part_003.md",
+      "bytes": 138566,
+      "sha256": "ca3307d1ea5b264c555478fbb0bd25f390d5892bde8e9f76591ff5fda78c0f2d"
+    },
+    {
+      "name": "danetki_host_qa_full.jsonl",
+      "bytes": 2419548,
+      "sha256": "593044c38d1f92937897e383b13171736928ae6ad308c012f1132c3100186175"
+    },
+    {
+      "name": "danetki_puzzles_full.jsonl",
+      "bytes": 3118423,
+      "sha256": "6bab57e8cf7223f4a63526521878949ad96c9136c5b24649bd866fcd3055ca66"
+    },
+    {
+      "name": "danetki_puzzles_part_001.jsonl",
+      "bytes": 2108213,
+      "sha256": "b84df6676758f24a11c85ad8a8b1f47a4deb34611c0856ae8979a96f64ad6036"
+    },
+    {
+      "name": "danetki_puzzles_part_002.jsonl",
+      "bytes": 1010210,
+      "sha256": "42b4025a1917183d49d27b3e45f57502838b3bece8faf43778d7ced8d3fc323a"
+    },
+    {
+      "name": "danetki_puzzles_test.jsonl",
+      "bytes": 125296,
+      "sha256": "13723b5475ffcf953305d36f385a0fac064c2ca0479d5d9d5c56b4d9068d9384"
+    },
+    {
+      "name": "danetki_puzzles_train.jsonl",
+      "bytes": 2816874,
+      "sha256": "aae8203b34eac4f6a5156de7f1b18dfdbb4f6fd33fcdbcdfee9bad790808fd64"
+    },
+    {
+      "name": "danetki_puzzles_validation.jsonl",
+      "bytes": 176253,
+      "sha256": "c310ae83d7644fe26c14e8b76a0f3ff34289a4201f029fdabd787381ef827103"
+    },
+    {
+      "name": "danetki_writer_sft_train.jsonl",
+      "bytes": 2179559,
+      "sha256": "ff111fef9e5ea257ca80640e7d1625da8dde640a99f628c1410c001033bb5bcf"
+    },
+    {
+      "name": "plot_fingerprints.md",
+      "bytes": 1036514,
+      "sha256": "5a73278cfd6cb26177994fc5a234cc9b7661df37d0097c9da77af64a049c6b91"
+    },
+    {
+      "name": "sources_and_licenses.csv",
+      "bytes": 1021,
+      "sha256": "bca04c5ec8dc8b2dc8a0b4b52c725bd2b9240ea71c9ad41888cba16b6a7d7bac"
+    },
+    {
+      "name": "stats.json",
+      "bytes": 1091,
+      "sha256": "841eddd2e18fb399a84c951132b06b6737db020d44975b3107b085f4bff5fc2d"
+    }
+  ]
+}

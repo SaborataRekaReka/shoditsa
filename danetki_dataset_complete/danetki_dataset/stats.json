@@ -1,0 +1,50 @@
+{
+  "build_date": "2026-07-20",
+  "raw_puzzle_records": 2010,
+  "unique_puzzles": 1743,
+  "duplicates_merged": 267,
+  "near_duplicate_edges": 336,
+  "host_qa_rows": 3064,
+  "source_raw_counts": {
+    "deepturtle": 18,
+    "lateval": 326,
+    "splat": 975,
+    "turtlebench": 32,
+    "turtlesoup_bench": 400,
+    "yesnogame": 259
+  },
+  "source_provenance_counts_after_merge": {
+    "deepturtle": 18,
+    "lateval": 326,
+    "splat": 975,
+    "turtlebench": 32,
+    "turtlesoup_bench": 400,
+    "yesnogame": 259
+  },
+  "language_counts": {
+    "en": 1366,
+    "ru": 259,
+    "zh": 118
+  },
+  "split_counts": {
+    "test": 76,
+    "train": 1567,
+    "validation": 100
+  },
+  "selected_text_license_counts": {
+    "Apache-2.0": 25,
+    "MIT": 18,
+    "research_noncommercial": 229,
+    "unknown": 1471
+  },
+  "commercial_ready_selected_texts": 43,
+  "knowledge_files": [
+    "custom_gpt_knowledge_part_001.md",
+    "custom_gpt_knowledge_part_002.md",
+    "custom_gpt_knowledge_part_003.md"
+  ],
+  "jsonl_parts": [
+    "danetki_puzzles_part_001.jsonl",
+    "danetki_puzzles_part_002.jsonl"
+  ]
+}

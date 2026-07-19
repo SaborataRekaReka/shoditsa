@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, CircleHelp, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
@@ -46,7 +46,7 @@ export type AppHeaderProps = {
   profileActive?: boolean
 }
 
-export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profileActive = false }: AppHeaderProps) {
+export function AppHeader({ onHome, onArchive, onStats, profileActive = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -101,7 +101,6 @@ export function AppHeader({ onHome, onArchive, onStats, onRules, onReview, profi
           <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
         </button>
         <nav aria-label="Навигация">
-          <button onClick={() => { trackMetrikaGoal('open_rules'); onRules() }} aria-label="Как играть"><CircleHelp /></button>
           <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
           {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}

@@ -62,7 +62,8 @@
   min-width: 100%;
   max-height: var(--game-option-menu-max-height, 280px);
   padding: 7px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid var(--color-paper-line);
   border-radius: var(--radius-md);
   color: var(--color-ink);
@@ -72,6 +73,9 @@
   gap: 4px;
   transform: none;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   animation: gameOptionMenuIn .18s var(--ease) both;
 }
 .game-option-select.opens-up .game-option-menu { top: auto; bottom: calc(100% + 8px); }

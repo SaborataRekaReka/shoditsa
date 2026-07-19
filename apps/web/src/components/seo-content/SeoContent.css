@@ -214,7 +214,7 @@
   min-width: 0;
   max-width: 600px;
 }
-.concert-ticket--dossier { grid-template-columns: minmax(0, 1fr) 98px; }
+.concert-ticket--dossier { grid-template-columns: 98px minmax(0, 1fr); }
 .med-chart--dossier { grid-template-columns: 96px minmax(0, 1fr); }
 
 .admit-ticket--dossier .admit-ticket__stub {
@@ -296,6 +296,27 @@
 .ticket-dossier__lead { margin-top: 7px !important; color: var(--color-ink) !important; }
 .ticket-dossier__story { padding: 8px 0 2px; }
 .ticket-dossier__story p + p { margin-top: 8px; }
+
+.ticket-dossier__rules { margin-top: 20px; padding: 16px; border: 1px solid rgba(var(--ticket-dossier-accent-rgb), .25); border-radius: 14px; background: rgba(var(--ticket-dossier-accent-rgb), .055); }
+.ticket-dossier__rules > header { display: flex; align-items: center; gap: 9px; }
+.ticket-dossier__rules > header > svg { width: 20px; height: 20px; flex: none; color: var(--ticket-dossier-accent); stroke-width: 1.8; }
+.ticket-dossier__rules > header span { display: block; color: var(--color-paper-muted); font-size: 8px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.ticket-dossier__rules h4 { margin: 1px 0 0; font: 500 19px/1.08 Oswald, sans-serif; }
+.ticket-dossier__rules ol { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+.ticket-dossier__rules li { display: grid; grid-template-columns: 29px minmax(0, 1fr); gap: 9px; color: var(--color-paper-muted); font-size: 12px; line-height: 1.45; }
+.ticket-dossier__rules li > strong { width: 25px; height: 25px; border: 1px solid rgba(var(--ticket-dossier-accent-rgb), .52); border-radius: 50%; color: var(--ticket-dossier-accent); display: grid; place-items: center; font: 500 10px Oswald, sans-serif; }
+.ticket-dossier__rules li > span { padding-top: 3px; }
+.ticket-dossier__legend { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.ticket-dossier__legend > span { min-width: 0; padding: 8px; border: 1px solid var(--color-paper-line); border-radius: 10px; background: var(--color-paper); display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 2px 6px; align-items: center; }
+.ticket-dossier__legend i { width: 11px; height: 11px; border: 1px solid rgba(23, 26, 23, .26); border-radius: 4px; grid-row: 1 / 3; }
+.ticket-dossier__legend i.match { background: var(--color-primary); }
+.ticket-dossier__legend i.close { background: var(--color-accent); }
+.ticket-dossier__legend i.miss { background: var(--color-surface-3); }
+.ticket-dossier__legend b { min-width: 0; font-size: 11px; }
+.ticket-dossier__legend small { min-width: 0; color: var(--color-paper-muted); font-size: 9px; line-height: 1.25; }
+.ticket-dossier__rules > p { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--color-paper-line); font-size: 11px; }
+.ticket-dossier__rules > p + p { margin-top: 8px; padding-top: 0; border-top: 0; }
+.ticket-dossier__mode-note { color: var(--color-ink) !important; }
 
 .ticket-dossier__guide { margin-top: 23px; display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); }
 .ticket-dossier__guide > section { min-width: 0; }
@@ -395,6 +416,7 @@
   .ticket-dossier__guide { grid-template-columns: 1fr; gap: 22px; }
   .ticket-dossier__evidence { padding-right: 0; }
   .ticket-dossier__route { padding: 20px 0 0; border-top: 1px solid var(--color-paper-line); border-left: 0; }
+  .ticket-dossier__legend { grid-template-columns: 1fr; }
 }
 
 @media (min-width: 720px) {

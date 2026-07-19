@@ -17,7 +17,7 @@ import {
   Stethoscope,
   Tv,
 } from 'lucide-react'
-import { GAME_GUIDE_PRESENTATION, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO } from '../../app/seo-content'
+import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO } from '../../app/seo-content'
 import './SeoContent.css'
 
 const GUIDE_ICONS = {
@@ -39,6 +39,7 @@ const GuideSummary = ({ title, openTitle, note }: { title: string; openTitle: st
 export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
   const content = GAME_SEO[mode]
   const presentation = GAME_GUIDE_PRESENTATION[mode]
+  const rules = GAME_RULES[mode]
   const ModeIcon = GUIDE_ICONS[mode]
   const scrollPosition = useRef<number | null>(null)
   return <details
@@ -67,7 +68,7 @@ export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
         <span>
           <strong className="ticket-dossier__closed-label">{presentation.closedLabel}</strong>
           <strong className="ticket-dossier__open-label">{presentation.openLabel}</strong>
-          <small>об игре · подсказки · вопросы</small>
+          <small>как играть · подсказки · вопросы</small>
         </span>
       </span>
       <ChevronDown className="ticket-dossier__chevron" aria-hidden="true" />
@@ -81,6 +82,22 @@ export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
           <p className="ticket-dossier__lead">{content.lead}</p>
         </div>
       </header>
+
+      <section className="ticket-dossier__rules" aria-labelledby={`artifact-rules-${mode}`}>
+        <header><BookOpenText aria-hidden="true" /><div><span>Правила игры</span><h4 id={`artifact-rules-${mode}`}>Как играть</h4></div></header>
+        <ol>
+          <li><strong>01</strong><span>{rules.searchInstruction}</span></li>
+          <li><strong>02</strong><span>{rules.comparisonInstruction}</span></li>
+          <li><strong>03</strong><span>Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.</span></li>
+        </ol>
+        <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
+          <span><i className="match" /><b>Точно</b><small>значение совпало</small></span>
+          <span><i className="close" /><b>Рядом</b><small>число близко или есть частичное совпадение</small></span>
+          <span><i className="miss" /><b>Мимо</b><small>значение не совпало</small></span>
+        </div>
+        {rules.directionInstruction && <p>{rules.directionInstruction}</p>}
+        {rules.modeNote && <p className="ticket-dossier__mode-note">{rules.modeNote}</p>}
+      </section>
 
       <div className="ticket-dossier__guide">
         <section className="ticket-dossier__evidence" aria-labelledby={`artifact-features-${mode}`}>

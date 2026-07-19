@@ -2,6 +2,11 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Reac
 import { Check, ChevronRight } from 'lucide-react'
 import './GameLaunchControls.css'
 
+const MENU_HEIGHT_LIMIT = 280
+const MENU_GAP = 8
+const VIEWPORT_GUTTER = 12
+const STICKY_HEADER_HEIGHT = 64
+
 export function GameLaunchControls({ mode, action, option }: {
   mode: string
   action: ReactNode
@@ -42,19 +47,23 @@ export function GameOptionSelect({
 }) {
   const [open, setOpen] = useState(false)
   const [opensUp, setOpensUp] = useState(false)
-  const [menuMaxHeight, setMenuMaxHeight] = useState(280)
+  const [menuMaxHeight, setMenuMaxHeight] = useState(MENU_HEIGHT_LIMIT)
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const close = useCallback(() => setOpen(false), [])
   const positionMenu = useCallback(() => {
     const rect = wrapRef.current?.getBoundingClientRect()
     if (!rect) return
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
-    const spaceBelow = viewportHeight - rect.bottom
-    const spaceAbove = rect.top
-    const nextOpensUp = spaceBelow < 280 && spaceAbove > spaceBelow
+    const viewport = window.visualViewport
+    const viewportTop = viewport?.offsetTop ?? 0
+    const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight)
+    const safeTop = viewportTop + STICKY_HEADER_HEIGHT + VIEWPORT_GUTTER
+    const safeBottom = viewportBottom - VIEWPORT_GUTTER
+    const spaceBelow = Math.max(0, safeBottom - rect.bottom - MENU_GAP)
+    const spaceAbove = Math.max(0, rect.top - safeTop - MENU_GAP)
+    const nextOpensUp = spaceBelow < MENU_HEIGHT_LIMIT && spaceAbove > spaceBelow
     const available = nextOpensUp ? spaceAbove : spaceBelow
     setOpensUp(nextOpensUp)
-    setMenuMaxHeight(Math.max(120, Math.floor(available - 12)))
+    setMenuMaxHeight(Math.max(96, Math.min(MENU_HEIGHT_LIMIT, Math.floor(available))))
   }, [])
 
   useEffect(() => setOpen(false), [resetKey])
@@ -78,7 +87,10 @@ export function GameOptionSelect({
   return <div
     ref={wrapRef}
     className={`game-option-select ${className} ${open ? 'is-open' : ''} ${opensUp ? 'opens-up' : ''}`.trim()}
-    style={{ '--game-option-menu-max-height': `${menuMaxHeight}px` } as CSSProperties}
+    style={{
+      '--game-option-menu-max-height': `${menuMaxHeight}px`,
+      '--period-menu-max-height': `${menuMaxHeight}px`,
+    } as CSSProperties}
   >
     <button
       type="button"

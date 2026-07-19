@@ -1485,6 +1485,15 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
               </section>
           : mode === 'music'
             ? <section className="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music">
+                <div className="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">
+                  <img className="concert-ticket__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.music)} alt="" decoding="async" />
+                  <span className="concert-ticket__stub-kicker">Концерт дня</span>
+                  <strong>Артист дня</strong>
+                  <small>Главная сцена</small>
+                  <em>{date.slice(8, 10)}.{date.slice(5, 7)} · 21:45</em>
+                  <span className="concert-ticket__stub-no">№ {dayNumber(date)}</span>
+                  <div className="concert-ticket__barcode concert-ticket__barcode--v" />
+                </div>
                 <div className="concert-ticket__main">
                   <div className="concert-ticket__head">
                     <div className="concert-ticket__brand">
@@ -1505,15 +1514,6 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   </div>
                   <div className="concert-ticket__barcode" aria-hidden="true" />
                   {launchControls}
-                </div>
-                <div className="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">
-                  <img className="concert-ticket__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.music)} alt="" decoding="async" />
-                  <span className="concert-ticket__stub-kicker">Концерт дня</span>
-                  <strong>Артист дня</strong>
-                  <small>Главная сцена</small>
-                  <em>{date.slice(8, 10)}.{date.slice(5, 7)} · 21:45</em>
-                  <span className="concert-ticket__stub-no">№ {dayNumber(date)}</span>
-                  <div className="concert-ticket__barcode concert-ticket__barcode--v" />
                 </div>
                 <GameArtifactSeoDetails mode="music" />
               </section>

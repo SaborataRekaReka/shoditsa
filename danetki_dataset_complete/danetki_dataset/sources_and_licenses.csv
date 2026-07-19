@@ -1,0 +1,7 @@
+source,name,homepage,raw_records,license,commercial_ready,note
+yesnogame,YesNoGame,https://yesnogame.net/,259,unknown,False,No explicit dataset/content reuse license was found during collection.
+splat,SPLAT,https://github.com/chenqi008/LateralThinking,975,unknown,False,Repository exposes the data but no explicit license file was found.
+lateval,LatEval,https://github.com/THUKElab/LatEval,326,research_noncommercial,False,Paper is CC BY-NC 4.0 and states that source licenses were checked for non-profit academic research; repository data terms are not separately stated.
+turtlesoup_bench,TurtleSoup-Bench,https://github.com/lin-ruo/TurtleSoup-Bench,400,unknown,False,Repository exposes the data but no explicit license file was found.
+turtlebench,TurtleBench1.5k,https://huggingface.co/datasets/Duguce/TurtleBench1.5k,32,Apache-2.0,True,Dataset repository includes an Apache-2.0 license.
+deepturtle,DeepTurtle,https://huggingface.co/datasets/YuiMax/DeepTurtle,18,MIT,True,Hugging Face dataset card declares MIT.
