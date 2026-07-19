@@ -41,6 +41,7 @@ const sourceChecks = [
       ['game-case guide integration', /<GameArtifactSeoDetails\s+mode="game"\s*\/>/],
       ['concert-ticket guide integration', /<GameArtifactSeoDetails\s+mode="music"\s*\/>/],
       ['medical-chart guide integration', /<GameArtifactSeoDetails\s+mode="diagnosis"\s*\/>/],
+      ['home guide integrated with hero ticket', /hub-hero-ticket[^]*<DailyProgressStub[^]*<HomeSeoContent/],
     ],
   },
   {
@@ -77,11 +78,12 @@ const sourceChecks = [
   {
     path: 'apps/web/src/components/seo-content/SeoContent.tsx',
     required: [
-      ['native SEO disclosure', /<details\s+className="seo-content__details">/],
+      ['native SEO disclosure', /<details\s+className="hub-guide">/],
       ['HTML-resident game copy', /content\.paragraphs\.map/],
       ['useful nested FAQ disclosure', /ticket-dossier__faq[^]*content\.faq\.map/],
       ['manifest-driven game guide icons', /satisfies\s+Record<PlayableModeId,\s*LucideIcon>/],
       ['shared native artifact disclosure', /function GameArtifactSeoDetails[^]*artifact-dossier ticket-dossier/],
+      ['compact nested long-form disclosure', /ticket-dossier__more[^]*content\.paragraphs\.map/],
       ['presentation-driven artifact language', /GAME_GUIDE_PRESENTATION\[mode\]/],
     ],
   },
@@ -100,11 +102,27 @@ const sourceChecks = [
     ],
   },
   {
+    path: 'apps/web/src/components/game-launch-controls/GameLaunchControls.tsx',
+    required: [
+      ['shared upper launch controls', /function GameLaunchControls[^]*game-launch-controls__action[^]*game-launch-controls__option/],
+      ['shared accessible option selector', /function GameOptionSelect[^]*role="listbox"/],
+      ['shared accessible option item', /function GameOption[^]*role="option"/],
+    ],
+  },
+  {
+    path: 'apps/web/src/components/game-launch-controls/GameLaunchControls.css',
+    required: [
+      ['wrapping launch controls', /game-launch-controls[^}]*flex-wrap:\s*wrap/],
+      ['minimum action width before wrapping', /game-launch-controls__action[^}]*min-width:\s*min\(220px,\s*100%\)/],
+      ['viewport-safe mobile option menu', /game-launch-controls__option \.game-option-menu[^}]*width:\s*min\(280px,\s*100%\)/],
+    ],
+  },
+  {
     path: 'apps/web/src/components/mode-variant/ModeVariantControl.tsx',
     required: [
       ['manifest-driven mode variants', /GAME_MODE_MANIFEST\[mode\]\.variants/],
-      ['compact variant trigger', /className="mode-variant-trigger"/],
-      ['accessible variant listbox', /role="listbox"/],
+      ['compact variant trigger', /triggerClassName="mode-variant-trigger"/],
+      ['shared variant selector', /<GameOptionSelect/],
     ],
   },
   {
@@ -113,6 +131,8 @@ const sourceChecks = [
       ['static game HTML generation', /'seo',\s*'games',\s*`\$\{game\.mode\}\.html`/],
       ['registry-driven sitemap generation', /INDEXABLE_GAME_SEO/],
       ['server-rendered shared artifact disclosure', /renderArtifactDossier[^]*artifact-dossier ticket-dossier/],
+      ['server-rendered upper launch controls', /renderLaunchControls[^]*game-launch-controls/],
+      ['server-rendered home hero guide', /renderHomeFallback[^]*hub-hero-ticket[^]*hub-guide/],
       ['server-rendered thematic artifact shells', /renderGameArtifactFallback[^]*renderAdmissionTicketFallback/],
     ],
   },

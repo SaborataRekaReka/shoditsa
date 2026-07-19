@@ -1,3 +1,61 @@
+.hub-guide {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-text);
+  background: var(--color-surface);
+  text-align: left;
+}
+.hub-guide__summary {
+  min-height: 64px;
+  padding: 12px clamp(20px, 3.5vw, 46px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 22px;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  list-style: none;
+  transition: color .2s ease, background .2s ease;
+}
+.hub-guide__summary::-webkit-details-marker { display: none; }
+.hub-guide__summary:hover { background: color-mix(in srgb, var(--color-primary) 7%, transparent); }
+.hub-guide__summary:focus { outline: 0; }
+.hub-guide__summary:focus-visible { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-primary) 52%, transparent); }
+.hub-guide__summary-title { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.hub-guide__summary-title > svg { width: 18px; height: 18px; flex: none; color: var(--color-primary); }
+.hub-guide__summary-title > span { min-width: 0; display: grid; }
+.hub-guide__summary-title strong { overflow: hidden; font-size: 13px; letter-spacing: .035em; text-overflow: ellipsis; white-space: nowrap; }
+.hub-guide__open-label { display: none; }
+.hub-guide__summary > small { color: var(--color-muted); font-size: 11px; letter-spacing: .06em; }
+.hub-guide__summary-chevron { width: 18px; color: var(--color-muted); transition: transform .25s var(--ease), color .2s ease; }
+.hub-guide[open] > .hub-guide__summary { color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 6%, transparent); }
+.hub-guide[open] .hub-guide__closed-label { display: none; }
+.hub-guide[open] .hub-guide__open-label { display: inline; }
+.hub-guide[open] > .hub-guide__summary .hub-guide__summary-chevron { color: var(--color-primary); transform: rotate(180deg); }
+.hub-guide__drawer {
+  padding: clamp(22px, 4vw, 38px) clamp(20px, 4vw, 46px) clamp(26px, 4vw, 42px);
+  border-top: 1px solid var(--color-line);
+  background:
+    radial-gradient(circle at 88% 10%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 30%),
+    var(--color-surface);
+  animation: seoDrawerIn .28s var(--ease) both;
+}
+.hub-guide__intro { max-width: 790px; }
+.hub-guide__intro > span,
+.hub-guide__game-links > span { display: flex; align-items: center; gap: 8px; color: var(--color-primary); font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.hub-guide__intro h2 { margin: 5px 0 8px; font: 500 clamp(25px, 3vw, 34px)/1.08 Oswald, sans-serif; letter-spacing: -.01em; }
+.hub-guide__intro p,
+.hub-guide__story p { margin: 0; color: var(--color-muted); font-size: 13px; line-height: 1.62; }
+.hub-guide__intro p { max-width: 720px; color: var(--color-text); }
+.hub-guide__content { margin-top: 22px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); gap: clamp(24px, 4vw, 44px); }
+.hub-guide__story p + p { margin-top: 10px; }
+.hub-guide__game-links { min-width: 0; padding-left: clamp(22px, 3vw, 34px); border-left: 1px solid var(--color-line); }
+.hub-guide__game-links > span svg { width: 15px; flex: none; }
+.hub-guide__game-links > div { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; }
+.hub-guide__game-links a { padding: 7px 10px; border: 1px solid var(--color-line-strong); border-radius: 999px; color: var(--color-text); font-size: 11px; font-weight: 700; text-decoration: none; }
+.hub-guide__game-links a:hover { border-color: var(--color-primary); color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 7%, transparent); }
+
 .seo-content {
   position: relative;
   width: min(100%, 940px);
@@ -26,6 +84,8 @@
 }
 
 .seo-static-shell { min-height: 100vh; padding: 56px 14px; }
+.seo-static-shell--home { display: grid; place-items: start center; }
+.hub-hero-ticket--static { width: min(100%, 1240px); }
 .seo-content--home { margin-bottom: 54px; }
 .seo-content--game { margin-top: 50px; }
 .seo-breadcrumbs { margin: 0; padding: 15px clamp(20px, 3vw, 30px); border-bottom: 1px solid var(--color-line); display: flex; align-items: center; gap: 8px; color: var(--color-muted); font-size: 12px; }
@@ -149,14 +209,13 @@
 .seo-content__game-links a { padding: 8px 12px; border: 1px solid var(--color-line-strong); border-radius: 999px; color: var(--color-text); font-size: 12px; font-weight: 700; text-decoration: none; transition: border-color .2s ease, background .2s ease, color .2s ease; }
 .seo-content__game-links a:hover { border-color: var(--color-primary); color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
 
-/* The useful guide is part of each game's own paper artifact. */
-.admit-ticket--dossier .admit-ticket__body,
-.concert-ticket--dossier .concert-ticket__main,
-.med-chart--dossier .med-chart__body {
-  --ticket-body-x: 16px;
+/* The guide spans the full artifact below its compact upper controls. */
+:is(.admit-ticket--dossier, .concert-ticket--dossier, .med-chart--dossier, .game-case--dossier) {
   min-width: 0;
-  padding-bottom: 0;
+  max-width: 600px;
 }
+.concert-ticket--dossier { grid-template-columns: minmax(0, 1fr) 98px; }
+.med-chart--dossier { grid-template-columns: 96px minmax(0, 1fr); }
 
 .admit-ticket--dossier .admit-ticket__stub {
   background:
@@ -167,10 +226,17 @@
 .ticket-dossier {
   --ticket-dossier-accent: #31794b;
   --ticket-dossier-accent-rgb: 49, 121, 75;
-  margin: 15px calc(var(--ticket-body-x) * -1) 0;
+  --ticket-body-x: clamp(16px, 4vw, 24px);
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
   border-top: 1px dashed var(--color-paper-line);
+  border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
   color: var(--color-ink);
   text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .ticket-dossier--series { --ticket-dossier-accent: #8a5d1c; --ticket-dossier-accent-rgb: 138, 93, 28; }
@@ -179,10 +245,7 @@
 .ticket-dossier--music { --ticket-dossier-accent: #9a5d24; --ticket-dossier-accent-rgb: 154, 93, 36; }
 .ticket-dossier--diagnosis { --ticket-dossier-accent: #9d3f39; --ticket-dossier-accent-rgb: 157, 63, 57; }
 
-.game-case--dossier .ticket-dossier {
-  --ticket-body-x: 16px;
-  margin: 0;
-}
+.game-case--dossier > .ticket-dossier { width: calc(100% - 24px); margin-left: 24px; }
 
 .ticket-dossier__summary {
   min-height: 56px;
@@ -197,8 +260,11 @@
 }
 
 .ticket-dossier__summary::-webkit-details-marker,
+.ticket-dossier__more > summary::-webkit-details-marker,
 .ticket-dossier__faq summary::-webkit-details-marker { display: none; }
 .ticket-dossier__summary:hover { background: rgba(23, 26, 23, .045); }
+.ticket-dossier__summary:focus { outline: 0; }
+.ticket-dossier__summary:focus-visible { box-shadow: inset 0 0 0 2px rgba(var(--ticket-dossier-accent-rgb), .42); }
 .ticket-dossier__summary-title { min-width: 0; display: flex; align-items: center; gap: 10px; }
 .ticket-dossier__summary-title > svg { width: 18px; height: 18px; flex: none; color: var(--ticket-dossier-accent); stroke-width: 1.9; }
 .ticket-dossier__summary-title > .ticket-dossier__static-icon { width: 18px; flex: none; color: var(--ticket-dossier-accent); font-size: 16px; text-align: center; }
@@ -215,15 +281,12 @@
 .ticket-dossier__drawer {
   padding: 20px var(--ticket-body-x) 22px;
   border-top: 1px solid var(--color-paper-line);
-  background:
-    linear-gradient(90deg, transparent 0 38px, rgba(165, 85, 77, .12) 38px 39px, transparent 39px),
-    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(23, 26, 23, .035) 31px 32px),
-    var(--color-paper-2);
+  background: var(--color-paper-2);
+  border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
   animation: seoDrawerIn .28s var(--ease) both;
 }
 
-.ticket-dossier__intro { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; align-items: start; }
-.ticket-dossier__frame { padding-top: 7px; border-top: 2px solid var(--ticket-dossier-accent); color: var(--ticket-dossier-accent); font: 500 22px/1 Oswald, sans-serif; }
+.ticket-dossier__intro { display: block; }
 .ticket-dossier__eyebrow { display: block; margin-bottom: 4px; color: var(--ticket-dossier-accent); font-size: 9px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .ticket-dossier__intro h2,
 .ticket-dossier__intro h3 { margin: 0; font: 500 26px/1.04 Oswald, sans-serif; letter-spacing: -.01em; }
@@ -231,9 +294,9 @@
 .ticket-dossier__guide h4,
 .ticket-dossier__faq h3,
 .ticket-dossier__faq h4 { margin: 1px 0 0; font: 500 19px/1.08 Oswald, sans-serif; }
-.ticket-dossier p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.62; }
+.ticket-dossier p { margin: 0; color: var(--color-paper-muted); font-size: 13px; line-height: 1.58; }
 .ticket-dossier__lead { margin-top: 7px !important; color: var(--color-ink) !important; }
-.ticket-dossier__story { margin: 17px 0 0 56px; padding-top: 15px; border-top: 1px solid var(--color-paper-line); }
+.ticket-dossier__story { padding: 8px 0 2px; }
 .ticket-dossier__story p + p { margin-top: 8px; }
 
 .ticket-dossier__guide { margin-top: 23px; display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); }
@@ -249,19 +312,22 @@
 .ticket-dossier__faq > header span { display: block; color: var(--color-paper-muted); font-size: 8px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .ticket-dossier__evidence ul,
 .ticket-dossier__route ol { margin: 14px 0 0; padding: 0; list-style: none; }
-.ticket-dossier__evidence li { min-height: 34px; padding: 7px 0; border-bottom: 1px solid var(--color-paper-line); display: flex; align-items: flex-start; gap: 8px; color: var(--color-paper-muted); font-size: 11px; line-height: 1.45; }
-.ticket-dossier__evidence li:first-child { border-top: 1px solid var(--color-paper-line); }
+.ticket-dossier__evidence li { min-height: 30px; padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; color: var(--color-paper-muted); font-size: 12px; line-height: 1.45; }
 .ticket-dossier__evidence li svg { width: 13px; height: 13px; margin-top: 1px; flex: none; color: var(--ticket-dossier-accent); }
 .ticket-dossier__evidence li > .ticket-dossier__static-icon { width: 13px; margin-top: 1px; flex: none; color: var(--ticket-dossier-accent); text-align: center; }
-.ticket-dossier__route li { position: relative; min-height: 46px; display: grid; grid-template-columns: 29px minmax(0, 1fr); gap: 9px; color: var(--color-paper-muted); font-size: 11px; line-height: 1.45; }
-.ticket-dossier__route li:not(:last-child)::before { content: ''; position: absolute; top: 25px; bottom: 3px; left: 12px; width: 1px; background: var(--color-paper-line); }
+.ticket-dossier__route li { position: relative; min-height: 46px; display: grid; grid-template-columns: 29px minmax(0, 1fr); gap: 9px; color: var(--color-paper-muted); font-size: 12px; line-height: 1.45; }
 .ticket-dossier__route li strong { width: 25px; height: 25px; border: 1px solid rgba(var(--ticket-dossier-accent-rgb), .52); border-radius: 50%; color: var(--ticket-dossier-accent); display: grid; place-items: center; font: 500 10px Oswald, sans-serif; }
 .ticket-dossier__route li span { padding-top: 3px; }
 
-.ticket-dossier__faq { margin-top: 23px; padding-top: 18px; border-top: 1px dashed var(--color-paper-line); }
-.ticket-dossier__faq > div { margin-top: 12px; border-top: 1px solid var(--color-paper-line); }
-.ticket-dossier__faq details { border-bottom: 1px solid var(--color-paper-line); }
-.ticket-dossier__faq summary { min-height: 42px; padding: 8px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--color-ink); font-size: 11px; font-weight: 800; cursor: pointer; list-style: none; }
+.ticket-dossier__more { margin-top: 20px; border-top: 1px solid var(--color-paper-line); }
+.ticket-dossier__more > summary { min-height: 46px; padding: 9px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--color-ink); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; list-style: none; }
+.ticket-dossier__more > summary svg { width: 15px; height: 15px; flex: none; color: var(--ticket-dossier-accent); transition: transform .2s ease; }
+.ticket-dossier__more[open] > summary svg { transform: rotate(180deg); }
+.ticket-dossier__more[open] > summary { color: var(--ticket-dossier-accent); }
+
+.ticket-dossier__faq { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-paper-line); }
+.ticket-dossier__faq > div { margin-top: 8px; }
+.ticket-dossier__faq summary { min-height: 42px; padding: 8px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--color-ink); font-size: 12px; font-weight: 800; cursor: pointer; list-style: none; }
 .ticket-dossier__faq summary svg { width: 14px; height: 14px; flex: none; color: var(--color-paper-muted); transition: transform .2s ease; }
 .ticket-dossier__faq summary > .ticket-dossier__static-icon { width: 14px; flex: none; color: var(--color-paper-muted); text-align: center; transition: transform .2s ease; }
 .ticket-dossier__faq details[open] summary svg { color: var(--ticket-dossier-accent); transform: rotate(180deg); }
@@ -287,6 +353,13 @@
 }
 
 @media (max-width: 680px) {
+  .hub-guide__summary { min-height: 59px; padding: 11px 18px; grid-template-columns: minmax(0, 1fr) 20px; gap: 8px; }
+  .hub-guide__summary > small { display: none; }
+  .hub-guide__summary-title strong { font-size: 12px; }
+  .hub-guide__drawer { padding: 22px 18px 27px; }
+  .hub-guide__content { grid-template-columns: 1fr; gap: 22px; }
+  .hub-guide__game-links { padding: 18px 0 0; border-top: 1px solid var(--color-line); border-left: 0; }
+
   .seo-content { margin-top: 32px; border-radius: var(--radius-md); }
   .seo-content::before { left: 79px; }
   .seo-breadcrumbs { padding: 13px 16px; }
@@ -321,23 +394,24 @@
   .ticket-dossier__drawer { padding-top: 18px; }
   .ticket-dossier__intro h2,
   .ticket-dossier__intro h3 { font-size: 24px; }
-  .ticket-dossier__story { margin-left: 0; }
   .ticket-dossier__guide { grid-template-columns: 1fr; gap: 22px; }
   .ticket-dossier__evidence { padding-right: 0; }
   .ticket-dossier__route { padding: 20px 0 0; border-top: 1px solid var(--color-paper-line); border-left: 0; }
 }
 
 @media (min-width: 720px) {
-  .admit-ticket--dossier .admit-ticket__body { --ticket-body-x: 21px; }
-  .med-chart--dossier .med-chart__body { --ticket-body-x: 22px; }
+  .med-chart--dossier { grid-template-columns: 112px minmax(0, 1fr); }
   .seo-static-shell--artifact :is(.admit-ticket, .game-case, .concert-ticket, .med-chart) h1 { font-size: 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hub-guide__drawer,
   .seo-content__drawer,
   .seo-content__summary-chevron,
   .seo-content__faq-list summary svg,
+  .hub-guide__summary-chevron,
   .ticket-dossier__drawer,
   .ticket-dossier__chevron,
+  .ticket-dossier__more > summary svg,
   .ticket-dossier__faq summary svg { animation: none; transition: none; }
 }

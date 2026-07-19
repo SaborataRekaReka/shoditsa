@@ -111,6 +111,21 @@ test('all canonical modes use the current cards and mobile layout does not overf
   expect(overflow).toBe(false)
 })
 
+test('the home guide unfolds as part of the hero ticket', async ({ page }) => {
+  await page.goto('/')
+  const heroTicket = page.locator('.hub-hero-ticket')
+  const guide = heroTicket.locator(':scope > .hub-guide')
+  await expect(heroTicket).toBeVisible()
+  await expect(guide).toHaveCount(1)
+  await expect(page.locator('.seo-content--home')).toHaveCount(0)
+  await expect(guide).not.toHaveAttribute('open', '')
+  await guide.locator(':scope > .hub-guide__summary').click()
+  await expect(guide).toHaveAttribute('open', '')
+  await expect(guide.locator('.hub-guide__intro h2')).toBeVisible()
+  await expect(guide.locator('.hub-guide__story p')).toHaveCount(2)
+  await expect(guide.locator('.hub-guide__game-links a')).toHaveCount(7)
+})
+
 test('opening a mode from a scrolled hub starts at the top of the title screen', async ({ page }) => {
   await page.goto('/')
   const cityCard = page.getByRole('link', { name: 'Играть: Города', exact: true })
@@ -139,29 +154,47 @@ test('cities keep the compact mode picker and switch the answer pool', async ({ 
 
 test('every game guide unfolds inside its own themed artifact', async ({ page }) => {
   const cases = [
-    { mode: 'movie', artifact: '.admit-ticket--dossier', closedLabel: 'Развернуть билет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать фильм' },
-    { mode: 'series', artifact: '.admit-ticket--dossier', closedLabel: 'Открыть телепрограмму', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать сериал' },
-    { mode: 'anime', artifact: '.admit-ticket--dossier', closedLabel: 'Развернуть вкладыш', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать аниме' },
-    { mode: 'game', artifact: '.game-case--dossier', closedLabel: 'Открыть буклет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать игру' },
-    { mode: 'city', artifact: '.admit-ticket--dossier', closedLabel: 'Развернуть маршрут', evidenceTitle: 'Что сверяем', routeTitle: 'Как найти город' },
-    { mode: 'music', artifact: '.concert-ticket--dossier', closedLabel: 'Открыть программу', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать артиста' },
-    { mode: 'diagnosis', artifact: '.med-chart--dossier', closedLabel: 'Открыть карту', evidenceTitle: 'Что сравниваем', routeTitle: 'Как искать ответ' },
+    { mode: 'movie', artifact: '.admit-ticket--dossier', optionLabel: 'Период', closedLabel: 'Развернуть билет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать фильм' },
+    { mode: 'series', artifact: '.admit-ticket--dossier', optionLabel: 'Период', closedLabel: 'Открыть телепрограмму', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать сериал' },
+    { mode: 'anime', artifact: '.admit-ticket--dossier', optionLabel: 'Период', closedLabel: 'Развернуть вкладыш', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать аниме' },
+    { mode: 'game', artifact: '.game-case--dossier', optionLabel: null, closedLabel: 'Открыть буклет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать игру' },
+    { mode: 'city', artifact: '.admit-ticket--dossier', optionLabel: 'Режим', closedLabel: 'Развернуть маршрут', evidenceTitle: 'Что сверяем', routeTitle: 'Как найти город' },
+    { mode: 'music', artifact: '.concert-ticket--dossier', optionLabel: 'Сложность', closedLabel: 'Открыть программу', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать артиста' },
+    { mode: 'diagnosis', artifact: '.med-chart--dossier', optionLabel: null, closedLabel: 'Открыть карту', evidenceTitle: 'Что сравниваем', routeTitle: 'Как искать ответ' },
   ] as const
 
   for (const entry of cases) {
     await page.goto(`/games/${entry.mode}`)
     const artifact = page.locator(entry.artifact)
-    const dossier = artifact.locator(`.artifact-dossier.ticket-dossier--${entry.mode}`)
+    const launchControls = artifact.locator('.game-launch-controls')
+    const dossier = artifact.locator(`:scope > .artifact-dossier.ticket-dossier--${entry.mode}`)
     await expect(artifact).toBeVisible()
+    await expect(launchControls).toHaveCount(1)
+    await expect(launchControls.getByRole('button', { name: /Начать|Продолжить|Сыграть|Открыть|Не хватает/ })).toBeVisible()
+    await expect(launchControls.locator('.game-option-trigger')).toHaveCount(entry.optionLabel ? 1 : 0)
+    await expect(launchControls.locator('.game-option-select__note')).toHaveCount(0)
+    if (entry.optionLabel) await expect(launchControls.locator('.game-option-trigger__label')).toContainText(entry.optionLabel)
+    await expect(artifact.locator(':scope > .game-launch-controls')).toHaveCount(0)
     await expect(page.locator('.seo-content--game')).toHaveCount(0)
     await expect(dossier).not.toHaveAttribute('open', '')
+    await expect(dossier.locator('.ticket-dossier__frame')).toHaveCount(0)
     await expect(dossier.locator('.ticket-dossier__story p')).toHaveCount(2)
+
+    const widths = await artifact.evaluate((node) => {
+      const dossierNode = node.querySelector(':scope > .artifact-dossier')
+      return { artifact: node.getBoundingClientRect().width, dossier: dossierNode?.getBoundingClientRect().width ?? 0 }
+    })
+    expect(widths.artifact - widths.dossier, `${entry.mode} dossier should span the artifact`).toBeLessThanOrEqual(25)
 
     await dossier.getByText(entry.closedLabel, { exact: true }).click()
     await expect(dossier).toHaveAttribute('open', '')
     await expect(artifact.getByRole('heading', { name: entry.evidenceTitle })).toBeVisible()
     await expect(artifact.getByRole('heading', { name: entry.routeTitle })).toBeVisible()
     await expect(artifact.getByRole('heading', { name: 'Короткие ответы' })).toBeVisible()
+    const more = dossier.locator('.ticket-dossier__more')
+    await expect(more).not.toHaveAttribute('open', '')
+    await more.getByText('Подробнее об игре', { exact: true }).click()
+    await expect(more.locator('.ticket-dossier__story')).toBeVisible()
     await expectNoHorizontalOverflow(page, `${entry.mode}-artifact-dossier`)
   }
 })

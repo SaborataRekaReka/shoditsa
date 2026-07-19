@@ -1,8 +1,8 @@
 import type { PlayableModeId } from '@shoditsa/contracts'
 import type { LucideIcon } from 'lucide-react'
+import { useRef } from 'react'
 import {
   BookOpenText,
-  CalendarDays,
   Check,
   ChevronDown,
   CircleHelp,
@@ -15,7 +15,6 @@ import {
   ScanSearch,
   Sparkles,
   Stethoscope,
-  Target,
   Tv,
 } from 'lucide-react'
 import { GAME_GUIDE_PRESENTATION, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO } from '../../app/seo-content'
@@ -31,18 +30,38 @@ const GUIDE_ICONS = {
   diagnosis: Stethoscope,
 } satisfies Record<PlayableModeId, LucideIcon>
 
-const GuideSummary = ({ title, note }: { title: string; note: string }) => <summary className="seo-content__summary">
-  <span className="seo-content__summary-title"><BookOpenText aria-hidden="true" /> {title}</span>
+const GuideSummary = ({ title, openTitle, note }: { title: string; openTitle: string; note: string }) => <summary className="hub-guide__summary">
+  <span className="hub-guide__summary-title"><BookOpenText aria-hidden="true" /><span><strong className="hub-guide__closed-label">{title}</strong><strong className="hub-guide__open-label">{openTitle}</strong></span></span>
   <small>{note}</small>
-  <ChevronDown className="seo-content__summary-chevron" aria-hidden="true" />
+  <ChevronDown className="hub-guide__summary-chevron" aria-hidden="true" />
 </summary>
 
 export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
   const content = GAME_SEO[mode]
   const presentation = GAME_GUIDE_PRESENTATION[mode]
   const ModeIcon = GUIDE_ICONS[mode]
-  return <details className={`artifact-dossier ticket-dossier ticket-dossier--${mode}`}>
-    <summary className="ticket-dossier__summary">
+  const scrollPosition = useRef<number | null>(null)
+  return <details
+    className={`artifact-dossier ticket-dossier ticket-dossier--${mode}`}
+    onToggle={(event) => {
+      if (!event.currentTarget.open || scrollPosition.current === null) return
+      const top = scrollPosition.current
+      const details = event.currentTarget
+      scrollPosition.current = null
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.scrollTo({ top, behavior: 'auto' })))
+      window.setTimeout(() => {
+        if (details.open) window.scrollTo({ top, behavior: 'auto' })
+      }, 320)
+    }}
+  >
+    <summary
+      className="ticket-dossier__summary"
+      onPointerDown={() => { scrollPosition.current = window.scrollY }}
+      onMouseDown={(event) => { event.preventDefault() }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') scrollPosition.current = window.scrollY
+      }}
+    >
       <span className="ticket-dossier__summary-title">
         <ModeIcon aria-hidden="true" />
         <span>
@@ -56,17 +75,12 @@ export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
 
     <div className="ticket-dossier__drawer">
       <header className="ticket-dossier__intro">
-        <span className="ticket-dossier__frame" aria-hidden="true">01</span>
         <div>
           <span className="ticket-dossier__eyebrow">{presentation.introLabel}</span>
           <h3 id={`about-${mode}`}>{content.heading}</h3>
           <p className="ticket-dossier__lead">{content.lead}</p>
         </div>
       </header>
-
-      <section className="ticket-dossier__story" aria-label="Об игре подробнее">
-        {content.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-      </section>
 
       <div className="ticket-dossier__guide">
         <section className="ticket-dossier__evidence" aria-labelledby={`artifact-features-${mode}`}>
@@ -78,6 +92,13 @@ export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
           <ol>{content.steps.map((step, index) => <li key={step}><strong>{String(index + 1).padStart(2, '0')}</strong><span>{step}</span></li>)}</ol>
         </section>
       </div>
+
+      <details className="ticket-dossier__more">
+        <summary><span>Подробнее об игре</span><ChevronDown aria-hidden="true" /></summary>
+        <section className="ticket-dossier__story" aria-label="Об игре подробнее">
+          {content.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </section>
+      </details>
 
       <section className="ticket-dossier__faq" aria-labelledby={`artifact-faq-${mode}`}>
         <header><CircleHelp aria-hidden="true" /><div><span>{presentation.faqLabel}</span><h4 id={`artifact-faq-${mode}`}>{presentation.faqTitle}</h4></div></header>
@@ -96,31 +117,23 @@ export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
 }
 
 export function HomeSeoContent() {
-  return <section className="seo-content seo-content--home" aria-labelledby="home-about-title">
-    <header className="seo-content__preview">
-      <span className="seo-content__seal" aria-hidden="true"><Sparkles /></span>
-      <div className="seo-content__preview-copy">
-        <span className="seo-content__eyebrow">Путеводитель по «Сходится!»</span>
+  return <details className="hub-guide">
+    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат · подсказки · все режимы" />
+    <div className="hub-guide__drawer">
+      <header className="hub-guide__intro">
+        <span>Путеводитель · без спойлеров</span>
         <h2 id="home-about-title">{HOME_SEO.heading}</h2>
-        <p className="seo-content__lead">{HOME_SEO.lead}</p>
-      </div>
-      <div className="seo-content__signals" aria-label="Коротко о платформе">
-        <span><Target aria-hidden="true" /><strong>7 игр</strong><small>в одном месте</small></span>
-        <span><CalendarDays aria-hidden="true" /><strong>Каждый день</strong><small>новые загадки</small></span>
-      </div>
-    </header>
-    <details className="seo-content__details">
-      <GuideSummary title="Как устроены ежедневные игры" note="формат · подсказки · все режимы" />
-      <div className="seo-content__drawer">
-        <section className="seo-content__story" aria-label="О платформе">
-          <span className="seo-content__story-mark" aria-hidden="true">01</span>
-          <div>{HOME_SEO.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+        <p>{HOME_SEO.lead}</p>
+      </header>
+      <div className="hub-guide__content">
+        <section className="hub-guide__story" aria-label="О платформе">
+          {HOME_SEO.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </section>
-        <nav className="seo-content__game-links" aria-label="Все ежедневные игры">
-          <span><Route aria-hidden="true" /> Выберите маршрут</span>
+        <nav className="hub-guide__game-links" aria-label="Все ежедневные игры">
+          <span><Route aria-hidden="true" /> Все игровые маршруты</span>
           <div>{INDEXABLE_GAME_SEO.map((game) => <a key={game.mode} href={game.canonicalPath}>{game.shortName}</a>)}</div>
         </nav>
       </div>
-    </details>
-  </section>
+    </div>
+  </details>
 }

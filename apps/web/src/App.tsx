@@ -97,6 +97,7 @@ import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAtt
 import { pathnameForPlayerRoute, playerRouteFromPathname, type PlayerScreen } from './app/routes'
 import { MODE_PRESENTATION } from './app/mode-presentation'
 import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
+import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
 import { GamePageFrame } from './components/game-shell/GamePageFrame'
 
 const normalizeTextMatch = (value: string) => value
@@ -1027,68 +1028,25 @@ function PeriodControl({
   unlockedPeriods: PeriodKey[]
   completedPeriods: PeriodKey[]
 }) {
-  const [open, setOpen] = useState(false)
-  const [menuPlacement, setMenuPlacement] = useState<'above' | 'below'>('below')
-  const [menuMaxHeight, setMenuMaxHeight] = useState(240)
-  const wrapRef = useRef<HTMLDivElement | null>(null)
-  const closePeriodMenu = useCallback(() => setOpen(false), [])
   const unlocked = new Set(unlockedPeriods)
   const completed = new Set(completedPeriods)
   const selectedLocked = !unlocked.has(value)
   const selectedCost = periodUnlockCost(value)
   const shortage = Math.max(0, selectedCost - wallet.tickets)
   const selectedUnlockable = selectedLocked && selectedCost > 0 && shortage === 0
-  const positionMenu = useCallback(() => {
-    const rect = wrapRef.current?.getBoundingClientRect()
-    if (!rect) return
-
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
-    const spaceBelow = viewportHeight - rect.bottom
-    const spaceAbove = rect.top
-    const openAbove = spaceBelow < 240 && spaceAbove > spaceBelow
-    const availableSpace = openAbove ? spaceAbove : spaceBelow
-
-    setMenuPlacement(openAbove ? 'above' : 'below')
-    setMenuMaxHeight(Math.max(96, Math.floor(availableSpace - 8)))
-  }, [])
-  useDismissOnOutside(open, wrapRef, closePeriodMenu)
-
-  useEffect(() => {
-    if (!open) return
-    const reposition = () => positionMenu()
-    window.addEventListener('resize', reposition)
-    window.visualViewport?.addEventListener('resize', reposition)
-    return () => {
-      window.removeEventListener('resize', reposition)
-      window.visualViewport?.removeEventListener('resize', reposition)
-    }
-  }, [open, positionMenu])
-
-  return <div
-    ref={wrapRef}
-    className={`period-select-wrap ${open ? 'is-open' : ''} ${menuPlacement === 'above' ? 'opens-up' : ''}`}
-    style={{ '--period-menu-max-height': `${menuMaxHeight}px` } as CSSProperties}
+  return <GameOptionSelect
+    label="Период"
+    labelIcon={<CalendarDays />}
+    value={PERIODS[value].label}
+    valueIcon={selectedLocked ? selectedUnlockable ? <LockOpen /> : <Lock /> : undefined}
+    endLabel={<><Ticket /> {wallet.tickets}</>}
+    menuLabel="Выберите период"
+    className="period-select-wrap"
+    triggerClassName={`period-control period-control--custom ${selectedLocked ? 'is-locked' : ''} ${selectedUnlockable ? 'is-unlockable' : ''}`}
+    menuClassName="period-menu"
+    resetKey={mode}
   >
-    <button type="button" className={`period-control period-control--custom ${selectedLocked ? 'is-locked' : ''} ${selectedUnlockable ? 'is-unlockable' : ''}`} onClick={(event) => {
-      event.stopPropagation()
-      if (open) {
-        setOpen(false)
-        return
-      }
-      positionMenu()
-      setOpen(true)
-    }} aria-expanded={open}>
-      <span className="period-control__top">
-        <span>Период</span>
-        <strong><Ticket /> {wallet.tickets}</strong>
-      </span>
-      <span className="period-control__value">
-        {selectedLocked && (selectedUnlockable ? <LockOpen /> : <Lock />)}
-        <span>{PERIODS[value].label}</span>
-        <ChevronRight />
-      </span>
-    </button>
-    {open && <div className="period-menu" role="listbox" aria-label="Период">
+    {(close) => <>
       {PERIOD_UNLOCK_ORDER.map((periodKey) => {
         const isUnlocked = unlocked.has(periodKey)
         const isActive = value === periodKey
@@ -1110,12 +1068,15 @@ function PeriodControl({
             : isUnlocked
               ? 'Открыт'
               : `${cost} билетов`
-        return <button
-          type="button"
+        return <GameOption
           key={periodKey}
           className={`period-option ${isMainSession ? 'period-option--main' : ''} ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : isUnlockable ? 'unlockable' : 'locked'}`}
-          onClick={(event) => {
-            event.stopPropagation()
+          title={PERIODS[periodKey].label}
+          description={optionDescription}
+          icon={optionIcon}
+          selected={isActive}
+          tone={isMainSession ? 'special' : isUnlocked || isUnlockable ? 'positive' : 'muted'}
+          onSelect={() => {
             trackMetrikaGoal('select_period', {
               mode,
               period: periodKey,
@@ -1123,48 +1084,29 @@ function PeriodControl({
               unlockable: isUnlockable,
             })
             onChange(periodKey)
-            setOpen(false)
+            close()
           }}
-          role="option"
-          aria-selected={isActive}
-        >
-          <span className="period-option__lock">{optionIcon}</span>
-          <span className="period-option__copy">
-            <strong>{PERIODS[periodKey].label}</strong>
-            <small>{optionDescription}</small>
-          </span>
-        </button>
+        />
       })}
-      {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <button
-        type="button"
+      {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <GameOption
         className={`period-option period-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? 'unlocked' : 'locked'}`}
-        onClick={(event) => {
-          event.stopPropagation()
+        title="Свободная игра"
+        description={hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
+        icon={<Sparkles />}
+        tone={hasActiveFreePlay || freePlayShortage === 0 ? 'positive' : 'muted'}
+        onSelect={() => {
           trackMetrikaGoal('open_free_play', {
             mode,
             cost: hasActiveFreePlay ? 0 : freePlayCostValue,
             launchesToday: freePlayLaunchesToday,
             hasActiveSession: hasActiveFreePlay,
           })
-          setOpen(false)
+          close()
           onStartFreePlay()
         }}
-      >
-        <span className="period-option__lock"><Sparkles /></span>
-        <span className="period-option__copy">
-          <strong>Свободная игра</strong>
-          <small>{hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
-        </span>
-      </button>}
-    </div>}
-    <p className={`period-control__note ${selectedLocked ? 'is-warning' : ''}`}>
-      {selectedLocked
-        ? shortage > 0
-          ? `Не хватает ${formatTickets(shortage)}. Период можно выбрать, но старт пока закрыт.`
-          : `Период откроется за ${formatTickets(selectedCost)} при старте.`
-        : 'Период открыт. Можно начинать сеанс.'}
-    </p>
-  </div>
+      />}
+    </>}
+  </GameOptionSelect>
 }
 
 function DifficultyControl({
@@ -1186,74 +1128,52 @@ function DifficultyControl({
   freePlayShortage: number
   freePlayLaunchesToday: number
 }) {
-  const [open, setOpen] = useState(false)
-  const wrapRef = useRef<HTMLDivElement | null>(null)
-  const closeMenu = useCallback(() => setOpen(false), [])
-  useDismissOnOutside(open, wrapRef, closeMenu)
   const current = DIFFICULTIES[value]
 
-  return <div ref={wrapRef} className={`difficulty-select-wrap ${open ? 'is-open' : ''}`}>
-    <button
-      type="button"
-      className="difficulty-trigger"
-      onClick={(event) => {
-        event.stopPropagation()
-        setOpen((prev) => !prev)
-      }}
-      aria-expanded={open}
-      aria-haspopup="listbox"
-    >
-      <span className="difficulty-trigger__label"><BarChart3 /> Сложность</span>
-      <span className="difficulty-trigger__value">
-        <span className={`difficulty-bars difficulty-bars--${value}`} aria-hidden="true"><i /><i /><i /></span>
-        <strong>{current.label}</strong>
-        <ChevronRight />
-      </span>
-    </button>
-    {open && <div className="difficulty-menu" role="listbox" aria-label="Уровень сложности">
-      <span className="difficulty-menu__head">Уровень сложности</span>
+  return <GameOptionSelect
+    label="Сложность"
+    labelIcon={<BarChart3 />}
+    value={current.label}
+    valueIcon={<span className={`difficulty-bars difficulty-bars--${value}`} aria-hidden="true"><i /><i /><i /></span>}
+    menuLabel="Уровень сложности"
+    className="difficulty-select-wrap"
+    triggerClassName="difficulty-trigger"
+    menuClassName="difficulty-menu"
+    resetKey="music"
+  >
+    {(close) => <>
       {DIFFICULTY_ORDER.map((key) => {
         const meta = DIFFICULTIES[key]
         const isActive = value === key
-        return <button
-          type="button"
+        return <GameOption
           key={key}
-          role="option"
-          aria-selected={isActive}
           className={`difficulty-option ${isActive ? 'active' : ''}`}
-          onClick={(event) => {
-            event.stopPropagation()
+          title={meta.label}
+          description={counts ? `${formatArtists(counts[key])} · ${meta.hint}` : meta.hint}
+          icon={<span className={`difficulty-bars difficulty-bars--${key}`}><i /><i /><i /></span>}
+          selected={isActive}
+          tone={isActive ? 'positive' : 'default'}
+          onSelect={() => {
             trackMetrikaGoal('select_difficulty', { mode: 'music', difficulty: key })
             onChange(key)
-            setOpen(false)
+            close()
           }}
-        >
-          <span className={`difficulty-bars difficulty-bars--${key}`} aria-hidden="true"><i /><i /><i /></span>
-          <span className="difficulty-option__copy">
-            <strong>{meta.label}</strong>
-            <small>{counts ? `${formatArtists(counts[key])} · ${meta.hint}` : meta.hint}</small>
-          </span>
-          {isActive && <Check className="difficulty-option__check" />}
-        </button>
+        />
       })}
-      <button
-        type="button"
+      <GameOption
         className={`difficulty-option difficulty-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? '' : 'locked'}`}
-        onClick={(event) => {
-          event.stopPropagation()
+        title="Свободная игра"
+        description={hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
+        icon={<Sparkles />}
+        tone={hasActiveFreePlay || freePlayShortage === 0 ? 'special' : 'muted'}
+        onSelect={() => {
           trackMetrikaGoal('open_free_play', { mode: 'music', cost: hasActiveFreePlay ? 0 : freePlayCostValue, launchesToday: freePlayLaunchesToday, hasActiveSession: hasActiveFreePlay })
-          setOpen(false)
+          close()
           onStartFreePlay()
         }}
-      >
-        <span className="difficulty-option__spark" aria-hidden="true"><Sparkles /></span>
-        <span className="difficulty-option__copy">
-          <strong>Свободная игра</strong>
-          <small>{hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}</small>
-        </span>
-      </button>
-    </div>}
-  </div>
+      />
+    </>}
+  </GameOptionSelect>
 }
 
 const apiDifficulty = (value: DifficultyKey | null | undefined): ApiDifficultyKey | null => value === 'experimental' ? 'expert' : value ?? null
@@ -1301,6 +1221,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
         <div className="hub-hero">
           <div className="hub-hero__copy">
             <div className="hub-hero__facts" aria-label="Об игре">
+              <span><Gamepad2 /><strong>7 игр</strong></span>
               <span><CalendarDays /><strong>1 загадка в день</strong></span>
               <span><Target /><strong>10 попыток</strong></span>
             </div>
@@ -1327,6 +1248,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
           </div>
         </div>
         <DailyProgressStub state={dailyState} />
+        <HomeSeoContent />
       </section>
 
       <section className="category-section" id="available-games">
@@ -1365,7 +1287,6 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
           />}
         </div>
       </section>
-      <HomeSeoContent />
     </main>
   </>
 }
@@ -1448,6 +1369,23 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
     onPlay()
   }
 
+  const launchOption = mode === 'music'
+    ? <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
+    : hasModeVariants
+      ? <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
+      : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
+        ? <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+        : undefined
+  const launchControls = !isPromoTitle && <GameLaunchControls
+    mode={mode}
+    option={launchOption}
+    action={<ActionButton className={`play-button game-launch-controls__play ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>
+      {isDiagnosisReplay ? <RotateCcw className="play-button__replay-icon" /> : <Play />}
+      {playButtonText}
+      {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
+    </ActionButton>}
+  />
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return
@@ -1510,8 +1448,9 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
                   <ChevronRight aria-hidden="true" />
                 </button>}
-                <GameArtifactSeoDetails mode="diagnosis" />
+                {launchControls}
               </div>
+              <GameArtifactSeoDetails mode="diagnosis" />
             </section>
           : isPromoTitle
             ? <section className="promo-case">
@@ -1551,11 +1490,9 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                       <p>Каждый день — новая игра из мирового чарта. У вас есть <strong>10 попыток</strong>, чтобы узнать её по жанрам, студии и рейтингам.</p>
                     </div>
                   </div>
-                  <div className="game-case__actions">
-                    <ActionButton className="game-case__play" onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
-                  </div>
-                  <GameArtifactSeoDetails mode="game" />
+                  {launchControls}
                 </div>
+                <GameArtifactSeoDetails mode="game" />
               </section>
           : mode === 'music'
             ? <section className="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music">
@@ -1578,7 +1515,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                     <span><i>ROW</i><b>07</b></span>
                   </div>
                   <div className="concert-ticket__barcode" aria-hidden="true" />
-                  <GameArtifactSeoDetails mode="music" />
+                  {launchControls}
                 </div>
                 <div className="concert-ticket__stub" aria-hidden="true">
                   <span className="concert-ticket__stub-kicker">Концерт дня</span>
@@ -1588,32 +1525,21 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <span className="concert-ticket__stub-no">№ {dayNumber(date)}</span>
                   <div className="concert-ticket__barcode concert-ticket__barcode--v" />
                 </div>
+                <GameArtifactSeoDetails mode="music" />
               </section>
           : <section className="admit-ticket admit-ticket--dossier" aria-labelledby={`ticket-${mode}`}>
-              <div className="admit-ticket__stub">
+              <div className={`admit-ticket__stub${mode === 'movie' ? ' admit-ticket__stub--poster' : ''}`}>
+                {mode === 'movie' && <img className="admit-ticket__stub-art" src={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')} alt="" aria-hidden="true" decoding="async" />}
                 <span>ВХОД</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small><em>{date.slice(8,10)}.{date.slice(5,7)}</em><i />
               </div>
               <div className="admit-ticket__body">
                 <div className="ticket-kicker"><span>Ежедневная премьера</span><i /> <small>полночный сеанс</small></div>
                 <h2 id={`ticket-${mode}`}>Ежедневная игра: {modeMeta(mode).lower}</h2>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
-                {GAME_MODE_MANIFEST[mode].periodPolicy === 'year' && <div className="ticket-settings">
-                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
-                </div>}
-                <GameArtifactSeoDetails mode={mode} />
+                {launchControls}
               </div>
+              <GameArtifactSeoDetails mode={mode} />
             </section>}
-        {mode === 'music'
-          ? <div className="title-play-row">
-              <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
-              <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
-            </div>
-          : hasModeVariants
-            ? <div className="title-play-row">
-                <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
-                <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
-              </div>
-          : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>{isDiagnosisReplay ? <RotateCcw className="play-button__replay-icon" /> : <Play />} {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
     </main>
   </>
