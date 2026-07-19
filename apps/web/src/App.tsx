@@ -62,7 +62,7 @@ import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
 import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
-import { GameSeoContent, HomeSeoContent } from './components/seo-content/SeoContent'
+import { GameArtifactSeoDetails, HomeSeoContent } from './components/seo-content/SeoContent'
 import {
   canUseAsArtistPortrait,
   canonicalMusicId,
@@ -1408,6 +1408,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
 }) {
   const isPromoTitle = mode === 'game' && isPromoVariant(promoPackId)
   const isDiagnosisReplay = mode === 'diagnosis' && todayCompleted
+  const hasModeVariants = GAME_MODE_MANIFEST[mode].variants.length > 0
   const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
@@ -1492,7 +1493,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
         <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
         <p>{isPromoTitle ? 'Угадайте игру по комментариям, которые никто не писал, но все уже читали' : `Угадайте ${modeMeta(mode).subject} дня за десять попыток`}</p>
         {mode === 'diagnosis'
-          ? <section className="med-chart">
+          ? <section className="med-chart med-chart--dossier" aria-labelledby="ticket-diagnosis">
               <div className="med-chart__stub">
                 <span className="med-chart__cross" aria-hidden="true"><i /><i /></span>
                 <span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № {dayNumber(date)}</small><em>{date.slice(8, 10)}.{date.slice(5, 7)}</em>
@@ -1502,13 +1503,14 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
               </div>
               <div className="med-chart__body">
                 <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
-                <h2>Ежедневная игра: диагнозы</h2>
+                <h2 id="ticket-diagnosis">Ежедневная игра: диагнозы</h2>
                 <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
                 {hasAnamnesis && <button type="button" className="med-chart__anamnesis" onClick={onReadAnamnesis}>
                   <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
                   <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
                   <ChevronRight aria-hidden="true" />
                 </button>}
+                <GameArtifactSeoDetails mode="diagnosis" />
               </div>
             </section>
           : isPromoTitle
@@ -1533,7 +1535,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                 </div>
               </section>
           : mode === 'game'
-            ? <section className="game-case">
+            ? <section className="game-case game-case--dossier" aria-labelledby="ticket-game">
                 <div className="game-case__spine" aria-hidden="true"><span>Сходится · Игры</span></div>
                 <div className="game-case__body">
                   <div className="game-case__band">
@@ -1545,22 +1547,23 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                     <span className="game-case__disc cd disc" aria-hidden="true"><i /></span>
                     <div className="game-case__info">
                       <div className="game-case__kicker"><span>Ежедневный релиз</span><i /> <small>глобальный чарт</small></div>
-                      <h2>Ежедневная игра: игры</h2>
+                      <h2 id="ticket-game">Ежедневная игра: игры</h2>
                       <p>Каждый день — новая игра из мирового чарта. У вас есть <strong>10 попыток</strong>, чтобы узнать её по жанрам, студии и рейтингам.</p>
                     </div>
                   </div>
                   <div className="game-case__actions">
                     <ActionButton className="game-case__play" onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
                   </div>
+                  <GameArtifactSeoDetails mode="game" />
                 </div>
               </section>
           : mode === 'music'
-            ? <section className="concert-ticket">
+            ? <section className="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music">
                 <div className="concert-ticket__main">
                   <div className="concert-ticket__head">
                     <div className="concert-ticket__brand">
                       <span className="concert-ticket__kicker"><Music2 /> Концерт дня</span>
-                      <h2>Артист дня</h2>
+                      <h2 id="ticket-music">Артист дня</h2>
                       <p className="concert-ticket__venue">Главная сцена · сеанс №{dayNumber(date)}</p>
                     </div>
                     <div className="concert-ticket__when">
@@ -1575,6 +1578,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                     <span><i>ROW</i><b>07</b></span>
                   </div>
                   <div className="concert-ticket__barcode" aria-hidden="true" />
+                  <GameArtifactSeoDetails mode="music" />
                 </div>
                 <div className="concert-ticket__stub" aria-hidden="true">
                   <span className="concert-ticket__stub-kicker">Концерт дня</span>
@@ -1585,19 +1589,18 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
                   <div className="concert-ticket__barcode concert-ticket__barcode--v" />
                 </div>
               </section>
-          : <section className="admit-ticket">
+          : <section className="admit-ticket admit-ticket--dossier" aria-labelledby={`ticket-${mode}`}>
               <div className="admit-ticket__stub">
                 <span>ВХОД</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small><em>{date.slice(8,10)}.{date.slice(5,7)}</em><i />
               </div>
               <div className="admit-ticket__body">
                 <div className="ticket-kicker"><span>Ежедневная премьера</span><i /> <small>полночный сеанс</small></div>
-                <h2>Ежедневная игра: {modeMeta(mode).lower}</h2>
+                <h2 id={`ticket-${mode}`}>Ежедневная игра: {modeMeta(mode).lower}</h2>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
-                <div className="ticket-settings">
-                  {GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
-                    ? <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
-                    : <ModeVariantControl mode={mode} value={variantKey} onChange={setVariantKey} />}
-                </div>
+                {GAME_MODE_MANIFEST[mode].periodPolicy === 'year' && <div className="ticket-settings">
+                  <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+                </div>}
+                <GameArtifactSeoDetails mode={mode} />
               </div>
             </section>}
         {mode === 'music'
@@ -1605,9 +1608,13 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
               <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
               <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
             </div>
+          : hasModeVariants
+            ? <div className="title-play-row">
+                <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}><Play /> {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>
+                <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
+              </div>
           : mode !== 'game' && <ActionButton className={`play-button ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>{isDiagnosisReplay ? <RotateCcw className="play-button__replay-icon" /> : <Play />} {playButtonText} {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}</ActionButton>}
       </section>
-      {!isPromoTitle && <GameSeoContent mode={mode} />}
     </main>
   </>
 }

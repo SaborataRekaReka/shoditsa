@@ -26,7 +26,7 @@ if (!/(?:src|href)="\/assets\//.test(indexHtml) || /(?:src|href)="\.\/assets\//.
 }
 
 const verificationTags = [
-  '<meta name="yandex-verification" content="e04b61286a4d3e9d"',
+  '<meta name="yandex-verification" content="ed7c785c08886924"',
   '<meta name="google-site-verification" content="GGoM_1EOCbLZl1NAn86xUKod7pSnZJGzgmXFLGjJ2Xo"',
 ]
 for (const verificationTag of verificationTags) {

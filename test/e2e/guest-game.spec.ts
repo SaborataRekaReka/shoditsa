@@ -123,6 +123,49 @@ test('opening a mode from a scrolled hub starts at the top of the title screen',
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
 })
 
+test('cities keep the compact mode picker and switch the answer pool', async ({ page }) => {
+  await page.goto('/')
+  await openModeLobby(page, 'Города')
+
+  const trigger = page.locator('.mode-variant-trigger')
+  await expect(trigger).toContainText('Столицы')
+  await trigger.click()
+  await expect(page.getByRole('listbox', { name: 'Режим игры «Города»' })).toBeVisible()
+
+  await page.getByRole('option', { name: /Все города/ }).click()
+  await expect(trigger).toContainText('Все')
+  await expect(page.locator('.mode-variant-menu')).toHaveCount(0)
+})
+
+test('every game guide unfolds inside its own themed artifact', async ({ page }) => {
+  const cases = [
+    { mode: 'movie', artifact: '.admit-ticket--dossier', closedLabel: 'Развернуть билет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать фильм' },
+    { mode: 'series', artifact: '.admit-ticket--dossier', closedLabel: 'Открыть телепрограмму', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать сериал' },
+    { mode: 'anime', artifact: '.admit-ticket--dossier', closedLabel: 'Развернуть вкладыш', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать аниме' },
+    { mode: 'game', artifact: '.game-case--dossier', closedLabel: 'Открыть буклет', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать игру' },
+    { mode: 'city', artifact: '.admit-ticket--dossier', closedLabel: 'Развернуть маршрут', evidenceTitle: 'Что сверяем', routeTitle: 'Как найти город' },
+    { mode: 'music', artifact: '.concert-ticket--dossier', closedLabel: 'Открыть программу', evidenceTitle: 'Что сверяем', routeTitle: 'Как искать артиста' },
+    { mode: 'diagnosis', artifact: '.med-chart--dossier', closedLabel: 'Открыть карту', evidenceTitle: 'Что сравниваем', routeTitle: 'Как искать ответ' },
+  ] as const
+
+  for (const entry of cases) {
+    await page.goto(`/games/${entry.mode}`)
+    const artifact = page.locator(entry.artifact)
+    const dossier = artifact.locator(`.artifact-dossier.ticket-dossier--${entry.mode}`)
+    await expect(artifact).toBeVisible()
+    await expect(page.locator('.seo-content--game')).toHaveCount(0)
+    await expect(dossier).not.toHaveAttribute('open', '')
+    await expect(dossier.locator('.ticket-dossier__story p')).toHaveCount(2)
+
+    await dossier.getByText(entry.closedLabel, { exact: true }).click()
+    await expect(dossier).toHaveAttribute('open', '')
+    await expect(artifact.getByRole('heading', { name: entry.evidenceTitle })).toBeVisible()
+    await expect(artifact.getByRole('heading', { name: entry.routeTitle })).toBeVisible()
+    await expect(artifact.getByRole('heading', { name: 'Короткие ответы' })).toBeVisible()
+    await expectNoHorizontalOverflow(page, `${entry.mode}-artifact-dossier`)
+  }
+})
+
 test('archive screen starts a server archive session in the polished layout', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Архив' }).first().click()

@@ -33,7 +33,10 @@ for (const mode of manifest.playableModes) {
   if (!pageHtml.includes(`<link rel="canonical" href="${baseUrl}${pathname}"`)) throw new Error(`${pathname} has no matching canonical URL`)
   if (!pageHtml.includes('name="robots" content="index,follow')) throw new Error(`${pathname} is not indexable in server HTML`)
   if (!pageHtml.includes('type="application/ld+json"') || !pageHtml.includes('BreadcrumbList')) throw new Error(`${pathname} has no game structured data`)
-  if (!pageHtml.includes('<h1>')) throw new Error(`${pathname} has no server-rendered heading`)
+  if (!pageHtml.includes('<h1')) throw new Error(`${pathname} has no server-rendered heading`)
+  const hasSeoDisclosure = pageHtml.includes('artifact-dossier ticket-dossier')
+    && pageHtml.includes('class="ticket-dossier__drawer"')
+  if (!hasSeoDisclosure) throw new Error(`${pathname} has no server-rendered SEO disclosure content`)
   if (!pageHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${pathname} build marker does not match main`)
 }
 

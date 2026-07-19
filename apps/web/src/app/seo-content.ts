@@ -28,6 +28,106 @@ export type GameSeoContent = SeoPageContent & {
   faq: readonly SeoFaq[]
 }
 
+export type GameGuidePresentation = {
+  closedLabel: string
+  openLabel: string
+  introLabel: string
+  evidenceLabel: string
+  evidenceTitle: string
+  routeLabel: string
+  routeTitle: string
+  faqLabel: string
+  faqTitle: string
+  linksLabel: string
+}
+
+export const GAME_GUIDE_PRESENTATION = {
+  movie: {
+    closedLabel: 'Развернуть билет',
+    openLabel: 'Обратная сторона билета',
+    introLabel: 'Кинокарточка · без спойлеров',
+    evidenceLabel: 'В кадре',
+    evidenceTitle: 'Что сверяем',
+    routeLabel: 'Три действия',
+    routeTitle: 'Как искать фильм',
+    faqLabel: 'Перед сеансом',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Следующие сеансы',
+  },
+  series: {
+    closedLabel: 'Открыть телепрограмму',
+    openLabel: 'Телепрограмма игры',
+    introLabel: 'Карточка сериала · без спойлеров',
+    evidenceLabel: 'В титрах',
+    evidenceTitle: 'Что сверяем',
+    routeLabel: 'Три действия',
+    routeTitle: 'Как искать сериал',
+    faqLabel: 'Перед просмотром',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Следующие сеансы',
+  },
+  anime: {
+    closedLabel: 'Развернуть вкладыш',
+    openLabel: 'Вкладыш тайтла',
+    introLabel: 'Карточка тайтла · без спойлеров',
+    evidenceLabel: 'Профиль тайтла',
+    evidenceTitle: 'Что сверяем',
+    routeLabel: 'Три действия',
+    routeTitle: 'Как искать аниме',
+    faqLabel: 'Перед просмотром',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Другие тайтлы',
+  },
+  game: {
+    closedLabel: 'Открыть буклет',
+    openLabel: 'Буклет из коробки',
+    introLabel: 'Руководство игрока · без спойлеров',
+    evidenceLabel: 'Характеристики',
+    evidenceTitle: 'Что сверяем',
+    routeLabel: 'Три шага',
+    routeTitle: 'Как искать игру',
+    faqLabel: 'Перед запуском',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Другие релизы',
+  },
+  city: {
+    closedLabel: 'Развернуть маршрут',
+    openLabel: 'Путевой лист игры',
+    introLabel: 'Путевой лист · без спойлеров',
+    evidenceLabel: 'Ориентиры',
+    evidenceTitle: 'Что сверяем',
+    routeLabel: 'Три координаты',
+    routeTitle: 'Как найти город',
+    faqLabel: 'Перед поездкой',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Другие маршруты',
+  },
+  music: {
+    closedLabel: 'Открыть программу',
+    openLabel: 'Программа концерта',
+    introLabel: 'Лайнап · без спойлеров',
+    evidenceLabel: 'Звучание',
+    evidenceTitle: 'Что сверяем',
+    routeLabel: 'Три действия',
+    routeTitle: 'Как искать артиста',
+    faqLabel: 'Перед концертом',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Другие сцены',
+  },
+  diagnosis: {
+    closedLabel: 'Открыть карту',
+    openLabel: 'Развёрнутая медкарта',
+    introLabel: 'Учебная карта · не диагноз',
+    evidenceLabel: 'Признаки',
+    evidenceTitle: 'Что сравниваем',
+    routeLabel: 'Ход осмотра',
+    routeTitle: 'Как искать ответ',
+    faqLabel: 'Важно',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Другие сеансы',
+  },
+} as const satisfies Record<PlayableModeId, GameGuidePresentation>
+
 export const HOME_SEO: SeoPageContent = {
   title: 'Сходится! — ежедневные игры на логику и знания онлайн',
   description: 'Семь бесплатных игр каждый день: угадывайте фильмы, сериалы, аниме, видеоигры, города, исполнителей и диагнозы по сравнительным подсказкам.',

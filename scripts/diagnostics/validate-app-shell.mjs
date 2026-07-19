@@ -37,13 +37,17 @@ const sourceChecks = [
     path: 'apps/web/src/App.tsx',
     required: [
       ['committed screen scroll reset', /useLayoutEffect\(\(\) => \{[^]*window\.scrollTo\(\{ top: 0, left: 0 \}\)[^]*\}, \[routeLocation\.pathname, screen\]\)/],
+      ['admission-ticket guide integration', /<GameArtifactSeoDetails\s+mode=\{mode\}\s*\/>/],
+      ['game-case guide integration', /<GameArtifactSeoDetails\s+mode="game"\s*\/>/],
+      ['concert-ticket guide integration', /<GameArtifactSeoDetails\s+mode="music"\s*\/>/],
+      ['medical-chart guide integration', /<GameArtifactSeoDetails\s+mode="diagnosis"\s*\/>/],
     ],
   },
   {
     path: 'apps/web/index.html',
     required: [
       ['route-stable document base', /<base\s+href="%BASE_URL%"\s*\/>/],
-      ['Yandex site verification', /<meta\s+name="yandex-verification"\s+content="e04b61286a4d3e9d"\s*\/>/],
+      ['Yandex site verification', /<meta\s+name="yandex-verification"\s+content="ed7c785c08886924"\s*\/>/],
       ['Google site verification', /<meta\s+name="google-site-verification"\s+content="GGoM_1EOCbLZl1NAn86xUKod7pSnZJGzgmXFLGjJ2Xo"\s*\/>/],
     ],
   },
@@ -66,7 +70,19 @@ const sourceChecks = [
     path: 'apps/web/src/app/seo-content.ts',
     required: [
       ['exhaustive game SEO registry', /satisfies\s+Record<PlayableModeId,\s*GameSeoContent>/],
+      ['exhaustive game guide presentation', /satisfies\s+Record<PlayableModeId,\s*GameGuidePresentation>/],
       ['manifest-derived indexable games', /DAILY_MODE_IDS\.map\(\(mode\)\s*=>\s*GAME_SEO\[mode\]\)/],
+    ],
+  },
+  {
+    path: 'apps/web/src/components/seo-content/SeoContent.tsx',
+    required: [
+      ['native SEO disclosure', /<details\s+className="seo-content__details">/],
+      ['HTML-resident game copy', /content\.paragraphs\.map/],
+      ['useful nested FAQ disclosure', /ticket-dossier__faq[^]*content\.faq\.map/],
+      ['manifest-driven game guide icons', /satisfies\s+Record<PlayableModeId,\s*LucideIcon>/],
+      ['shared native artifact disclosure', /function GameArtifactSeoDetails[^]*artifact-dossier ticket-dossier/],
+      ['presentation-driven artifact language', /GAME_GUIDE_PRESENTATION\[mode\]/],
     ],
   },
   {
@@ -84,10 +100,20 @@ const sourceChecks = [
     ],
   },
   {
+    path: 'apps/web/src/components/mode-variant/ModeVariantControl.tsx',
+    required: [
+      ['manifest-driven mode variants', /GAME_MODE_MANIFEST\[mode\]\.variants/],
+      ['compact variant trigger', /className="mode-variant-trigger"/],
+      ['accessible variant listbox', /role="listbox"/],
+    ],
+  },
+  {
     path: 'scripts/seo/generate-static-pages.ts',
     required: [
       ['static game HTML generation', /'seo',\s*'games',\s*`\$\{game\.mode\}\.html`/],
       ['registry-driven sitemap generation', /INDEXABLE_GAME_SEO/],
+      ['server-rendered shared artifact disclosure', /renderArtifactDossier[^]*artifact-dossier ticket-dossier/],
+      ['server-rendered thematic artifact shells', /renderGameArtifactFallback[^]*renderAdmissionTicketFallback/],
     ],
   },
   {
