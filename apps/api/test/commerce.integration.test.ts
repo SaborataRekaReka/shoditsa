@@ -55,6 +55,7 @@ describe('commerce API', () => {
     await app?.close()
     if (database) {
       await database.db.delete(gameSessions).where(inArray(gameSessions.userId, [userId, freeUserId]))
+      await database.db.delete(walletLedger).where(inArray(walletLedger.userId, [userId, freeUserId]))
       await database.db.delete(user).where(eq(user.id, userId))
       await database.db.delete(user).where(eq(user.id, freeUserId))
       await database.client.end()
