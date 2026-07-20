@@ -104,7 +104,6 @@ import { GamePageFrame } from './components/game-shell/GamePageFrame'
 import { trackClientEvent } from './app/client-events'
 import { ClubScreen } from './features/commerce/ClubScreen'
 import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
-import { MembershipBadge } from './features/commerce/MembershipBadge'
 import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
 import { CreateGameScreen } from './features/private-games/CreateGameScreen'
 import { LegalScreen } from './features/legal/LegalScreen'
@@ -3899,12 +3898,6 @@ const profileTabFromLocation = (): ProfileTab => {
   return PROFILE_TABS.some((tab) => tab.id === value) ? value as ProfileTab : 'overview'
 }
 
-const publicPlayerNumber = (id: string | null | undefined) => {
-  let hash = 17
-  for (const char of id ?? 'guest') hash = (hash * 31 + char.charCodeAt(0)) % 9999
-  return String(hash + 1).padStart(4, '0')
-}
-
 const profileStatus = (completedGames: number) => completedGames >= 80
   ? 'Мастер экрана'
   : completedGames >= 30
@@ -3935,7 +3928,6 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
     queryFn: api.meCommerce,
     enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
   })
-  const [economyOpen, setEconomyOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<ProfileTab>(profileTabFromLocation)
   const [profileName, setProfileName] = useState('')
   const [profileNotice, setProfileNotice] = useState('')
@@ -4008,9 +4000,6 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
     { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: publicAssetUrl('images/badges/bullseye.webp') },
     { key: 'full-house', title: 'Полный зал', description: `Закончите все ${MODE_TABS.length} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: publicAssetUrl('images/badges/full-house.webp') },
   ]
-  const nearestAchievement = achievementCards.find((achievement) => !achievement.unlocked) ?? achievementCards[achievementCards.length - 1]
-  const nearestProgress = `${nearestAchievement.current}/${nearestAchievement.target}`
-  const nearestProgressPercent = Math.min(100, Math.round(nearestAchievement.current / nearestAchievement.target * 100))
   const profileCategoryConfig = CATEGORY_TICKET_CONFIG
   const nextDailyCategory = profileCategoryConfig.find((category) => category.mode === activeSession?.mode)
     ?? profileCategoryConfig.find((category) => !today.completedModes.includes(category.mode))
@@ -4020,28 +4009,29 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} profileActive />
     <main className="profile-screen profile-screen--new">
-      <div className="screen-back-row"><button className="screen-back" onClick={onHome} aria-label="На главную"><ChevronLeft /></button><span>Личный кабинет</span></div>
+      <div className="screen-back-row"><button className="screen-back" onClick={onHome} aria-label="На главную"><ChevronLeft /></button><span>Профиль</span></div>
 
       <section className="profile-hero">
         <div className="profile-hero__identity">
           <div className="profile-avatar profile-avatar--large" aria-hidden="true">{loading ? <UserRound /> : initials || <UserRound />}</div>
           <div className="profile-hero__copy">
-            <span className="profile-eyebrow">{session && !session.isAnonymous ? 'Игровой профиль' : 'Гостевой профиль'}</span>
             <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
             <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
-            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>Игрок «Сходится!»</i>{serverRuntime.dashboard?.membership.active && <MembershipBadge membership={serverRuntime.dashboard.membership} compact />}{(() => { const rank = ['gold', 'silver', 'paper'].find((level) => commerceProfile.data?.entitlements.some((entry) => entry.key === 'supporter' && entry.scope === level)); return rank ? <i>Жетон: {rank === 'gold' ? 'золотой' : rank === 'silver' ? 'серебряный' : 'бумажный'}</i> : null })()}</div>
-          </div>
-          <button className="profile-hero__settings" type="button" onClick={() => session && !session.isAnonymous ? selectTab('settings') : window.location.assign('/register')}><UserRound /> {session && !session.isAnonymous ? 'Настройки профиля' : 'Сохранить прогресс'}</button>
-        </div>
-        <div className="profile-hero__dossier" aria-label="Иллюстрация игрового профиля">
-          <img className="profile-hero__illustration" src={publicAssetUrl('images/profile-hero-collage.webp')} alt="" />
-          <div className="profile-dossier__stamp">PLAYER {publicPlayerNumber(session?.id)}</div>
-          <div className="profile-dossier__ticket"><Ticket /><strong>{wallet.tickets}</strong><span>билетов</span></div>
-          <div className="profile-hero__reward">
-            <div><span>До первой награды — {nearestAchievement.title}</span><strong>{nearestProgress}</strong></div>
-            <i><span style={{ width: `${nearestProgressPercent}%` }} /></i>
+            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span>{(() => { const rank = ['gold', 'silver', 'paper'].find((level) => commerceProfile.data?.entitlements.some((entry) => entry.key === 'supporter' && entry.scope === level)); return rank ? <i>Жетон: {rank === 'gold' ? 'золотой' : rank === 'silver' ? 'серебряный' : 'бумажный'}</i> : null })()}</div>
           </div>
         </div>
+        <button className="profile-hero__club" type="button" onClick={onClub}>
+          <span className="profile-hero__club-mark" aria-hidden="true"><Crown /></span>
+          <span className="profile-hero__club-copy">
+            <small>Клуб «Сходится!»</small>
+            <strong>{serverRuntime.dashboard?.membership.active
+              ? serverRuntime.dashboard.membership.endsAt
+                ? `Активен до ${new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(serverRuntime.dashboard.membership.endsAt))}`
+                : 'Клубный билет активен'
+              : 'Архив и свободная игра'}</strong>
+          </span>
+          <ChevronRight aria-hidden="true" />
+        </button>
       </section>
 
       {session?.isAnonymous && <aside className="profile-guest-banner">
@@ -4050,12 +4040,6 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
         <a className="profile-guest-banner__primary" href="/register">Создать аккаунт</a>
         <a className="profile-guest-banner__secondary" href="/login">Уже есть аккаунт</a>
       </aside>}
-
-      <aside className="profile-club-card">
-        <span className="profile-club-card__mark" aria-hidden="true"><Crown /></span>
-        <div><span>Клуб «Сходится!»</span><strong>{serverRuntime.dashboard?.membership.active ? 'Клубный билет активен' : 'Архив с первого дня и свободная игра'}</strong><p>{serverRuntime.dashboard?.membership.active && serverRuntime.dashboard.membership.endsAt ? `Доступ действует до ${new Intl.DateTimeFormat('ru-RU', { dateStyle: 'long' }).format(new Date(serverRuntime.dashboard.membership.endsAt))}.` : 'Ежедневные игры останутся бесплатными для всех.'}</p></div>
-        <button type="button" onClick={onClub}>{serverRuntime.dashboard?.membership.active ? 'Открыть клуб' : 'Выбрать клубный билет'}</button>
-      </aside>
 
       <nav className="profile-tabs" aria-label="Разделы личного кабинета" role="tablist">
         {PROFILE_TABS.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} className={activeTab === tab.id ? 'is-active' : ''} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}
@@ -4144,7 +4128,6 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
         </section>
       </section>}
     </main>
-    {economyOpen && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
   </>
 }
 

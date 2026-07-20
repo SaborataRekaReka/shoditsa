@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { Check, ChevronLeft, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Ticket, Users } from 'lucide-react'
+import { CalendarDays, Check, ChevronLeft, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
@@ -202,6 +202,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   const dateBadge = Number.isNaN(puzzleDate.getTime())
     ? session.puzzleDate
     : `${String(puzzleDate.getDate()).padStart(2, '0')}/${String(puzzleDate.getMonth() + 1).padStart(2, '0')}`
+  const caseNumber = (state.puzzle.id.match(/\d+/g)?.join('') ?? dateBadge.replace(/\D/g, '')).slice(-3).padStart(3, '0')
 
   return <div className="danetki-page danetki-page--session">
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
@@ -213,16 +214,18 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         {connection !== 'connected' && <span className={`danetki-connection danetki-connection--${connection}`}>{connection === 'offline' ? 'нет сети' : 'переподключение'}</span>}
       </div>
 
-      <section className="game-heading">
-        <div><div className="game-heading__kicker"><span>{session.kind === 'daily' ? `Сегодня · Данетка · ${difficulty}` : `Архив · Данетка · ${difficulty}`}</span></div><h1>{session.kind === 'daily' ? 'Данетка дня' : 'Архивная данетка'}</h1><div className="danetki-case-meta"><span>{dateLabel} · обновление в 00:00 МСК</span><strong>Дело · {state.puzzle.titleRu}</strong></div></div>
-        <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{dateBadge.slice(0, 2)}<small>/{dateBadge.slice(-2)}</small></span></div>
-      </section>
-
       <section className="danetki-situation">
-        <div className="danetki-situation__copy"><span className="danetki-kicker"><Sparkles /> Ситуация</span><p>{state.puzzle.condition}</p><small>Задавайте вопросы, на которые можно ответить «да» или «нет».</small></div>
+        <div className="danetki-situation__copy">
+          <span className="danetki-kicker">{session.kind === 'daily' ? `Сегодня · Данетка №${caseNumber} · ${difficulty}` : `Архив · Данетка · ${difficulty}`}</span>
+          <h1>{session.kind === 'daily' ? 'Данетка дня' : 'Архивная данетка'}</h1>
+          <div className="danetki-case-meta"><span>{dateLabel} · обновление в 00:00 МСК</span><strong>Дело №{caseNumber} · вход</strong></div>
+          <p>{state.puzzle.condition}</p>
+          <small>Задавайте вопросы, на которые можно ответить «да» или «нет».</small>
+        </div>
+        <div className="danetki-case-date" aria-label={`Дата: ${dateBadge}`}><CalendarDays aria-hidden="true" /><strong>{dateBadge}</strong></div>
         <div className={`danetki-host danetki-host--${state.aiStatus}`}>
-          <div className="danetki-case-collage" aria-hidden="true"><span className="danetki-case-sheet danetki-case-sheet--back" /><span className="danetki-case-sheet danetki-case-sheet--front"><i>Дело</i><b>{dateBadge}</b></span><span className="danetki-case-receipt">№ {dateBadge.replace('/', '')}</span><span className="danetki-case-stamp">Проверено</span></div>
-          <span aria-hidden="true">✦</span><img src={publicAssetUrl('images/danetki/detective-cashier-transparent.png')} width="1136" height="1407" decoding="async" fetchPriority="high" alt="Ведущий расследования с лупой" />{state.aiStatus === 'error' && <button type="button" onClick={() => retryAi.mutate()} disabled={retryAi.isPending}><RefreshCw /> Повторить</button>}
+          <picture aria-hidden="true"><source srcSet={publicAssetUrl('images/danetki/danetka-detective-hero.webp')} type="image/webp" /><img src={publicAssetUrl('images/danetki/danetka-detective-hero.png')} width="1672" height="941" decoding="async" fetchPriority="high" alt="" /></picture>
+          {state.aiStatus === 'error' && <button type="button" onClick={() => retryAi.mutate()} disabled={retryAi.isPending}><RefreshCw /> Повторить</button>}
         </div>
         <div className="danetki-hostline"><strong><i aria-hidden="true" />{hostStatus}</strong><span>{state.aiStatus === 'error' ? 'Попробуйте повторить запрос' : 'Реагирует на ваши вопросы'}</span></div>
       </section>
@@ -230,7 +233,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
       <section className="danetki-investigation">
         <div className="danetki-room-toolbar">
           <div className="danetki-room-summary">
-            <strong>{state.roomMode === 'group' ? 'Групповое расследование' : 'Расследование'}</strong>
+            <strong>Протокол расследования</strong>
             <div className="danetki-members" aria-label={`Участников: ${activeMembers.length}`}>
               <span className="danetki-avatar danetki-avatar--host" title="Ведущий"><img src={publicAssetUrl('images/danetki/host-avatar.webp')} width="32" height="32" alt="" /></span>
               {activeMembers.map((member) => <span key={member.userId} className={`danetki-avatar ${member.userId === state.currentUserId ? 'is-current' : ''}`} title={member.displayName} data-color={member.colorKey}>{member.displayName.slice(0, 1).toUpperCase()}</span>)}
@@ -240,7 +243,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
           <div className="danetki-room-tools"><span className="danetki-question-count"><HelpCircle /> {state.questionCount} {state.questionCount === 1 ? 'вопрос' : 'вопросов'}</span><button type="button" onClick={() => listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}><Clock3 /> История</button>{state.canInvite && <button type="button" onClick={() => invite.mutate()} disabled={invite.isPending}><Users /> Пригласить</button>}{state.roomMode === 'group' && <button type="button" onClick={() => leave.mutate()} disabled={leave.isPending}><DoorOpen /> Выйти</button>}</div>
         </div>
 
-        <div className="danetki-messages" ref={listRef} aria-live="polite" onScroll={(event) => { const node = event.currentTarget; wasNearBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 80; if (wasNearBottom.current) setNewMessages(0) }}>
+        <div className="danetki-messages" ref={listRef} role="log" aria-live="polite" onScroll={(event) => { const node = event.currentTarget; wasNearBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 80; if (wasNearBottom.current) setNewMessages(0) }}>
           {state.roomMode === 'group' && activeMembers.length === 1 && <div className="danetki-system danetki-waiting"><Users /><span>Комната готова. Отправьте ссылку друзьям — расследование синхронизируется для всех.</span></div>}
           {!state.messages.length && <div className="danetki-empty"><Sparkles /><p>Расследование начинается. Выберите стартовый вопрос или задайте свой.</p></div>}
           {state.messages.map((message) => {
@@ -262,7 +265,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         {newMessages > 0 && <button type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения · {newMessages}</button>}
 
         {session.status === 'playing' && <>
-          <form className="danetki-composer" onSubmit={submit}><span className="danetki-composer__label">Новый вопрос</span><textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining > 0 ? 'Напишите вопрос…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0} /><button type="submit" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос">{send.isPending ? <LoaderCircle /> : <Send />}</button></form>
+          <form className="danetki-composer" onSubmit={submit}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining > 0 ? 'Напишите вопрос…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0} /><button type="submit" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос">{send.isPending ? <LoaderCircle /> : <Send />}</button></form>
           <div className="danetki-suggestions">{state.puzzle.starterQuestions.slice(0, 3).map((question) => <button key={question} type="button" onClick={() => setDraft(question)}>{question}</button>)}</div>
         </>}
       </section>

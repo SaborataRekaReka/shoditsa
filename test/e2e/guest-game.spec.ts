@@ -281,7 +281,7 @@ test('profile opens the current account screen for a guest', async ({ page }) =>
   await page.goto('/')
   await openGuestProfile(page)
   await expect(page.getByText(/Ваш прогресс сохранён в текущем браузере/)).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Настройки профиля' })).toBeVisible()
+  await expect(page.getByRole('tab', { name: 'Настройки' })).toBeVisible()
   await openProfileSettings(page)
   await expect(page.getByRole('button', { name: 'Создать аккаунт' })).toBeVisible()
   await expect(page.getByLabel('Email')).toBeVisible()
