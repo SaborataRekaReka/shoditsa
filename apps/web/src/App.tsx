@@ -60,7 +60,7 @@ import { activeSessionToSavedGame, archiveItemToSavedGame, serverTitleCounts, to
 import type { ContentReportReason } from './features/content-report/ContentReport'
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
-import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
+import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT, useDialogFocusTrap } from './components/app-shell/AppShell'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
 import { GameArtifactSeoDetails, HomeSeoContent } from './components/seo-content/SeoContent'
 import {
@@ -2743,6 +2743,7 @@ function Game({
     setHintModalRound(null)
     persistGame(attempts, status, hintChoices, nextDismissedRounds)
   }
+  const hintDialogRef = useDialogFocusTrap<HTMLElement>(Boolean(hintModalRound), dismissHintModal)
 
   const submit = (forcedSelection?: TitleItem) => {
     const nextSelection = forcedSelection ?? selected
@@ -3080,7 +3081,7 @@ function Game({
     </GamePageFrame>
 
     {hintModalRound && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
-      <section className="hint-modal" role="dialog" aria-modal="true" aria-labelledby="hint-modal-title">
+      <section className="hint-modal" ref={hintDialogRef} role="dialog" aria-modal="true" aria-labelledby="hint-modal-title" tabIndex={-1}>
         <div className="hint-modal__head">
           <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
           <button onClick={dismissHintModal} aria-label="Закрыть"><X /></button>
@@ -3238,6 +3239,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     }
     setHintModalRound(null)
   }, [hint.isPending, hintModalRound, revealedHint])
+  const hintDialogRef = useDialogFocusTrap<HTMLElement>(Boolean(hintModalRound), dismissHintModal)
 
   useEffect(() => {
     if (revealedHint) return
@@ -3259,15 +3261,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       if (event.key !== 'Escape') return
       if (isEditableTarget(event.target)) return
       event.preventDefault()
-      if (hintModalRound) {
-        dismissHintModal()
-        return
-      }
+      if (hintModalRound) return
       onBack()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [dismissHintModal, hintModalRound, onBack])
+  }, [hintModalRound, onBack])
 
   useEffect(() => {
     if (session) onSessionLoaded(session)
@@ -3416,7 +3415,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       })}</section>}
     </GamePageFrame>
     {hintModalRound && (hintOptions.length > 0 || revealedHint) && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
-      <section className="hint-modal" role="dialog" aria-modal="true">
+      <section className="hint-modal" ref={hintDialogRef} role="dialog" aria-modal="true" aria-label="Подсказка" tabIndex={-1}>
         <div className="hint-modal__head">
           <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
           <button onClick={dismissHintModal} aria-label="Закрыть" disabled={hint.isPending}><X /></button>
@@ -4076,19 +4075,10 @@ function AnamnesisModal({ text, dayNo, onClose, onStart }: {
   onClose: () => void
   onStart?: () => void
 }) {
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        onClose()
-      }
-    }
-    window.addEventListener('keydown', onKeyDown, true)
-    return () => window.removeEventListener('keydown', onKeyDown, true)
-  }, [onClose])
+  const dialogRef = useDialogFocusTrap<HTMLElement>(true, onClose)
 
   return <div className="anamnesis-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <section className="anamnesis-modal" role="dialog" aria-modal="true" aria-labelledby="anamnesis-title">
+    <section className="anamnesis-modal" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="anamnesis-title" tabIndex={-1}>
       <div className="anamnesis-modal__head">
         <span><Stethoscope /> Амбулаторная карта · Анамнез</span>
         <button onClick={onClose} aria-label="Закрыть"><X /></button>

@@ -1,9 +1,11 @@
 import { Swords } from 'lucide-react'
+import { useDialogFocusTrap } from '../../components/app-shell/AppShell'
 import type { ChallengePayload } from './challenge'
 
 export function ChallengeInvite({ challenge, onAccept, onDismiss }: { challenge: ChallengePayload; onAccept: () => void; onDismiss: () => void }) {
+  const dialogRef = useDialogFocusTrap<HTMLElement>(true, onDismiss)
   return <div className="challenge-invite-backdrop" role="presentation">
-    <section className="challenge-invite" role="dialog" aria-modal="true" aria-labelledby="challenge-invite-title">
+    <section className="challenge-invite" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="challenge-invite-title" tabIndex={-1}>
       <Swords aria-hidden="true" />
       <span>Вам бросили вызов</span>
       <h2 id="challenge-invite-title">Друг угадал с {challenge.opponentAttempts}-й попытки.</h2>

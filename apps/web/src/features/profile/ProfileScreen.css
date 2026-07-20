@@ -115,7 +115,7 @@
 .profile-hero__settings,
 .profile-link-button,
 .profile-section__head > button {
-  min-height: 40px;
+  min-height: 44px;
   border: 1px solid rgba(231, 184, 66, .42);
   border-radius: 11px;
   padding: 0 14px;
@@ -219,7 +219,7 @@
 .profile-rewards__grid article div > i span { height: 100%; background: var(--color-primary); display: block; }
 
 .profile-tabs {
-  min-height: 42px;
+  min-height: 44px;
   margin: 7px 0 12px;
   border-bottom: 1px solid var(--color-line);
   display: flex;
@@ -230,7 +230,7 @@
 .profile-tabs button {
   position: relative;
   flex: 0 0 auto;
-  min-height: 42px;
+  min-height: 44px;
   border: 0;
   padding: 0 14px;
   color: var(--color-muted);
@@ -443,7 +443,7 @@
   .profile-hero { grid-template-columns: minmax(0, 58%) minmax(0, 42%); }
   .profile-hero__identity { grid-template-columns: 86px minmax(0, 1fr); gap: 16px; }
   .profile-avatar--large { width: 86px; height: 86px; font-size: 30px; }
-  .profile-hero__settings { grid-column: 2; width: fit-content; min-height: 35px; }
+  .profile-hero__settings { grid-column: 2; width: fit-content; min-height: 44px; }
   .profile-dossier__ticket { right: 12px; }
   .profile-overview-layout { grid-template-columns: 1fr; }
   .profile-overview-side { grid-template-rows: auto auto; grid-template-columns: 1fr; }
@@ -503,7 +503,7 @@
   .profile-hero__settings {
     grid-column: 1 / -1;
     width: 100%;
-    min-height: 38px;
+    min-height: 44px;
     margin-top: 2px;
     justify-content: center;
   }

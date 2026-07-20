@@ -106,12 +106,13 @@
 
 .login-art-copy > span,
 .login-eyebrow {
-  color: #89c994;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: .15em;
   text-transform: uppercase;
 }
+.login-art-copy > span { color: #89c994; }
+.login-eyebrow { color: #326d40; }
 
 .login-art-copy strong {
   margin-top: 8px;
@@ -145,7 +146,7 @@
   position: absolute;
   top: 22px;
   right: 24px;
-  min-height: 38px;
+  min-height: 44px;
   padding: 0 11px;
   border: 1px solid rgba(23, 28, 24, .18);
   border-radius: 10px;
@@ -176,7 +177,7 @@
   min-height: 40px;
   margin: 10px 0 25px;
   color: var(--login-muted);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.45;
 }
 
@@ -203,7 +204,7 @@
   color: var(--login-ink);
   background: rgba(255, 255, 255, .46);
   box-shadow: inset 0 1px rgba(255, 255, 255, .55);
-  font-size: 14px;
+  font-size: 16px;
   transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
@@ -226,8 +227,8 @@
   position: absolute;
   right: 6px;
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 8px;
   color: rgba(23, 28, 24, .64);
@@ -243,11 +244,14 @@
 
 .login-forgot,
 .login-secondary-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   justify-self: end;
   margin: -2px 0 14px;
   padding: 0;
   border: 0;
-  color: #397a47;
+  color: #326d40;
   background: transparent;
   font: inherit;
   font-size: 12px;
@@ -324,9 +328,12 @@
 
 .login-register-line a,
 .login-register-line button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   padding: 0;
   border: 0;
-  color: #397a47;
+  color: #326d40;
   background: transparent;
   font: inherit;
   font-weight: 800;
@@ -371,7 +378,7 @@
   .login-brand { top: 15px; left: 16px; width: 38px; }
   .login-art { right: -8%; bottom: -74%; width: 82%; }
   .login-form-column { min-height: 535px; padding: 58px 18px 24px; }
-  .login-back { top: 13px; right: 13px; min-height: 34px; }
+  .login-back { top: 13px; right: 13px; min-height: 44px; }
   .login-card h1 { font-size: 36px; }
   .login-description { margin-top: 7px; font-size: 13px; }
   .login-field { margin-bottom: 11px; }

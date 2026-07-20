@@ -41,7 +41,7 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
 
   const content = <>
     <span className="category-ticket__stub" aria-hidden="true">
-      <img className="category-ticket__watermark" src={watermarkUrl} alt="" aria-hidden="true" />
+      <img className="category-ticket__watermark" src={watermarkUrl} alt="" aria-hidden="true" loading="lazy" decoding="async" />
     </span>
     <span className="category-ticket__body">
       <span className="category-ticket__top">

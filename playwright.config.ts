@@ -24,6 +24,11 @@ export default defineConfig({
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'small-mobile', testMatch: /responsive-layout\.spec\.ts/, use: { ...devices['iPhone SE'] } },
+    { name: 'mobile-landscape', testMatch: /responsive-layout\.spec\.ts/, use: { ...devices['iPhone SE'], viewport: { width: 667, height: 375 } } },
+    { name: 'tablet', testMatch: /responsive-layout\.spec\.ts/, use: { ...devices['iPad Mini'] } },
+    { name: 'webkit', testMatch: /responsive-layout\.spec\.ts/, use: { ...devices['Desktop Safari'], browserName: 'webkit' } },
+    { name: 'wide-desktop', testMatch: /responsive-layout\.spec\.ts/, use: { ...devices['Desktop Chrome'], viewport: { width: 2560, height: 1440 } } },
   ],
   webServer: [
     { command: 'npx tsx apps/api/src/server.ts', url: 'http://127.0.0.1:3002/api/v1/health/ready', reuseExistingServer: true, timeout: 120_000, env: apiEnv },
