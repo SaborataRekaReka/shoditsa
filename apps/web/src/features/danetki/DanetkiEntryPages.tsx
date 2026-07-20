@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type { DanetkiRoomMode, GameSessionSnapshot } from '@shoditsa/contracts'
-import { ArrowLeft, CalendarDays, Clock3, HelpCircle, LoaderCircle, Sparkles, UserRound, Users } from 'lucide-react'
+import { ArrowLeft, CalendarDays, ChevronLeft, Clock3, HelpCircle, LoaderCircle, Sparkles, UserRound, Users } from 'lucide-react'
 import { api, ApiClientError } from '../../api/client'
+import { AppHeader } from '../../components/app-shell/AppShell'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { publicAssetUrl } from '../../app/public-asset'
 import './DanetkiGamePage.css'
@@ -11,8 +12,14 @@ const messageFor = (error: unknown) => error instanceof ApiClientError
   ? error.message
   : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 
-export function DanetkiLobbyPage({ onHome, onStart, onContinue, onStartArchive, onStartFreePlay, busy, error }: {
+export function DanetkiLobbyPage({ date, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartArchive, onStartFreePlay, busy, error }: {
+  date: string
   onHome: () => void
+  onBack: () => void
+  onArchive: () => void
+  onStats: () => void
+  onRules: () => void
+  onReview: () => void
   onStart: (roomMode: DanetkiRoomMode) => void
   onContinue?: () => void
   onStartArchive?: (date: string) => void
@@ -21,36 +28,66 @@ export function DanetkiLobbyPage({ onHome, onStart, onContinue, onStartArchive, 
   error?: string
 }) {
   const [archiveDate, setArchiveDate] = useState('')
-  return <div className="danetki-entry">
-    <header className="danetki-nav">
-      <button type="button" onClick={onHome} aria-label="На главную"><ArrowLeft /></button>
-      <button type="button" className="danetki-brand" onClick={onHome}>Сходится!</button>
-    </header>
-    <main className="danetki-entry__main">
-      <section className="danetki-entry__hero">
-        <div><span><Sparkles /> Новый игровой режим</span><h1>Данетки</h1><p>Раскройте необычную историю, задавая ИИ-ведущей вопросы, на которые можно ответить «да» или «нет».</p></div>
-        <div className="danetki-host"><span aria-hidden="true">✦</span><img src={publicAssetUrl('media/danetki/host/host-neutral.webp')} width="720" height="900" decoding="async" fetchPriority="high" alt="ИИ-ведущий Данеток с лупой" /><small>Ведущий на связи</small></div>
-      </section>
-      <section className="danetki-entry__daily">
-        <div className="danetki-entry__label"><CalendarDays /> Данетка дня</div>
-        <h2>Начать расследование</h2>
-        <p>Играйте самостоятельно или создайте общую комнату для компании до шести человек.</p>
-        {onContinue && <button type="button" className="danetki-entry__continue" onClick={onContinue}><Clock3 /> Продолжить незавершённое расследование</button>}
-        <div className="danetki-entry__choices">
-          <button type="button" onClick={() => onStart('solo')} disabled={busy}><UserRound /><strong>Начать одному</strong><span>Вы и ИИ-ведущая</span></button>
-          <button type="button" onClick={() => onStart('group')} disabled={busy}><Users /><strong>Создать комнату</strong><span>Пригласить до 5 друзей</span></button>
+  const [roomMode, setRoomMode] = useState<DanetkiRoomMode>('solo')
+  const [archiveOpen, setArchiveOpen] = useState(false)
+  const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
+  useEffect(() => {
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); onBack() } }
+    window.addEventListener('keydown', escape)
+    return () => window.removeEventListener('keydown', escape)
+  }, [onBack])
+  return <>
+    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
+    <main className="title-screen danetki-title-screen">
+      <div className="screen-back-row"><button className="screen-back" type="button" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
+      <section className="title-stage danetki-title-stage">
+        <div className="title-game-mark">
+          <span><Sparkles aria-hidden="true" /></span>
+          <i>Игра дня · совместное расследование</i>
+          <h1>Данетки</h1>
         </div>
-        <div className="danetki-entry__alternatives">
-          <label><span>Архив по дате</span><input type="date" value={archiveDate} max={new Date().toISOString().slice(0, 10)} onChange={(event) => setArchiveDate(event.target.value)} /></label>
-          <button type="button" disabled={busy || !archiveDate} onClick={() => onStartArchive?.(archiveDate)}><CalendarDays /> Играть из архива</button>
-          <button type="button" disabled={busy} onClick={onStartFreePlay}><Sparkles /> Свободная игра</button>
+        <time dateTime={date}>{displayDate}</time>
+        <p>Раскройте необычную историю вопросами, на которые ведущий может ответить «да» или «нет».</p>
+      <section className="admit-ticket admit-ticket--dossier danetki-title-ticket" aria-labelledby="ticket-danetki">
+        <div className="admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--danetki" aria-hidden="true">
+          <img className="admit-ticket__stub-art" src={publicAssetUrl('images/title-posters/danetki-ticket-poster.webp')} alt="" decoding="async" fetchPriority="high" />
+          <span>ДЕЛО</span><strong>ОТКРЫТО</strong><small>№ {date.slice(8, 10)}</small><em>{date.slice(8, 10)}.{date.slice(5, 7)}</em><i />
         </div>
-        {busy && <p className="danetki-entry__status"><LoaderCircle /> Готовим расследование…</p>}
-        {error && <p className="danetki-entry__inline-error" role="alert">{error}</p>}
+        <div className="admit-ticket__body">
+          <div className="ticket-kicker"><span>Данетка дня</span><i /><small>ИИ-ведущий на связи</small></div>
+          <h2 id="ticket-danetki">Ваше расследование</h2>
+          <p>Выберите формат — ведущий уже подготовил историю.</p>
+          {onContinue && <button type="button" className="danetki-entry__continue" onClick={onContinue}><Clock3 /> Продолжить незавершённое расследование</button>}
+          <div className="danetki-launch">
+            <span className="danetki-launch__label">Формат игры</span>
+            <div className="danetki-room-switch" role="group" aria-label="Формат игры">
+              <button type="button" className={roomMode === 'solo' ? 'is-active' : ''} aria-pressed={roomMode === 'solo'} onClick={() => setRoomMode('solo')} disabled={busy}>
+                <UserRound aria-hidden="true" /><span><strong>Одному</strong><small>с ИИ-ведущим</small></span>
+              </button>
+              <button type="button" className={roomMode === 'group' ? 'is-active' : ''} aria-pressed={roomMode === 'group'} onClick={() => setRoomMode('group')} disabled={busy}>
+                <Users aria-hidden="true" /><span><strong>Вместе</strong><small>до 6 игроков</small></span>
+              </button>
+            </div>
+            <button type="button" className="danetki-launch__primary" onClick={() => onStart(roomMode)} disabled={busy}>
+              {busy ? <LoaderCircle className="danetki-spinner" aria-hidden="true" /> : <Sparkles aria-hidden="true" />}
+              {roomMode === 'solo' ? 'Начать расследование' : 'Создать общую комнату'}
+            </button>
+          </div>
+          <div className="danetki-launch__secondary">
+            <button type="button" disabled={busy} onClick={onStartFreePlay}><Sparkles aria-hidden="true" /> Свободная игра</button>
+            <button type="button" disabled={busy} aria-expanded={archiveOpen} onClick={() => setArchiveOpen((value) => !value)}><CalendarDays aria-hidden="true" /> Архив</button>
+          </div>
+          {archiveOpen && <div className="danetki-archive-row">
+            <input aria-label="Дата архивной данетки" type="date" value={archiveDate} max={new Date().toISOString().slice(0, 10)} onChange={(event) => setArchiveDate(event.target.value)} />
+            <button type="button" disabled={busy || !archiveDate} onClick={() => onStartArchive?.(archiveDate)}>Открыть</button>
+          </div>}
+          {busy && <p className="danetki-entry__status">Готовим расследование…</p>}
+          {error && <p className="danetki-entry__inline-error" role="alert">{error}</p>}
+        </div>
       </section>
-      <section className="danetki-entry__rules"><HelpCircle /><div><h2>Как играть</h2><p>Читайте условие, проверяйте версии вопросами, используйте три общие подсказки и отправьте полную разгадку, когда восстановите причинно-следственную связь.</p></div></section>
+      </section>
     </main>
-  </div>
+  </>
 }
 
 export function DanetkiJoinPage({ token, onHome, onJoined }: {

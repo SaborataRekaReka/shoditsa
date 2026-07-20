@@ -1213,11 +1213,12 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectPromo: () => void
   onDanetki: () => void
   danetkiEnabled: boolean
+  danetkiPoolCount: number | null
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1298,13 +1299,22 @@ function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, onRewat
             }
             return <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
-          {danetkiEnabled && <article className="danetki-hub-ticket">
-            <button type="button" onClick={onDanetki}>
-              <span className="danetki-hub-ticket__icon">?</span>
-              <span className="danetki-hub-ticket__copy"><small>НОВЫЙ РЕЖИМ</small><strong>Данетки</strong><span>Расследуйте необычные истории с ИИ-ведущей — самостоятельно или вместе с друзьями.</span></span>
-              <span className="danetki-hub-ticket__action">Начать расследование</span>
-            </button>
-          </article>}
+          {danetkiEnabled && <CategoryTicket
+            mode="danetki"
+            title="Данетки"
+            description="Раскройте необычную историю вопросами — самостоятельно или вместе с друзьями."
+            color="#4D8A48"
+            icon={Sparkles}
+            watermarkUrl={publicAssetUrl('images/category-stubs/danetki-stub.webp')}
+            poolCount={danetkiPoolCount}
+            status="new"
+            attempts={null}
+            href={pathnameForPlayerRoute({ screen: 'danetki' })}
+            onClick={() => {
+              trackMetrikaGoal('category_ticket_play', { mode: 'danetki', status: 'new', attempts: 0, date: todayAttendance.date })
+              onDanetki()
+            }}
+          />}
           {isAdmin && <CategoryTicket
             mode="game"
             title="Срач дня"
@@ -5108,9 +5118,9 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'danetki' && <DanetkiLobbyPage onHome={goHome} onStart={startDanetki} onStartArchive={startArchiveDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartArchive={startArchiveDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onJoined={(session) => activateServerSession(session, 'hub')} />}
 

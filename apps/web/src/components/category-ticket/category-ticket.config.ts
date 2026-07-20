@@ -3,10 +3,10 @@ import { DAILY_MODE_IDS, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import type { TitleMode } from '../../types'
 
-export type CategoryTicketMode = TitleMode
+export type CategoryTicketMode = TitleMode | 'danetki'
 
 export type CategoryTicketConfig = {
-  mode: CategoryTicketMode
+  mode: TitleMode
   title: string
   description: string
   color: string

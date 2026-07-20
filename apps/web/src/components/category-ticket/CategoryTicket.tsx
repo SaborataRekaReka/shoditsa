@@ -1,11 +1,12 @@
 import type { CSSProperties, MouseEvent } from 'react'
 import { ChevronRight } from 'lucide-react'
-import type { CategoryTicketConfig } from './category-ticket.config'
+import type { CategoryTicketConfig, CategoryTicketMode } from './category-ticket.config'
 import './CategoryTicket.css'
 
 export type CategoryTicketStatus = 'new' | 'active' | 'completed'
 
-type Props = CategoryTicketConfig & {
+type Props = Omit<CategoryTicketConfig, 'mode'> & {
+  mode: CategoryTicketMode
   poolCount: number | null
   status: CategoryTicketStatus
   attempts: number | null
