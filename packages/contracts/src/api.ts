@@ -2,6 +2,7 @@ import type { AssistHintKey, Hint, TitleItem } from './legacy-types.js'
 import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason, PlayableMode } from './schemas.js'
 import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
 import type { GameEngine } from './game-modes.js'
+import type { EconomyRuleSet } from './economy.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'won' | 'lost'
@@ -128,6 +129,15 @@ export type DashboardResponse = {
   entitlements: PeriodEntitlement[]
   activeSessions: ActiveSessionSummary[]
   freePlayLaunchesToday: number
+  freePlayNextCost: number
+  economyRules: EconomyRuleSet
+  danetkiAccess: {
+    dailyRoomsStarted: number
+    extraRoomsStarted: number
+    clubRoomsRemaining: number
+    nextSoloCost: number
+    nextGroupCost: number
+  }
   membership: { active: boolean; endsAt: string | null }
 }
 
@@ -144,6 +154,7 @@ export type PromoPromptSnapshot = { packId: string; title: string; subtitle: str
 
 export type GameSessionSnapshot = {
   engine: GameEngine
+  rulesVersion: number
   id: string
   kind: 'daily' | 'archive' | 'free_play' | 'pack'
   packId: string | null
@@ -184,11 +195,19 @@ export type AttemptResponse = {
   progressiveHints: Array<{ key: string; value: unknown }>
   answer?: PublicContentItem
   reward?: {
+    rulesVersion: number
     total: number
     balanceAfter: number
     alreadyClaimed: boolean
-    multiplier: number
-    components: { completion: number; win: number; speed: number; firstCompletion: number; fullHouse: number }
+    components: {
+      completion: number
+      win: number
+      efficiency: number
+      firstGame: number
+      route3: number
+      fullRoute: number
+      streakMilestone: number
+    }
   }
 }
 export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string }
