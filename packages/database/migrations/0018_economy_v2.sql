@@ -44,10 +44,10 @@ INSERT INTO "economy_rule_sets" ("version", "effective_at", "rules", "active") V
 UPDATE "commerce_products"
 SET "price_minor" = 179000,
     "description" = 'Полный архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Продление вручную.',
-    "updated_at" = now()
+    "updatedAt" = now()
 WHERE "id" = 'club_365d';
 
 UPDATE "commerce_products"
 SET "description" = 'Полный архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток. Продление вручную.',
-    "updated_at" = now()
+    "updatedAt" = now()
 WHERE "id" = 'club_30d';

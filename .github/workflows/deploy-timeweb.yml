@@ -126,6 +126,24 @@ jobs:
           api_compose() {
             docker compose --project-directory "$API_COMPOSE_DIR" --project-name "$API_COMPOSE_PROJECT" -f "$API_COMPOSE_FILES" "$@"
           }
+          refresh_docker_nginx() {
+            mapfile -t API_PROXY_CONTAINERS < <(
+              while IFS= read -r container; do
+                mount_source="$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/var/www/shoditsa"}}{{.Source}}{{end}}{{end}}' "$container")"
+                [ -n "$mount_source" ] && printf '%s\n' "$container"
+              done < <(docker ps -q)
+            )
+            # A host Nginx proxies through the stable published port and does
+            # not need a restart. Docker Nginx resolves the API container IP
+            # only at startup, so refresh it after every API recreation.
+            [ "${#API_PROXY_CONTAINERS[@]}" -eq 0 ] && return 0
+            if [ "${#API_PROXY_CONTAINERS[@]}" -ne 1 ]; then
+              echo "Expected at most one Docker Nginx proxy, found ${#API_PROXY_CONTAINERS[@]}" >&2
+              return 1
+            fi
+            docker restart "${API_PROXY_CONTAINERS[0]}" >/dev/null
+            docker exec "${API_PROXY_CONTAINERS[0]}" nginx -t
+          }
           mapfile -t API_WORKER_SERVICES < <(api_compose config --services | grep -E '(^|-)worker$' || true)
           if [ "${#API_WORKER_SERVICES[@]}" -ne 1 ]; then
             echo "Expected exactly one Shoditsa worker service, found ${#API_WORKER_SERVICES[@]}" >&2
@@ -140,6 +158,7 @@ jobs:
             cp -a "$API_COMPOSE_BACKUP" "$API_COMPOSE_FILES"
             api_compose config --quiet
             api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" "$API_WORKER_SERVICE" || true
+            refresh_docker_nginx || true
           }
           API_DEPLOY_ROLLBACK_ARMED=1
           sed -Ei "s#^([[:space:]]*image:[[:space:]]*)shoditsa-api:[^[:space:]]+#\1shoditsa-api:${GITHUB_SHA}#" "$API_COMPOSE_FILES"
@@ -213,6 +232,10 @@ jobs:
             fi
           fi
           if ! api_compose up -d --no-deps --force-recreate "$API_COMPOSE_SERVICE" "$API_WORKER_SERVICE"; then
+            rollback_api
+            exit 1
+          fi
+          if ! refresh_docker_nginx; then
             rollback_api
             exit 1
           fi

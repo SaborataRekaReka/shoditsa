@@ -184,6 +184,7 @@ const sourceChecks = [
       ['API smoke check', /\/api\/v1\/meta/],
       ['three API image consumers', /Expected exactly three Shoditsa API image declarations \(API, worker, migrate\)/],
       ['worker recreated with API', /--force-recreate "\$API_COMPOSE_SERVICE" "\$API_WORKER_SERVICE"/],
+      ['Docker proxy refreshed after API recreation', /refresh_docker_nginx\(\)[^]*docker restart[^]*if ! refresh_docker_nginx/],
       ['worker SHA verification', /API_WORKER_IMAGE[^]*shoditsa-api:\$\{GITHUB_SHA\}/],
     ],
   },
