@@ -1,4 +1,6 @@
 .club-screen {
+  position: relative;
+  z-index: 1;
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 34px 0 72px;
@@ -481,6 +483,8 @@
   font-size: 11px;
 }
 .purchase-return {
+  position: relative;
+  z-index: 1;
   width: min(620px, calc(100% - 32px));
   margin: 80px auto;
   padding: 54px;

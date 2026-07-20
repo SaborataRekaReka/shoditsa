@@ -1,4 +1,6 @@
 .create-game-screen {
+  position: relative;
+  z-index: 1;
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0 80px;
