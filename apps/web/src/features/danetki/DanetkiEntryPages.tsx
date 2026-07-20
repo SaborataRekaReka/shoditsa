@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronLeft, Clock3, HelpCircle, LoaderCircle, Play, Sparkle
 import { api, ApiClientError } from '../../api/client'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOption, GameOptionSelect } from '../../components/game-launch-controls/GameLaunchControls'
+import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { publicAssetUrl } from '../../app/public-asset'
 import './DanetkiGamePage.css'
@@ -97,6 +98,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
           {busy && <p className="danetki-entry__status">Готовим расследование…</p>}
           {error && <p className="danetki-entry__inline-error" role="alert">{error}</p>}
         </div>
+        <GameArtifactSeoDetails mode="danetki" />
       </section>
       </section>
     </main>

@@ -1,4 +1,3 @@
-import type { PlayableModeId } from '@shoditsa/contracts'
 import type { LucideIcon } from 'lucide-react'
 import { useRef } from 'react'
 import {
@@ -17,7 +16,7 @@ import {
   Stethoscope,
   Tv,
 } from 'lucide-react'
-import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO } from '../../app/seo-content'
+import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, type SeoGameMode } from '../../app/seo-content'
 import './SeoContent.css'
 
 const GUIDE_ICONS = {
@@ -28,7 +27,15 @@ const GUIDE_ICONS = {
   city: MapPinned,
   music: Music2,
   diagnosis: Stethoscope,
-} satisfies Record<PlayableModeId, LucideIcon>
+  danetki: ScanSearch,
+} satisfies Record<SeoGameMode, LucideIcon>
+
+const DANETKI_RULES = {
+  searchInstruction: 'Прочитайте необычную ситуацию и выберите формат: расследовать одному или создать общую комнату для друзей.',
+  comparisonInstruction: 'Задавайте ведущему короткие вопросы, на которые можно ответить «да» или «нет», и сопоставляйте ответы в общем журнале.',
+  directionInstruction: 'Когда восстановите всю причинно-следственную связь, сформулируйте полную версию и отправьте её ведущему на проверку.',
+  modeNote: 'В совместной комнате все участники видят один диалог, подсказки и итоговую версию в реальном времени.',
+}
 
 const GuideSummary = ({ title, openTitle, note }: { title: string; openTitle: string; note: string }) => <summary className="hub-guide__summary">
   <span className="hub-guide__summary-title"><BookOpenText aria-hidden="true" /><span><strong className="hub-guide__closed-label">{title}</strong><strong className="hub-guide__open-label">{openTitle}</strong></span></span>
@@ -36,10 +43,10 @@ const GuideSummary = ({ title, openTitle, note }: { title: string; openTitle: st
   <ChevronDown className="hub-guide__summary-chevron" aria-hidden="true" />
 </summary>
 
-export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
+export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
   const content = GAME_SEO[mode]
   const presentation = GAME_GUIDE_PRESENTATION[mode]
-  const rules = GAME_RULES[mode]
+  const rules = mode === 'danetki' ? DANETKI_RULES : GAME_RULES[mode]
   const ModeIcon = GUIDE_ICONS[mode]
   const scrollPosition = useRef<number | null>(null)
   return <details
@@ -88,14 +95,14 @@ export function GameArtifactSeoDetails({ mode }: { mode: PlayableModeId }) {
         <ol>
           <li><strong>01</strong><span>{rules.searchInstruction}</span></li>
           <li><strong>02</strong><span>{rules.comparisonInstruction}</span></li>
-          <li><strong>03</strong><span>Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.</span></li>
+          <li><strong>03</strong><span>{mode === 'danetki' ? DANETKI_RULES.directionInstruction : 'Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.'}</span></li>
         </ol>
-        <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
+        {mode !== 'danetki' && <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
           <span><i className="match" /><b>Точно</b><small>значение совпало</small></span>
           <span><i className="close" /><b>Рядом</b><small>число близко или есть частичное совпадение</small></span>
           <span><i className="miss" /><b>Мимо</b><small>значение не совпало</small></span>
-        </div>
-        {rules.directionInstruction && <p>{rules.directionInstruction}</p>}
+        </div>}
+        {mode !== 'danetki' && rules.directionInstruction && <p>{rules.directionInstruction}</p>}
         {rules.modeNote && <p className="ticket-dossier__mode-note">{rules.modeNote}</p>}
       </section>
 
