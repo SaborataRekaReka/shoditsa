@@ -113,7 +113,9 @@ export function ClubScreen({
         : undefined,
     }
   })
-  const membershipNumber = String(runtime.dashboard?.wallet.balance ?? 0).padStart(6, '0')
+  const membershipNumber = authenticated
+    ? String(runtime.dashboard?.wallet.balance ?? 0).padStart(6, '0')
+    : '------'
   const tipsRequested =
     typeof window !== 'undefined' &&
     (new URLSearchParams(window.location.search).get('section') === 'tips' ||
@@ -174,10 +176,9 @@ export function ClubScreen({
                 </span>
               )}
             </div>
-            <h1>
-              Больше игр.
-              <br />
-              Больше поводов вернуться.
+            <h1 className="club-hero__title">
+              <span>Больше игр.</span>
+              <span>Больше поводов вернуться.</span>
             </h1>
             <p>
               Архив с первого дня, свободная игра
@@ -185,7 +186,7 @@ export function ClubScreen({
               и клубные спецпоказы — по одному билету.
             </p>
             <div className="club-hero__actions">
-              <ActionButton type="button" onClick={hasClub ? onArchive : scrollToOffers}>
+              <ActionButton className="club-button" type="button" onClick={hasClub ? onArchive : scrollToOffers}>
                 {hasClub ? 'Открыть архив' : 'Вступить в клуб'}
               </ActionButton>
               <a href={hasClub ? '/specials' : '#club-benefits'}>

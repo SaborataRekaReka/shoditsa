@@ -22,6 +22,7 @@ export function ClubCard({ offer, disabled, onSelect, action }: { offer: ClubOff
         {offer.savingsLabel && <em>{offer.savingsLabel}</em>}
       </div>
       {annual && <span className="club-card__stamp">Выгоднее<br /><strong>на 25%</strong></span>}
+      {!annual && <span className="club-card__brand-stamp" aria-hidden="true">Сходится!</span>}
       <ul>
         <li><Check /> Архив с даты запуска</li>
         <li><Check /> Свободная игра без списания билетов</li>
