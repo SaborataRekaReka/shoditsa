@@ -1210,7 +1210,7 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, onClub, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectPromo: () => void
   onRewatch: () => void
@@ -1218,7 +1218,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
   onRules: () => void
   onReview: () => void
   onResume: () => void
-  onClub: () => void
+  onOpenSaved: (game: SavedGame) => void
   isAdmin: boolean
   promoSession: SavedGame | null
   activeSessionsCount: number
@@ -1263,9 +1263,6 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
                   onRules()
                 }}><CircleHelp /> Как это работает</ActionButton>}
             </div>
-            <button className="hub-hero__club-cta" type="button" onClick={() => { trackMetrikaGoal('open_club', { placement: 'home_hero' }); onClub() }}>
-              <Crown /><span><strong>Клуб «Сходится!»</strong><small>Архив с первого дня и свободная игра без списаний</small></span><ChevronRight />
-            </button>
           </div>
           <div className="hub-hero__visual" aria-hidden="true">
             <img src={publicAssetUrl('images/hero.webp')} alt="" width="1122" height="913" fetchPriority="high" decoding="async" />
@@ -1288,8 +1285,10 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
             const handleClick = () => {
               const eventName = status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play'
               trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGameAttemptCount(savedGame), date: todayAttendance.date })
-              // Opening a category is always configuration first. Resuming a
-              // saved session remains an explicit action in the resume list.
+              if (savedGame) {
+                onOpenSaved(savedGame)
+                return
+              }
               onSelect(configMode)
             }
             return <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
@@ -5039,7 +5038,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onClub={() => moveToScreen('club')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 

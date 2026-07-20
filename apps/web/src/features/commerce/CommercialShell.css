@@ -206,10 +206,10 @@
 
 .club-card {
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 26px;
+  min-height: 430px;
+  padding: 24px;
   border: 1px solid var(--color-line);
   border-radius: 18px;
   color: var(--color-text);
@@ -217,15 +217,19 @@
   box-shadow: 0 14px 34px rgba(0, 0, 0, .2);
 }
 .club-card--featured { border-color: var(--color-accent-border); box-shadow: 0 14px 38px rgba(214, 165, 70, .09); }
-.club-card__ribbon { right: -35px; top: 18px; width: 150px; padding: 7px 0; border-radius: 0; background: var(--color-accent); color: var(--color-ink); text-align: center; transform: rotate(34deg); }
-.club-card__icon { width: 44px; height: 44px; border-radius: 12px; color: var(--color-accent); background: var(--color-accent-soft); }
-.club-card__icon svg { width: 21px; }
-.club-card h2 { margin: 18px 0 4px; color: var(--color-text); font: 500 28px/1.08 Oswald, sans-serif; }
-.club-card > strong { color: var(--color-accent-border); font: 500 22px/1.2 Oswald, sans-serif; }
-.club-card > p { min-height: 45px; color: var(--color-muted); font-size: 12px; line-height: 1.55; }
-.club-card ul { margin: 12px 0 22px; gap: 9px; }
-.club-card li { color: var(--color-text); font-size: 12px; line-height: 1.45; }
-.club-card li svg { flex: 0 0 auto; color: var(--color-primary); }
+.club-card__header { min-height: 42px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.club-card__header > span { padding: 6px 9px; border: 1px solid var(--color-line); border-radius: 999px; color: var(--color-muted); background: var(--color-surface); font-size: 10px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.club-card--featured .club-card__header > span { border-color: var(--color-accent-border); color: var(--color-ink); background: var(--color-accent); }
+.club-card__icon { width: 42px; height: 42px; border-radius: 11px; color: var(--color-accent); background: var(--color-accent-soft); display: grid; place-items: center; }
+.club-card__icon svg { width: 20px; height: 20px; }
+.club-card h2 { margin: 22px 0 8px; color: var(--color-text); font: 500 28px/1.08 Oswald, sans-serif; }
+.club-card__price { min-height: 34px; display: flex; align-items: baseline; gap: 9px; }
+.club-card__price strong { color: var(--color-accent-border); font: 500 28px/1 Oswald, sans-serif; }
+.club-card__price span { color: var(--color-muted); font-size: 12px; font-weight: 700; }
+.club-card > p { min-height: 45px; margin: 14px 0 8px; color: var(--color-muted); font-size: 12px; line-height: 1.55; }
+.club-card ul { list-style: none; margin: 14px 0 24px; padding: 0; display: grid; gap: 10px; }
+.club-card li { color: var(--color-text); display: flex; align-items: flex-start; gap: 9px; font-size: 12px; line-height: 1.45; }
+.club-card li svg { flex: 0 0 auto; width: 17px; height: 17px; color: var(--color-primary); }
 .club-card__action { margin-top: auto; }
 .club-card__action > button {
   width: 100%;
@@ -234,9 +238,11 @@
   border-radius: 12px;
   color: var(--color-ink);
   background: var(--color-primary);
+  font-weight: 800;
+  cursor: pointer;
 }
 .club-card__action > button:hover { background: var(--color-primary-hover); }
-.club-card > small { color: var(--color-muted-2); font-size: 10px; }
+.club-card > small { margin-top: 8px; color: var(--color-muted-2); font-size: 10px; text-align: center; }
 .club-card__error { color: #e89a82; }
 .club-offers__notice { border: 1px solid var(--color-primary-border); color: var(--color-text); background: var(--color-primary-soft); }
 
@@ -494,7 +500,7 @@
   .club-principles article,
   .create-game-benefits article,
   .club-card { padding: 18px; }
-  .club-card__ribbon { right: -42px; top: 15px; }
+  .club-card { min-height: 0; }
   .profile-club-card { grid-template-columns: 42px minmax(0, 1fr); gap: 12px; }
   .profile-club-card button { grid-column: 1 / -1; width: 100%; }
   .specials-hero__poster { height: 280px; }

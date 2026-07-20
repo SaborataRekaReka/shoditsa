@@ -430,29 +430,6 @@
 .hub-hero p { max-width: 530px; margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.65; }
 .hub-hero__actions { margin-top: 16px; display: grid; gap: 8px; }
 .hub-hero__actions .ui-button { min-height: 50px; }
-.hub-hero__club-cta {
-  width: 100%;
-  min-height: 58px;
-  margin-top: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--color-accent-border);
-  border-radius: 14px;
-  color: var(--color-text);
-  background: linear-gradient(110deg, var(--color-accent-soft), rgba(27, 31, 27, .92));
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color .2s var(--ease), transform .2s var(--ease), background .2s var(--ease);
-}
-.hub-hero__club-cta:hover { transform: translateY(-2px); border-color: var(--color-accent); background: linear-gradient(110deg, rgba(214, 165, 70, .18), var(--color-surface-2)); }
-.hub-hero__club-cta > svg:first-child { width: 20px; color: var(--color-accent); }
-.hub-hero__club-cta > svg:last-child { width: 17px; color: var(--color-muted); }
-.hub-hero__club-cta span { min-width: 0; display: grid; gap: 2px; }
-.hub-hero__club-cta strong { font-size: 13px; }
-.hub-hero__club-cta small { overflow: hidden; color: var(--color-muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .hub-hero__facts { margin-bottom: 10px; display: flex; flex-wrap: nowrap; align-items: center; gap: 6px; max-width: 100%; overflow-x: auto; }
 .hub-hero__facts > span { flex: 0 0 auto; min-height: 34px; padding: 5px 10px; border: 1px solid var(--color-line); border-radius: 999px; background: var(--color-bg); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .hub-hero__facts svg { flex: 0 0 auto; width: 14px; color: var(--color-accent); }

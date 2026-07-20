@@ -11,10 +11,15 @@ export type ClubOffer = {
 
 export function ClubCard({ offer, disabled, onSelect, action }: { offer: ClubOffer; disabled?: boolean; onSelect?: (offer: ClubOffer) => void; action?: ReactNode }) {
   return <article className={`club-card ${offer.id === 'club_365d' ? 'club-card--featured' : ''}`}>
-    {offer.id === 'club_365d' && <span className="club-card__ribbon">На весь год</span>}
-    <div className="club-card__icon" aria-hidden="true">{offer.id === 'club_365d' ? <CalendarDays /> : <Ticket />}</div>
+    <header className="club-card__header">
+      <div className="club-card__icon" aria-hidden="true">{offer.id === 'club_365d' ? <CalendarDays /> : <Ticket />}</div>
+      <span>{offer.id === 'club_365d' ? 'Лучший выбор' : 'На месяц'}</span>
+    </header>
     <h2>{offer.title}</h2>
-    <strong>{offer.priceLabel ? `${offer.priceLabel} · ${offer.durationLabel}` : offer.durationLabel}</strong>
+    <div className="club-card__price">
+      {offer.priceLabel && <strong>{offer.priceLabel}</strong>}
+      <span>{offer.durationLabel}</span>
+    </div>
     <p>{offer.note}</p>
     <ul>
       <li><Check /> Архив с даты запуска</li>
