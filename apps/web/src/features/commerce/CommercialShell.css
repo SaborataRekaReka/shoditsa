@@ -610,3 +610,606 @@
   .purchase-return { width: calc(100% - 20px); margin: 40px auto; padding: 34px 22px; }
   .purchase-return h1 { font-size: 32px; }
 }
+
+/* Club landing — ticket-office art direction inside the shared site shell. */
+
+.club-screen {
+  width: min(1120px, calc(100% - 32px));
+  min-height: calc(100vh - 160px);
+  padding: 30px 0 84px;
+}
+
+.club-screen__back { display: inline-flex; }
+
+.club-hero {
+  height: 440px;
+  margin: 0 0 18px;
+  padding: 36px 44px 28px 64px;
+  border: 0;
+  border-radius: 18px;
+  color: #1d211d;
+  background:
+    radial-gradient(circle at 80% 24%, rgba(189, 164, 116, .17), transparent 32%),
+    linear-gradient(104deg, #f0e9db 0%, #eee6d7 55%, #e9dfcc 100%);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, .25);
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 28px;
+  box-sizing: border-box;
+}
+
+.club-hero::before {
+  z-index: 0;
+  opacity: .4;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(82, 66, 43, .16) .65px, transparent .8px),
+    repeating-linear-gradient(15deg, rgba(91, 74, 48, .025) 0 1px, transparent 1px 4px);
+  background-size: 5px 5px, 7px 7px;
+  mask-image: none;
+}
+
+.club-hero::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  top: 20px;
+  right: 16px;
+  width: 390px;
+  height: 390px;
+  border-radius: 50%;
+  background: rgba(189, 168, 126, .27);
+  filter: none;
+}
+
+.club-hero__copy,
+.club-hero__visual {
+  position: relative;
+  z-index: 1;
+}
+
+.club-hero__copy {
+  align-self: center;
+  padding-top: 0;
+}
+
+.club-hero__copy > span {
+  color: #365d45;
+  font: 600 15px/1.1 Oswald, sans-serif;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.club-hero h1 {
+  max-width: 600px;
+  margin: 10px 0 15px;
+  color: #171a17;
+  font: 500 52px/1.02 Oswald, sans-serif;
+  letter-spacing: -.025em;
+}
+
+.club-hero p {
+  max-width: 660px;
+  margin: 0;
+  color: #33362f;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.club-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 18px;
+}
+
+.club-hero .club-hero__actions button {
+  min-width: 205px;
+  min-height: 52px;
+  margin: 0;
+  padding: 0 25px;
+  border: 1px solid #355a42;
+  border-radius: 7px;
+  color: #eee5d2;
+  background: linear-gradient(135deg, #426f50, #274b35);
+  box-shadow: 0 8px 18px rgba(25, 53, 35, .18), inset 0 1px rgba(255, 255, 255, .12);
+  font: 600 17px/1 Oswald, sans-serif;
+  letter-spacing: .065em;
+  text-transform: uppercase;
+  box-sizing: border-box;
+}
+
+.club-hero .club-hero__actions button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #4b7b5a, #2c543b);
+}
+
+.club-hero__actions a {
+  padding: 8px 0 5px;
+  border-bottom: 1px solid #35563f;
+  color: #252922;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.club-hero__renewal {
+  margin-top: 19px;
+  color: #66665f;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+}
+
+.club-hero__renewal svg { width: 16px; height: 16px; color: #26332a; }
+
+.club-hero__visual {
+  align-self: center;
+  height: 440px;
+  transform: scale(.82);
+  transform-origin: center;
+}
+
+.club-hero__visual::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -70px;
+  width: 500px;
+  height: 430px;
+  border-radius: 50%;
+  background: rgba(196, 177, 139, .34);
+}
+
+.club-hero__ticket {
+  position: absolute;
+  top: 1px;
+  left: -4px;
+  z-index: 2;
+  width: 390px;
+  height: 368px;
+  min-height: 0;
+  padding: 60px 32px 27px;
+  border: 1px solid rgba(17, 38, 25, .55);
+  border-radius: 22px 22px 7px 7px;
+  color: #e2d0ac;
+  background:
+    radial-gradient(circle at 25% 14%, rgba(255, 255, 255, .06), transparent 24%),
+    linear-gradient(145deg, #345541, #203b2d);
+  box-shadow: 15px 14px 24px rgba(22, 29, 22, .27), inset 0 0 30px rgba(0, 0, 0, .12);
+  transform: none;
+  display: block;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.club-hero__ticket::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: .2;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(235, 221, 190, .2) .6px, transparent .8px),
+    repeating-linear-gradient(20deg, rgba(255, 255, 255, .03) 0 1px, transparent 1px 5px);
+  background-size: 5px 5px, 8px 8px;
+  pointer-events: none;
+}
+
+.club-hero__ticket > * { position: relative; z-index: 1; }
+
+.club-hero__ticket .club-hero__star {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  color: #111812;
+  font-size: 61px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow: 0 1px 0 rgba(228, 210, 170, .38);
+}
+
+.club-hero__ticket > strong {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #dfcda8;
+  font: 500 57px/.96 Oswald, sans-serif;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+.club-hero__number {
+  display: block;
+  margin-top: 13px;
+  color: #cfbc96;
+  font: 500 23px/1 Oswald, sans-serif;
+  letter-spacing: .05em;
+}
+
+.club-hero__number b {
+  color: #bd513b;
+  font-weight: 500;
+  letter-spacing: .11em;
+}
+
+.club-hero__ticket > small {
+  display: block;
+  margin-top: 15px;
+  color: #94a766;
+  font: 500 16px/1 Oswald, sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.club-hero__ticket > em {
+  position: absolute;
+  right: 31px;
+  bottom: 27px;
+  padding: 8px 13px 7px;
+  border: 3px solid #d29a2a;
+  color: #d29a2a;
+  font: 600 28px/.95 Oswald, sans-serif;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  box-shadow: inset 0 0 0 2px #2a4635, inset 0 0 0 3px #d29a2a;
+}
+
+.club-hero__stub {
+  position: absolute;
+  top: 368px;
+  left: -4px;
+  z-index: 3;
+  width: 390px;
+  height: 72px;
+  border: 1px solid #9b6e1c;
+  border-radius: 7px 7px 18px 18px;
+  color: #274b35;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(91, 65, 21, .16) .65px, transparent .8px) 0 0 / 5px 5px,
+    linear-gradient(110deg, #dba441, #e5b750);
+  box-shadow: 13px 13px 20px rgba(21, 27, 21, .28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 21px;
+  box-sizing: border-box;
+  font: 600 15px/1 Oswald, sans-serif;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.club-hero__stub::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: 8px;
+  left: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 4px 0, #111a13 3px, transparent 3.7px) 0 0 / 13px 8px repeat-x;
+}
+
+.club-hero__stub svg { width: 27px; height: 27px; }
+
+.club-principles {
+  width: 100%;
+  height: 82px;
+  margin: 12px auto 28px;
+  gap: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  scroll-margin-top: 82px;
+}
+
+.club-principles article {
+  min-width: 0;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 0;
+  color: #ded6c8;
+  background: transparent;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.club-principles article:first-child,
+.club-principles article:nth-child(2),
+.club-principles article:nth-child(3) { padding-left: 22px; gap: 16px; }
+
+.club-principles article + article { border-left: 1px solid rgba(226, 217, 198, .32); }
+
+.club-principles svg {
+  width: 48px;
+  height: 48px;
+  color: #8fa861;
+  stroke-width: 1.35;
+}
+
+.club-principles strong {
+  color: #dfd5c3;
+  font: 500 19px/1 Oswald, sans-serif;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+}
+
+.club-principles p {
+  margin: 6px 0 0;
+  color: #bdb6a9;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.club-offers { scroll-margin-top: 78px; }
+
+.club-offers__heading {
+  min-height: 69px;
+  max-width: 720px;
+  margin: 0 auto 7px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.club-offers__heading h2 {
+  margin: 0;
+  color: #e9dfcd;
+  font: 500 43px/1 Oswald, sans-serif;
+  letter-spacing: .015em;
+  text-transform: uppercase;
+}
+
+.club-offers__heading p {
+  margin: 5px 0 0;
+  color: #beb6a8;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.club-offers__heading .membership-badge { margin-top: 7px; }
+
+.club-offers__grid {
+  grid-template-columns: 487fr 555fr;
+  width: 1040px;
+  max-width: 100%;
+  margin: 0 auto;
+  gap: 32px;
+  transform: none;
+}
+
+.club-card {
+  position: relative;
+  overflow: hidden;
+  height: 219px;
+  min-height: 219px;
+  padding: 11px 34px 11px;
+  border: 1px solid #b8af9f;
+  border-radius: 13px;
+  color: #171b17;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(89, 71, 43, .16) .55px, transparent .75px) 0 0 / 5px 5px,
+    linear-gradient(105deg, #f0eadf, #e9e0d0);
+  box-shadow: 0 11px 24px rgba(0, 0, 0, .24);
+  box-sizing: border-box;
+}
+
+.club-card--featured {
+  border-color: #a97521;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(91, 64, 19, .18) .6px, transparent .8px) 0 0 / 5px 5px,
+    linear-gradient(110deg, #dba446, #e8b957);
+  box-shadow: 0 12px 27px rgba(0, 0, 0, .28);
+}
+
+.club-card::before,
+.club-card::after {
+  content: '';
+  position: absolute;
+  z-index: 4;
+  top: 82px;
+  width: 25px;
+  height: 37px;
+  border-radius: 50%;
+  background: #121612;
+}
+
+.club-card::before { left: -14px; }
+.club-card::after { right: -14px; }
+
+.club-card__body {
+  position: relative;
+  min-height: 121px;
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: start;
+  gap: 22px;
+}
+
+.club-card--featured .club-card__body {
+  grid-template-columns: 150px minmax(0, 1fr);
+  padding-left: 10px;
+  gap: 176px;
+}
+
+.club-card__price h2 {
+  margin: 0;
+  color: #151915;
+  font: 500 40px/1 Oswald, sans-serif;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.club-card__price {
+  min-height: 0;
+  display: block;
+}
+
+.club-card__price > strong {
+  display: block;
+  margin-top: 5px;
+  color: #28563b;
+  font: 500 40px/.95 Oswald, sans-serif;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.club-card__price > span,
+.club-card__price > em {
+  display: block;
+  margin-top: 5px;
+  color: #292d27;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.club-card__price > em { margin-top: 12px; color: #31583f; font-weight: 700; }
+
+.club-card__stamp {
+  position: absolute;
+  top: -2px;
+  left: 185px;
+  min-width: 107px;
+  padding: 6px 8px 5px;
+  border: 2px solid #496239;
+  color: #38512f;
+  background: rgba(231, 185, 84, .33);
+  font: 500 13px/1.05 Oswald, sans-serif;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+}
+
+.club-card__stamp strong { font-size: 20px; font-weight: 500; }
+
+.club-card ul {
+  align-self: start;
+  margin: 10px 0 0;
+  padding: 0;
+  gap: 6px;
+}
+
+.club-card li {
+  color: #20241f;
+  gap: 7px;
+  font-size: 11px;
+  line-height: 1.32;
+}
+
+.club-card li svg {
+  width: 15px;
+  height: 15px;
+  color: #365e42;
+  stroke-width: 2.2;
+}
+
+.club-card__rule {
+  height: 1px;
+  margin: 1px 114px 0 0;
+  background: repeating-linear-gradient(90deg, #56584f 0 3px, transparent 3px 7px);
+}
+
+.club-card__renewal {
+  min-height: 24px;
+  color: #67675f;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+}
+
+.club-card__renewal svg { width: 13px; height: 13px; color: #29332a; }
+.club-card__renewal svg:last-child { width: 12px; height: 12px; }
+.club-card__action { margin-top: auto; }
+
+.club-card__action > button {
+  min-height: 42px;
+  border: 1px solid #31553d;
+  border-radius: 7px;
+  color: #eee4d0;
+  background: linear-gradient(135deg, #426e4f, #294c36);
+  font: 500 19px/1 Oswald, sans-serif;
+  letter-spacing: .105em;
+  text-transform: uppercase;
+}
+
+.club-card__action > button:hover {
+  background: linear-gradient(135deg, #4b7b5a, #2c543b);
+}
+
+.club-card__error {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 0;
+  color: #e89a82;
+  font-size: 11px;
+}
+
+.club-offers__notice {
+  width: 1040px;
+  max-width: 100%;
+  margin: 12px auto 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.club-account-state { margin-top: 54px; }
+
+@media (max-width: 1080px) {
+  .club-hero { height: auto; min-height: 430px; padding: 36px; grid-template-columns: minmax(0, 1fr) 330px; gap: 20px; }
+  .club-hero h1 { font-size: 48px; }
+  .club-hero p { font-size: 15px; }
+  .club-hero__visual { height: 390px; transform: scale(.76); transform-origin: center; }
+  .club-principles { width: 100%; }
+  .club-principles article { padding-inline: 22px; }
+}
+
+@media (max-width: 800px) {
+  .club-screen { width: min(100% - 24px, 620px); padding-top: 18px; }
+  .club-hero { min-height: 0; height: auto; padding: 34px 28px; grid-template-columns: 1fr; gap: 24px; }
+  .club-hero__copy { align-self: center; padding-top: 0; text-align: center; }
+  .club-hero h1 { font-size: clamp(44px, 10vw, 58px); }
+  .club-hero p { font-size: 16px; }
+  .club-hero__actions { justify-content: center; }
+  .club-hero__renewal { justify-content: center; }
+  .club-hero__visual { width: 430px; max-width: 100%; margin: 0 auto; transform: scale(.92); }
+  .club-principles { height: auto; margin: 18px 0 24px; grid-template-columns: 1fr; }
+  .club-principles article { min-height: 88px; padding: 10px 18px; }
+  .club-principles article + article { border-top: 1px solid rgba(226, 217, 198, .22); border-left: 0; }
+  .club-offers__grid { width: min(520px, 100%); grid-template-columns: 1fr; gap: 14px; }
+  .club-offers__grid { transform: none; }
+}
+
+@media (max-width: 620px) {
+  .club-screen { width: calc(100% - 20px); padding-top: 18px; }
+  .club-hero { padding: 29px 19px 25px; border-radius: 14px; }
+  .club-hero__copy > span { font-size: 14px; }
+  .club-hero h1 { margin-top: 11px; font-size: clamp(37px, 10.5vw, 44px); }
+  .club-hero p { font-size: 14px; }
+  .club-hero p br { display: initial; }
+  .club-hero__actions { flex-direction: column; gap: 9px; margin-top: 18px; }
+  .club-hero .club-hero__actions button { width: 100%; min-width: 0; min-height: 52px; }
+  .club-hero__actions a { font-size: 14px; }
+  .club-hero__renewal { margin-top: 18px; }
+  .club-hero__visual { width: 390px; height: 350px; margin: -4px auto -18px; transform: scale(.77); transform-origin: top center; }
+  .club-principles article { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
+  .club-principles svg { width: 46px; height: 46px; }
+  .club-principles strong { font-size: 19px; }
+  .club-offers__heading { min-height: 61px; }
+  .club-offers__heading h2 { font-size: 36px; }
+  .club-card { height: auto; min-height: 278px; padding: 18px 24px 14px; }
+  .club-card::before,
+  .club-card::after { top: 103px; }
+  .club-card__body,
+  .club-card--featured .club-card__body { min-height: 155px; padding-left: 0; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .club-card--featured .club-card__body { padding-top: 44px; }
+  .club-card__price h2 { font-size: 32px; }
+  .club-card__price > strong { font-size: 35px; }
+  .club-card__stamp { top: 0; left: 50%; transform: translateX(-50%) rotate(-5deg); }
+  .club-card__rule { margin-right: 0; }
+}

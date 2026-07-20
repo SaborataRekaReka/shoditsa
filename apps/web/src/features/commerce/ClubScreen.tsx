@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import {
-  ArrowLeft,
-  Clapperboard,
-  Heart,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react'
+import { Archive, ArrowLeft, Clapperboard, Heart, LockKeyhole, Ticket } from 'lucide-react'
 import { AppHeader } from '../../components/app-shell/AppShell'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
@@ -26,13 +20,18 @@ const fallbackOffers: ClubOffer[] = [
     id: 'club_30d',
     title: 'Клубный билет',
     durationLabel: '30 дней',
-    note: 'Попробуйте клуб на месяц. Без автопродления.',
+    note: 'Архив, свободная игра и клубные спецпоказы на 30 дней.',
+    priceLabel: '199 ₽',
+    unitLabel: '6,63 ₽ в день',
   },
   {
     id: 'club_365d',
     title: 'Годовой клубный билет',
     durationLabel: '365 дней',
-    note: 'Спокойный доступ к архиву и свободной игре на весь год.',
+    note: 'Архив, свободная игра и клубные спецпоказы на весь год.',
+    priceLabel: '1 490 ₽',
+    unitLabel: '124 ₽ в месяц',
+    savingsLabel: 'Экономия 898 ₽',
   },
 ]
 
@@ -44,6 +43,16 @@ type Props = {
   onRules: () => void
   onReview: () => void
 }
+
+const priceFormatter = new Intl.NumberFormat('ru-RU', {
+  style: 'currency',
+  currency: 'RUB',
+  maximumFractionDigits: 0,
+})
+
+const decimalFormatter = new Intl.NumberFormat('ru-RU', {
+  maximumFractionDigits: 2,
+})
 
 export function ClubScreen({
   onHome,
@@ -75,21 +84,32 @@ export function ClubScreen({
   const productsById = new Map(
     (catalog.data?.products ?? []).map((product) => [product.id, product]),
   )
+  const monthlyPriceMinor = productsById.get('club_30d')?.priceMinor ?? 19_900
+  const annualPriceMinor = productsById.get('club_365d')?.priceMinor ?? 149_000
   const offers = fallbackOffers.map((offer) => {
     const product = productsById.get(offer.id)
-    return product
-      ? {
-          ...offer,
-          title: product.title,
-          note: product.description,
-          priceLabel: new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: product.currency,
-            maximumFractionDigits: 0,
-          }).format(product.priceMinor / 100),
-        }
-      : offer
+    if (!product) return offer
+
+    const annual = offer.id === 'club_365d'
+    const savingsMinor = monthlyPriceMinor * 12 - annualPriceMinor
+    return {
+      ...offer,
+      title: product.title,
+      note: product.description,
+      priceLabel: new Intl.NumberFormat('ru-RU', {
+        style: 'currency',
+        currency: product.currency,
+        maximumFractionDigits: 0,
+      }).format(product.priceMinor / 100),
+      unitLabel: annual
+        ? `${priceFormatter.format(Math.round(product.priceMinor / 12) / 100)} в месяц`
+        : `${decimalFormatter.format(product.priceMinor / 30 / 100)} ₽ в день`,
+      savingsLabel: annual && savingsMinor > 0
+        ? `Экономия ${priceFormatter.format(savingsMinor / 100)}`
+        : undefined,
+    }
   })
+  const membershipNumber = String(runtime.dashboard?.wallet.balance ?? 0).padStart(6, '0')
   const tipsRequested =
     typeof window !== 'undefined' &&
     (new URLSearchParams(window.location.search).get('section') === 'tips' ||
@@ -120,9 +140,11 @@ export function ClubScreen({
       )
       return
     }
-    // The enabled checkout action is connected by the commerce phase. Until then
-    // no payment data or non-working provider button is exposed.
     setNotice('Подключаем безопасную оплату. Попробуйте немного позже.')
+  }
+
+  const scrollToOffers = () => {
+    document.getElementById('club-offers')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -140,82 +162,73 @@ export function ClubScreen({
         </button>
         <section className="club-hero">
           <div className="club-hero__copy">
-            <span>
-              <Sparkles /> Клуб «Сходится!»
-            </span>
+            <span>Клуб «Сходится!»</span>
             <h1>
-              Больше сеансов.
+              Больше игр.
               <br />
-              Та же честная игра.
+              Больше поводов вернуться.
             </h1>
             <p>
-              Daily-игры, обычные подсказки и билеты остаются бесплатными. Клуб
-              открывает архив с первого дня проекта и свободную игру без
-              списаний.
+              Архив с первого дня, свободная игра
+              <br />
+              и клубные спецпоказы — по одному билету.
             </p>
-            <button
-              type="button"
-              onClick={() =>
-                document
-                  .getElementById('club-offers')
-                  ?.scrollIntoView({ behavior: 'smooth' })
-              }
-            >
-              Выбрать срок
-            </button>
+            <div className="club-hero__actions">
+              <button type="button" onClick={scrollToOffers}>Вступить в клуб</button>
+              <a href="#club-benefits">Посмотреть преимущества</a>
+            </div>
+            <small className="club-hero__renewal"><LockKeyhole /> Продление только вручную</small>
           </div>
-          <div
-            className="club-hero__ticket"
-            aria-label="Преимущества клубного билета"
-          >
-            <span>ADMIT ONE</span>
-            <strong>КЛУБ</strong>
-            <small>ARCHIVE · FREE PLAY · BADGE</small>
+
+          <div className="club-hero__visual" aria-label="Клубный билет">
+            <div className="club-hero__ticket">
+              <span className="club-hero__star" aria-hidden="true">★</span>
+              <strong>Клубный<br />билет</strong>
+              <span className="club-hero__number">№ <b>{membershipNumber}</b></span>
+              <small>Archive · Free play · Specials</small>
+              <em>Сходится!</em>
+            </div>
+            <div className="club-hero__stub"><Ticket /> Archive · Free play · Specials</div>
           </div>
         </section>
 
-        <section className="club-principles" aria-label="Принципы клуба">
+        <section className="club-principles" id="club-benefits" aria-label="Преимущества клуба">
+          <article>
+            <Archive />
+            <div>
+              <strong>Весь архив</strong>
+              <p>Возвращайтесь к любой игре<br />с первого дня проекта.</p>
+            </div>
+          </article>
+          <article>
+            <Ticket />
+            <div>
+              <strong>Свободная игра</strong>
+              <p>Играйте без списания<br />билетов.</p>
+            </div>
+          </article>
           <article>
             <Clapperboard />
             <div>
-              <strong>Daily навсегда бесплатный</strong>
-              <p>Никаких жизней, рекламы и покупки правильных ответов.</p>
-            </div>
-          </article>
-          <article>
-            <ShieldCheck />
-            <div>
-              <strong>Без автопродления</strong>
-              <p>Каждый срок покупается осознанно и продлевается вручную.</p>
-            </div>
-          </article>
-          <article>
-            <Heart />
-            <div>
-              <strong>Поддержка проекта</strong>
-              <p>Абонемент помогает выпускать новые ежедневные категории.</p>
+              <strong>Спецпоказы</strong>
+              <p>Тематические серии игр<br />только для клуба.</p>
             </div>
           </article>
         </section>
 
         <section className="club-offers" id="club-offers">
           <div className="club-offers__heading">
-            <span>Абонементы</span>
-            <h2>
-              {hasClub ? 'Ваш клубный билет активен' : 'Выберите удобный срок'}
-            </h2>
+            <h2>{hasClub ? 'Ваш билет активен' : 'Выберите срок'}</h2>
             {hasClub ? (
               <MembershipBadge membership={membership} />
             ) : (
-              <p>
-                Сумма и срок всегда подтверждаются серверным каталогом до
-                оплаты.
-              </p>
+              <p>Один доступ. Разница только в сроке.</p>
             )}
           </div>
           <div className="club-offers__grid">
             {offers.map((offer) => {
               const product = productsById.get(offer.id)
+              const buttonLabel = offer.id === 'club_365d' ? 'Взять на год' : 'Взять на месяц'
               return (
                 <ClubCard
                   key={offer.id}
@@ -226,6 +239,7 @@ export function ClubScreen({
                       <CheckoutButton
                         product={product}
                         authenticated={authenticated}
+                        label={buttonLabel}
                       />
                     ) : undefined
                   }
@@ -234,9 +248,7 @@ export function ClubScreen({
             })}
           </div>
           {notice && (
-            <p className="club-offers__notice" role="status">
-              {notice}
-            </p>
+            <p className="club-offers__notice" role="status">{notice}</p>
           )}
         </section>
 
@@ -263,7 +275,7 @@ export function ClubScreen({
           </button>
         </section>
 
-        <section className="club-tip-cta" id="tips">
+        <section className="club-tip-cta" id="club-support">
           <span className="club-tip-cta__mark" aria-hidden="true"><Heart /></span>
           <div className="club-tip-cta__copy">
             <span>Поддержать проект</span>

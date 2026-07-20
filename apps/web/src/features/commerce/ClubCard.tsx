@@ -1,4 +1,4 @@
-import { CalendarDays, Check, Ticket } from 'lucide-react'
+import { Check, CircleHelp, LockKeyhole } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 export type ClubOffer = {
@@ -7,26 +7,29 @@ export type ClubOffer = {
   durationLabel: string
   note: string
   priceLabel?: string
+  unitLabel?: string
+  savingsLabel?: string
 }
 
 export function ClubCard({ offer, disabled, onSelect, action }: { offer: ClubOffer; disabled?: boolean; onSelect?: (offer: ClubOffer) => void; action?: ReactNode }) {
-  return <article className={`club-card ${offer.id === 'club_365d' ? 'club-card--featured' : ''}`}>
-    <header className="club-card__header">
-      <div className="club-card__icon" aria-hidden="true">{offer.id === 'club_365d' ? <CalendarDays /> : <Ticket />}</div>
-      <span>{offer.id === 'club_365d' ? 'Лучший выбор' : 'На месяц'}</span>
-    </header>
-    <h2>{offer.title}</h2>
-    <div className="club-card__price">
-      {offer.priceLabel && <strong>{offer.priceLabel}</strong>}
-      <span>{offer.durationLabel}</span>
+  const annual = offer.id === 'club_365d'
+  return <article className={`club-card ${annual ? 'club-card--featured' : ''}`} aria-label={offer.title}>
+    <div className="club-card__body">
+      <div className="club-card__price">
+        <h2>{offer.durationLabel}</h2>
+        <strong>{offer.priceLabel ?? '—'}</strong>
+        {offer.unitLabel && <span>{offer.unitLabel}</span>}
+        {offer.savingsLabel && <em>{offer.savingsLabel}</em>}
+      </div>
+      {annual && <span className="club-card__stamp">Выгоднее<br /><strong>на 25%</strong></span>}
+      <ul>
+        <li><Check /> Архив с даты запуска</li>
+        <li><Check /> Свободная игра без списания билетов</li>
+        <li><Check /> Все клубные спецпоказы</li>
+      </ul>
     </div>
-    <p>{offer.note}</p>
-    <ul>
-      <li><Check /> Архив с даты запуска</li>
-      <li><Check /> Свободная игра без списания билетов</li>
-      <li><Check /> Клубный бейдж в профиле</li>
-    </ul>
-    <div className="club-card__action">{action ?? <button type="button" disabled={disabled} onClick={() => onSelect?.(offer)}>Хочу такой абонемент</button>}</div>
-    <small>Продление только вручную</small>
+    <div className="club-card__rule" aria-hidden="true" />
+    <span className="club-card__renewal"><LockKeyhole /> Продление вручную <CircleHelp /></span>
+    <div className="club-card__action">{action ?? <button type="button" disabled={disabled} onClick={() => onSelect?.(offer)}>{annual ? 'Взять на год' : 'Взять на месяц'}</button>}</div>
   </article>
 }
