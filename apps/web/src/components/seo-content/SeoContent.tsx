@@ -1,3 +1,4 @@
+import type { PlayableModeId } from '@shoditsa/contracts'
 import type { LucideIcon } from 'lucide-react'
 import { useRef } from 'react'
 import {
@@ -27,8 +28,7 @@ const GUIDE_ICONS = {
   city: MapPinned,
   music: Music2,
   diagnosis: Stethoscope,
-  danetki: ScanSearch,
-} satisfies Record<SeoGameMode, LucideIcon>
+} satisfies Record<PlayableModeId, LucideIcon>
 
 const DANETKI_RULES = {
   searchInstruction: 'Прочитайте необычную ситуацию и выберите формат: расследовать одному или создать общую комнату для друзей.',
@@ -47,7 +47,7 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
   const content = GAME_SEO[mode]
   const presentation = GAME_GUIDE_PRESENTATION[mode]
   const rules = mode === 'danetki' ? DANETKI_RULES : GAME_RULES[mode]
-  const ModeIcon = GUIDE_ICONS[mode]
+  const ModeIcon = mode === 'danetki' ? ScanSearch : GUIDE_ICONS[mode]
   const scrollPosition = useRef<number | null>(null)
   return <details
     className={`artifact-dossier ticket-dossier ticket-dossier--${mode}`}

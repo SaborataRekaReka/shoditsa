@@ -642,3 +642,361 @@
   .danetki-page--session .danetki-room-tools button:nth-of-type(1),
   .danetki-page--session .danetki-room-tools button:nth-of-type(3) { display: none; }
 }
+
+/* Session module: an open case with a paper investigation protocol. */
+.danetki-page--session .danetki-main { width: min(100%, 1440px); }
+.danetki-page--session .danetki-situation {
+  position: relative;
+  isolation: isolate;
+  min-height: 320px;
+  padding: 0;
+  overflow: hidden;
+  grid-template-columns: minmax(0, 58%) minmax(0, 42%);
+  grid-template-rows: minmax(0, 1fr) 44px;
+  grid-template-areas: "copy host" "status status";
+  gap: 0;
+  border-color: var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background: #101510;
+  box-shadow: none;
+}
+.danetki-page--session .danetki-situation::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(7, 11, 8, .98) 0%, rgba(7, 11, 8, .92) 43%, rgba(7, 11, 8, .28) 70%, rgba(7, 11, 8, .08) 100%),
+    url('/images/realistic-grain-paper-texture.webp');
+  background-position: center;
+  background-size: auto, cover;
+  background-blend-mode: normal, soft-light;
+  opacity: .96;
+}
+.danetki-page--session .danetki-situation__copy {
+  position: relative;
+  z-index: 3;
+  grid-area: copy;
+  align-self: stretch;
+  max-width: none;
+  padding: 28px 28px 54px 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.danetki-page--session .danetki-kicker {
+  display: block;
+  color: var(--color-primary);
+  font: 600 11px/1.2 Oswald, sans-serif;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.danetki-page--session .danetki-situation__copy > h1 {
+  margin: 7px 0 6px;
+  color: var(--color-paper);
+  font: 500 clamp(40px, 4.2vw, 58px)/.98 Oswald, sans-serif;
+  letter-spacing: .015em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .52);
+}
+.danetki-page--session .danetki-case-meta {
+  margin-bottom: 17px;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+.danetki-page--session .danetki-case-meta > strong {
+  max-width: 280px;
+  color: var(--color-accent-border);
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-line));
+  background: color-mix(in srgb, var(--color-accent-soft) 24%, transparent);
+}
+.danetki-page--session .danetki-situation__copy > p {
+  max-width: 720px;
+  margin: 0 0 12px;
+  color: var(--color-paper);
+  font: 500 clamp(21px, 2vw, 28px)/1.28 Oswald, sans-serif;
+  letter-spacing: .005em;
+}
+.danetki-page--session .danetki-situation__copy > small {
+  color: var(--color-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.danetki-case-date {
+  position: absolute;
+  z-index: 6;
+  top: 18px;
+  right: 18px;
+  min-width: 108px;
+  min-height: 48px;
+  padding: 8px 13px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-primary) 72%, var(--color-paper));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.danetki-case-date svg { width: 19px; height: 19px; }
+.danetki-case-date strong { font: 500 22px/1 Oswald, sans-serif; letter-spacing: .04em; }
+.danetki-page--session .danetki-host {
+  position: relative;
+  z-index: 1;
+  grid-area: host;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  overflow: visible;
+}
+.danetki-page--session .danetki-host picture { position: absolute; inset: 0; display: block; pointer-events: none; user-select: none; }
+.danetki-page--session .danetki-host picture img {
+  position: absolute;
+  z-index: 2;
+  right: -20px;
+  bottom: -300px;
+  width: clamp(660px, 55vw, 820px);
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  filter: saturate(.88) sepia(.04) drop-shadow(0 14px 18px rgba(0, 0, 0, .48));
+}
+.danetki-page--session .danetki-host > button { z-index: 7; right: 18px; bottom: 54px; }
+.danetki-page--session .danetki-hostline {
+  position: relative;
+  z-index: 5;
+  grid-area: status;
+  min-height: 44px;
+  padding: 0 42px;
+  border-top-color: var(--color-line);
+  background: rgba(10, 15, 11, .86);
+}
+.danetki-page--session .danetki-hostline strong { color: var(--color-primary); font-size: 10px; }
+.danetki-page--session .danetki-hostline span { color: var(--color-muted); font-size: 10px; }
+.danetki-page--session .danetki-hostline--processing i,
+.danetki-page--session .danetki-hostline--queued i { animation: danetki-pulse 1.2s ease-in-out infinite; }
+.danetki-page--session .danetki-hostline--error i,
+.danetki-page--session .danetki-hostline--reconnecting i { background: var(--color-accent); box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 55%, transparent); }
+.danetki-page--session .danetki-hostline--offline i { background: var(--color-danger); box-shadow: none; }
+
+.danetki-page--session .danetki-investigation {
+  position: relative;
+  margin-top: 8px;
+  overflow: hidden;
+  border-color: var(--color-paper-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+  background-image: url('/images/realistic-grain-paper-texture.webp');
+  background-position: center;
+  background-size: cover;
+  background-blend-mode: soft-light;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .14);
+}
+.danetki-page--session .danetki-investigation::before,
+.danetki-page--session .danetki-investigation::after {
+  content: '';
+  position: absolute;
+  z-index: 8;
+  top: 48%;
+  width: 22px;
+  height: 46px;
+  background: var(--color-bg);
+  pointer-events: none;
+}
+.danetki-page--session .danetki-investigation::before { left: -1px; border-radius: 0 23px 23px 0; }
+.danetki-page--session .danetki-investigation::after { right: -1px; border-radius: 23px 0 0 23px; }
+.danetki-page--session .danetki-room-toolbar {
+  min-height: 62px;
+  padding: 10px 22px;
+  border-bottom: 1px dashed var(--color-paper-line);
+  color: var(--color-ink);
+  background: rgba(239, 231, 215, .74);
+}
+.danetki-page--session .danetki-room-summary { gap: 17px; }
+.danetki-page--session .danetki-room-summary > strong {
+  color: var(--color-ink);
+  font: 500 18px/1 Oswald, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.danetki-page--session .danetki-avatar {
+  width: 32px;
+  height: 32px;
+  border-color: var(--color-paper);
+  color: var(--color-ink);
+  font-size: 11px;
+}
+.danetki-page--session .danetki-avatar--host { border-color: var(--color-paper); box-shadow: 0 0 0 1px #6b674f; }
+.danetki-page--session .danetki-members small { color: var(--color-paper-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.danetki-page--session .danetki-question-count { color: var(--color-paper-muted); }
+.danetki-page--session .danetki-room-toolbar .ui-button {
+  min-height: 36px;
+  padding: 0 12px;
+  border-color: var(--color-paper-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: rgba(239, 231, 215, .54);
+  box-shadow: none;
+}
+.danetki-page--session .danetki-room-toolbar .ui-button:hover:not(:disabled) { color: var(--color-ink); background: var(--color-paper-2); transform: none; }
+.danetki-page--session .danetki-messages {
+  height: 224px;
+  min-height: 180px;
+  padding: 16px 26px;
+  gap: 9px;
+  color: var(--color-ink);
+  background: transparent;
+  scrollbar-color: var(--color-paper-line) transparent;
+}
+.danetki-page--session .danetki-message { max-width: min(64%, 700px); }
+.danetki-page--session .danetki-message__avatar {
+  border-color: #756b54;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .55);
+}
+.danetki-page--session .danetki-message__bubble {
+  padding: 7px 11px;
+  border-color: #88806b;
+  border-radius: 9px;
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper-2) 48%, var(--color-paper));
+  box-shadow: none;
+}
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble {
+  border-color: #77725d;
+  border-radius: 9px;
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper-2) 52%, var(--color-paper));
+}
+.danetki-page--session .danetki-message.is-ai .danetki-message__bubble {
+  border-color: #344536;
+  border-radius: 9px;
+  color: var(--color-paper);
+  background: #233828;
+}
+.danetki-page--session .danetki-message__bubble::after { border-color: #88806b; background: inherit; }
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble::after { border-color: #77725d; }
+.danetki-page--session .danetki-message.is-ai .danetki-message__bubble::after { border-color: #344536; }
+.danetki-page--session .danetki-message__author { color: var(--color-primary); }
+.danetki-page--session .danetki-message.is-mine .danetki-message__author { color: #a26e12; }
+.danetki-page--session .danetki-message time,
+.danetki-page--session .danetki-system time { color: var(--color-paper-muted); }
+.danetki-page--session .danetki-message.is-ai time { color: #bbb49f; }
+.danetki-page--session .danetki-system { color: var(--color-paper-muted); }
+.danetki-page--session .danetki-system.is-solution { color: var(--color-ink); background: #e2cf9c; }
+.danetki-page--session .danetki-empty { color: var(--color-paper-muted); }
+.danetki-page--session .danetki-waiting { border-color: var(--color-paper-line); color: var(--color-paper-muted); }
+.danetki-page--session .danetki-typing { color: #496b4d; }
+.danetki-page--session .danetki-composer {
+  min-height: 58px;
+  padding: 7px 22px 5px;
+  border-top: 1px solid var(--color-paper-line);
+  background: rgba(239, 231, 215, .68);
+}
+.danetki-page--session .danetki-composer textarea {
+  min-height: 46px;
+  padding: 12px 14px;
+  border-color: var(--color-paper-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: #f5efe3;
+  box-shadow: inset 0 1px 2px rgba(40, 34, 23, .06);
+}
+.danetki-page--session .danetki-composer textarea:focus-visible { outline: 3px solid color-mix(in srgb, var(--color-primary) 55%, transparent); outline-offset: 1px; }
+.danetki-page--session .danetki-composer button {
+  width: 48px;
+  min-height: 46px;
+  border-color: var(--color-primary-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: var(--color-primary);
+}
+.danetki-page--session .danetki-composer button:hover:not(:disabled) { background: var(--color-primary-hover); }
+.danetki-page--session .danetki-composer button:disabled { opacity: .45; cursor: not-allowed; }
+.danetki-page--session .danetki-suggestions {
+  min-height: 38px;
+  padding: 5px 22px 9px;
+  border: 0;
+  color: var(--color-ink);
+  background: rgba(239, 231, 215, .68);
+  scrollbar-width: none;
+}
+.danetki-page--session .danetki-suggestions::-webkit-scrollbar { display: none; }
+.danetki-page--session .danetki-suggestions button {
+  padding: 5px 10px;
+  border-color: var(--color-paper-line);
+  border-radius: 999px;
+  color: var(--color-ink);
+  background: transparent;
+}
+.danetki-page--session .danetki-suggestions button:hover { background: var(--color-paper-2); }
+
+@media (min-width: 768px) and (max-height: 950px) {
+  .danetki-page--session .danetki-main { padding: 14px 28px 22px; }
+  .danetki-page--session .danetki-situation { min-height: 300px; }
+  .danetki-page--session .danetki-host picture img { bottom: -305px; }
+  .danetki-page--session .danetki-messages { height: 190px; min-height: 170px; }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .danetki-page--session .danetki-situation { grid-template-columns: minmax(0, 57%) minmax(0, 43%); }
+  .danetki-page--session .danetki-situation__copy { padding-left: 30px; }
+  .danetki-page--session .danetki-situation__copy > h1 { font-size: clamp(39px, 4.6vw, 50px); }
+  .danetki-page--session .danetki-situation__copy > p { font-size: clamp(20px, 2.4vw, 25px); }
+  .danetki-page--session .danetki-host picture img { right: -55px; width: clamp(610px, 65vw, 730px); }
+  .danetki-page--session .danetki-room-summary { gap: 10px; }
+  .danetki-page--session .danetki-room-summary > strong { font-size: 15px; }
+}
+
+@media (max-width: 767px) {
+  .danetki-page--session .danetki-main { width: 100%; padding: 20px 14px 64px; }
+  .danetki-page--session .danetki-situation {
+    min-height: 610px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 250px 44px;
+    grid-template-areas: "copy" "host" "status";
+  }
+  .danetki-page--session .danetki-situation::before {
+    background-image:
+      linear-gradient(180deg, rgba(7, 11, 8, .98) 0%, rgba(7, 11, 8, .9) 58%, rgba(7, 11, 8, .2) 100%),
+      url('/images/realistic-grain-paper-texture.webp');
+  }
+  .danetki-page--session .danetki-situation__copy { padding: 24px 20px 16px; }
+  .danetki-page--session .danetki-situation__copy > h1 { max-width: calc(100% - 92px); font-size: clamp(36px, 11vw, 48px); }
+  .danetki-page--session .danetki-situation__copy > p { font-size: 22px; }
+  .danetki-page--session .danetki-case-meta { align-items: flex-start; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .danetki-page--session .danetki-case-meta > strong { max-width: 260px; }
+  .danetki-case-date { top: 18px; right: 14px; min-width: 82px; min-height: 40px; padding: 6px 8px; gap: 5px; }
+  .danetki-case-date svg { width: 15px; height: 15px; }
+  .danetki-case-date strong { font-size: 18px; }
+  .danetki-page--session .danetki-host { width: 100%; height: 250px; }
+  .danetki-page--session .danetki-host picture img { right: 50%; bottom: -215px; width: min(610px, 150vw); transform: translateX(50%); }
+  .danetki-page--session .danetki-hostline { padding: 0 20px; gap: 12px; }
+  .danetki-page--session .danetki-investigation::before,
+  .danetki-page--session .danetki-investigation::after { display: none; }
+  .danetki-page--session .danetki-room-toolbar { min-height: 70px; padding: 9px 12px; }
+  .danetki-page--session .danetki-room-summary { gap: 8px; }
+  .danetki-page--session .danetki-room-summary > strong { max-width: 108px; font-size: 14px; white-space: normal; }
+  .danetki-page--session .danetki-room-tools { margin-left: auto; }
+  .danetki-page--session .danetki-room-toolbar .ui-button { width: 34px; min-height: 34px; padding: 0; display: inline-flex; justify-content: center; font-size: 0; }
+  .danetki-page--session .danetki-room-toolbar .ui-button svg { width: 17px; height: 17px; }
+  .danetki-page--session .danetki-question-count { display: none; }
+  .danetki-page--session .danetki-messages { height: min(42vh, 360px); min-height: 240px; padding: 15px 14px; }
+  .danetki-page--session .danetki-message { max-width: 90%; }
+  .danetki-page--session .danetki-composer { padding-inline: 12px; }
+  .danetki-page--session .danetki-suggestions { padding-inline: 12px; }
+}
+
+@media (max-width: 420px) {
+  .danetki-page--session .danetki-situation { min-height: 650px; grid-template-rows: auto 235px 44px; }
+  .danetki-page--session .danetki-situation__copy > h1 { font-size: 35px; }
+  .danetki-page--session .danetki-kicker { max-width: calc(100% - 88px); font-size: 9px; }
+  .danetki-page--session .danetki-host { height: 235px; }
+  .danetki-page--session .danetki-host picture img { bottom: -205px; width: 570px; }
+  .danetki-page--session .danetki-hostline span { display: none; }
+  .danetki-page--session .danetki-room-summary > strong { max-width: 92px; font-size: 13px; }
+  .danetki-page--session .danetki-avatar { width: 29px; height: 29px; }
+  .danetki-page--session .danetki-room-tools { gap: 4px; }
+}

@@ -193,7 +193,14 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     send.mutate({ text, key })
   }
   const activeMembers = useMemo(() => state.members.filter((member) => !member.leftAt), [state.members])
-  const hostStatus = state.aiStatus === 'processing' || state.aiStatus === 'queued' ? 'Ведущий думает…' : state.aiStatus === 'error' ? 'Ведущий временно недоступен' : 'Ведущий на связи'
+  const hostStatus = connection === 'offline'
+    ? 'Ведущий не в сети'
+    : connection === 'reconnecting'
+      ? 'Восстанавливаем связь'
+      : state.aiStatus === 'processing' || state.aiStatus === 'queued'
+        ? 'Ведущий думает…'
+        : state.aiStatus === 'error' ? 'Ведущий временно недоступен' : 'Ведущий на связи'
+  const hostState = connection === 'connected' ? state.aiStatus : connection
   const difficulty = state.puzzle.difficulty === 'easy' ? 'лёгкая' : state.puzzle.difficulty === 'hard' ? 'сложная' : 'средняя'
   const puzzleDate = new Date(`${session.puzzleDate}T12:00:00`)
   const dateLabel = Number.isNaN(puzzleDate.getTime())
@@ -224,10 +231,10 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         </div>
         <div className="danetki-case-date" aria-label={`Дата: ${dateBadge}`}><CalendarDays aria-hidden="true" /><strong>{dateBadge}</strong></div>
         <div className={`danetki-host danetki-host--${state.aiStatus}`}>
-          <picture aria-hidden="true"><source srcSet={publicAssetUrl('images/danetki/danetka-detective-hero.webp')} type="image/webp" /><img src={publicAssetUrl('images/danetki/danetka-detective-hero.png')} width="1672" height="941" decoding="async" fetchPriority="high" alt="" /></picture>
+          <picture aria-hidden="true"><source srcSet={publicAssetUrl('images/danetki/danetka-detective-hero.webp')} type="image/webp" /><img src={publicAssetUrl('images/danetki/danetka-detective-hero.png')} width="1049" height="909" decoding="async" fetchPriority="high" alt="" /></picture>
           {state.aiStatus === 'error' && <button type="button" onClick={() => retryAi.mutate()} disabled={retryAi.isPending}><RefreshCw /> Повторить</button>}
         </div>
-        <div className="danetki-hostline"><strong><i aria-hidden="true" />{hostStatus}</strong><span>{state.aiStatus === 'error' ? 'Попробуйте повторить запрос' : 'Реагирует на ваши вопросы'}</span></div>
+        <div className={`danetki-hostline danetki-hostline--${hostState}`}><strong><i aria-hidden="true" />{hostStatus}</strong><span>{state.aiStatus === 'error' ? 'Попробуйте повторить запрос' : 'Реагирует на ваши вопросы'}</span></div>
       </section>
 
       <section className="danetki-investigation">
@@ -240,7 +247,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
               <small><Users /> {activeMembers.length}</small>
             </div>
           </div>
-          <div className="danetki-room-tools"><span className="danetki-question-count"><HelpCircle /> {state.questionCount} {state.questionCount === 1 ? 'вопрос' : 'вопросов'}</span><button type="button" onClick={() => listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}><Clock3 /> История</button>{state.canInvite && <button type="button" onClick={() => invite.mutate()} disabled={invite.isPending}><Users /> Пригласить</button>}{state.roomMode === 'group' && <button type="button" onClick={() => leave.mutate()} disabled={leave.isPending}><DoorOpen /> Выйти</button>}</div>
+          <div className="danetki-room-tools"><span className="danetki-question-count"><HelpCircle /> {state.questionCount} {state.questionCount === 1 ? 'вопрос' : 'вопросов'}</span><ActionButton type="button" variant="secondary" onClick={() => listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}><Clock3 /> История</ActionButton>{state.canInvite && <ActionButton type="button" variant="secondary" onClick={() => invite.mutate()} disabled={invite.isPending}><Users /> Пригласить</ActionButton>}{state.roomMode === 'group' && <ActionButton type="button" variant="ghost" onClick={() => leave.mutate()} disabled={leave.isPending}><DoorOpen /> Выйти</ActionButton>}</div>
         </div>
 
         <div className="danetki-messages" ref={listRef} role="log" aria-live="polite" onScroll={(event) => { const node = event.currentTarget; wasNearBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 80; if (wasNearBottom.current) setNewMessages(0) }}>
