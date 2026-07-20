@@ -326,7 +326,7 @@ export const GAME_SEO = {
   },
 } as const satisfies Record<PlayableModeId, GameSeoContent>
 
-export const INDEXABLE_GAME_SEO = DAILY_MODE_IDS.map((mode) => GAME_SEO[mode])
+export const INDEXABLE_GAME_SEO = DAILY_MODE_IDS.map((mode) => GAME_SEO[mode]).filter(Boolean)
 export const INDEXABLE_PATHS = [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((page) => page.canonicalPath)] as const
 
 export const gameSeoFromPathname = (pathname: string) => {
