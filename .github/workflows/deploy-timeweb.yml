@@ -61,14 +61,30 @@ jobs:
         run: |
           set -euo pipefail
           REMOTE="$DEPLOY_USER@$DEPLOY_HOST"
-          REMOTE_ARCHIVE="/tmp/shoditsa-web-${GITHUB_SHA}.tar.gz"
-          REMOTE_API_IMAGE="/tmp/shoditsa-api-${GITHUB_SHA}.tar.gz"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "mkdir -p '$DEPLOY_ROOT/releases'"
+          REMOTE_UPLOAD_DIR="${DEPLOY_ROOT}/incoming"
+          REMOTE_ARCHIVE="${REMOTE_UPLOAD_DIR}/shoditsa-web-${GITHUB_SHA}.tar.gz"
+          REMOTE_API_IMAGE="${REMOTE_UPLOAD_DIR}/shoditsa-api-${GITHUB_SHA}.tar.gz"
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' REMOTE_UPLOAD_DIR='$REMOTE_UPLOAD_DIR' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE_PREPARE'
+          set -euo pipefail
+          install -d -m 700 "$REMOTE_UPLOAD_DIR"
+          mkdir -p "$DEPLOY_ROOT/releases"
+          find "$REMOTE_UPLOAD_DIR" -maxdepth 1 -type f \( -name 'shoditsa-web-*.tar.gz' -o -name 'shoditsa-api-*.tar.gz' \) -mtime +1 -delete
+          rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE"
+          AVAILABLE_KB="$(df -Pk "$DEPLOY_ROOT" | awk 'NR == 2 { print $4 }')"
+          if [ "$AVAILABLE_KB" -lt 1048576 ]; then
+            echo "At least 1 GiB of free space is required before uploading a release; ${AVAILABLE_KB} KiB available" >&2
+            exit 1
+          fi
+          REMOTE_PREPARE
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
           scp -P "$DEPLOY_PORT" release-api-image.tar.gz "$REMOTE:$REMOTE_API_IMAGE"
           ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE'
           set -euo pipefail
           API_DEPLOY_ROLLBACK_ARMED=0
+          cleanup_uploads() {
+            rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE"
+          }
+          trap cleanup_uploads EXIT
           trap 'status=$?; failed_line=$LINENO; failed_command=$BASH_COMMAND; if [ "${API_DEPLOY_ROLLBACK_ARMED:-0}" -eq 1 ] && declare -F rollback_api >/dev/null; then rollback_api || true; fi; echo "remote deploy failed at line ${failed_line}: ${failed_command} (exit ${status})" >&2; exit "$status"' ERR
           STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
           RELEASE="${DEPLOY_ROOT}/releases/${GITHUB_SHA}"
@@ -369,7 +385,11 @@ jobs:
           fi
 
           test "$(readlink -f "$CURRENT_ROOT")" = "$(readlink -f "$RELEASE/web")"
-          rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE"
+          find "${DEPLOY_ROOT}/backups" -maxdepth 1 -type f -name 'pre-deploy-*.dump' -printf '%T@ %p\n' \
+            | sort -nr \
+            | tail -n +11 \
+            | cut -d' ' -f2- \
+            | while IFS= read -r backup; do rm -f -- "$backup"; done
           while IFS= read -r image; do
             if [ "$image" != "shoditsa-api:${GITHUB_SHA}" ] && [ "$image" != "$PREVIOUS_API_IMAGE" ]; then
               docker image rm "$image" >/dev/null 2>&1 || true

@@ -37,14 +37,29 @@ try {
   if ($LASTEXITCODE -ne 0) { throw "Could not package dist." }
 
   $remote = "{0}@{1}" -f $User, $ServerHost
-  $remoteArchive = "/tmp/shoditsa-web-$releaseId.tar.gz"
-  ssh -p $Port $remote "mkdir -p '$DeployRoot/releases'"
+  $remoteUploadDir = "$DeployRoot/incoming"
+  $remoteArchive = "$remoteUploadDir/shoditsa-web-$releaseId.tar.gz"
+  $prepareScript = @'
+set -euo pipefail
+install -d -m 700 "$REMOTE_UPLOAD_DIR"
+mkdir -p "$DEPLOY_ROOT/releases"
+find "$REMOTE_UPLOAD_DIR" -maxdepth 1 -type f -name 'shoditsa-web-*.tar.gz' -mtime +1 -delete
+rm -f "$REMOTE_ARCHIVE"
+AVAILABLE_KB="$(df -Pk "$DEPLOY_ROOT" | awk 'NR == 2 { print $4 }')"
+if [ "$AVAILABLE_KB" -lt 262144 ]; then
+  echo "At least 256 MiB of free space is required before uploading a web release; ${AVAILABLE_KB} KiB available" >&2
+  exit 1
+fi
+# Keep PowerShell's final CRLF on a Bash comment when piping over SSH.
+'@
+  $prepareScript | ssh -p $Port $remote "DEPLOY_ROOT='$DeployRoot' REMOTE_UPLOAD_DIR='$remoteUploadDir' REMOTE_ARCHIVE='$remoteArchive' bash -s"
   if ($LASTEXITCODE -ne 0) { throw "Could not prepare the release directory." }
   scp -P $Port $archivePath "${remote}:$remoteArchive"
   if ($LASTEXITCODE -ne 0) { throw "Could not upload the release archive." }
 
   $activationScript = @'
 set -euo pipefail
+trap 'rm -f "$REMOTE_ARCHIVE"' EXIT
 STAGE="${DEPLOY_ROOT}/releases/.stage-${GITHUB_SHA}"
 RELEASE="${DEPLOY_ROOT}/releases/${GITHUB_SHA}"
 rm -rf "$STAGE"
@@ -132,7 +147,7 @@ else
   echo "Neither host Nginx nor Docker is available to activate the web release" >&2
   exit 1
 fi
-rm -f "$REMOTE_ARCHIVE"
+# Keep PowerShell's final CRLF on a Bash comment when piping over SSH.
 '@
   $activationScript | ssh -p $Port $remote "DEPLOY_ROOT='$DeployRoot' GITHUB_SHA='$releaseId' BUILD_SHA='$commitSha' REMOTE_ARCHIVE='$remoteArchive' bash -s"
   if ($LASTEXITCODE -ne 0) { throw "Atomic release activation failed." }

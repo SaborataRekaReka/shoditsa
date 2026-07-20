@@ -175,8 +175,11 @@ const sourceChecks = [
     required: [
       ['immutable release root', /DEPLOY_ROOT:\s*\/opt\/shoditsa/],
       ['release archive upload', /release-web\.tar\.gz/],
+      ['isolated incoming release uploads', /REMOTE_UPLOAD_DIR="\$\{DEPLOY_ROOT\}\/incoming"/],
+      ['failed upload cleanup', /trap cleanup_uploads EXIT/],
       ['staged atomic activation', /releases\/\.stage-\$\{GITHUB_SHA\}/],
       ['atomic current symlink', /current\.next["']?\s+"?\$\{DEPLOY_ROOT\}\/current/],
+      ['automated database backup retention', /name 'pre-deploy-\*\.dump'[^]*tail -n \+11/],
       ['production SHA smoke', /smoke:production/],
       ['API smoke check', /\/api\/v1\/meta/],
       ['three API image consumers', /Expected exactly three Shoditsa API image declarations \(API, worker, migrate\)/],
