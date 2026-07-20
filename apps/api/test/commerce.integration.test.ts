@@ -1,8 +1,8 @@
 import { createHmac } from 'node:crypto'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
-import { commerceProducts, createDatabase, paymentOrders, playerProfiles, user, userEntitlements, walletAccounts, walletLedger } from '@shoditsa/database'
+import { commerceProducts, createDatabase, gameSessions, paymentOrders, playerProfiles, user, userEntitlements, walletAccounts, walletLedger } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
 import type { Auth } from '../src/modules/auth/auth.js'
 
@@ -54,6 +54,7 @@ describe('commerce API', () => {
   afterAll(async () => {
     await app?.close()
     if (database) {
+      await database.db.delete(gameSessions).where(inArray(gameSessions.userId, [userId, freeUserId]))
       await database.db.delete(user).where(eq(user.id, userId))
       await database.db.delete(user).where(eq(user.id, freeUserId))
       await database.client.end()

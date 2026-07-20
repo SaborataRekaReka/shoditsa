@@ -101,7 +101,7 @@ describe('server-authoritative game API', () => {
   })
 
   it('rejects new attempts but restores the result on repeated start after completion', async () => {
-    const start = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'series', period: 'all', difficulty: null, archiveDate: null } })
+    const start = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'anime', period: 'all', difficulty: null, archiveDate: null } })
     expect(start.statusCode).toBe(200)
     const sessionId = start.json().session.id as string
     const answerId = await answerItemIdForSession(sessionId)
@@ -114,7 +114,7 @@ describe('server-authoritative game API', () => {
     expect(afterCompletion.statusCode).toBe(409)
     expect(afterCompletion.json().error.code).toBe('GAME_ALREADY_COMPLETED')
 
-    const repeatedStart = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'series', period: 'all', difficulty: null, archiveDate: null } })
+    const repeatedStart = await app.inject({ method: 'POST', url: '/api/v1/games/start', headers: { cookie }, payload: { kind: 'daily', mode: 'anime', period: 'all', difficulty: null, archiveDate: null } })
     expect(repeatedStart.statusCode).toBe(200)
     expect(repeatedStart.json().session).toMatchObject({ id: sessionId, status: 'won', attemptsCount: 1 })
     expect(repeatedStart.json().session.answer.id).toBe(answerId)
