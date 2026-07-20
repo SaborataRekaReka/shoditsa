@@ -1,5 +1,7 @@
 import type { AssistHintKey, Hint, TitleItem } from './legacy-types.js'
 import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason, PlayableMode } from './schemas.js'
+import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
+import type { GameEngine } from './game-modes.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'won' | 'lost'
@@ -52,6 +54,10 @@ export type MetaResponse = {
     currency: string
     archiveFirstDate: string
     freeArchiveDays: number
+  }
+  features: {
+    danetkiEnabled: boolean
+    danetkiMultiplayerEnabled: boolean
   }
 }
 
@@ -137,6 +143,7 @@ export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: 
 export type PromoPromptSnapshot = { packId: string; title: string; subtitle: string; disclaimer: string }
 
 export type GameSessionSnapshot = {
+  engine: GameEngine
   id: string
   kind: 'daily' | 'archive' | 'free_play' | 'pack'
   packId: string | null
@@ -157,11 +164,19 @@ export type GameSessionSnapshot = {
   promoPrompt: PromoPromptSnapshot | null
   diagnosisVignette: { id: string; text: string } | null
   serverTime: string
+  danetki?: DanetkiGameState
   answer?: PublicContentItem
 }
 
 export type GameStartResponse = { session: GameSessionSnapshot }
 export type GameResponse = { session: GameSessionSnapshot }
+
+export type DanetkiStartBody = {
+  mode: 'danetki'
+  kind: 'daily' | 'archive'
+  roomMode: DanetkiRoomMode
+  archiveDate?: string | null
+}
 export type CatalogSearchResponse = { items: PublicContentItem[] }
 export type AttemptResponse = {
   attempt: GameAttemptSnapshot

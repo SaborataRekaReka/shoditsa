@@ -29,6 +29,7 @@ const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file
   if (![item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].every(validMediaUrl)) throw new Error(`${item.id}: invalid media URL`)
   if (mode === 'music' && typeof item.allowedInGame !== 'boolean') throw new Error(`${item.id}: music allowedInGame must be boolean`)
   if (mode === 'diagnosis' && !(item.icd10?.length || item.icdGroup)) throw new Error(`${item.id}: diagnosis ICD data is required`)
+  if (mode === 'danetki' && (typeof item.condition !== 'string' || typeof item.solution !== 'string' || !Array.isArray(item.keyFacts) || !Array.isArray(item.hints))) throw new Error(`${item.id}: invalid danetki payload`)
   seen.add(item.id)
   return item
 }

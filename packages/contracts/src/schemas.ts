@@ -50,12 +50,32 @@ export const CatalogSearchResponseSchema = Type.Object({
 export const GameStartBodySchema = Type.Object({
   kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('pack')]),
   mode: PlayableModeSchema,
+  roomMode: Type.Optional(Type.Union([Type.Literal('solo'), Type.Literal('group')])),
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),
   variantKey: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   packId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   packPosition: Type.Optional(Type.Integer({ minimum: 1, maximum: 10_000 })),
   archiveDate: Type.Optional(Type.Union([DateSchema, Type.Null()])),
+}, { additionalProperties: false })
+
+export const DanetkiMessageBodySchema = Type.Object({
+  text: Type.String({ minLength: 2, maxLength: 300 }),
+  idempotencyKey: Type.Optional(Type.String({ minLength: 8, maxLength: 120 })),
+}, { additionalProperties: false })
+
+export const DanetkiGuessBodySchema = Type.Object({
+  text: Type.String({ minLength: 20, maxLength: 1_500 }),
+  idempotencyKey: Type.Optional(Type.String({ minLength: 8, maxLength: 120 })),
+}, { additionalProperties: false })
+
+export const DanetkiMutationBodySchema = Type.Object({
+  idempotencyKey: Type.Optional(Type.String({ minLength: 8, maxLength: 120 })),
+}, { additionalProperties: false })
+
+export const DanetkiJoinBodySchema = Type.Object({
+  displayName: Type.String({ minLength: 1, maxLength: 40 }),
+  idempotencyKey: Type.Optional(Type.String({ minLength: 8, maxLength: 120 })),
 }, { additionalProperties: false })
 
 export const AttemptBodySchema = Type.Object({

@@ -52,6 +52,30 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   if (mode === 'city' && !text(payload.country)) error('country', 'required', 'Укажите страну города')
   if (mode === 'city' && !text(payload.continent)) error('continent', 'required', 'Укажите континент города')
   if (mode === 'city' && number(payload.population) == null) warning('population', 'missing_population', 'Население города не заполнено')
+  if (mode === 'danetki') {
+    const condition = text(payload.condition)
+    const solution = text(payload.solution)
+    const facts = Array.isArray(payload.keyFacts) ? payload.keyFacts.map(asRecord) : []
+    const factIds = new Set(facts.map((fact) => text(fact.id)).filter(Boolean))
+    const requiredFacts = facts.filter((fact) => fact.required === true && text(fact.id))
+    const hints = Array.isArray(payload.hints) ? payload.hints.map(asRecord) : []
+    const starterQuestions = Array.isArray(payload.starterQuestions) ? payload.starterQuestions.map(text).filter(Boolean) : []
+    const answerRules = asRecord(payload.answerRules)
+    const requiredFactIds = Array.isArray(answerRules.requiredFactIds) ? answerRules.requiredFactIds.map(text).filter(Boolean) : []
+    const minCoverage = number(answerRules.minCoverage)
+    if (condition.length < 40 || condition.length > 600) error('condition', 'invalid_length', 'Условие должно содержать от 40 до 600 символов')
+    if (solution.length < 60 || solution.length > 1_500) error('solution', 'invalid_length', 'Разгадка должна содержать от 60 до 1 500 символов')
+    if (facts.length < 3 || facts.some((fact) => !text(fact.id) || !text(fact.text) || typeof fact.required !== 'boolean')) error('keyFacts', 'invalid_facts', 'Нужно минимум три факта с ID, текстом и флагом required')
+    if (!requiredFacts.length) error('keyFacts', 'required_fact_missing', 'Хотя бы один ключевой факт должен быть обязательным')
+    if (!requiredFactIds.length || requiredFactIds.some((id) => !factIds.has(id))) error('answerRules.requiredFactIds', 'unknown_fact', 'Правила ответа ссылаются на отсутствующий ключевой факт')
+    const hintLevels = hints.map((hint) => number(hint.level)).sort()
+    if (hints.length !== 3 || hintLevels.join(',') !== '1,2,3' || hints.some((hint) => !text(hint.text))) error('hints', 'invalid_hints', 'Нужны ровно три непустые подсказки уровней 1, 2 и 3')
+    if (solution && hints.some((hint) => normalize(text(hint.text)) === normalize(solution))) error('hints', 'solution_leak', 'Подсказка не должна дословно раскрывать разгадку')
+    if (starterQuestions.length < 2) error('starterQuestions', 'too_few_questions', 'Добавьте минимум два стартовых вопроса')
+    if (minCoverage == null || minCoverage < 0.5 || minCoverage > 1) error('answerRules.minCoverage', 'invalid_range', 'Минимальное покрытие должно быть от 0.5 до 1')
+    if (payload.allowedInGame === true && !['test', 'ready'].includes(text(payload.contentStatus))) error('contentStatus', 'not_publishable', 'В игру можно включать только test или ready контент')
+    if (typeof payload.allowedInGame !== 'boolean') error('allowedInGame', 'required', 'Укажите, разрешена ли данетка в игре')
+  }
   if (mode === 'anime' && Array.isArray(payload.facts)) {
     const modelFacts = new Set([
       text(payload.animeKind) ? `Формат: ${text(payload.animeKind)}` : '',
@@ -62,8 +86,8 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
     const duplicatedFacts = payload.facts.map(text).filter((fact) => fact && modelFacts.has(normalize(fact)))
     if (duplicatedFacts.length) error('facts', 'duplicate_model_fact', 'Интересные факты не должны повторять формат, статус или количество эпизодов')
   }
-  const hint = text(payload.plotHint)
-  if (!hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
+  const hint = mode === 'danetki' ? '' : text(payload.plotHint)
+  if (mode !== 'danetki' && !hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
   if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
   if (hint && /(?:\.\.\.|…)\s*$/.test(hint)) error('plotHint', 'truncated_hint', 'Подсказка не должна заканчиваться многоточием')
   if (hint && text(payload.titleRu) && normalize(hint).includes(normalize(text(payload.titleRu)))) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')

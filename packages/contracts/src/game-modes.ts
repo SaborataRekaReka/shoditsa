@@ -1,15 +1,17 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki'] as const
 export const PLAYABLE_MODE_IDS = CONTENT_MODE_IDS
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
 export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]
+export type GameEngine = 'catalog_guess' | 'danetki_chat'
 
 export type GameModeCapabilities = {
+  engine: GameEngine
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'danetki'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
@@ -32,23 +34,23 @@ export type GameModeVariant = {
  */
 export const GAME_MODE_MANIFEST = {
   movie: {
-    label: 'Кино', dailyLabel: 'Фильм', shareIcon: '🎬', dataDir: 'movies', dailyOrder: 1,
+    engine: 'catalog_guess', label: 'Кино', dailyLabel: 'Фильм', shareIcon: '🎬', dataDir: 'movies', dailyOrder: 1,
     countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [],
   },
   series: {
-    label: 'Сериалы', dailyLabel: 'Сериал', shareIcon: '📺', dataDir: 'series', dailyOrder: 2,
+    engine: 'catalog_guess', label: 'Сериалы', dailyLabel: 'Сериал', shareIcon: '📺', dataDir: 'series', dailyOrder: 2,
     countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [],
   },
   anime: {
-    label: 'Аниме', dailyLabel: 'Аниме', shareIcon: '🌸', dataDir: 'animes', dailyOrder: 3,
+    engine: 'catalog_guess', label: 'Аниме', dailyLabel: 'Аниме', shareIcon: '🌸', dataDir: 'animes', dailyOrder: 3,
     countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [],
   },
   game: {
-    label: 'Игры', dailyLabel: 'Игра', shareIcon: '🎮', dataDir: 'games', dailyOrder: 4,
+    engine: 'catalog_guess', label: 'Игры', dailyLabel: 'Игра', shareIcon: '🎮', dataDir: 'games', dailyOrder: 4,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [],
   },
   city: {
-    label: 'Города', dailyLabel: 'Город', shareIcon: '🌍', dataDir: 'cities', dailyOrder: 5,
+    engine: 'catalog_guess', label: 'Города', dailyLabel: 'Город', shareIcon: '🌍', dataDir: 'cities', dailyOrder: 5,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false,
     variants: [
       { id: 'capitals', label: 'Столицы', shortLabel: 'Столицы', description: 'Только столицы государств' },
@@ -57,12 +59,16 @@ export const GAME_MODE_MANIFEST = {
     ],
   },
   music: {
-    label: 'Музыка', dailyLabel: 'Артист', shareIcon: '🎵', dataDir: 'music', dailyOrder: 6,
+    engine: 'catalog_guess', label: 'Музыка', dailyLabel: 'Артист', shareIcon: '🎵', dataDir: 'music', dailyOrder: 6,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'music', freePlay: true, variants: [],
   },
   diagnosis: {
-    label: 'Диагнозы', dailyLabel: 'Диагноз', shareIcon: '🩺', dataDir: 'diagnoses', dailyOrder: 7,
+    engine: 'catalog_guess', label: 'Диагнозы', dailyLabel: 'Диагноз', shareIcon: '🩺', dataDir: 'diagnoses', dailyOrder: 7,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
+  },
+  danetki: {
+    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 8,
+    countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
   },
 } as const satisfies Record<PlayableModeId, GameModeCapabilities>
 

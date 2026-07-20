@@ -1,15 +1,524 @@
-.club-screen{width:min(1180px,calc(100% - 32px));margin:0 auto;padding:34px 0 72px;color:var(--ink,#271d18)}
-.club-screen__back{display:inline-flex;align-items:center;gap:8px;border:0;background:none;color:inherit;font-weight:700;cursor:pointer;margin-bottom:22px}.club-screen__back svg{width:18px}
-.club-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:48px;align-items:center;border:1px solid rgba(84,54,39,.22);border-radius:28px;padding:clamp(34px,6vw,72px);background:linear-gradient(130deg,#f8ead3 0%,#fffaf0 55%,#e9d3b2 100%);box-shadow:0 22px 60px rgba(71,42,24,.1)}
-.club-hero:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(84,54,39,.12) .7px,transparent .7px);background-size:6px 6px;opacity:.35;pointer-events:none}.club-hero>*{position:relative}
-.club-hero__copy>span,.club-offers__heading>span,.club-account-state span{display:inline-flex;align-items:center;gap:7px;text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:900;color:#95521e}.club-hero__copy>span svg{width:17px}
-.club-hero h1{margin:15px 0;font-family:Georgia,serif;font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.045em}.club-hero p{max-width:680px;font-size:18px;line-height:1.65;color:#665247}.club-hero button,.club-account-state button{border:0;border-radius:999px;padding:14px 24px;background:#28201c;color:#fff;font-weight:800;cursor:pointer}
-.club-hero__ticket{transform:rotate(3deg);min-height:230px;border:2px solid #8e3f20;border-radius:18px;padding:32px;display:flex;flex-direction:column;justify-content:center;text-align:center;color:#7d321a;background:#f9e2bb;box-shadow:12px 14px 0 rgba(100,51,27,.12)}.club-hero__ticket span,.club-hero__ticket small{letter-spacing:.18em;font-weight:800}.club-hero__ticket strong{font-family:Georgia,serif;font-size:52px;margin:20px 0;border-block:2px dashed currentColor;padding:14px}
-.club-principles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:24px 0 64px}.club-principles article{display:flex;gap:15px;padding:23px;border:1px solid rgba(84,54,39,.14);border-radius:18px;background:rgba(255,255,255,.68)}.club-principles svg{flex:none;color:#a95726}.club-principles strong{display:block;margin-bottom:5px}.club-principles p{margin:0;color:#76645b;line-height:1.45}
-.club-offers__heading{text-align:center;max-width:680px;margin:0 auto 28px}.club-offers__heading h2{font-family:Georgia,serif;font-size:clamp(34px,5vw,52px);margin:10px 0}.club-offers__heading p{color:#756258}.club-offers__grid{display:grid;grid-template-columns:repeat(2,minmax(0,430px));justify-content:center;gap:22px}
-.club-card{position:relative;display:flex;flex-direction:column;border:1px solid rgba(84,54,39,.2);border-radius:24px;padding:30px;background:#fffaf1;box-shadow:0 12px 36px rgba(64,40,27,.08)}.club-card--featured{border-color:#a95726;box-shadow:0 15px 40px rgba(169,87,38,.16)}.club-card__ribbon{position:absolute;right:20px;top:20px;border-radius:999px;padding:6px 10px;background:#a95726;color:white;font-size:11px;font-weight:900;text-transform:uppercase}.club-card__icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#f0d7b4;color:#8a401f}.club-card h2{font-family:Georgia,serif;font-size:28px;margin:20px 0 6px}.club-card>strong{font-size:24px}.club-card>p{color:#756258;min-height:48px}.club-card ul{list-style:none;padding:0;margin:12px 0 24px;display:grid;gap:10px}.club-card li{display:flex;gap:9px;align-items:center}.club-card li svg{width:17px;color:#6b792d}.club-card__action{margin-top:auto}.club-card__action>button{width:100%;border:0;border-radius:12px;background:#8f421f;color:white;padding:14px;font-weight:900;cursor:pointer}.club-card__action>button:disabled{opacity:.65;cursor:wait}.club-card__error{display:block;color:#a33024;font-size:12px;margin-top:8px}.club-card>small{text-align:center;margin-top:10px;color:#756258}.club-offers__notice{max-width:760px;margin:22px auto 0;padding:14px 18px;border-radius:12px;background:#e7efcf;color:#45501f;text-align:center;font-weight:700}
-.club-account-state{display:flex;justify-content:space-between;align-items:center;gap:28px;margin:64px 0 0;padding:30px;border-radius:20px;background:#2d2521;color:white}.club-account-state strong{display:block;font-family:Georgia,serif;font-size:27px;margin:8px 0}.club-account-state p{margin:0;color:#dfd4cc}.club-account-state button{background:#f4d2a1;color:#3a281e;white-space:nowrap}
-.profile-club-card{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:20px 0;padding:20px 24px;border:1px solid rgba(150,83,34,.25);border-radius:18px;background:#fbecd4}.profile-club-card span{display:block;color:#9b5524;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.12em}.profile-club-card strong{display:block;margin:4px 0;font-family:Georgia,serif;font-size:21px}.profile-club-card p{margin:0;color:#705a4d}.profile-club-card button{border:0;border-radius:999px;padding:12px 18px;background:#8f421f;color:white;font-weight:800;white-space:nowrap;cursor:pointer}
-@media(max-width:800px){.club-hero{grid-template-columns:1fr;padding:30px}.club-hero__ticket{min-height:180px}.club-principles{grid-template-columns:1fr}.club-offers__grid{grid-template-columns:1fr}.club-account-state,.profile-club-card{align-items:flex-start;flex-direction:column}.club-account-state button,.profile-club-card button{width:100%}}
-.membership-badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 12px;background:#e5edc8;color:#4d5c20;font-size:13px;font-weight:900}.membership-badge svg{width:16px}.membership-badge--compact{padding:5px 9px;font-size:11px}
-.purchase-return{width:min(620px,calc(100% - 32px));margin:80px auto;padding:54px;text-align:center;border:1px solid rgba(84,54,39,.18);border-radius:24px;background:#fffaf1;box-shadow:0 18px 50px rgba(64,40,27,.1)}.purchase-return>svg{width:54px;height:54px;color:#8f421f}.purchase-return h1{font-family:Georgia,serif;font-size:38px;margin:18px 0 8px}.purchase-return p{color:#756258;line-height:1.6}.purchase-return button{margin-top:20px;border:0;border-radius:999px;padding:13px 22px;background:#28201c;color:white;font-weight:900;cursor:pointer}.purchase-return__spin{animation:purchase-spin 1.5s linear infinite}@keyframes purchase-spin{to{transform:rotate(360deg)}}
+.club-screen {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 72px;
+  color: var(--color-text, #f2ecdf);
+}
+.club-screen__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 22px;
+}
+.club-screen__back svg {
+  width: 18px;
+}
+.club-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 48px;
+  align-items: center;
+  border: 1px solid rgba(84, 54, 39, 0.22);
+  border-radius: 28px;
+  padding: clamp(34px, 6vw, 72px);
+  color: #271d18;
+  background: linear-gradient(130deg, #f8ead3 0%, #fffaf0 55%, #e9d3b2 100%);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
+}
+.club-hero:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(84, 54, 39, 0.12) 0.7px,
+    transparent 0.7px
+  );
+  background-size: 6px 6px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.club-hero > * {
+  position: relative;
+}
+.club-hero__copy > span,
+.club-offers__heading > span,
+.club-account-state span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 12px;
+  font-weight: 900;
+  color: #95521e;
+}
+.club-hero__copy > span svg {
+  width: 17px;
+}
+.club-hero h1 {
+  margin: 15px 0;
+  font-family: Georgia, serif;
+  font-size: clamp(42px, 6vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+.club-hero p {
+  max-width: 680px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: #665247;
+}
+.club-hero button,
+.club-account-state button {
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 24px;
+  background: #28201c;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.club-hero__ticket {
+  transform: rotate(3deg);
+  min-height: 230px;
+  border: 2px solid #8e3f20;
+  border-radius: 18px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: #7d321a;
+  background: #f9e2bb;
+  box-shadow: 12px 14px 0 rgba(100, 51, 27, 0.12);
+}
+.club-hero__ticket span,
+.club-hero__ticket small {
+  letter-spacing: 0.18em;
+  font-weight: 800;
+}
+.club-hero__ticket strong {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  margin: 20px 0;
+  border-block: 2px dashed currentColor;
+  padding: 14px;
+}
+.club-principles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 24px 0 64px;
+}
+.club-principles article {
+  display: flex;
+  gap: 15px;
+  padding: 23px;
+  border: 1px solid rgba(84, 54, 39, 0.14);
+  border-radius: 18px;
+  color: #271d18;
+  background: #f3ecdf;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.club-principles svg {
+  flex: none;
+  color: #a95726;
+}
+.club-principles strong {
+  display: block;
+  margin-bottom: 5px;
+}
+.club-principles p {
+  margin: 0;
+  color: #76645b;
+  line-height: 1.45;
+}
+.club-offers__heading {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 28px;
+}
+.club-offers__heading h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(34px, 5vw, 52px);
+  margin: 10px 0;
+  color: var(--color-text);
+}
+.club-offers__heading p {
+  color: var(--color-muted);
+}
+.club-offers__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 430px));
+  justify-content: center;
+  gap: 22px;
+}
+.club-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(84, 54, 39, 0.2);
+  border-radius: 24px;
+  padding: 30px;
+  color: #271d18;
+  background: #fffaf1;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
+}
+.club-card--featured {
+  border-color: #a95726;
+  box-shadow: 0 15px 40px rgba(169, 87, 38, 0.16);
+}
+.club-card__ribbon {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #a95726;
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.club-card__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #f0d7b4;
+  color: #8a401f;
+}
+.club-card h2 {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  margin: 20px 0 6px;
+}
+.club-card > strong {
+  font-size: 24px;
+}
+.club-card > p {
+  color: #756258;
+  min-height: 48px;
+}
+.club-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 24px;
+  display: grid;
+  gap: 10px;
+}
+.club-card li {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.club-card li svg {
+  width: 17px;
+  color: #6b792d;
+}
+.club-card__action {
+  margin-top: auto;
+}
+.club-card__action > button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #8f421f;
+  color: white;
+  padding: 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.club-card__action > button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.club-card__error {
+  display: block;
+  color: #a33024;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.club-card > small {
+  text-align: center;
+  margin-top: 10px;
+  color: #756258;
+}
+.club-offers__notice {
+  max-width: 760px;
+  margin: 22px auto 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #e7efcf;
+  color: #45501f;
+  text-align: center;
+  font-weight: 700;
+}
+.club-account-state {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+  margin: 64px 0 0;
+  padding: 30px;
+  border-radius: 20px;
+  background: #2d2521;
+  color: white;
+}
+.club-account-state strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 27px;
+  margin: 8px 0;
+}
+.club-account-state p {
+  margin: 0;
+  color: #dfd4cc;
+}
+.club-account-state button {
+  background: #f4d2a1;
+  color: #3a281e;
+  white-space: nowrap;
+}
+.profile-club-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 20px 0;
+  padding: 20px 24px;
+  border: 1px solid rgba(150, 83, 34, 0.25);
+  border-radius: 18px;
+  background: #fbecd4;
+  color: #271d18;
+}
+
+.club-tips {
+  margin-top: 72px;
+  scroll-margin-top: 90px;
+}
+.club-tips__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.club-tip {
+  --tip-accent: #836b4a;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  min-height: 340px;
+  flex-direction: column;
+  padding: 28px;
+  border: 1px solid color-mix(in srgb, var(--tip-accent) 55%, #6b6154);
+  border-radius: 24px;
+  color: #271d18;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), transparent 48%), #efe6d6;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
+}
+.club-tip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(39, 29, 24, 0.14) 0.65px,
+    transparent 0.65px
+  );
+  background-size: 6px 6px;
+  opacity: 0.22;
+  pointer-events: none;
+}
+.club-tip > * {
+  position: relative;
+  z-index: 1;
+}
+.club-tip--silver {
+  --tip-accent: #79848d;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.85), transparent 48%), #d9dcda;
+}
+.club-tip--gold {
+  --tip-accent: #a66c1f;
+  background:
+    linear-gradient(145deg, rgba(255, 250, 220, 0.88), transparent 48%), #e4c57d;
+}
+.club-tip__token {
+  display: grid;
+  width: 66px;
+  height: 66px;
+  place-items: center;
+  margin-bottom: 24px;
+  border: 2px dashed var(--tip-accent);
+  border-radius: 50%;
+  color: var(--tip-accent);
+  background: rgba(255, 255, 255, 0.42);
+  transform: rotate(-7deg);
+}
+.club-tip__token svg {
+  width: 29px;
+  height: 29px;
+}
+.club-tip > span {
+  color: var(--tip-accent);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.club-tip h3 {
+  margin: 10px 0 8px;
+  font:
+    700 28px/1.05 Georgia,
+    serif;
+}
+.club-tip p {
+  margin: 0 0 20px;
+  color: #665d52;
+  line-height: 1.55;
+}
+.club-tip > strong {
+  margin-top: auto;
+  font-size: 26px;
+}
+.club-tip__action {
+  margin-top: 18px;
+}
+.club-tip__action > button {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 12px;
+  color: #fffaf1;
+  background: #2a221d;
+  font-weight: 900;
+  cursor: pointer;
+}
+.club-tip__action > button:disabled {
+  color: #776f64;
+  background: rgba(255, 255, 255, 0.48);
+  cursor: not-allowed;
+}
+.profile-club-card span {
+  display: block;
+  color: #9b5524;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.profile-club-card strong {
+  display: block;
+  margin: 4px 0;
+  font-family: Georgia, serif;
+  font-size: 21px;
+}
+.profile-club-card p {
+  margin: 0;
+  color: #705a4d;
+}
+.profile-club-card button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: #8f421f;
+  color: white;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+@media (max-width: 800px) {
+  .club-hero {
+    grid-template-columns: 1fr;
+    padding: 30px;
+  }
+  .club-hero__ticket {
+    min-height: 180px;
+  }
+  .club-principles {
+    grid-template-columns: 1fr;
+  }
+  .club-offers__grid {
+    grid-template-columns: 1fr;
+  }
+  .club-tips__grid {
+    grid-template-columns: 1fr;
+  }
+  .club-account-state,
+  .profile-club-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .club-account-state button,
+  .profile-club-card button {
+    width: 100%;
+  }
+}
+.membership-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #e5edc8;
+  color: #4d5c20;
+  font-size: 13px;
+  font-weight: 900;
+}
+.membership-badge svg {
+  width: 16px;
+}
+.membership-badge--compact {
+  padding: 5px 9px;
+  font-size: 11px;
+}
+.purchase-return {
+  width: min(620px, calc(100% - 32px));
+  margin: 80px auto;
+  padding: 54px;
+  text-align: center;
+  border: 1px solid rgba(84, 54, 39, 0.18);
+  border-radius: 24px;
+  background: #fffaf1;
+  box-shadow: 0 18px 50px rgba(64, 40, 27, 0.1);
+}
+.purchase-return > svg {
+  width: 54px;
+  height: 54px;
+  color: #8f421f;
+}
+.purchase-return h1 {
+  font-family: Georgia, serif;
+  font-size: 38px;
+  margin: 18px 0 8px;
+}
+.purchase-return p {
+  color: #756258;
+  line-height: 1.6;
+}
+.purchase-return button {
+  margin-top: 20px;
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 22px;
+  background: #28201c;
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+.purchase-return__spin {
+  animation: purchase-spin 1.5s linear infinite;
+}
+@keyframes purchase-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

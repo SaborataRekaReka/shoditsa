@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { CONTENT_MODE_IDS } from '@shoditsa/contracts'
 import {
-  boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
+  bigint, boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
   numeric, real, smallint, text, timestamp, unique, uniqueIndex, uuid,
 } from 'drizzle-orm/pg-core'
 
@@ -10,6 +10,14 @@ const now = () => timestamp({ withTimezone: true }).notNull().defaultNow()
 export const contentMode = pgEnum('content_mode', [...CONTENT_MODE_IDS])
 export const periodKey = pgEnum('period_key', ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'])
 export const difficultyKey = pgEnum('difficulty_key', ['easy', 'medium', 'hard', 'expert'])
+export const danetkiRoomMode = pgEnum('danetki_room_mode', ['solo', 'group'])
+export const danetkiAiStatus = pgEnum('danetki_ai_status', ['idle', 'queued', 'processing', 'error'])
+export const danetkiMemberRole = pgEnum('danetki_member_role', ['owner', 'player'])
+export const danetkiSenderKind = pgEnum('danetki_sender_kind', ['user', 'ai', 'system'])
+export const danetkiMessageType = pgEnum('danetki_message_type', ['question', 'answer', 'hint', 'guess', 'event', 'solution'])
+export const danetkiGuessStatus = pgEnum('danetki_guess_status', ['pending', 'correct', 'incorrect'])
+export const danetkiAiPurpose = pgEnum('danetki_ai_purpose', ['answer', 'evaluate_guess', 'hint', 'summarize'])
+export const danetkiAiCallStatus = pgEnum('danetki_ai_call_status', ['pending', 'success', 'error'])
 
 // Better Auth schema. IDs are UUIDs so domain foreign keys remain native UUID columns.
 export const user = pgTable('user', {
@@ -326,7 +334,7 @@ export const backgroundJobs = pgTable('background_jobs', {
   workerId: text('worker_id'),
   pipelineRunId: uuid('pipeline_run_id').references(() => pipelineRuns.id, { onDelete: 'set null' }),
 }, (table) => [
-  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention')`),
+  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention','danetki_ai_reply','danetki_guess_evaluate','danetki_room_expire')`),
   check('background_job_status_check', sql`${table.status} in ('queued','running','completed','failed','cancelled')`),
   index('background_job_claim_idx').on(table.status, table.nextRetryAt, table.createdAt),
   index('background_job_pipeline_idx').on(table.pipelineRunId),
@@ -404,6 +412,118 @@ export const gameSessions = pgTable('game_sessions', {
   check('game_session_status_check', sql`${table.status} in ('playing','won','lost')`),
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
 ])
+
+export const danetkiSessionState = pgTable('danetki_session_state', {
+  sessionId: uuid('session_id').primaryKey().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  roomMode: danetkiRoomMode('room_mode').notNull(),
+  questionCount: integer('question_count').notNull().default(0),
+  hintLevel: integer('hint_level').notNull().default(0),
+  revealedFactIds: text('revealed_fact_ids').array().notNull().default(sql`ARRAY[]::text[]`),
+  stateSummary: text('state_summary').notNull().default(''),
+  nextMessageSeq: bigint('next_message_seq', { mode: 'number' }).notNull().default(1),
+  aiStatus: danetkiAiStatus('ai_status').notNull().default('idle'),
+  promptVersion: text('prompt_version').notNull().default('danetki-host-v1'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  check('danetki_session_question_count_check', sql`${table.questionCount} >= 0`),
+  check('danetki_session_hint_level_check', sql`${table.hintLevel} between 0 and 3`),
+])
+
+export const danetkiSessionMembers = pgTable('danetki_session_members', {
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  role: danetkiMemberRole().notNull().default('player'),
+  displayNameSnapshot: text('display_name_snapshot').notNull(),
+  colorKey: text('color_key').notNull(),
+  joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow(),
+  leftAt: timestamp('left_at', { withTimezone: true }),
+  lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  primaryKey({ columns: [table.sessionId, table.userId] }),
+  index('danetki_members_active_idx').on(table.sessionId, table.leftAt, table.joinedAt),
+  check('danetki_member_name_check', sql`char_length(${table.displayNameSnapshot}) between 1 and 40`),
+])
+
+export const danetkiInvites = pgTable('danetki_invites', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  tokenHash: text('token_hash').notNull(),
+  createdBy: uuid('created_by').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  maxUses: integer('max_uses').notNull().default(5),
+  usesCount: integer('uses_count').notNull().default(0),
+  revokedAt: timestamp('revoked_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('danetki_invite_token_hash_unique').on(table.tokenHash),
+  index('danetki_invite_session_idx').on(table.sessionId, table.expiresAt),
+  check('danetki_invite_uses_check', sql`${table.usesCount} >= 0 and ${table.maxUses} between 1 and 6`),
+])
+
+export const danetkiMessages = pgTable('danetki_messages', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  seq: bigint({ mode: 'number' }).notNull(),
+  senderKind: danetkiSenderKind('sender_kind').notNull(),
+  senderUserId: uuid('sender_user_id').references(() => user.id, { onDelete: 'set null' }),
+  messageType: danetkiMessageType('message_type').notNull(),
+  text: text().notNull(),
+  classification: text(),
+  importance: text(),
+  parentMessageId: uuid('parent_message_id'),
+  idempotencyKey: text('idempotency_key'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('danetki_message_session_seq_unique').on(table.sessionId, table.seq),
+  uniqueIndex('danetki_message_user_idempotency_unique').on(table.sessionId, table.senderUserId, table.idempotencyKey)
+    .where(sql`${table.senderUserId} is not null and ${table.idempotencyKey} is not null`),
+  uniqueIndex('danetki_message_ai_parent_unique').on(table.parentMessageId)
+    .where(sql`${table.senderKind} = 'ai' and ${table.parentMessageId} is not null`),
+  index('danetki_message_session_created_idx').on(table.sessionId, table.createdAt),
+  check('danetki_message_classification_check', sql`${table.classification} is null or ${table.classification} in ('yes','no','irrelevant','unclear','invalid')`),
+  check('danetki_message_importance_check', sql`${table.importance} is null or ${table.importance} in ('critical','useful','neutral')`),
+])
+
+export const danetkiFinalGuesses = pgTable('danetki_final_guesses', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  text: text().notNull(),
+  status: danetkiGuessStatus().notNull().default('pending'),
+  evaluation: jsonb(),
+  idempotencyKey: text('idempotency_key').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('danetki_guess_idempotency_unique').on(table.sessionId, table.userId, table.idempotencyKey),
+  index('danetki_guess_session_created_idx').on(table.sessionId, table.createdAt),
+])
+
+export const danetkiAiCalls = pgTable('danetki_ai_calls', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  triggerMessageId: uuid('trigger_message_id').references(() => danetkiMessages.id, { onDelete: 'set null' }),
+  purpose: danetkiAiPurpose().notNull(),
+  model: text().notNull(),
+  promptVersion: text('prompt_version').notNull(),
+  providerResponseId: text('provider_response_id'),
+  inputTokens: integer('input_tokens'),
+  outputTokens: integer('output_tokens'),
+  latencyMs: integer('latency_ms'),
+  status: danetkiAiCallStatus().notNull().default('pending'),
+  errorCode: text('error_code'),
+  responseJson: jsonb('response_json'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index('danetki_ai_call_session_created_idx').on(table.sessionId, table.createdAt),
+  uniqueIndex('danetki_ai_call_trigger_purpose_unique').on(table.triggerMessageId, table.purpose)
+    .where(sql`${table.triggerMessageId} is not null`),
+])
+
+export const danetkiSurrenderVotes = pgTable('danetki_surrender_votes', {
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [primaryKey({ columns: [table.sessionId, table.userId] })])
 
 export const contentReports = pgTable('content_reports', {
   id: uuid().primaryKey().defaultRandom(),

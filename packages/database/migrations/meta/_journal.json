@@ -113,6 +113,20 @@
       "when": 1784531016153,
       "tag": "0015_chunky_squadron_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1784548800000,
+      "tag": "0016_add_danetki_content_mode",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1784548860000,
+      "tag": "0017_danetki_chat_engine",
+      "breakpoints": true
     }
   ]
 }
