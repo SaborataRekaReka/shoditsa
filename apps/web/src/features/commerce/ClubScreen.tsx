@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { DEFAULT_CLUB_PRODUCTS, ECONOMY_RULE_SET } from '@shoditsa/contracts'
 import { Archive, CircleHelp, Clapperboard, LockKeyhole, Sparkles, Ticket } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { trackClientEvent } from '../../app/client-events'
@@ -14,24 +15,30 @@ import { TipCheckoutTrigger } from './TipCheckout'
 import { api, queryKeys } from '../../api/client'
 import './CommercialShell.css'
 
+const defaultMonthly = DEFAULT_CLUB_PRODUCTS.find((product) => product.id === 'club_30d')!
+const defaultAnnual = DEFAULT_CLUB_PRODUCTS.find((product) => product.id === 'club_365d')!
+const fallbackRubles = (minor: number) => `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(minor / 100)} ₽`
+const fallbackSavings = defaultMonthly.priceMinor * 12 - defaultAnnual.priceMinor
+const fallbackDiscount = Math.round((1 - defaultAnnual.priceMinor / (defaultMonthly.priceMinor * 12)) * 100)
+
 const fallbackOffers: ClubOffer[] = [
   {
-    id: 'club_30d',
-    title: 'Клубный билет',
+    id: defaultMonthly.id,
+    title: defaultMonthly.title,
     durationLabel: '30 дней',
-    note: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки.',
-    priceLabel: '199 ₽',
-    unitLabel: '6,63 ₽ в день',
+    note: defaultMonthly.description,
+    priceLabel: fallbackRubles(defaultMonthly.priceMinor),
+    unitLabel: `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(defaultMonthly.priceMinor / 30 / 100)} ₽ в день`,
   },
   {
-    id: 'club_365d',
-    title: 'Годовой клубный билет',
+    id: defaultAnnual.id,
+    title: defaultAnnual.title,
     durationLabel: '365 дней',
-    note: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки.',
-    priceLabel: '1 790 ₽',
-    unitLabel: '149 ₽ в месяц',
-    savingsLabel: 'Экономия 598 ₽',
-    discountLabel: '25%',
+    note: defaultAnnual.description,
+    priceLabel: fallbackRubles(defaultAnnual.priceMinor),
+    unitLabel: `${fallbackRubles(Math.round(defaultAnnual.priceMinor / 12))} в месяц`,
+    savingsLabel: `Экономия ${fallbackRubles(fallbackSavings)}`,
+    discountLabel: `${fallbackDiscount}%`,
   },
 ]
 
@@ -89,8 +96,8 @@ export function ClubScreen({
   const productsById = new Map(
     (catalog.data?.products ?? []).map((product) => [product.id, product]),
   )
-  const monthlyPriceMinor = productsById.get('club_30d')?.priceMinor ?? 19_900
-  const annualPriceMinor = productsById.get('club_365d')?.priceMinor ?? 179_000
+  const monthlyPriceMinor = productsById.get('club_30d')?.priceMinor ?? defaultMonthly.priceMinor
+  const annualPriceMinor = productsById.get('club_365d')?.priceMinor ?? defaultAnnual.priceMinor
   const offers = fallbackOffers.map((offer) => {
     const product = productsById.get(offer.id)
     if (!product) return offer
@@ -138,7 +145,7 @@ export function ClubScreen({
       sessionKind: 'club-paywall',
       dailyCompletedCount: runtime.dashboard?.today?.completedModes.length ?? 0,
       streak: runtime.dashboard?.attendance?.currentDailyStreak ?? 0,
-      rulesVersion: runtime.dashboard?.economyRules.version ?? 2,
+      rulesVersion: runtime.dashboard?.economyRules.version ?? ECONOMY_RULE_SET.version,
       hasClub,
     }
     trackClientEvent('club_screen_view', properties)

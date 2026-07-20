@@ -5,18 +5,22 @@ import {
   BriefcaseBusiness,
   CalendarCheck2,
   Check,
-  CircleCheckBig,
   Clock3,
+  ExternalLink,
+  FileCheck2,
+  Image,
+  Lightbulb,
+  Link2,
   MonitorPlay,
-  Palette,
+  PencilLine,
+  Rocket,
   ShieldCheck,
   Sparkles,
-  UsersRound,
 } from 'lucide-react'
-import { AppHeader } from '../../components/app-shell/AppShell'
-import { api } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
-import '../commerce/CommercialShell.css'
+import { api } from '../../api/client'
+import { AppHeader } from '../../components/app-shell/AppShell'
+import './CorporatePage.css'
 
 type Props = {
   onHome: () => void
@@ -26,37 +30,50 @@ type Props = {
   onReview: () => void
 }
 
-const privateGameArt = publicAssetUrl('images/profile-hero-collage.webp')
+const heroArt = publicAssetUrl('images/corporate/corporate-hero.webp')
 
 const formats = [
   {
-    icon: UsersRound,
+    image: publicAssetUrl('images/corporate/format-team.webp'),
+    alt: 'Коллаж: командная игра за круглым столом',
     label: 'Командное событие',
+    audience: 'Для своих',
+    duration: '15–30 минут',
     title: 'Вовлечь всех, а не только самых громких',
-    text: 'Для тимбилдинга, корпоратива или пятничного созвона. Участники играют со своих устройств — вместе в зале или онлайн.',
-    meta: '10–500+ участников',
+    text: 'Факты о коллегах, проектах и офисной жизни превращаются в игру для тимбилдинга, корпоратива или пятничного созвона.',
   },
   {
-    icon: BriefcaseBusiness,
+    image: publicAssetUrl('images/corporate/format-comms.webp'),
+    alt: 'Коллаж: коммуникация и обмен идеями',
     label: 'Внутренние коммуникации',
+    audience: 'Про компанию',
+    duration: '20–40 минут',
     title: 'Рассказать о компании через игру',
-    text: 'Онбординг, запуск продукта, ценности и итоги года превращаются в живой формат, который хочется обсуждать.',
-    meta: 'Ваши факты и визуальный стиль',
+    text: 'Онбординг, запуск продукта, ценности или итоги года становятся живым форматом, который хочется обсуждать.',
   },
   {
-    icon: Sparkles,
+    image: publicAssetUrl('images/corporate/format-event.webp'),
+    alt: 'Коллаж: брендированная игровая зона на событии',
     label: 'Бренд-активация',
+    audience: 'Для гостей',
+    duration: '10–25 минут',
     title: 'Сделать событие заметным',
-    text: 'Игра для конференции, стенда, клиентского вечера или спецпроекта — с отдельной ссылкой и нужной механикой.',
-    meta: 'Под ключ к дате события',
+    text: 'Отдельная игра для конференции, стенда, клиентского вечера или спецпроекта — по QR-коду и в визуальном стиле бренда.',
   },
 ]
 
+const deliverables = [
+  ['01', 'Сценарий под вашу задачу', 'Находим тему и механику, даже если есть только дата и общий повод.'],
+  ['02', 'Редакторская сборка', 'Формулируем вопросы, собираем ответы и вручную проверяем содержание.'],
+  ['03', 'Визуальный выпуск', 'Добавляем фирменные цвета, логотипы, фотографии и экран события.'],
+  ['04', 'Частный игровой сеанс', 'Передаём ссылку, проверяем запуск и остаёмся на связи в день игры.'],
+]
+
 const steps = [
-  ['01', 'Бриф', 'Уточняем аудиторию, повод, площадку и желаемый результат.'],
-  ['02', 'Сценарий', 'Предлагаем тему, механику и структуру игрового сеанса.'],
-  ['03', 'Продакшн', 'Собираем контент, оформляем и вручную проверяем ответы.'],
-  ['04', 'Запуск', 'Передаём частную ссылку и остаёмся на связи в день события.'],
+  { number: '01', icon: Lightbulb, title: 'Бриф', text: 'Уточняем аудиторию, повод, площадку и желаемый результат.' },
+  { number: '02', icon: PencilLine, title: 'Сценарий', text: 'Предлагаем тему, механику и структуру игрового сеанса.' },
+  { number: '03', icon: FileCheck2, title: 'Продакшн', text: 'Собираем контент, оформляем и вручную проверяем ответы.' },
+  { number: '04', icon: Rocket, title: 'Запуск', text: 'Передаём частную ссылку и остаёмся на связи в день события.' },
 ]
 
 export function CreateGameScreen({
@@ -108,121 +125,152 @@ export function CreateGameScreen({
         onRules={onRules}
         onReview={onReview}
       />
-      <main className="create-game-screen">
-        <button type="button" className="create-game-back" onClick={onHome}>
+
+      <main className="corporate-page">
+        <button type="button" className="corporate-page__back" onClick={onHome}>
           <ArrowLeft /> На главную
         </button>
 
-        <section className="create-game-hero" aria-labelledby="partners-title">
-          <div className="create-game-hero__copy">
-            <span className="create-game-eyebrow">
-              <BriefcaseBusiness /> Сходится! для бизнеса
-            </span>
-            <h1 id="partners-title">
-              Игра, которая <em>работает</em> на вашу команду
-            </h1>
-            <p>
-              Создадим интерактивный игровой сеанс под ваше событие, бренд и аудиторию — от идеи до готовой частной ссылки.
-            </p>
-            <div className="create-game-hero__actions">
-              <a className="create-game-button create-game-button--primary" href="#brief">
+        <section className="corporate-hero" aria-labelledby="partners-title">
+          <div className="corporate-hero__media" aria-hidden="true">
+            <img src={heroArt} alt="" fetchPriority="high" />
+          </div>
+          <div className="corporate-hero__veil" />
+
+          <div className="corporate-hero__copy">
+            <div className="corporate-hero__badges" aria-label="Условия формата">
+              <span>Без установки</span>
+              <span><b>Private</b> Только ваша команда</span>
+            </div>
+            <span className="corporate-eyebrow"><BriefcaseBusiness /> Сходится! для бизнеса</span>
+            <h1 id="partners-title">Игра, которая <em>работает</em> на вашу команду</h1>
+            <p>Создадим интерактивный игровой сеанс под ваше событие, бренд и аудиторию — от идеи и редакторской сборки до готовой частной ссылки.</p>
+            <div className="corporate-hero__actions">
+              <a className="corporate-button corporate-button--primary" href="#brief">
                 Обсудить проект <ArrowRight />
               </a>
-              <a className="create-game-button create-game-button--ghost" href="#formats">
+              <a className="corporate-button corporate-button--ghost" href="#formats">
                 Посмотреть форматы
               </a>
             </div>
-            <div className="create-game-hero__facts" aria-label="Ключевые параметры">
-              <span><strong>10–500+</strong> участников</span>
-              <span><strong>15–40</strong> минут игры</span>
-              <span><strong>1 ссылка</strong> без установки</span>
-            </div>
           </div>
 
-          <div className="create-game-art" aria-label="Пример брендированного игрового сеанса">
-            <div className="create-game-art__halo" />
-            <img src={privateGameArt} alt="Коллаж игровых тем «Сходится!»" />
-            <div className="create-game-ticket">
-              <div className="create-game-ticket__top">
-                <span>PRIVATE SESSION</span>
-                <Sparkles />
-              </div>
-              <strong>Ваша команда.<br />Ваша история.</strong>
-              <small>Собрано редакцией «Сходится!»</small>
-            </div>
-            <div className="create-game-float-card create-game-float-card--top">
-              <Palette /> <span>В стиле<br /><strong>вашего бренда</strong></span>
-            </div>
-            <div className="create-game-float-card create-game-float-card--bottom">
-              <CircleCheckBig /> <span>Контент<br /><strong>проверен вручную</strong></span>
-            </div>
+          <div className="corporate-hero__stats" aria-label="Ключевые параметры">
+            <div><strong>10–500+</strong><span>участников</span></div>
+            <div><strong>15–40</strong><span>минут игры</span></div>
+            <div><strong>1 ссылка</strong><span>без установки</span></div>
+            <p><strong>Для офиса, онлайна и большой сцены</strong>Запустим к нужной дате и останемся на связи</p>
           </div>
         </section>
 
-        <section className="create-game-trust" aria-label="Преимущества формата">
-          <p>Подходит для офиса, онлайна и большой сцены</p>
-          <div>
-            <span><MonitorPlay /> Работает в браузере</span>
-            <span><ShieldCheck /> Доступ по частной ссылке</span>
-            <span><CalendarCheck2 /> Готово к вашей дате</span>
-          </div>
-        </section>
+        <section className="corporate-section" id="formats">
+          <header className="corporate-section__heading">
+            <div>
+              <span className="corporate-eyebrow"><Sparkles /> Три сценария</span>
+              <h2>Не просто квиз. Инструмент для вашей задачи</h2>
+            </div>
+            <p>Сохраняем лёгкость игры, а содержание и подачу настраиваем под контекст компании, аудиторию и площадку.</p>
+          </header>
 
-        <section className="create-game-formats" id="formats">
-          <div className="create-game-section-heading">
-            <span>Сценарии</span>
-            <h2>Не просто квиз.<br />Инструмент для вашей задачи</h2>
-            <p>Сохраняем лёгкость игры, а содержание и подачу настраиваем под контекст компании.</p>
-          </div>
-          <div className="create-game-format-grid">
-            {formats.map(({ icon: Icon, label, title, text, meta }, index) => (
-              <article key={label} className={`create-game-format-card create-game-format-card--${index + 1}`}>
-                <div className="create-game-format-card__top">
-                  <span><Icon /></span>
-                  <small>0{index + 1}</small>
+          <div className="corporate-formats">
+            {formats.map((format, index) => (
+              <article className="corporate-format-card" key={format.label}>
+                <div className="corporate-format-card__visual">
+                  <img src={format.image} alt={format.alt} loading="lazy" />
+                  <span className="corporate-format-card__index">0{index + 1}</span>
+                  <span className="corporate-format-card__label">{format.label}</span>
                 </div>
-                <p>{label}</p>
-                <h3>{title}</h3>
-                <div className="create-game-format-card__line" />
-                <div className="create-game-format-card__detail">
-                  <p>{text}</p>
-                  <strong><Check /> {meta}</strong>
+                <div className="corporate-format-card__body">
+                  <div className="corporate-format-card__meta"><span>{format.audience}</span><span>{format.duration}</span></div>
+                  <h3>{format.title}</h3>
+                  <p>{format.text}</p>
+                  <a href="#brief">Подобрать формат <ArrowRight /></a>
                 </div>
               </article>
             ))}
           </div>
-        </section>
 
-        <section className="create-game-value">
-          <div className="create-game-value__lead">
-            <span>Что получаете</span>
-            <h2>Всё, чтобы просто отправить ссылку и начать</h2>
-          </div>
-          <div className="create-game-value__list">
-            <article>
-              <span>01</span>
-              <div><strong>Сценарий под задачу</strong><p>Поможем найти идею и механику, даже если у вас пока есть только дата.</p></div>
-            </article>
-            <article>
-              <span>02</span>
-              <div><strong>Редакторская сборка</strong><p>Берём на себя вопросы, ответы, визуалы, тональность и финальную вычитку.</p></div>
-            </article>
-            <article>
-              <span>03</span>
-              <div><strong>Отдельный игровой сеанс</strong><p>Участники заходят по ссылке с телефона или компьютера — без регистрации и установки.</p></div>
-            </article>
+          <div className="corporate-trust">
+            <p>Один формат — на любом экране</p>
+            <div>
+              <span><MonitorPlay /> Работает в браузере</span>
+              <span><ShieldCheck /> Доступ по частной ссылке</span>
+              <span><CalendarCheck2 /> Готово к вашей дате</span>
+            </div>
           </div>
         </section>
 
-        <section className="create-game-process" aria-labelledby="process-title">
-          <div className="create-game-section-heading create-game-section-heading--row">
-            <div><span>Как это работает</span><h2 id="process-title">От задачи до запуска — четыре шага</h2></div>
+        <section className="corporate-section" id="preview">
+          <header className="corporate-section__heading">
+            <div>
+              <span className="corporate-eyebrow"><Sparkles /> Пример экрана</span>
+              <h2>Участники узнают себя уже с первого вопроса</h2>
+            </div>
+            <p>Показываем сам продукт: узнаваемую игровую карточку, собранную из материалов компании.</p>
+          </header>
+
+          <div className="corporate-preview">
+            <div className="corporate-preview__stage">
+              <article className="corporate-question-card">
+                <header><b>Раунд 03 / 10</b><span>Команда «Север»</span></header>
+                <h3>Какой проект команда впервые запустила прямо из кухни?</h3>
+                <div className="corporate-question-card__answers">
+                  <span>Приложение для курьеров</span>
+                  <span className="is-correct">Новогодний спецпроект <Check /></span>
+                  <span>Первый корпоративный блог</span>
+                  <span>Систему аналитики</span>
+                </div>
+                <footer>
+                  <span>12 человек уже ответили</span>
+                  <i><b /><b /><b /><b /><b /></i>
+                </footer>
+              </article>
+            </div>
+
+            <aside className="corporate-preview__copy">
+              <span className="corporate-eyebrow"><Sparkles /> В вашей версии</span>
+              <h3>Своей будет каждая деталь</h3>
+              <p>Берём узнаваемую механику «Сходится!» и собираем отдельный выпуск под конкретную аудиторию.</p>
+              <div className="corporate-features">
+                <article><PencilLine /><div><strong>Ваши вопросы и факты</strong><span>Редактируем формулировки и вручную проверяем каждый ответ.</span></div></article>
+                <article><Image /><div><strong>Фирменный визуальный слой</strong><span>Цвета, логотип, фотографии и материалы события.</span></div></article>
+                <article><Link2 /><div><strong>Одна частная ссылка</strong><span>Открывается с телефона и компьютера без установки.</span></div></article>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section className="corporate-section">
+          <div className="corporate-value">
+            <div className="corporate-value__lead">
+              <span className="corporate-eyebrow"><Sparkles /> Что получаете</span>
+              <h2>От вас — факты. От нас — готовая игра.</h2>
+              <p>Берём на себя редактуру, дизайн и запуск. Команде остаётся перейти по ссылке и начать.</p>
+            </div>
+            <div className="corporate-value__list">
+              {deliverables.map(([number, title, text]) => (
+                <article key={number}>
+                  <span>{number}</span>
+                  <div><strong>{title}</strong><p>{text}</p></div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="corporate-section" id="process" aria-labelledby="process-title">
+          <header className="corporate-section__heading">
+            <div>
+              <span className="corporate-eyebrow"><Sparkles /> Как это работает</span>
+              <h2 id="process-title">От задачи до запуска — четыре понятных шага</h2>
+            </div>
             <p>Один контакт с нашей стороны, прозрачные этапы и согласование до публикации.</p>
-          </div>
-          <div className="create-game-process__grid">
-            {steps.map(([number, title, text]) => (
+          </header>
+
+          <div className="corporate-process">
+            {steps.map(({ number, icon: Icon, title, text }) => (
               <article key={number}>
-                <span>{number}</span>
+                <header><span><Icon /></span><b>{number}</b></header>
                 <h3>{title}</h3>
                 <p>{text}</p>
               </article>
@@ -230,41 +278,41 @@ export function CreateGameScreen({
           </div>
         </section>
 
-        <section className="create-game-order" id="brief">
-          <div className="create-game-order__intro">
-            <span>Давайте знакомиться</span>
-            <h2>Расскажите о событии</h2>
+        <section className="corporate-order" id="brief">
+          <div className="corporate-order__intro">
+            <span className="corporate-eyebrow"><Sparkles /> Заявка на спецвыпуск</span>
+            <h2>Расскажите, что должно сойтись</h2>
             <p>Ответим по рабочей почте, уточним задачу и предложим формат, сроки и стоимость.</p>
-            <div className="create-game-order__promise">
+            <div className="corporate-order__promise">
               <Clock3 />
-              <div><strong>Без оплаты на этом этапе</strong><small>Сначала обсудим идею и зафиксируем объём работ.</small></div>
+              <div><strong>Без оплаты на этом этапе</strong><small>Сначала обсуждаем идею и объём работ.</small></div>
             </div>
-            <div className="create-game-order__promise">
+            <div className="corporate-order__promise">
               <ShieldCheck />
-              <div><strong>Ваши материалы останутся частными</strong><small>Игра не появится в публичном каталоге.</small></div>
+              <div><strong>Материалы останутся частными</strong><small>Игра не появится в публичном каталоге.</small></div>
             </div>
           </div>
 
           {sent ? (
-            <div className="create-game-success" role="status">
+            <div className="corporate-order__success" role="status">
               <Check />
               <h3>Заявка отправлена</h3>
               <p>Спасибо! Мы получили описание и вернёмся с уточнениями по указанной почте.</p>
               <button type="button" onClick={onHome}>Вернуться к играм</button>
             </div>
           ) : (
-            <form onSubmit={(event) => void submit(event)}>
+            <form className="corporate-order__form" onSubmit={(event) => void submit(event)}>
               <label>
                 <span>Как к вам обращаться</span>
-                <input name="contactName" minLength={2} maxLength={120} placeholder="Имя" required />
+                <input name="contactName" minLength={2} maxLength={120} placeholder="Имя" autoComplete="name" required />
               </label>
               <label>
                 <span>Рабочая почта</span>
-                <input name="email" type="email" maxLength={254} placeholder="name@company.ru" required />
+                <input name="email" type="email" maxLength={254} placeholder="name@company.ru" autoComplete="email" required />
               </label>
               <label>
                 <span>Компания или проект</span>
-                <input name="company" maxLength={160} placeholder="Название компании" />
+                <input name="company" maxLength={160} placeholder="Название компании" autoComplete="organization" />
               </label>
               <label>
                 <span>Участников</span>
@@ -274,7 +322,7 @@ export function CreateGameScreen({
                 <span>Желаемая дата</span>
                 <input name="eventDate" type="date" />
               </label>
-              <label className="create-game-wide">
+              <label className="corporate-order__wide">
                 <span>Что хотите устроить</span>
                 <textarea
                   name="description"
@@ -285,18 +333,18 @@ export function CreateGameScreen({
                   required
                 />
               </label>
-              <label className="create-game-honeypot" aria-hidden="true">
+              <label className="corporate-order__honeypot" aria-hidden="true">
                 <span>Сайт</span>
                 <input name="website" tabIndex={-1} autoComplete="off" />
               </label>
-              <label className="create-game-consent create-game-wide">
+              <label className="corporate-order__consent corporate-order__wide">
                 <input type="checkbox" required />
                 <span>Согласен на обработку контактных данных для ответа на заявку.</span>
               </label>
-              <button className="create-game-wide" type="submit" disabled={pending}>
-                {pending ? 'Отправляем…' : <>Обсудить проект <ArrowRight /></>}
+              <button className="corporate-order__wide" type="submit" disabled={pending}>
+                {pending ? 'Отправляем…' : <>Обсудить проект <ExternalLink /></>}
               </button>
-              {error && <p className="create-game-wide" role="alert">{error}</p>}
+              {error && <p className="corporate-order__error corporate-order__wide" role="alert">{error}</p>}
             </form>
           )}
         </section>

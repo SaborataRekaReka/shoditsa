@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import type { CommerceProduct } from '@shoditsa/contracts'
+import { DEFAULT_CLUB_PRODUCTS, type CommerceProduct } from '@shoditsa/contracts'
 import { ArrowLeft, Building2, Mail, Phone } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { api, queryKeys } from '../../api/client'
@@ -34,8 +34,7 @@ type ShellProps = {
 }
 
 const fallbackProducts: CommerceProduct[] = [
-  { id: 'club_30d', kind: 'club', title: 'Клубный билет на 30 дней', description: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток.', priceMinor: 19_900, currency: 'RUB', durationDays: 30, metadata: {} },
-  { id: 'club_365d', kind: 'club', title: 'Годовой клубный билет', description: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток.', priceMinor: 179_000, currency: 'RUB', durationDays: 365, metadata: {} },
+  ...DEFAULT_CLUB_PRODUCTS.map((product) => ({ ...product, metadata: { ...product.metadata } })),
   { id: 'pack_dtf_games_30', kind: 'pack', title: '30 игр, которые сходятся', description: 'Тематический спецпоказ из 30 игр с отдельным прогрессом.', priceMinor: 14_900, currency: 'RUB', durationDays: null, metadata: { badge: 'Навсегда' } },
   { id: 'tip_paper_99', kind: 'tip', title: 'Бумажный жетон', description: 'Памятный цифровой жетон в профиле.', priceMinor: 9_900, currency: 'RUB', durationDays: null, metadata: {} },
   { id: 'tip_silver_299', kind: 'tip', title: 'Серебряный жетон', description: 'Памятный цифровой жетон в профиле.', priceMinor: 29_900, currency: 'RUB', durationDays: null, metadata: {} },

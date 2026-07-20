@@ -16,6 +16,29 @@ export type CommerceProduct = {
   metadata: Record<string, unknown>
 }
 
+export const DEFAULT_CLUB_PRODUCTS = [
+  {
+    id: 'club_30d',
+    kind: 'club',
+    title: 'Клубный билет на 30 дней',
+    description: 'Полный архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток. Продление вручную.',
+    priceMinor: 19_900,
+    currency: 'RUB',
+    durationDays: 30,
+    metadata: {},
+  },
+  {
+    id: 'club_365d',
+    kind: 'club',
+    title: 'Годовой клубный билет',
+    description: 'Полный архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Продление вручную.',
+    priceMinor: 179_000,
+    currency: 'RUB',
+    durationDays: 365,
+    metadata: {},
+  },
+] as const satisfies readonly CommerceProduct[]
+
 export type CommerceCatalogResponse = { enabled: boolean; currency: string; products: CommerceProduct[] }
 export type MembershipSummary = {
   active: boolean
