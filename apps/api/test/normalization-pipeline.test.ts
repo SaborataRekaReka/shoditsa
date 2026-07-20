@@ -8,6 +8,13 @@ describe('normalization pipeline', () => {
     expect(fields).not.toContain('year')
   })
 
+  it('exposes chat-engine fields without catalog-only presentation fields for danetki', () => {
+    const fields = normalizationFields('danetki').map((entry) => entry.field)
+    expect(fields).toEqual(expect.arrayContaining(['condition', 'solution', 'keyFacts', 'hints', 'starterQuestions', 'answerRules']))
+    expect(fields).not.toContain('plotHint')
+    expect(fields).not.toContain('posterUrl')
+  })
+
   it('rejects protected or unrelated fields', () => {
     expect(() => assertNormalizationField('music', 'id')).toThrow()
     expect(() => assertNormalizationField('movie', 'activityStartYear')).toThrow()

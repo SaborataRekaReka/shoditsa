@@ -1,7 +1,7 @@
 import { and, asc, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import { contentItemVersions, contentRevisions, createDatabase, dailyChallenges } from '@shoditsa/database'
-import type { ApiDifficultyKey, PeriodKey, TitleItem, TitleMode } from '@shoditsa/contracts'
+import { isCatalogGuessModeId, type ApiDifficultyKey, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import { dailyTitle, DIFFICULTY_ORDER, PERIODS, poolFor } from '@shoditsa/game-core'
 import { arg } from './lib.js'
 
@@ -15,7 +15,7 @@ try {
     .from(contentItemVersions).where(and(eq(contentItemVersions.revisionId, revision[0].id), eq(contentItemVersions.allowedInGame, true))).orderBy(asc(contentItemVersions.sortOrder))
   const byMode = new Map<TitleMode, Array<{ id: string; item: TitleItem }>>()
   for (const row of rows) {
-    if (row.mode === 'city') continue
+    if (!isCatalogGuessModeId(row.mode) || row.mode === 'city') continue
     const list = byMode.get(row.mode) ?? []
     list.push({ id: row.id, item: row.payload as TitleItem }); byMode.set(row.mode, list)
   }

@@ -175,11 +175,24 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: 'Население', present: (payload) => hasContentValue(payload.population) },
     { label: 'Герб / флаг', present: (payload) => valueFromKeys(payload, ['coatOfArmsUrl', 'cityFlagUrl', 'countryFlagUrl']) },
   ],
+  danetki: [
+    { label: 'Русское название', present: (payload) => hasTextValue(payload.titleRu) },
+    { label: 'Условие', present: (payload) => hasTextValue(payload.condition) },
+    { label: 'Разгадка', present: (payload) => hasTextValue(payload.solution) },
+    { label: 'Сложность', present: (payload) => hasTextValue(payload.difficulty) },
+    { label: 'Жанры', present: (payload) => hasContentValue(payload.genres) },
+    { label: 'Ключевые факты', present: (payload) => hasContentValue(payload.keyFacts) },
+    { label: 'Подсказки', present: (payload) => hasContentValue(payload.hints) },
+    { label: 'Стартовые вопросы', present: (payload) => hasContentValue(payload.starterQuestions) },
+    { label: 'Правила ответа', present: (payload) => hasContentValue(payload.answerRules) },
+  ],
 }
 
 const completionMeta = (payload: unknown, mode: ContentMode) => {
   const record = asRecord(payload)
-  const fields = [...COMPLETION_COMMON_FIELDS, ...(COMPLETION_MODE_FIELDS[mode] ?? [])]
+  const fields = mode === 'danetki'
+    ? COMPLETION_MODE_FIELDS.danetki
+    : [...COMPLETION_COMMON_FIELDS, ...COMPLETION_MODE_FIELDS[mode]]
   const missingFields = fields.filter((field) => !field.present(record)).map((field) => field.label)
   const fieldsTotal = fields.length
   const fieldsFilled = fieldsTotal - missingFields.length

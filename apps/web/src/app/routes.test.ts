@@ -23,6 +23,8 @@ describe('typed player routes', () => {
     expect(pathnameForPlayerRoute({ screen: 'special', packId: 'pack one' })).toBe('/specials/pack%20one')
     expect(playerRouteFromPathname('/create-a-game')).toEqual({ screen: 'create-game' })
     expect(playerRouteFromPathname('/purchase/return')).toEqual({ screen: 'purchase-return' })
+    expect(playerRouteFromPathname('/games/danetki')).toEqual({ screen: 'hub' })
+    expect(playerRouteFromPathname('/play/danetki')).toEqual({ screen: 'hub' })
     expect(playerRouteFromPathname('/games/not-a-mode')).toEqual({ screen: 'hub' })
   })
 })

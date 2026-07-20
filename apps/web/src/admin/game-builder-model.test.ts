@@ -69,4 +69,27 @@ describe('JSON game builder model', () => {
       cast: [{ nameRu: 'Сергей Бодров мл.', nameOriginal: '', photoUrl: null }],
     })
   })
+
+  it('detects danetki and preserves its structured chat-engine fields', () => {
+    const analysed = analyseUnknownJson([{
+      id: 'case-1', titleRu: 'Закрытая комната', condition: 'Длинное условие загадочной ситуации.',
+      solution: 'Полное объяснение загадочной ситуации.', difficulty: 'medium', genres: ['детективная'],
+      keyFacts: [{ id: 'room', text: 'Комната двигалась', required: true }],
+      hints: [{ level: 1, text: 'Комната не стояла на месте' }], starterQuestions: ['Это помещение?'],
+      answerRules: { requiredFactIds: ['room'], minCoverage: 0.75 }, contentStatus: 'test', allowedInGame: true,
+    }])
+    const mode = inferContentMode(analysed.fields)
+    const targets = targetsForMode(mode)
+    const mapping = autoMapFields(analysed.fields, targets)
+    const item = mapRecordToItem({ record: analysed.records[0], index: 0, fields: analysed.fields, targets, mapping, mode })
+
+    expect(mode).toBe('danetki')
+    expect(item.data).toMatchObject({
+      condition: 'Длинное условие загадочной ситуации.',
+      solution: 'Полное объяснение загадочной ситуации.',
+      keyFacts: [{ id: 'room', text: 'Комната двигалась', required: true }],
+      answerRules: { requiredFactIds: ['room'], minCoverage: 0.75 },
+    })
+    expect(targets.map((target) => target.key)).not.toContain('posterUrl')
+  })
 })

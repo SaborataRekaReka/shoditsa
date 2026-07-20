@@ -5,6 +5,7 @@ import { calculateResponseCost, type OpenAiUsageEntry } from './pipeline-cost.js
 type Json = Record<string, unknown>
 
 const COMMON_FIELDS = ['titleRu', 'titleOriginal', 'alternativeTitles', 'year', 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame', 'posterUrl', 'headerUrl', 'backdropUrl', 'screenshots']
+const DANETKI_COMMON_FIELDS = new Set(['titleRu', 'titleOriginal', 'alternativeTitles', 'genres', 'allowedInGame'])
 const MODE_FIELDS: Record<ContentMode, string[]> = {
   movie: ['runtimeMinutes', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId', 'ratings', 'awards'],
   series: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId'],
@@ -13,6 +14,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
+  danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
 }
 
 const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
@@ -23,6 +25,7 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   music: ['year', 'activityStartYear', 'endYear', 'countries', 'musicType', 'musicOrigin', 'members', 'associatedActs', 'musicLinks'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'ranks'],
+  danetki: ['condition', 'solution', 'difficulty', 'genres', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'allowedInGame'],
 }
 
 const TEMPLATE_SPECIAL_VARIABLES = [
@@ -55,10 +58,12 @@ const LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Окончание деятельности', titleRu: 'Русское название',
   titleOriginal: 'Оригинальное название', plotHint: 'Подсказка', facts: 'Факты', genres: 'Жанры', countries: 'Страны',
   country: 'Страна', continent: 'Континент', languages: 'Языки', population: 'Население', timezone: 'Часовой пояс',
+  condition: 'Условие', solution: 'Разгадка', difficulty: 'Сложность', tags: 'Теги', keyFacts: 'Ключевые факты',
+  hints: 'Подсказки', starterQuestions: 'Стартовые вопросы', answerRules: 'Правила ответа', contentWarnings: 'Предупреждения', contentStatus: 'Статус контента',
 }
 
 export const normalizationFields = (mode: ContentMode) => [...new Set([
-  ...COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year')),
+  ...COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year') && (mode !== 'danetki' || DANETKI_COMMON_FIELDS.has(field))),
   ...MODE_FIELDS[mode],
 ])].map((field) => ({ field, label: LABELS[field] ?? field }))
 

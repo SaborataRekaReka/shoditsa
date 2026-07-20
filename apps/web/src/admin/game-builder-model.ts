@@ -178,11 +178,28 @@ const modeTargets: Partial<Record<ContentMode, TargetDefinition[]>> = {
     { key: 'cityFlagUrl', payloadKey: 'cityFlagUrl', label: 'Флаг города', hint: 'Изображение городского флага', group: 'media', valueType: 'media', visual: true, aliases: ['cityflagurl', 'флаггорода'] },
     { key: 'coatOfArmsUrl', payloadKey: 'coatOfArmsUrl', label: 'Герб', hint: 'Изображение герба города', group: 'media', valueType: 'media', visual: true, aliases: ['coatofarmsurl', 'герб'] },
   ],
+  danetki: [
+    { key: 'condition', payloadKey: 'condition', label: 'Условие', hint: 'Текст загадочной ситуации', group: 'attempt', valueType: 'string', required: true, visual: true, aliases: ['condition', 'situation', 'story', 'условие', 'ситуация'] },
+    { key: 'solution', payloadKey: 'solution', label: 'Разгадка', hint: 'Полное объяснение ситуации', group: 'attempt', valueType: 'string', required: true, aliases: ['solution', 'answer', 'explanation', 'разгадка', 'ответ', 'объяснение'] },
+    { key: 'difficulty', payloadKey: 'difficulty', label: 'Сложность', hint: 'easy, medium или hard', group: 'identity', valueType: 'string', required: true, aliases: ['difficulty', 'level', 'сложность', 'уровень'] },
+    { key: 'tags', payloadKey: 'tags', label: 'Теги', hint: 'Тематические метки', group: 'identity', valueType: 'array', aliases: ['tags', 'keywords', 'теги', 'метки'] },
+    { key: 'keyFacts', payloadKey: 'keyFacts', label: 'Ключевые факты', hint: 'Факты с ID, текстом и признаком обязательности', group: 'attempt', valueType: 'array', required: true, aliases: ['keyfacts', 'facts', 'ключевыефакты', 'факты'] },
+    { key: 'hints', payloadKey: 'hints', label: 'Подсказки', hint: 'Три подсказки уровней 1, 2 и 3', group: 'attempt', valueType: 'array', required: true, aliases: ['hints', 'clues', 'подсказки'] },
+    { key: 'starterQuestions', payloadKey: 'starterQuestions', label: 'Стартовые вопросы', hint: 'Примеры первых вопросов игрока', group: 'attempt', valueType: 'array', required: true, aliases: ['starterquestions', 'questions', 'стартовыевопросы', 'вопросы'] },
+    { key: 'requiredFactIds', payloadKey: 'answerRules.requiredFactIds', label: 'Обязательные факты ответа', hint: 'ID обязательных ключевых фактов', group: 'attempt', valueType: 'array', required: true, aliases: ['requiredfactids', 'answerrequiredids', 'обязательныефакты'] },
+    { key: 'minCoverage', payloadKey: 'answerRules.minCoverage', label: 'Минимальное покрытие', hint: 'Доля фактов от 0.5 до 1', group: 'attempt', valueType: 'number', required: true, aliases: ['mincoverage', 'minimumcoverage', 'минимальноепокрытие'] },
+    { key: 'contentWarnings', payloadKey: 'contentWarnings', label: 'Предупреждения', hint: 'Предупреждения о чувствительном содержании', group: 'identity', valueType: 'array', aliases: ['contentwarnings', 'warnings', 'предупреждения'] },
+    { key: 'contentStatus', payloadKey: 'contentStatus', label: 'Статус контента', hint: 'draft, test, ready или blocked', group: 'identity', valueType: 'string', required: true, aliases: ['contentstatus', 'status', 'статус'] },
+    { key: 'popularityScore', payloadKey: 'popularityScore', label: 'Популярность', hint: 'Вес загадки при выборе', group: 'identity', valueType: 'number', aliases: ['popularityscore', 'popularity', 'weight', 'популярность', 'вес'] },
+  ],
 }
 
 const movieLayoutDataOnly = new Set(['plotHint', 'facts', 'headerUrl'])
+const danetkiCommonTargets = new Set(['id', 'titleRu', 'titleOriginal', 'alternativeTitles', 'genres', 'allowedInGame'])
 export const targetsForMode = (mode: ContentMode) => [
-  ...commonTargets.map((target) => movieLayoutDataOnly.has(target.key) ? { ...target, visual: false } : target),
+  ...commonTargets
+    .filter((target) => mode !== 'danetki' || danetkiCommonTargets.has(target.key))
+    .map((target) => movieLayoutDataOnly.has(target.key) ? { ...target, visual: false } : target),
   ...(modeTargets[mode] ?? []),
 ]
 
@@ -221,6 +238,7 @@ export const autoMapFields = (fields: DetectedField[], targets: TargetDefinition
 export const inferContentMode = (fields: DetectedField[]): ContentMode => {
   const names = normalizedName(fields.map((field) => field.path.join(' ')).join(' '))
   const scores: Array<[ContentMode, number]> = [
+    ['danetki', ['condition', 'solution', 'keyfacts', 'starterquestions', 'answerrules', 'данетка', 'разгадка'].filter((token) => names.includes(normalizedName(token))).length],
     ['city', ['population', 'timezone', 'continent', 'население', 'столица'].filter((token) => names.includes(normalizedName(token))).length],
     ['game', ['steam', 'developer', 'platform', 'разработчик'].filter((token) => names.includes(normalizedName(token))).length],
     ['music', ['artist', 'track', 'album', 'исполнитель'].filter((token) => names.includes(normalizedName(token))).length],

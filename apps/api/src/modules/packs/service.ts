@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import type { ApiRole, ContentPack, ContentPackDetail } from '@shoditsa/contracts'
+import { isPlayableModeId, type ApiRole, type ContentPack, type ContentPackDetail } from '@shoditsa/contracts'
 import {
   commerceProducts, contentPackEntries, contentPacks, contentItemVersions, gameSessions,
   userPackProgress, type Database,
@@ -19,6 +19,7 @@ const packCard = async (
   userId: string | null,
   role: ApiRole,
 ): Promise<ContentPack> => {
+  if (!isPlayableModeId(pack.mode)) throw new ApiError(404, 'PACK_MODE_NOT_PLAYABLE', 'Этот спецпоказ пока недоступен')
   const [counts, productRows, progressRows, fullAccess, owned] = await Promise.all([
     db.select({ count: sql<number>`count(*)::int` }).from(contentPackEntries).where(and(eq(contentPackEntries.packId, pack.id), eq(contentPackEntries.enabled, true))),
     pack.productId ? db.select().from(commerceProducts).where(eq(commerceProducts.id, pack.productId)).limit(1) : Promise.resolve([]),

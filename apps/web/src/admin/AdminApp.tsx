@@ -44,6 +44,7 @@ const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admi
 const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
   { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' },
+  { value: 'danetki', label: 'Данетки' },
 ]
 const MODE_LABEL = Object.fromEntries(MODES.map((mode) => [mode.value, mode.label])) as Record<ContentMode, string>
 type ContentFieldFilter = string
@@ -468,7 +469,7 @@ function FieldEditor({ name, value, disabled, onChange }: { name: string; value:
   if (typeof value === 'number' || ['year', 'endYear', 'runtime', 'episodes', 'seasonsCount', 'popularityScore', 'topRank'].includes(name)) return <label className="admin-field"><span>{label}</span><input type="number" value={value == null ? '' : String(value)} disabled={disabled} onChange={(event) => onChange(event.target.value === '' ? null : Number(event.target.value))} /></label>
   if (Array.isArray(value)) return <label className="admin-field admin-field--wide"><span>{label}<small>{value.length} знач.</small></span><textarea value={value.map((entry) => typeof entry === 'string' ? entry : JSON.stringify(entry)).join('\n')} disabled={disabled} onChange={(event) => onChange(event.target.value.split('\n').map((entry) => entry.trim()).filter(Boolean).map((entry) => { try { return JSON.parse(entry) } catch { return entry } }))} /></label>
   if (value && typeof value === 'object') return <label className="admin-field admin-field--wide"><span>{label}<small>JSON</small></span><textarea className="admin-code-input" value={JSON.stringify(value, null, 2)} disabled={disabled} onChange={(event) => { try { onChange(JSON.parse(event.target.value)) } catch { /* keep last valid object */ } }} /></label>
-  const multiline = ['description', 'plotHint', 'slogan', 'notes', 'facts', 'safetyDisclaimer'].some((part) => name.toLocaleLowerCase().includes(part.toLocaleLowerCase()))
+  const multiline = ['description', 'plotHint', 'slogan', 'notes', 'facts', 'safetyDisclaimer', 'condition', 'solution'].some((part) => name.toLocaleLowerCase().includes(part.toLocaleLowerCase()))
   return <label className={`admin-field ${multiline ? 'admin-field--wide' : ''}`}><span>{label}{typeof value === 'string' && <small>{value.length}</small>}</span>{multiline
     ? <textarea value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />
     : <input value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />}</label>
@@ -476,7 +477,7 @@ function FieldEditor({ name, value, disabled, onChange }: { name: string; value:
 
 function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode: ContentMode }) {
   const poster = typeof payload.posterUrl === 'string' ? payload.posterUrl : typeof payload.headerUrl === 'string' ? payload.headerUrl : null
-  const hint = String(payload.plotHint ?? payload.description ?? 'Подсказка пока не заполнена')
+  const hint = String(mode === 'danetki' ? payload.condition ?? 'Условие пока не заполнено' : payload.plotHint ?? payload.description ?? 'Подсказка пока не заполнена')
   return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>Подсказка о сюжете</button><button>Интересный факт</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
 }
 
@@ -561,6 +562,16 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Население', ['population']],
       ['Часовой пояс', ['timezone']],
       ['Столица', ['capital']],
+    ],
+    danetki: [
+      ['Условие', ['condition']],
+      ['Разгадка', ['solution']],
+      ['Сложность', ['difficulty']],
+      ['Теги', ['tags']],
+      ['Ключевые факты', ['keyFacts']],
+      ['Подсказки', ['hints']],
+      ['Стартовые вопросы', ['starterQuestions']],
+      ['Статус', ['contentStatus']],
     ],
   }
   return [...shared, ...byMode[mode]].map(([label, paths]) => {
@@ -2618,6 +2629,7 @@ function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | nu
 type PipelineKey = 'music' | 'movie' | 'anime' | 'normalization'
 
 const NORMALIZATION_COMMON_FIELDS = ['titleRu', 'titleOriginal', 'alternativeTitles', 'year', 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame', 'posterUrl', 'headerUrl', 'backdropUrl', 'screenshots']
+const DANETKI_NORMALIZATION_COMMON_FIELDS = new Set(['titleRu', 'titleOriginal', 'alternativeTitles', 'genres', 'allowedInGame'])
 const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   movie: ['runtimeMinutes', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId', 'ratings', 'awards'],
   series: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId'],
@@ -2626,6 +2638,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
+  danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
 }
 const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Год окончания', titleRu: 'Русское название',
@@ -2635,9 +2648,11 @@ const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   directors: 'Режиссёры', writers: 'Сценаристы', cast: 'Актёры', ratings: 'Рейтинги', awards: 'Награды',
   country: 'Страна', continent: 'Континент', languages: 'Языки', population: 'Население', timezone: 'Часовой пояс',
   capital: 'Столица', popular: 'Популярный город', countryFlagUrl: 'Флаг страны', cityFlagUrl: 'Флаг города', coatOfArmsUrl: 'Герб', ranks: 'Городской профиль',
+  condition: 'Условие', solution: 'Разгадка', difficulty: 'Сложность', tags: 'Теги', keyFacts: 'Ключевые факты',
+  hints: 'Подсказки', starterQuestions: 'Стартовые вопросы', answerRules: 'Правила ответа', contentWarnings: 'Предупреждения', contentStatus: 'Статус контента',
 }
 const normalizationFallbackFields = (mode: ContentMode) => [...new Set([
-  ...NORMALIZATION_COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year')),
+  ...NORMALIZATION_COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year') && (mode !== 'danetki' || DANETKI_NORMALIZATION_COMMON_FIELDS.has(field))),
   ...NORMALIZATION_MODE_FIELDS[mode],
 ])].map((field) => ({ field, label: NORMALIZATION_FIELD_LABELS[field] ?? field }))
 

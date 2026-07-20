@@ -1,6 +1,9 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
 export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki'] as const
-export const PLAYABLE_MODE_IDS = CONTENT_MODE_IDS
+// Danetki content can already be prepared in the admin panel, but its chat
+// runtime is not wired into the player application yet. Keep it out of public
+// game routes until that engine is available end to end.
+export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'] as const
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
 export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]
@@ -70,11 +73,25 @@ export const GAME_MODE_MANIFEST = {
     engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 8,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
   },
-} as const satisfies Record<PlayableModeId, GameModeCapabilities>
+} as const satisfies Record<ContentModeId, GameModeCapabilities>
+
+export type CatalogGuessModeId = {
+  [Mode in ContentModeId]: typeof GAME_MODE_MANIFEST[Mode]['engine'] extends 'catalog_guess' ? Mode : never
+}[ContentModeId]
+
+export const isCatalogGuessModeId = (value: unknown): value is CatalogGuessModeId => (
+  typeof value === 'string'
+  && (CONTENT_MODE_IDS as readonly string[]).includes(value)
+  && GAME_MODE_MANIFEST[value as ContentModeId].engine === 'catalog_guess'
+)
+
+export const CATALOG_GUESS_MODE_IDS = CONTENT_MODE_IDS.filter(isCatalogGuessModeId)
 
 export const DAILY_MODE_IDS = PLAYABLE_MODE_IDS
   .filter((mode) => GAME_MODE_MANIFEST[mode].dailyOrder > 0)
   .sort((left, right) => GAME_MODE_MANIFEST[left].dailyOrder - GAME_MODE_MANIFEST[right].dailyOrder)
+
+export const CATALOG_GUESS_DAILY_MODE_IDS = DAILY_MODE_IDS.filter(isCatalogGuessModeId)
 
 export const FULL_HOUSE_MODE_IDS = DAILY_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].countsTowardFullHouse)
 export const PERIOD_UNLOCKABLE_MODE_IDS = PLAYABLE_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].periodPolicy === 'year')

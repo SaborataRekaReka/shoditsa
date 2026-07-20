@@ -27,6 +27,7 @@ const TEMPLATE_STORAGE = 'shoditsa:admin:game-builder-templates:v1'
 const MODE_OPTIONS: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
   { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' },
+  { value: 'danetki', label: 'Данетки' },
 ]
 const MODE_LABEL = Object.fromEntries(MODE_OPTIONS.map((option) => [option.value, option.label])) as Record<ContentMode, string>
 const KIND_LABEL: Record<DetectedField['kind'], string> = { text: 'текст', number: 'число', boolean: 'да/нет', list: 'список', 'object-list': 'объекты', object: 'объект', mixed: 'разные', empty: 'пусто' }
@@ -285,7 +286,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
   const cast = currentData.cast
   const today = new Date()
   const prettyToday = new Intl.DateTimeFormat('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }).format(today)
-  const gameSubject: Record<ContentMode, string> = { movie: 'фильм', series: 'сериал', anime: 'аниме', game: 'игру', music: 'артиста', diagnosis: 'диагноз', city: 'город' }
+  const gameSubject: Record<ContentMode, string> = { movie: 'фильм', series: 'сериал', anime: 'аниме', game: 'игру', music: 'артиста', diagnosis: 'диагноз', city: 'город', danetki: 'данетку' }
   const nativeDrop = (targetKey: string) => ({
     onDragOver: (event: DragEvent<HTMLElement>) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' },
     onDrop: (event: DragEvent<HTMLElement>) => { event.preventDefault(); const fieldId = event.dataTransfer.getData('application/x-shoditsa-json-field') || event.dataTransfer.getData('text/plain'); if (fieldId) setTargetMapping(targetKey, fieldId) },

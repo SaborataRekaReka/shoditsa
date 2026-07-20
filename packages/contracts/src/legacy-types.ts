@@ -1,6 +1,7 @@
-import type { PlayableMode } from './schemas.js'
+import type { CatalogGuessModeId } from './game-modes.js'
 
-export type TitleMode = PlayableMode
+/** Modes powered by the legacy catalog-comparison game engine. */
+export type TitleMode = CatalogGuessModeId
 export type PeriodKey = 'all' | 'from_1960' | 'from_1980' | 'from_1990' | 'from_2000' | 'from_2010' | 'from_2020'
 export type DifficultyKey = 'easy' | 'medium' | 'hard' | 'expert' | 'experimental'
 export type MusicOrigin = 'ru' | 'intl'
