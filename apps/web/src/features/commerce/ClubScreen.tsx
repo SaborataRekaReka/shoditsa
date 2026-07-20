@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Archive, ArrowLeft, Clapperboard, Heart, LockKeyhole, Ticket } from 'lucide-react'
-import { AppHeader } from '../../components/app-shell/AppShell'
+import { Archive, Clapperboard, Heart, LockKeyhole, Sparkles, Ticket } from 'lucide-react'
+import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import {
@@ -11,7 +11,6 @@ import {
 import { ClubCard, type ClubOffer } from './ClubCard'
 import { CheckoutButton } from './CheckoutButton'
 import { TipCheckoutTrigger } from './TipCheckout'
-import { MembershipBadge } from './MembershipBadge'
 import { api, queryKeys } from '../../api/client'
 import './CommercialShell.css'
 
@@ -54,10 +53,15 @@ const decimalFormatter = new Intl.NumberFormat('ru-RU', {
   maximumFractionDigits: 2,
 })
 
+const formatMembershipDate = (value: string) => new Intl.DateTimeFormat('ru-RU', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(new Date(value))
+
 export function ClubScreen({
   onHome,
   onArchive,
-  onProfile,
   onStats,
   onRules,
   onReview,
@@ -156,13 +160,20 @@ export function ClubScreen({
         onRules={onRules}
         onReview={onReview}
       />
-      <main className="club-screen">
-        <button className="club-screen__back" type="button" onClick={onHome}>
-          <ArrowLeft /> На главную
-        </button>
+      <main className="club-screen hub-screen">
         <section className="club-hero">
           <div className="club-hero__copy">
-            <span>Клуб «Сходится!»</span>
+            <div className="club-hero__eyebrow">
+              <span>Клуб «Сходится!»</span>
+              {hasClub && (
+                <span className="club-hero__status">
+                  <Sparkles />
+                  {membership.endsAt
+                    ? `Активен до ${formatMembershipDate(membership.endsAt)}`
+                    : 'Клуб активен'}
+                </span>
+              )}
+            </div>
             <h1>
               Больше игр.
               <br />
@@ -174,8 +185,12 @@ export function ClubScreen({
               и клубные спецпоказы — по одному билету.
             </p>
             <div className="club-hero__actions">
-              <button type="button" onClick={scrollToOffers}>Вступить в клуб</button>
-              <a href="#club-benefits">Посмотреть преимущества</a>
+              <ActionButton type="button" onClick={hasClub ? onArchive : scrollToOffers}>
+                {hasClub ? 'Открыть архив' : 'Вступить в клуб'}
+              </ActionButton>
+              <a href={hasClub ? '/specials' : '#club-benefits'}>
+                {hasClub ? 'Перейти к спецпоказам' : 'Посмотреть преимущества'}
+              </a>
             </div>
             <small className="club-hero__renewal"><LockKeyhole /> Продление только вручную</small>
           </div>
@@ -218,17 +233,15 @@ export function ClubScreen({
 
         <section className="club-offers" id="club-offers">
           <div className="club-offers__heading">
-            <h2>{hasClub ? 'Ваш билет активен' : 'Выберите срок'}</h2>
-            {hasClub ? (
-              <MembershipBadge membership={membership} />
-            ) : (
-              <p>Один доступ. Разница только в сроке.</p>
-            )}
+            <h2>Выберите срок</h2>
+            <p>Один доступ. Разница только в сроке.</p>
           </div>
           <div className="club-offers__grid">
             {offers.map((offer) => {
               const product = productsById.get(offer.id)
-              const buttonLabel = offer.id === 'club_365d' ? 'Взять на год' : 'Взять на месяц'
+              const buttonLabel = hasClub
+                ? offer.id === 'club_365d' ? 'Продлить на год' : 'Продлить на месяц'
+                : offer.id === 'club_365d' ? 'Взять на год' : 'Взять на месяц'
               return (
                 <ClubCard
                   key={offer.id}
@@ -250,29 +263,6 @@ export function ClubScreen({
           {notice && (
             <p className="club-offers__notice" role="status">{notice}</p>
           )}
-        </section>
-
-        <section className="club-account-state">
-          <div>
-            <span>Ваш статус</span>
-            <strong>
-              {hasClub
-                ? 'Клубный доступ активен'
-                : authenticated
-                  ? 'Аккаунт готов к покупке'
-                  : 'Сейчас вы играете как гость'}
-            </strong>
-            <p>
-              {hasClub
-                ? 'Архив и свободная игра уже доступны по клубному билету.'
-                : authenticated
-                  ? 'После оплаты абонемент будет привязан к этому аккаунту.'
-                  : 'Посмотреть предложение можно без регистрации. Для покупки потребуется постоянный аккаунт.'}
-            </p>
-          </div>
-          <button type="button" onClick={onProfile}>
-            {authenticated ? 'Открыть профиль' : 'Создать аккаунт'}
-          </button>
         </section>
 
         <section className="club-tip-cta" id="club-support">
