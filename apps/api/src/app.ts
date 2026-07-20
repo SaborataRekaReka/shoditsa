@@ -15,6 +15,7 @@ import {
   ContentReportBodySchema, FreePlayBodySchema, GameStartBodySchema, HintChoiceBodySchema,
   LedgerQuerySchema, LegacyImportBodySchema, PeriodUnlockBodySchema, ProfilePatchSchema,
   PromoRedeemBodySchema, UuidSchema,
+  ECONOMY_RULES_VERSION,
   type AdminContentReviewDecision, type AdminContentReviewQuery, type AdminPromoCreateBody,
   type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveCalendarQuery, type ArchiveQuery, type AttemptBody,
   type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
@@ -149,7 +150,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       serverTime: new Date().toISOString(),
       moscowDate: getMoscowDate(),
       apiVersion: 'v1',
-      rulesVersion: 1,
+      rulesVersion: ECONOMY_RULES_VERSION,
       activeRevision: active[0] ?? null,
       modes: counts.filter((entry) => entry.mode !== 'danetki' || danetkiFeatures.enabled),
       minimumFrontendVersion: '0.1.0',
@@ -463,7 +464,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       const wallet = (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, body.userId)).for('update').limit(1))[0]
       const balanceAfter = wallet.balance + Math.trunc(body.amount)
       if (balanceAfter < 0) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Корректировка сделает баланс отрицательным')
-      const ledger = await tx.insert(walletLedger).values({ userId: body.userId, operationKey: `admin-adjustment:${key}`, type: 'adjustment', reason: body.reason, amount: Math.trunc(body.amount), balanceAfter, metadata: { actor: actor.id } }).returning()
+      const ledger = await tx.insert(walletLedger).values({ userId: body.userId, operationKey: `admin-adjustment:${key}`, type: 'adjustment', reason: body.reason, amount: Math.trunc(body.amount), balanceAfter, rulesVersion: ECONOMY_RULES_VERSION, metadata: { actor: actor.id, rulesVersion: ECONOMY_RULES_VERSION } }).returning()
       await tx.update(walletAccounts).set({ balance: balanceAfter, lifetimeEarned: Math.max(wallet.lifetimeEarned, balanceAfter), version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, body.userId))
       await tx.insert(auditLog).values({ actorUserId: actor.id, action: 'wallet.adjustment', entityType: 'wallet', entityId: body.userId, before: wallet, after: { balanceAfter, ledgerId: ledger[0].id }, requestId: request.id })
       return { ledger: ledger[0], balanceAfter }

@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { isPlayableModeId, type ApiRole, type ContentPack, type ContentPackDetail } from '@shoditsa/contracts'
+import { ECONOMY_RULES_VERSION, isPlayableModeId, type ApiRole, type ContentPack, type ContentPackDetail } from '@shoditsa/contracts'
 import {
   commerceProducts, contentPackEntries, contentPacks, contentItemVersions, gameSessions,
   userPackProgress, type Database,
@@ -140,7 +140,7 @@ export const startPackSession = async (
     puzzleDate: getMoscowDate(),
     revisionId,
     answerItemVersionId: versions[0].id,
-    rulesVersion: 1,
+    rulesVersion: ECONOMY_RULES_VERSION,
   }).onConflictDoNothing().returning()
   const session = inserted[0] ?? (await tx.select().from(gameSessions).where(and(
     eq(gameSessions.userId, userId), eq(gameSessions.packId, packId), eq(gameSessions.packPosition, position),

@@ -65,6 +65,9 @@ export type DanetkiGameState = {
   puzzle: PublicDanetka
   roomMode: DanetkiRoomMode
   questionCount: number
+  questionWarningAt: number
+  questionLimit: number
+  questionsRemaining: number
   hintLevel: number
   aiStatus: DanetkiAiStatus
   members: DanetkiMember[]

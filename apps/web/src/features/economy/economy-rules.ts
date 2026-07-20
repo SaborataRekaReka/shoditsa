@@ -1,14 +1,19 @@
-const FREE_PLAY_BASE_COST = 45
-const FREE_PLAY_COST_STEP = 15
+import { ECONOMY_RULE_SET, economyFreePlayCost, economyStreakMilestoneReward, type EconomyRuleSet } from '@shoditsa/contracts'
 
-export const freePlayCost = (launchesToday: number) => {
-  const safeLaunches = Math.max(0, Math.trunc(Number(launchesToday) || 0))
-  return FREE_PLAY_BASE_COST + safeLaunches * FREE_PLAY_COST_STEP
+export const freePlayCost = economyFreePlayCost
+
+export const streakMilestoneReward = economyStreakMilestoneReward
+export const nextStreakMilestoneAt = (days: number) => {
+  const safeDays = Math.max(0, Math.trunc(Number(days) || 0))
+  if (safeDays < 3) return 3
+  if (safeDays < 7) return 7
+  if (safeDays < 14) return 14
+  if (safeDays < 30) return 30
+  return (Math.floor(safeDays / 30) + 1) * 30
 }
-
-export const streakMultiplier = (days: number) => days >= 30 ? 1.6 : days >= 14 ? 1.4 : days >= 7 ? 1.25 : days >= 3 ? 1.1 : 1
-export const nextMultiplierAt = (days: number) => days < 3 ? 3 : days < 7 ? 7 : days < 14 ? 14 : days < 30 ? 30 : null
-export const formatMultiplier = (value: number) => `×${value.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}`
+export const nextStreakMilestoneReward = (days: number, rules: EconomyRuleSet = ECONOMY_RULE_SET) => (
+  streakMilestoneReward(nextStreakMilestoneAt(days), rules) || rules.streakMilestones.every30Days
+)
 
 export const countWord = (count: number, forms: [string, string, string]) => {
   const mod100 = Math.abs(count) % 100

@@ -5,6 +5,36 @@ import type {
 
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
 
+export type AdminEconomyOverview = {
+  periodDays: 7 | 14 | 30
+  generatedAt: string
+  summary: {
+    ticketsEarned: number
+    ticketsSpent: number
+    earnedSpentRatio: number | null
+    activeUsers: number
+    shortageUsers: number
+    shortageViews: number
+    shortageUserRate: number
+    shortageExits: number
+    shortageExitRate: number
+    shortageClubConversions: number
+    balanceP50: number
+    balanceP90: number
+    danetkiRoomsMeasured: number
+    danetkiTokensP50: number
+    danetkiTokensP95: number
+    revenueMinor: number
+    payingUsers: number
+    revenuePerPayingUserMinor: number
+    repeatBuyers: number
+    refunds: number
+  }
+  spendByReason: Array<{ reason: string; amount: number; operations: number }>
+  ruleVersions: Array<{ rulesVersion: number; operations: number; earned: number; spent: number }>
+  balanceBuckets: Array<{ bucket: string; users: number }>
+}
+
 export class AdminApiError extends Error {
   constructor(public status: number, public code: string, message: string, public details: Record<string, unknown> = {}) { super(message) }
 }
@@ -219,6 +249,7 @@ export const adminApi = {
   health: () => request<Record<string, unknown>>('/admin/health'),
   audit: () => request<{ items: Array<Record<string, unknown>> }>('/admin/audit-log'),
   promos: () => request<{ items: Array<Record<string, unknown>> }>('/admin/promos'),
+  economyOverview: (days: 7 | 14 | 30) => request<AdminEconomyOverview>(`/admin/economy/overview?days=${days}`),
   createPromo: (body: Record<string, unknown>) => request<Record<string, unknown>>('/admin/promos', { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json(body) }),
   patchPromo: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/promos/${id}`, { method: 'PATCH', body: json(body) }),
   commerceProducts: () => request<{ items: Array<Record<string, unknown>> }>('/admin/commerce/products'),

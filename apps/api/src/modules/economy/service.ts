@@ -1,9 +1,19 @@
 import { createHmac, randomInt } from 'node:crypto'
 import { and, asc, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import { FREE_PLAY_MODE_IDS, PERIOD_UNLOCKABLE_MODE_IDS, type ApiDifficultyKey, type PeriodKey, type PlayableMode } from '@shoditsa/contracts'
 import {
-  attendanceStats, dailyAttendance, dailyChallenges, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
+  ECONOMY_RULE_SET,
+  ECONOMY_RULES_VERSION,
+  FREE_PLAY_MODE_IDS,
+  PERIOD_UNLOCKABLE_MODE_IDS,
+  economyDanetkiCost,
+  economyFreePlayCost,
+  type ApiDifficultyKey,
+  type PeriodKey,
+  type PlayableMode,
+} from '@shoditsa/contracts'
+import {
+  attendanceStats, dailyAttendance, dailyChallenges, danetkiDailyUsage, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
   promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
@@ -44,11 +54,20 @@ export const unlockPeriod = async (db: Database, userId: string, mode: PlayableM
   const wallet = await lockedWallet(tx, userId)
   const lockedExisting = await tx.select().from(periodEntitlements).where(and(eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, mode), eq(periodEntitlements.period, period))).limit(1)
   if (lockedExisting[0]) return { entitlement: lockedExisting[0], alreadyUnlocked: true }
-  if (wallet.balance < 25) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', { required: 25, balance: wallet.balance })
-  const balanceAfter = wallet.balance - 25
+  const cost = ECONOMY_RULE_SET.periodUnlock
+  if (wallet.balance < cost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', {
+    required: cost,
+    balance: wallet.balance,
+    shortage: cost - wallet.balance,
+    sink: 'period-unlock',
+    mode,
+    rulesVersion: ECONOMY_RULES_VERSION,
+  })
+  const balanceAfter = wallet.balance - cost
   const ledger = await tx.insert(walletLedger).values({
-    userId, operationKey: `period-unlock:${userId}:${mode}:${period}`, type: 'spend', reason: 'period-unlock', amount: -25, balanceAfter,
-    metadata: { mode, period, idempotencyKey },
+    userId, operationKey: `period-unlock:${userId}:${mode}:${period}`, type: 'spend', reason: 'period-unlock', amount: -cost, balanceAfter,
+    rulesVersion: ECONOMY_RULES_VERSION,
+    metadata: { mode, period, idempotencyKey, sink: 'period-unlock', rulesVersion: ECONOMY_RULES_VERSION },
   }).returning({ id: walletLedger.id })
   await tx.update(walletAccounts).set({ balance: balanceAfter, version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, userId))
   const entitlement = await tx.insert(periodEntitlements).values({ userId, mode, period, source: 'purchase', ledgerId: ledger[0].id }).returning()
@@ -65,9 +84,18 @@ export const startFreePlay = async (db: Database, userId: string, mode: Playable
   const lockedReplay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return replayFreePlay(tx, userId, lockedReplay[0], idempotencyKey)
   const clubActive = await hasEntitlement(tx, userId, 'club', undefined, new Date())
-  const cost = clubActive ? 0 : 45 + usage.launches * 15
+  const cost = clubActive ? 0 : economyFreePlayCost(usage.launches)
   const wallet = await lockedWallet(tx, userId)
-  if (wallet.balance < cost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', { required: cost, balance: wallet.balance })
+  if (wallet.balance < cost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', {
+    required: cost,
+    balance: wallet.balance,
+    shortage: cost - wallet.balance,
+    sink: 'free-play',
+    mode,
+    sessionKind: 'free_play',
+    rulesVersion: ECONOMY_RULES_VERSION,
+    hasClub: clubActive,
+  })
   const revisionId = await activeRevision(tx)
   const pool = await answerPool(tx, revisionId, mode, 'all', mode === 'music' ? difficulty ?? 'medium' : null)
   if (!pool.items.length) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для режима нет доступных вариантов')
@@ -75,11 +103,12 @@ export const startFreePlay = async (db: Database, userId: string, mode: Playable
   const balanceAfter = wallet.balance - cost
   const ledger = clubActive ? [] : await tx.insert(walletLedger).values({
     userId, operationKey: `free-play:${userId}:${idempotencyKey}`, type: 'spend', reason: 'free-play', amount: -cost, balanceAfter,
-    metadata: { mode, launch: usage.launches + 1 },
+    rulesVersion: ECONOMY_RULES_VERSION,
+    metadata: { mode, launch: usage.launches + 1, sink: 'free-play', sessionKind: 'free_play', hasClub: clubActive, rulesVersion: ECONOMY_RULES_VERSION },
   }).returning({ id: walletLedger.id })
   const sessions = await tx.insert(gameSessions).values({
     userId, authSessionId, kind: 'free_play', mode, period: 'all', difficulty: mode === 'music' ? difficulty ?? 'medium' : null,
-    puzzleDate: date, revisionId, answerItemVersionId: pool.byItemId.get(answer.id)!, rulesVersion: 1, startIdempotencyKey: idempotencyKey,
+    puzzleDate: date, revisionId, answerItemVersionId: pool.byItemId.get(answer.id)!, rulesVersion: ECONOMY_RULES_VERSION, startIdempotencyKey: idempotencyKey,
   }).returning()
   if (!clubActive) await tx.update(walletAccounts).set({ balance: balanceAfter, version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, userId))
   await tx.update(freePlayUsage).set({ launches: usage.launches + 1 }).where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, date)))
@@ -113,7 +142,8 @@ export const redeemPromo = async (db: Database, config: AppConfig, userId: strin
   const balanceAfter = wallet.balance + amount
   const ledger = await tx.insert(walletLedger).values({
     userId, operationKey: `promo:${promo.id}:${userId}:${userUses.length + 1}`, type: 'earn', reason: 'promo', amount, balanceAfter,
-    metadata: { promoId: promo.id },
+    rulesVersion: ECONOMY_RULES_VERSION,
+    metadata: { promoId: promo.id, source: 'promo', rulesVersion: ECONOMY_RULES_VERSION },
   }).returning({ id: walletLedger.id })
   await tx.update(walletAccounts).set({ balance: balanceAfter, lifetimeEarned: wallet.lifetimeEarned + amount, version: sql`${walletAccounts.version} + 1`, updatedAt: now }).where(eq(walletAccounts.userId, userId))
   const redemption = await tx.insert(promoRedemptions).values({ promoId: promo.id, userId, ledgerId: ledger[0].id, redemptionNumber: userUses.length + 1, idempotencyKey }).returning()
@@ -122,7 +152,7 @@ export const redeemPromo = async (db: Database, config: AppConfig, userId: strin
 
 export const dashboard = async (db: Database, userId: string) => {
   const activityDate = getMoscowDate()
-  const [wallet, attendance, today, stats, entitlements, activeSessions, freePlay, membership] = await Promise.all([
+  const [wallet, attendance, today, stats, entitlements, activeSessions, freePlay, danetkiUsage, membership] = await Promise.all([
     db.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).limit(1),
     db.select().from(attendanceStats).where(eq(attendanceStats.userId, userId)).limit(1),
     db.select().from(dailyAttendance).where(and(eq(dailyAttendance.userId, userId), eq(dailyAttendance.activityDate, activityDate))).limit(1),
@@ -146,8 +176,15 @@ export const dashboard = async (db: Database, userId: string) => {
       .orderBy(desc(gameSessions.updatedAt)),
     db.select({ launches: freePlayUsage.launches }).from(freePlayUsage)
       .where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, activityDate))).limit(1),
+    db.select().from(danetkiDailyUsage)
+      .where(and(eq(danetkiDailyUsage.userId, userId), eq(danetkiDailyUsage.activityDate, activityDate))).limit(1),
     getMembershipSummary(db, userId),
   ])
+  const staticLaunches = freePlay[0]?.launches ?? 0
+  const danetki = danetkiUsage[0] ?? { dailyRooms: 0, extraRooms: 0, clubRooms: 0, paidRooms: 0 }
+  const clubRoomsRemaining = membership.active
+    ? Math.max(0, ECONOMY_RULE_SET.danetki.clubExtraRooms - danetki.clubRooms)
+    : 0
   return {
     wallet: wallet[0] ?? { balance: 0, lifetimeEarned: 0 },
     attendance: attendance[0] ?? null,
@@ -155,7 +192,16 @@ export const dashboard = async (db: Database, userId: string) => {
     stats,
     entitlements,
     activeSessions,
-    freePlayLaunchesToday: freePlay[0]?.launches ?? 0,
+    freePlayLaunchesToday: staticLaunches,
+    freePlayNextCost: membership.active ? 0 : economyFreePlayCost(staticLaunches),
+    economyRules: ECONOMY_RULE_SET,
+    danetkiAccess: {
+      dailyRoomsStarted: danetki.dailyRooms,
+      extraRoomsStarted: danetki.extraRooms,
+      clubRoomsRemaining,
+      nextSoloCost: clubRoomsRemaining > 0 ? 0 : economyDanetkiCost('solo', danetki.paidRooms),
+      nextGroupCost: clubRoomsRemaining > 0 ? 0 : economyDanetkiCost('group', danetki.paidRooms),
+    },
     membership: { active: membership.active, endsAt: membership.endsAt },
   }
 }

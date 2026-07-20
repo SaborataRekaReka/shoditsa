@@ -34,8 +34,8 @@ type ShellProps = {
 }
 
 const fallbackProducts: CommerceProduct[] = [
-  { id: 'club_30d', kind: 'club', title: 'Клубный билет на 30 дней', description: 'Архив, свободная игра и клубные спецпоказы на 30 суток.', priceMinor: 19_900, currency: 'RUB', durationDays: 30, metadata: {} },
-  { id: 'club_365d', kind: 'club', title: 'Годовой клубный билет', description: 'Архив, свободная игра и клубные спецпоказы на 365 суток.', priceMinor: 149_000, currency: 'RUB', durationDays: 365, metadata: {} },
+  { id: 'club_30d', kind: 'club', title: 'Клубный билет на 30 дней', description: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток.', priceMinor: 19_900, currency: 'RUB', durationDays: 30, metadata: {} },
+  { id: 'club_365d', kind: 'club', title: 'Годовой клубный билет', description: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток.', priceMinor: 179_000, currency: 'RUB', durationDays: 365, metadata: {} },
   { id: 'pack_dtf_games_30', kind: 'pack', title: '30 игр, которые сходятся', description: 'Тематический спецпоказ из 30 игр с отдельным прогрессом.', priceMinor: 14_900, currency: 'RUB', durationDays: null, metadata: { badge: 'Навсегда' } },
   { id: 'tip_paper_99', kind: 'tip', title: 'Бумажный жетон', description: 'Памятный цифровой жетон в профиле.', priceMinor: 9_900, currency: 'RUB', durationDays: null, metadata: {} },
   { id: 'tip_silver_299', kind: 'tip', title: 'Серебряный жетон', description: 'Памятный цифровой жетон в профиле.', priceMinor: 29_900, currency: 'RUB', durationDays: null, metadata: {} },

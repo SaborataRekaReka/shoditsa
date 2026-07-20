@@ -92,8 +92,8 @@ export type AttendanceSummary = {
 
 export type TodayAttendance = {
   activityDate: string
-  completedModes: PlayableMode[]
-  wonModes: PlayableMode[]
+  completedModes: ContentMode[]
+  wonModes: ContentMode[]
   fullHouse: boolean
 }
 
@@ -216,7 +216,7 @@ export type PeriodUnlockResponse = { entitlement: PeriodEntitlement; balanceAfte
 export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string | null; accessSource: 'tickets' | 'club' }
 export type PromoRedeemResponse = { reward?: { type: 'tickets'; amount: number; balanceAfter: number }; alreadyRedeemed: boolean }
 
-export type LedgerEntry = { id: string; amount: number; balanceAfter: number; reason: string; type: string; createdAt: string }
+export type LedgerEntry = { id: string; amount: number; balanceAfter: number; reason: string; type: string; rulesVersion: number; createdAt: string }
 export type LedgerResponse = { items: LedgerEntry[]; nextCursor: string | null }
 export type WalletResponse = { wallet: WalletAccount }
 export type ArchiveItem = { id: string; mode: PlayableMode; variantKey: string | null; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null; puzzleDate: string; status: ApiGameStatus; attemptsCount: number; completedAt: string | null }

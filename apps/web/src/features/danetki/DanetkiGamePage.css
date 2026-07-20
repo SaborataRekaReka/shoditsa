@@ -44,3 +44,12 @@
 @keyframes danetki-archive-in{from{opacity:0;transform:translateY(-4px)}}
 @media(max-width:420px){.danetki-room-switch button{padding-inline:7px;gap:6px}.danetki-room-switch small{font-size:8px}.danetki-launch__secondary{gap:15px}}
 @media(prefers-reduced-motion:reduce){.danetki-archive-row{animation:none}.danetki-room-switch button,.danetki-launch__primary{transition:none}}
+.danetki-question-limit {
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  border-radius: 10px;
+  color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-primary) 7%, transparent);
+  font-size: 12px;
+}

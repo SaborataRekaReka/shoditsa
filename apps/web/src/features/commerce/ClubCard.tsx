@@ -9,6 +9,7 @@ export type ClubOffer = {
   priceLabel?: string
   unitLabel?: string
   savingsLabel?: string
+  discountLabel?: string
 }
 
 export function ClubCard({ offer, disabled, onSelect, action }: { offer: ClubOffer; disabled?: boolean; onSelect?: (offer: ClubOffer) => void; action?: ReactNode }) {
@@ -21,12 +22,13 @@ export function ClubCard({ offer, disabled, onSelect, action }: { offer: ClubOff
         {offer.unitLabel && <span>{offer.unitLabel}</span>}
         {offer.savingsLabel && <em>{offer.savingsLabel}</em>}
       </div>
-      {annual && <span className="club-card__stamp">Выгоднее<br /><strong>на 25%</strong></span>}
+      {annual && <span className="club-card__stamp">Выгоднее<br /><strong>на {offer.discountLabel ?? '25%'}</strong></span>}
       {!annual && <span className="club-card__brand-stamp" aria-hidden="true">Сходится!</span>}
       <ul>
         <li><Check /> Архив с даты запуска</li>
         <li><Check /> Свободная игра без списания билетов</li>
         <li><Check /> Все клубные спецпоказы</li>
+        <li><Check /> 2 дополнительные Данетки в сутки</li>
       </ul>
     </div>
     <div className="club-card__rule" aria-hidden="true" />

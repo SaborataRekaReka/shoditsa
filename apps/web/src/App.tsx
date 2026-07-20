@@ -40,7 +40,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
-import { FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
+import { ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -54,7 +54,7 @@ import { ChallengeInvite } from './features/challenge/ChallengeInvite'
 import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
 import { nextDailyMode } from './features/daily-route/daily-route'
 import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion } from './features/economy/completion'
-import { formatArtists, formatMultiplier, formatTickets, freePlayCost, streakMultiplier } from './features/economy/economy-rules'
+import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, nextStreakMilestoneReward } from './features/economy/economy-rules'
 import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyView'
 import { GameResult } from './features/result/GameResult'
 import { activeSessionToSavedGame, archiveItemToSavedGame, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
@@ -68,6 +68,7 @@ import {
   canUseAsArtistPortrait,
   canonicalMusicId,
   compareTitles,
+  calculateCompletionReward,
   dailyTitle,
   DIFFICULTIES,
   DIFFICULTY_ORDER,
@@ -131,14 +132,6 @@ const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   music: 'images/title-posters/music-ticket-poster.webp',
   diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
 }
-const PERIOD_UNLOCK_COSTS: Partial<Record<PeriodKey, number>> = {
-  from_2020: 25,
-  from_2010: 25,
-  from_2000: 25,
-  from_1990: 25,
-  from_1980: 25,
-  from_1960: 25,
-}
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS)
 const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS)
@@ -149,13 +142,13 @@ const isPromoVariant = (value: string | null | undefined) => value === PROMO_PAC
 type EconomyAward = {
   total: number
   base: number
-  multiplier: number
   completed: number
   win: number
   speed: number
   firstDaily: number
   milestoneBonus: number
   fullHouse: number
+  streakMilestone: number
   newDailyStreak: number
   gracePasses: number
   alreadyClaimed: boolean
@@ -163,13 +156,13 @@ type EconomyAward = {
 const emptyAward = (attendance: AttendanceStats): EconomyAward => ({
   total: 0,
   base: 0,
-  multiplier: 1,
   completed: 0,
   win: 0,
   speed: 0,
   firstDaily: 0,
   milestoneBonus: 0,
   fullHouse: 0,
+  streakMilestone: 0,
   newDailyStreak: attendance.currentDailyStreak,
   gracePasses: attendance.gracePasses,
   alreadyClaimed: true,
@@ -208,7 +201,7 @@ const resetPasswordTokenFromLocation = () => {
   const token = new URLSearchParams(window.location.search).get('token')?.trim() || ''
   return token
 }
-const periodUnlockCost = (period: PeriodKey) => PERIOD_UNLOCK_COSTS[period] ?? 0
+const periodUnlockCost = (period: PeriodKey, unlockCost: number = ECONOMY_RULE_SET.periodUnlock) => period === 'all' ? 0 : unlockCost
 const canUnlockPeriods = (mode: TitleMode) => UNLOCKABLE_PERIOD_MODES.has(mode)
 const resultConfigureLabel = (mode: TitleMode) => mode === 'music'
   ? 'Сложность / свободная игра'
@@ -925,30 +918,38 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
     nextStats = { ...nextStats, fullHouseDays: nextStats.fullHouseDays + 1 }
   }
 
-  const completed = 10
-  const win = won ? 10 : 0
-  const speed = won ? Math.max(0, 10 - attemptsCount) : 0
-  const firstDaily = firstCompletionForDay ? 5 : 0
   const milestoneClaims = loadDailyMilestoneClaims(date)
   const reachedMilestones = crossedDailyMilestones(previousCompletedCount, nextCompletedCount, milestoneClaims.claimed)
   const reachedThree = reachedMilestones.includes(3)
   const fullHouseTarget = FULL_HOUSE_MODE_IDS.length
   const reachedFullHouse = reachedMilestones.includes(fullHouseTarget)
-  const milestoneBonus = reachedThree ? 10 : 0
-  const fullHouse = reachedFullHouse ? 25 : 0
+  const reward = calculateCompletionReward({
+    won,
+    attemptsCount,
+    firstCompletion: firstCompletionForDay,
+    firstRoute3: reachedThree,
+    firstFullHouse: reachedFullHouse,
+    dailyStreak: nextStats.currentDailyStreak,
+  })
+  const completed = reward.components.completion
+  const win = reward.components.win
+  const speed = reward.components.efficiency
+  const firstDaily = reward.components.firstGame
+  const milestoneBonus = reward.components.route3
+  const fullHouse = reward.components.fullRoute
+  const streakMilestone = reward.components.streakMilestone
   if (reachedMilestones.length) {
     claimDailyMilestones(date, reachedMilestones)
     for (const milestone of reachedMilestones) {
-      const reward = milestone === 3 ? 10 : 25
-      const analyticsParams = { mode, completedCount: nextCompletedCount, nextMilestone: milestone, reward, dateMoscow: date }
+      const milestoneReward = milestone === 3 ? ECONOMY_RULE_SET.rewards.route3 : ECONOMY_RULE_SET.rewards.fullRoute
+      const analyticsParams = { mode, completedCount: nextCompletedCount, nextMilestone: milestone, reward: milestoneReward, dateMoscow: date, rulesVersion: ECONOMY_RULE_SET.version }
       trackMetrikaGoal('daily_milestone_reached', analyticsParams)
       trackMetrikaGoal('daily_milestone_claimed', analyticsParams)
       if (milestone === fullHouseTarget) trackMetrikaGoal('full_house_reached', analyticsParams)
     }
   }
-  const base = completed + win + speed + firstDaily + milestoneBonus + fullHouse
-  const multiplier = firstCompletionForDay ? streakMultiplier(nextStats.currentDailyStreak) : 1
-  const total = Math.round(base * multiplier)
+  const base = reward.total
+  const total = reward.total
   const wallet = loadWallet()
   const nextWallet = { tickets: wallet.tickets + total, lifetimeTickets: wallet.lifetimeTickets + total }
   saveWallet(nextWallet)
@@ -968,13 +969,13 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
   return {
     total,
     base,
-    multiplier,
     completed,
     win,
     speed,
     firstDaily,
     milestoneBonus,
     fullHouse,
+    streakMilestone,
     newDailyStreak: nextStats.currentDailyStreak,
     gracePasses: nextStats.gracePasses,
     alreadyClaimed: false,
@@ -1026,6 +1027,7 @@ function PeriodControl({
   mode,
   value,
   onChange,
+  periodUnlockCostValue,
   onStartFreePlay,
   hasActiveFreePlay,
   freePlayCostValue,
@@ -1039,6 +1041,7 @@ function PeriodControl({
   mode: TitleMode
   value: PeriodKey
   onChange: (period: PeriodKey) => void
+  periodUnlockCostValue: number
   onStartFreePlay: () => void
   hasActiveFreePlay: boolean
   freePlayCostValue: number
@@ -1052,7 +1055,7 @@ function PeriodControl({
   const unlocked = new Set(unlockedPeriods)
   const completed = new Set(completedPeriods)
   const selectedLocked = !unlocked.has(value)
-  const selectedCost = periodUnlockCost(value)
+  const selectedCost = periodUnlockCost(value, periodUnlockCostValue)
   const shortage = Math.max(0, selectedCost - wallet.tickets)
   const selectedUnlockable = selectedLocked && selectedCost > 0 && shortage === 0
   return <GameOptionSelect
@@ -1073,7 +1076,7 @@ function PeriodControl({
         const isActive = value === periodKey
         const isMainSession = periodKey === 'all'
         const isCompleted = !isMainSession && completed.has(periodKey)
-        const cost = periodUnlockCost(periodKey)
+        const cost = periodUnlockCost(periodKey, periodUnlockCostValue)
         const isUnlockable = !isUnlocked && cost > 0 && wallet.tickets >= cost
         const optionIcon = isMainSession
           ? <Target />
@@ -1336,7 +1339,7 @@ function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, danetki
   </>
 }
 
-function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, clubFreePlay, difficulty, setDifficulty, difficultyCounts, isBusy }: {
+function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, periodUnlockCostValue, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, clubFreePlay, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
   promoPackId: string | null
   variantKey: string | null
@@ -1361,6 +1364,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
   unlockedPeriods: PeriodKey[]
   completedPeriods: PeriodKey[]
   onUnlockPeriod: (period: PeriodKey) => boolean | Promise<boolean>
+  periodUnlockCostValue: number
   onStartFreePlay: () => void
   freePlayArmed: boolean
   hasActiveFreePlay: boolean
@@ -1377,7 +1381,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
   const isDiagnosisReplay = mode === 'diagnosis' && todayCompleted
   const hasModeVariants = GAME_MODE_MANIFEST[mode].variants.length > 0
   const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
-  const periodCost = periodUnlockCost(period)
+  const periodCost = periodUnlockCost(period, periodUnlockCostValue)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
   const canStart = isDiagnosisReplay || freePlayArmed
     ? hasActiveFreePlay || freePlayShortage === 0
@@ -1420,7 +1424,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
     : hasModeVariants
       ? <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
       : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
-        ? <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+        ? <PeriodControl mode={mode} value={period} onChange={setPeriod} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
         : undefined
   const launchControls = !isPromoTitle && <GameLaunchControls
     mode={mode}
@@ -3233,7 +3237,24 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       attemptKeyRef.current = null
       setQuery('')
       setMessage('')
-      if (response.reward) setLastAward(response.reward)
+      if (response.reward) {
+        setLastAward(response.reward)
+        trackClientEvent('ticket_earned', {
+          balanceBefore: response.reward.balanceAfter - response.reward.total,
+          balanceAfter: response.reward.balanceAfter,
+          amount: response.reward.total,
+          required: 0,
+          shortage: 0,
+          source: 'daily-game',
+          sink: null,
+          mode: session?.mode ?? null,
+          sessionKind: session?.kind ?? null,
+          dailyCompletedCount: new Set([...(dashboard.data?.today?.completedModes ?? []), ...(session?.mode ? [session.mode] : [])]).size,
+          streak: dashboard.data?.attendance?.currentDailyStreak ?? 0,
+          rulesVersion: response.reward.rulesVersion,
+          hasClub: dashboard.data?.membership.active ?? false,
+        }, { gameSessionId: sessionId })
+      }
       await Promise.all([
         client.invalidateQueries({ queryKey: queryKeys.game(sessionId) }),
         client.invalidateQueries({ queryKey: queryKeys.dashboard }),
@@ -3369,7 +3390,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     hint.mutate({ checkpoint: hintModalRound, hintKey, key })
   }
   const pendingHintOption = hintOptions.find((option) => option.key === hint.variables?.hintKey) ?? null
-  const completedModes = dashboard.data?.today?.completedModes ?? []
+  const completedModes = (dashboard.data?.today?.completedModes ?? []).filter(isPlayableModeId)
   const completedToday = new Set(completedModes).size
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
@@ -3408,10 +3429,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     base: Object.values(lastAward.components).reduce((sum, value) => sum + value, 0),
     completed: lastAward.components.completion,
     win: lastAward.components.win,
-    speed: lastAward.components.speed,
-    firstDaily: lastAward.components.firstCompletion,
-    milestoneBonus: 0,
-    fullHouse: lastAward.components.fullHouse,
+    speed: lastAward.components.efficiency,
+    firstDaily: lastAward.components.firstGame,
+    milestoneBonus: lastAward.components.route3,
+    fullHouse: lastAward.components.fullRoute,
+    streakMilestone: lastAward.components.streakMilestone,
     newDailyStreak: dashboard.data?.attendance?.currentDailyStreak ?? 0,
     alreadyClaimed: lastAward.alreadyClaimed,
   } : null
@@ -4194,7 +4216,7 @@ function StatsView({ mode, difficulty }: { mode: TitleMode; difficulty?: Difficu
     <div className="stats-grid stats-grid--economy">
       <div><strong>{wallet.tickets}</strong><span>билетов</span></div>
       <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
-      <div><strong>{formatMultiplier(streakMultiplier(attendance.currentDailyStreak))}</strong><span>множитель</span></div>
+      <div><strong>+{nextStreakMilestoneReward(attendance.currentDailyStreak, serverRuntime.dashboard?.economyRules)}</strong><span>на {nextStreakMilestoneAt(attendance.currentDailyStreak)}-й день</span></div>
       <div><strong>{attendance.gracePasses}</strong><span>контрамарки</span></div>
     </div>
     <h3 className="subheading">Статистика темы</h3>
@@ -4306,8 +4328,15 @@ function GameApp() {
     ? serverRuntime.dashboard?.freePlayLaunchesToday ?? 0
     : loadFreePlayUsage(getMoscowDate()), [economyVersion, serverRuntime.dashboard])
   const clubFreePlay = Boolean(SERVER_RUNTIME && serverRuntime.dashboard?.membership.active)
-  const freePlayCostValue = useMemo(() => clubFreePlay ? 0 : freePlayCost(freePlayLaunchesToday), [clubFreePlay, freePlayLaunchesToday])
+  const freePlayCostValue = useMemo(() => clubFreePlay
+    ? 0
+    : SERVER_RUNTIME
+      ? serverRuntime.dashboard?.freePlayNextCost ?? ECONOMY_RULE_SET.freePlay.base
+      : freePlayCost(freePlayLaunchesToday), [clubFreePlay, freePlayLaunchesToday, serverRuntime.dashboard])
   const freePlayShortage = Math.max(0, freePlayCostValue - wallet.tickets)
+  const periodUnlockCostValue = SERVER_RUNTIME
+    ? serverRuntime.dashboard?.economyRules.periodUnlock ?? ECONOMY_RULE_SET.periodUnlock
+    : ECONOMY_RULE_SET.periodUnlock
   const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
   const currentUnlockedPeriods = useMemo<PeriodKey[]>(() => {
     if (!SERVER_RUNTIME) return unlockedPeriodsFor(mode, periodUnlocks)
@@ -4379,9 +4408,57 @@ function GameApp() {
     },
     onSuccess: async (response, variables) => {
       activateServerSession(response.session, variables.backTarget)
+      if (variables.body.mode === 'danetki') {
+        const isExtra = variables.body.kind === 'free_play'
+        const roomMode = variables.body.roomMode ?? 'solo'
+        const cost = isExtra
+          ? roomMode === 'group'
+            ? serverRuntime.dashboard?.danetkiAccess.nextGroupCost ?? 0
+            : serverRuntime.dashboard?.danetkiAccess.nextSoloCost ?? 0
+          : 0
+        trackClientEvent('danetki_room_started', {
+          balanceBefore: wallet.tickets,
+          balanceAfter: wallet.tickets - cost,
+          amount: cost,
+          required: cost,
+          shortage: 0,
+          source: isExtra && cost === 0 ? 'club' : variables.body.kind,
+          sink: isExtra && cost > 0 ? 'danetki-room' : null,
+          mode: 'danetki',
+          sessionKind: variables.body.kind,
+          roomMode,
+          dailyCompletedCount: todayAttendance.completedModes.length,
+          streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
+          rulesVersion: response.session.rulesVersion,
+          hasClub: clubFreePlay,
+        }, { gameSessionId: response.session.id })
+        if (cost > 0) trackClientEvent('ticket_spent', {
+          balanceBefore: wallet.tickets,
+          balanceAfter: wallet.tickets - cost,
+          amount: cost,
+          required: cost,
+          shortage: 0,
+          source: 'wallet',
+          sink: 'danetki-room',
+          mode: 'danetki',
+          sessionKind: 'free_play',
+          dailyCompletedCount: todayAttendance.completedModes.length,
+          streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
+          rulesVersion: response.session.rulesVersion,
+          hasClub: clubFreePlay,
+        }, { gameSessionId: response.session.id })
+      }
       await queryClient.invalidateQueries({ queryKey: queryKeys.dashboard })
     },
-    onError: (error) => setServerActionError(apiErrorMessage(error)),
+    onError: (error, variables) => {
+      setServerActionError(apiErrorMessage(error))
+      if (error instanceof ApiClientError && error.code === 'INSUFFICIENT_TICKETS') trackClientEvent('insufficient_tickets_view', {
+        ...error.details,
+        mode: variables.body.mode,
+        sessionKind: variables.body.kind,
+        hasClub: clubFreePlay,
+      })
+    },
   })
   const startServerFreePlay = useMutation({
     mutationFn: async ({ key }: { key: string; backTarget: 'title' | 'rewatch' | 'hub' }) => {
@@ -4390,6 +4467,36 @@ function GameApp() {
     },
     onSuccess: async (session, variables) => {
       activateServerSession(session, variables.backTarget)
+      trackClientEvent('free_play_started', {
+        balanceBefore: session.balanceAfter + session.cost,
+        balanceAfter: session.balanceAfter,
+        amount: session.cost,
+        required: session.cost,
+        shortage: 0,
+        source: session.accessSource,
+        sink: session.cost > 0 ? 'free-play' : null,
+        mode: session.mode,
+        sessionKind: session.kind,
+        dailyCompletedCount: todayAttendance.completedModes.length,
+        streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
+        rulesVersion: session.rulesVersion,
+        hasClub: session.accessSource === 'club',
+      }, { gameSessionId: session.id })
+      if (session.cost > 0) trackClientEvent('ticket_spent', {
+        balanceBefore: session.balanceAfter + session.cost,
+        balanceAfter: session.balanceAfter,
+        amount: session.cost,
+        required: session.cost,
+        shortage: 0,
+        source: 'wallet',
+        sink: 'free-play',
+        mode: session.mode,
+        sessionKind: session.kind,
+        dailyCompletedCount: todayAttendance.completedModes.length,
+        streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
+        rulesVersion: session.rulesVersion,
+        hasClub: false,
+      }, { gameSessionId: session.id })
       if (session.accessSource === 'club') {
         trackClientEvent('club_free_play_started', { mode: session.mode, hasClub: true })
         trackMetrikaGoal('club_free_play_started', { mode: session.mode })
@@ -4400,21 +4507,60 @@ function GameApp() {
         queryClient.invalidateQueries({ queryKey: queryKeys.commerce }),
       ])
     },
-    onError: (error) => setServerActionError(apiErrorMessage(error)),
+    onError: (error) => {
+      setServerActionError(apiErrorMessage(error))
+      if (error instanceof ApiClientError && error.code === 'INSUFFICIENT_TICKETS') trackClientEvent('insufficient_tickets_view', { ...error.details, mode, sessionKind: 'free_play', hasClub: clubFreePlay })
+    },
   })
   const unlockServerPeriod = useMutation({
     mutationFn: async ({ periodKey, key }: { periodKey: PeriodKey; key: string }) => {
       await ensureServerSession()
       return api.unlock(mode, periodKey, key)
     },
-    onSuccess: async () => {
+    onSuccess: async (result, variables) => {
       setServerActionError('')
+      const cost = serverRuntime.dashboard?.economyRules.periodUnlock ?? ECONOMY_RULE_SET.periodUnlock
+      const balanceAfter = result.balanceAfter ?? wallet.tickets
+      trackClientEvent('period_unlocked', {
+        balanceBefore: balanceAfter + (result.alreadyUnlocked ? 0 : cost),
+        balanceAfter,
+        amount: result.alreadyUnlocked ? 0 : cost,
+        required: cost,
+        shortage: 0,
+        source: 'wallet',
+        sink: 'period-unlock',
+        mode,
+        sessionKind: 'period-unlock',
+        period: variables.periodKey,
+        dailyCompletedCount: todayAttendance.completedModes.length,
+        streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
+        rulesVersion: serverRuntime.dashboard?.economyRules.version ?? ECONOMY_RULE_SET.version,
+        hasClub: clubFreePlay,
+      })
+      if (!result.alreadyUnlocked) trackClientEvent('ticket_spent', {
+        balanceBefore: balanceAfter + cost,
+        balanceAfter,
+        amount: cost,
+        required: cost,
+        shortage: 0,
+        source: 'wallet',
+        sink: 'period-unlock',
+        mode,
+        sessionKind: 'period-unlock',
+        dailyCompletedCount: todayAttendance.completedModes.length,
+        streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
+        rulesVersion: serverRuntime.dashboard?.economyRules.version ?? ECONOMY_RULE_SET.version,
+        hasClub: clubFreePlay,
+      })
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
         queryClient.invalidateQueries({ queryKey: queryKeys.ledger }),
       ])
     },
-    onError: (error) => setServerActionError(apiErrorMessage(error)),
+    onError: (error) => {
+      setServerActionError(apiErrorMessage(error))
+      if (error instanceof ApiClientError && error.code === 'INSUFFICIENT_TICKETS') trackClientEvent('insufficient_tickets_view', { ...error.details, mode, sessionKind: 'period-unlock', hasClub: clubFreePlay })
+    },
   })
 
   useEffect(() => {
@@ -4776,10 +4922,10 @@ function GameApp() {
     startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'archive', mode: 'danetki', roomMode: 'solo', archiveDate }, backTarget: 'hub' })
   }
 
-  const startFreePlayDanetki = () => {
+  const startFreePlayDanetki = (roomMode: 'solo' | 'group') => {
     if (startServerSession.isPending) return
     setServerActionError('')
-    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'free_play', mode: 'danetki', roomMode: 'solo' }, backTarget: 'hub' })
+    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'free_play', mode: 'danetki', roomMode }, backTarget: 'hub' })
   }
 
   const continueDanetki = () => {
@@ -5120,11 +5266,11 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartArchive={startArchiveDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartArchive={startArchiveDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onJoined={(session) => activateServerSession(session, 'hub')} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onClub={() => moveToScreen('club')} />}
 

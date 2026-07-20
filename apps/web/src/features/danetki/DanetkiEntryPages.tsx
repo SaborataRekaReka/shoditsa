@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { DanetkiRoomMode, GameSessionSnapshot } from '@shoditsa/contracts'
+import type { DanetkiRoomMode, DashboardResponse, GameSessionSnapshot } from '@shoditsa/contracts'
 import { ArrowLeft, CalendarDays, ChevronLeft, Clock3, HelpCircle, LoaderCircle, Sparkles, UserRound, Users } from 'lucide-react'
 import { api, ApiClientError } from '../../api/client'
 import { AppHeader } from '../../components/app-shell/AppShell'
@@ -12,8 +12,9 @@ const messageFor = (error: unknown) => error instanceof ApiClientError
   ? error.message
   : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 
-export function DanetkiLobbyPage({ date, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartArchive, onStartFreePlay, busy, error }: {
+export function DanetkiLobbyPage({ date, access, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartArchive, onStartFreePlay, busy, error }: {
   date: string
+  access?: DashboardResponse['danetkiAccess']
   onHome: () => void
   onBack: () => void
   onArchive: () => void
@@ -23,13 +24,14 @@ export function DanetkiLobbyPage({ date, onHome, onBack, onArchive, onStats, onR
   onStart: (roomMode: DanetkiRoomMode) => void
   onContinue?: () => void
   onStartArchive?: (date: string) => void
-  onStartFreePlay?: () => void
+  onStartFreePlay?: (roomMode: DanetkiRoomMode) => void
   busy: boolean
   error?: string
 }) {
   const [archiveDate, setArchiveDate] = useState('')
   const [roomMode, setRoomMode] = useState<DanetkiRoomMode>('solo')
   const [archiveOpen, setArchiveOpen] = useState(false)
+  const nextExtraCost = roomMode === 'solo' ? access?.nextSoloCost : access?.nextGroupCost
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
   useEffect(() => {
     const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); onBack() } }
@@ -56,7 +58,7 @@ export function DanetkiLobbyPage({ date, onHome, onBack, onArchive, onStats, onR
         <div className="admit-ticket__body">
           <div className="ticket-kicker"><span>Данетка дня</span><i /><small>ИИ-ведущий на связи</small></div>
           <h2 id="ticket-danetki">Ваше расследование</h2>
-          <p>Выберите формат — ведущий уже подготовил историю.</p>
+          <p>Одна новая Данетка в день бесплатна. Создатель получает +10 билетов после завершения.</p>
           {onContinue && <button type="button" className="danetki-entry__continue" onClick={onContinue}><Clock3 /> Продолжить незавершённое расследование</button>}
           <div className="danetki-launch">
             <span className="danetki-launch__label">Формат игры</span>
@@ -74,7 +76,7 @@ export function DanetkiLobbyPage({ date, onHome, onBack, onArchive, onStats, onR
             </button>
           </div>
           <div className="danetki-launch__secondary">
-            <button type="button" disabled={busy} onClick={onStartFreePlay}><Sparkles aria-hidden="true" /> Свободная игра</button>
+            <button type="button" disabled={busy || !onStartFreePlay} onClick={() => onStartFreePlay?.(roomMode)}><Sparkles aria-hidden="true" /> {nextExtraCost === 0 ? 'Дополнительная комната · Клуб' : `Дополнительная комната · ${nextExtraCost ?? '—'} билетов`}</button>
             <button type="button" disabled={busy} aria-expanded={archiveOpen} onClick={() => setArchiveOpen((value) => !value)}><CalendarDays aria-hidden="true" /> Архив</button>
           </div>
           {archiveOpen && <div className="danetki-archive-row">

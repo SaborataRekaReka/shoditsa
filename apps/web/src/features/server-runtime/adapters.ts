@@ -25,8 +25,8 @@ export const toLegacyAttendance = (attendance: AttendanceSummary | null | undefi
 
 export const toLegacyDailyAttendance = (today: TodayAttendance | null | undefined, fallbackDate: string): DailyAttendance => ({
   date: today?.activityDate ?? fallbackDate,
-  completedModes: today?.completedModes ?? [],
-  wonModes: today?.wonModes ?? [],
+  completedModes: (today?.completedModes ?? []).filter((mode): mode is TitleMode => (PLAYABLE_MODE_IDS as readonly string[]).includes(mode)),
+  wonModes: (today?.wonModes ?? []).filter((mode): mode is TitleMode => (PLAYABLE_MODE_IDS as readonly string[]).includes(mode)),
   completedSessions: [],
   firstCompletedAt: 0,
   fullHouse: today?.fullHouse ?? false,

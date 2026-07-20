@@ -16,8 +16,9 @@ import {
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { loadIntegrationEnvironment } from '../admin/integration-secrets.js'
-import { normalizeDanetkiQuestion, toPublicDanetka } from './service.js'
+import { completeDanetkiParticipantStats, normalizeDanetkiQuestion, toPublicDanetka } from './service.js'
 import { requestDanetkiAnswer, requestDanetkiGuessEvaluation } from './ai.js'
+import { completeDanetkiDaily } from '../stats/rewards.js'
 
 type Job = typeof backgroundJobs.$inferSelect
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
@@ -159,12 +160,20 @@ const handleGuess = async (db: Database, config: AppConfig, job: Job) => {
         increment = 2
       }
       const now = new Date()
+      if (isCorrect) await completeDanetkiParticipantStats(tx, sessionId, true)
+      const reward = isCorrect && session.kind === 'daily' ? await completeDanetkiDaily(tx, {
+        sessionId,
+        userId: session.userId,
+        puzzleDate: session.puzzleDate,
+        won: true,
+        rulesVersion: session.rulesVersion,
+      }) : null
       await Promise.all([
         tx.update(danetkiFinalGuesses).set({ status: isCorrect ? 'correct' : 'incorrect', evaluation }).where(eq(danetkiFinalGuesses.id, guess.id)),
         tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + ${increment}`, aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, sessionId)),
         tx.update(danetkiAiCalls).set({ status: 'success', providerResponseId: result.responseId, inputTokens: result.usage.inputTokens, outputTokens: result.usage.outputTokens, latencyMs: result.latencyMs, responseJson: evaluation }).where(eq(danetkiAiCalls.id, call.id)),
         ...(isCorrect ? [
-          tx.update(gameSessions).set({ status: 'won', completedAt: now, updatedAt: now }).where(eq(gameSessions.id, sessionId)),
+          tx.update(gameSessions).set({ status: 'won', completedAt: now, updatedAt: now, rewardLedgerId: reward?.ledgerId ?? null }).where(eq(gameSessions.id, sessionId)),
           tx.update(danetkiInvites).set({ revokedAt: now }).where(and(eq(danetkiInvites.sessionId, sessionId), isNull(danetkiInvites.revokedAt))),
         ] : []),
       ])

@@ -127,6 +127,13 @@
       "when": 1784548860000,
       "tag": "0017_danetki_chat_engine",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1784566800000,
+      "tag": "0018_economy_v2",
+      "breakpoints": true
     }
   ]
 }

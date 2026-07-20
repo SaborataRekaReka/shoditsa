@@ -4,7 +4,7 @@ import { ApiClientError, api } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 
-export function CheckoutButton({ product, authenticated, label, placement = 'club_screen', returnUrl = '/club' }: { product: CommerceProduct; authenticated: boolean; label?: string; placement?: string; returnUrl?: string }) {
+export function CheckoutButton({ product, authenticated, hasClub = false, label, placement = 'club_screen', returnUrl = '/club' }: { product: CommerceProduct; authenticated: boolean; hasClub?: boolean; label?: string; placement?: string; returnUrl?: string }) {
   const keyRef = useRef<string | null>(null)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
@@ -21,7 +21,7 @@ export function CheckoutButton({ product, authenticated, label, placement = 'clu
     setPending(true)
     setError('')
     keyRef.current ??= crypto.randomUUID()
-    const properties = { productId: product.id, placement, isAuthenticated: true, hasClub: false }
+    const properties = { productId: product.id, placement, isAuthenticated: true, hasClub }
     trackClientEvent('checkout_started', properties)
     trackMetrikaGoal('checkout_started', properties)
     try {

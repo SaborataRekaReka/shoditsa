@@ -1,13 +1,20 @@
 import { createHash, createHmac, randomBytes } from 'node:crypto'
 import { and, asc, count, eq, gt, inArray, isNull, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import type { DanetkiPayload, PublicDanetka } from '@shoditsa/contracts'
+import {
+  ECONOMY_RULE_SET,
+  ECONOMY_RULES_VERSION,
+  economyDanetkiCost,
+  type DanetkiPayload,
+  type PublicDanetka,
+} from '@shoditsa/contracts'
 import {
   appSettings,
   backgroundJobs,
   contentItemVersions,
   contentRevisions,
   dailyChallenges,
+  danetkiDailyUsage,
   danetkiFinalGuesses,
   danetkiInvites,
   danetkiMessages,
@@ -15,14 +22,24 @@ import {
   danetkiSessionState,
   danetkiSurrenderVotes,
   gameSessions,
+  userModeStats,
+  walletAccounts,
+  walletLedger,
   type Database,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { canStartArchiveSession } from '../archive/access.js'
+import { hasEntitlement } from '../commerce/entitlements.js'
+import { completeDanetkiDaily } from '../stats/rewards.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
+
+const lockedWallet = async (tx: Transaction, userId: string) => {
+  await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
+  return (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).for('update').limit(1))[0]
+}
 
 export type DanetkiFeatureFlags = {
   enabled: boolean
@@ -182,6 +199,7 @@ export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, se
 
   return {
     engine: 'danetki_chat' as const,
+    rulesVersion: session.rulesVersion,
     id: session.id,
     kind: session.kind,
     packId: null,
@@ -206,6 +224,9 @@ export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, se
       puzzle,
       roomMode: state.roomMode,
       questionCount: state.questionCount,
+      questionWarningAt: ECONOMY_RULE_SET.danetki.questionWarningAt,
+      questionLimit: ECONOMY_RULE_SET.danetki.questionLimit,
+      questionsRemaining: Math.max(0, ECONOMY_RULE_SET.danetki.questionLimit - state.questionCount),
       hintLevel: state.hintLevel,
       aiStatus: state.aiStatus,
       members: members.map((entry) => ({
@@ -270,6 +291,44 @@ export const startDanetkiSession = async (db: Database, user: {
   }
 
   return db.transaction(async (tx) => {
+    const replay = input.idempotencyKey
+      ? await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, user.id), eq(gameSessions.startIdempotencyKey, input.idempotencyKey))).limit(1)
+      : []
+    if (replay[0]) return buildDanetkiSessionSnapshot(tx, replay[0], user.id)
+
+    let usage: typeof danetkiDailyUsage.$inferSelect | null = null
+    let roomCost = 0
+    let accessSource: 'daily' | 'club' | 'tickets' | 'archive' = input.kind === 'daily' ? 'daily' : 'archive'
+    let wallet: typeof walletAccounts.$inferSelect | null = null
+    if (input.kind === 'free_play') {
+      await tx.insert(danetkiDailyUsage).values({ userId: user.id, activityDate: today }).onConflictDoNothing()
+      usage = (await tx.select().from(danetkiDailyUsage).where(and(
+        eq(danetkiDailyUsage.userId, user.id),
+        eq(danetkiDailyUsage.activityDate, today),
+      )).for('update').limit(1))[0]
+      const lockedReplay = await tx.select().from(gameSessions).where(and(
+        eq(gameSessions.userId, user.id),
+        eq(gameSessions.startIdempotencyKey, input.idempotencyKey!),
+      )).limit(1)
+      if (lockedReplay[0]) return buildDanetkiSessionSnapshot(tx, lockedReplay[0], user.id)
+      const clubActive = await hasEntitlement(tx, user.id, 'club', undefined, new Date())
+      const clubIncluded = clubActive && usage.clubRooms < ECONOMY_RULE_SET.danetki.clubExtraRooms
+      accessSource = clubIncluded ? 'club' : 'tickets'
+      roomCost = clubIncluded ? 0 : economyDanetkiCost(input.roomMode, usage.paidRooms)
+      wallet = await lockedWallet(tx, user.id)
+      if (wallet.balance < roomCost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', {
+        required: roomCost,
+        balance: wallet.balance,
+        shortage: roomCost - wallet.balance,
+        sink: 'danetki-room',
+        mode: 'danetki',
+        sessionKind: 'free_play',
+        roomMode: input.roomMode,
+        rulesVersion: ECONOMY_RULES_VERSION,
+        hasClub: clubActive,
+      })
+    }
+
     const challenge = input.kind === 'free_play' ? null : await resolveChallenge(tx, puzzleDate)
     const freePlayPuzzle = input.kind === 'free_play' ? await resolveFreePlayPuzzle(tx) : null
     const inserted = await tx.insert(gameSessions).values({
@@ -283,13 +342,55 @@ export const startDanetkiSession = async (db: Database, user: {
       puzzleDate,
       revisionId: challenge?.revisionId ?? freePlayPuzzle!.revisionId,
       answerItemVersionId: challenge?.answerItemVersionId ?? freePlayPuzzle!.answerItemVersionId,
-      rulesVersion: 1,
+      rulesVersion: ECONOMY_RULES_VERSION,
       startIdempotencyKey: input.idempotencyKey,
     }).onConflictDoNothing().returning()
     const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play'
       ? and(eq(gameSessions.userId, user.id), eq(gameSessions.startIdempotencyKey, input.idempotencyKey!))
       : and(eq(gameSessions.userId, user.id), eq(gameSessions.challengeId, challenge!.id))).limit(1))[0]
     if (!session) throw new ApiError(503, 'DANETKI_SESSION_NOT_READY', 'Не удалось создать игровую сессию')
+
+    if (inserted[0] && input.kind === 'daily') {
+      await tx.insert(danetkiDailyUsage).values({ userId: user.id, activityDate: today, dailyRooms: 1 }).onConflictDoUpdate({
+        target: [danetkiDailyUsage.userId, danetkiDailyUsage.activityDate],
+        set: { dailyRooms: sql`${danetkiDailyUsage.dailyRooms} + 1` },
+      })
+    }
+    if (inserted[0] && input.kind === 'free_play' && usage && wallet) {
+      const balanceAfter = wallet.balance - roomCost
+      if (roomCost > 0) {
+        await tx.insert(walletLedger).values({
+          userId: user.id,
+          operationKey: `danetki-room:${user.id}:${input.idempotencyKey}`,
+          type: 'spend',
+          reason: 'danetki-room',
+          amount: -roomCost,
+          balanceAfter,
+          rulesVersion: ECONOMY_RULES_VERSION,
+          metadata: {
+            sessionId: session.id,
+            sink: 'danetki-room',
+            mode: 'danetki',
+            sessionKind: 'free_play',
+            roomMode: input.roomMode,
+            launch: usage.extraRooms + 1,
+            paidLaunch: usage.paidRooms + 1,
+            accessSource,
+            rulesVersion: ECONOMY_RULES_VERSION,
+          },
+        })
+        await tx.update(walletAccounts).set({
+          balance: balanceAfter,
+          version: sql`${walletAccounts.version} + 1`,
+          updatedAt: new Date(),
+        }).where(eq(walletAccounts.userId, user.id))
+      }
+      await tx.update(danetkiDailyUsage).set({
+        extraRooms: usage.extraRooms + 1,
+        clubRooms: usage.clubRooms + (accessSource === 'club' ? 1 : 0),
+        paidRooms: usage.paidRooms + (roomCost > 0 ? 1 : 0),
+      }).where(and(eq(danetkiDailyUsage.userId, user.id), eq(danetkiDailyUsage.activityDate, today)))
+    }
 
     await tx.insert(danetkiSessionState).values({ sessionId: session.id, roomMode: input.roomMode }).onConflictDoNothing()
     await tx.insert(danetkiSessionMembers).values({
@@ -360,6 +461,14 @@ export const createDanetkiMessage = async (db: Database, userId: string, session
 
   const { session, state, member } = await lockMemberContext(tx, sessionId, userId)
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
+  if (state.questionCount >= ECONOMY_RULE_SET.danetki.questionLimit) throw new ApiError(409, 'DANETKI_QUESTION_LIMIT_REACHED', 'Лимит вопросов в этой комнате исчерпан', {
+    required: ECONOMY_RULE_SET.danetki.questionLimit,
+    questionCount: state.questionCount,
+    warningAt: ECONOMY_RULE_SET.danetki.questionWarningAt,
+    mode: 'danetki',
+    sessionKind: session.kind,
+    rulesVersion: session.rulesVersion,
+  })
   const normalized = normalizeDanetkiQuestion(input.text)
   if (normalized.length < 2) throw new ApiError(422, 'DANETKI_QUESTION_TOO_SHORT', 'Сформулируйте вопрос подробнее')
 
@@ -489,12 +598,45 @@ const addSystemMessage = async (tx: Transaction, state: typeof danetkiSessionSta
   text: input.text,
 }).returning()
 
+export const completeDanetkiParticipantStats = async (tx: Transaction, sessionId: string, won: boolean) => {
+  const members = await tx.select({ userId: danetkiSessionMembers.userId }).from(danetkiSessionMembers)
+    .where(eq(danetkiSessionMembers.sessionId, sessionId)).orderBy(asc(danetkiSessionMembers.userId))
+  for (const member of members) {
+    await tx.insert(userModeStats).values({ userId: member.userId, mode: 'danetki', difficultyKey: '-' }).onConflictDoNothing()
+    const current = (await tx.select().from(userModeStats).where(and(
+      eq(userModeStats.userId, member.userId),
+      eq(userModeStats.mode, 'danetki'),
+      eq(userModeStats.difficultyKey, '-'),
+    )).for('update').limit(1))[0]
+    const currentStreak = won ? current.currentStreak + 1 : 0
+    await tx.update(userModeStats).set({
+      played: current.played + 1,
+      won: current.won + (won ? 1 : 0),
+      currentStreak,
+      bestStreak: Math.max(current.bestStreak, currentStreak),
+      updatedAt: new Date(),
+    }).where(and(
+      eq(userModeStats.userId, member.userId),
+      eq(userModeStats.mode, 'danetki'),
+      eq(userModeStats.difficultyKey, '-'),
+    ))
+  }
+}
+
 const finishLost = async (tx: Transaction, context: MemberContext) => {
   const puzzle = await loadSecretPuzzle(tx, context.session)
   const message = (await addSystemMessage(tx, context.state, { sessionId: context.session.id, messageType: 'solution', text: puzzle.solution }))[0]
   const now = new Date()
+  await completeDanetkiParticipantStats(tx, context.session.id, false)
+  const reward = context.session.kind === 'daily' ? await completeDanetkiDaily(tx, {
+    sessionId: context.session.id,
+    userId: context.session.userId,
+    puzzleDate: context.session.puzzleDate,
+    won: false,
+    rulesVersion: context.session.rulesVersion,
+  }) : null
   await Promise.all([
-    tx.update(gameSessions).set({ status: 'lost', completedAt: now, updatedAt: now }).where(eq(gameSessions.id, context.session.id)),
+    tx.update(gameSessions).set({ status: 'lost', completedAt: now, updatedAt: now, rewardLedgerId: reward?.ledgerId ?? null }).where(eq(gameSessions.id, context.session.id)),
     tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`, aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, context.session.id)),
     tx.update(danetkiInvites).set({ revokedAt: now }).where(and(eq(danetkiInvites.sessionId, context.session.id), isNull(danetkiInvites.revokedAt))),
   ])

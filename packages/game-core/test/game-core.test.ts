@@ -61,6 +61,27 @@ describe('deterministic rules', () => {
 })
 
 describe('economy', () => {
-  it('uses the fixed reward formula', () => expect(calculateCompletionReward({ won: true, attemptsCount: 3, firstCompletion: true, firstFullHouse: false, dailyStreak: 7 })).toEqual({ components: { completion: 10, win: 10, speed: 7, firstCompletion: 5, fullHouse: 0 }, multiplier: 1.25, total: 40 }))
-  it('awards completion on a loss', () => expect(calculateCompletionReward({ won: false, attemptsCount: 10, firstCompletion: false, firstFullHouse: false, dailyStreak: 1 }).total).toBe(10))
+  it('uses the v2 reward formula without streak multipliers', () => expect(calculateCompletionReward({ won: true, attemptsCount: 3, firstCompletion: true, firstRoute3: false, firstFullHouse: false, dailyStreak: 7 })).toEqual({
+    rulesVersion: 2,
+    components: { completion: 5, win: 5, efficiency: 3, firstGame: 5, route3: 0, fullRoute: 0, streakMilestone: 7 },
+    total: 25,
+  }))
+  it('awards completion on a loss', () => expect(calculateCompletionReward({ won: false, attemptsCount: 10, firstCompletion: false, firstFullHouse: false, dailyStreak: 1 }).total).toBe(5))
+  it('lands on the v2 17 / 51 / 119 daily targets', () => {
+    const reward = (position: number) => calculateCompletionReward({
+      won: true,
+      attemptsCount: 5,
+      firstCompletion: position === 1,
+      firstRoute3: position === 3,
+      firstFullHouse: position === 7,
+      dailyStreak: 1,
+    }).total
+    expect(reward(1)).toBe(17)
+    expect([1, 2, 3].reduce((sum, position) => sum + reward(position), 0)).toBe(51)
+    expect([1, 2, 3, 4, 5, 6, 7].reduce((sum, position) => sum + reward(position), 0)).toBe(119)
+  })
+  it('awards a streak milestone once without multiplying later games', () => {
+    expect(calculateCompletionReward({ won: true, attemptsCount: 5, firstCompletion: true, firstFullHouse: false, dailyStreak: 30 }).total).toBe(37)
+    expect(calculateCompletionReward({ won: true, attemptsCount: 5, firstCompletion: false, firstFullHouse: false, dailyStreak: 30 }).total).toBe(12)
+  })
 })

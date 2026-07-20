@@ -11,7 +11,7 @@ import {
   saveWallet,
 } from '../../storage'
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
-import { formatMultiplier, formatTickets, nextMultiplierAt, streakMultiplier } from './economy-rules'
+import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
 import { ServerEconomyView } from './ServerEconomyView'
 
 const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
@@ -31,8 +31,8 @@ function LocalEconomyView() {
   const [promoCode, setPromoCode] = useState('')
   const [promoMessage, setPromoMessage] = useState('')
   const attendance = loadAttendanceStats()
-  const nextAt = nextMultiplierAt(attendance.currentDailyStreak)
-  const multiplier = streakMultiplier(attendance.currentDailyStreak)
+  const nextAt = nextStreakMilestoneAt(attendance.currentDailyStreak)
+  const nextBonus = nextStreakMilestoneReward(attendance.currentDailyStreak)
   const notifyEconomyChange = () => window.dispatchEvent(new Event(ECONOMY_CHANGE_EVENT))
 
   const submitPromoCode = (event: FormEvent<HTMLFormElement>) => {
@@ -84,7 +84,7 @@ function LocalEconomyView() {
       <div><strong>{wallet.tickets}</strong><span>сейчас</span></div>
       <div><strong>{wallet.lifetimeTickets}</strong><span>всего</span></div>
       <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
-      <div><strong>{formatMultiplier(multiplier)}</strong><span>множитель</span></div>
+      <div><strong>+{nextBonus}</strong><span>на {nextAt}-й день</span></div>
     </div>
     <div className="economy-note"><Ticket /><p>Билеты открывают дополнительные периоды в кино, сериалах, аниме и музыке. Базовый сеанс всегда доступен, а закрытый период можно выбрать заранее.</p></div>
     <p className="modal-lead">Билеты хранятся только в этом браузере на этом устройстве. В другом браузере или на другом устройстве они не переносятся. Если очистить данные сайта, билеты и их история могут исчезнуть.</p>
@@ -94,8 +94,8 @@ function LocalEconomyView() {
       {promoMessage && <p>{promoMessage}</p>}
     </form>
     <h3 className="subheading">Как начисляется</h3>
-    <div className="economy-rules"><span><strong>+10</strong> завершить сеанс</span><span><strong>+10</strong> угадать ответ</span><span><strong>+0-9</strong> бонус за попытки</span><span><strong>+5</strong> первый сеанс дня</span><span><strong>+25</strong> полный зал всех режимов</span></div>
-    <p className="modal-lead">Абонемент продлевается за первый завершённый daily-сеанс дня, даже если ответ не угадан. Первый сеанс дня умножается на текущий множитель. {nextAt ? `До ${formatMultiplier(streakMultiplier(nextAt))}: ${nextAt - attendance.currentDailyStreak} дн.` : 'Максимальный множитель уже активен.'}</p>
+    <div className="economy-rules"><span><strong>+5</strong> завершить сеанс</span><span><strong>+5</strong> угадать ответ</span><span><strong>+1–3</strong> за эффективность</span><span><strong>+5</strong> первая игра дня</span><span><strong>+10</strong> маршрут из 3 режимов</span><span><strong>+20</strong> полный маршрут</span></div>
+    <p className="modal-lead">Серия растёт за первую завершённую игру дня и больше не умножает награды. Следующий одноразовый бонус: +{nextBonus} на {nextAt}-й день серии.</p>
     <h3 className="subheading">История билетов</h3>
     {ledger.length
       ? <div className="ticket-ledger">{ledger.slice(0, 14).map((entry) => <article className={`ticket-ledger__item ${entry.type}`} key={entry.id}><span>{entry.type === 'earn' ? <Ticket /> : <Lock />}</span><div><strong>{entry.title}</strong><small>{entry.detail} · {new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(entry.at))}</small></div><em>{entry.type === 'earn' ? '+' : '-'}{entry.amount}</em></article>)}</div>

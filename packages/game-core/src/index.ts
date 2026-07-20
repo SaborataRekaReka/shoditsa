@@ -1,4 +1,19 @@
-import { GAME_MODE_MANIFEST, type Direction, type DifficultyKey, type Hint, type LibrarySearchIndex, type MatchStatus, type PeriodKey, type Stats, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import {
+  ECONOMY_RULE_SET,
+  ECONOMY_RULES_VERSION,
+  GAME_MODE_MANIFEST,
+  economyEfficiencyReward,
+  economyStreakMilestoneReward,
+  type Direction,
+  type DifficultyKey,
+  type Hint,
+  type LibrarySearchIndex,
+  type MatchStatus,
+  type PeriodKey,
+  type Stats,
+  type TitleItem,
+  type TitleMode,
+} from '@shoditsa/contracts'
 
 export const PERIODS: Record<PeriodKey, { label: string; short: string; fromYear: number | null }> = {
   all: { label: 'Все годы', short: 'Весь экран', fromYear: null },
@@ -1090,17 +1105,28 @@ export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
 }
 
 export const emptyStats = (): Stats => ({ played: 0, won: 0, currentStreak: 0, bestStreak: 0, distribution: Array(10).fill(0) })
-export const streakMultiplier = (streak: number) => streak >= 30 ? 1.6 : streak >= 14 ? 1.4 : streak >= 7 ? 1.25 : streak >= 3 ? 1.1 : 1
-export const calculateCompletionReward = (input: { won: boolean; attemptsCount: number; firstCompletion: boolean; firstFullHouse: boolean; dailyStreak: number }) => {
+export const calculateCompletionReward = (input: {
+  won: boolean
+  attemptsCount: number
+  firstCompletion: boolean
+  firstRoute3?: boolean
+  firstFullHouse: boolean
+  dailyStreak: number
+}) => {
   const components = {
-    completion: 10,
-    win: input.won ? 10 : 0,
-    speed: input.won ? Math.max(0, 10 - input.attemptsCount) : 0,
-    firstCompletion: input.firstCompletion ? 5 : 0,
-    fullHouse: input.firstFullHouse ? 25 : 0,
+    completion: ECONOMY_RULE_SET.rewards.completion,
+    win: input.won ? ECONOMY_RULE_SET.rewards.win : 0,
+    efficiency: economyEfficiencyReward(input.won, input.attemptsCount),
+    firstGame: input.firstCompletion ? ECONOMY_RULE_SET.rewards.firstGame : 0,
+    route3: input.firstRoute3 ? ECONOMY_RULE_SET.rewards.route3 : 0,
+    fullRoute: input.firstFullHouse ? ECONOMY_RULE_SET.rewards.fullRoute : 0,
+    streakMilestone: input.firstCompletion ? economyStreakMilestoneReward(input.dailyStreak) : 0,
   }
-  const multiplier = streakMultiplier(input.dailyStreak)
-  return { components, multiplier, total: Math.round(Object.values(components).reduce((sum, value) => sum + value, 0) * multiplier) }
+  return {
+    rulesVersion: ECONOMY_RULES_VERSION,
+    components,
+    total: Object.values(components).reduce((sum, value) => sum + value, 0),
+  }
 }
 export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean) => {
   const rows = hints.map((row) => row.map((hint) => hint.status === 'match' ? '🟩' : hint.status === 'close' || hint.status === 'partial' ? '🟨' : hint.status === 'unknown' ? '⬜' : '⬛').join('')).join('\n')

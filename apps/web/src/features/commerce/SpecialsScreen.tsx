@@ -242,6 +242,7 @@ export function SpecialDetailScreen({
                     <CheckoutButton
                       product={product}
                       authenticated={authenticated}
+                      hasClub={Boolean(runtime.dashboard?.membership.active)}
                       label="Купить спецпоказ навсегда"
                       placement="pack_paywall"
                       returnUrl={`/specials/${encodeURIComponent(pack.id)}`}

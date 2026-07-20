@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Archive, CircleHelp, Clapperboard, Heart, LockKeyhole, Sparkles, Ticket } from 'lucide-react'
+import { Archive, CircleHelp, Clapperboard, LockKeyhole, Sparkles, Ticket } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
@@ -19,7 +19,7 @@ const fallbackOffers: ClubOffer[] = [
     id: 'club_30d',
     title: 'Клубный билет',
     durationLabel: '30 дней',
-    note: 'Архив, свободная игра и клубные спецпоказы на 30 дней.',
+    note: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки.',
     priceLabel: '199 ₽',
     unitLabel: '6,63 ₽ в день',
   },
@@ -27,10 +27,11 @@ const fallbackOffers: ClubOffer[] = [
     id: 'club_365d',
     title: 'Годовой клубный билет',
     durationLabel: '365 дней',
-    note: 'Архив, свободная игра и клубные спецпоказы на весь год.',
-    priceLabel: '1 490 ₽',
-    unitLabel: '124 ₽ в месяц',
-    savingsLabel: 'Экономия 898 ₽',
+    note: 'Архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки.',
+    priceLabel: '1 790 ₽',
+    unitLabel: '149 ₽ в месяц',
+    savingsLabel: 'Экономия 598 ₽',
+    discountLabel: '25%',
   },
 ]
 
@@ -89,7 +90,7 @@ export function ClubScreen({
     (catalog.data?.products ?? []).map((product) => [product.id, product]),
   )
   const monthlyPriceMinor = productsById.get('club_30d')?.priceMinor ?? 19_900
-  const annualPriceMinor = productsById.get('club_365d')?.priceMinor ?? 149_000
+  const annualPriceMinor = productsById.get('club_365d')?.priceMinor ?? 179_000
   const offers = fallbackOffers.map((offer) => {
     const product = productsById.get(offer.id)
     if (!product) return offer
@@ -111,6 +112,9 @@ export function ClubScreen({
       savingsLabel: annual && savingsMinor > 0
         ? `Экономия ${priceFormatter.format(savingsMinor / 100)}`
         : undefined,
+      discountLabel: annual && monthlyPriceMinor > 0
+        ? `${Math.round((1 - product.priceMinor / (monthlyPriceMinor * 12)) * 100)}%`
+        : undefined,
     }
   })
   const tipsRequested =
@@ -119,14 +123,28 @@ export function ClubScreen({
       window.location.hash.includes('section=tips'))
 
   useEffect(() => {
+    if (SERVER_RUNTIME && !runtime.dashboard) return
     const properties = {
       placement: 'club_screen',
       isAuthenticated: authenticated,
+      balanceBefore: runtime.dashboard?.wallet.balance ?? 0,
+      balanceAfter: runtime.dashboard?.wallet.balance ?? 0,
+      amount: 0,
+      required: 0,
+      shortage: 0,
+      source: 'club-screen',
+      sink: null,
+      mode: null,
+      sessionKind: 'club-paywall',
+      dailyCompletedCount: runtime.dashboard?.today?.completedModes.length ?? 0,
+      streak: runtime.dashboard?.attendance?.currentDailyStreak ?? 0,
+      rulesVersion: runtime.dashboard?.economyRules.version ?? 2,
       hasClub,
     }
     trackClientEvent('club_screen_view', properties)
+    if (!hasClub) trackClientEvent('club_paywall_view', properties)
     trackMetrikaGoal('club_screen_view', properties)
-  }, [authenticated, hasClub])
+  }, [authenticated, hasClub, runtime.dashboard?.economyRules.version])
 
   const selectOffer = (offer: ClubOffer) => {
     const properties = {
@@ -186,7 +204,7 @@ export function ClubScreen({
                 <span>Больше игр.</span>
                 <span>Больше поводов вернуться.</span>
               </h1>
-              <p>Архив с первого дня, свободная игра и клубные спецпоказы — по одному билету.</p>
+              <p>Архив с первого дня, свободная игра, клубные спецпоказы и две дополнительные Данетки в сутки.</p>
               <div className="club-hero__actions">
                 <ActionButton type="button" onClick={hasClub ? onArchive : scrollToOffers}>
                   {hasClub ? <Archive /> : <Ticket />}
@@ -268,6 +286,7 @@ export function ClubScreen({
                       <CheckoutButton
                         product={product}
                         authenticated={authenticated}
+                        hasClub={hasClub}
                         label={buttonLabel}
                       />
                     ) : undefined
@@ -281,19 +300,17 @@ export function ClubScreen({
           )}
         </section>
 
-        <section className="club-tip-cta" id="club-support">
-          <span className="club-tip-cta__mark" aria-hidden="true"><Heart /></span>
+        <section className="club-tip-cta club-tip-cta--quiet" id="club-support">
           <div className="club-tip-cta__copy">
             <span>Поддержать проект</span>
-            <h2>Оставить чаевые кассиру</h2>
             <p>Добровольная поддержка новых ежедневных игр — без игровых преимуществ.</p>
           </div>
           <TipCheckoutTrigger
             className="club-tip-cta__button"
             placement="club_tip"
             initialOpen={tipsRequested}
-            label="Выбрать сумму"
-            hint="Сразу перейти к оплате"
+            label="Оставить чаевые"
+            hint="99, 299 или 699 ₽"
           />
         </section>
       </main>

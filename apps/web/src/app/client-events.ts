@@ -2,6 +2,9 @@ export type EventName = 'page_view' | 'mode_opened' | 'client_error' | 'api_erro
   | 'club_screen_view' | 'club_interest_clicked' | 'archive_paywall_view' | 'archive_paywall_clicked'
   | 'checkout_started' | 'checkout_returned' | 'purchase_succeeded' | 'purchase_failed'
   | 'club_free_play_started' | 'pack_opened' | 'pack_paywall_view'
+  | 'ticket_earned' | 'ticket_spent' | 'insufficient_tickets_view' | 'ticket_offer_view' | 'ticket_offer_clicked'
+  | 'ticket_bundle_purchased' | 'period_unlocked' | 'free_play_started' | 'danetki_room_started'
+  | 'danetki_room_completed' | 'danetki_limit_reached' | 'club_paywall_view'
 type QueuedEvent = {
   eventId: string
   eventName: EventName
@@ -14,6 +17,7 @@ type QueuedEvent = {
   gameSessionId?: string | null
   properties?: Record<string, string | number | boolean | null>
 }
+type EventProperty = string | number | boolean | null
 
 const STORAGE_KEY = 'shoditsa:client-events:v1'
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
@@ -29,12 +33,16 @@ const fingerprint = (value: string) => {
   return `fnv1a:${(hash >>> 0).toString(16)}`
 }
 
-export const trackClientEvent = (eventName: EventName, properties: QueuedEvent['properties'] = {}, context: Partial<Pick<QueuedEvent, 'requestId' | 'errorCode' | 'gameSessionId' | 'stackFingerprint'>> = {}) => {
+export const trackClientEvent = (eventName: EventName, properties: Record<string, unknown> = {}, context: Partial<Pick<QueuedEvent, 'requestId' | 'errorCode' | 'gameSessionId' | 'stackFingerprint'>> = {}) => {
+  const safeProperties = Object.fromEntries(Object.entries(properties).flatMap(([key, value]) => {
+    if (value === null || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return [[key, value as EventProperty]]
+    return []
+  }))
   const event: QueuedEvent = {
     eventId: crypto.randomUUID(), eventName, occurredAt: new Date().toISOString(), route: window.location.pathname,
-    appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev'), properties, ...context,
+    appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev'), properties: safeProperties, ...context,
   }
-  if (eventName === 'client_error' && !event.stackFingerprint) event.stackFingerprint = fingerprint(String(properties.message ?? 'client_error'))
+  if (eventName === 'client_error' && !event.stackFingerprint) event.stackFingerprint = fingerprint(String(safeProperties.message ?? 'client_error'))
   write([...read(), event]); void flushClientEvents()
 }
 

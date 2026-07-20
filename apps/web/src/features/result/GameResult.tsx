@@ -18,6 +18,7 @@ export type ResultAward = {
   firstDaily: number
   milestoneBonus: number
   fullHouse: number
+  streakMilestone: number
   newDailyStreak: number
   alreadyClaimed: boolean
 }
@@ -78,14 +79,15 @@ export function GameResult(props: Props) {
       {props.won && <TipCheckoutTrigger className="result-tip" />}
     </div>
     {props.award && <details className="reward-breakdown result-card__wide">
-      <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билета`}</span><ChevronDown /></summary>
+      <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билетов`}</span><ChevronDown /></summary>
       {!props.award.alreadyClaimed && <ul>
         <li><span>За завершение</span><strong>+{props.award.completed}</strong></li>
         {!!props.award.win && <li><span>За победу</span><strong>+{props.award.win}</strong></li>}
-        {!!props.award.speed && <li><span>За скорость</span><strong>+{props.award.speed}</strong></li>}
+        {!!props.award.speed && <li><span>За эффективность</span><strong>+{props.award.speed}</strong></li>}
         {!!props.award.firstDaily && <li><span>Первая игра дня</span><strong>+{props.award.firstDaily}</strong></li>}
         {!!props.award.milestoneBonus && <li><span>Маршрут дня</span><strong>+{props.award.milestoneBonus}</strong></li>}
         {!!props.award.fullHouse && <li><span>Полный маршрут</span><strong>+{props.award.fullHouse}</strong></li>}
+        {!!props.award.streakMilestone && <li><span>Бонус за серию</span><strong>+{props.award.streakMilestone}</strong></li>}
       </ul>}
     </details>}
     {(props.streak !== undefined || props.telegramUrl || props.onReport || props.onHome) && <div className="result-utility result-card__wide">

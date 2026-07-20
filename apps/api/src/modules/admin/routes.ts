@@ -1707,6 +1707,111 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
   app.get('/api/v1/admin/promos', async (request, reply) => {
     await admin(request, reply, deps); return { items: await deps.db.select({ promo: promoCodes, redemptions: sql<number>`(select count(*)::int from promo_redemptions pr where pr.promo_id = ${promoCodes.id})` }).from(promoCodes).orderBy(desc(promoCodes.createdAt)) }
   })
+  app.get('/api/v1/admin/economy/overview', {
+    schema: { querystring: Type.Object({ days: Type.Optional(Type.Union([Type.Literal(7), Type.Literal(14), Type.Literal(30)])) }, { additionalProperties: false }) },
+  }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const days = (request.query as { days?: 7 | 14 | 30 }).days ?? 14
+    const since = new Date(Date.now() - days * 86_400_000).toISOString()
+    const [summaryResult, spendResult, versionsResult, balancesResult] = await Promise.all([
+      deps.db.execute(sql`
+        with first_shortage as (
+          select user_id, min(occurred_at) first_at
+          from client_events
+          where event_name = 'insufficient_tickets_view' and occurred_at >= ${since}::timestamptz
+          group by user_id
+        ), ai_per_room as (
+          select session_id, sum(coalesce(input_tokens, 0) + coalesce(output_tokens, 0))::int total_tokens
+          from danetki_ai_calls
+          where status = 'success' and created_at >= ${since}::timestamptz
+          group by session_id
+        ), paid_by_user as (
+          select user_id, count(*)::int paid_orders, sum(amount_minor)::bigint revenue_minor
+          from payment_orders
+          where status = 'paid' and paid_at >= ${since}::timestamptz
+          group by user_id
+        )
+        select
+          coalesce((select sum(amount) from wallet_ledger where amount > 0 and "createdAt" >= ${since}::timestamptz), 0)::int "ticketsEarned",
+          coalesce((select -sum(amount) from wallet_ledger where amount < 0 and "createdAt" >= ${since}::timestamptz), 0)::int "ticketsSpent",
+          (select count(distinct user_id)::int from game_sessions where "startedAt" >= ${since}::timestamptz) "activeUsers",
+          (select count(*)::int from first_shortage) "shortageUsers",
+          (select count(*)::int from client_events where event_name = 'insufficient_tickets_view' and occurred_at >= ${since}::timestamptz) "shortageViews",
+          (select count(*)::int from first_shortage fs where not exists (
+            select 1 from client_events later where later.user_id = fs.user_id and later.occurred_at > fs.first_at and later.occurred_at <= fs.first_at + interval '15 minutes'
+          )) "shortageExits",
+          (select count(*)::int from first_shortage fs where exists (
+            select 1 from payment_orders po join commerce_products cp on cp.id = po.product_id
+            where po.user_id = fs.user_id and po.status = 'paid' and cp.kind = 'club' and po.paid_at >= fs.first_at
+          )) "shortageClubConversions",
+          coalesce((select percentile_cont(0.5) within group (order by balance) from wallet_accounts), 0)::float8 "balanceP50",
+          coalesce((select percentile_cont(0.9) within group (order by balance) from wallet_accounts), 0)::float8 "balanceP90",
+          (select count(*)::int from ai_per_room) "danetkiRoomsMeasured",
+          coalesce((select percentile_cont(0.5) within group (order by total_tokens) from ai_per_room), 0)::float8 "danetkiTokensP50",
+          coalesce((select percentile_cont(0.95) within group (order by total_tokens) from ai_per_room), 0)::float8 "danetkiTokensP95",
+          coalesce((select sum(revenue_minor) from paid_by_user), 0)::bigint "revenueMinor",
+          (select count(*)::int from paid_by_user) "payingUsers",
+          (select count(*)::int from paid_by_user where paid_orders > 1) "repeatBuyers",
+          (select count(*)::int from payment_orders where status in ('refunded','chargeback') and "updatedAt" >= ${since}::timestamptz) "refunds"
+      `),
+      deps.db.execute(sql`
+        select reason, (-sum(amount))::int amount, count(*)::int operations
+        from wallet_ledger
+        where amount < 0 and "createdAt" >= ${since}::timestamptz
+        group by reason order by amount desc
+      `),
+      deps.db.execute(sql`
+        select rules_version "rulesVersion", count(*)::int operations,
+          coalesce(sum(amount) filter (where amount > 0), 0)::int earned,
+          coalesce(-sum(amount) filter (where amount < 0), 0)::int spent
+        from wallet_ledger where "createdAt" >= ${since}::timestamptz
+        group by rules_version order by rules_version desc
+      `),
+      deps.db.execute(sql`
+        select bucket, count(*)::int users from (
+          select case when balance < 60 then '0–59' when balance <= 180 then '60–180' when balance <= 600 then '181–600' else '601+' end bucket
+          from wallet_accounts
+        ) balances group by bucket order by min(case bucket when '0–59' then 1 when '60–180' then 2 when '181–600' then 3 else 4 end)
+      `),
+    ])
+    const raw = rows<Record<string, unknown>>(summaryResult)[0] ?? {}
+    const number = (key: string) => Number(raw[key] ?? 0)
+    const ticketsEarned = number('ticketsEarned')
+    const ticketsSpent = number('ticketsSpent')
+    const activeUsers = number('activeUsers')
+    const shortageUsers = number('shortageUsers')
+    const shortageExits = number('shortageExits')
+    const payingUsers = number('payingUsers')
+    return {
+      periodDays: days,
+      generatedAt: new Date().toISOString(),
+      summary: {
+        ticketsEarned,
+        ticketsSpent,
+        earnedSpentRatio: ticketsSpent > 0 ? ticketsEarned / ticketsSpent : null,
+        activeUsers,
+        shortageUsers,
+        shortageViews: number('shortageViews'),
+        shortageUserRate: activeUsers > 0 ? shortageUsers / activeUsers : 0,
+        shortageExits,
+        shortageExitRate: shortageUsers > 0 ? shortageExits / shortageUsers : 0,
+        shortageClubConversions: number('shortageClubConversions'),
+        balanceP50: number('balanceP50'),
+        balanceP90: number('balanceP90'),
+        danetkiRoomsMeasured: number('danetkiRoomsMeasured'),
+        danetkiTokensP50: number('danetkiTokensP50'),
+        danetkiTokensP95: number('danetkiTokensP95'),
+        revenueMinor: number('revenueMinor'),
+        payingUsers,
+        revenuePerPayingUserMinor: payingUsers > 0 ? number('revenueMinor') / payingUsers : 0,
+        repeatBuyers: number('repeatBuyers'),
+        refunds: number('refunds'),
+      },
+      spendByReason: rows<Record<string, unknown>>(spendResult).map((entry) => ({ reason: String(entry.reason), amount: Number(entry.amount), operations: Number(entry.operations) })),
+      ruleVersions: rows<Record<string, unknown>>(versionsResult).map((entry) => ({ rulesVersion: Number(entry.rulesVersion), operations: Number(entry.operations), earned: Number(entry.earned), spent: Number(entry.spent) })),
+      balanceBuckets: rows<Record<string, unknown>>(balancesResult).map((entry) => ({ bucket: String(entry.bucket), users: Number(entry.users) })),
+    }
+  })
   app.get('/api/v1/admin/settings', async (request, reply) => { await admin(request, reply, deps); return { items: await deps.db.select().from(appSettings).orderBy(asc(appSettings.key)) } })
   app.get('/api/v1/admin/quality-issues', async (request, reply) => {
     await admin(request, reply, deps)

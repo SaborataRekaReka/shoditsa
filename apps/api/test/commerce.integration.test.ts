@@ -34,7 +34,7 @@ describe('commerce API', () => {
     database = createDatabase(config)
     await database.db.insert(commerceProducts).values([
       { id: 'club_30d', kind: 'club', title: 'Клубный билет на 30 дней', description: '30 дней клуба', priceMinor: 19_900, currency: 'RUB', durationDays: 30, entitlementKey: 'club', sortOrder: 10 },
-      { id: 'club_365d', kind: 'club', title: 'Годовой клубный билет', description: '365 дней клуба', priceMinor: 149_000, currency: 'RUB', durationDays: 365, entitlementKey: 'club', sortOrder: 20 },
+      { id: 'club_365d', kind: 'club', title: 'Годовой клубный билет', description: '365 дней клуба', priceMinor: 179_000, currency: 'RUB', durationDays: 365, entitlementKey: 'club', sortOrder: 20 },
     ]).onConflictDoNothing()
     await database.db.insert(user).values([
       { id: userId, name: 'Commerce User', email: `commerce-${userId}@example.test`, emailVerified: true },
@@ -119,7 +119,7 @@ describe('commerce API', () => {
     currentUser = { id: freeUserId, email: `commerce-${freeUserId}@example.test`, name: 'Free User', isAnonymous: false }
     const response = await app.inject({ method: 'POST', url: '/api/v1/economy/free-play/start', headers: { 'idempotency-key': crypto.randomUUID() }, payload: { mode: 'series', difficulty: null } })
     expect(response.statusCode).toBe(200)
-    expect(response.json()).toMatchObject({ cost: 45, accessSource: 'tickets', balanceAfter: 455 })
+    expect(response.json()).toMatchObject({ cost: 60, accessSource: 'tickets', balanceAfter: 440 })
     expect(response.json().ledgerId).toEqual(expect.any(String))
     currentUser = { id: userId, email: `commerce-${userId}@example.test`, name: 'Commerce User', isAnonymous: false }
   })

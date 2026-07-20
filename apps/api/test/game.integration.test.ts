@@ -159,28 +159,28 @@ describe('server-authoritative game API', () => {
   it('charges unlock, free play and promo only once under concurrent retries', async () => {
     const config = loadConfig(); const database = createDatabase(config)
     try {
-      await database.db.insert(walletAccounts).values({ userId: guestUserId, balance: 100, lifetimeEarned: 100 }).onConflictDoUpdate({ target: walletAccounts.userId, set: { balance: 100, lifetimeEarned: 100 } })
+      await database.db.insert(walletAccounts).values({ userId: guestUserId, balance: 250, lifetimeEarned: 250 }).onConflictDoUpdate({ target: walletAccounts.userId, set: { balance: 250, lifetimeEarned: 250 } })
       const unlockKey = crypto.randomUUID()
       const unlockRequests = [1, 2].map(() => app.inject({ method: 'POST', url: '/api/v1/economy/period-unlocks', headers: { cookie, 'idempotency-key': unlockKey }, payload: { mode: 'anime', period: 'from_2020' } }))
       expect((await Promise.all(unlockRequests)).every((response) => response.statusCode === 200)).toBe(true)
-      expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(75)
+      expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(130)
       expect((await database.db.select().from(periodEntitlements).where(eq(periodEntitlements.userId, guestUserId))).length).toBe(1)
 
       const freeKey = crypto.randomUUID()
       const freeRequests = [1, 2].map(() => app.inject({ method: 'POST', url: '/api/v1/economy/free-play/start', headers: { cookie, 'idempotency-key': freeKey }, payload: { mode: 'movie', difficulty: null } }))
       const freeResponses = await Promise.all(freeRequests)
       expect(freeResponses.every((response) => response.statusCode === 200)).toBe(true)
-      expect(freeResponses[1].json()).toMatchObject({ id: freeResponses[0].json().id, cost: 45, balanceAfter: 30, ledgerId: freeResponses[0].json().ledgerId })
-      expect(freeResponses[0].json()).toMatchObject({ cost: 45, balanceAfter: 30 })
+      expect(freeResponses[1].json()).toMatchObject({ id: freeResponses[0].json().id, cost: 60, balanceAfter: 70, ledgerId: freeResponses[0].json().ledgerId })
+      expect(freeResponses[0].json()).toMatchObject({ cost: 60, balanceAfter: 70 })
       expect(freeResponses[0].json().ledgerId).toMatch(/^[0-9a-f-]{36}$/i)
-      expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(30)
+      expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(70)
 
       const code = `TEST-${crypto.randomUUID()}`
       await database.db.insert(promoCodes).values({ codeHash: promoHash(code, config.promoPepper), title: 'Integration', rewardType: 'tickets', rewardValue: 50, perUserLimit: 1 })
       const promoKey = crypto.randomUUID()
       const promoRequests = [1, 2].map(() => app.inject({ method: 'POST', url: '/api/v1/promos/redeem', headers: { cookie, 'idempotency-key': promoKey }, payload: { code } }))
       expect((await Promise.all(promoRequests)).every((response) => response.statusCode === 200)).toBe(true)
-      expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(80)
+      expect((await database.db.select().from(walletAccounts).where(eq(walletAccounts.userId, guestUserId)))[0].balance).toBe(120)
     } finally { await database.client.end() }
   })
 

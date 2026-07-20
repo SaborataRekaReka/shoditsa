@@ -50,11 +50,11 @@ export const GAME_MODE_MANIFEST = {
   },
   game: {
     engine: 'catalog_guess', label: 'Игры', dailyLabel: 'Игра', shareIcon: '🎮', dataDir: 'games', dailyOrder: 4,
-    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
   },
   city: {
     engine: 'catalog_guess', label: 'Города', dailyLabel: 'Город', shareIcon: '🌍', dataDir: 'cities', dailyOrder: 5,
-    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false,
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true,
     variants: [
       { id: 'capitals', label: 'Столицы', shortLabel: 'Столицы', description: 'Только столицы государств' },
       { id: 'capitals-popular', label: 'Столицы и популярные', shortLabel: 'Столицы +', description: 'Столицы и самые узнаваемые города' },

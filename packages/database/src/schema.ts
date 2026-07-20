@@ -95,6 +95,16 @@ export const appSettings = pgTable('app_settings', {
   updatedAt: now(),
 })
 
+export const economyRuleSets = pgTable('economy_rule_sets', {
+  version: integer().primaryKey(),
+  effectiveAt: timestamp('effective_at', { withTimezone: true }).notNull(),
+  rules: jsonb().notNull(),
+  active: boolean().notNull().default(false),
+  createdAt: now(),
+}, (table) => [
+  uniqueIndex('economy_rule_sets_single_active_idx').on(table.active).where(sql`${table.active} = true`),
+])
+
 export const integrationSecrets = pgTable('integration_secrets', {
   key: text().primaryKey(),
   encryptedValue: text('encrypted_value').notNull(),
@@ -629,7 +639,7 @@ export const walletAccounts = pgTable('wallet_accounts', {
 export const walletLedger = pgTable('wallet_ledger', {
   id: uuid().primaryKey().defaultRandom(), userId: uuid('user_id').notNull().references(() => user.id),
   operationKey: text('operation_key').notNull().unique(), type: text().notNull(), reason: text().notNull(),
-  amount: integer().notNull(), balanceAfter: integer('balance_after').notNull(), metadata: jsonb().notNull().default({}), createdAt: now(),
+  amount: integer().notNull(), balanceAfter: integer('balance_after').notNull(), rulesVersion: integer('rules_version').notNull().default(1), metadata: jsonb().notNull().default({}), createdAt: now(),
 }, (table) => [index('wallet_ledger_user_cursor_idx').on(table.userId, table.createdAt), check('wallet_ledger_type_check', sql`${table.type} in ('earn','spend','adjustment','migration')`)])
 
 export const periodEntitlements = pgTable('period_entitlements', {
@@ -647,6 +657,18 @@ export const promoCodes = pgTable('promo_codes', {
   startsAt: timestamp('starts_at', { withTimezone: true }), endsAt: timestamp('ends_at', { withTimezone: true }), enabled: boolean().notNull().default(true),
   createdBy: uuid('created_by').references(() => user.id), createdAt: now(),
 })
+
+export const danetkiDailyUsage = pgTable('danetki_daily_usage', {
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  activityDate: date('activity_date').notNull(),
+  dailyRooms: integer('daily_rooms').notNull().default(0),
+  extraRooms: integer('extra_rooms').notNull().default(0),
+  clubRooms: integer('club_rooms').notNull().default(0),
+  paidRooms: integer('paid_rooms').notNull().default(0),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.activityDate] }),
+  check('danetki_daily_usage_counts_check', sql`${table.dailyRooms} >= 0 and ${table.extraRooms} >= 0 and ${table.clubRooms} >= 0 and ${table.paidRooms} >= 0`),
+])
 
 export const commerceProducts = pgTable('commerce_products', {
   id: text().primaryKey(),
@@ -844,7 +866,7 @@ export const clientEvents = pgTable('client_events', {
   properties: jsonb().notNull().default({}),
   createdAt: now(),
 }, (table) => [
-  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view')`),
+  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','club_paywall_view')`),
   index('client_event_occurred_idx').on(table.occurredAt),
   index('client_event_user_occurred_idx').on(table.userId, table.occurredAt),
   index('client_event_game_session_idx').on(table.gameSessionId),

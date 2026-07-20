@@ -4,6 +4,8 @@ import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
 import { ArrowLeft, Check, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
+import { trackClientEvent } from '../../app/client-events'
+import { useServerRuntime } from '../../hooks/use-server-runtime'
 import './DanetkiGamePage.css'
 
 type Props = {
@@ -20,7 +22,9 @@ export const SESSION_RENDERER_BY_ENGINE = { danetki_chat: DanetkiGamePage }
 
 export function DanetkiGamePage({ sessionId, session, onHome, onBack }: Props) {
   const client = useQueryClient()
+  const runtime = useServerRuntime()
   const state = session.danetki!
+  const isOwner = state.members.some((member) => member.userId === state.currentUserId && member.role === 'owner')
   const [draft, setDraft] = useState('')
   const [connection, setConnection] = useState<'connected' | 'reconnecting' | 'offline'>('reconnecting')
   const [error, setError] = useState('')
@@ -35,6 +39,8 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack }: Props) {
   const wasNearBottom = useRef(true)
   const previousMessageCount = useRef(state.messages.length)
   const sendKey = useRef<string | null>(null)
+  const completionTracked = useRef(false)
+  const limitTracked = useRef(false)
 
   const refresh = async () => client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
   useEffect(() => {
@@ -69,6 +75,58 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack }: Props) {
     setNewMessages(0)
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
   }, [state.messages.length])
+
+  useEffect(() => {
+    if (session.status === 'playing' || completionTracked.current) return
+    completionTracked.current = true
+    const balanceBefore = runtime.dashboard?.wallet.balance ?? 0
+    const amount = session.kind === 'daily' && isOwner ? runtime.dashboard?.economyRules.danetki.ownerDailyCompletionReward ?? 10 : 0
+    trackClientEvent('danetki_room_completed', {
+      balanceBefore,
+      balanceAfter: balanceBefore + amount,
+      amount,
+      required: 0,
+      shortage: 0,
+      source: session.kind === 'daily' ? 'danetki-daily' : 'danetki-room',
+      sink: null,
+      mode: 'danetki',
+      sessionKind: session.kind,
+      roomMode: state.roomMode,
+      questionCount: state.questionCount,
+      outcome: session.status,
+      dailyCompletedCount: runtime.dashboard?.today?.completedModes.length ?? 0,
+      streak: runtime.dashboard?.attendance?.currentDailyStreak ?? 0,
+      rulesVersion: session.rulesVersion,
+      hasClub: runtime.dashboard?.membership.active ?? false,
+    }, { gameSessionId: session.id })
+    void Promise.all([
+      client.invalidateQueries({ queryKey: queryKeys.dashboard }),
+      client.invalidateQueries({ queryKey: queryKeys.ledger }),
+    ])
+  }, [client, isOwner, runtime.dashboard, session.id, session.kind, session.rulesVersion, session.status, state.questionCount, state.roomMode])
+
+  useEffect(() => {
+    if (state.questionsRemaining > 0 || limitTracked.current) return
+    limitTracked.current = true
+    const balance = runtime.dashboard?.wallet.balance ?? 0
+    trackClientEvent('danetki_limit_reached', {
+      balanceBefore: balance,
+      balanceAfter: balance,
+      amount: 0,
+      mode: 'danetki',
+      sessionKind: session.kind,
+      roomMode: state.roomMode,
+      questionCount: state.questionCount,
+      required: state.questionLimit,
+      shortage: 0,
+      source: 'danetki-room',
+      sink: null,
+      dailyCompletedCount: runtime.dashboard?.today?.completedModes.length ?? 0,
+      streak: runtime.dashboard?.attendance?.currentDailyStreak ?? 0,
+      rulesVersion: session.rulesVersion,
+      hasClub: runtime.dashboard?.membership.active ?? false,
+    }, { gameSessionId: session.id })
+  }, [runtime.dashboard, session.id, session.kind, session.rulesVersion, state.questionCount, state.questionLimit, state.questionsRemaining, state.roomMode])
 
   useEffect(() => {
     if (!dialog) return
@@ -169,7 +227,12 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack }: Props) {
 
         {session.status === 'playing' && <>
           <div className="danetki-suggestions">{state.puzzle.starterQuestions.slice(0, 3).map((question) => <button key={question} type="button" onClick={() => setDraft(question)}>{question}</button>)}</div>
-          <form className="danetki-composer" onSubmit={submit}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={300} rows={2} placeholder="Спросите о ситуации…" aria-label="Вопрос ведущей" /><button type="submit" disabled={send.isPending || draft.trim().length < 2} aria-label="Отправить вопрос">{send.isPending ? <LoaderCircle /> : <Send />}</button></form>
+          {state.questionCount >= state.questionWarningAt && <p className="danetki-question-limit" role="status">
+            {state.questionsRemaining > 0
+              ? `Осталось вопросов: ${state.questionsRemaining} из ${state.questionLimit}`
+              : `Лимит ${state.questionLimit} вопросов исчерпан. Завершите расследование финальной версией или откройте разгадку.`}
+          </p>}
+          <form className="danetki-composer" onSubmit={submit}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={300} rows={2} placeholder={state.questionsRemaining > 0 ? 'Спросите о ситуации…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущей" disabled={state.questionsRemaining <= 0} /><button type="submit" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос">{send.isPending ? <LoaderCircle /> : <Send />}</button></form>
         </>}
       </section>
 

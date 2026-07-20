@@ -67,6 +67,7 @@ export function TipCheckoutTrigger({
   const [accepted, setAccepted] = useState(false)
   const idempotencyKeyRef = useRef<string | null>(null)
   const authenticated = Boolean(runtime.me && !runtime.me.user.isAnonymous)
+  const hasClub = Boolean(runtime.dashboard?.membership.active)
   const catalog = useQuery({
     queryKey: queryKeys.commerceCatalog,
     queryFn: api.commerceCatalog,
@@ -106,7 +107,7 @@ export function TipCheckoutTrigger({
       productId: product.id,
       placement,
       isAuthenticated: true,
-      hasClub: false,
+      hasClub,
     }
     trackClientEvent('checkout_started', properties)
     trackMetrikaGoal('checkout_started', properties)

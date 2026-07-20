@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
-import { GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItems, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
@@ -712,7 +712,7 @@ export const startGame = async (db: Database, userId: string, input: {
   }
   const insertedSession = await tx.insert(gameSessions).values({
     userId, authSessionId, challengeId: challenge[0].id, kind: input.kind, mode: input.mode, period, difficulty,
-    puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: 1,
+    puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: ECONOMY_RULES_VERSION,
   }).onConflictDoNothing().returning()
   const session = insertedSession[0] ?? (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.challengeId, challenge[0].id))).limit(1))[0]
   return buildSessionSnapshot(tx, session)
@@ -745,7 +745,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
       ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
       : []
   const result: Record<string, unknown> = {
-    engine: 'catalog_guess',
+    engine: 'catalog_guess', rulesVersion: session.rulesVersion,
     id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, packId: session.packId, packPosition: session.packPosition, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
@@ -811,7 +811,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   let reward: Awaited<ReturnType<typeof completeGame>> = null
   if (status !== 'playing') reward = await completeGame(tx, {
     sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
-    puzzleDate: session.puzzleDate, won: status === 'won', attemptsCount: position,
+    puzzleDate: session.puzzleDate, won: status === 'won', attemptsCount: position, rulesVersion: session.rulesVersion,
   })
   await tx.update(gameSessions).set({
     attemptsCount: position, status, updatedAt: new Date(), completedAt: status === 'playing' ? null : new Date(),

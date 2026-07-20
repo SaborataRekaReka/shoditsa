@@ -36,8 +36,8 @@ export const dailyCompletedCopy = (count: number) => {
 
 export const dailyRewardState = (completedCount: number): DailyRewardState => {
   const fullHouseTarget = DAILY_MODE_ORDER.length
-  if (completedCount >= fullHouseTarget) return { fullHouse: true, remaining: 0, reward: 25, milestone: fullHouseTarget }
-  if (completedCount >= 3) return { fullHouse: false, remaining: fullHouseTarget - completedCount, reward: 25, milestone: fullHouseTarget }
+  if (completedCount >= fullHouseTarget) return { fullHouse: true, remaining: 0, reward: 20, milestone: fullHouseTarget }
+  if (completedCount >= 3) return { fullHouse: false, remaining: fullHouseTarget - completedCount, reward: 20, milestone: fullHouseTarget }
   return { fullHouse: false, remaining: 3 - completedCount, reward: 10, milestone: 3 }
 }
 
