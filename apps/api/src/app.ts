@@ -142,7 +142,10 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.get('/api/v1/meta', async () => {
     const [active, danetkiFeatures] = await Promise.all([
       db.select({ id: contentRevisions.id, version: contentRevisions.version }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1),
-      loadDanetkiFeatureFlags(db),
+      loadDanetkiFeatureFlags(db, {
+        enabled: config.danetkiEnabled,
+        multiplayerEnabled: config.danetkiMultiplayerEnabled,
+      }),
     ])
     const counts = active[0] ? await db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, active[0].id)) : []
     const emailInfrastructureReady = Boolean(config.smtp.host && config.smtp.from)

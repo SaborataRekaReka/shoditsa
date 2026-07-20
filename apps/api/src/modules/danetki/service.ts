@@ -48,13 +48,16 @@ export type DanetkiFeatureFlags = {
 
 const settingBoolean = (value: unknown, fallback: boolean) => typeof value === 'boolean' ? value : fallback
 
-export const loadDanetkiFeatureFlags = async (db: Pick<Database, 'select'>): Promise<DanetkiFeatureFlags> => {
+export const loadDanetkiFeatureFlags = async (
+  db: Pick<Database, 'select'>,
+  fallback: DanetkiFeatureFlags = { enabled: false, multiplayerEnabled: true },
+): Promise<DanetkiFeatureFlags> => {
   const rows = await db.select({ key: appSettings.key, value: appSettings.value }).from(appSettings)
     .where(inArray(appSettings.key, ['danetki.enabled', 'danetki.multiplayerEnabled']))
   const settings = new Map(rows.map((row) => [row.key, row.value]))
   return {
-    enabled: settingBoolean(settings.get('danetki.enabled'), false),
-    multiplayerEnabled: settingBoolean(settings.get('danetki.multiplayerEnabled'), true),
+    enabled: settingBoolean(settings.get('danetki.enabled'), fallback.enabled),
+    multiplayerEnabled: settingBoolean(settings.get('danetki.multiplayerEnabled'), fallback.multiplayerEnabled),
   }
 }
 
@@ -275,7 +278,10 @@ export const startDanetkiSession = async (db: Database, user: {
   archiveDate?: string | null
   idempotencyKey?: string
 }, config: AppConfig) => {
-  const flags = await loadDanetkiFeatureFlags(db)
+  const flags = await loadDanetkiFeatureFlags(db, {
+    enabled: config.danetkiEnabled,
+    multiplayerEnabled: config.danetkiMultiplayerEnabled,
+  })
   if (!flags.enabled) throw new ApiError(404, 'DANETKI_DISABLED', 'Режим «Данетки» пока недоступен')
   if (input.roomMode === 'group' && !flags.multiplayerEnabled) {
     throw new ApiError(404, 'DANETKI_MULTIPLAYER_DISABLED', 'Совместная игра пока недоступна')

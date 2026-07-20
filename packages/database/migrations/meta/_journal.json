@@ -134,6 +134,13 @@
       "when": 1784566800000,
       "tag": "0018_economy_v2",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1784572201787,
+      "tag": "0019_enable_danetki_mode",
+      "breakpoints": true
     }
   ]
 }

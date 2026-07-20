@@ -34,20 +34,21 @@ type SettingsBody = {
   enabled: boolean; multiplayerEnabled: boolean; hostModel: string; promptVersion: string; contextMessages: number
   maxOutputTokens: number; timeoutMs: number; retryCount: number; userCooldownMs: number; roomQuestionsPerMinute: number; emptyRoomTtlMinutes: number
 }
-const defaults: SettingsBody = {
-  enabled: false, multiplayerEnabled: true, hostModel: 'gpt-5-mini', promptVersion: 'danetki-host-v1', contextMessages: 30,
+const defaults = (config: AppConfig): SettingsBody => ({
+  enabled: config.danetkiEnabled, multiplayerEnabled: config.danetkiMultiplayerEnabled, hostModel: config.danetkiHostModel, promptVersion: 'danetki-host-v1', contextMessages: 30,
   maxOutputTokens: 800, timeoutMs: 20_000, retryCount: 1, userCooldownMs: 2_000, roomQuestionsPerMinute: 20, emptyRoomTtlMinutes: 60,
-}
+})
 const keys: Record<keyof SettingsBody, string> = {
   enabled: 'danetki.enabled', multiplayerEnabled: 'danetki.multiplayerEnabled', hostModel: 'danetki.hostModel', promptVersion: 'danetki.promptVersion',
   contextMessages: 'danetki.contextMessages', maxOutputTokens: 'danetki.maxOutputTokens', timeoutMs: 'danetki.timeoutMs', retryCount: 'danetki.retryCount',
   userCooldownMs: 'danetki.userCooldownMs', roomQuestionsPerMinute: 'danetki.roomQuestionsPerMinute', emptyRoomTtlMinutes: 'danetki.emptyRoomTtlMinutes',
 }
 
-const loadSettings = async (db: Database): Promise<SettingsBody> => {
+const loadSettings = async (db: Database, config: AppConfig): Promise<SettingsBody> => {
   const rows = await db.select({ key: appSettings.key, value: appSettings.value }).from(appSettings).where(inArray(appSettings.key, Object.values(keys)))
   const values = new Map(rows.map((row) => [row.key, row.value]))
-  return Object.fromEntries(Object.entries(keys).map(([name, key]) => [name, values.has(key) ? values.get(key) : defaults[name as keyof SettingsBody]])) as SettingsBody
+  const fallback = defaults(config)
+  return Object.fromEntries(Object.entries(keys).map(([name, key]) => [name, values.has(key) ? values.get(key) : fallback[name as keyof SettingsBody]])) as SettingsBody
 }
 
 export const registerDanetkiAdminRoutes = (app: FastifyInstance, deps: Deps) => {
@@ -59,13 +60,13 @@ export const registerDanetkiAdminRoutes = (app: FastifyInstance, deps: Deps) => 
   app.get('/api/v1/admin/danetki/settings', async (request, reply) => {
     await admin(request, reply)
     const environment = await loadIntegrationEnvironment(deps.db, deps.config)
-    return { settings: await loadSettings(deps.db), openAiConfigured: Boolean(environment.OPENAI_API_KEY) }
+    return { settings: await loadSettings(deps.db, deps.config), openAiConfigured: Boolean(environment.OPENAI_API_KEY) }
   })
 
   app.put('/api/v1/admin/danetki/settings', { schema: { body: settingsBody } }, async (request, reply) => {
     const actor = await admin(request, reply)
     const body = request.body as SettingsBody
-    const before = await loadSettings(deps.db)
+    const before = await loadSettings(deps.db, deps.config)
     await deps.db.transaction(async (tx) => {
       for (const [name, key] of Object.entries(keys)) {
         const value = body[name as keyof SettingsBody]
@@ -73,7 +74,7 @@ export const registerDanetkiAdminRoutes = (app: FastifyInstance, deps: Deps) => 
       }
       await tx.insert(auditLog).values({ actorUserId: actor.id, action: 'danetki.settings.update', entityType: 'app_settings', entityId: 'danetki', before, after: body, requestId: request.id })
     })
-    return { settings: await loadSettings(deps.db) }
+    return { settings: await loadSettings(deps.db, deps.config) }
   })
 
   app.get('/api/v1/admin/danetki/sessions', async (request, reply) => {
@@ -150,7 +151,7 @@ export const registerDanetkiAdminRoutes = (app: FastifyInstance, deps: Deps) => 
   app.post('/api/v1/admin/danetki/ai-test', { schema: { body: Type.Object({ itemVersionId: Type.Optional(Type.String({ format: 'uuid' })), question: Type.String({ minLength: 2, maxLength: 300 }) }, { additionalProperties: false }) } }, async (request, reply) => {
     await admin(request, reply)
     const body = request.body as { itemVersionId?: string; question: string }
-    const settings = await loadSettings(deps.db)
+    const settings = await loadSettings(deps.db, deps.config)
     const environment = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'OpenAI API key не настроен')
     const puzzleRows = body.itemVersionId
