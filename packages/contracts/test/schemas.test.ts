@@ -5,6 +5,7 @@ import {
   AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentExchangeDocumentSchema, ContentExchangeExportBodySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
   LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema,
+  PrivateGameOrderBodySchema,
 } from '../src/index.js'
 
 FormatRegistry.Set('uuid', (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
@@ -14,6 +15,13 @@ FormatRegistry.Set('date-time', (value) => !Number.isNaN(Date.parse(value)))
 describe('API schemas', () => {
   it('rejects unknown start fields', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'movie', answerId: 'secret' })).toBe(false))
   it('accepts city through the canonical game route with a supported variant', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'city', variantKey: 'capitals' })).toBe(true))
+  it('accepts a pack session selector', () => expect(Value.Check(GameStartBodySchema, { kind: 'pack', mode: 'game', packId: 'dtf-games-promo-30-v1', packPosition: 1 })).toBe(true))
+  it('validates the manual private-game order form strictly', () => {
+    const valid = { contactName: 'Анна', email: 'anna@example.com', participants: 20, eventDate: null, description: 'Командная игра для летней встречи отдела.', consent: true }
+    expect(Value.Check(PrivateGameOrderBodySchema, valid)).toBe(true)
+    expect(Value.Check(PrivateGameOrderBodySchema, { ...valid, consent: false })).toBe(false)
+    expect(Value.Check(PrivateGameOrderBodySchema, { ...valid, price: 100 })).toBe(false)
+  })
   it('rejects invalid attempts', () => expect(Value.Check(AttemptBodySchema, { itemId: '' })).toBe(false))
   it('bounds search limits', () => expect(Value.Check(CatalogSearchQuerySchema, { mode: 'movie', q: 'a', limit: 21 })).toBe(false))
   it('requires explicit consent for a legacy import', () => {
@@ -67,6 +75,8 @@ describe('API schemas', () => {
     expect(Value.Check(IntegrationKeySchema, 'KINOPOISK_UNOFFICIAL_API_KEY_6')).toBe(false)
     expect(Value.Check(IntegrationKeySchema, 'SHIKIMORI_USER_AGENT')).toBe(true)
     expect(Value.Check(IntegrationKeySchema, 'SHIKIMORI_ACCESS_TOKEN')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'YOOKASSA_SHOP_ID')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'YOOKASSA_SECRET_KEY')).toBe(true)
   })
   it('accepts pipeline bulk actions larger than the old 500 item limit', () => {
     const itemIds = Array.from({ length: 501 }, () => crypto.randomUUID())

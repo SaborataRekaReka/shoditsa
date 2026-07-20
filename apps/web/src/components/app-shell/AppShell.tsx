@@ -204,7 +204,7 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
         <button className="app-footer__home" onClick={onHome} aria-label="На главный экран"><BrandLogo /></button>
         <p>Неспешная игра на каждый день</p>
       </div>
-      <nav className="app-footer__nav" aria-label="Навигация в подвале"><button onClick={onHome}>Игры</button><button onClick={onArchive}>Архив</button><button onClick={onProfile}>Профиль</button><button onClick={onRules}>Правила</button></nav>
+      <nav className="app-footer__nav" aria-label="Навигация в подвале"><button onClick={onHome}>Игры</button><a href="/specials">Спецпоказы</a><button onClick={onArchive}>Архив</button><button onClick={onProfile}>Профиль</button><a href="/create-a-game">Корпоративным клиентам</a><button onClick={onRules}>Правила</button></nav>
       <small className="app-footer__copy">© {new Date().getFullYear()} Сходится!</small>
     </div>
   </footer>

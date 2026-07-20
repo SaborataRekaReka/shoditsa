@@ -1550,6 +1550,8 @@
 }
 .rewatch-item.won .rewatch-poster { border-color: var(--color-primary); box-shadow: 4px 4px 0 var(--color-primary-soft); }
 .rewatch-item.lost .rewatch-poster { border-color: var(--color-danger); }
+.rewatch-item--locked .rewatch-poster { border-style: dashed; opacity: .72; filter: saturate(.55); }
+.rewatch-item--locked .rewatch-poster__fallback-day svg { width: 30px; height: 30px; }
 .rewatch-item > strong { display: block; margin-top: 8px; color: var(--color-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
 .rewatch-item > small { display: block; margin-top: 2px; color: var(--color-muted-2); font-size: 12px; }
 .back-to-premiere { display: flex; margin: 30px auto 0; }

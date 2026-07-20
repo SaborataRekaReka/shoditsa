@@ -9,6 +9,12 @@ const integer = (name: string, fallback: number, min = 1) => {
   return value
 }
 
+const rangedInteger = (name: string, fallback: number, min: number, max: number) => {
+  const value = integer(name, fallback, min)
+  if (value > max) throw new Error(`${name} must be an integer between ${min} and ${max}`)
+  return value
+}
+
 const bool = (name: string, fallback: boolean) => {
   const raw = process.env[name]
   if (raw == null || raw === '') return fallback
@@ -48,6 +54,28 @@ export const loadConfig = () => {
   const authUrl = required('BETTER_AUTH_URL', production ? undefined : 'http://localhost:3001')
   const trustedOrigins = required('TRUSTED_ORIGINS', production ? undefined : 'http://localhost:5173,http://localhost:3001')
     .split(',').map((origin) => origin.trim()).filter(Boolean)
+  const commerceEnabled = bool('COMMERCE_ENABLED', false)
+  const commerceProvider = process.env.COMMERCE_PROVIDER?.trim().toLocaleLowerCase('en-US') || 'stub'
+  if (commerceProvider !== 'stub' && commerceProvider !== 'web') throw new Error('COMMERCE_PROVIDER must be stub or web')
+  if (production && commerceEnabled && commerceProvider === 'stub') throw new Error('COMMERCE_PROVIDER=stub cannot be enabled in production')
+  const commerceCurrency = (process.env.COMMERCE_CURRENCY?.trim() || 'RUB').toUpperCase()
+  if (!/^[A-Z]{3}$/.test(commerceCurrency)) throw new Error('COMMERCE_CURRENCY must be a three-letter currency code')
+  const commerceReturnUrl = process.env.COMMERCE_RETURN_URL?.trim() || `${trustedOrigins[0]}/purchase/return`
+  let commerceReturnOrigin = ''
+  try { commerceReturnOrigin = new URL(commerceReturnUrl).origin } catch { throw new Error('COMMERCE_RETURN_URL must be a valid absolute URL') }
+  const trustedOriginSet = new Set(trustedOrigins.map((origin) => {
+    try { return new URL(origin).origin } catch { throw new Error(`TRUSTED_ORIGINS contains an invalid origin: ${origin}`) }
+  }))
+  if (!trustedOriginSet.has(commerceReturnOrigin)) throw new Error('COMMERCE_RETURN_URL must use a trusted origin')
+  const commerceWebhookSecret = process.env.COMMERCE_WEBHOOK_SECRET?.trim() || ''
+  const commerceShopId = process.env.COMMERCE_SHOP_ID?.trim() || ''
+  const commerceSecretKey = process.env.COMMERCE_SECRET_KEY?.trim() || ''
+  const archiveFirstDate = process.env.ARCHIVE_FIRST_DATE?.trim() || '2026-07-01'
+  const archiveFirstDateValue = new Date(`${archiveFirstDate}T00:00:00Z`)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(archiveFirstDate) || Number.isNaN(archiveFirstDateValue.getTime()) || archiveFirstDateValue.toISOString().slice(0, 10) !== archiveFirstDate) {
+    throw new Error('ARCHIVE_FIRST_DATE must be a valid YYYY-MM-DD date')
+  }
+  if (archiveFirstDate > new Date().toISOString().slice(0, 10)) throw new Error('ARCHIVE_FIRST_DATE cannot be in the future')
   const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',')
     .map((email) => email.trim().toLocaleLowerCase('en-US')).filter(Boolean)
   const adminUserIds = (process.env.ADMIN_USER_IDS ?? '').split(',').map((id) => id.trim().toLocaleLowerCase('en-US')).filter(Boolean)
@@ -71,6 +99,17 @@ export const loadConfig = () => {
     authSecret,
     authUrl,
     trustedOrigins,
+    commerce: {
+      enabled: commerceEnabled,
+      provider: commerceProvider,
+      currency: commerceCurrency,
+      returnUrl: commerceReturnUrl,
+      webhookSecret: commerceWebhookSecret,
+      shopId: commerceShopId,
+      secretKey: commerceSecretKey,
+      archiveFirstDate,
+      freeArchiveDays: rangedInteger('FREE_ARCHIVE_DAYS', 7, 1, 31),
+    },
     cookieSecure: bool('COOKIE_SECURE', production),
     authEmailEnabled,
     authYandexEnabled,

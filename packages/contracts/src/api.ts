@@ -46,6 +46,13 @@ export type MetaResponse = {
     passwordReset: boolean
     yandex: boolean
   }
+  commerce: {
+    enabled: boolean
+    provider: 'none' | 'stub' | 'web'
+    currency: string
+    archiveFirstDate: string
+    freeArchiveDays: number
+  }
 }
 
 export type MeResponse = {
@@ -97,7 +104,7 @@ export type PeriodEntitlement = { mode: PlayableMode; period: ApiPeriodKey; sour
 export type ActiveSessionSummary = {
   id: string
   mode: PlayableMode
-  kind: 'daily' | 'archive' | 'free_play'
+  kind: 'daily' | 'archive' | 'free_play' | 'pack'
   status: ApiGameStatus
   variantKey: string | null
   period: ApiPeriodKey
@@ -115,6 +122,7 @@ export type DashboardResponse = {
   entitlements: PeriodEntitlement[]
   activeSessions: ActiveSessionSummary[]
   freePlayLaunchesToday: number
+  membership: { active: boolean; endsAt: string | null }
 }
 
 export type GameAttemptSnapshot = {
@@ -130,7 +138,9 @@ export type PromoPromptSnapshot = { packId: string; title: string; subtitle: str
 
 export type GameSessionSnapshot = {
   id: string
-  kind: 'daily' | 'archive' | 'free_play'
+  kind: 'daily' | 'archive' | 'free_play' | 'pack'
+  packId: string | null
+  packPosition: number | null
   mode: PlayableMode
   variantKey: string | null
   period: ApiPeriodKey
@@ -169,7 +179,7 @@ export type AttemptResponse = {
 export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string }
 export type GuestResponse = { user?: ApiUser; session?: unknown }
 export type PeriodUnlockResponse = { entitlement: PeriodEntitlement; balanceAfter?: number; alreadyUnlocked: boolean }
-export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string }
+export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string | null; accessSource: 'tickets' | 'club' }
 export type PromoRedeemResponse = { reward?: { type: 'tickets'; amount: number; balanceAfter: number }; alreadyRedeemed: boolean }
 
 export type LedgerEntry = { id: string; amount: number; balanceAfter: number; reason: string; type: string; createdAt: string }

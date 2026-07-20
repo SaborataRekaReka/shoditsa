@@ -15,7 +15,7 @@ import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manu
 import { GameBuilderPage } from './GameBuilderPage'
 import './admin.css'
 
-type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'integrations' | 'system' | 'audit'
+type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
 const adminLogoUrl = publicAssetUrl('images/logo.svg')
 
@@ -308,7 +308,7 @@ const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => ty
 const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
   const candidate = (parts[0] || 'dashboard') as Section
-  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'integrations', 'system', 'audit']
+  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'integrations', 'system', 'audit']
   return {
     section: allowed.includes(candidate) ? candidate : 'dashboard',
     id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null,
@@ -4888,6 +4888,51 @@ function EconomyPage({ notify }: { notify: (tone: Notice['tone'], text: string) 
   return <><PageHead eyebrow="Билеты и промокоды" title="Экономика" description="Append-only ledger и безопасное управление кодами без показа HMAC credential data." actions={<button className="admin-btn admin-btn--primary" onClick={() => setCreating(true)}><Plus />Создать промокод</button>} /><div className="admin-economy-grid"><section className="admin-panel"><header><div><span>Промокоды</span><h2>Активные и завершённые</h2></div></header><div className="admin-promo-list">{promos.data?.items.map((raw) => { const entry = record(raw); const promo = record(entry.promo); return <article key={String(promo.id)}><span className="admin-list-icon"><Tags /></span><div><strong>{title(promo.title)}</strong><small>{promo.enabled ? 'Активен' : 'Отключён'} · {String(entry.redemptions ?? 0)} применений</small><p>{String(record(promo.rewardValue).amount ?? promo.rewardValue)} билетов · лимит {String(promo.perUserLimit)}/польз.</p></div><Status value={promo.enabled ? 'active' : 'blocked'} /></article> })}</div></section><section className="admin-panel admin-ledger-explainer"><header><div><span>Гарантия</span><h2>Ledger не редактируется</h2></div></header><CircleDollarSign /><h3>Каждая корректировка — отдельная операция</h3><p>Баланс меняется только через audited endpoint с обязательной причиной и idempotency key. Старые операции нельзя удалить или переписать.</p><a href="/admin/users">Найти пользователя для корректировки <ChevronRight /></a></section></div>{creating && <div className="admin-modal-backdrop"><div className="admin-modal"><header><div><span>Credential показывается один раз</span><h2>Новый промокод</h2></div><button onClick={() => setCreating(false)}><X /></button></header><div className="admin-modal__body"><label className="admin-field"><span>Сырой код</span><input value={code} onChange={(event) => setCode(event.target.value)} placeholder="SHODITSA-2026" /></label><label className="admin-field"><span>Название</span><input value={promoTitle} onChange={(event) => setPromoTitle(event.target.value)} placeholder="Летний подарок" /></label><label className="admin-field"><span>Билетов</span><input type="number" min="1" value={reward} onChange={(event) => setReward(Number(event.target.value))} /></label><div className="admin-warning"><AlertTriangle />После создания БД хранит только HMAC hash. Потерянный код восстановить нельзя.</div></div><footer><button className="admin-btn admin-btn--secondary" onClick={() => setCreating(false)}>Отмена</button><button className="admin-btn admin-btn--primary" onClick={() => create.mutate()} disabled={!code || !promoTitle || create.isPending}>Создать код</button></footer></div></div>}</>
 }
 
+function CommercePage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
+  const client = useQueryClient()
+  const [tab, setTab] = useState<'products' | 'orders' | 'entitlements'>('products')
+  const products = useQuery({ queryKey: ['admin', 'commerce', 'products'], queryFn: adminApi.commerceProducts })
+  const orders = useQuery({ queryKey: ['admin', 'commerce', 'orders'], queryFn: adminApi.commerceOrders, enabled: tab === 'orders' })
+  const entitlements = useQuery({ queryKey: ['admin', 'commerce', 'entitlements'], queryFn: adminApi.commerceEntitlements, enabled: tab === 'entitlements' })
+  const patchProduct = useMutation({
+    mutationFn: async ({ id, changes }: { id: string; changes: Record<string, unknown> }) => {
+      const reason = prompt('Причина изменения продукта')?.trim()
+      if (!reason) throw new Error('Действие отменено')
+      return adminApi.patchCommerceProduct(id, { ...changes, reason })
+    },
+    onSuccess: () => { notify('success', 'Продукт обновлён'); void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'products'] }) },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const grant = useMutation({
+    mutationFn: async () => {
+      const userId = prompt('UUID пользователя')?.trim()
+      const durationDays = Number(prompt('Срок клубного доступа в днях', '30'))
+      const reason = prompt('Причина ручной выдачи')?.trim()
+      if (!userId || !Number.isInteger(durationDays) || durationDays < 1 || !reason) throw new Error('Действие отменено')
+      return adminApi.grantCommerceEntitlement({ userId, entitlementKey: 'club', durationDays, reason })
+    },
+    onSuccess: () => { notify('success', 'Клубный доступ выдан'); void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'entitlements'] }) },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const revoke = useMutation({
+    mutationFn: async (id: string) => {
+      const reason = prompt('Причина отзыва доступа')?.trim()
+      if (!reason || !confirm('Отозвать выбранный доступ?')) throw new Error('Действие отменено')
+      return adminApi.revokeCommerceEntitlement(id, reason)
+    },
+    onSuccess: () => { notify('success', 'Доступ отозван'); void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'entitlements'] }) },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const rubles = (minor: unknown, currency = 'RUB') => new Intl.NumberFormat('ru-RU', { style: 'currency', currency, maximumFractionDigits: 0 }).format(Number(minor ?? 0) / 100)
+
+  return <><PageHead eyebrow="Платёжный контур" title="Монетизация" description="Продукты, неизменяемые суммы заказов и выданные доступы. Статус оплаты нельзя редактировать вручную." actions={tab === 'entitlements' ? <button className="admin-btn admin-btn--primary" onClick={() => grant.mutate()}><Plus />Выдать клуб</button> : <button className="admin-btn admin-btn--secondary" onClick={() => { void products.refetch(); void orders.refetch(); void entitlements.refetch() }}><RefreshCw />Обновить</button>} />
+    <div className="admin-toolbar"><div className="admin-periods">{(['products', 'orders', 'entitlements'] as const).map((value) => <button key={value} className={tab === value ? 'is-active' : ''} onClick={() => setTab(value)}>{value === 'products' ? 'Продукты' : value === 'orders' ? 'Заказы' : 'Доступы'}</button>)}</div></div>
+    {tab === 'products' && (products.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>ID</th><th>Продукт</th><th>Тип</th><th>Цена</th><th>Срок</th><th>Статус</th><th /></tr></thead><tbody>{products.data?.items.map((raw) => { const item = record(raw); return <tr key={String(item.id)}><td><code>{String(item.id)}</code></td><td><strong>{title(item.title)}</strong><small>{title(item.description)}</small></td><td>{title(item.kind)}</td><td>{rubles(item.priceMinor, String(item.currency))}</td><td>{item.durationDays ? `${String(item.durationDays)} дней` : 'Навсегда'}</td><td><Status value={item.enabled ? 'active' : 'blocked'} /></td><td><button className="admin-link" onClick={() => { const value = prompt('Цена в рублях', String(Number(item.priceMinor) / 100)); if (value && Number.isFinite(Number(value))) patchProduct.mutate({ id: String(item.id), changes: { priceMinor: Math.round(Number(value) * 100) } }) }}>Цена</button><button className="admin-link" onClick={() => patchProduct.mutate({ id: String(item.id), changes: { enabled: !item.enabled } })}>{item.enabled ? 'Отключить' : 'Включить'}</button></td></tr> })}</tbody></table></div>)}
+    {tab === 'orders' && (orders.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Дата</th><th>Пользователь</th><th>Продукт</th><th>Сумма</th><th>Provider</th><th>Статус</th></tr></thead><tbody>{orders.data?.items.map((raw) => { const row = record(raw); const item = record(row.order); return <tr key={String(item.id)}><td>{formatDate(item.createdAt)}</td><td>{title(row.userEmail)}<small><code>{String(item.userId)}</code></small></td><td>{title(row.productTitle)}<small><code>{String(item.productId)}</code></small></td><td>{rubles(item.amountMinor, String(item.currency))}</td><td>{title(item.provider)}<small>{title(item.providerPaymentId)}</small></td><td><Status value={item.status} /></td></tr> })}</tbody></table></div>)}
+    {tab === 'entitlements' && (entitlements.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Пользователь</th><th>Доступ</th><th>Начало</th><th>Окончание</th><th>Источник</th><th>Статус</th><th /></tr></thead><tbody>{entitlements.data?.items.map((raw) => { const row = record(raw); const item = record(row.entitlement); return <tr key={String(item.id)}><td>{title(row.userEmail)}<small><code>{String(item.userId)}</code></small></td><td><strong>{title(item.entitlementKey)}</strong><small>{title(item.scope)}</small></td><td>{formatDate(item.startsAt)}</td><td>{item.endsAt ? formatDate(item.endsAt) : 'Навсегда'}</td><td>{title(item.sourceType)}<small><code>{String(item.sourceId)}</code></small></td><td><Status value={item.status} /></td><td>{item.status === 'active' && <button className="admin-link" onClick={() => revoke.mutate(String(item.id))}>Отозвать</button>}</td></tr> })}</tbody></table></div>)}
+  </>
+}
+
 function SystemPage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const health = useQuery({ queryKey: ['admin', 'health'], queryFn: adminApi.health, refetchInterval: 10_000 }); const jobs = useQuery({ queryKey: ['admin', 'jobs'], queryFn: adminApi.jobs, refetchInterval: 5_000 }); const revisions = useQuery({ queryKey: ['admin', 'revisions'], queryFn: adminApi.revisions }); const salt = useQuery({ queryKey: ['admin', 'salt'], queryFn: adminApi.dailySalt }); const challenges = useQuery({ queryKey: ['admin', 'daily-challenges'], queryFn: adminApi.dailyChallenges })
   const retry = useMutation({ mutationFn: adminApi.retryJob, onSuccess: () => { notify('success', 'Повтор поставлен в очередь'); void client.invalidateQueries({ queryKey: ['admin', 'jobs'] }) }, onError: (error) => notify('error', errorText(error)) })
@@ -4922,12 +4967,32 @@ function AuditPage() {
   return <><PageHead eyebrow="Только чтение" title="Журнал администратора" description="Неизменяемый след всех административных мутаций и экспортов." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void audit.refetch()}><RefreshCw />Обновить</button>} />{audit.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Время</th><th>Действие</th><th>Сущность</th><th>ID</th><th>Результат</th><th>Request ID</th></tr></thead><tbody>{audit.data?.items.map((raw) => { const item = record(raw); return <tr key={String(item.id)}><td>{formatDate(item.createdAt)}</td><td><strong>{title(item.action)}</strong>{item.reason && <small>{title(item.reason)}</small>}</td><td>{title(item.entityType)}</td><td><code>{title(item.entityId)}</code></td><td><Status value={item.result} /></td><td><code>{title(item.requestId)}</code></td></tr> })}</tbody></table></div>}</>
 }
 
+function PrivateOrdersPage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
+  const client = useQueryClient()
+  const orders = useQuery({ queryKey: ['admin', 'private-game-orders'], queryFn: adminApi.privateGameOrders })
+  const update = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => {
+      const internalNote = prompt('Внутренняя заметка (необязательно)')
+      const reason = prompt('Причина изменения для audit log')
+      if (!reason?.trim()) throw new Error('Причина обязательна')
+      return adminApi.patchPrivateGameOrder(id, { status, internalNote: internalNote?.trim() || null, reason: reason.trim() })
+    },
+    onSuccess: () => { notify('success', 'Заявка обновлена'); void client.invalidateQueries({ queryKey: ['admin', 'private-game-orders'] }) },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  return <><PageHead eyebrow="Ручная обработка" title="Корпоративные заявки" description="Очередь запросов на частные игры. Оплата и выдача ссылки выполняются вне первого MVP." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void orders.refetch()}><RefreshCw />Обновить</button>} />
+    {orders.isLoading ? <Loading /> : orders.error ? <ErrorState error={orders.error} /> : !orders.data?.items.length ? <Empty title="Новых заявок нет" text="Заявки с публичного лендинга появятся здесь." icon={<BriefcaseBusiness />} /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Создана</th><th>Контакт</th><th>Событие</th><th>Описание</th><th>Статус</th></tr></thead><tbody>{orders.data.items.map((raw) => { const item = record(raw); return <tr key={String(item.id)}><td>{formatDate(item.createdAt)}</td><td><strong>{title(item.contactName)}</strong><small>{title(item.email)}{item.company ? ` · ${title(item.company)}` : ''}</small></td><td><strong>{String(item.participants)} участников</strong><small>{item.eventDate ? title(item.eventDate) : 'Дата не выбрана'}</small></td><td><p>{title(item.description)}</p>{item.internalNote && <small>Заметка: {title(item.internalNote)}</small>}</td><td><select value={String(item.status)} disabled={update.isPending} onChange={(event) => update.mutate({ id: String(item.id), status: event.target.value })}><option value="new">Новая</option><option value="contacted">Связались</option><option value="in_progress">В работе</option><option value="completed">Готово</option><option value="rejected">Отклонена</option></select></td></tr> })}</tbody></table></div>}
+  </>
+}
+
 const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: 'dashboard', label: 'Обзор', icon: LayoutDashboard }, { id: 'content', label: 'Карточки', icon: Boxes },
   { id: 'builder', label: 'Конструктор игры', icon: LayoutTemplate },
   { id: 'reports', label: 'Баг-репорты', icon: Bug }, { id: 'pipelines', label: 'ИИ-пайплайны', icon: WandSparkles },
   { id: 'users', label: 'Пользователи', icon: UsersRound }, { id: 'events', label: 'События', icon: Activity },
   { id: 'quality', label: 'Контроль качества', icon: ListChecks }, { id: 'economy', label: 'Экономика', icon: CircleDollarSign },
+  { id: 'commerce', label: 'Монетизация', icon: CircleDollarSign },
+  { id: 'private-orders', label: 'Корпоративные заявки', icon: BriefcaseBusiness },
   { id: 'integrations', label: 'API-интеграции', icon: KeyRound }, { id: 'system', label: 'Система', icon: Settings2 }, { id: 'audit', label: 'Журнал администратора', icon: FileClock },
 ]
 
@@ -4952,6 +5017,8 @@ export default function AdminApp() {
     {route.section === 'events' && <EventsPage sessionId={route.id} />}
     {route.section === 'quality' && <QualityPage navigate={route.navigate} notify={notify} />}
     {route.section === 'economy' && <EconomyPage notify={notify} />}
+    {route.section === 'commerce' && <CommercePage notify={notify} />}
+    {route.section === 'private-orders' && <PrivateOrdersPage notify={notify} />}
     {route.section === 'integrations' && <IntegrationsPage notify={notify} />}
     {route.section === 'system' && <SystemPage notify={notify} />}
     {route.section === 'audit' && <AuditPage />}

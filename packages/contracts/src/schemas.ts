@@ -48,13 +48,13 @@ export const CatalogSearchResponseSchema = Type.Object({
 }, { additionalProperties: false })
 
 export const GameStartBodySchema = Type.Object({
-  kind: Type.Union([Type.Literal('daily'), Type.Literal('archive')]),
+  kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('pack')]),
   mode: PlayableModeSchema,
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),
   variantKey: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
-  /** @deprecated v1 compatibility; use variantKey. */
   packId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
+  packPosition: Type.Optional(Type.Integer({ minimum: 1, maximum: 10_000 })),
   archiveDate: Type.Optional(Type.Union([DateSchema, Type.Null()])),
 }, { additionalProperties: false })
 

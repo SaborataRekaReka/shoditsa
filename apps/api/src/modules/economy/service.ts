@@ -9,6 +9,7 @@ import {
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { activeRevision, answerPool, buildSessionSnapshot } from '../games/service.js'
+import { getMembershipSummary, hasEntitlement } from '../commerce/entitlements.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 const UNLOCKABLE: PlayableMode[] = [...PERIOD_UNLOCKABLE_MODE_IDS]
@@ -23,12 +24,16 @@ const replayFreePlay = async (tx: Transaction, userId: string, session: typeof g
   const operationKey = `free-play:${userId}:${idempotencyKey}`
   const ledger = await tx.select({ id: walletLedger.id, amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter })
     .from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1)
-  if (!ledger[0]) throw new ApiError(500, 'FREE_PLAY_LEDGER_MISSING', 'Не удалось восстановить операцию свободной игры')
+  if (!ledger[0]) {
+    const wallet = await lockedWallet(tx, userId)
+    return { ...(await buildSessionSnapshot(tx, session)), cost: 0, balanceAfter: wallet.balance, ledgerId: null, accessSource: 'club' as const }
+  }
   return {
     ...(await buildSessionSnapshot(tx, session)),
     cost: Math.abs(ledger[0].amount),
     balanceAfter: ledger[0].balanceAfter,
     ledgerId: ledger[0].id,
+    accessSource: 'tickets' as const,
   }
 }
 
@@ -59,7 +64,8 @@ export const startFreePlay = async (db: Database, userId: string, mode: Playable
   const usage = (await tx.select().from(freePlayUsage).where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, date))).for('update').limit(1))[0]
   const lockedReplay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return replayFreePlay(tx, userId, lockedReplay[0], idempotencyKey)
-  const cost = 45 + usage.launches * 15
+  const clubActive = await hasEntitlement(tx, userId, 'club', undefined, new Date())
+  const cost = clubActive ? 0 : 45 + usage.launches * 15
   const wallet = await lockedWallet(tx, userId)
   if (wallet.balance < cost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', { required: cost, balance: wallet.balance })
   const revisionId = await activeRevision(tx)
@@ -67,7 +73,7 @@ export const startFreePlay = async (db: Database, userId: string, mode: Playable
   if (!pool.items.length) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для режима нет доступных вариантов')
   const answer = pool.items[randomInt(pool.items.length)]
   const balanceAfter = wallet.balance - cost
-  const ledger = await tx.insert(walletLedger).values({
+  const ledger = clubActive ? [] : await tx.insert(walletLedger).values({
     userId, operationKey: `free-play:${userId}:${idempotencyKey}`, type: 'spend', reason: 'free-play', amount: -cost, balanceAfter,
     metadata: { mode, launch: usage.launches + 1 },
   }).returning({ id: walletLedger.id })
@@ -75,9 +81,9 @@ export const startFreePlay = async (db: Database, userId: string, mode: Playable
     userId, authSessionId, kind: 'free_play', mode, period: 'all', difficulty: mode === 'music' ? difficulty ?? 'medium' : null,
     puzzleDate: date, revisionId, answerItemVersionId: pool.byItemId.get(answer.id)!, rulesVersion: 1, startIdempotencyKey: idempotencyKey,
   }).returning()
-  await tx.update(walletAccounts).set({ balance: balanceAfter, version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, userId))
+  if (!clubActive) await tx.update(walletAccounts).set({ balance: balanceAfter, version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, userId))
   await tx.update(freePlayUsage).set({ launches: usage.launches + 1 }).where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, date)))
-  return { ...(await buildSessionSnapshot(tx, sessions[0])), cost, balanceAfter, ledgerId: ledger[0].id }
+  return { ...(await buildSessionSnapshot(tx, sessions[0])), cost, balanceAfter, ledgerId: ledger[0]?.id ?? null, accessSource: clubActive ? 'club' as const : 'tickets' as const }
 })
 
 export const normalizePromoCode = (code: string) => code.trim().toLocaleUpperCase('ru-RU').replace(/Ё/g, 'Е')
@@ -116,7 +122,7 @@ export const redeemPromo = async (db: Database, config: AppConfig, userId: strin
 
 export const dashboard = async (db: Database, userId: string) => {
   const activityDate = getMoscowDate()
-  const [wallet, attendance, today, stats, entitlements, activeSessions, freePlay] = await Promise.all([
+  const [wallet, attendance, today, stats, entitlements, activeSessions, freePlay, membership] = await Promise.all([
     db.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).limit(1),
     db.select().from(attendanceStats).where(eq(attendanceStats.userId, userId)).limit(1),
     db.select().from(dailyAttendance).where(and(eq(dailyAttendance.userId, userId), eq(dailyAttendance.activityDate, activityDate))).limit(1),
@@ -140,6 +146,7 @@ export const dashboard = async (db: Database, userId: string) => {
       .orderBy(desc(gameSessions.updatedAt)),
     db.select({ launches: freePlayUsage.launches }).from(freePlayUsage)
       .where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, activityDate))).limit(1),
+    getMembershipSummary(db, userId),
   ])
   return {
     wallet: wallet[0] ?? { balance: 0, lifetimeEarned: 0 },
@@ -149,6 +156,7 @@ export const dashboard = async (db: Database, userId: string) => {
     entitlements,
     activeSessions,
     freePlayLaunchesToday: freePlay[0]?.launches ?? 0,
+    membership: { active: membership.active, endsAt: membership.endsAt },
   }
 }
 

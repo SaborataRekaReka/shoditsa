@@ -45,6 +45,7 @@
     "content:export": "tsx scripts/content/export.ts",
     "content:verify": "tsx scripts/content/verify.ts",
     "content:materialize": "tsx scripts/content/materialize-challenges.ts",
+    "content:import:promo-pack": "tsx scripts/content/import-promo-pack.ts",
     "content:music-tier-backfill": "tsx scripts/content/backfill-music-tiers.ts",
     "content:media:migrate": "tsx scripts/content/migrate-media.ts",
     "clean:workspace": "powershell -ExecutionPolicy Bypass -File scripts/maintenance/clean-workspace.ps1",

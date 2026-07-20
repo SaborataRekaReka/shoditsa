@@ -279,6 +279,7 @@ export const IntegrationKeySchema = Type.Union([
   Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_5'),
   Type.Literal('SHIKIMORI_USER_AGENT'), Type.Literal('SHIKIMORI_CLIENT_ID'),
   Type.Literal('SHIKIMORI_CLIENT_SECRET'), Type.Literal('SHIKIMORI_ACCESS_TOKEN'),
+  Type.Literal('YOOKASSA_SHOP_ID'), Type.Literal('YOOKASSA_SECRET_KEY'),
 ])
 
 export const IntegrationKeyParamsSchema = Type.Object({ key: IntegrationKeySchema }, { additionalProperties: false })
@@ -344,6 +345,8 @@ export const ClientEventSchema = Type.Object({
   eventId: UuidSchema,
   eventName: Type.Union([
     'page_view', 'mode_opened', 'client_error', 'api_error', 'network_offline', 'network_online', 'report_form_opened', 'report_submit_failed',
+    'club_screen_view', 'club_interest_clicked', 'archive_paywall_view', 'archive_paywall_clicked', 'checkout_started', 'checkout_returned',
+    'purchase_succeeded', 'purchase_failed', 'club_free_play_started', 'pack_opened', 'pack_paywall_view',
   ].map((value) => Type.Literal(value))),
   occurredAt: DateTimeSchema,
   gameSessionId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),

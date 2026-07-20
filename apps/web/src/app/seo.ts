@@ -23,6 +23,15 @@ const NOINDEX_FOLLOW = 'noindex,follow,noarchive'
 const NOINDEX_PRIVATE = 'noindex,nofollow,noarchive'
 
 const utilitySeo = (pathname: string): SeoRoute | null => {
+  if (pathname === '/create-a-game') return {
+    kind: 'utility', title: 'Корпоративная игра на заказ — Сходится!', description: 'Закажите частный тематический сеанс «Сходится!» для команды, события или праздника.', canonicalPath: '/create-a-game', heading: 'Свой сеанс «Сходится!»', lead: 'Частная игра под вашу аудиторию.', paragraphs: [], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  if (pathname === '/specials') return {
+    kind: 'utility', title: 'Спецпоказы — Сходится!', description: 'Тематические игровые подборки с отдельным прогрессом и бесплатными превью.', canonicalPath: '/specials', heading: 'Спецпоказы', lead: '', paragraphs: [], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  if (pathname.startsWith('/specials/')) return {
+    kind: 'utility', title: 'Спецпоказ — Сходится!', description: 'Тематический игровой спецпоказ.', canonicalPath: pathname, heading: 'Спецпоказ', lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
   if (pathname === '/login') return {
     kind: 'utility', title: 'Вход — Сходится!', description: 'Войдите в Сходится!, чтобы сохранить прогресс и продолжить ежедневные игры.', canonicalPath: '/login', heading: 'Вход', lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }

@@ -11,12 +11,12 @@ import type { AppConfig } from '@shoditsa/config'
 import {
   AdminContentReviewDecisionSchema, AdminContentReviewParamsSchema, AdminContentReviewQuerySchema,
   AdminPromoCreateBodySchema, AdminPromoPatchBodySchema, AdminWalletAdjustmentBodySchema,
-  ArchiveDateParamsSchema, ArchiveQuerySchema, AttemptBodySchema, CatalogSearchQuerySchema,
+  ArchiveCalendarQuerySchema, ArchiveDateParamsSchema, ArchiveQuerySchema, AttemptBodySchema, CatalogSearchQuerySchema,
   ContentReportBodySchema, FreePlayBodySchema, GameStartBodySchema, HintChoiceBodySchema,
   LedgerQuerySchema, LegacyImportBodySchema, PeriodUnlockBodySchema, ProfilePatchSchema,
   PromoRedeemBodySchema, UuidSchema,
   type AdminContentReviewDecision, type AdminContentReviewQuery, type AdminPromoCreateBody,
-  type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveQuery, type AttemptBody,
+  type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveCalendarQuery, type ArchiveQuery, type AttemptBody,
   type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
 } from '@shoditsa/contracts'
@@ -35,6 +35,12 @@ import { dashboard, ledgerPage, normalizePromoCode, promoHash, redeemPromo, star
 import { importLegacy } from './modules/users/legacy-import.js'
 import { registerAdminRoutes, registerClientEventRoutes } from './modules/admin/routes.js'
 import { activateContentRevision } from './modules/admin/content-service.js'
+import { registerCommerceRoutes } from './modules/commerce/routes.js'
+import { archiveCalendar } from './modules/archive/calendar.js'
+import { registerCommerceAdminRoutes } from './modules/commerce/admin-routes.js'
+import { registerPackRoutes } from './modules/packs/routes.js'
+import { startPackSession } from './modules/packs/service.js'
+import { registerPrivateGameRoutes } from './modules/private-games/routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -68,6 +74,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         'req.body.currentPassword',
         'req.body.newPassword',
         'req.body.token',
+        'req.body.signature',
+        'req.body.paymentToken',
+        'req.body.providerPayload',
+        'req.body.secretKey',
+        'req.headers.x-commerce-signature',
         'req.body.code',
         'res.headers.set-cookie',
       ],
@@ -140,6 +151,13 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         emailVerification: config.authEmailEnabled && emailInfrastructureReady,
         passwordReset: config.authEmailEnabled && emailInfrastructureReady,
         yandex: config.authYandexEnabled,
+      },
+      commerce: {
+        enabled: config.commerce.enabled,
+        provider: config.commerce.enabled ? config.commerce.provider : 'none',
+        currency: config.commerce.currency,
+        archiveFirstDate: config.commerce.archiveFirstDate,
+        freeArchiveDays: config.commerce.freeArchiveDays,
       },
     }
   })
@@ -251,7 +269,13 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
 
   app.post('/api/v1/games/start', { schema: { body: GameStartBodySchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    return { session: await startGame(db, user!.id, request.body as GameStartBody, user!.authSessionId, user!.role) }
+    const body = request.body as GameStartBody
+    if (body.kind === 'pack') {
+      if (!body.packId || !body.packPosition) throw new ApiError(422, 'PACK_POSITION_REQUIRED', 'Для спецпоказа нужны packId и packPosition')
+      if (body.archiveDate) throw new ApiError(422, 'PACK_ARCHIVE_DATE_FORBIDDEN', 'Для спецпоказа нельзя передавать archiveDate')
+      return { session: await startPackSession(db, user!.id, body.packId, body.packPosition, user!.authSessionId, user!.role) }
+    }
+    return { session: await startGame(db, user!.id, { ...body, kind: body.kind as 'daily' | 'archive' }, user!.authSessionId, user!.role, config) }
   })
   app.get('/api/v1/games/:sessionId', { schema: { params: paramsId } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -333,10 +357,19 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       .where(and(...filters)).orderBy(desc(gameSessions.completedAt)).limit(limit + 1)
     return { items: rows.slice(0, limit), nextCursor: rows.length > limit ? rows[limit - 1].completedAt?.toISOString() ?? null : null }
   })
+  app.get('/api/v1/archive/calendar', { schema: { querystring: ArchiveCalendarQuerySchema } }, async (request) => {
+    const actor = await getRequestUser(request, auth, db, true, config)
+    return archiveCalendar(db, config, actor!.id, request.query as ArchiveCalendarQuery)
+  })
   app.get('/api/v1/archive/:date/status', { schema: { params: ArchiveDateParamsSchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const { date } = request.params as { date: string }
     return { items: await db.select({ mode: gameSessions.mode, status: gameSessions.status, id: gameSessions.id }).from(gameSessions).where(and(eq(gameSessions.userId, user!.id), eq(gameSessions.puzzleDate, date))) }
   })
+
+  await registerCommerceRoutes(app, { db, auth, config })
+  await registerCommerceAdminRoutes(app, { db, auth, config })
+  registerPackRoutes(app, db, auth, config)
+  registerPrivateGameRoutes(app, { db, auth, config })
 
   await registerClientEventRoutes(app, { db, auth, config })
   await registerAdminRoutes(app, { db, auth, config })

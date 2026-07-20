@@ -38,6 +38,11 @@ const playerRoutes = [
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'sessions/$sessionId', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'archive', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'profile', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'club', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'specials', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'specials/$packId', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'create-a-game', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'purchase/return', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'review/music', component: RouteMarker }),
 ]
 

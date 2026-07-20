@@ -18,8 +18,11 @@ import {
   poolFor,
 } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
+import type { AppConfig } from '@shoditsa/config'
+import { canStartArchiveSession } from '../archive/access.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
+import { recordPackCompletion } from '../packs/progress.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
@@ -648,7 +651,7 @@ const dailySalt = async (tx: Transaction) => {
 
 export const startGame = async (db: Database, userId: string, input: {
   kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null; packId?: string | null;
-}, authSessionId: string | null = null, actorRole: ApiRole = 'player') => db.transaction(async (tx) => {
+}, authSessionId: string | null = null, actorRole: ApiRole = 'player', config?: AppConfig) => db.transaction(async (tx) => {
   const capabilities = GAME_MODE_MANIFEST[input.mode]
   const period = capabilities.periodPolicy === 'all' ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
@@ -669,6 +672,11 @@ export const startGame = async (db: Database, userId: string, input: {
   const puzzleDate = input.kind === 'daily' ? today : input.archiveDate
   if (!puzzleDate) throw new ApiError(422, 'ARCHIVE_DATE_REQUIRED', 'Для архивной игры нужна дата')
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
+  if (input.kind === 'archive' && config) {
+    const access = await canStartArchiveSession(tx as unknown as Database, userId, puzzleDate, config, new Date(), { mode: input.mode, period, difficulty })
+    if (access.source === 'before-launch') throw new ApiError(422, 'ARCHIVE_DATE_BEFORE_LAUNCH', 'Эта дата была до запуска архива', { archiveDate: puzzleDate, archiveFirstDate: config.commerce.archiveFirstDate })
+    if (!access.allowed) throw new ApiError(403, 'ARCHIVE_CLUB_REQUIRED', 'Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем', { archiveDate: puzzleDate, freeFrom: access.freeFrom })
+  }
   const revisionId = await activeRevision(tx)
   const salt = await dailySalt(tx)
   const variant = modeVariant ?? difficulty ?? '-'
@@ -718,9 +726,9 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     .where(eq(gameAttempts.sessionId, session.id)).orderBy(asc(gameAttempts.position))
   const choices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey, response: gameHintChoices.responseSnapshot })
     .from(gameHintChoices).where(eq(gameHintChoices.sessionId, session.id)).orderBy(asc(gameHintChoices.checkpoint))
-  const challengeVariant = session.challengeId
+  const challengeVariant = session.packId ?? (session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
-    : null
+    : null)
   let diagnosisVignette: { id: string; text: string } | null = null
   if (session.mode === 'diagnosis') {
     const rows = await tx.select({ id: diagnosisVignettes.id, text: diagnosisVignettes.text }).from(diagnosisVignettes)
@@ -738,7 +746,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
       ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
       : []
   const result: Record<string, unknown> = {
-    id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, period: session.period, difficulty: session.difficulty,
+    id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, packId: session.packId, packPosition: session.packPosition, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
     attempts: attempts.map((entry) => ({
@@ -782,9 +790,9 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   if (session.attemptsCount >= 10) throw new ApiError(409, 'GAME_ATTEMPTS_EXHAUSTED', 'Попытки закончились')
 
-  const variantKey = session.challengeId
+  const variantKey = session.packId ?? (session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
-    : null
+    : null)
   const sessionMode = session.mode as TitleMode
   const pool = await answerPoolForSession(tx, session.revisionId, sessionMode, session.period, session.difficulty, variantKey)
   const guess = pool.items.find((item) => item.id === itemId)
@@ -808,6 +816,9 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
     attemptsCount: position, status, updatedAt: new Date(), completedAt: status === 'playing' ? null : new Date(),
     rewardLedgerId: reward?.ledgerId ?? null,
   }).where(eq(gameSessions.id, sessionId))
+  if (status !== 'playing' && session.kind === 'pack' && session.packId && session.packPosition) {
+    await recordPackCompletion(tx, userId, session.packId, session.packPosition)
+  }
   const response: Record<string, unknown> = {
     attempt: { position, item: publicCard(guess), hints },
     session: { status, attemptsCount: position, attemptsRemaining: 10 - position },
@@ -830,9 +841,9 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   const lockedReplay = await tx.select({ response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(and(eq(gameHintChoices.sessionId, sessionId), eq(gameHintChoices.idempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return lockedReplay[0].response
   if (session.attemptsCount < checkpoint) throw new ApiError(422, 'HINT_CHECKPOINT_LOCKED', 'Эта подсказка пока недоступна')
-  const variantKey = session.challengeId
+  const variantKey = session.packId ?? (session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
-    : null
+    : null)
   if (isPromoSessionVariant(session.mode as TitleMode, variantKey)) {
     throw new ApiError(422, 'HINT_DISABLED_FOR_PROMO', 'В промо-режиме доступны только подсказки из пакета')
   }
@@ -866,9 +877,9 @@ export const searchCatalog = async (db: Database, input: { mode: TitleMode; q: s
     if (!session || (userId && session.userId !== userId)) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
     mode = session.mode as TitleMode
     revisionId = session.revisionId; period = session.period; difficulty = session.difficulty
-    variantKey = session.challengeId
+    variantKey = session.packId ?? (session.challengeId
       ? (await db.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
-      : null
+      : null)
     const used = await db.select({ itemId: contentItemVersions.itemId }).from(gameAttempts).innerJoin(contentItemVersions, eq(contentItemVersions.id, gameAttempts.guessedItemVersionId)).where(eq(gameAttempts.sessionId, session.id))
     used.forEach((row) => excluded.add(row.itemId))
   } else {

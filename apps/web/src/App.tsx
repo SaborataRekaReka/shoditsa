@@ -99,6 +99,12 @@ import { MODE_PRESENTATION } from './app/mode-presentation'
 import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
 import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
 import { GamePageFrame } from './components/game-shell/GamePageFrame'
+import { trackClientEvent } from './app/client-events'
+import { ClubScreen } from './features/commerce/ClubScreen'
+import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
+import { MembershipBadge } from './features/commerce/MembershipBadge'
+import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
+import { CreateGameScreen } from './features/private-games/CreateGameScreen'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -1021,6 +1027,7 @@ function PeriodControl({
   freePlayCostValue,
   freePlayShortage,
   freePlayLaunchesToday,
+  clubFreePlay,
   wallet,
   unlockedPeriods,
   completedPeriods,
@@ -1033,6 +1040,7 @@ function PeriodControl({
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
+  clubFreePlay: boolean
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
   completedPeriods: PeriodKey[]
@@ -1100,7 +1108,7 @@ function PeriodControl({
       {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <GameOption
         className={`period-option period-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? 'unlocked' : 'locked'}`}
         title="Свободная игра"
-        description={hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
+        description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Sparkles />}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'positive' : 'muted'}
         onSelect={() => {
@@ -1127,6 +1135,7 @@ function DifficultyControl({
   freePlayCostValue,
   freePlayShortage,
   freePlayLaunchesToday,
+  clubFreePlay,
 }: {
   value: DifficultyKey
   onChange: (difficulty: DifficultyKey) => void
@@ -1136,6 +1145,7 @@ function DifficultyControl({
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
+  clubFreePlay: boolean
 }) {
   const current = DIFFICULTIES[value]
 
@@ -1172,7 +1182,7 @@ function DifficultyControl({
       <GameOption
         className={`difficulty-option difficulty-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? '' : 'locked'}`}
         title="Свободная игра"
-        description={hasActiveFreePlay ? 'Игра уже идет' : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
+        description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Sparkles />}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'special' : 'muted'}
         onSelect={() => {
@@ -1300,7 +1310,7 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
   </>
 }
 
-function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, difficulty, setDifficulty, difficultyCounts, isBusy }: {
+function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, clubFreePlay, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
   promoPackId: string | null
   variantKey: string | null
@@ -1331,6 +1341,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
   freePlayCostValue: number
   freePlayShortage: number
   freePlayLaunchesToday: number
+  clubFreePlay: boolean
   difficulty: DifficultyKey
   setDifficulty: (difficulty: DifficultyKey) => void
   difficultyCounts: Record<DifficultyKey, number> | null
@@ -1379,11 +1390,11 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
   }
 
   const launchOption = mode === 'music'
-    ? <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} />
+    ? <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} />
     : hasModeVariants
       ? <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
       : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
-        ? <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+        ? <PeriodControl mode={mode} value={period} onChange={setPeriod} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
         : undefined
   const launchControls = !isPromoTitle && <GameLaunchControls
     mode={mode}
@@ -1547,24 +1558,25 @@ type RewatchScreenProps = {
   onStats: () => void
   onRules: () => void
   onReview: () => void
+  onClub: () => void
 }
 
 function RewatchScreen(props: RewatchScreenProps) {
   return SERVER_RUNTIME ? <ServerRewatchScreen {...props} /> : <LocalRewatchScreen {...props} />
 }
 
-function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onStats, onRules, onReview }: RewatchScreenProps) {
+function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onStats, onRules, onReview, onClub }: RewatchScreenProps) {
   const serverRuntime = useServerRuntime()
+  const [lockedDate, setLockedDate] = useState<string | null>(null)
   const archive = useQuery({
-    queryKey: queryKeys.archive({ mode }),
-    queryFn: () => api.archive(mode),
+    queryKey: queryKeys.archiveCalendar({ mode, period, from: dates.at(-1), to: dates[0] }),
+    queryFn: () => api.archiveCalendar({ mode, period, from: dates.at(-1)!, to: dates[0]! }),
     enabled: Boolean(serverRuntime.me),
   })
   const sessions = useMemo<SavedGame[]>(() => {
-    const completed = (archive.data?.items ?? []).map(archiveItemToSavedGame)
-    const active = (serverRuntime.dashboard?.activeSessions ?? []).filter((game) => game.mode === mode).map(activeSessionToSavedGame)
-    return [...active, ...completed]
-  }, [archive.data, mode, serverRuntime.dashboard])
+    return (archive.data?.items ?? []).flatMap((item) => item.session ? [archiveItemToSavedGame(item.session)] : [])
+  }, [archive.data])
+  const accessByDate = useMemo(() => new Map((archive.data?.items ?? []).map((item) => [item.date, item.access])), [archive.data])
   const latestByDate = useMemo(() => {
     const byDate = new Map<string, SavedGame | null>()
     for (const itemDate of dates) {
@@ -1603,24 +1615,41 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
     return map
   }, [sessionPreviewQueries])
 
+  useEffect(() => {
+    if (!lockedDate) return
+    const archiveAgeDays = Math.max(0, dates.indexOf(lockedDate))
+    trackClientEvent('archive_paywall_view', { mode, archiveAgeDays, hasClub: false })
+    trackMetrikaGoal('archive_paywall_view', { mode, archiveAgeDays })
+  }, [dates, lockedDate, mode])
+
   return <>
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
-      <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
+      <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>Последние семь дат доступны всем. Полный архив с даты запуска открыт клубу.</p></div>
       <div className="rewatch-toolbar"><div className="mode-tabs">{MODE_TABS.map((tabMode) => <button className={mode === tabMode ? 'active' : ''} key={tabMode} onClick={() => setMode(tabMode)}>{modeMeta(tabMode).plural}</button>)}</div></div>
       {archive.isError && <p className="server-error">{apiErrorMessage(archive.error)}</p>}
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const played = latestByDate.get(itemDate) ?? null
+        const access = accessByDate.get(itemDate) ?? 'locked'
         const sessionId = played?.key.startsWith('server:') ? played.key.slice('server:'.length) : null
         const posterItem = sessionId ? posterBySessionId.get(sessionId) : undefined
-        return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)} disabled={archive.isLoading}>
-          <div className="rewatch-poster">{posterItem ? <><Poster item={posterItem} className="rewatch-poster__media" /><small className="rewatch-poster__day">#{dayNumber(itemDate)}</small></> : <span className="rewatch-poster__fallback-day">#{dayNumber(itemDate)}</span>}<i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' ? `${played.attempts.length}/10` : ''}</i></div>
+        return <button className={`rewatch-item ${played?.status ?? ''} ${access === 'locked' && !played ? 'rewatch-item--locked' : ''}`} key={itemDate} onClick={() => {
+          if (access === 'locked' && !played) {
+            setLockedDate(itemDate)
+            trackClientEvent('archive_paywall_clicked', { mode, archiveAgeDays: index, hasClub: false })
+            trackMetrikaGoal('archive_paywall_clicked', { mode, archiveAgeDays: index })
+            return
+          }
+          onOpen(itemDate, played)
+        }} disabled={archive.isLoading}>
+          <div className="rewatch-poster">{posterItem ? <><Poster item={posterItem} className="rewatch-poster__media" /><small className="rewatch-poster__day">#{dayNumber(itemDate)}</small></> : <span className="rewatch-poster__fallback-day">{access === 'locked' ? <Lock /> : `#${dayNumber(itemDate)}`}</span>}<i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' ? `${played.attempts.length}/10` : ''}</i></div>
           <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
-          <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : 'Не сыгран'}</small>
+          <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : access === 'locked' ? 'Полный архив клуба' : 'Не сыгран'}</small>
         </button>
       })}</section>
       <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
     </main>
+    {lockedDate && <Modal title="Полный архив клуба" onClose={() => setLockedDate(null)}><p className="modal-lead">Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем.</p><ActionButton onClick={() => { setLockedDate(null); onClub() }}>Узнать о клубе</ActionButton></Modal>}
   </>
 }
 
@@ -3832,13 +3861,14 @@ const profileStatus = (completedGames: number) => completedGames >= 80
       ? 'Игрок'
       : 'Новичок'
 
-function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode }: {
+function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode, onClub }: {
   onHome: () => void
   onArchive: () => void
   onStats: () => void
   onRules: () => void
   onReview: () => void
   onSelectMode: (mode: TitleMode) => void
+  onClub: () => void
 }) {
   const { session, loading, refresh: refreshSession } = useAuthSession()
   const serverRuntime = useServerRuntime()
@@ -3846,6 +3876,11 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ profile: true }),
     queryFn: () => api.archive(),
+    enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
+  })
+  const commerceProfile = useQuery({
+    queryKey: queryKeys.commerce,
+    queryFn: api.meCommerce,
     enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
   })
   const [economyOpen, setEconomyOpen] = useState(false)
@@ -3942,7 +3977,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
             <span className="profile-eyebrow">{session && !session.isAnonymous ? 'Игровой профиль' : 'Гостевой профиль'}</span>
             <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
             <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
-            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>Игрок «Сходится!»</i></div>
+            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span><i>Игрок «Сходится!»</i>{serverRuntime.dashboard?.membership.active && <MembershipBadge membership={serverRuntime.dashboard.membership} compact />}{(() => { const rank = ['gold', 'silver', 'paper'].find((level) => commerceProfile.data?.entitlements.some((entry) => entry.key === 'supporter' && entry.scope === level)); return rank ? <i>Жетон: {rank === 'gold' ? 'золотой' : rank === 'silver' ? 'серебряный' : 'бумажный'}</i> : null })()}</div>
           </div>
           <button className="profile-hero__settings" type="button" onClick={() => session && !session.isAnonymous ? selectTab('settings') : window.location.assign('/register')}><UserRound /> {session && !session.isAnonymous ? 'Настройки профиля' : 'Сохранить прогресс'}</button>
         </div>
@@ -3963,6 +3998,11 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
         <a className="profile-guest-banner__primary" href="/register">Создать аккаунт</a>
         <a className="profile-guest-banner__secondary" href="/login">Уже есть аккаунт</a>
       </aside>}
+
+      <aside className="profile-club-card">
+        <div><span>Клуб «Сходится!»</span><strong>{serverRuntime.dashboard?.membership.active ? 'Клубный билет активен' : 'Архив с первого дня и свободная игра'}</strong><p>{serverRuntime.dashboard?.membership.active && serverRuntime.dashboard.membership.endsAt ? `Доступ действует до ${new Intl.DateTimeFormat('ru-RU', { dateStyle: 'long' }).format(new Date(serverRuntime.dashboard.membership.endsAt))}.` : 'Ежедневные игры останутся бесплатными для всех.'}</p></div>
+        <button type="button" onClick={onClub}>{serverRuntime.dashboard?.membership.active ? 'Открыть клуб' : 'Узнать о клубе'}</button>
+      </aside>
 
       <nav className="profile-tabs" aria-label="Разделы личного кабинета" role="tablist">
         {PROFILE_TABS.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} className={activeTab === tab.id ? 'is-active' : ''} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}
@@ -4234,7 +4274,8 @@ function GameApp() {
   const freePlayLaunchesToday = useMemo(() => SERVER_RUNTIME
     ? serverRuntime.dashboard?.freePlayLaunchesToday ?? 0
     : loadFreePlayUsage(getMoscowDate()), [economyVersion, serverRuntime.dashboard])
-  const freePlayCostValue = useMemo(() => freePlayCost(freePlayLaunchesToday), [freePlayLaunchesToday])
+  const clubFreePlay = Boolean(SERVER_RUNTIME && serverRuntime.dashboard?.membership.active)
+  const freePlayCostValue = useMemo(() => clubFreePlay ? 0 : freePlayCost(freePlayLaunchesToday), [clubFreePlay, freePlayLaunchesToday])
   const freePlayShortage = Math.max(0, freePlayCostValue - wallet.tickets)
   const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
   const currentUnlockedPeriods = useMemo<PeriodKey[]>(() => {
@@ -4312,9 +4353,14 @@ function GameApp() {
     },
     onSuccess: async (session, variables) => {
       activateServerSession(session, variables.backTarget)
+      if (session.accessSource === 'club') {
+        trackClientEvent('club_free_play_started', { mode: session.mode, hasClub: true })
+        trackMetrikaGoal('club_free_play_started', { mode: session.mode })
+      }
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
         queryClient.invalidateQueries({ queryKey: queryKeys.ledger }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.commerce }),
       ])
     },
     onError: (error) => setServerActionError(apiErrorMessage(error)),
@@ -4376,7 +4422,11 @@ function GameApp() {
     if (challenge) trackMetrikaGoal('challenge_opened', { mode: challenge.mode, date: challenge.date, from: challenge.from })
   }, [])
 
-  const archiveDates = Array.from({ length: 7 }, (_, offset) => {
+  const archiveFirstDate = serverRuntime.meta?.commerce.archiveFirstDate ?? getMoscowDate()
+  const totalArchiveDays = SERVER_RUNTIME
+    ? Math.max(7, Math.min(62, Math.floor((Date.parse(`${getMoscowDate()}T12:00:00Z`) - Date.parse(`${archiveFirstDate}T12:00:00Z`)) / 86_400_000) + 1))
+    : 7
+  const archiveDates = Array.from({ length: totalArchiveDays }, (_, offset) => {
     const day = new Date(`${getMoscowDate()}T12:00:00+03:00`)
     day.setDate(day.getDate() - offset)
     return getMoscowDate(day)
@@ -4441,6 +4491,11 @@ function GameApp() {
     if (target.screen === 'game' && target.mode) return navigate({ to: '/play/$mode', params: { mode: target.mode }, replace })
     if (target.screen === 'rewatch') return navigate({ to: '/archive', replace })
     if (target.screen === 'profile') return navigate({ to: '/profile', replace })
+    if (target.screen === 'club') return navigate({ to: '/club', replace })
+    if (target.screen === 'specials') return navigate({ to: '/specials', replace })
+    if (target.screen === 'special' && target.packId) return navigate({ to: '/specials/$packId', params: { packId: target.packId }, replace })
+    if (target.screen === 'create-game') return navigate({ to: '/create-a-game', replace })
+    if (target.screen === 'purchase-return') return navigate({ to: '/purchase/return', replace })
     if (target.screen === 'review') return navigate({ to: '/review/music', replace })
     return navigate({ to: '/', replace })
   }, [navigate])
@@ -4465,6 +4520,7 @@ function GameApp() {
       screen: routedScreen,
       mode: routedScreen === 'title' || (routedScreen === 'game' && !serverSessionId) ? mode : undefined,
       sessionId: routedScreen === 'game' ? serverSessionId ?? undefined : undefined,
+      packId: routedScreen === 'special' ? playerRouteFromPathname(routeLocation.pathname).packId : undefined,
     }
     const desiredPath = pathnameForPlayerRoute(target)
     if (applyingRouteRef.current) {
@@ -4512,7 +4568,7 @@ function GameApp() {
     }, 400)
   }
 
-  const moveToScreen = (target: 'hub' | 'title' | 'rewatch' | 'profile') => {
+  const moveToScreen = (target: 'hub' | 'title' | 'rewatch' | 'profile' | 'club' | 'specials') => {
     clearTransitionTimer()
     setTransition('idle')
     setFreePlayArmed(false)
@@ -4979,13 +5035,23 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
-    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onClub={() => moveToScreen('club')} />}
 
     {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} />}
+    {screen === 'profile' && <ProfileScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSelectMode={selectCategory} onClub={() => moveToScreen('club')} />}
+
+    {screen === 'club' && <ClubScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+
+    {screen === 'specials' && <SpecialsScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+
+    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(id) => { setGameBackTarget('hub'); setServerSessionId(id); setScreen('game'); window.scrollTo({ top: 0 }) }} />}
+
+    {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+
+    {screen === 'purchase-return' && <PurchaseReturnScreen onHome={goHome} onClub={() => moveToScreen('club')} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'game' && (SERVER_RUNTIME
       ? serverSessionId

@@ -1,0 +1,2 @@
+ALTER TABLE "client_events" DROP CONSTRAINT "client_event_name_check";--> statement-breakpoint
+ALTER TABLE "client_events" ADD CONSTRAINT "client_event_name_check" CHECK ("client_events"."event_name" in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view'));

@@ -29,6 +29,8 @@ export const integrationRegistry: ReadonlyArray<{
   { key: 'SHIKIMORI_CLIENT_ID', title: 'OAuth Client ID', provider: 'Shikimori API', description: 'Идентификатор OAuth-приложения Shikimori; для публичного каталога не обязателен.', required: false, secret: false },
   { key: 'SHIKIMORI_CLIENT_SECRET', title: 'OAuth Client Secret', provider: 'Shikimori API', description: 'Секрет OAuth-приложения Shikimori. Хранится зашифрованно и не возвращается в браузер.', required: false, secret: true },
   { key: 'SHIKIMORI_ACCESS_TOKEN', title: 'OAuth Access Token', provider: 'Shikimori API', description: 'Необязательный Bearer-токен для авторизованных запросов. Публичный каталог работает без него.', required: false, secret: true },
+  { key: 'YOOKASSA_SHOP_ID', title: 'Идентификатор магазина (shopId)', provider: 'ЮKassa', description: 'Идентификатор магазина из личного кабинета ЮKassa для серверных запросов API.', required: false, secret: false },
+  { key: 'YOOKASSA_SECRET_KEY', title: 'Секретный ключ', provider: 'ЮKassa', description: 'Секретный ключ API ЮKassa. Хранится зашифрованно и никогда не возвращается в браузер.', required: false, secret: true },
 ]
 
 const registryByKey = new Map(integrationRegistry.map((entry) => [entry.key, entry]))

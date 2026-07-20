@@ -5,6 +5,9 @@ import type {
   GameStartResponse, GuestResponse, HintResponse, LedgerResponse, LegacyImportBody, LegacyImportResponse,
   MeResponse, MetaResponse, PeriodUnlockResponse, PromoRedeemResponse, WalletResponse, AuthActionResponse,
   PlayerProfile, ProfilePatch,
+  ArchiveCalendarQuery, ArchiveCalendarResponse, CheckoutBody, CheckoutResponse, CommerceCatalogResponse, MeCommerceResponse, OrderResponse,
+  PackDetailResponse, PackListResponse, PackProgressResponse,
+  PrivateGameOrderBody, PrivateGameOrderResponse,
 } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
@@ -159,6 +162,16 @@ export const api = {
   freePlay: (mode: ContentMode, difficulty: ApiDifficultyKey | null, key: string) => request<FreePlayResponse>(`${API_BASE}/economy/free-play/start`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ mode, difficulty }), retries: 1, maxRateLimitRetryMs: 10_000 }),
   redeem: (code: string, key: string) => request<PromoRedeemResponse>(`${API_BASE}/promos/redeem`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ code }), retries: 1 }),
   archive: (mode?: ContentMode) => request<ArchiveResponse>(`${API_BASE}/archive${mode ? `?mode=${encodeURIComponent(mode)}` : ''}`, { retries: 1 }),
+  archiveCalendar: (query: ArchiveCalendarQuery) => request<ArchiveCalendarResponse>(`${API_BASE}/archive/calendar?${new URLSearchParams(Object.entries(query).filter((entry): entry is [string, string] => typeof entry[1] === 'string')).toString()}`, { retries: 1 }),
+  commerceCatalog: () => request<CommerceCatalogResponse>(`${API_BASE}/commerce/catalog`, { retries: 1 }),
+  meCommerce: () => request<MeCommerceResponse>(`${API_BASE}/me/commerce`, { retries: 1 }),
+  checkout: (body: CheckoutBody, key: string) => request<CheckoutResponse>(`${API_BASE}/commerce/checkout`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify(body), retries: 1, maxRateLimitRetryMs: 10_000 }),
+  commerceOrder: (id: string) => request<OrderResponse>(`${API_BASE}/commerce/orders/${encodeURIComponent(id)}`, { retries: 1 }),
+  packs: () => request<PackListResponse>(`${API_BASE}/packs`, { retries: 1 }),
+  pack: (id: string) => request<PackDetailResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}`, { retries: 1 }),
+  packProgress: (id: string) => request<PackProgressResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/progress`, { retries: 1 }),
+  startPack: (id: string, position: number) => request<GameStartResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/sessions`, { method: 'POST', body: JSON.stringify({ position }), retries: 1 }),
+  createPrivateGameOrder: (body: PrivateGameOrderBody) => request<PrivateGameOrderResponse>(`${API_BASE}/private-game-orders`, { method: 'POST', body: JSON.stringify(body) }),
   wallet: () => request<WalletResponse>(`${API_BASE}/me/wallet`, { retries: 1 }),
   ledger: () => request<LedgerResponse>(`${API_BASE}/me/wallet/ledger?limit=30`, { retries: 1 }),
   legacyImport: (payload: LegacyImportBody) => request<LegacyImportResponse>(`${API_BASE}/me/legacy-import`, {
@@ -205,4 +218,10 @@ export const queryKeys = {
   archive: (filters: unknown) => ['archive', filters] as const,
   ledger: ['ledger'] as const,
   review: (filters: unknown) => ['admin', 'content-review', filters] as const,
+  commerceCatalog: ['commerce', 'catalog'] as const,
+  commerce: ['commerce', 'me'] as const,
+  commerceOrder: (id: string) => ['commerce', 'order', id] as const,
+  archiveCalendar: (filters: unknown) => ['archive', 'calendar', filters] as const,
+  packs: ['packs'] as const,
+  pack: (id: string) => ['packs', id] as const,
 }
