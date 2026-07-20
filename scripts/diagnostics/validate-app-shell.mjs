@@ -69,8 +69,8 @@ const sourceChecks = [
   {
     path: 'apps/web/src/app/seo-content.ts',
     required: [
-      ['exhaustive game SEO registry', /satisfies\s+Record<PlayableModeId,\s*GameSeoContent>/],
-      ['exhaustive game guide presentation', /satisfies\s+Record<PlayableModeId,\s*GameGuidePresentation>/],
+      ['exhaustive game SEO registry', /satisfies\s+Record<SeoGameMode,\s*GameSeoContent>/],
+      ['exhaustive game guide presentation', /satisfies\s+Record<SeoGameMode,\s*GameGuidePresentation>/],
       ['manifest-derived indexable games', /DAILY_MODE_IDS\.map\(\(mode\)\s*=>\s*GAME_SEO\[mode\]\)/],
     ],
   },
@@ -157,6 +157,7 @@ const sourceChecks = [
     path: 'infra/nginx/shoditsa.conf.template',
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
+      ['danetki refresh route', /location\s+~\s+\^\/games\/\([^)]*danetki[^)]*\)\$/],
       ['private route noindex header', /X-Robots-Tag\s+"noindex, follow, noarchive"/],
       ['invalid game route 404', /location\s+\/games\/\s*\{[^}]*return\s+404/s],
       ['legacy city dataset 404', /location\s+\^~\s+\/city-content\/\s*\{[^}]*return\s+404/s],

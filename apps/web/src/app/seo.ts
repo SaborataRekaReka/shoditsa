@@ -1,4 +1,3 @@
-import type { PlayableModeId } from '@shoditsa/contracts'
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
 import {
   DEFAULT_SOCIAL_IMAGE_PATH,
@@ -9,12 +8,13 @@ import {
   SITE_NAME,
   SITE_ORIGIN,
   gameSeoFromPathname,
+  type SeoGameMode,
   type SeoPageContent,
 } from './seo-content'
 
 export type SeoRoute = SeoPageContent & {
   kind: 'home' | 'game' | 'utility' | 'unknown'
-  mode?: PlayableModeId
+  mode?: SeoGameMode
   robots: string
   indexable: boolean
   imagePath: string

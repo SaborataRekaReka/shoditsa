@@ -1,5 +1,7 @@
 import { DAILY_MODE_IDS, type PlayableModeId } from '@shoditsa/contracts'
 
+export type SeoGameMode = PlayableModeId | 'danetki'
+
 export const SITE_ORIGIN = 'https://shoditsa.ru'
 export const SITE_NAME = 'Сходится!'
 export const SITE_LANGUAGE = 'ru-RU'
@@ -21,7 +23,7 @@ export type SeoPageContent = {
 }
 
 export type GameSeoContent = SeoPageContent & {
-  mode: PlayableModeId
+  mode: SeoGameMode
   shortName: string
   features: readonly string[]
   steps: readonly string[]
@@ -133,7 +135,19 @@ export const GAME_GUIDE_PRESENTATION = {
     faqTitle: 'Короткие ответы',
     linksLabel: 'Другие сеансы',
   },
-} as const satisfies Record<PlayableModeId, GameGuidePresentation>
+  danetki: {
+    closedLabel: 'Открыть дело',
+    openLabel: 'Материалы дела',
+    introLabel: 'Детективная игра · без спойлеров',
+    evidenceLabel: 'Улики',
+    evidenceTitle: 'Что выяснять',
+    routeLabel: 'Ход расследования',
+    routeTitle: 'Как раскрыть историю',
+    faqLabel: 'Перед расследованием',
+    faqTitle: 'Короткие ответы',
+    linksLabel: 'Другие дела',
+  },
+} as const satisfies Record<SeoGameMode, GameGuidePresentation>
 
 export const GAME_RULES: Record<PlayableModeId, GameRulesContent> = {
   movie: {
@@ -180,10 +194,10 @@ export const GAME_RULES: Record<PlayableModeId, GameRulesContent> = {
 
 export const HOME_SEO: SeoPageContent = {
   title: 'Сходится! — ежедневные игры на логику и знания онлайн',
-  description: 'Семь бесплатных игр каждый день: угадывайте фильмы, сериалы, аниме, видеоигры, города, исполнителей и диагнозы по сравнительным подсказкам.',
+  description: 'Восемь бесплатных игр каждый день: угадывайте фильмы, сериалы, аниме, видеоигры, города, исполнителей и диагнозы или раскрывайте данетки.',
   canonicalPath: '/',
   heading: 'Ежедневные игры «Сходится!»',
-  lead: 'Семь новых загадок каждый день — для тех, кто любит кино, сериалы, аниме, видеоигры, географию, музыку и медицинские квизы.',
+  lead: 'Восемь новых загадок каждый день — для тех, кто любит кино, сериалы, аниме, видеоигры, географию, музыку, медицинские квизы и данетки.',
   paragraphs: [
     'В каждой игре нужно найти один ответ за десять попыток. После каждого варианта вы получаете не абстрактную подсказку, а сравнение важных признаков: года, жанров, людей, стран, рейтингов и других характеристик.',
     'Можно сыграть без регистрации. Аккаунт нужен только для синхронизации прогресса, серии дней, достижений и билетиков между устройствами.',
@@ -324,9 +338,28 @@ export const GAME_SEO = {
       { question: 'Что показывает ответ?', answer: 'Игра сравнивает систему органов, симптомы, диагностические признаки и классификационный код.' },
     ],
   },
-} as const satisfies Record<PlayableModeId, GameSeoContent>
+  danetki: {
+    mode: 'danetki',
+    shortName: 'Данетки',
+    title: 'Данетки онлайн с ИИ-ведущим — игра на логику | Сходится!',
+    description: 'Раскройте необычную историю вопросами, на которые ведущий отвечает «да» или «нет». Играйте в данетки самостоятельно или вместе с друзьями.',
+    canonicalPath: '/games/danetki',
+    heading: 'Игра «Данетки» с ИИ-ведущим',
+    lead: 'Восстановите скрытую историю, задавая точные вопросы и проверяя свои версии вместе с ведущим.',
+    paragraphs: [
+      '«Данетки» — детективная игра на логику и внимательность. Вы видите только необычную ситуацию, а затем шаг за шагом выясняете обстоятельства вопросами, на которые ведущий может ответить «да», «нет» или отметить важную деталь.',
+      'Расследование можно проходить одному или создать общую комнату по ссылке для компании до шести человек. Участники видят единый диалог, вместе используют подсказки и формулируют финальную разгадку.',
+    ],
+    features: ['необычная ситуация без готовых вариантов', 'ИИ-ведущий с ответами «да» и «нет»', 'общая комната до шести участников', 'подсказки и совместная финальная версия'],
+    steps: ['Изучите условие и выберите одиночную или совместную игру.', 'Задавайте короткие вопросы и сопоставляйте ответы ведущего.', 'Когда восстановите причинно-следственную связь, отправьте полную разгадку.'],
+    faq: [
+      { question: 'Можно ли играть в данетки вместе?', answer: 'Да. Создатель комнаты делится ссылкой, после чего до пяти друзей присоединяются к общему расследованию.' },
+      { question: 'Что можно спрашивать у ведущего?', answer: 'Формулируйте вопросы о ситуации так, чтобы на них можно было ответить «да» или «нет». Ведущий также отмечает особенно важные догадки.' },
+    ],
+  },
+} as const satisfies Record<SeoGameMode, GameSeoContent>
 
-export const INDEXABLE_GAME_SEO = DAILY_MODE_IDS.map((mode) => GAME_SEO[mode]).filter(Boolean)
+export const INDEXABLE_GAME_SEO = [...DAILY_MODE_IDS.map((mode) => GAME_SEO[mode]), GAME_SEO.danetki]
 export const INDEXABLE_PATHS = [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((page) => page.canonicalPath)] as const
 
 export const gameSeoFromPathname = (pathname: string) => {

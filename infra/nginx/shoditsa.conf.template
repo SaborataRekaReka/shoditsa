@@ -54,7 +54,7 @@ server {
     # Search engines receive route-specific HTML (metadata, JSON-LD and useful
     # text) at the canonical browser-history URL. The /seo files themselves are
     # implementation details and cannot be opened as duplicate public pages.
-    location ~ ^/games/(movie|series|anime|game|city|music|diagnosis)$ {
+    location ~ ^/games/(movie|series|anime|game|city|music|diagnosis|danetki)$ {
         try_files /seo$uri.html =404;
         add_header Cache-Control "no-cache" always;
     }

@@ -24,7 +24,7 @@ if (!html.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`))
 
 const sitemap = await fetchText(`/sitemap.xml?smoke=${Date.now()}`)
 if (!sitemap.includes(`<loc>${baseUrl}/</loc>`)) throw new Error('Sitemap is missing the canonical home page')
-for (const mode of manifest.playableModes) {
+for (const mode of [...manifest.playableModes, 'danetki']) {
   const pathname = `/games/${mode}`
   if (!sitemap.includes(`<loc>${baseUrl}${pathname}</loc>`)) throw new Error(`Sitemap is missing ${pathname}`)
   const page = await fetch(`${baseUrl}${pathname}?smoke=${Date.now()}`, { headers: { 'cache-control': 'no-cache' } })
@@ -53,6 +53,7 @@ if (!Array.isArray(manifest.playableModes) || !manifest.playableModes.length) th
 for (const mode of manifest.playableModes) {
   if (!Number.isInteger(modes.get(mode)) || modes.get(mode) <= 0) throw new Error(`API content mode ${mode} is empty or invalid`)
 }
+if (meta.features?.danetkiEnabled && (!Number.isInteger(modes.get('danetki')) || modes.get('danetki') <= 0)) throw new Error('API danetki content mode is empty or invalid')
 
 const leakedData = await fetchResponse(`/data/libraries/movies/items.json?smoke=${Date.now()}`)
 if (leakedData.status !== 404) throw new Error(`Legacy answer dataset is publicly reachable (HTTP ${leakedData.status})`)

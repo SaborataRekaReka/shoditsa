@@ -1251,12 +1251,12 @@ function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, danetki
         <div className="hub-hero">
           <div className="hub-hero__copy">
             <div className="hub-hero__facts" aria-label="Об игре">
-              <span><Gamepad2 /><strong>7 игр</strong></span>
+              <span><Gamepad2 /><strong>8 игр</strong></span>
               <span><CalendarDays /><strong>1 загадка в день</strong></span>
               <span><Target /><strong>10 попыток</strong></span>
             </div>
             <h1>Все сойдется!</h1>
-            <p>Кино, сериалы, аниме, игры, города, музыка и диагнозы. Каждый день — новая загадка и 10 попыток, чтобы найти ответ по подсказкам.</p>
+            <p>Кино, сериалы, аниме, игры, города, музыка, диагнозы и данетки. Каждый день — новая загадка, которую можно раскрыть по подсказкам.</p>
             <div className="hub-hero__actions">
               <ActionButton onClick={() => {
                 trackMetrikaGoal('hub_scroll_to_games')
@@ -3352,7 +3352,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   if (!session) return <><AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} /><main className="loading loading--error" role="alert"><AlertTriangle /><h1>Сеанс не открылся</h1><p>{apiErrorMessage(game.error)}</p><ActionButton onClick={onBack}>Назад</ActionButton></main></>
   if (session.engine === 'danetki_chat' && session.danetki) {
     const DanetkiRenderer = SESSION_RENDERER_BY_ENGINE.danetki_chat
-    return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} />
+    return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
   }
 
   const isPromoSession = isPromoVariant(session.variantKey)
@@ -4916,12 +4916,6 @@ function GameApp() {
     })
   }
 
-  const startArchiveDanetki = (archiveDate: string) => {
-    if (startServerSession.isPending) return
-    setServerActionError('')
-    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'archive', mode: 'danetki', roomMode: 'solo', archiveDate }, backTarget: 'hub' })
-  }
-
   const startFreePlayDanetki = (roomMode: 'solo' | 'group') => {
     if (startServerSession.isPending) return
     setServerActionError('')
@@ -5266,7 +5260,7 @@ function GameApp() {
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartArchive={startArchiveDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onJoined={(session) => activateServerSession(session, 'hub')} />}
 

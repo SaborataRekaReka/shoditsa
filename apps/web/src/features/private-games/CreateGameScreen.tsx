@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type MouseEvent } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -87,6 +87,20 @@ export function CreateGameScreen({
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
 
+  const scrollToSection = (event: MouseEvent<HTMLAnchorElement>, sectionId: 'brief' | 'formats') => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+    const section = document.getElementById(sectionId)
+    if (!section) return
+
+    event.preventDefault()
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${window.location.pathname}${window.location.search}#${sectionId}`,
+    )
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (pending) return
@@ -146,10 +160,10 @@ export function CreateGameScreen({
             <h1 id="partners-title">Игра, которая <em>работает</em> на вашу команду</h1>
             <p>Создадим интерактивный игровой сеанс под ваше событие, бренд и аудиторию — от идеи и редакторской сборки до готовой частной ссылки.</p>
             <div className="corporate-hero__actions">
-              <a className="corporate-button corporate-button--primary" href="#brief">
+              <a className="corporate-button corporate-button--primary" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>
                 Обсудить проект <ArrowRight />
               </a>
-              <a className="corporate-button corporate-button--ghost" href="#formats">
+              <a className="corporate-button corporate-button--ghost" href="/partners#formats" onClick={(event) => scrollToSection(event, 'formats')}>
                 Посмотреть форматы
               </a>
             </div>
@@ -184,7 +198,7 @@ export function CreateGameScreen({
                   <div className="corporate-format-card__meta"><span>{format.audience}</span><span>{format.duration}</span></div>
                   <h3>{format.title}</h3>
                   <p>{format.text}</p>
-                  <a href="#brief">Подобрать формат <ArrowRight /></a>
+                  <a href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>Подобрать формат <ArrowRight /></a>
                 </div>
               </article>
             ))}

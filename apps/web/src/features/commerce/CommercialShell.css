@@ -285,8 +285,8 @@
 .tip-modal__unavailable { border: 1px solid var(--color-line); color: var(--color-muted); background: var(--color-surface-2); }
 .tip-modal__error { margin: 12px 0 0; border: 1px solid rgba(214, 91, 72, .55); color: #f0a28f; background: rgba(147, 46, 34, .18); }
 .tip-modal__note { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--color-line); color: var(--color-muted-2); font-size: 10px; line-height: 1.5; }
-.tip-modal__acceptance { margin: 14px 0 0; color: var(--color-muted); display: grid; grid-template-columns: 17px minmax(0, 1fr); align-items: start; gap: 8px; font-size: 10px; line-height: 1.45; cursor: pointer; }
-.tip-modal__acceptance input { width: 16px; height: 16px; margin: 0; accent-color: var(--color-accent); cursor: pointer; }
+.tip-modal__acceptance { margin: 0 0 16px; color: var(--color-muted); display: grid; grid-template-columns: 17px minmax(0, 1fr); align-items: start; gap: 9px; font-size: 10px; line-height: 1.45; cursor: pointer; }
+.tip-modal__acceptance input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--color-accent); cursor: pointer; }
 .checkout-acceptance {
   width: 100%;
   margin-bottom: 9px;
@@ -302,7 +302,6 @@
 }
 .checkout-acceptance input { width: 15px; height: 15px; margin: 0; accent-color: var(--color-primary); cursor: pointer; }
 .checkout-acceptance a, .tip-modal__acceptance a { color: var(--color-accent); font-weight: 800; text-underline-offset: 2px; }
-.club-card__action > button:disabled { cursor: not-allowed; opacity: .55; }
 @keyframes tipSpinner { to { transform: rotate(360deg); } }
 
 .membership-badge { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--color-primary-border); border-radius: 999px; padding: 8px 12px; color: var(--color-primary); background: var(--color-primary-soft); font-size: 13px; font-weight: 800; }
@@ -631,7 +630,7 @@
   padding: 4px 9px;
   border: 1px solid var(--color-primary-border);
   border-radius: var(--radius-xl);
-  color: var(--color-primary-soft);
+  color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 14%, transparent);
   display: inline-flex;
   align-items: center;
@@ -847,23 +846,24 @@
   position: absolute;
   z-index: 4;
   top: 90px;
-  width: 30px;
+  width: 16px;
   height: 38px;
   border: 1px solid var(--color-paper-line);
-  border-radius: 50%;
   background: var(--color-bg);
   box-sizing: border-box;
   pointer-events: none;
 }
 
 .club-card::before {
-  left: -15px;
-  clip-path: inset(0 0 0 50%);
+  left: -1px;
+  border-left: 0;
+  border-radius: 0 19px 19px 0;
 }
 
 .club-card::after {
-  right: -15px;
-  clip-path: inset(0 50% 0 0);
+  right: -1px;
+  border-right: 0;
+  border-radius: 19px 0 0 19px;
 }
 
 .club-card--featured::before,
@@ -1005,32 +1005,7 @@
 .club-card__renewal svg { width: 13px; height: 13px; color: var(--color-primary-soft); }
 .club-card__renewal svg:last-child { width: 12px; height: 12px; }
 .club-card__action { margin-top: auto; }
-
-.club-card__action > button {
-  width: 100%;
-  min-height: 43px;
-  border-color: color-mix(in srgb, var(--color-primary-soft) 72%, var(--color-paper-line));
-  border-radius: var(--radius-sm);
-  color: var(--color-paper);
-  background: var(--color-primary-soft);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, .16);
-  font: 500 18px/1 Oswald, sans-serif;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: transform .18s var(--ease), background .18s var(--ease), box-shadow .18s var(--ease);
-}
-
-.club-card__action > button:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-primary-soft) 84%, var(--color-primary));
-  box-shadow: 0 8px 16px rgba(0, 0, 0, .18);
-  transform: translateY(-1px);
-}
-
-.club-card__action > button:active:not(:disabled) {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, .15);
-  transform: translateY(2px);
-}
+.club-card__action > .ui-button { width: 100%; }
 
 .club-card__error {
   position: absolute;

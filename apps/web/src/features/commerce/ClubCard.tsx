@@ -1,5 +1,6 @@
 import { Check, CircleHelp, LockKeyhole } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { ActionButton } from '../../components/app-shell/AppShell'
 
 export type ClubOffer = {
   id: 'club_30d' | 'club_365d'
@@ -33,6 +34,6 @@ export function ClubCard({ offer, disabled, onSelect, action }: { offer: ClubOff
     </div>
     <div className="club-card__rule" aria-hidden="true" />
     <span className="club-card__renewal"><LockKeyhole /> Продление вручную <CircleHelp /></span>
-    <div className="club-card__action">{action ?? <button type="button" disabled={disabled} onClick={() => onSelect?.(offer)}>{annual ? 'Взять на год' : 'Взять на месяц'}</button>}</div>
+    <div className="club-card__action">{action ?? <ActionButton type="button" disabled={disabled} onClick={() => onSelect?.(offer)}>{annual ? 'Взять на год' : 'Взять на месяц'}</ActionButton>}</div>
   </article>
 }

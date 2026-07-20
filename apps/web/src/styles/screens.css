@@ -924,7 +924,7 @@
 .category-card--locked p { margin: 0; font-size: 12px; line-height: 1.5; }
 
 .title-screen {
-  width: min(100%, 820px);
+  width: min(100%, 960px);
   min-height: calc(100vh - 64px);
   margin: 0 auto;
   padding: 46px 14px 44px;
@@ -936,7 +936,7 @@
 }
 .app--transition-game .app-header { opacity: 0; transform: translateY(-8px); pointer-events: none; }
 .app--transition-game .title-screen, .title-screen.is-leaving { opacity: 0; transform: translateY(14px); pointer-events: none; }
-.title-stage { width: min(100%, 560px); min-width: 0; text-align: center; animation: screenIn .55s .06s var(--ease) both; }
+.title-stage { width: min(100%, 640px); min-width: 0; text-align: center; animation: screenIn .55s .06s var(--ease) both; }
 .title-game-mark { width: max-content; max-width: 100%; margin: 0 auto; display: grid; grid-template-columns: 48px auto; grid-template-rows: auto auto; column-gap: 12px; align-items: center; text-align: left; }
 .title-game-mark > span { grid-row: 1/3; width: 48px; height: 48px; border-radius: 15px; background: var(--color-primary); color: var(--color-ink); display: grid; place-items: center; box-shadow: 3px 3px 0 var(--color-shadow); }
 .title-game-mark > span svg { width: 23px; }
@@ -949,7 +949,7 @@
 .play-button svg { fill: currentColor; }
 .play-button .play-button__replay-icon { fill: none; }
 .admit-ticket {
-  width: min(100%, 600px);
+  width: 100%;
   margin-top: 24px;
   color: var(--color-ink);
   background: var(--color-paper);
@@ -1123,7 +1123,7 @@
 
 /* --- Music premiere card: concert ticket --- */
 .concert-ticket {
-  width: min(100%, 600px);
+  width: 100%;
   margin-top: 24px;
   color: var(--color-ink);
   background: var(--color-paper);
@@ -1325,7 +1325,7 @@
 
 /* --- DTF promo title: standalone editorial card --- */
 .promo-case {
-  width: min(100%, 600px);
+  width: 100%;
   margin-top: 24px;
   overflow: hidden;
   color: #f7f7f7;
@@ -1402,7 +1402,7 @@
 
 /* --- Diagnosis premiere card: patient chart --- */
 .med-chart {
-  width: min(100%, 600px);
+  width: 100%;
   margin-top: 24px;
   color: var(--color-ink);
   background: var(--color-paper);
@@ -3028,7 +3028,7 @@
   .app-header__inner, .hub-screen { max-width: 1680px; }
   .app-footer__inner { max-width: 1440px; }
   .game-shell { width: min(100%, 960px); }
-  .title-stage { width: min(100%, 640px); }
+  .title-stage { width: min(100%, 720px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

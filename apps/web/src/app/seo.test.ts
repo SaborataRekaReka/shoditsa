@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DAILY_MODE_IDS, PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
-import { GAME_SEO, HOME_SEO, INDEXABLE_PATHS } from './seo-content'
+import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS } from './seo-content'
 import { normalizeSeoPathname, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
 
 describe('search index contract', () => {
@@ -9,8 +8,8 @@ describe('search index contract', () => {
     const descriptions = new Set<string>()
     const paths = new Set<string>()
 
-    for (const mode of PLAYABLE_MODE_IDS) {
-      const content = GAME_SEO[mode]
+    for (const content of INDEXABLE_GAME_SEO) {
+      const mode = content.mode
       const route = seoRouteFromPathname(content.canonicalPath)
       expect(route.kind).toBe('game')
       expect(route.mode).toBe(mode)
@@ -30,10 +29,10 @@ describe('search index contract', () => {
       paths.add(content.canonicalPath)
     }
 
-    expect(titles.size).toBe(PLAYABLE_MODE_IDS.length)
-    expect(descriptions.size).toBe(PLAYABLE_MODE_IDS.length)
-    expect(paths.size).toBe(PLAYABLE_MODE_IDS.length)
-    expect(INDEXABLE_PATHS).toEqual([HOME_SEO.canonicalPath, ...DAILY_MODE_IDS.map((mode) => `/games/${mode}`)])
+    expect(titles.size).toBe(INDEXABLE_GAME_SEO.length)
+    expect(descriptions.size).toBe(INDEXABLE_GAME_SEO.length)
+    expect(paths.size).toBe(INDEXABLE_GAME_SEO.length)
+    expect(INDEXABLE_PATHS).toEqual([HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath)])
   })
 
   it('keeps personal and transactional routes out of the index', () => {
