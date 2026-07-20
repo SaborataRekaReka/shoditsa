@@ -3,12 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import {
   ArrowLeft,
   Clapperboard,
-  Crown,
   Heart,
-  Medal,
   ShieldCheck,
   Sparkles,
-  Ticket,
 } from 'lucide-react'
 import { AppHeader } from '../../components/app-shell/AppShell'
 import { trackClientEvent } from '../../app/client-events'
@@ -19,6 +16,7 @@ import {
 } from '../../hooks/use-server-runtime'
 import { ClubCard, type ClubOffer } from './ClubCard'
 import { CheckoutButton } from './CheckoutButton'
+import { TipCheckoutTrigger } from './TipCheckout'
 import { MembershipBadge } from './MembershipBadge'
 import { api, queryKeys } from '../../api/client'
 import './CommercialShell.css'
@@ -92,9 +90,6 @@ export function ClubScreen({
         }
       : offer
   })
-  const tipProducts = (catalog.data?.products ?? []).filter(
-    (product) => product.kind === 'tip',
-  )
   const tipsRequested =
     typeof window !== 'undefined' &&
     (new URLSearchParams(window.location.search).get('section') === 'tips' ||
@@ -109,15 +104,6 @@ export function ClubScreen({
     trackClientEvent('club_screen_view', properties)
     trackMetrikaGoal('club_screen_view', properties)
   }, [authenticated, hasClub])
-
-  useEffect(() => {
-    if (!tipsRequested) return
-    window.setTimeout(
-      () =>
-        document.getElementById('tips')?.scrollIntoView({ behavior: 'smooth' }),
-      0,
-    )
-  }, [tipProducts.length, tipsRequested])
 
   const selectOffer = (offer: ClubOffer) => {
     const properties = {
@@ -277,63 +263,21 @@ export function ClubScreen({
           </button>
         </section>
 
-        {tipsRequested && !!tipProducts.length && (
-          <section className="club-tips" id="tips">
-            <div className="club-offers__heading">
-              <span>После победы</span>
-              <h2>Чаевые кассиру</h2>
-              <p>
-                Добровольная поддержка не даёт игровых преимуществ. В профиле
-                останется памятный жетон самого высокого уровня.
-              </p>
-            </div>
-            <div className="club-tips__grid">
-              {tipProducts.map((product) => {
-                const tier = product.id.includes('gold')
-                  ? 'gold'
-                  : product.id.includes('silver')
-                    ? 'silver'
-                    : 'paper'
-                const Icon =
-                  tier === 'gold' ? Crown : tier === 'silver' ? Medal : Ticket
-                return (
-                  <article
-                    className={`club-tip club-tip--${tier}`}
-                    key={product.id}
-                  >
-                    <div className="club-tip__token" aria-hidden="true">
-                      <Icon />
-                    </div>
-                    <span>Жетон поддержки</span>
-                    <h3>{product.title}</h3>
-                    <p>{product.description}</p>
-                    <strong>
-                      {new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: product.currency,
-                        maximumFractionDigits: 0,
-                      }).format(product.priceMinor / 100)}
-                    </strong>
-                    <div className="club-tip__action">
-                      {commerceEnabled ? (
-                        <CheckoutButton
-                          product={product}
-                          authenticated={authenticated}
-                          label="Оставить чаевые"
-                          placement="victory_tip"
-                        />
-                      ) : (
-                        <button type="button" disabled>
-                          Оплата пока закрыта
-                        </button>
-                      )}
-                    </div>
-                  </article>
-                )
-              })}
-            </div>
-          </section>
-        )}
+        <section className="club-tip-cta" id="tips">
+          <span className="club-tip-cta__mark" aria-hidden="true"><Heart /></span>
+          <div className="club-tip-cta__copy">
+            <span>Поддержать проект</span>
+            <h2>Оставить чаевые кассиру</h2>
+            <p>Добровольная поддержка новых ежедневных игр — без игровых преимуществ.</p>
+          </div>
+          <TipCheckoutTrigger
+            className="club-tip-cta__button"
+            placement="club_tip"
+            initialOpen={tipsRequested}
+            label="Выбрать сумму"
+            hint="Сразу перейти к оплате"
+          />
+        </section>
       </main>
     </>
   )

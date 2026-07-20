@@ -3,6 +3,7 @@ import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
 import { Check, ChevronDown, Copy, Send, Share2, Ticket } from 'lucide-react'
 import type { ChallengeOutcome } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
+import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import type { TitleMode } from '../../types'
 import { publicAssetUrl } from '../../app/public-asset'
 
@@ -74,7 +75,7 @@ export function GameResult(props: Props) {
       <button type="button" className="result-config" onClick={props.onConfigure}>{props.configureLabel}</button>
       {props.onChallenge && <button type="button" onClick={props.onChallenge}>{props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'} <Share2 /></button>}
       <button type="button" className="result-copy" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
-      {props.won && <a className="result-tip" href="/club?section=tips">Оставить чаевые кассиру</a>}
+      {props.won && <TipCheckoutTrigger className="result-tip" />}
     </div>
     {props.award && <details className="reward-breakdown result-card__wide">
       <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билета`}</span><ChevronDown /></summary>
