@@ -10,7 +10,7 @@ import {
 import { AppHeader } from '../../components/app-shell/AppShell'
 import { api } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
-import './CreateGameScreen.css'
+import '../commerce/CommercialShell.css'
 
 type Props = {
   onHome: () => void

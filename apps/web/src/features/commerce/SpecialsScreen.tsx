@@ -17,7 +17,7 @@ import {
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
 import { CheckoutButton } from './CheckoutButton'
-import './SpecialsScreen.css'
+import './CommercialShell.css'
 
 type ShellProps = {
   onHome: () => void

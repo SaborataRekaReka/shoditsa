@@ -21,7 +21,7 @@ import { ClubCard, type ClubOffer } from './ClubCard'
 import { CheckoutButton } from './CheckoutButton'
 import { MembershipBadge } from './MembershipBadge'
 import { api, queryKeys } from '../../api/client'
-import './ClubScreen.css'
+import './CommercialShell.css'
 
 const fallbackOffers: ClubOffer[] = [
   {

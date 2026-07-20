@@ -6,6 +6,7 @@ import { apiErrorMessage } from '../../api/error-message'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader } from '../../components/app-shell/AppShell'
+import './CommercialShell.css'
 
 type Props = { onHome: () => void; onClub: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, Crown, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
@@ -124,6 +124,7 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
     ? session.name || session.email?.split('@')[0] || 'Профиль'
     : 'Гость'
   const signedIn = Boolean(session && !session.isAnonymous)
+  const hasClub = Boolean(serverRuntime.dashboard?.membership.active)
   const openProfile = (tab: ProfileMenuTab = 'overview') => {
     trackMetrikaGoal('open_profile')
     setProfileMenuOpen(false)
@@ -166,6 +167,9 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
           <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
         </button>
         <nav aria-label="Навигация">
+          <a className={`header-club ${hasClub ? 'is-active' : ''}`} href="/club" aria-label={hasClub ? 'Клубный билет активен' : 'Вступить в клуб'} title={hasClub ? 'Клубный билет активен' : 'Клуб «Сходится!»'}>
+            <Crown /><span>{hasClub ? 'Клуб активен' : 'Клуб'}</span>
+          </a>
           <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
           <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
           {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
@@ -176,6 +180,7 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
             {profileMenuOpen && <div className="header-profile-dropdown" role="menu">
               <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{signedIn ? session?.name || 'Игрок' : 'Гость кинозала'}</strong><small>{signedIn ? session?.email : 'Прогресс хранится в этом браузере'}</small></div></div>
               <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>{signedIn ? 'Обзор профиля' : 'Гостевой кабинет'}</span></button>
+              <button className="header-profile-dropdown__club" type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_club', { placement: 'profile_menu' }); window.location.assign('/club') }}><Crown /><span>{hasClub ? 'Клубный билет' : 'Вступить в клуб'}</span></button>
               <button type="button" role="menuitem" onClick={() => openProfile('stats')}><BarChart3 /><span>Статистика</span></button>
               <button type="button" role="menuitem" onClick={() => openProfile('achievements')}><Trophy /><span>Достижения</span></button>
               {signedIn
@@ -204,7 +209,15 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
         <button className="app-footer__home" onClick={onHome} aria-label="На главный экран"><BrandLogo /></button>
         <p>Неспешная игра на каждый день</p>
       </div>
-      <nav className="app-footer__nav" aria-label="Навигация в подвале"><button onClick={onHome}>Игры</button><a href="/specials">Спецпоказы</a><button onClick={onArchive}>Архив</button><button onClick={onProfile}>Профиль</button><a href="/create-a-game">Корпоративным клиентам</a><button onClick={onRules}>Правила</button></nav>
+      <nav className="app-footer__nav" aria-label="Навигация в подвале">
+        <button className="app-footer__link" onClick={onHome}>Игры</button>
+        <button className="app-footer__link" onClick={onArchive}>Архив</button>
+        <a className="app-footer__link" href="/specials">Спецпоказы</a>
+        <a className="app-footer__link app-footer__link--club" href="/club"><Crown />Клуб</a>
+        <button className="app-footer__link" onClick={onProfile}>Профиль</button>
+        <a className="app-footer__link" href="/create-a-game">Для компаний</a>
+        <button className="app-footer__link" onClick={onRules}>Правила</button>
+      </nav>
       <small className="app-footer__copy">© {new Date().getFullYear()} Сходится!</small>
     </div>
   </footer>
