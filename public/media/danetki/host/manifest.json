@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "defaultState": "neutral",
+  "states": {
+    "neutral": { "src": "host-neutral.webp", "width": 720, "height": 900 },
+    "thinking": { "src": "host-neutral.webp", "width": 720, "height": 900, "presentation": "pulse" },
+    "yes": { "src": "host-neutral.webp", "width": 720, "height": 900 },
+    "no": { "src": "host-neutral.webp", "width": 720, "height": 900 },
+    "hint": { "src": "host-neutral.webp", "width": 720, "height": 900 },
+    "success": { "src": "host-neutral.webp", "width": 720, "height": 900 }
+  }
+}

@@ -19,10 +19,11 @@ import {
   type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveCalendarQuery, type ArchiveQuery, type AttemptBody,
   type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
+  isCatalogGuessModeId,
 } from '@shoditsa/contracts'
 import {
   account, appSettings, auditLog, authEvents, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
-  createDatabase, dailyChallenges, gameSessions, playerProfiles, promoCodes, user, userModeStats, walletAccounts, walletLedger,
+  createDatabase, dailyChallenges, danetkiAiCalls, danetkiMessages, danetkiSessionMembers, gameSessions, playerProfiles, promoCodes, user, userModeStats, walletAccounts, walletLedger,
   type Database,
 } from '@shoditsa/database'
 import { createAuth, type Auth } from './modules/auth/auth.js'
@@ -41,6 +42,9 @@ import { registerCommerceAdminRoutes } from './modules/commerce/admin-routes.js'
 import { registerPackRoutes } from './modules/packs/routes.js'
 import { startPackSession } from './modules/packs/service.js'
 import { registerPrivateGameRoutes } from './modules/private-games/routes.js'
+import { getDanetkiSession, loadDanetkiFeatureFlags, startDanetkiSession } from './modules/danetki/service.js'
+import { registerDanetkiRoutes, type DanetkiRealtimeMetrics } from './modules/danetki/routes.js'
+import { registerDanetkiAdminRoutes } from './modules/danetki/admin-routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -64,6 +68,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   const auth = providedAuth ?? createAuth(config, db)
   const requestStarted = new WeakMap<object, number>()
   const requestMetrics = new Map<string, { count: number; errors: number; durationMs: number }>()
+  const danetkiRealtimeMetrics: DanetkiRealtimeMetrics = { activeConnections: 0, reconnects: 0 }
   const app = Fastify({
     logger: {
       level: config.logLevel,
@@ -134,7 +139,10 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     } catch { return reply.status(503).send({ status: 'not-ready', checks: { database: false, activeContentRevision: false } }) }
   })
   app.get('/api/v1/meta', async () => {
-    const active = await db.select({ id: contentRevisions.id, version: contentRevisions.version }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1)
+    const [active, danetkiFeatures] = await Promise.all([
+      db.select({ id: contentRevisions.id, version: contentRevisions.version }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1),
+      loadDanetkiFeatureFlags(db),
+    ])
     const counts = active[0] ? await db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, active[0].id)) : []
     const emailInfrastructureReady = Boolean(config.smtp.host && config.smtp.from)
     return {
@@ -143,7 +151,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       apiVersion: 'v1',
       rulesVersion: 1,
       activeRevision: active[0] ?? null,
-      modes: counts,
+      modes: counts.filter((entry) => entry.mode !== 'danetki' || danetkiFeatures.enabled),
       minimumFrontendVersion: '0.1.0',
       buildSha: config.gitSha,
       auth: {
@@ -159,15 +167,24 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         archiveFirstDate: config.commerce.archiveFirstDate,
         freeArchiveDays: config.commerce.freeArchiveDays,
       },
+      features: {
+        danetkiEnabled: danetkiFeatures.enabled,
+        danetkiMultiplayerEnabled: danetkiFeatures.enabled && danetkiFeatures.multiplayerEnabled,
+      },
     }
   })
   app.get('/api/v1/metrics', async (request, reply) => {
     const authorization = request.headers.authorization
     if (!config.metricsToken || authorization !== `Bearer ${config.metricsToken}`) throw new ApiError(403, 'METRICS_FORBIDDEN', 'Метрики недоступны')
-    const [active, completed, revision] = await Promise.all([
+    const [active, completed, revision, danetkiRooms, danetkiQuestions, danetkiAi, danetkiJoins, danetkiFinished] = await Promise.all([
       db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(eq(gameSessions.status, 'playing')),
       db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(sql`${gameSessions.status} in ('won','lost')`),
       db.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1),
+      db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(and(eq(gameSessions.mode, 'danetki'), eq(gameSessions.status, 'playing'))),
+      db.select({ count: sql<number>`count(*)::int` }).from(danetkiMessages).where(eq(danetkiMessages.messageType, 'question')),
+      db.select({ status: danetkiAiCalls.status, purpose: danetkiAiCalls.purpose, model: danetkiAiCalls.model, count: sql<number>`count(*)::int`, latency: sql<number>`coalesce(avg(${danetkiAiCalls.latencyMs}),0)::int`, inputTokens: sql<number>`coalesce(sum(${danetkiAiCalls.inputTokens}),0)::int`, outputTokens: sql<number>`coalesce(sum(${danetkiAiCalls.outputTokens}),0)::int` }).from(danetkiAiCalls).groupBy(danetkiAiCalls.status, danetkiAiCalls.purpose, danetkiAiCalls.model),
+      db.select({ count: sql<number>`greatest(count(*)::int - count(*) filter (where ${danetkiSessionMembers.role} = 'owner')::int, 0)` }).from(danetkiSessionMembers),
+      db.select({ status: gameSessions.status, count: sql<number>`count(*)::int` }).from(gameSessions).where(and(eq(gameSessions.mode, 'danetki'), sql`${gameSessions.status} in ('won','lost')`)).groupBy(gameSessions.status),
     ])
     const lines = ['# TYPE shoditsa_http_requests_total counter']
     for (const [route, metric] of requestMetrics) {
@@ -177,6 +194,18 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       lines.push(`shoditsa_http_duration_ms_sum{route="${label}"} ${metric.durationMs.toFixed(3)}`)
     }
     lines.push(`shoditsa_active_sessions ${active[0].count}`, `shoditsa_completed_games_total ${completed[0].count}`, `shoditsa_active_content_revision_info{revision="${revision[0]?.id ?? 'none'}"} 1`)
+    lines.push(
+      `danetki_rooms_active ${danetkiRooms[0]?.count ?? 0}`,
+      `danetki_questions_total ${danetkiQuestions[0]?.count ?? 0}`,
+      `danetki_sse_connections ${danetkiRealtimeMetrics.activeConnections}`,
+      `danetki_sse_reconnects_total ${danetkiRealtimeMetrics.reconnects}`,
+      `danetki_invite_joins_total ${danetkiJoins[0]?.count ?? 0}`,
+    )
+    for (const entry of danetkiAi) {
+      const labels = `status="${entry.status}",purpose="${entry.purpose}",model="${entry.model.replaceAll('"', '\\"')}"`
+      lines.push(`danetki_ai_requests_total{${labels}} ${entry.count}`, `danetki_ai_latency_ms{${labels}} ${entry.latency}`, `danetki_ai_input_tokens_total{${labels}} ${entry.inputTokens}`, `danetki_ai_output_tokens_total{${labels}} ${entry.outputTokens}`)
+    }
+    for (const entry of danetkiFinished) lines.push(`danetki_sessions_finished_total{outcome="${entry.status}"} ${entry.count}`)
     return reply.type('text/plain; version=0.0.4; charset=utf-8').send(`${lines.join('\n')}\n`)
   })
 
@@ -270,16 +299,39 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.post('/api/v1/games/start', { schema: { body: GameStartBodySchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
     const body = request.body as GameStartBody
+    if (body.mode === 'danetki') {
+      if (body.kind === 'pack') throw new ApiError(422, 'DANETKI_PACK_UNSUPPORTED', 'Данетки пока нельзя запускать как спецпоказ')
+      return { session: await startDanetkiSession(db, user!, {
+        kind: body.kind,
+        roomMode: body.roomMode ?? 'solo',
+        archiveDate: body.archiveDate,
+        idempotencyKey: requireIdempotencyKey(request),
+      }, config) }
+    }
+    if (!isCatalogGuessModeId(body.mode)) throw new ApiError(422, 'GAME_MODE_UNSUPPORTED', 'Этот игровой режим пока не поддерживается')
+    if (body.kind === 'free_play') throw new ApiError(422, 'GAME_KIND_UNSUPPORTED', 'Свободная игра для этого режима запускается через экономику')
     if (body.kind === 'pack') {
       if (!body.packId || !body.packPosition) throw new ApiError(422, 'PACK_POSITION_REQUIRED', 'Для спецпоказа нужны packId и packPosition')
       if (body.archiveDate) throw new ApiError(422, 'PACK_ARCHIVE_DATE_FORBIDDEN', 'Для спецпоказа нельзя передавать archiveDate')
       return { session: await startPackSession(db, user!.id, body.packId, body.packPosition, user!.authSessionId, user!.role) }
     }
-    return { session: await startGame(db, user!.id, { ...body, kind: body.kind as 'daily' | 'archive' }, user!.authSessionId, user!.role, config) }
+    return { session: await startGame(db, user!.id, {
+      kind: body.kind as 'daily' | 'archive',
+      mode: body.mode,
+      period: body.period,
+      difficulty: body.difficulty,
+      archiveDate: body.archiveDate,
+      variantKey: body.variantKey,
+      packId: body.packId,
+    }, user!.authSessionId, user!.role, config) }
   })
   app.get('/api/v1/games/:sessionId', { schema: { params: paramsId } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    return { session: await getOwnedSession(db, user!.id, (request.params as { sessionId: string }).sessionId) }
+    const sessionId = (request.params as { sessionId: string }).sessionId
+    const rows = await db.select({ mode: gameSessions.mode }).from(gameSessions).where(eq(gameSessions.id, sessionId)).limit(1)
+    return { session: rows[0]?.mode === 'danetki'
+      ? await getDanetkiSession(db, user!.id, sessionId)
+      : await getOwnedSession(db, user!.id, sessionId) }
   })
   app.post('/api/v1/games/:sessionId/attempts', { schema: { params: paramsId, headers: idempotencyHeaders, body: AttemptBodySchema }, config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -370,6 +422,8 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   await registerCommerceAdminRoutes(app, { db, auth, config })
   registerPackRoutes(app, db, auth, config)
   registerPrivateGameRoutes(app, { db, auth, config })
+  registerDanetkiRoutes(app, { db, auth, config, realtimeMetrics: danetkiRealtimeMetrics })
+  registerDanetkiAdminRoutes(app, { db, auth, config })
 
   await registerClientEventRoutes(app, { db, auth, config })
   await registerAdminRoutes(app, { db, auth, config })

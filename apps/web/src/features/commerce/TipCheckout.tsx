@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import type { CommerceProduct } from '@shoditsa/contracts'
+import { CURRENT_OFFER_VERSION, type CommerceProduct } from '@shoditsa/contracts'
 import { useQuery } from '@tanstack/react-query'
 import {
   ArrowUpRight,
@@ -64,6 +64,7 @@ export function TipCheckoutTrigger({
   const [open, setOpen] = useState(initialOpen)
   const [pendingProductId, setPendingProductId] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [accepted, setAccepted] = useState(false)
   const idempotencyKeyRef = useRef<string | null>(null)
   const authenticated = Boolean(runtime.me && !runtime.me.user.isAnonymous)
   const catalog = useQuery({
@@ -86,11 +87,12 @@ export function TipCheckoutTrigger({
     if (pendingProductId) return
     setOpen(false)
     setError('')
+    setAccepted(false)
   }
   const dialogRef = useDialogFocusTrap<HTMLElement>(open, close)
 
   const chooseTip = async (product: CommerceProduct) => {
-    if (pendingProductId) return
+    if (pendingProductId || !accepted) return
     if (!authenticated) {
       const returnUrl = `/club?section=tips&product=${encodeURIComponent(product.id)}`
       window.location.assign(`/register?returnUrl=${encodeURIComponent(returnUrl)}`)
@@ -110,7 +112,7 @@ export function TipCheckoutTrigger({
     trackMetrikaGoal('checkout_started', properties)
     try {
       const response = await api.checkout(
-        { productId: product.id },
+        { productId: product.id, termsAccepted: true, offerVersion: CURRENT_OFFER_VERSION },
         idempotencyKeyRef.current,
       )
       if (response.checkoutUrl) {
@@ -156,6 +158,10 @@ export function TipCheckoutTrigger({
             <p className="tip-modal__lead">
               Выберите сумму — сразу после нажатия откроется безопасная страница оплаты ЮKassa.
             </p>
+            <label className="tip-modal__acceptance">
+              <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} disabled={Boolean(pendingProductId)} />
+              <span>Принимаю <a href="/legal/terms" target="_blank" rel="noreferrer">оферту</a>, <a href="/legal/tariffs" target="_blank" rel="noreferrer">тариф</a> и <a href="/legal/refunds" target="_blank" rel="noreferrer">условия возврата</a></span>
+            </label>
             {catalog.isPending ? (
               <div className="tip-modal__loading" role="status">
                 <LoaderCircle /> Загружаем варианты…
@@ -171,7 +177,7 @@ export function TipCheckoutTrigger({
                       type="button"
                       className={`tip-modal__option tip-modal__option--${tier}`}
                       key={product.id}
-                      disabled={Boolean(pendingProductId)}
+                      disabled={Boolean(pendingProductId) || !accepted}
                       onClick={() => void chooseTip(product)}
                     >
                       <span className="tip-modal__token" aria-hidden="true"><Icon /></span>
@@ -191,7 +197,7 @@ export function TipCheckoutTrigger({
             )}
             {error && <p className="tip-modal__error" role="alert">{error}</p>}
             <p className="tip-modal__note">
-              Чаевые добровольные и не дают игровых преимуществ. В профиле останется памятный жетон самого высокого уровня.
+              Оплата добровольная и не даёт игровых преимуществ. Услуга состоит в выдаче памятного цифрового жетона выбранного уровня в профиле.
             </p>
           </section>
         </div>,

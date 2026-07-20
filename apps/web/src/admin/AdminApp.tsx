@@ -15,7 +15,7 @@ import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manu
 import { GameBuilderPage } from './GameBuilderPage'
 import './admin.css'
 
-type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'integrations' | 'system' | 'audit'
+type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
 const adminLogoUrl = publicAssetUrl('images/logo.svg')
 
@@ -309,7 +309,7 @@ const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => ty
 const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
   const candidate = (parts[0] || 'dashboard') as Section
-  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'integrations', 'system', 'audit']
+  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'danetki', 'integrations', 'system', 'audit']
   return {
     section: allowed.includes(candidate) ? candidate : 'dashboard',
     id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null,
@@ -5000,6 +5000,43 @@ function PrivateOrdersPage({ notify }: { notify: (tone: Notice['tone'], text: st
   </>
 }
 
+function DanetkiAdminPage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
+  const client = useQueryClient()
+  const settings = useQuery({ queryKey: ['admin', 'danetki', 'settings'], queryFn: adminApi.danetkiSettings })
+  const rooms = useQuery({ queryKey: ['admin', 'danetki', 'sessions'], queryFn: adminApi.danetkiSessions, refetchInterval: 5_000 })
+  const [draft, setDraft] = useState<Record<string, unknown> | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [testQuestion, setTestQuestion] = useState('Это произошло ночью?')
+  const detail = useQuery({ queryKey: ['admin', 'danetki', 'session', selectedId], queryFn: () => adminApi.danetkiSession(selectedId!), enabled: Boolean(selectedId), refetchInterval: selectedId ? 4_000 : false })
+  useEffect(() => { if (settings.data?.settings && !draft) setDraft(settings.data.settings) }, [settings.data, draft])
+  const save = useMutation({ mutationFn: () => adminApi.saveDanetkiSettings(draft!), onSuccess: (data) => { setDraft(data.settings); notify('success', 'Настройки ИИ-ведущей сохранены'); void client.invalidateQueries({ queryKey: ['admin', 'danetki'] }) }, onError: (error) => notify('error', errorText(error)) })
+  const retry = useMutation({ mutationFn: (id: string) => adminApi.retryDanetkiAi(id), onSuccess: () => { notify('info', 'Повтор AI-задачи поставлен в очередь'); void detail.refetch() }, onError: (error) => notify('error', errorText(error)) })
+  const close = useMutation({ mutationFn: ({ id, reason }: { id: string; reason: string }) => adminApi.closeDanetkiSession(id, reason), onSuccess: () => { notify('success', 'Комната закрыта'); void rooms.refetch(); void detail.refetch() }, onError: (error) => notify('error', errorText(error)) })
+  const aiTest = useMutation({ mutationFn: () => adminApi.testDanetkiAi(testQuestion), onSuccess: () => notify('success', 'Тестовый ответ получен'), onError: (error) => notify('error', errorText(error)) })
+  const set = (key: string, value: unknown) => setDraft((current) => ({ ...(current ?? {}), [key]: value }))
+  const selected = record(detail.data)
+  const messages = Array.isArray(selected.messages) ? selected.messages.map(record) : []
+  const calls = Array.isArray(selected.aiCalls) ? selected.aiCalls.map(record) : []
+
+  return <><PageHead eyebrow="Игровой движок" title="Данетки" description="ИИ-ведущая, feature flags и монитор общих комнат." actions={<button className="admin-btn admin-btn--secondary" onClick={() => { void settings.refetch(); void rooms.refetch() }}><RefreshCw />Обновить</button>} />
+    <div className="admin-system-grid">
+      <section className="admin-panel"><header><div><span>Runtime</span><h2>Настройки ведущей</h2></div><Status value={settings.data?.openAiConfigured ? 'active' : 'failed'}>{settings.data?.openAiConfigured ? 'OpenAI настроен' : 'Нет ключа'}</Status></header>
+        {!draft ? <Loading /> : <div className="danetki-admin-settings">
+          <label><input type="checkbox" checked={Boolean(draft.enabled)} onChange={(event) => set('enabled', event.target.checked)} /> Режим включён</label>
+          <label><input type="checkbox" checked={Boolean(draft.multiplayerEnabled)} onChange={(event) => set('multiplayerEnabled', event.target.checked)} /> Совместная игра включена</label>
+          <label className="admin-field"><span>Модель</span><input value={String(draft.hostModel ?? '')} onChange={(event) => set('hostModel', event.target.value)} /></label>
+          <label className="admin-field"><span>Версия промпта</span><input value={String(draft.promptVersion ?? '')} onChange={(event) => set('promptVersion', event.target.value)} /></label>
+          {[['contextMessages', 'Сообщений в контексте'], ['maxOutputTokens', 'Максимум output tokens'], ['timeoutMs', 'Timeout, мс'], ['retryCount', 'Повторы'], ['userCooldownMs', 'Пауза пользователя, мс'], ['roomQuestionsPerMinute', 'Вопросов комнаты / мин'], ['emptyRoomTtlMinutes', 'TTL пустой комнаты, мин']].map(([key, label]) => <label key={key} className="admin-field"><span>{label}</span><input type="number" value={Number(draft[key] ?? 0)} onChange={(event) => set(key, Number(event.target.value))} /></label>)}
+          <button className="admin-btn admin-btn--primary" disabled={save.isPending} onClick={() => save.mutate()}><Save />Сохранить</button>
+        </div>}
+      </section>
+      <section className="admin-panel"><header><div><span>Structured output</span><h2>Проверка подключения</h2></div></header><label className="admin-field"><span>Тестовый вопрос</span><input value={testQuestion} maxLength={300} onChange={(event) => setTestQuestion(event.target.value)} /></label><button className="admin-btn admin-btn--secondary" disabled={aiTest.isPending || testQuestion.trim().length < 2} onClick={() => aiTest.mutate()}><Bot />{aiTest.isPending ? 'Проверяем…' : 'Проверить ИИ'}</button>{aiTest.data && <pre className="danetki-admin-json">{JSON.stringify(aiTest.data, null, 2)}</pre>}</section>
+    </div>
+    <section className="admin-panel"><header><div><span>Realtime</span><h2>Комнаты</h2></div></header>{rooms.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Начало</th><th>Данетка</th><th>Комната</th><th>Ход игры</th><th>ИИ</th></tr></thead><tbody>{rooms.data?.items.map((raw) => { const room = record(raw); return <tr key={String(room.id)} className={selectedId === room.id ? 'is-selected' : ''} onClick={() => setSelectedId(String(room.id))}><td>{formatDate(room.startedAt)}</td><td><strong>{title(room.title)}</strong><small>{title(room.puzzleDate)}</small></td><td>{room.roomMode === 'group' ? 'Совместная' : 'Одиночная'}<small>{String(room.participants)} участников</small></td><td><Status value={room.status} /><small>{String(room.questionCount)} вопросов · {String(room.hintLevel)} подсказок</small></td><td><Status value={room.aiStatus} /><small>{room.lastLatencyMs ? `${String(room.lastLatencyMs)} мс` : '—'}{room.lastError ? ` · ${title(room.lastError)}` : ''}</small></td></tr> })}</tbody></table></div>}</section>
+    {selectedId && <section className="admin-panel danetki-admin-room"><header><div><span>{selectedId}</span><h2>Transcript и AI timeline</h2></div><div><button className="admin-btn admin-btn--secondary" disabled={retry.isPending} onClick={() => retry.mutate(selectedId)}><RefreshCw />Повторить AI</button><button className="admin-btn admin-btn--danger" onClick={() => { const reason = prompt('Обязательная причина закрытия комнаты'); if (reason?.trim() && reason.trim().length >= 5) close.mutate({ id: selectedId, reason: reason.trim() }) }}><X />Закрыть комнату</button></div></header>{detail.isLoading ? <Loading /> : <div className="danetki-admin-transcript">{messages.map((message) => <article key={String(message.id)}><header><strong>{message.senderKind === 'ai' ? 'ИИ-ведущая' : message.senderKind === 'system' ? 'Система' : 'Игрок'}</strong><small>#{String(message.seq)} · {formatDate(message.createdAt)}</small></header><p>{title(message.text)}</p></article>)}</div>}<h3>Последние AI-вызовы</h3><div className="admin-jobs">{calls.slice(0, 20).map((call) => <article key={String(call.id)}><Bot /><div><header><strong>{title(call.purpose)}</strong><Status value={call.status} /></header><small>{title(call.model)} · {String(call.latencyMs ?? '—')} мс · {String(call.inputTokens ?? 0)}/{String(call.outputTokens ?? 0)} tokens</small>{call.errorCode && <p>{title(call.errorCode)}</p>}</div></article>)}</div></section>}
+  </>
+}
+
 const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: 'dashboard', label: 'Обзор', icon: LayoutDashboard }, { id: 'content', label: 'Карточки', icon: Boxes },
   { id: 'builder', label: 'Конструктор игры', icon: LayoutTemplate },
@@ -5008,6 +5045,7 @@ const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> 
   { id: 'quality', label: 'Контроль качества', icon: ListChecks }, { id: 'economy', label: 'Экономика', icon: CircleDollarSign },
   { id: 'commerce', label: 'Монетизация', icon: CircleDollarSign },
   { id: 'private-orders', label: 'Корпоративные заявки', icon: BriefcaseBusiness },
+  { id: 'danetki', label: 'Данетки', icon: Bot },
   { id: 'integrations', label: 'API-интеграции', icon: KeyRound }, { id: 'system', label: 'Система', icon: Settings2 }, { id: 'audit', label: 'Журнал администратора', icon: FileClock },
 ]
 
@@ -5034,6 +5072,7 @@ export default function AdminApp() {
     {route.section === 'economy' && <EconomyPage notify={notify} />}
     {route.section === 'commerce' && <CommercePage notify={notify} />}
     {route.section === 'private-orders' && <PrivateOrdersPage notify={notify} />}
+    {route.section === 'danetki' && <DanetkiAdminPage notify={notify} />}
     {route.section === 'integrations' && <IntegrationsPage notify={notify} />}
     {route.section === 'system' && <SystemPage notify={notify} />}
     {route.section === 'audit' && <AuditPage />}

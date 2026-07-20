@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Archive, Clapperboard, Heart, LockKeyhole, Sparkles, Ticket } from 'lucide-react'
+import { Archive, CircleHelp, Clapperboard, Heart, LockKeyhole, Sparkles, Ticket } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
@@ -113,9 +113,6 @@ export function ClubScreen({
         : undefined,
     }
   })
-  const membershipNumber = authenticated
-    ? String(runtime.dashboard?.wallet.balance ?? 0).padStart(6, '0')
-    : '------'
   const tipsRequested =
     typeof window !== 'undefined' &&
     (new URLSearchParams(window.location.search).get('section') === 'tips' ||
@@ -153,6 +150,10 @@ export function ClubScreen({
     document.getElementById('club-offers')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const scrollToBenefits = () => {
+    document.getElementById('club-benefits')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <>
       <AppHeader
@@ -164,72 +165,86 @@ export function ClubScreen({
       />
       <main className="club-screen hub-screen">
         <section className="club-hero">
-          <div className="club-hero__copy">
-            <div className="club-hero__eyebrow">
-              <span>Клуб «Сходится!»</span>
-              {hasClub && (
-                <span className="club-hero__status">
-                  <Sparkles />
-                  {membership.endsAt
-                    ? `Активен до ${formatMembershipDate(membership.endsAt)}`
-                    : 'Клуб активен'}
-                </span>
-              )}
+          <div className="club-hero__top">
+            <div className="club-hero__copy">
+              <div className="club-hero__trust" aria-label="Условия клуба">
+                <span><LockKeyhole /><strong>Без автопродления</strong></span>
+                <span><b>Daily</b><strong>Бесплатный</strong></span>
+              </div>
+              <div className="club-hero__eyebrow">
+                <span>Клуб «Сходится!»</span>
+                {hasClub && (
+                  <span className="club-hero__status">
+                    <Sparkles />
+                    {membership.endsAt
+                      ? `Активен до ${formatMembershipDate(membership.endsAt)}`
+                      : 'Клуб активен'}
+                  </span>
+                )}
+              </div>
+              <h1 className="club-hero__title">
+                <span>Больше игр.</span>
+                <span>Больше поводов вернуться.</span>
+              </h1>
+              <p>Архив с первого дня, свободная игра и клубные спецпоказы — по одному билету.</p>
+              <div className="club-hero__actions">
+                <ActionButton type="button" onClick={hasClub ? onArchive : scrollToOffers}>
+                  {hasClub ? <Archive /> : <Ticket />}
+                  {hasClub ? 'Открыть архив' : 'Вступить в клуб'}
+                </ActionButton>
+                {hasClub ? (
+                  <a className="ui-button ui-button--secondary" href="/specials">
+                    <Clapperboard />
+                    Перейти к спецпоказам
+                  </a>
+                ) : (
+                  <ActionButton type="button" variant="secondary" onClick={scrollToBenefits}>
+                    <CircleHelp />
+                    Что входит
+                  </ActionButton>
+                )}
+              </div>
             </div>
-            <h1 className="club-hero__title">
-              <span>Больше игр.</span>
-              <span>Больше поводов вернуться.</span>
-            </h1>
-            <p>
-              Архив с первого дня, свободная игра
-              <br />
-              и клубные спецпоказы — по одному билету.
-            </p>
-            <div className="club-hero__actions">
-              <ActionButton className="club-button" type="button" onClick={hasClub ? onArchive : scrollToOffers}>
-                {hasClub ? 'Открыть архив' : 'Вступить в клуб'}
-              </ActionButton>
-              <a href={hasClub ? '/specials' : '#club-benefits'}>
-                {hasClub ? 'Перейти к спецпоказам' : 'Посмотреть преимущества'}
-              </a>
+
+            <div className="club-hero__artwork">
+              <img
+                src="/assets/club/club-hero-character.png"
+                alt="Героиня протягивает клубный билет"
+                width="1536"
+                height="1024"
+                fetchPriority="high"
+              />
             </div>
-            <small className="club-hero__renewal"><LockKeyhole /> Продление только вручную</small>
           </div>
 
-          <div className="club-hero__visual" aria-label="Клубный билет">
-            <div className="club-hero__ticket">
-              <span className="club-hero__star" aria-hidden="true">★</span>
-              <strong>Клубный<br />билет</strong>
-              <span className="club-hero__number">№ <b>{membershipNumber}</b></span>
-              <small>Archive · Free play · Specials</small>
-              <em>Сходится!</em>
-            </div>
-            <div className="club-hero__stub"><Ticket /> Archive · Free play · Specials</div>
+          <div className="club-principles" id="club-benefits" aria-label="Преимущества клуба">
+            <article>
+              <Archive />
+              <div>
+                <strong>Весь архив</strong>
+                <p>Возвращайтесь к любой игре с первого дня.</p>
+              </div>
+            </article>
+            <article>
+              <Ticket />
+              <div>
+                <strong>Свободная игра</strong>
+                <p>Играйте без списания билетов.</p>
+              </div>
+            </article>
+            <article>
+              <Clapperboard />
+              <div>
+                <strong>Спецпоказы</strong>
+                <p>Тематические серии игр только для клуба.</p>
+              </div>
+            </article>
           </div>
-        </section>
 
-        <section className="club-principles" id="club-benefits" aria-label="Преимущества клуба">
-          <article>
-            <Archive />
-            <div>
-              <strong>Весь архив</strong>
-              <p>Возвращайтесь к любой игре<br />с первого дня проекта.</p>
-            </div>
-          </article>
-          <article>
-            <Ticket />
-            <div>
-              <strong>Свободная игра</strong>
-              <p>Играйте без списания<br />билетов.</p>
-            </div>
-          </article>
-          <article>
-            <Clapperboard />
-            <div>
-              <strong>Спецпоказы</strong>
-              <p>Тематические серии игр<br />только для клуба.</p>
-            </div>
-          </article>
+          <div className="club-hero__service">
+            <span><LockKeyhole /> Без автопродления</span>
+            <span>Daily-игры, подсказки и заработанные билеты остаются бесплатными</span>
+          </div>
         </section>
 
         <section className="club-offers" id="club-offers">

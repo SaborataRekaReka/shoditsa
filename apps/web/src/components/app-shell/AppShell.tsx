@@ -116,6 +116,7 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement>(null)
+  const profileTriggerRef = useRef<HTMLButtonElement>(null)
   const { session } = useAuthSession()
   const serverRuntime = useServerRuntime()
   const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
@@ -162,26 +163,21 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
     <header className="app-header">
       <div className="app-header__inner">
         <button className="brand" aria-label="На главный экран" onClick={() => { trackMetrikaGoal('header_home_click'); onHome() }}><BrandLogo /></button>
-        <button className="header-economy" aria-label="Билеты и абонемент" onClick={() => { trackMetrikaGoal('open_economy_modal'); setEconomyOpen(true) }}>
-          <span><Ticket /> <strong>{wallet.tickets}</strong></span>
-          <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
-        </button>
         <nav aria-label="Навигация">
-          <a className={`header-club ${hasClub ? 'is-active' : ''}`} href="/club" aria-label={hasClub ? 'Клубный билет активен' : 'Вступить в клуб'} title={hasClub ? 'Клубный билет активен' : 'Клуб «Сходится!»'}>
-            <Crown /><span>{hasClub ? 'Клуб активен' : 'Клуб'}</span>
-          </a>
-          <button onClick={() => { trackMetrikaGoal('open_archive'); onArchive() }} aria-label="Архив"><Archive /></button>
-          <button onClick={() => { trackMetrikaGoal('open_stats'); onStats() }} aria-label="Статистика"><BarChart3 /></button>
-          {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button onClick={() => { trackMetrikaGoal('open_admin'); window.location.assign('/admin') }} aria-label="Административная панель" title="Административная панель"><ShieldCheck /></button>}
           <div className="header-profile-menu" ref={profileMenuRef}>
-            <button onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label="Открыть меню профиля" title="Меню профиля" aria-haspopup="menu" aria-expanded={profileMenuOpen}>
+            <button ref={profileTriggerRef} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label="Открыть меню" title="Меню" aria-haspopup="menu" aria-expanded={profileMenuOpen}>
               <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
             </button>
             {profileMenuOpen && <div className="header-profile-dropdown" role="menu">
               <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{signedIn ? session?.name || 'Игрок' : 'Гость кинозала'}</strong><small>{signedIn ? session?.email : 'Прогресс хранится в этом браузере'}</small></div></div>
+              <button className="header-profile-dropdown__economy" type="button" role="menuitem" aria-label={`Билеты: ${wallet.tickets}. Серия: ${attendance.currentDailyStreak} дней`} onClick={() => { trackMetrikaGoal('open_economy_modal'); profileTriggerRef.current?.focus(); setProfileMenuOpen(false); setEconomyOpen(true) }}>
+                <Ticket /><span>Билеты</span><strong>{wallet.tickets}</strong>
+                <Trophy /><span>Серия</span><strong>{attendance.currentDailyStreak} дн.</strong>
+              </button>
               <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>{signedIn ? 'Обзор профиля' : 'Гостевой кабинет'}</span></button>
+              <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_archive'); setProfileMenuOpen(false); onArchive() }}><Archive /><span>Архив</span></button>
               <button className="header-profile-dropdown__club" type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_club', { placement: 'profile_menu' }); window.location.assign('/club') }}><Crown /><span>{hasClub ? 'Клубный билет' : 'Вступить в клуб'}</span></button>
-              <button type="button" role="menuitem" onClick={() => openProfile('stats')}><BarChart3 /><span>Статистика</span></button>
+              <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_stats'); setProfileMenuOpen(false); onStats() }}><BarChart3 /><span>Статистика</span></button>
               <button type="button" role="menuitem" onClick={() => openProfile('achievements')}><Trophy /><span>Достижения</span></button>
               {signedIn
                 ? <>
@@ -215,10 +211,18 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
         <a className="app-footer__link" href="/specials">Спецпоказы</a>
         <a className="app-footer__link app-footer__link--club" href="/club"><Crown />Клуб</a>
         <button className="app-footer__link" onClick={onProfile}>Профиль</button>
-        <a className="app-footer__link" href="/create-a-game">Для компаний</a>
+        <a className="app-footer__link" href="/partners">Для компаний</a>
         <button className="app-footer__link" onClick={onRules}>Правила</button>
       </nav>
-      <small className="app-footer__copy">© {new Date().getFullYear()} Сходится!</small>
+      <small className="app-footer__copy">© {new Date().getFullYear()} Сходится! · ИП Бренейзе А. В. · ИНН 540552157271</small>
+      <nav className="app-footer__legal" aria-label="Юридическая информация">
+        <a href="/legal/terms">Соглашение и оферта</a>
+        <a href="/legal/tariffs">Тарифы</a>
+        <a href="/legal/privacy">Конфиденциальность</a>
+        <a href="/legal/refunds">Оплата и возвраты</a>
+        <a href="/legal/contacts">Контакты и реквизиты</a>
+        <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Настройки cookie</button>
+      </nav>
     </div>
   </footer>
 }

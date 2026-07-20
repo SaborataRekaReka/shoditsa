@@ -52,4 +52,20 @@ describe('search index contract', () => {
     expect(data['@graph'].some((entry) => entry['@type'] === 'WebApplication')).toBe(true)
     expect(data['@graph'].some((entry) => entry['@type'] === 'BreadcrumbList')).toBe(true)
   })
+
+  it('publishes canonical metadata for legal documents', () => {
+    const route = seoRouteFromPathname('/legal/terms')
+    expect(route.kind).toBe('utility')
+    expect(route.indexable).toBe(true)
+    expect(route.canonicalPath).toBe('/legal/terms')
+    expect(route.title).toContain('Пользовательское соглашение')
+  })
+
+  it('uses the partners URL as the canonical corporate landing', () => {
+    const route = seoRouteFromPathname('/partners')
+    const legacyRoute = seoRouteFromPathname('/create-a-game')
+    expect(route.indexable).toBe(true)
+    expect(route.canonicalPath).toBe('/partners')
+    expect(legacyRoute.canonicalPath).toBe('/partners')
+  })
 })

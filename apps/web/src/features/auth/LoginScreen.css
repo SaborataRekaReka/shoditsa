@@ -343,6 +343,14 @@
 
 .login-form-hint { margin: -1px 0 13px; color: rgba(23, 28, 24, .52); font-size: 11px; line-height: 1.42; }
 .login-form-hint--warning { margin: 14px 0 0; color: #8a6515; }
+.login-legal-consents { margin: 0 0 13px; padding: 0; border: 0; display: grid; gap: 9px; }
+.login-legal-consents label { color: rgba(23, 28, 24, .64); display: grid; grid-template-columns: 18px minmax(0, 1fr); align-items: start; gap: 8px; font-size: 10px; line-height: 1.45; cursor: pointer; }
+.login-legal-consents input { width: 16px; height: 16px; margin: 0; accent-color: #4f985e; cursor: pointer; }
+.login-legal-consents a { color: #326d40; font-weight: 800; text-underline-offset: 2px; }
+.login-legal-error { display: block; margin: -5px 0 12px; }
+.login-legal-footer { width: min(100%, 920px); margin: 0 auto; padding: 0 16px 22px; display: flex; flex-wrap: wrap; justify-content: center; gap: 7px 16px; box-sizing: border-box; }
+.login-legal-footer a, .login-legal-footer button { padding: 0; border: 0; color: rgba(255, 255, 255, .58); background: transparent; font: inherit; font-size: 10px; line-height: 1.35; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.login-legal-footer a:hover, .login-legal-footer button:hover { color: rgba(255, 255, 255, .9); }
 .login-error,
 .login-notice { margin: 0 0 13px; padding: 9px 11px; border-radius: 9px; font-size: 11px; line-height: 1.4; }
 .login-error { border: 1px solid rgba(169, 79, 59, .28); color: #8e3d2c; background: rgba(196, 99, 75, .1); }

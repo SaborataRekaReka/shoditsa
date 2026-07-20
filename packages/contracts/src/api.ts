@@ -173,7 +173,7 @@ export type GameResponse = { session: GameSessionSnapshot }
 
 export type DanetkiStartBody = {
   mode: 'danetki'
-  kind: 'daily' | 'archive'
+  kind: 'daily' | 'archive' | 'free_play'
   roomMode: DanetkiRoomMode
   archiveDate?: string | null
 }

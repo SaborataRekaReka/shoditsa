@@ -1,4 +1,5 @@
 import type { PlayableModeId } from '@shoditsa/contracts'
+import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
 import {
   DEFAULT_SOCIAL_IMAGE_PATH,
   GAME_SEO,
@@ -22,9 +23,26 @@ export type SeoRoute = SeoPageContent & {
 const NOINDEX_FOLLOW = 'noindex,follow,noarchive'
 const NOINDEX_PRIVATE = 'noindex,nofollow,noarchive'
 
+const LEGAL_SEO: Record<LegalDocumentSlug, { title: string; description: string }> = {
+  terms: { title: 'Пользовательское соглашение и оферта — Сходится!', description: 'Условия использования сервиса, оказания и оплаты цифровых услуг «Сходится!».' },
+  tariffs: { title: 'Тарифы и получение услуг — Сходится!', description: 'Актуальные тарифы клуба, спецпоказов и памятных цифровых жетонов «Сходится!».' },
+  privacy: { title: 'Политика обработки персональных данных — Сходится!', description: 'Правила обработки и защиты персональных данных пользователей сервиса «Сходится!».' },
+  'personal-data-consent': { title: 'Согласие на обработку персональных данных — Сходится!', description: 'Условия отдельного согласия на обработку персональных данных пользователей «Сходится!».' },
+  refunds: { title: 'Оплата, получение услуг и возвраты — Сходится!', description: 'Порядок оплаты, активации цифровых услуг, отмены и возврата денежных средств.' },
+  contacts: { title: 'Контакты и реквизиты — Сходится!', description: 'Контактные данные и реквизиты владельца и исполнителя сервиса «Сходится!».' },
+}
+
 const utilitySeo = (pathname: string): SeoRoute | null => {
-  if (pathname === '/create-a-game') return {
-    kind: 'utility', title: 'Корпоративная игра на заказ — Сходится!', description: 'Закажите частный тематический сеанс «Сходится!» для команды, события или праздника.', canonicalPath: '/create-a-game', heading: 'Свой сеанс «Сходится!»', lead: 'Частная игра под вашу аудиторию.', paragraphs: [], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  const legalMatch = pathname.match(/^\/legal\/([^/]+)$/)
+  if (legalMatch && isLegalDocumentSlug(legalMatch[1])) {
+    const document = legalMatch[1]
+    const content = LEGAL_SEO[document]
+    return {
+      kind: 'utility', title: content.title, description: content.description, canonicalPath: pathname, heading: content.title.replace(/ — Сходится!$/, ''), lead: '', paragraphs: [], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+    }
+  }
+  if (pathname === '/partners' || pathname === '/create-a-game') return {
+    kind: 'utility', title: 'Корпоративные игры для команд и событий — Сходится!', description: 'Создадим брендированную онлайн-игру для тимбилдинга, корпоратива, конференции или спецпроекта — под вашу аудиторию и задачу.', canonicalPath: '/partners', heading: 'Игры «Сходится!» для бизнеса', lead: 'Частный игровой сеанс под вашу команду, бренд и событие.', paragraphs: [], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }
   if (pathname === '/specials') return {
     kind: 'utility', title: 'Спецпоказы — Сходится!', description: 'Тематические игровые подборки с отдельным прогрессом и бесплатными превью.', canonicalPath: '/specials', heading: 'Спецпоказы', lead: '', paragraphs: [], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,

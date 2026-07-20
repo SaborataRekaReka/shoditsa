@@ -28,7 +28,12 @@ export type MeCommerceResponse = {
   entitlements: Array<{ key: string; scope: string | null; startsAt: string; endsAt: string | null }>
 }
 
-export const CheckoutBodySchema = Type.Object({ productId: Type.String({ minLength: 1, maxLength: 120 }) }, { additionalProperties: false })
+export const CURRENT_OFFER_VERSION = '2026-07-20' as const
+export const CheckoutBodySchema = Type.Object({
+  productId: Type.String({ minLength: 1, maxLength: 120 }),
+  termsAccepted: Type.Literal(true),
+  offerVersion: Type.Literal(CURRENT_OFFER_VERSION),
+}, { additionalProperties: false })
 export type CheckoutBody = Static<typeof CheckoutBodySchema>
 
 export const CommerceOrderParamsSchema = Type.Object({ orderId: UuidSchema }, { additionalProperties: false })

@@ -21,6 +21,7 @@ import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie
 import { assertNormalizationField, isNormalizationRateLimitError, mergeNormalizationUsage, normalizationPendingItemIds, normalizeProposedValue, requestNormalization, runNormalizationPool } from './modules/admin/normalization-pipeline.js'
 import { apiBackfillFields, buildMissingFieldsProposal } from './modules/admin/pipeline-backfill.js'
 import { ApiError } from './lib/errors.js'
+import { handleDanetkiJob } from './modules/danetki/worker.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -786,6 +787,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
 }
 
 const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
+  if (job.type === 'danetki_ai_reply' || job.type === 'danetki_guess_evaluate' || job.type === 'danetki_room_expire') return handleDanetkiJob(db, config, job)
   if (job.type === 'content_revision_build') {
     const payload = record(job.payload); const workspaceId = text(payload.workspaceId)
     if (!job.createdBy || !workspaceId) throw new Error('Revision build job is incomplete')

@@ -1,6 +1,6 @@
 import { and, eq, inArray, isNull } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import type { ApiDifficultyKey, ApiPeriodKey, PlayableMode } from '@shoditsa/contracts'
+import type { ApiDifficultyKey, ApiPeriodKey, ContentMode } from '@shoditsa/contracts'
 import { gameSessions, type Database } from '@shoditsa/database'
 import { getMoscowDate } from '../../lib/time.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
@@ -19,7 +19,7 @@ export const canStartArchiveSession = async (
   puzzleDate: string,
   config: AppConfig,
   now = new Date(),
-  selection?: { mode: PlayableMode; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null },
+  selection?: { mode: ContentMode; period: ApiPeriodKey; difficulty: ApiDifficultyKey | null },
 ) => {
   const today = getMoscowDate(now)
   const freeFrom = getFreeArchiveStart(today, config.commerce.freeArchiveDays)

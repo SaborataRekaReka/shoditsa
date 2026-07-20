@@ -12,13 +12,14 @@ import { LoginScreen } from '../features/auth/LoginScreen'
 import { SERVER_RUNTIME } from '../hooks/use-server-runtime'
 import { AlertTriangle, Sparkles } from 'lucide-react'
 import { applyRuntimeSeo } from './seo'
+import { CookieConsentBanner } from '../features/legal/CookieConsentBanner'
 
 const AdminApp = import.meta.env.MODE === 'yandex' ? null : lazy(() => import('../admin/AdminApp'))
 
 const RootView = () => {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   useEffect(() => applyRuntimeSeo(pathname), [pathname])
-  return <Outlet />
+  return <><Outlet /><CookieConsentBanner /></>
 }
 const PlayerLayout = () => <><App /><Outlet /></>
 const RouteMarker = () => null
@@ -36,14 +37,17 @@ const playerRoutes = [
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'games/$mode', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'play/$mode', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'sessions/$sessionId', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'danetki/join/$token', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'archive', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'profile', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'club', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'specials', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'specials/$packId', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'partners', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'create-a-game', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'purchase/return', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'review/music', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'legal/$document', component: RouteMarker }),
 ]
 
 const loginRoute = createRoute({ getParentRoute: () => rootRoute, path: 'login', component: () => <LoginRoute mode="login" /> })

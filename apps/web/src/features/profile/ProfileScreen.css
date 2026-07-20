@@ -528,8 +528,19 @@
   .profile-hero__reward span,
   .profile-hero__reward strong { font-size: 11px; }
   .profile-hero__reward > i { margin-top: 6px; }
-  .profile-tabs { gap: 0; }
-  .profile-tabs button { padding: 0 9px; font-size: 12px; }
+  .profile-tabs {
+    overflow: visible;
+    padding: 4px;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .018);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    display: grid;
+  }
+  .profile-tabs button { width: 100%; min-width: 0; padding: 0 8px; border-radius: 8px; font-size: 12px; }
+  .profile-tabs button::after { display: none; }
+  .profile-tabs button.is-active { background: rgba(105, 183, 121, .13); }
   .profile-overview--dashboard article { min-height: 96px; padding: 15px 19px; }
   .profile-overview--dashboard article > strong { font-size: 31px; }
   .profile-overview--dashboard article > i { right: 11px; bottom: 10px; }

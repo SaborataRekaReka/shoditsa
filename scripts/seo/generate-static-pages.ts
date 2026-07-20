@@ -12,8 +12,10 @@ import {
   type SeoPageContent,
 } from '../../apps/web/src/app/seo-content'
 import { seoRouteFromPathname, structuredDataForSeoRoute } from '../../apps/web/src/app/seo'
+import { LEGAL_DOCUMENT_SLUGS } from '../../apps/web/src/features/legal/legal'
 
 const distRoot = resolve('dist')
+const INDEXABLE_UTILITY_PATHS = ['/partners'] as const
 const escapeHtml = (value: string) => value
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -132,7 +134,7 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
 }
 
 const renderSitemap = () => {
-  const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO]
+  const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO, ...INDEXABLE_UTILITY_PATHS.map((canonicalPath) => ({ canonicalPath })), ...LEGAL_DOCUMENT_SLUGS.map((slug) => ({ canonicalPath: `/legal/${slug}` }))]
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((page) => `  <url><loc>${escapeXml(new URL(page.canonicalPath, `${SITE_ORIGIN}/`).toString())}</loc></url>`).join('\n')}\n</urlset>\n`
 }
 
@@ -161,6 +163,6 @@ for (const game of INDEXABLE_GAME_SEO) {
 
 await writeFile(resolve(distRoot, 'sitemap.xml'), renderSitemap(), 'utf8')
 await writeFile(resolve(distRoot, 'robots.txt'), renderRobots(), 'utf8')
-await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath)] }, null, 2)}\n`, 'utf8')
+await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath), ...INDEXABLE_UTILITY_PATHS, ...LEGAL_DOCUMENT_SLUGS.map((slug) => `/legal/${slug}`)] }, null, 2)}\n`, 'utf8')
 
 console.log(`[seo] generated ${INDEXABLE_GAME_SEO.length + 1} indexable pages, sitemap.xml and robots.txt`)

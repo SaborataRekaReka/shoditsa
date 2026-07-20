@@ -92,6 +92,9 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [pending, setPending] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const [personalDataAccepted, setPersonalDataAccepted] = useState(false)
+  const [legalError, setLegalError] = useState('')
 
   const returnUrl = useMemo(() => currentReturnUrl(), [])
   const resetMode = Boolean(resetToken) && !register
@@ -135,7 +138,11 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     if (!password) nextErrors.password = 'Введите пароль.'
     else if (register && password.length < 10) nextErrors.password = 'Минимум 10 символов.'
     setFieldErrors(nextErrors)
-    return !Object.values(nextErrors).some(Boolean)
+    const nextLegalError = register && (!termsAccepted || !personalDataAccepted)
+      ? 'Для регистрации подтвердите оба пункта отдельно.'
+      : ''
+    setLegalError(nextLegalError)
+    return !Object.values(nextErrors).some(Boolean) && !nextLegalError
   }
 
   const redirectAfterAuth = () => {
@@ -260,6 +267,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setForgotMode(false)
     setResetToken('')
     setFieldErrors(emptyFieldErrors)
+    setLegalError('')
     clearMessages()
     removeResetTokenFromAddress()
   }
@@ -302,14 +310,14 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
               : <form className="login-form" onSubmit={submitEmail} noValidate>
                 {register && !resetMode && <div className="login-field">
                   <label htmlFor="login-name">Имя</label>
-                  <input id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
+                  <input className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
                   {fieldErrors.name && <small id="login-name-error" className="login-field-error">{fieldErrors.name}</small>}
                 </div>}
 
                 {!resetMode && <div className="login-field">
                   <label htmlFor="login-email">Email</label>
                   <div className="login-input-wrap">
-                    <input id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
+                    <input className="ym-disable-keys" id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
                   </div>
                   {fieldErrors.email && <small id="login-email-error" className="login-field-error">{fieldErrors.email}</small>}
                 </div>}
@@ -317,7 +325,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!resetMode && !forgotMode && <div className="login-field">
                   <label htmlFor="login-password">Пароль</label>
                   <div className="login-input-wrap">
-                    <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <input className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
                     <button className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </button>
@@ -328,7 +336,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {resetMode && <div className="login-field">
                   <label htmlFor="login-password">Новый пароль</label>
                   <div className="login-input-wrap">
-                    <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <input className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
                     <button className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </button>
@@ -338,6 +346,19 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
                 {!register && !resetMode && !forgotMode && <button className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</button>}
                 {register && !resetMode && <p className="login-form-hint">После регистрации проверьте почту, если подтверждение email включено на сервере.</p>}
+
+                {register && !resetMode && <fieldset className="login-legal-consents" aria-describedby={legalError ? 'login-legal-error' : undefined}>
+                  <legend className="sr-only">Юридические согласия</legend>
+                  <label>
+                    <input type="checkbox" checked={termsAccepted} onChange={(event) => { setTermsAccepted(event.target.checked); setLegalError('') }} />
+                    <span>Я принимаю <a href="/legal/terms" target="_blank" rel="noreferrer">Пользовательское соглашение и публичную оферту</a>.</span>
+                  </label>
+                  <label>
+                    <input type="checkbox" checked={personalDataAccepted} onChange={(event) => { setPersonalDataAccepted(event.target.checked); setLegalError('') }} />
+                    <span>Отдельно даю <a href="/legal/personal-data-consent" target="_blank" rel="noreferrer">согласие на обработку персональных данных</a> на условиях <a href="/legal/privacy" target="_blank" rel="noreferrer">Политики</a>.</span>
+                  </label>
+                </fieldset>}
+                {legalError && <small id="login-legal-error" className="login-field-error login-legal-error">{legalError}</small>}
 
                 {error && <div className="login-error" role="alert" aria-live="polite">{error}</div>}
 
@@ -365,5 +386,12 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
         </div>
       </section>
     </main>
+    <footer className="login-legal-footer">
+      <a href="/legal/terms">Соглашение и оферта</a>
+      <a href="/legal/tariffs">Тарифы</a>
+      <a href="/legal/privacy">Конфиденциальность</a>
+      <a href="/legal/contacts">Контакты и реквизиты</a>
+      <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Настройки cookie</button>
+    </footer>
   </div>
 }

@@ -62,7 +62,7 @@ export const getOrder = async (db: Database, userId: string, orderId: string) =>
   return { order: publicOrder(result.order), product: publicProduct(result.product) }
 }
 
-export const startCheckout = async (db: Database, config: AppConfig, actor: { id: string; isAnonymous: boolean }, productId: string, idempotencyKey: string) => {
+export const startCheckout = async (db: Database, config: AppConfig, actor: { id: string; isAnonymous: boolean }, productId: string, idempotencyKey: string, acceptance: { offerVersion: string; termsAccepted: true }) => {
   if (!config.commerce.enabled) throw new ApiError(503, 'COMMERCE_DISABLED', 'Оплата пока не включена. Вы можете продолжать играть бесплатно')
   if (actor.isAnonymous) throw new ApiError(403, 'COMMERCE_ACCOUNT_REQUIRED', 'Создайте постоянный аккаунт, чтобы покупка сохранилась')
   const product = (await db.select().from(commerceProducts).where(and(eq(commerceProducts.id, productId), eq(commerceProducts.enabled, true))).limit(1))[0]
@@ -79,7 +79,7 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
       amountMinor: product.priceMinor,
       currency: product.currency,
       idempotencyKey,
-      metadata: {},
+      metadata: { offerVersion: acceptance.offerVersion, termsAccepted: acceptance.termsAccepted, termsAcceptedAt: new Date().toISOString() },
     }).onConflictDoNothing().returning()
     order = inserted[0] ?? (await db.select().from(paymentOrders).where(and(eq(paymentOrders.userId, actor.id), eq(paymentOrders.idempotencyKey, idempotencyKey))).limit(1))[0]
   }

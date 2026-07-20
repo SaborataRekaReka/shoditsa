@@ -24,7 +24,7 @@ export const registerCommerceRoutes = async (app: FastifyInstance, deps: Deps) =
   }, async (request) => {
     const actor = await getRequestUser(request, deps.auth, deps.db, true, deps.config)
     const body = request.body as CheckoutBody
-    return startCheckout(deps.db, deps.config, actor!, body.productId, requireIdempotencyKey(request))
+    return startCheckout(deps.db, deps.config, actor!, body.productId, requireIdempotencyKey(request), { offerVersion: body.offerVersion, termsAccepted: body.termsAccepted })
   })
   app.get('/api/v1/commerce/orders/:orderId', {
     schema: { params: CommerceOrderParamsSchema },

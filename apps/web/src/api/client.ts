@@ -8,6 +8,7 @@ import type {
   ArchiveCalendarQuery, ArchiveCalendarResponse, CheckoutBody, CheckoutResponse, CommerceCatalogResponse, MeCommerceResponse, OrderResponse,
   PackDetailResponse, PackListResponse, PackProgressResponse,
   PrivateGameOrderBody, PrivateGameOrderResponse,
+  DanetkiMessage,
 } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
@@ -155,6 +156,16 @@ export const api = {
     maxRateLimitRetryMs: 10_000,
   }),
   game: (id: string) => request<GameResponse>(`${API_BASE}/games/${id}`, { retries: 1 }),
+  danetkiSnapshot: (id: string, afterSeq = 0) => request<GameResponse>(`${API_BASE}/danetki/sessions/${id}/snapshot?afterSeq=${afterSeq}`, { retries: 1 }),
+  danetkiMessage: (id: string, text: string, idempotencyKey: string) => request<{ message: DanetkiMessage; aiStatus: 'queued' }>(`${API_BASE}/danetki/sessions/${id}/messages`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ text, idempotencyKey }), retries: 1, timeoutMs: 15_000 }),
+  danetkiHint: (id: string, idempotencyKey: string) => request<{ message: DanetkiMessage; hintLevel: number }>(`${API_BASE}/danetki/sessions/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  danetkiRetryAi: (id: string, idempotencyKey: string) => request<{ queued: boolean; jobId: string }>(`${API_BASE}/danetki/sessions/${id}/retry-ai`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  danetkiGuess: (id: string, text: string, idempotencyKey: string) => request<{ guess: { id: string; status: string } }>(`${API_BASE}/danetki/sessions/${id}/guesses`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ text, idempotencyKey }), retries: 1, timeoutMs: 15_000 }),
+  danetkiSurrender: (id: string, idempotencyKey: string) => request<{ completed: boolean; votes: number; required: number }>(`${API_BASE}/danetki/sessions/${id}/surrender-votes`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  danetkiInvite: (id: string, idempotencyKey: string) => request<{ token: string; expiresAt: string }>(`${API_BASE}/danetki/sessions/${id}/invites`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }) }),
+  danetkiInvitePreview: (token: string) => request<{ title: string; ownerName: string; participants: number; capacity: number; expiresAt: string }>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}`),
+  danetkiJoin: (token: string, displayName: string, idempotencyKey: string) => request<GameResponse>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}/join`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ displayName, idempotencyKey }), retries: 1 }),
+  danetkiLeave: (id: string, idempotencyKey: string) => request<{ left: boolean; newOwnerUserId: string | null }>(`${API_BASE}/danetki/sessions/${id}/leave`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }) }),
   search: (params: URLSearchParams) => request<CatalogSearchResponse>(`${API_BASE}/catalog/search?${params}`, { retries: 1 }),
   attempt: (id: string, itemId: string, idempotencyKey: string) => request<AttemptResponse>(`${API_BASE}/games/${id}/attempts`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ itemId }), timeoutMs: 15_000, retries: 1, maxRateLimitRetryMs: 10_000 }),
   hint: (id: string, checkpoint: 5 | 8, hintKey: AssistHintKey, idempotencyKey: string) => request<HintResponse>(`${API_BASE}/games/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ checkpoint, hintKey }), retries: 1, maxRateLimitRetryMs: 10_000 }),
@@ -210,6 +221,8 @@ export const api = {
   }),
   signOut: () => request<unknown>(`${AUTH_BASE}/sign-out`, { method: 'POST', body: '{}' }),
 }
+
+export const danetkiEventsUrl = (sessionId: string) => `${API_BASE}/danetki/sessions/${encodeURIComponent(sessionId)}/events`
 
 export const queryKeys = {
   me: ['me'] as const, dashboard: ['dashboard'] as const,

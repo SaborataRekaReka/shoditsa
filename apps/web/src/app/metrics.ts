@@ -7,12 +7,81 @@ type RefactorMetric = {
 }
 type MetrikaParamValue = string | number | boolean
 const METRIKA_COUNTER_ID = 110517987
+const METRIKA_SCRIPT_ID = 'yandex-metrika-script'
+export const ANALYTICS_CONSENT_STORAGE_KEY = 'shoditsa:analytics-consent:v1'
+export type AnalyticsConsent = 'accepted' | 'rejected'
 
 declare global {
   interface Window {
     __SEANS_REFACTOR_METRICS__?: RefactorMetric[]
     ym?: (...args: unknown[]) => void
     dataLayer?: unknown[]
+    __SHODITSA_METRIKA_INITIALIZED__?: boolean
+  }
+}
+
+type MetrikaStub = ((...args: unknown[]) => void) & { a?: unknown[][]; l?: number }
+
+export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
+  if (typeof window === 'undefined') return null
+  const value = window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)
+  return value === 'accepted' || value === 'rejected' ? value : null
+}
+
+export const initMetrika = () => {
+  if (typeof window === 'undefined' || window.__SHODITSA_METRIKA_INITIALIZED__) return
+  const stub: MetrikaStub = (window.ym as MetrikaStub | undefined) ?? ((...args: unknown[]) => {
+    stub.a = stub.a ?? []
+    stub.a.push(args)
+  })
+  stub.l = Date.now()
+  window.ym = stub
+  window.__SHODITSA_METRIKA_INITIALIZED__ = true
+
+  if (!document.getElementById(METRIKA_SCRIPT_ID)) {
+    const script = document.createElement('script')
+    script.id = METRIKA_SCRIPT_ID
+    script.async = true
+    script.src = 'https://mc.yandex.ru/metrika/tag.js?id=110517987'
+    document.head.appendChild(script)
+  }
+
+  stub(METRIKA_COUNTER_ID, 'init', {
+    ssr: true,
+    webvisor: false,
+    clickmap: true,
+    ecommerce: 'dataLayer',
+    referrer: document.referrer,
+    url: window.location.href,
+    accurateTrackBounce: true,
+    trackLinks: true,
+  })
+}
+
+export const initMetrikaFromStoredConsent = () => {
+  if (storedAnalyticsConsent() === 'accepted') initMetrika()
+}
+
+export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
+  if (typeof window === 'undefined') return
+  window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, consent)
+  if (consent === 'accepted') {
+    initMetrika()
+    return
+  }
+
+  try { window.ym?.(METRIKA_COUNTER_ID, 'destruct') } catch { /* ignore cleanup errors */ }
+  window.__SHODITSA_METRIKA_INITIALIZED__ = false
+  document.getElementById(METRIKA_SCRIPT_ID)?.remove()
+  const cookieNames = ['_ym_uid', '_ym_d', '_ym_isad', '_ym_visorc', '_ym_metrika_enabled', '_ym_fa', '_ym_ucs']
+  const hostname = window.location.hostname
+  for (const name of cookieNames) {
+    document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`
+    if (hostname) document.cookie = `${name}=; Max-Age=0; path=/; domain=.${hostname}; SameSite=Lax`
+  }
+  for (let index = window.localStorage.length - 1; index >= 0; index -= 1) {
+    const key = window.localStorage.key(index)
+    if (key?.startsWith('_ym')) window.localStorage.removeItem(key)
   }
 }
 

@@ -40,7 +40,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
-import { FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS } from '@shoditsa/contracts'
+import { FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -106,6 +106,9 @@ import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
 import { MembershipBadge } from './features/commerce/MembershipBadge'
 import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
 import { CreateGameScreen } from './features/private-games/CreateGameScreen'
+import { LegalScreen } from './features/legal/LegalScreen'
+import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
+import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -1210,9 +1213,11 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectPromo: () => void
+  onDanetki: () => void
+  danetkiEnabled: boolean
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1293,6 +1298,13 @@ function HubScreen({ onSelect, onSelectPromo, onRewatch, onStats, onRules, onRev
             }
             return <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
+          {danetkiEnabled && <article className="danetki-hub-ticket">
+            <button type="button" onClick={onDanetki}>
+              <span className="danetki-hub-ticket__icon">?</span>
+              <span className="danetki-hub-ticket__copy"><small>НОВЫЙ РЕЖИМ</small><strong>Данетки</strong><span>Расследуйте необычные истории с ИИ-ведущей — самостоятельно или вместе с друзьями.</span></span>
+              <span className="danetki-hub-ticket__action">Начать расследование</span>
+            </button>
+          </article>}
           {isAdmin && <CategoryTicket
             mode="game"
             title="Срач дня"
@@ -3307,6 +3319,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   if (game.isLoading) return <div className="loading"><Sparkles /> Восстанавливаем сеанс…</div>
   if (!session) return <><AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} /><main className="loading loading--error" role="alert"><AlertTriangle /><h1>Сеанс не открылся</h1><p>{apiErrorMessage(game.error)}</p><ActionButton onClick={onBack}>Назад</ActionButton></main></>
+  if (session.engine === 'danetki_chat' && session.danetki) {
+    const DanetkiRenderer = SESSION_RENDERER_BY_ENGINE.danetki_chat
+    return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} />
+  }
 
   const isPromoSession = isPromoVariant(session.variantKey)
   const promoHints = isPromoSession
@@ -3898,7 +3914,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
     ? toLegacyDailyAttendance(serverRuntime.dashboard?.today, serverRuntime.meta?.moscowDate ?? getMoscowDate())
     : loadDailyAttendance(getMoscowDate())
   const completedGames: SavedGame[] = SERVER_RUNTIME
-    ? (serverArchive.data?.items ?? []).map(archiveItemToSavedGame)
+    ? (serverArchive.data?.items ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(archiveItemToSavedGame)
     : allGames().filter((game) => game.status === 'won' || game.status === 'lost')
   const wonGames = completedGames.filter((game) => game.status === 'won')
   const winRate = completedGames.length ? Math.round(wonGames.length / completedGames.length * 100) : 0
@@ -3909,7 +3925,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
     : 'Гость кинозала'
   const initials = displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU')
   const todayDate = serverRuntime.meta?.moscowDate ?? getMoscowDate()
-  const activeSession = serverRuntime.dashboard?.activeSessions.find((entry) => entry.kind === 'daily' && entry.puzzleDate === todayDate)
+  const activeSession = serverRuntime.dashboard?.activeSessions.find((entry) => isPlayableModeId(entry.mode) && entry.kind === 'daily' && entry.puzzleDate === todayDate)
   const selectTab = (tab: ProfileTab) => {
     setActiveTab(tab)
     if (typeof window === 'undefined') return
@@ -4318,11 +4334,13 @@ function GameApp() {
     setServerSessionId(session.id)
     window.sessionStorage.setItem('shoditsa:active-server-session', session.id)
     setGameBackTarget(backTarget)
-    setMode(session.mode)
-    setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
-    setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
-    setPeriod(session.period)
-    if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
+    if (session.engine !== 'danetki_chat') {
+      setMode(session.mode)
+      setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
+      setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
+      setPeriod(session.period)
+      if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
+    }
     setDate(session.puzzleDate)
     setFreePlayLaunch(session.kind === 'free_play' ? 1 : null)
     setFreePlayArmed(false)
@@ -4332,6 +4350,10 @@ function GameApp() {
     window.scrollTo({ top: 0 })
   }, [])
   const syncServerSessionContext = useCallback((session: GameSessionSnapshot) => {
+    if (session.engine === 'danetki_chat') {
+      setDate(session.puzzleDate)
+      return
+    }
     setMode(session.mode)
     setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
     setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
@@ -4491,6 +4513,8 @@ function GameApp() {
   useEffect(() => clearTransitionTimer, [])
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
+    if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
+    if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
     if (target.screen === 'title' && target.mode) return navigate({ to: '/games/$mode', params: { mode: target.mode }, replace })
     if (target.screen === 'game' && target.sessionId) return navigate({ to: '/sessions/$sessionId', params: { sessionId: target.sessionId }, replace })
     if (target.screen === 'game' && target.mode) return navigate({ to: '/play/$mode', params: { mode: target.mode }, replace })
@@ -4499,9 +4523,10 @@ function GameApp() {
     if (target.screen === 'club') return navigate({ to: '/club', replace })
     if (target.screen === 'specials') return navigate({ to: '/specials', replace })
     if (target.screen === 'special' && target.packId) return navigate({ to: '/specials/$packId', params: { packId: target.packId }, replace })
-    if (target.screen === 'create-game') return navigate({ to: '/create-a-game', replace })
+    if (target.screen === 'create-game') return navigate({ to: '/partners', replace })
     if (target.screen === 'purchase-return') return navigate({ to: '/purchase/return', replace })
     if (target.screen === 'review') return navigate({ to: '/review/music', replace })
+    if (target.screen === 'legal' && target.legalDocument) return navigate({ to: '/legal/$document', params: { document: target.legalDocument }, replace })
     return navigate({ to: '/', replace })
   }, [navigate])
 
@@ -4526,6 +4551,8 @@ function GameApp() {
       mode: routedScreen === 'title' || (routedScreen === 'game' && !serverSessionId) ? mode : undefined,
       sessionId: routedScreen === 'game' ? serverSessionId ?? undefined : undefined,
       packId: routedScreen === 'special' ? playerRouteFromPathname(routeLocation.pathname).packId : undefined,
+      legalDocument: routedScreen === 'legal' ? playerRouteFromPathname(routeLocation.pathname).legalDocument : undefined,
+      inviteToken: routedScreen === 'danetki-join' ? playerRouteFromPathname(routeLocation.pathname).inviteToken : undefined,
     }
     const desiredPath = pathnameForPlayerRoute(target)
     if (applyingRouteRef.current) {
@@ -4595,10 +4622,11 @@ function GameApp() {
   const games = useMemo<SavedGame[]>(() => {
     if (!SERVER_RUNTIME) return allGames()
     return [
-      ...(serverRuntime.dashboard?.activeSessions ?? []).map(activeSessionToSavedGame),
-      ...(serverArchive.data?.items ?? []).map(archiveItemToSavedGame),
+      ...(serverRuntime.dashboard?.activeSessions ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(activeSessionToSavedGame),
+      ...(serverArchive.data?.items ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(archiveItemToSavedGame),
     ]
   }, [serverArchive.data, serverRuntime.dashboard])
+  const activeDanetkiSessionId = (serverRuntime.dashboard?.activeSessions ?? []).find((session) => String(session.mode) === 'danetki' && session.status === 'playing')?.id ?? null
   const isAdmin = SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin'
   const promoSession = useMemo<SavedGame | null>(() => {
     if (!isAdmin) return null
@@ -4708,6 +4736,48 @@ function GameApp() {
     setModeSafe(nextMode)
     setDate(getMoscowDate())
     setScreen('title')
+    setModal(null)
+    window.scrollTo({ top: 0 })
+  }
+
+  const openDanetki = () => {
+    if (!SERVER_RUNTIME || !serverRuntime.meta?.features.danetkiEnabled) return
+    clearTransitionTimer()
+    setTransition('idle')
+    setServerActionError('')
+    setModal(null)
+    setScreen('danetki')
+    window.scrollTo({ top: 0 })
+  }
+
+  const startDanetki = (roomMode: 'solo' | 'group') => {
+    if (startServerSession.isPending) return
+    setServerActionError('')
+    startServerSession.mutate({
+      key: crypto.randomUUID(),
+      body: { kind: 'daily', mode: 'danetki', roomMode },
+      backTarget: 'hub',
+    })
+  }
+
+  const startArchiveDanetki = (archiveDate: string) => {
+    if (startServerSession.isPending) return
+    setServerActionError('')
+    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'archive', mode: 'danetki', roomMode: 'solo', archiveDate }, backTarget: 'hub' })
+  }
+
+  const startFreePlayDanetki = () => {
+    if (startServerSession.isPending) return
+    setServerActionError('')
+    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'free_play', mode: 'danetki', roomMode: 'solo' }, backTarget: 'hub' })
+  }
+
+  const continueDanetki = () => {
+    if (!activeDanetkiSessionId) return
+    setServerSessionId(activeDanetkiSessionId)
+    window.sessionStorage.setItem('shoditsa:active-server-session', activeDanetkiSessionId)
+    setGameBackTarget('hub')
+    setScreen('game')
     setModal(null)
     window.scrollTo({ top: 0 })
   }
@@ -5038,7 +5108,11 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+
+    {screen === 'danetki' && <DanetkiLobbyPage onHome={goHome} onStart={startDanetki} onStartArchive={startArchiveDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+
+    {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onJoined={(session) => activateServerSession(session, 'hub')} />}
 
     {screen === 'title' && <TitleScreen mode={mode} promoPackId={packId} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
@@ -5057,6 +5131,8 @@ function GameApp() {
     {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'purchase-return' && <PurchaseReturnScreen onHome={goHome} onClub={() => moveToScreen('club')} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+
+    {screen === 'legal' && <LegalScreen document={playerRouteFromPathname(routeLocation.pathname).legalDocument ?? 'terms'} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'game' && (SERVER_RUNTIME
       ? serverSessionId

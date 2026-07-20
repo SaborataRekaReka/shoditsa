@@ -68,8 +68,9 @@ test('mobile controls remain tappable and inputs do not trigger iOS zoom', async
 
 test('dialog traps focus, closes with Escape, and returns focus', async ({ page }) => {
   await page.goto('/')
-  const trigger = page.locator('.header-economy')
+  const trigger = page.locator('.header-profile')
   await trigger.click()
+  await page.locator('.header-profile-dropdown__economy').click()
   const dialog = page.getByRole('dialog', { name: 'Билеты' })
   await expect(dialog).toBeVisible()
   await expect.poll(() => page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null)).toBe(true)

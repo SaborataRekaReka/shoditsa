@@ -48,8 +48,10 @@ export const CatalogSearchResponseSchema = Type.Object({
 }, { additionalProperties: false })
 
 export const GameStartBodySchema = Type.Object({
-  kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('pack')]),
-  mode: PlayableModeSchema,
+  kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('free_play'), Type.Literal('pack')]),
+  // Danetki shares the canonical route, but remains outside PLAYABLE_MODES
+  // because the legacy catalog engine still assumes title-guessing semantics.
+  mode: ContentModeSchema,
   roomMode: Type.Optional(Type.Union([Type.Literal('solo'), Type.Literal('group')])),
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),

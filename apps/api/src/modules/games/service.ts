@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
-import { GAME_MODE_MANIFEST, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItems, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
@@ -745,6 +745,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
       ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
       : []
   const result: Record<string, unknown> = {
+    engine: 'catalog_guess',
     id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, packId: session.packId, packPosition: session.packPosition, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
     attemptsRemaining: 10 - session.attemptsCount,
@@ -784,6 +785,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const sessions = await tx.select().from(gameSessions).where(and(eq(gameSessions.id, sessionId), eq(gameSessions.userId, userId))).for('update').limit(1)
   const session = sessions[0]
   if (!session) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
+  if (!isCatalogGuessModeId(session.mode)) throw new ApiError(422, 'GAME_ACTION_ENGINE_MISMATCH', 'Для этой игры действие недоступно')
   const lockedReplay = await tx.select({ response: gameAttempts.responseSnapshot }).from(gameAttempts).where(and(eq(gameAttempts.sessionId, sessionId), eq(gameAttempts.idempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return lockedReplay[0].response
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
@@ -837,6 +839,7 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   const sessions = await tx.select().from(gameSessions).where(and(eq(gameSessions.id, sessionId), eq(gameSessions.userId, userId))).for('update').limit(1)
   const session = sessions[0]
   if (!session) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
+  if (!isCatalogGuessModeId(session.mode)) throw new ApiError(422, 'GAME_ACTION_ENGINE_MISMATCH', 'Для этой игры действие недоступно')
   const lockedReplay = await tx.select({ response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(and(eq(gameHintChoices.sessionId, sessionId), eq(gameHintChoices.idempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return lockedReplay[0].response
   if (session.attemptsCount < checkpoint) throw new ApiError(422, 'HINT_CHECKPOINT_LOCKED', 'Эта подсказка пока недоступна')
