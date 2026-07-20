@@ -6,12 +6,14 @@ import { apiErrorMessage } from '../../api/error-message'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader } from '../../components/app-shell/AppShell'
+import { useServerRuntime } from '../../hooks/use-server-runtime'
 import './CommercialShell.css'
 
 type Props = { onHome: () => void; onClub: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }
 
 export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRules, onReview }: Props) {
   const queryClient = useQueryClient()
+  const runtime = useServerRuntime()
   const startedAt = useRef(Date.now())
   const trackedStatus = useRef<string | null>(null)
   const orderId = typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('orderId')?.trim() || ''
@@ -26,6 +28,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
   })
   const status = order.data?.order.status
   const productKind = order.data?.product.kind
+  const hasClub = productKind === 'club' || Boolean(runtime.dashboard?.membership.active)
   const paidTitle = productKind === 'club'
     ? 'Клубный билет активирован'
     : productKind === 'pack'
@@ -42,7 +45,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
         : 'Оплата подтверждена сервером.'
 
   useEffect(() => {
-    trackClientEvent('checkout_returned', { orderStatus: status ?? 'checking', placement: 'purchase_return' })
+    trackClientEvent('checkout_returned', { orderStatus: status ?? 'checking', placement: 'purchase_return', hasClub })
     trackMetrikaGoal('checkout_returned', { orderStatus: status ?? 'checking' })
   }, [])
 
@@ -50,7 +53,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
     if (!status || trackedStatus.current === status) return
     trackedStatus.current = status
     if (status === 'paid') {
-      trackClientEvent('purchase_succeeded', { ...(order.data?.order.productId ? { productId: order.data.order.productId } : {}), orderStatus: status, hasClub: productKind === 'club' })
+      trackClientEvent('purchase_succeeded', { ...(order.data?.order.productId ? { productId: order.data.order.productId } : {}), orderStatus: status, hasClub })
       trackMetrikaGoal('purchase_succeeded', { productId: order.data?.order.productId })
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
@@ -58,10 +61,10 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
         queryClient.invalidateQueries({ queryKey: ['archive'] }),
       ])
     } else if (['failed', 'canceled', 'expired', 'refunded', 'chargeback'].includes(status)) {
-      trackClientEvent('purchase_failed', { ...(order.data?.order.productId ? { productId: order.data.order.productId } : {}), orderStatus: status })
+      trackClientEvent('purchase_failed', { ...(order.data?.order.productId ? { productId: order.data.order.productId } : {}), orderStatus: status, hasClub })
       trackMetrikaGoal('purchase_failed', { productId: order.data?.order.productId, orderStatus: status })
     }
-  }, [order.data?.order.productId, productKind, queryClient, status])
+  }, [hasClub, order.data?.order.productId, productKind, queryClient, status])
 
   const pendingTimedOut = (status === 'created' || status === 'pending') && Date.now() - startedAt.current >= 60_000
   return <>

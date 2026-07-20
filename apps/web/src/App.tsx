@@ -1648,9 +1648,9 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
   useEffect(() => {
     if (!lockedDate) return
     const archiveAgeDays = Math.max(0, dates.indexOf(lockedDate))
-    trackClientEvent('archive_paywall_view', { mode, archiveAgeDays, hasClub: false })
+    trackClientEvent('archive_paywall_view', { mode, archiveAgeDays, hasClub: serverRuntime.dashboard?.membership.active ?? false })
     trackMetrikaGoal('archive_paywall_view', { mode, archiveAgeDays })
-  }, [dates, lockedDate, mode])
+  }, [dates, lockedDate, mode, serverRuntime.dashboard?.membership.active])
 
   return <>
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
@@ -1666,7 +1666,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
         return <button className={`rewatch-item ${played?.status ?? ''} ${access === 'locked' && !played ? 'rewatch-item--locked' : ''}`} key={itemDate} onClick={() => {
           if (access === 'locked' && !played) {
             setLockedDate(itemDate)
-            trackClientEvent('archive_paywall_clicked', { mode, archiveAgeDays: index, hasClub: false })
+            trackClientEvent('archive_paywall_clicked', { mode, archiveAgeDays: index, hasClub: serverRuntime.dashboard?.membership.active ?? false })
             trackMetrikaGoal('archive_paywall_clicked', { mode, archiveAgeDays: index })
             return
           }

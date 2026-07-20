@@ -1,6 +1,6 @@
 import type { DailyAttendance, SavedGame, TitleMode } from '../../types'
 import type { DailyHubState, DailyRewardState } from './daily-progress.types'
-import { DAILY_MODE_IDS, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
+import { DAILY_MODE_IDS, ECONOMY_RULE_SET, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
 
 export const DAILY_MODE_ORDER: TitleMode[] = [...DAILY_MODE_IDS]
 
@@ -36,9 +36,9 @@ export const dailyCompletedCopy = (count: number) => {
 
 export const dailyRewardState = (completedCount: number): DailyRewardState => {
   const fullHouseTarget = DAILY_MODE_ORDER.length
-  if (completedCount >= fullHouseTarget) return { fullHouse: true, remaining: 0, reward: 20, milestone: fullHouseTarget }
-  if (completedCount >= 3) return { fullHouse: false, remaining: fullHouseTarget - completedCount, reward: 20, milestone: fullHouseTarget }
-  return { fullHouse: false, remaining: 3 - completedCount, reward: 10, milestone: 3 }
+  if (completedCount >= fullHouseTarget) return { fullHouse: true, remaining: 0, reward: ECONOMY_RULE_SET.rewards.fullRoute, milestone: fullHouseTarget }
+  if (completedCount >= 3) return { fullHouse: false, remaining: fullHouseTarget - completedCount, reward: ECONOMY_RULE_SET.rewards.fullRoute, milestone: fullHouseTarget }
+  return { fullHouse: false, remaining: 3 - completedCount, reward: ECONOMY_RULE_SET.rewards.route3, milestone: 3 }
 }
 
 export const buildDailyHubState = (attendance: DailyAttendance, games: SavedGame[], preferredMode: TitleMode, globalDailySalt = 0): DailyHubState => {

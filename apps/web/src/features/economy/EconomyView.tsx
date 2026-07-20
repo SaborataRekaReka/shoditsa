@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Lock, Ticket } from 'lucide-react'
+import { ECONOMY_RULE_SET } from '@shoditsa/contracts'
 import { trackMetrikaGoal } from '../../app/metrics'
 import {
   addTicketLedgerEntry,
@@ -94,7 +95,7 @@ function LocalEconomyView() {
       {promoMessage && <p>{promoMessage}</p>}
     </form>
     <h3 className="subheading">Как начисляется</h3>
-    <div className="economy-rules"><span><strong>+5</strong> завершить сеанс</span><span><strong>+5</strong> угадать ответ</span><span><strong>+1–3</strong> за эффективность</span><span><strong>+5</strong> первая игра дня</span><span><strong>+10</strong> маршрут из 3 режимов</span><span><strong>+20</strong> полный маршрут</span></div>
+    <div className="economy-rules"><span><strong>+{ECONOMY_RULE_SET.rewards.completion}</strong> завершить сеанс</span><span><strong>+{ECONOMY_RULE_SET.rewards.win}</strong> угадать ответ</span><span><strong>+1–{ECONOMY_RULE_SET.rewards.efficiency.upTo3Attempts}</strong> за эффективность</span><span><strong>+{ECONOMY_RULE_SET.rewards.firstGame}</strong> первая игра дня</span><span><strong>+{ECONOMY_RULE_SET.rewards.route3}</strong> маршрут из 3 режимов</span><span><strong>+{ECONOMY_RULE_SET.rewards.fullRoute}</strong> полный маршрут</span></div>
     <p className="modal-lead">Серия растёт за первую завершённую игру дня и больше не умножает награды. Следующий одноразовый бонус: +{nextBonus} на {nextAt}-й день серии.</p>
     <h3 className="subheading">История билетов</h3>
     {ledger.length

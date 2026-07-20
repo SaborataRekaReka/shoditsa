@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Lock, Ticket } from 'lucide-react'
+import { ECONOMY_RULE_SET } from '@shoditsa/contracts'
 import { api, queryKeys } from '../../api/client'
 import { apiErrorMessage } from '../../api/error-message'
 import { ensureServerSession, useServerRuntime } from '../../hooks/use-server-runtime'
@@ -56,7 +57,7 @@ export function ServerEconomyView() {
   })
   const attendance = { ...emptyAttendanceStats(), ...(serverRuntime.dashboard?.attendance ?? {}) }
   const wallet = serverRuntime.dashboard?.wallet ?? { balance: 0, lifetimeEarned: 0 }
-  const rules = serverRuntime.dashboard?.economyRules
+  const rules = serverRuntime.dashboard?.economyRules ?? ECONOMY_RULE_SET
   const nextAt = nextStreakMilestoneAt(attendance.currentDailyStreak)
   const nextBonus = nextStreakMilestoneReward(attendance.currentDailyStreak, rules)
   const submitPromoCode = (event: FormEvent<HTMLFormElement>) => {
@@ -86,7 +87,7 @@ export function ServerEconomyView() {
       {promoMessage && <p>{promoMessage}</p>}
     </form>
     <h3 className="subheading">Как начисляется</h3>
-    <div className="economy-rules"><span><strong>+{rules?.rewards.completion ?? 5}</strong> завершить сеанс</span><span><strong>+{rules?.rewards.win ?? 5}</strong> угадать ответ</span><span><strong>+1–{rules?.rewards.efficiency.upTo3Attempts ?? 3}</strong> за эффективность</span><span><strong>+{rules?.rewards.firstGame ?? 5}</strong> первая игра дня</span><span><strong>+{rules?.rewards.route3 ?? 10}</strong> маршрут из 3 режимов</span><span><strong>+{rules?.rewards.fullRoute ?? 20}</strong> полный маршрут</span></div>
+    <div className="economy-rules"><span><strong>+{rules.rewards.completion}</strong> завершить сеанс</span><span><strong>+{rules.rewards.win}</strong> угадать ответ</span><span><strong>+1–{rules.rewards.efficiency.upTo3Attempts}</strong> за эффективность</span><span><strong>+{rules.rewards.firstGame}</strong> первая игра дня</span><span><strong>+{rules.rewards.route3}</strong> маршрут из 3 режимов</span><span><strong>+{rules.rewards.fullRoute}</strong> полный маршрут</span></div>
     <p className="modal-lead">Серия растёт за первую завершённую игру дня и больше не умножает каждую награду. Следующий одноразовый бонус: +{nextBonus} на {nextAt}-й день серии.</p>
     <h3 className="subheading">История билетов</h3>
     {ledger.isLoading

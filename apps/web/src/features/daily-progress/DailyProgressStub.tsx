@@ -14,7 +14,7 @@ export function DailyProgressStub({ state }: { state: DailyHubState }) {
     <div className={`next-reward ${reward.fullHouse ? 'is-full-house' : ''}`}>
       <p className="next-reward__copy">
         {reward.fullHouse
-          ? <>Все игры дня завершены<br /><strong>+20 билетиков получено</strong></>
+          ? <>Все игры дня завершены<br /><strong>+{reward.reward} билетиков получено</strong></>
           : <>Завершите ещё {reward.remaining} {reward.remaining === 1 ? 'игру' : 'игры'}<br />и получите <strong>+{reward.reward} билетиков</strong></>}
       </p>
       <span className="next-reward__icon" aria-hidden="true">{reward.fullHouse ? <Trophy /> : <Ticket />}</span>
