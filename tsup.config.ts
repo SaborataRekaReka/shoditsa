@@ -5,6 +5,7 @@ export default defineConfig({
     worker: 'apps/api/src/worker.ts',
     migrate: 'packages/database/src/migrate.ts',
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
+    'content-bootstrap-danetki': 'scripts/content/bootstrap-danetki.ts',
     'content-migrate-media': 'scripts/content/migrate-media.ts',
     'city-hints': 'scripts/cities/operate-city-hints.ts',
     'city-facts': 'scripts/cities/operate-city-facts.ts',

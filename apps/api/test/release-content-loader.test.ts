@@ -11,5 +11,8 @@ describe('release content catalog', () => {
     expect(Object.values(release.manifest.modes).every((mode) => mode.count > 0)).toBe(true)
     const anime = release.libraries.find((library) => library.mode === 'anime')!
     expect(anime.items.every((item) => !item.facts?.length)).toBe(true)
+    const danetki = release.libraries.find((library) => library.mode === 'danetki')!
+    expect(danetki.items).toHaveLength(5)
+    expect(danetki.items.every((item) => item.allowedInGame === true && String(item.contentStatus) === 'test')).toBe(true)
   })
 })

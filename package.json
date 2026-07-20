@@ -42,6 +42,7 @@
     "content:import": "tsx scripts/content/import.ts",
     "content:import:production-snapshot": "tsx scripts/content/import.ts --production-snapshot",
     "content:activate": "tsx scripts/content/activate.ts",
+    "content:bootstrap:danetki": "tsx scripts/content/bootstrap-danetki.ts",
     "content:export": "tsx scripts/content/export.ts",
     "content:verify": "tsx scripts/content/verify.ts",
     "content:materialize": "tsx scripts/content/materialize-challenges.ts",
