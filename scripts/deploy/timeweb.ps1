@@ -28,13 +28,18 @@ try {
 
   $commitSha = (git rev-parse HEAD).Trim()
   if ($LASTEXITCODE -ne 0 -or $commitSha -notmatch '^[0-9a-f]{40}$') { throw "Could not resolve the Git commit SHA." }
-  $releaseId = if ($ReleaseId) { $ReleaseId } else { $commitSha }
-  if ($releaseId -notmatch '^[0-9A-Za-z._-]+$') { throw "ReleaseId may contain only letters, numbers, dots, underscores, and hyphens." }
 
   New-Item -ItemType Directory -Force (Split-Path -Parent $archivePath) | Out-Null
   if (Test-Path $archivePath) { Remove-Item -LiteralPath $archivePath -Force }
   tar -czf $archivePath -C dist .
   if ($LASTEXITCODE -ne 0) { throw "Could not package dist." }
+
+  # Releases are immutable on the server. A commit-only id can point at stale
+  # assets when deploying uncommitted UI work from the same HEAD, so include
+  # the packaged artifact hash in the default release id.
+  $artifactHash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant().Substring(0, 12)
+  $releaseId = if ($ReleaseId) { $ReleaseId } else { "$commitSha-$artifactHash" }
+  if ($releaseId -notmatch '^[0-9A-Za-z._-]+$') { throw "ReleaseId may contain only letters, numbers, dots, underscores, and hyphens." }
 
   $remote = "{0}@{1}" -f $User, $ServerHost
   $remoteUploadDir = "$DeployRoot/incoming"

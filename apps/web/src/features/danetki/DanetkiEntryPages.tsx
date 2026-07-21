@@ -1,13 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type { DanetkiRoomMode, DashboardResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { ChevronLeft, Clock3, HelpCircle, LoaderCircle, Play, Sparkles, UserRound, Users } from 'lucide-react'
+import { Clock3, HelpCircle, LoaderCircle, Play, Sparkles, UserRound, Users } from 'lucide-react'
 import { api, ApiClientError } from '../../api/client'
 import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOption, GameOptionSelect } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { publicAssetUrl } from '../../app/public-asset'
+import { DanetkiShell } from './DanetkiShell'
 import './DanetkiGamePage.css'
 
 const messageFor = (error: unknown) => error instanceof ApiClientError
@@ -56,8 +57,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
   }, [canLaunch, dailyAvailable, onBack, onStart, onStartFreePlay, roomMode])
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="title-screen danetki-title-screen">
-      <div className="screen-back-row"><button className="screen-back" type="button" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
+    <DanetkiShell onBack={onBack} className="title-screen danetki-title-screen">
       <section className="title-stage danetki-title-stage">
         <div className="title-game-mark">
           <span><Sparkles aria-hidden="true" /></span>
@@ -101,7 +101,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
         <GameArtifactSeoDetails mode="danetki" />
       </section>
       </section>
-    </main>
+    </DanetkiShell>
   </>
 }
 

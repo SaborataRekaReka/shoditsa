@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { CalendarDays, Check, ChevronLeft, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
+import { CalendarDays, Check, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
+import { DanetkiShell } from './DanetkiShell'
 import './DanetkiGamePage.css'
 
 type Props = {
@@ -228,12 +229,11 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   return <div className="danetki-page danetki-page--session">
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
 
-    <main className="game-shell danetki-main">
-      <div className="danetki-session-nav">
-        <button className="screen-back" type="button" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
-        <span className="keycap-hint" aria-hidden="true">Esc</span>
-        {connection !== 'connected' && <span className={`danetki-connection danetki-connection--${connection}`}>{connection === 'offline' ? 'нет сети' : 'переподключение'}</span>}
-      </div>
+    <DanetkiShell
+      onBack={onBack}
+      className="game-shell danetki-main"
+      status={connection !== 'connected' && <span className={`danetki-connection danetki-connection--${connection}`}>{connection === 'offline' ? 'нет сети' : 'переподключение'}</span>}
+    >
 
       <section className="danetki-situation">
         <div className="danetki-situation__copy">
@@ -302,7 +302,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         <ActionButton type="button" variant="secondary" onClick={() => setDialog('hint')} disabled={state.hintLevel >= 3}><Lightbulb /> Подсказка {state.hintLevel}/3</ActionButton>
         <ActionButton type="button" variant="ghost" onClick={() => setDialog('surrender')}><DoorOpen /> Сдаться</ActionButton>
       </div> : <section className={`danetki-result danetki-result--${session.status}`}><Sparkles /><h2>{session.status === 'won' ? 'Расследование завершено!' : 'Данетка раскрыта'}</h2><p>{state.solution}</p><button type="button" onClick={onHome}>На главную</button></section>}
-    </main>
+    </DanetkiShell>
 
     {dialog && <div className="danetki-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null) }}><section ref={dialogRef} className="danetki-dialog" role="dialog" aria-modal="true" aria-labelledby="danetki-dialog-title">
       {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><textarea rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><button type="button" onClick={() => setDialog(null)}>Отмена</button><button type="button" className="is-primary" disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</button></div></>}

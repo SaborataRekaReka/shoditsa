@@ -92,12 +92,16 @@ export function ActionButton({ variant = 'primary', className = '', children, ..
   return <button className={`ui-button ui-button--${variant} ${className}`.trim()} {...props}>{children}</button>
 }
 
-export function ScreenBack({ onBack, href, label = 'Назад' }: {
+export function ScreenBack({ onBack, href, label = 'Назад', keyboardShortcut = true, trailing, className = '' }: {
   onBack?: () => void
   href?: string
   label?: string
+  keyboardShortcut?: boolean
+  trailing?: ReactNode
+  className?: string
 }) {
   useEffect(() => {
+    if (!keyboardShortcut) return
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
       event.preventDefault()
@@ -106,13 +110,14 @@ export function ScreenBack({ onBack, href, label = 'Назад' }: {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [href, onBack])
+  }, [href, keyboardShortcut, onBack])
 
-  return <div className="screen-back-row">
+  return <div className={`screen-back-row ${className}`.trim()}>
     {href
       ? <a className="screen-back" href={href} aria-label={label} title={label}><ChevronLeft /></a>
       : <button className="screen-back" type="button" onClick={onBack} aria-label={label} title={label}><ChevronLeft /></button>}
     <span className="keycap-hint" aria-hidden="true">Esc</span>
+    {trailing}
   </div>
 }
 

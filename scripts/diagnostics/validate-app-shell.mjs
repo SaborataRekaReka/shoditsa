@@ -157,8 +157,21 @@ const sourceChecks = [
   {
     path: 'apps/web/src/features/danetki/DanetkiEntryPages.tsx',
     required: [
+      ['shared title shell', /function DanetkiLobbyPage[^]*<DanetkiShell[^]*className="title-screen danetki-title-screen"/],
       ['shared invite shell', /function DanetkiJoinPage[^]*<AppHeader[^]*<ScreenBack/],
       ['shared invite action', /danetki-join-card[^]*<ActionButton[^]*type="submit"/],
+    ],
+  },
+  {
+    path: 'apps/web/src/features/danetki/DanetkiGamePage.tsx',
+    required: [
+      ['shared live session shell', /function DanetkiGamePage[^]*<DanetkiShell[^]*className="game-shell danetki-main"/],
+    ],
+  },
+  {
+    path: 'apps/web/src/features/danetki/DanetkiShell.tsx',
+    required: [
+      ['stable Danetki navigation row', /function DanetkiShell[^]*<ScreenBack[^]*className="danetki-shell__nav"/],
     ],
   },
   {
@@ -208,6 +221,13 @@ const sourceChecks = [
       ['worker recreated with API', /--force-recreate "\$API_COMPOSE_SERVICE" "\$API_WORKER_SERVICE"/],
       ['Docker proxy refreshed after API recreation', /refresh_docker_nginx\(\)[^]*docker restart[^]*if ! refresh_docker_nginx/],
       ['worker SHA verification', /API_WORKER_IMAGE[^]*shoditsa-api:\$\{GITHUB_SHA\}/],
+    ],
+  },
+  {
+    path: 'scripts/deploy/timeweb.ps1',
+    required: [
+      ['content-addressed local release id', /Get-FileHash[^]*\$commitSha-\$artifactHash/],
+      ['atomic local release activation', /current\.next[^]*mv -Tf/],
     ],
   },
   {
