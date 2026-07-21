@@ -7,6 +7,7 @@ import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
+import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
 import './DanetkiGamePage.css'
 
 type Props = {
@@ -28,7 +29,10 @@ export const SESSION_RENDERER_BY_ENGINE = { danetki_chat: DanetkiGamePage }
 export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive, onStats, onRules, onReview }: Props) {
   const client = useQueryClient()
   const runtime = useServerRuntime()
-  const state = session.danetki!
+  const liveState = session.danetki!
+  const state = useMemo(() => import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('danetkiFixture') === 'filled'
+    ? withFilledDanetkiVisualFixture(liveState)
+    : liveState, [liveState])
   const isOwner = state.members.some((member) => member.userId === state.currentUserId && member.role === 'owner')
   const [draft, setDraft] = useState('')
   const [connection, setConnection] = useState<'connected' | 'reconnecting' | 'offline'>('reconnecting')
@@ -193,6 +197,16 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     send.mutate({ text, key })
   }
   const activeMembers = useMemo(() => state.members.filter((member) => !member.leftAt), [state.members])
+  const participantWord = activeMembers.length % 10 === 1 && activeMembers.length % 100 !== 11
+    ? 'участник'
+    : activeMembers.length % 10 >= 2 && activeMembers.length % 10 <= 4 && (activeMembers.length % 100 < 12 || activeMembers.length % 100 > 14)
+      ? 'участника'
+      : 'участников'
+  const questionWord = state.questionCount % 10 === 1 && state.questionCount % 100 !== 11
+    ? 'вопрос'
+    : state.questionCount % 10 >= 2 && state.questionCount % 10 <= 4 && (state.questionCount % 100 < 12 || state.questionCount % 100 > 14)
+      ? 'вопроса'
+      : 'вопросов'
   const hostStatus = connection === 'offline'
     ? 'Ведущий не в сети'
     : connection === 'reconnecting'
@@ -231,7 +245,10 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         </div>
         <div className="danetki-case-date" aria-label={`Дата: ${dateBadge}`}><CalendarDays aria-hidden="true" /><strong>{dateBadge}</strong></div>
         <div className={`danetki-host danetki-host--${state.aiStatus}`}>
-          <picture aria-hidden="true"><source srcSet={publicAssetUrl('images/danetki/danetka-detective-hero.webp')} type="image/webp" /><img src={publicAssetUrl('images/danetki/danetka-detective-hero.png')} width="1049" height="909" decoding="async" fetchPriority="high" alt="" /></picture>
+          <div className="danetki-artwork" aria-hidden="true">
+            <picture><source srcSet={publicAssetUrl('images/danetki/danetka-detective-hero.webp')} type="image/webp" /><img src={publicAssetUrl('images/danetki/danetka-detective-hero.png')} width="1672" height="941" decoding="async" fetchPriority="high" alt="" /></picture>
+            <span className="danetki-artwork__case"><i>Дело</i><b>№ {caseNumber}</b></span>
+          </div>
           {state.aiStatus === 'error' && <button type="button" onClick={() => retryAi.mutate()} disabled={retryAi.isPending}><RefreshCw /> Повторить</button>}
         </div>
         <div className={`danetki-hostline danetki-hostline--${hostState}`}><strong><i aria-hidden="true" />{hostStatus}</strong><span>{state.aiStatus === 'error' ? 'Попробуйте повторить запрос' : 'Реагирует на ваши вопросы'}</span></div>
@@ -241,13 +258,14 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         <div className="danetki-room-toolbar">
           <div className="danetki-room-summary">
             <strong>Протокол расследования</strong>
-            <div className="danetki-members" aria-label={`Участников: ${activeMembers.length}`}>
+            <div className="danetki-members" aria-label={`${activeMembers.length} ${participantWord}`}>
               <span className="danetki-avatar danetki-avatar--host" title="Ведущий"><img src={publicAssetUrl('images/danetki/host-avatar.webp')} width="32" height="32" alt="" /></span>
-              {activeMembers.map((member) => <span key={member.userId} className={`danetki-avatar ${member.userId === state.currentUserId ? 'is-current' : ''}`} title={member.displayName} data-color={member.colorKey}>{member.displayName.slice(0, 1).toUpperCase()}</span>)}
-              <small><Users /> {activeMembers.length}</small>
+              {activeMembers.slice(0, 2).map((member) => <span key={member.userId} className={`danetki-avatar ${member.userId === state.currentUserId ? 'is-current' : ''}`} title={member.displayName} data-color={member.colorKey}>{member.displayName.slice(0, 1).toUpperCase()}</span>)}
+              {activeMembers.length > 2 && <span className="danetki-avatar danetki-avatar--more" title={`Ещё участников: ${activeMembers.length - 2}`}>+{activeMembers.length - 2}</span>}
+              <small><Users /> {activeMembers.length} {participantWord}</small>
             </div>
           </div>
-          <div className="danetki-room-tools"><span className="danetki-question-count"><HelpCircle /> {state.questionCount} {state.questionCount === 1 ? 'вопрос' : 'вопросов'}</span><ActionButton type="button" variant="secondary" onClick={() => listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}><Clock3 /> История</ActionButton>{state.canInvite && <ActionButton type="button" variant="secondary" onClick={() => invite.mutate()} disabled={invite.isPending}><Users /> Пригласить</ActionButton>}{state.roomMode === 'group' && <ActionButton type="button" variant="ghost" onClick={() => leave.mutate()} disabled={leave.isPending}><DoorOpen /> Выйти</ActionButton>}</div>
+          <div className="danetki-room-tools"><span className="danetki-question-count"><HelpCircle /> {state.questionCount} {questionWord}</span><ActionButton type="button" variant="secondary" onClick={() => listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}><Clock3 /> История</ActionButton>{state.canInvite && <ActionButton type="button" variant="secondary" onClick={() => invite.mutate()} disabled={invite.isPending}><Users /> Пригласить</ActionButton>}{state.roomMode === 'group' && <ActionButton type="button" variant="ghost" onClick={() => leave.mutate()} disabled={leave.isPending}><DoorOpen /> Выйти</ActionButton>}</div>
         </div>
 
         <div className="danetki-messages" ref={listRef} role="log" aria-live="polite" onScroll={(event) => { const node = event.currentTarget; wasNearBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 80; if (wasNearBottom.current) setNewMessages(0) }}>
@@ -256,14 +274,15 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
           {state.messages.map((message) => {
             if (message.senderKind === 'system') return <div key={message.id} className={`danetki-system ${message.messageType === 'solution' ? 'is-solution' : ''}`}><span>{message.text}</span><time>{localTime(message.createdAt)}</time></div>
             const mine = message.senderUserId === state.currentUserId
+            const userMessage = message.senderKind === 'user'
             const sender = message.senderUserId ? state.members.find((member) => member.userId === message.senderUserId) : null
             const senderName = message.senderKind === 'ai' ? 'Ведущий' : message.senderName ?? sender?.displayName ?? 'Игрок'
-            return <article key={message.id} className={`danetki-message ${mine ? 'is-mine' : ''} ${message.senderKind === 'ai' ? 'is-ai' : ''}`}>
+            return <article key={message.id} className={`danetki-message ${mine ? 'is-mine' : ''} ${userMessage ? 'is-user' : ''} ${message.senderKind === 'ai' ? 'is-ai' : ''}`}>
               <span className="danetki-message__avatar" data-color={sender?.colorKey}>{message.senderKind === 'ai' ? <img src={publicAssetUrl('images/danetki/host-avatar.webp')} width="30" height="30" alt="" /> : senderName.slice(0, 1).toUpperCase()}</span>
               <div className="danetki-message__bubble"><strong className="danetki-message__author">{senderName}</strong><p>{message.text}</p><time>{localTime(message.createdAt)}</time></div>
             </article>
           })}
-          {(send.isPending || send.isError) && send.variables && <article className="danetki-message is-mine is-pending">
+          {(send.isPending || send.isError) && send.variables && <article className="danetki-message is-mine is-user is-pending">
             <span className="danetki-message__avatar">В</span>
             <div className="danetki-message__bubble"><strong className="danetki-message__author">Вы</strong><p>{send.variables.text}</p><small>{send.isPending ? 'Отправляется…' : 'Не отправлено'}</small>{send.isError && <button type="button" onClick={() => send.mutate(send.variables!)}>Повторить</button>}</div>
           </article>}
