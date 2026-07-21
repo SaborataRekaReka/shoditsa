@@ -12,7 +12,7 @@ type GameScreenShellProps = Omit<HTMLAttributes<HTMLElement>, 'children'> & {
 
 /** Stable platform frame shared by every game title and live session. */
 export function GameScreenShell({ children, onBack, variant, backLabel = 'Назад', status, wide = false, className = '', ...props }: GameScreenShellProps) {
-  return <main className={`game-screen-shell game-screen-shell--${variant} ${className}`.trim()} {...props}>
+  return <main className={`game-screen-shell game-screen-shell--${variant}${wide ? ' game-screen-shell--wide' : ''} ${className}`.trim()} {...props}>
     <ScreenBack
       onBack={onBack}
       label={backLabel}

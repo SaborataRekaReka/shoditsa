@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-21T00:00:00Z",
+  "package": "reddit-games-comments-25-v1",
+  "status": "passed_with_warnings",
+  "schemaValidation": "passed",
+  "counts": {
+    "games": 25,
+    "comments": 150,
+    "progressiveHints": 150,
+    "sourceRecords": 46,
+    "directThreadSources": 42,
+    "nonDirectSources": 4,
+    "redactionOperations": 59,
+    "gamesWithoutSteamAppId": 2,
+    "resolveExistingAdvisory": 15,
+    "resolveOrImportAdvisory": 10
+  },
+  "invariants": {
+    "itemsExactly25": true,
+    "commentsExactly6PerItem": true,
+    "unlockSequence": [
+      0,
+      0,
+      1,
+      2,
+      3,
+      5
+    ],
+    "uniqueItemIds": true,
+    "uniqueGameIds": true,
+    "uniqueCommentIds": true,
+    "allCommentsReferenceKnownSource": true,
+    "displayAnswerLeakCount": 0,
+    "playSetsCoverAllGamesOnce": true,
+    "playSetsOccupyContiguousFivePositionBlocks": true
+  },
+  "errors": [],
+  "warnings": [
+    "4 source records are not direct Reddit thread URLs and require manual replacement or removal.",
+    "2 games have no Steam App ID and must resolve by title/year: the-last-of-us-part-ii, bloodborne.",
+    "The pack is marked research_only / unverified and should remain draft until source and publication review is complete.",
+    "The current application still hardcodes 10 attempts; recommendedMaxAttempts=6 needs the included runtime patch."
+  ],
+  "manualSourceReview": [
+    {
+      "gameId": "hogwarts-legacy",
+      "sourceId": "hogwarts-merlin-secondary-1",
+      "retrievalMethod": "secondary_quote",
+      "threadUrl": "https://www.gamingbible.com/news/hogwarts-legacy-merlin-trials-783145-20230214",
+      "needsDirectRedditUrl": true
+    },
+    {
+      "gameId": "hogwarts-legacy",
+      "sourceId": "hogwarts-merlin-secondary-2",
+      "retrievalMethod": "secondary_quote",
+      "threadUrl": "https://www.gamingbible.com/news/hogwarts-legacy-merlin-trials-reward-isnt-worth-it-387139-20230223",
+      "needsDirectRedditUrl": true
+    },
+    {
+      "gameId": "silent-hill-2-remake",
+      "sourceId": "sh2-soulless-profile",
+      "retrievalMethod": "reddit_profile_context",
+      "threadUrl": "https://old.reddit.com/user/ur_mom1987",
+      "needsDirectRedditUrl": true
+    },
+    {
+      "gameId": "silent-hill-2-remake",
+      "sourceId": "sh2-remake-profile",
+      "retrievalMethod": "reddit_profile_context",
+      "threadUrl": "https://vi.reddit.com/user/JamesMGS/",
+      "needsDirectRedditUrl": true
+    }
+  ],
+  "answerLeakFindings": [],
+  "gamesWithoutSteamAppId": [
+    "the-last-of-us-part-ii",
+    "bloodborne"
+  ]
+}

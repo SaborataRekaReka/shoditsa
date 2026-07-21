@@ -23,6 +23,7 @@ import { canStartArchiveSession } from '../archive/access.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
 import { recordPackCompletion } from '../packs/progress.js'
+import { loadPackSessionPrompt } from '../packs/prompt-runtime.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
@@ -737,9 +738,20 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
   const sessionMode = session.mode as TitleMode
-  const isPromoSession = isPromoSessionVariant(sessionMode, challengeVariant)
-  const promo = await promoSessionPayload(sessionMode, challengeVariant, answer, session.attemptsCount)
-  const hintOptions = isPromoSession
+  const packPrompt = session.kind === 'pack'
+    ? await loadPackSessionPrompt(tx, {
+        packId: session.packId,
+        packPosition: session.packPosition,
+        attemptsCount: session.attemptsCount,
+      })
+    : null
+  const legacyPromo = packPrompt
+    ? null
+    : await promoSessionPayload(sessionMode, challengeVariant, answer, session.attemptsCount)
+  const promptRuntime = packPrompt ?? legacyPromo
+  const isPromptSession = Boolean(packPrompt) || isPromoSessionVariant(sessionMode, challengeVariant)
+  const maxAttempts = packPrompt?.maxAttempts ?? 10
+  const hintOptions = isPromptSession
     ? []
     : answer
       ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
@@ -748,7 +760,8 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     engine: 'catalog_guess', rulesVersion: session.rulesVersion,
     id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, packId: session.packId, packPosition: session.packPosition, period: session.period, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
-    attemptsRemaining: 10 - session.attemptsCount,
+    attemptsRemaining: Math.max(0, maxAttempts - session.attemptsCount),
+    maxAttempts,
     attempts: attempts.map((entry) => ({
       position: entry.position,
       item: publicCard(entry.item as TitleItem),
@@ -762,10 +775,10 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
           ? 'available'
           : 'locked',
     })),
-    hintChoices: isPromoSession ? [] : choices,
+    hintChoices: isPromptSession ? [] : choices,
     hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
-    progressiveHints: promo.progressiveHints,
-    promoPrompt: promo.promoPrompt,
+    progressiveHints: promptRuntime?.progressiveHints ?? [],
+    promoPrompt: promptRuntime?.promoPrompt ?? null,
     diagnosisVignette,
     serverTime: new Date().toISOString(),
   }
@@ -789,7 +802,15 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const lockedReplay = await tx.select({ response: gameAttempts.responseSnapshot }).from(gameAttempts).where(and(eq(gameAttempts.sessionId, sessionId), eq(gameAttempts.idempotencyKey, idempotencyKey))).limit(1)
   if (lockedReplay[0]) return lockedReplay[0].response
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
-  if (session.attemptsCount >= 10) throw new ApiError(409, 'GAME_ATTEMPTS_EXHAUSTED', 'Попытки закончились')
+  const packPrompt = session.kind === 'pack'
+    ? await loadPackSessionPrompt(tx, {
+        packId: session.packId,
+        packPosition: session.packPosition,
+        attemptsCount: session.attemptsCount,
+      })
+    : null
+  const maxAttempts = packPrompt?.maxAttempts ?? 10
+  if (session.attemptsCount >= maxAttempts) throw new ApiError(409, 'GAME_ATTEMPTS_EXHAUSTED', 'Попытки закончились')
 
   const variantKey = session.packId ?? (session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
@@ -805,9 +826,19 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const answer = answers[0].payload as TitleItem
   const isCorrect = guess.id === answer.id
   const position = session.attemptsCount + 1
-  const status = isCorrect ? 'won' : position >= 10 ? 'lost' : 'playing'
+  const status = isCorrect ? 'won' : position >= maxAttempts ? 'lost' : 'playing'
   const hints = normalizeHintPeople(compareTitles(guess, answer) as Hint[])
-  const promo = await promoSessionPayload(sessionMode, variantKey, answer, position)
+  const promptAfterAttempt = packPrompt
+    ? await loadPackSessionPrompt(tx, {
+        packId: session.packId,
+        packPosition: session.packPosition,
+        attemptsCount: position,
+      })
+    : null
+  const legacyPromoAfterAttempt = promptAfterAttempt
+    ? null
+    : await promoSessionPayload(sessionMode, variantKey, answer, position)
+  const promptRuntime = promptAfterAttempt ?? legacyPromoAfterAttempt
   let reward: Awaited<ReturnType<typeof completeGame>> = null
   if (status !== 'playing') reward = await completeGame(tx, {
     sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
@@ -822,9 +853,9 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   }
   const response: Record<string, unknown> = {
     attempt: { position, item: publicCard(guess), hints },
-    session: { status, attemptsCount: position, attemptsRemaining: 10 - position },
-    progressiveHints: promo.progressiveHints,
-    promoPrompt: promo.promoPrompt,
+    session: { status, attemptsCount: position, attemptsRemaining: Math.max(0, maxAttempts - position), maxAttempts },
+    progressiveHints: promptRuntime?.progressiveHints ?? [],
+    promoPrompt: promptRuntime?.promoPrompt ?? null,
   }
   if (status !== 'playing') { response.answer = publicCard(answer); response.reward = reward }
   await tx.insert(gameAttempts).values({
@@ -846,7 +877,14 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   const variantKey = session.packId ?? (session.challengeId
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
     : null)
-  if (isPromoSessionVariant(session.mode as TitleMode, variantKey)) {
+  const packPrompt = session.kind === 'pack'
+    ? await loadPackSessionPrompt(tx, {
+        packId: session.packId,
+        packPosition: session.packPosition,
+        attemptsCount: session.attemptsCount,
+      })
+    : null
+  if (packPrompt || isPromoSessionVariant(session.mode as TitleMode, variantKey)) {
     throw new ApiError(422, 'HINT_DISABLED_FOR_PROMO', 'В промо-режиме доступны только подсказки из пакета')
   }
   const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey, response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))

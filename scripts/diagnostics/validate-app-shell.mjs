@@ -173,6 +173,13 @@ const sourceChecks = [
     required: [
       ['stable platform navigation row', /function GameScreenShell[^]*<ScreenBack[^]*className="game-screen-shell__nav"/],
       ['separate content width from navigation rail', /game-screen-shell__content[^]*game-screen-shell__content--\$\{variant\}/],
+      ['wide shell layout profile', /wide \? ' game-screen-shell--wide'/],
+    ],
+  },
+  {
+    path: 'apps/web/src/styles/screens.css',
+    required: [
+      ['wide shell navigation follows canvas edge', /game-screen-shell--wide > \.game-screen-shell__nav\s*\{\s*width:\s*100%/],
     ],
   },
   {

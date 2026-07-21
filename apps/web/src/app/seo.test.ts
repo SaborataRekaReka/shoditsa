@@ -21,6 +21,7 @@ describe('search index contract', () => {
       expect(content.description.length).toBeGreaterThanOrEqual(110)
       expect(content.description.length).toBeLessThanOrEqual(170)
       expect(content.paragraphs.length).toBeGreaterThanOrEqual(2)
+      expect(content.collectionMethod.text.length).toBeGreaterThanOrEqual(120)
       expect(content.features.length).toBeGreaterThanOrEqual(4)
       expect(content.steps.length).toBeGreaterThanOrEqual(3)
       expect(content.faq.length).toBeGreaterThanOrEqual(2)
@@ -33,6 +34,9 @@ describe('search index contract', () => {
     expect(descriptions.size).toBe(INDEXABLE_GAME_SEO.length)
     expect(paths.size).toBe(INDEXABLE_GAME_SEO.length)
     expect(INDEXABLE_PATHS).toEqual([HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath)])
+    expect(GAME_SEO.game.collectionMethod.sources[0]?.url).toContain('playthatgame.co.uk')
+    expect(GAME_SEO.movie.collectionMethod.sources[0]?.url).toContain('kinopoisk.ru')
+    expect(GAME_SEO.city.collectionMethod.sources[0]?.url).toContain('oxfordeconomics.com')
   })
 
   it('keeps personal and transactional routes out of the index', () => {

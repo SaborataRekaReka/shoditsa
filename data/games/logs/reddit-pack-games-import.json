@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-07-21T15:01:16.532Z",
+  "requested": 25,
+  "presentWithSteamIdentity": 17,
+  "importedThisRun": [],
+  "catalogGames": [
+    {
+      "id": "steam_292030",
+      "titleRu": "Ведьмак 3: Дикая Охота",
+      "steamAppId": 292030,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_3159330",
+      "titleRu": "Assassin’s Creed Shadows",
+      "steamAppId": 3159330,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_668580",
+      "titleRu": "Atomic Heart",
+      "steamAppId": 668580,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1086940",
+      "titleRu": "Baldur’s Gate 3",
+      "steamAppId": 1086940,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1903340",
+      "titleRu": "Clair Obscur: Expedition 33",
+      "steamAppId": 1903340,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_2443720",
+      "titleRu": "Concord",
+      "steamAppId": 2443720,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1091500",
+      "titleRu": "Cyberpunk 2077",
+      "steamAppId": 1091500,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1845910",
+      "titleRu": "Dragon Age: На страже Завесы",
+      "steamAppId": 1845910,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1245620",
+      "titleRu": "Elden Ring",
+      "steamAppId": 1245620,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1151340",
+      "titleRu": "Fallout 76",
+      "steamAppId": 1151340,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_553850",
+      "titleRu": "Helldivers 2",
+      "steamAppId": 553850,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_990080",
+      "titleRu": "Hogwarts Legacy",
+      "steamAppId": 990080,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1771300",
+      "titleRu": "Kingdom Come: Deliverance II",
+      "steamAppId": 1771300,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1643320",
+      "titleRu": "S.T.A.L.K.E.R. 2: Сердце Чернобыля",
+      "steamAppId": 1643320,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_2124490",
+      "titleRu": "Silent Hill 2",
+      "steamAppId": 2124490,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1716740",
+      "titleRu": "Starfield",
+      "steamAppId": 1716740,
+      "verified": true,
+      "missingFields": []
+    },
+    {
+      "id": "steam_1372880",
+      "titleRu": "The Day Before",
+      "steamAppId": 1372880,
+      "verified": true,
+      "missingFields": []
+    }
+  ]
+}

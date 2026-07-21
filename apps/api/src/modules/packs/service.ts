@@ -8,6 +8,7 @@ import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { activeRevision, buildSessionSnapshot } from '../games/service.js'
 import { canAccessPack, hasPermanentPackAccess, type PackAccessSource } from './access.js'
+import { isAdminOnlyPack } from './policy.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 
@@ -55,13 +56,14 @@ export const listPacks = async (db: Database, userId: string | null, role: ApiRo
   const rows = where
     ? await db.select().from(contentPacks).where(where).orderBy(asc(contentPacks.createdAt))
     : await db.select().from(contentPacks).orderBy(asc(contentPacks.createdAt))
-  return Promise.all(rows.map((pack) => packCard(db, pack, userId, role)))
+  const visibleRows = role === 'admin' ? rows : rows.filter((pack) => !isAdminOnlyPack(pack.id))
+  return Promise.all(visibleRows.map((pack) => packCard(db, pack, userId, role)))
 }
 
 export const getPack = async (db: Database, packId: string, userId: string | null, role: ApiRole = 'player'): Promise<ContentPackDetail> => {
   const rows = await db.select().from(contentPacks).where(eq(contentPacks.id, packId)).limit(1)
   const pack = rows[0]
-  if (!pack || (pack.status !== 'published' && role !== 'admin')) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
+  if (!pack || (isAdminOnlyPack(packId) && role !== 'admin') || (pack.status !== 'published' && role !== 'admin')) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
   const [card, entries, progressRows] = await Promise.all([
     packCard(db, pack, userId, role),
     db.select({ position: contentPackEntries.position })
@@ -85,7 +87,8 @@ export const getPack = async (db: Database, packId: string, userId: string | nul
   }
 }
 
-export const getPackProgress = async (db: Database, userId: string, packId: string) => {
+export const getPackProgress = async (db: Database, userId: string, packId: string, role: ApiRole = 'player') => {
+  if (isAdminOnlyPack(packId) && role !== 'admin') throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
   const exists = await db.select({ id: contentPacks.id }).from(contentPacks).where(eq(contentPacks.id, packId)).limit(1)
   if (!exists[0]) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
   const rows = await db.select().from(userPackProgress).where(and(eq(userPackProgress.userId, userId), eq(userPackProgress.packId, packId))).limit(1)
@@ -108,7 +111,7 @@ export const startPackSession = async (
 ) => db.transaction(async (tx) => {
   const packRows = await tx.select().from(contentPacks).where(eq(contentPacks.id, packId)).limit(1)
   const pack = packRows[0]
-  if (!pack || (pack.status !== 'published' && role !== 'admin')) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
+  if (!pack || (isAdminOnlyPack(packId) && role !== 'admin') || (pack.status !== 'published' && role !== 'admin')) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
   const entries = await tx.select().from(contentPackEntries).where(and(
     eq(contentPackEntries.packId, packId), eq(contentPackEntries.position, position), eq(contentPackEntries.enabled, true),
   )).limit(1)

@@ -137,6 +137,8 @@ const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS)
 const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS)
 const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
 const PROMO_POOL_COUNT = 30
+const REDDIT_COMMENTS_PACK_ID = 'reddit-games-comments-25-v1'
+const REDDIT_COMMENTS_POOL_COUNT = 25
 const isPromoVariant = (value: string | null | undefined) => value === PROMO_PACK_ID
 
 type EconomyAward = {
@@ -1216,9 +1218,10 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectPromo, onSelectRedditPack, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, promoSession, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectPromo: () => void
+  onSelectRedditPack: () => void
   onDanetki: () => void
   danetkiEnabled: boolean
   danetkiPoolCount: number | null
@@ -1316,6 +1319,22 @@ function HubScreen({ onSelect, onSelectPromo, onDanetki, danetkiEnabled, danetki
             onClick={() => {
               trackMetrikaGoal('category_ticket_play', { mode: 'danetki', status: 'new', attempts: 0, date: todayAttendance.date })
               onDanetki()
+            }}
+          />}
+          {isAdmin && <CategoryTicket
+            mode="game"
+            title="Что за игра? — Reddit"
+            description="Закрытый набор: угадайте 25 игр по переведённым комментариям Reddit."
+            color="#FF6B35"
+            icon={Gamepad2}
+            watermarkUrl={publicAssetUrl('images/category-stubs/game-stub.webp')}
+            poolCount={REDDIT_COMMENTS_POOL_COUNT}
+            status="new"
+            attempts={null}
+            href={pathnameForPlayerRoute({ screen: 'special', packId: REDDIT_COMMENTS_PACK_ID })}
+            onClick={() => {
+              trackMetrikaGoal('pack_opened', { packId: REDDIT_COMMENTS_PACK_ID, placement: 'hub' })
+              onSelectRedditPack()
             }}
           />}
           {isAdmin && <CategoryTicket
@@ -2478,11 +2497,11 @@ function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {
   return <Card {...props} />
 }
 
-function Progress({ attempts }: { attempts: number }) {
+function Progress({ attempts, maxAttempts = 10 }: { attempts: number; maxAttempts?: number }) {
   return <div className="progress-block">
-    <div className="progress-copy"><span>Попытка</span><strong>{Math.min(attempts + 1, 10)} <i>из 10</i></strong></div>
-    <div className="progress-track" aria-label={`Использовано попыток: ${attempts} из 10`}>
-      {Array.from({ length: 10 }, (_, index) => <i key={index} className={index < attempts ? 'used' : index === attempts ? 'current' : ''} />)}
+    <div className="progress-copy"><span>Попытка</span><strong>{Math.min(attempts + 1, maxAttempts)} <i>из {maxAttempts}</i></strong></div>
+    <div className="progress-track" aria-label={`Использовано попыток: ${attempts} из ${maxAttempts}`}>
+      {Array.from({ length: maxAttempts }, (_, index) => <i key={index} className={index < attempts ? 'used' : index === attempts ? 'current' : ''} />)}
     </div>
   </div>
 }
@@ -3347,8 +3366,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
   }
 
-  const isPromoSession = isPromoVariant(session.variantKey)
-  const promoHints = isPromoSession
+  const isPromptSession = Boolean(session.promoPrompt)
+  const maxAttempts = session.maxAttempts ?? 10
+  const promoHints = isPromptSession
     ? session.progressiveHints
       .map((entry) => {
         const value = typeof entry.value === 'object' && entry.value !== null ? entry.value as Record<string, unknown> : null
@@ -3360,9 +3380,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       })
       .filter((entry): entry is { key: string; text: string; unlockAfterAttempts: number | null; authorArchetype: string } => Boolean(entry))
     : []
-  const promoHeading = isPromoSession ? session.promoPrompt?.title?.trim() || 'Срач дня' : null
-  const promoSubtitle = isPromoSession ? session.promoPrompt?.subtitle?.trim() || '' : ''
-  const promoDisclaimer = isPromoSession ? session.promoPrompt?.disclaimer?.trim() || '' : ''
+  const promoHeading = isPromptSession ? session.promoPrompt?.title?.trim() || 'Игра по комментариям' : null
+  const promoSubtitle = isPromptSession ? session.promoPrompt?.subtitle?.trim() || '' : ''
+  const promoDisclaimer = isPromptSession ? session.promoPrompt?.disclaimer?.trim() || '' : ''
+  const promptSourceLabel = session.promoPrompt?.packId === PROMO_PACK_ID ? 'DTF промо-пак' : 'Reddit-пак'
 
   const attempts = session.attempts.map(serverAttemptToLegacy)
   const matchedTags = collectMatchedTags(attempts)
@@ -3386,8 +3407,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const completedToday = new Set(completedModes).size
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
-  const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Сыграть ещё раз'
-  const configureLabel = routeCompleted ? 'Выбрать другой режим' : resultConfigureLabel(session.mode)
+  const isPackSession = session.kind === 'pack'
+  const nextLabel = isPackSession ? 'К подборке' : nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Сыграть ещё раз'
+  const configureLabel = isPackSession ? 'На главную' : routeCompleted ? 'Выбрать другой режим' : resultConfigureLabel(session.mode)
   const headingPeriodBadge = session.mode === 'music' && session.difficulty
     ? DIFFICULTIES[session.difficulty].label
     : session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime'
@@ -3440,15 +3462,15 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
-      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromoSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromoSession ? 'DTF promo-пак' : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
-      {isPromoSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
+      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
+      {isPromptSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
       {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      <div className="progress-row"><Progress attempts={session.attemptsCount} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
+      <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
-      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={completedToday} nextRewardText={completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={completedToday} nextRewardText={isPackSession ? 'Выберите следующий сеанс в подборке' : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession ? onBack : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
-        <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, 10)} из 10</span></div>
+        <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
         <div className="search-picker">
           <div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>
           {query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}
@@ -3479,7 +3501,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         {message && <div className="search-meta"><strong>{message}</strong></div>}
       </section>}
       {!attempts.length && session.status === 'playing' && <section className="empty-card"><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>Начните с первой попытки</h2><p>После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.</p></div></section>}
-      {!!session.attempts.length && <section className="attempt-list"><div className="section-title"><span>Ваши попытки</span><strong>{session.attempts.length}/10</strong></div>{[...session.attempts].reverse().map((entry) => {
+      {!!session.attempts.length && <section className="attempt-list"><div className="section-title"><span>Ваши попытки</span><strong>{session.attempts.length}/{maxAttempts}</strong></div>{[...session.attempts].reverse().map((entry) => {
         const item = publicItemToTitle(entry.item)
         const attemptValue = serverAttemptToLegacy(entry)
         const correct = answer?.id === item.id
@@ -4280,7 +4302,7 @@ function GameApp() {
   const [freePlayArmed, setFreePlayArmed] = useState(false)
   const [serverSessionId, setServerSessionId] = useState<string | null>(() => initialPlayerRoute.sessionId ?? null)
   const [serverActionError, setServerActionError] = useState('')
-  const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub'>('title')
+  const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub' | 'special'>('title')
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
   const { data, titleCounts: localTitleCounts, caseVignettes, loading, loadError, retryLoading, globalDailySalt, searchIndex } = useDataLoader(mode, !SERVER_RUNTIME)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
@@ -4343,14 +4365,14 @@ function GameApp() {
     window.scrollTo({ top: 0, left: 0 })
   }, [routeLocation.pathname, screen])
 
-  const activateServerSession = useCallback((session: GameSessionSnapshot, backTarget: 'title' | 'rewatch' | 'hub') => {
+  const activateServerSession = useCallback((session: GameSessionSnapshot, backTarget: 'title' | 'rewatch' | 'hub' | 'special') => {
     setServerActionError('')
     setServerSessionId(session.id)
     window.sessionStorage.setItem('shoditsa:active-server-session', session.id)
     setGameBackTarget(backTarget)
     if (session.engine !== 'danetki_chat') {
       setMode(session.mode)
-      setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
+      setPackId(session.mode === 'game' ? session.packId ?? (isPromoVariant(session.variantKey) ? session.variantKey : null) : null)
       setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
       setPeriod(session.period)
       if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
@@ -4369,7 +4391,7 @@ function GameApp() {
       return
     }
     setMode(session.mode)
-    setPackId(session.mode === 'game' && isPromoVariant(session.variantKey) ? session.variantKey : null)
+    setPackId(session.mode === 'game' ? session.packId ?? (isPromoVariant(session.variantKey) ? session.variantKey : null) : null)
     setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
     setPeriod(session.period)
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
@@ -4798,7 +4820,13 @@ function GameApp() {
   }, [mode, data.diagnosis, caseVignettes, effectiveDailySalt])
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
-  const goBackFromGame = () => moveToScreen(gameBackTarget)
+  const goBackFromGame = () => {
+    if (gameBackTarget === 'special' && packId) {
+      void navigateToPlayerRoute({ screen: 'special', packId })
+      return
+    }
+    moveToScreen(gameBackTarget === 'special' ? 'hub' : gameBackTarget)
+  }
   const goBackFromReview = () => moveToScreen(reviewBackTarget)
 
   useEffect(() => {
@@ -4928,6 +4956,13 @@ function GameApp() {
     setScreen('title')
     setModal(null)
     window.scrollTo({ top: 0 })
+  }
+
+  const selectRedditPack = () => {
+    if (!isAdmin) return
+    setServerActionError('')
+    setModal(null)
+    void navigateToPlayerRoute({ screen: 'special', packId: REDDIT_COMMENTS_PACK_ID })
   }
 
   const acceptChallenge = () => {
@@ -5233,7 +5268,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectPromo={selectPromoCategory} onSelectRedditPack={selectRedditPack} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} promoSession={promoSession} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
@@ -5251,7 +5286,7 @@ function GameApp() {
 
     {screen === 'specials' && <SpecialsScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(id) => { setGameBackTarget('hub'); setServerSessionId(id); setScreen('game'); window.scrollTo({ top: 0 }) }} />}
+    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(id) => { const currentPackId = playerRouteFromPathname(routeLocation.pathname).packId ?? null; setPackId(currentPackId); setGameBackTarget('special'); setServerSessionId(id); setScreen('game'); window.scrollTo({ top: 0 }) }} />}
 
     {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

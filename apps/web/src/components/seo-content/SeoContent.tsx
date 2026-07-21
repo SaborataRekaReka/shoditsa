@@ -6,6 +6,7 @@ import {
   Check,
   ChevronDown,
   CircleHelp,
+  Database,
   Film,
   Flower2,
   Gamepad2,
@@ -89,6 +90,18 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
           <p className="ticket-dossier__lead">{content.lead}</p>
         </div>
       </header>
+
+      <section className="ticket-dossier__collection" aria-labelledby={`artifact-collection-${mode}`}>
+        <Database aria-hidden="true" />
+        <div>
+          <span>Происхождение каталога</span>
+          <h4 id={`artifact-collection-${mode}`}>Как собран набор</h4>
+          <p>{content.collectionMethod.text}</p>
+          {content.collectionMethod.sources.length > 0 && <div className="ticket-dossier__collection-links">
+            {content.collectionMethod.sources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.label}</a>)}
+          </div>}
+        </div>
+      </section>
 
       <section className="ticket-dossier__rules" aria-labelledby={`artifact-rules-${mode}`}>
         <header><BookOpenText aria-hidden="true" /><div><span>Правила игры</span><h4 id={`artifact-rules-${mode}`}>Как играть</h4></div></header>

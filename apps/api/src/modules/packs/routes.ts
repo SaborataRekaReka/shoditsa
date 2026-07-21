@@ -21,7 +21,7 @@ export const registerPackRoutes = (app: FastifyInstance, db: Database, auth: Aut
   })
   app.get('/api/v1/packs/:packId/progress', { schema: { params: packParams } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    return getPackProgress(db, user!.id, (request.params as { packId: string }).packId)
+    return getPackProgress(db, user!.id, (request.params as { packId: string }).packId, user!.role)
   })
   app.post('/api/v1/packs/:packId/sessions', {
     schema: { params: packParams, body: PackSessionBodySchema },

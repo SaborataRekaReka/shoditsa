@@ -297,6 +297,15 @@
 .ticket-dossier__story { padding: 8px 0 2px; }
 .ticket-dossier__story p + p { margin-top: 8px; }
 
+.ticket-dossier__collection { margin-top: 18px; padding: 14px 16px; border-left: 3px solid var(--ticket-dossier-accent); border-radius: 0 12px 12px 0; background: rgba(var(--ticket-dossier-accent-rgb), .07); display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; }
+.ticket-dossier__collection > svg { width: 20px; height: 20px; margin-top: 1px; color: var(--ticket-dossier-accent); stroke-width: 1.8; }
+.ticket-dossier__collection span { display: block; color: var(--color-paper-muted); font-size: 8px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.ticket-dossier__collection h4 { margin: 1px 0 7px; font: 500 19px/1.08 Oswald, sans-serif; }
+.ticket-dossier__collection p { font-size: 12px; line-height: 1.52; }
+.ticket-dossier__collection-links { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 6px; }
+.ticket-dossier__collection-links a { padding: 5px 8px; border: 1px solid rgba(var(--ticket-dossier-accent-rgb), .35); border-radius: 999px; color: var(--ticket-dossier-accent); font-size: 9px; font-weight: 800; text-decoration: none; }
+.ticket-dossier__collection-links a:hover { border-color: var(--ticket-dossier-accent); background: var(--color-paper); }
+
 .ticket-dossier__rules { margin-top: 20px; padding: 16px; border: 1px solid rgba(var(--ticket-dossier-accent-rgb), .25); border-radius: 14px; background: rgba(var(--ticket-dossier-accent-rgb), .055); }
 .ticket-dossier__rules > header { display: flex; align-items: center; gap: 9px; }
 .ticket-dossier__rules > header > svg { width: 20px; height: 20px; flex: none; color: var(--ticket-dossier-accent); stroke-width: 1.8; }

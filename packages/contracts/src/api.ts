@@ -167,6 +167,7 @@ export type GameSessionSnapshot = {
   status: ApiGameStatus
   attemptsCount: number
   attemptsRemaining: number
+  maxAttempts?: number
   attempts: GameAttemptSnapshot[]
   hintCheckpoints: HintCheckpointSnapshot[]
   hintChoices: HintChoiceSnapshot[]
@@ -191,7 +192,7 @@ export type DanetkiStartBody = {
 export type CatalogSearchResponse = { items: PublicContentItem[] }
 export type AttemptResponse = {
   attempt: GameAttemptSnapshot
-  session: Pick<GameSessionSnapshot, 'status' | 'attemptsCount' | 'attemptsRemaining'>
+  session: Pick<GameSessionSnapshot, 'status' | 'attemptsCount' | 'attemptsRemaining' | 'maxAttempts'>
   progressiveHints: Array<{ key: string; value: unknown }>
   answer?: PublicContentItem
   reward?: {

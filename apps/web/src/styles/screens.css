@@ -3053,9 +3053,10 @@
 .game-screen-shell > .game-screen-shell__nav {
   width: min(100%, 960px);
   min-height: 44px;
-  margin: 0 auto 10px;
+  margin: 0 auto 16px;
   flex: 0 0 auto;
 }
+.game-screen-shell--wide > .game-screen-shell__nav { width: 100%; }
 .game-screen-shell__content {
   min-width: 0;
   margin-inline: auto;
@@ -3076,13 +3077,13 @@
 @media (min-width: 720px) and (max-height: 950px) {
   .game-screen-shell.title-screen.game-screen-shell--title,
   .game-screen-shell.game-shell.game-screen-shell--session { padding: 18px 28px 28px; }
-  .game-screen-shell > .game-screen-shell__nav { margin-bottom: 2px; }
+  .game-screen-shell > .game-screen-shell__nav { margin-bottom: 16px; }
 }
 
 @media (max-width: 719px) {
   .game-screen-shell.title-screen.game-screen-shell--title,
   .game-screen-shell.game-shell.game-screen-shell--session { width: 100%; padding: 20px 14px 64px; }
-  .game-screen-shell > .game-screen-shell__nav { width: 100%; margin-bottom: 2px; }
+  .game-screen-shell > .game-screen-shell__nav { width: 100%; margin-bottom: 12px; }
 }
 
 @media (min-width: 1920px) {

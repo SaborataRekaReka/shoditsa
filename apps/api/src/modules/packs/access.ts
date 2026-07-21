@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm'
 import { contentPacks, type Database } from '@shoditsa/database'
 import type { ApiRole } from '@shoditsa/contracts'
 import { hasEntitlement } from '../commerce/entitlements.js'
+import { isAdminOnlyPack } from './policy.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Database | Transaction
@@ -20,6 +21,7 @@ export const canAccessPack = async (
   const pack = rows[0]
   if (!pack) return { allowed: false, source: 'locked' }
   if (role === 'admin') return { allowed: true, source: 'admin' }
+  if (isAdminOnlyPack(packId)) return { allowed: false, source: 'locked' }
   if (pack.status !== 'published') return { allowed: false, source: 'locked' }
   if (pack.accessModel === 'free') return { allowed: true, source: 'free' }
   if (position <= pack.previewItems) return { allowed: true, source: 'preview' }

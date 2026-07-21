@@ -163,7 +163,7 @@ export const dashboard = async (db: Database, userId: string) => {
       mode: gameSessions.mode,
       kind: gameSessions.kind,
       status: gameSessions.status,
-      variantKey: dailyChallenges.variantKey,
+      variantKey: sql<string | null>`coalesce(${gameSessions.packId}, ${dailyChallenges.variantKey})`,
       period: gameSessions.period,
       difficulty: gameSessions.difficulty,
       puzzleDate: gameSessions.puzzleDate,

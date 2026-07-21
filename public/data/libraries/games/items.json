@@ -159,6 +159,153 @@
     }
   },
   {
+    "id": "steam_292030",
+    "mode": "game",
+    "titleRu": "Ведьмак 3: Дикая Охота",
+    "titleOriginal": "The Witcher 3: Wild Hunt",
+    "alternativeTitles": [
+      "The Witcher 3",
+      "Ведьмак 3",
+      "Witcher 3",
+      "The Witcher 3: Wild Hunt"
+    ],
+    "year": 2015,
+    "releaseDate": "2015-05-17",
+    "developers": [
+      "CD PROJEKT RED"
+    ],
+    "publishers": [
+      "CD PROJEKT RED"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Steam Trading Cards",
+      "Steam Workshop",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "Save Anytime",
+      "Stereo Sound",
+      "Surround Sound",
+      "Partial Controller Support",
+      "Steam Cloud",
+      "Remote Play on Tablet",
+      "Remote Play on TV",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Steam Trading Cards",
+      "Steam Workshop",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "Save Anytime",
+      "Stereo Sound",
+      "Surround Sound",
+      "Partial Controller Support",
+      "Steam Cloud",
+      "Remote Play on Tablet",
+      "Remote Play on TV",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian",
+      "German *",
+      "Spanish - Spain",
+      "Arabic",
+      "Czech",
+      "Hungarian",
+      "Japanese *",
+      "Korean *",
+      "Polish *",
+      "Portuguese - Brazil *",
+      "Russian *",
+      "Traditional Chinese",
+      "Turkish",
+      "Simplified Chinese *",
+      "Spanish - Latin America * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": 93,
+    "ratings": {
+      "steamPositivePercent": 97,
+      "metacritic": 93
+    },
+    "votes": {
+      "steamReviews": 878317,
+      "steamPositive": 849891,
+      "steamNegative": 28426
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 3999,
+      "final": 3999,
+      "discountPercent": 0
+    },
+    "steamAppId": 292030,
+    "steamUrl": "https://store.steampowered.com/app/292030/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ad9240e088f953a84aee814034c50a6a92bf4516/header.jpg?t=1768303991",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/94a3c7f9db82538b752312f6e17f912f0899ca30/page_bg_raw.jpg?t=1768303991",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_5710298af2318afd9aa72449ef29ac4a2ef64d8e.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_0901e64e9d4b8ebaea8348c194e7a3644d2d832d.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_112b1e176c1bd271d8a565eacb6feaf90f240bb2.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_d1b73b18cbcd5e9e412c7a1dead3c5cd7303d2ad.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_107600c1337accc09104f7a8aa7f275f23cad096.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_64eb760f9a2b67f6731a71cce3a8fb684b9af267.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_eda99e7f705a113d04ab2a7a36068f3e7b343d17.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_d5b80eb63c12a6484f26796f3e34410651bba068.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_b74d60ee215337d765e4d20c8ca6710ae2362cc2.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_dc55eeb409d6e187456a8e159018e8da098fa468.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_849ec8dcc6f8df1c0b2c509584c9fc9e51f88cfa.1920x1080.jpg?t=1768303991",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/ss_90a33d7764a2d23306091bfcb52265c3506b4fdb.1920x1080.jpg?t=1768303991"
+    ],
+    "description": "DISCOVER THE STORY BEFORE THE WITCHER IV About the Game",
+    "shortDescription": "You are Geralt of Rivia, mercenary monster slayer. Before you stands a war-torn, monster-infested continent you can explore at will. Your current contract? Tracking down Ciri — the Child of Prophecy, a living weapon that can alter the shape of the world.",
+    "topRank": null,
+    "popularityScore": 100,
+    "externalRanks": {
+      "steam": 292030
+    },
+    "plotHint": "You are Geralt of Rivia, mercenary monster slayer. Before you stands a war-torn, monster-infested continent you can explore at will. Your current contract? Tracking down Ciri — the Child of Prophecy, a living weapon that can alter the shape...",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_105602",
     "mode": "game",
     "titleRu": "ActRaiser",
@@ -2848,6 +2995,161 @@
     }
   },
   {
+    "id": "steam_3159330",
+    "mode": "game",
+    "titleRu": "Assassin’s Creed Shadows",
+    "titleOriginal": "Assassin’s Creed Shadows",
+    "alternativeTitles": [
+      "AC Shadows",
+      "Assassins Creed Shadows"
+    ],
+    "year": 2025,
+    "releaseDate": "2025-03-18",
+    "developers": [
+      "Ubisoft Quebec",
+      "Ubisoft Belgrade",
+      "Ubisoft Bordeaux",
+      "Ubisoft Bucharest & Craiova",
+      "Ubisoft Chengdu",
+      "Ubisoft Montpellier",
+      "Ubisoft Montreal",
+      "Ubisoft Osaka",
+      "Ubisoft Philippines",
+      "Ubisoft Shanghai",
+      "Ubisoft Singapore",
+      "Ubisoft Sofia",
+      "Ubisoft Ukraine"
+    ],
+    "publishers": [
+      "Ubisoft"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Steam Trading Cards",
+      "Captions available",
+      "In-App Purchases",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Keyboard Only Option",
+      "Mouse Only Option",
+      "Narrated Game Menus",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Partial Controller Support",
+      "HDR available"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Steam Trading Cards",
+      "Captions available",
+      "In-App Purchases",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Keyboard Only Option",
+      "Mouse Only Option",
+      "Narrated Game Menus",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian *",
+      "German *",
+      "Spanish - Spain *",
+      "Arabic",
+      "Japanese *",
+      "Korean",
+      "Portuguese - Brazil *",
+      "Russian",
+      "Simplified Chinese",
+      "Traditional Chinese",
+      "Polish * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 76,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 38467,
+      "steamPositive": 29061,
+      "steamNegative": 9406
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 6999,
+      "final": 6999,
+      "discountPercent": 0
+    },
+    "steamAppId": 3159330,
+    "steamUrl": "https://store.steampowered.com/app/3159330/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/3159330/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/header.jpg?t=1775589420",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/b783388ebdfb08515387d04f43ce9698e7eda526/page_bg_raw.jpg?t=1775589420",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.1920x1080.jpg?t=1775589420",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e27b352af4e7c1fa74718671c52e865a41449182/ss_e27b352af4e7c1fa74718671c52e865a41449182.1920x1080.jpg?t=1775589420"
+    ],
+    "description": "Reviews Comparison Grid Premium Edition The Assassin’s Creed Shadows Premium Edition includes: - The base game - Sekiryu Gear Set for both Naoe and Yasuke - Eye of the Dragon Katana - Claw of the Dragon Long Katana - Sekiryu Beast Mount - Dragon Tooth Trinket - The Claws of Awaji Expansion, which features a new region, a new weapon, new skills, and 10+ hours of content. Deluxe Edition The Assassin’s Creed Shadows Digital Deluxe Edition includes: - The base game - The Sekiryu Dual Pack including gear and weapon sets for both Naoe and Yasuke, the Sekiryu Beast, and Dragon Tooth trinket - The Sekiryu Hideout Pack including four unique ornaments to customize the hideout for your shinobi league - Five mastery points PC Specifications About the Game MASTER THE DEEPEST STEALTH MECHANISMS OF THE SERIES &amp; FIGHT IN VISCERAL COMBAT “Shadows is some of the most fun I’ve had with a stealth game in a decade” —PC Gamer Play as Naoe, a quick-witted shinobi, and use light, sound, and shadows to evade detection. Infiltrate enemy strongholds with many parkour options including the new grappling hook, distract guards with shuriken or smoke bombs, and assassinate your targets with your Hidden Blade. As the samurai Yasuke, use silent bow takedowns or unleash devastating melee combos with your katana or naginata. Switch between these two heroes to adapt your strategy and experience feudal Japan through two radically different approaches – stealth and strength, shadows and steel. DEEP-DIVE INTO THE CAPTIVATING WORLD OF ASSASSIN'S CREED SHADOWS “Assassin’s Creed Shadows creates one of the best versions of the open-world style.” —IGN Step into feudal Japan like never before! From majestic castle towns to serene shrines and sweeping countryside, Assassin’s Creed Shadows offers a breathtaking open world where dynamic seasons, shifting weather, and environmental destruction affect your tactical approach. And, to get full immersion, experience the game through Japanese voiceover. DISCOVER THE MOST TECHNICALLY ADVANCED ASSASSIN’S CREED GAME YET “It leads to one of the most dynamic, fun, and best-looking open-world games I’ve played this generation.” —Kotaku Experience a true next-gen leap with Assassin’s Creed Shadows, powered by the updated Anvil engine. Explore a world brought to life with ray-traced Global Illumination, real-time reflections, virtualized geometry, and dynamic wind and environmental particles. From the shimmer of lantern light on rain-slick rooftops to the rustle of cherry blossoms in the wind, every detail is crafted to immerse you deeper into feudal Japan. A GLOBAL HIT Whether you are a veteran Assassin’s Creed player or new to the franchise, feudal Japan awaits you! Join a community of millions of players and discover a title GameSpot describes as &quot;an absolute blast to play,&quot; Eurogamer.es as &quot;the best Assassin's Creed of the modern era&quot; and GamingTrend as “the new benchmark for the series.”",
+    "shortDescription": "Experience an epic action-adventure story set in feudal Japan! Become a lethal shinobi assassin and powerful legendary samurai as you explore a beautiful open world in a time of chaos.",
+    "topRank": null,
+    "popularityScore": 85,
+    "externalRanks": {
+      "steam": 3159330
+    },
+    "plotHint": "Experience an epic action-adventure story set in feudal Japan! Become a lethal shinobi and powerful legendary samurai as you explore a beautiful open world in a time of chaos.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_8170",
     "mode": "game",
     "titleRu": "Assassin's Creed: Brotherhood",
@@ -3103,6 +3405,142 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_668580",
+    "mode": "game",
+    "titleRu": "Atomic Heart",
+    "titleOriginal": "Atomic Heart",
+    "alternativeTitles": [
+      "Атомик Харт",
+      "Атомное сердце"
+    ],
+    "year": 2023,
+    "releaseDate": "2023-02-19",
+    "developers": [
+      "Mundfish"
+    ],
+    "publishers": [
+      "Focus Entertainment",
+      "4Divinity"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "German *",
+      "Spanish - Spain *",
+      "Japanese *",
+      "Russian *",
+      "Simplified Chinese *",
+      "Korean",
+      "Polish *",
+      "Portuguese - Brazil *",
+      "Italian *",
+      "Traditional Chinese",
+      "Ukrainian * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": 76,
+    "ratings": {
+      "steamPositivePercent": 81,
+      "metacritic": 76
+    },
+    "votes": {
+      "steamReviews": 49713,
+      "steamPositive": 40172,
+      "steamNegative": 9541
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 1499,
+      "discountPercent": 75
+    },
+    "steamAppId": 668580,
+    "steamUrl": "https://store.steampowered.com/app/668580/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/668580/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/header.jpg?t=1776355944",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/page_bg_raw.jpg?t=1776355944",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_1dc8661cde295efc2d1ff8612e079f5c74803748.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_9dedae959672ac7d7f2db16638a5b65f80bfe125.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_2fce9ef441a18361b9ab8f1b1ac70160c8226577.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_19b14ddac88c1f0d24c8061c1f38bebabfbbdff3.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_1edcb9e8de3f513645678de19879cb02ecf07764.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_91b040e19e14baa32684a588c20246a305ae336e.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_0e4b3349f2124cdba1df885ac3cdabfba87b22fb.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_5b70e08d5afa8f3df574852f77fa2347eefd2a57.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_2658707fc7d6bcf99493fce855408d4c0a5a8376.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_ce0e6d590cf0b6d5a2c9a69d8d0e215a745922e9.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_7f04634032df01f90a57d3d72b8bb3ca3ac6661f.1920x1080.jpg?t=1776355944",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/668580/ss_b9e0d03da7b16a97976a93b5be3dbcfafad1d740.1920x1080.jpg?t=1776355944"
+    ],
+    "description": "Special Edition Join our Discord About the Game Welcome to a utopian world of wonders and perfection, in which humans live in harmony with their loyal and fervent robots. Well, that's how it used to be. With the launch of the latest robot-control system mere days away, only a tragic accident or a global conspiracy could disrupt it… The unstoppable course of technology along with secret experiments have brought rise to mutant creatures, terrifying machines and superpowered robots—all suddenly rebelling against their creators. Only you can stop them and find out what lies behind the idealized world. Using the combat abilities granted by your experimental power glove, your arsenal of blades and cutting-edge weaponry, fight for your life in explosive and frenetic encounters. Adapt your fighting style to each unique opponent. Combine your skills and resources, use the environment and upgrade your equipment to overcome challenges and fight for good. • An utopian world, both mad and sublime • Visceral, spectacular and unforgiving combat • Blast giant machines and mutants using your multiple skills and advanced weapons • Upgrade your arsenal and equipment",
+    "shortDescription": "In a mad and sublime utopian world, take part in explosive encounters. Adapt your fighting style to each opponent, use your environment and upgrade your equipment to fulfill your mission. If you want to reach the truth, you'll have to pay in blood.",
+    "topRank": null,
+    "popularityScore": 87,
+    "externalRanks": {
+      "steam": 668580
+    },
+    "plotHint": "In a mad and sublime utopian world, take part in explosive encounters. Adapt your fighting style to each opponent, use your environment and upgrade your equipment to fulfill your mission. If you want to reach the truth, you'll have to pay i...",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -3524,6 +3962,158 @@
         "thegamesdb_bygamename",
         "thegamesdb_images",
         "wikipedia_fallback"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_1086940",
+    "mode": "game",
+    "titleRu": "Baldur’s Gate 3",
+    "titleOriginal": "Baldur's Gate 3",
+    "alternativeTitles": [
+      "Baldurs Gate 3",
+      "BG3"
+    ],
+    "year": 2023,
+    "releaseDate": "2023-08-02",
+    "developers": [
+      "Larian Studios"
+    ],
+    "publishers": [
+      "Larian Studios"
+    ],
+    "platforms": [
+      "windows",
+      "mac"
+    ],
+    "genres": [
+      "Adventure",
+      "RPG",
+      "Strategy"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Multi-player",
+      "Co-op",
+      "Online Co-op",
+      "LAN Co-op",
+      "Cross-Platform Multiplayer",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "Remote Play on TV",
+      "Remote Play Together",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Adventure",
+      "RPG",
+      "Strategy",
+      "Single-player",
+      "Multi-player",
+      "Co-op",
+      "Online Co-op",
+      "LAN Co-op",
+      "Cross-Platform Multiplayer",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French",
+      "German",
+      "Spanish - Spain",
+      "Polish",
+      "Russian",
+      "Simplified Chinese",
+      "Turkish",
+      "Portuguese - Brazil",
+      "Italian",
+      "Spanish - Latin America",
+      "Traditional Chinese",
+      "Ukrainian",
+      "Korean",
+      "Japanese * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": 96,
+    "ratings": {
+      "steamPositivePercent": 97,
+      "metacritic": 96
+    },
+    "votes": {
+      "steamReviews": 848461,
+      "steamPositive": 821257,
+      "steamNegative": 27204
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1086940,
+    "steamUrl": "https://store.steampowered.com/app/1086940/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/48a2fcbda8565bb45025e98fd8ebde8a7203f6a0/header.jpg?t=1777363040",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/page_bg_raw.jpg?t=1777363040",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_c73bc54415178c07fef85f54ee26621728c77504.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_73d93bea842b93914d966622104dcb8c0f42972b.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_cf936d31061b58e98e0c646aee00e6030c410cda.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_b6a6ee6e046426d08ceea7a4506a1b5f44181543.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_6b8faba0f6831a406ce015648958da9612d14dbb.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_8fc5eba770b4a1639b31666908bdd2bbc1aa2ae4.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_31c13d137706fb4d9a4210513274a3ed9c3c7c96.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_0efa1a469a37beeb4fd0cb8e16dc99bd36357dc4.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_387896248b42a15239a9256844b3e4bff72fbc2a.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_44d30da9c3e4622b46f2978e89bda0515856eaf4.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_f8c7fcdeccbfe77e3fad33330a464fed30f781f0.1920x1080.jpg?t=1777363040",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/ss_332cd26db210d4b10df744485ecf0a9b3f2e9024.1920x1080.jpg?t=1777363040"
+    ],
+    "description": "Соберите отряд и вернитесь в Забытые Королевства. Вас ждет история о дружбе и предательстве, выживании и самопожертвовании, о сладком зове абсолютной власти. Ваш мозг стал вместилищем для личинки иллитида, и она пробуждает в вас таинственные, пугающие способности. Сопротивляйтесь паразиту и обратите тьму против себя самой – или же безоглядно отдайтесь злу и станьте его воплощением. Ролевая игра нового поколения в мире Dungeons &amp; Dragons от создателей Divinity: Original Sin 2. Выбирайте из 12 классов и 11 рас, представленных в Руководстве игрока D&amp;D. Создайте собственную личность, возьмите любого из героев с историей – или же взгляните в глаза собственным темным желаниям, выбрав «Темный соблазн» – уникального героя с историей, отличающегося собственными уникальными механиками игры, но во всем остальном полностью настраиваемого. Кем бы вы ни стали, приключения, добыча, битвы и любовь ждут вас в Забытых Королевствах и за их пределами. Собирайте свой отряд и отправляйтесь искать приключений по Интернету группой до четырех игроков. Лишившись дома, друзей, даже будущего, вы превращаетесь в чудовище, но вместе с тьмой внутри вас растет и ваша сила. Она поможет вам выжить, но у всего есть своя цена. И кто знает – может быть, главной вашей силой станут не заклинания и навыки, а узы братства между товарищами по оружию? Втянутые против воли в войну между богами, дьяволами и зловещими потусторонними силами, вы – все вместе – определите судьбу Забытых Королевств. Построенная на новом движке Divinity 4.0, Baldur’s Gate 3 дает вам непревзойденную свободу действий: исследуйте, экспериментируйте, взаимодействуйте с богатым миром, полным разнообразных существ, опасностей и обмана. Грандиозный, яркий сюжет крупнейшего на сей момент произведения Larian поможет вам сжиться со своими героями как никогда раньше. От проклятых лесов до магических пещер Подземья и великого города Врата Балдура, ваше приключение складывается из действий, а ваше наследие – из выборов. Мир вас не забудет. Забытые Королевства – огромный, детально проработанный и разнообразный мир, практически каждая пядь которого полна секретов: вертикальность здесь не роскошь, а неотъемлемая часть приключения. Крадитесь в тенях, купайтесь в водоемах, толкайте предметы, прыгайте и залезайте на все подряд везде – от глубин Подземья до сверкающих крыш Врат Балдура. Каждый ваш выбор движет ваше приключение вперед, каждое решение оставит след в мире. Творите свое наследие, заводите друзей и врагов, решайте проблемы собственным путем. Двух одинаковых прохождений не будет. Сетевая игра в группе до 4 игроков Объединяйте силы в бою, чтобы атаковать врага одновременно, или разделяйте отряд, чтобы заниматься каждый своими делами и заданиями. Вместе выработайте идеальный план кампании... или внесите в него элемент хаоса в самый неожиданный для товарищей момент. Межличностные отношения – штука непростая. Особенно с паразитом в мозгу. Герои с историей В игре семь героев с историей. У каждого из них собственные уникальные черты, желания, планы и взгляды на мир. Линия каждого переплетена с общим сюжетом, и от вашего выбора зависит, чем она закончится: спасением, победой, поражением, искуплением... Всех возможностей и не перечесть. Играйте за одного из героев с историей или возьмите их в отряд в качестве спутников. Модернизированный пошаговый режим Основан на 5-й редакции D&amp;D. Командная инициатива, преимущества и недостатки, броски на модификаторы, а также боевые камеры, расширенное взаимодействие с окружающими предметами и новый уровень гибкости, вознаграждающий умных и дальновидных – попробуйте и оцените сами. Три уровня сложности позволят настроить тяжесть боя по своему вкусу. Шулерские кубики сдвинут баланс сил в вашу пользу, а если вам, наоборот, хочется усложнить задачу – с этим прекрасно справится тактический режим. Беспрецедентная глубина и масштаб 11 игровых рас (человек, гитьянки, полуорк, дварф, эльф, дроу, тифлинг, полурослик, полуэльф, гном, драконорожденный) и 31 подраса, 12 классов и 46 подклассов. Более 600 заклинаний и действий дают вам практически безграничную свободу взаимодействия с любовно созданным миром, в котором исследование вознаграждается, а путь не ограничен ничем, кроме собственных выборов игрока. Наша уникальная система создания персонажа дает беспрецедентную глубину проработки и реакций: кем бы вы ни были, вы оставите за собой яркий след вплоть до 12-го уровня. Более 174 часов видеороликов иллюстрируют практически все возможные ваши выборы – каждое прохождение будет и визуально выглядеть по-другому. Глубокие и сложные романтические отношения Когда над городом нависла война, а ведомые иллитидами полчища движутся к Вратам Балдура, можно, конечно, попытаться выжить в одиночку, но с друзьями это будет легче. Как и с кем дружить (и не только), зависит лишь от вас, а недостатка в живых, настоящих кандидатах в игре не будет. У каждого спутника собственные убеждения о нравственности, и никто не будет стесняться сказать вам, что думает по поводу того или иного вашего решения. Чем вы готовы поступиться ради верности своим идеям? Позволите ли любви влиять на ваш выбор? Дружба и любовь по дороге к Вратам Балдура и скрасит вам минуты отдыха в лагере, и добавят веса множеству решений, которые встанут перед вами. Настройте свою игру для стриминга ...чтобы, когда вы нажмете кнопку и выйдете в эфир, зрителей не ждали «преведы» от медведов (простите), особо неприличные слова или сверканье голых частей тела. В Baldur’s Gate 3 три разных уровня настройки содержимого для стриминга. Можно включать и отключать наготу и откровенное содержимое по отдельности (или вместе), а также настроить интеграцию Twitch на взаимодействие с вашей аудиторией напрямую, как мы это делаем во время выпусков Panel From Hell! Благодаря этому функционалу вы сможете без проблем стримить Baldur’s Gate 3 независимо от вашего стиля игры.",
+    "shortDescription": "Соберите отряд и вернитесь в Забытые Королевства. Вас ждет история о дружбе и предательстве, выживании и самопожертвовании, о сладком зове абсолютной власти.",
+    "topRank": null,
+    "popularityScore": 100,
+    "externalRanks": {
+      "steam": 1086940
+    },
+    "plotHint": "Соберите отряд и вернитесь в Забытые Королевства. Вас ждет история о дружбе и предательстве, выживании и самопожертвовании, о сладком зове абсолютной власти.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -9909,6 +10499,142 @@
     }
   },
   {
+    "id": "steam_1903340",
+    "mode": "game",
+    "titleRu": "Clair Obscur: Expedition 33",
+    "titleOriginal": "Clair Obscur: Expedition 33",
+    "alternativeTitles": [
+      "Expedition 33",
+      "Экспедиция 33"
+    ],
+    "year": 2025,
+    "releaseDate": "2025-04-23",
+    "developers": [
+      "Sandfall Interactive"
+    ],
+    "publishers": [
+      "Kepler Interactive"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Adjustable Text Size",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Gamepad Recommended",
+      "DualSense Controller Support",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Adjustable Text Size",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Gamepad Recommended",
+      "DualSense Controller Support",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian",
+      "German",
+      "Spanish - Spain",
+      "Japanese",
+      "Korean",
+      "Polish",
+      "Portuguese - Brazil",
+      "Russian",
+      "Simplified Chinese",
+      "Traditional Chinese",
+      "Czech",
+      "Indonesian",
+      "Spanish - Latin America",
+      "Thai",
+      "Turkish",
+      "Ukrainian",
+      "Vietnamese",
+      "Arabic * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": 91,
+    "ratings": {
+      "steamPositivePercent": 95,
+      "metacritic": 91
+    },
+    "votes": {
+      "steamReviews": 273260,
+      "steamPositive": 260448,
+      "steamNegative": 12812
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 4799,
+      "discountPercent": 20
+    },
+    "steamAppId": 1903340,
+    "steamUrl": "https://store.steampowered.com/app/1903340/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1903340/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/be3305b02d4db0dffa3458537118423bf2792d7e/header.jpg?t=1782830877",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/page_bg_raw.jpg?t=1782830877",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_483a27df5072beb3a4650634a764bda750fbcb82.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_e49800e906e8a0f00707458c836567c933603bac.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_b8089016095e6a16e324a59c45b2f24a439bd0b3.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_8439c07d7b1f2fcfc6449db5f051f8d0867f4785.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_9e050e6a61a4d9f4fe54bc62c8c73da38e9a63b0.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_d3a10809f5cc2a8df7773f41acd1493f4fb900ec.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_ec16f873c7d14fc4a4f17966b25f9712dc486b4a.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_c130295c9e1169dc0c63eaae0618e64d06a88c92.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_0902af724ac45a9093dee022a7893dc50cbf555e.1920x1080.jpg?t=1782830877",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/ss_49ba857fef972f2584e41fa0b46cddbcda8aa30f.1920x1080.jpg?t=1782830877"
+    ],
+    "description": "Издание Digital Deluxe Edition В состав Deluxe Edition входят: Основная игра Clair Obscur: Expedition 33 “Цветочная” коллекция – шесть нарядов и причесок, вдохновленных Цветами Люмьера, а также шесть дополнительных вариаций костюмов в стиле “Гоммаж”. По одному на каждого игрового персонажа. “Свет” – Индивидуальный наряд для Маэль “Тень” – Индивидуальный наряд для Гюстава Об игре Раз в год Художница просыпается и рисует на Монолите. Выводит свое проклятое число. И каждый, чей возраст больше этого числа, обращается в дым и угасает. Каждый год число уменьшается. Уже завтра она проснется и напишет цифру «33». Мы отправляемся в последнюю экспедицию, чтобы уничтожить Художницу. Мы — Экспедиция 33. Clair Obscur: Expedition 33 — это новая пошаговая ролевая игра с уникальной механикой реального времени, от которой невозможно оторваться. Исследуйте мир, созданный на основе Прекрасной эпохи Франции, и сражайтесь с опасными врагами. В этой новой JRPG действия в реальном времени дополняют классические пошаговые бои. Создайте уникальную экспедицию, используя разнообразное снаряжение, навыки, параметры и взаимодействия между ее участниками. Выполняйте уклонения, парируйте и наносите контрудары в реальном времени, собирайте комбо, осваивая ритмы атак, и нацеливайтесь на слабые места противника, используя систему прицеливания. Остался всего год. Присоединяйтесь к Гюставу, Маэль и другим участникам экспедиции в отчаянном путешествии, чтобы разорвать порочный круг смерти, созданный Художницей. Пройдите по следам предыдущих экспедиций и узнайте их судьбу. Познакомьтесь с участниками Экспедиции 33, которым предстоит работать вместе ради достижения их цели. Исследуйте чарующий мир, населенный сюрреалистическими врагами. Путешествуя по захватывающим пейзажам, от острова Многоликого до Забытого поля боя, открывайте скрытые задания и разгадывайте тайны. Находите союзников среди существ из легенд и встречайте уникальных компаньонов, используйте новые способы передвижения и раскрывайте тайные места на карте. Познакомьтесь с дебютной игрой от Sandfall Interactive, созданной на базе Unreal Engine 5. Вас ждут потрясающая графика и трогательный саундтрек.",
+    "shortDescription": "Возглавьте Экспедицию 33 и уничтожьте Художницу, чтобы она никогда больше не смогла нарисовать смерть. Исследуйте мир чудес, созданный на основе Прекрасной эпохи Франции, и побеждайте уникальных врагов в пошаговой ролевой игре с механикой реального времени.",
+    "topRank": null,
+    "popularityScore": 95,
+    "externalRanks": {
+      "steam": 1903340
+    },
+    "plotHint": "Возглавьте Экспедицию и уничтожьте Художницу, чтобы она никогда больше не смогла нарисовать смерть. Исследуйте мир чудес, созданный на основе Прекрасной эпохи Франции, и побеждайте уникальных врагов в пошаговой ролевой игре с механикой реал...",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_3487",
     "mode": "game",
     "titleRu": "Comix Zone",
@@ -10329,6 +11055,131 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_2443720",
+    "mode": "game",
+    "titleRu": "Concord",
+    "titleOriginal": "Concord™",
+    "alternativeTitles": [
+      "Конкорд",
+      "Concord™"
+    ],
+    "year": 2024,
+    "releaseDate": "2024-08-22",
+    "developers": [
+      "Firewalk Studios"
+    ],
+    "publishers": [
+      "PlayStation Publishing LLC"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action"
+    ],
+    "steamCategories": [
+      "Multi-player",
+      "PvP",
+      "Online PvP",
+      "Cross-Platform Multiplayer",
+      "Steam Achievements",
+      "In-App Purchases",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Steam Input API Support",
+      "Partial Controller Support",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Multi-player",
+      "PvP",
+      "Online PvP",
+      "Cross-Platform Multiplayer",
+      "Steam Achievements",
+      "In-App Purchases",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Steam Input API Support",
+      "Partial Controller Support",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian *",
+      "German *",
+      "Spanish - Spain *",
+      "Arabic",
+      "Japanese *",
+      "Korean *",
+      "Polish",
+      "Portuguese - Brazil *",
+      "Portuguese - Portugal",
+      "Russian",
+      "Simplified Chinese",
+      "Spanish - Latin America *",
+      "Thai",
+      "Traditional Chinese * languages with full audio support"
+    ],
+    "ageRating": null,
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 69,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 847,
+      "steamPositive": 586,
+      "steamNegative": 261
+    },
+    "price": {
+      "isFree": false,
+      "currency": null,
+      "initial": null,
+      "final": null,
+      "discountPercent": 0
+    },
+    "steamAppId": 2443720,
+    "steamUrl": "https://store.steampowered.com/app/2443720/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/2443720/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/header.jpg?t=1725380294",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/page_bg_raw.jpg?t=1725380294",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_b7c7b59cb6fe36f6e3455987d10b6fedeb9fef74.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_3502c22a275189bd384d998d09924eab23d2afd9.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_55aff2eee2e00a422578c70557565b45a272df23.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_4e5624d28e3a6ac832778d4c2a82b51934e83afd.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_9e865c1c45f79a649b245f331ee5ccf7ce7d0d30.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_7b5eb77923543c087209eedc2928cfae5c45f4ff.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_bcdafae877274b30c0ec8dcb86f253479805d38b.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_9d9015b745c2583f3e637559d8b0e5d85c551719.1920x1080.jpg?t=1725380294",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2443720/ss_c636357eb0307377049ce52df8197cb5060b97b8.1920x1080.jpg?t=1725380294"
+    ],
+    "description": "Издание Digital Deluxe Edition В издание входит: Игра Concord Набор «Фриганнер &quot;Северной звезды&quot;» 16 обликов персонажей. Набор Вейл «Монарх» Об игре В издание входит: Игра Concord™ Соберите свой отряд космических преступников-фриганнеров и играйте с друзьями в захватывающих PvP-режимах 5 на 5 по всей галактике Concord. Concord — это новый командный шутер от первого лица для PS5® и ПК*. Соберите собственный отряд фриганнеров из членов экипажа «Северной звезды», банды наемников — преступников и авантюристов. СОБЕРИТЕ СВОЮ КОМАНДУ Каждый фриганнер из экипажа «Северной звезды» обладает уникальными навыками, характером и способностями, подходящими для самых разных стилей игры. Собирайте собственные отряды фриганнеров, чтобы попробовать весь арсенал различных ролей в матчах, или уделите особое внимание любимым героям — только вам решать, когда играть своими персонажами и как влиять на матч. ПРОБУЙТЕ. ПЕРЕБИРАЙТЕ. ПОДСТРАИВАЙТЕ. Открывайте новые предметы для фриганнеров и больше узнавайте о персонажах, мирах и фракциях галактики Concord из путеводителя по галактике. По ходу игры вы также сможете открывать новые варианты фриганнеров — версии каждого из 16 фриганнеров с добавленными к их базовым способностям модификаторами боевых черт. Изучайте персонажей и подстраивайте их под свой стиль игры с помощью боевых черт. РЕЖИМЫ НА ЛЮБОЙ ВКУС В Concord вас ждет шесть разнообразных PvP-режимов с выполнением заданий и возрождением, чтобы вы могли сами выбрать степень напряжения в игре. ИСТОРИЯ ЭКИПАЖА «СЕВЕРНОЙ ЗВЕЗДЫ» Ваше путешествие по галактике Concord разворачивается вместе с историями членов экипажа «Северной звезды». Каждую неделю перед началом игры вам будут открываться новые видеозарисовки, которые расскажут историю героев и их приключений. ВСЕЛЕННАЯ БЕЗ ГРАНИЦ Экипаж «Северной звезды» и галактика Concord будут расти и расширяться посредством пострелизных обновлений. РАЗРАБОТАНО ДЛЯ PS5 И ПК Играйте вместе с друзьями на консолях PlayStation®5 и на ПК с помощью бесшовной кроссплатформенной игры. * Требуется учетная запись для PlayStation Network. Действуют условия обслуживания и Лицензионное соглашение PlayStation Network.",
+    "shortDescription": "ВСТУПИТЕ В ЭКИПАЖ «СЕВЕРНОЙ ЗВЕЗДЫ». Соберите свой отряд космических преступников-фриганнеров и играйте с друзьями в Concord по сети на PlayStation®5 и ПК*.",
+    "topRank": null,
+    "popularityScore": 67,
+    "externalRanks": {
+      "steam": 2443720
+    },
+    "plotHint": "ВСТУПИТЕ В ЭКИПАЖ «СЕВЕРНОЙ ЗВЕЗДЫ». Соберите свой отряд космических преступников-фриганнеров и играйте с друзьями в по сети на PlayStation®5 и ПК*.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -11849,6 +12700,155 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_1091500",
+    "mode": "game",
+    "titleRu": "Cyberpunk 2077",
+    "titleOriginal": "Cyberpunk 2077",
+    "alternativeTitles": [
+      "Киберпанк 2077",
+      "Cyberpunk",
+      "CP2077"
+    ],
+    "year": 2020,
+    "releaseDate": "2020-12-08",
+    "developers": [
+      "CD PROJEKT RED"
+    ],
+    "publishers": [
+      "CD PROJEKT RED"
+    ],
+    "platforms": [
+      "windows",
+      "mac"
+    ],
+    "genres": [
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian *",
+      "German *",
+      "Spanish - Spain *",
+      "Arabic",
+      "Czech",
+      "Hungarian",
+      "Japanese *",
+      "Korean *",
+      "Polish *",
+      "Portuguese - Brazil *",
+      "Russian *",
+      "Simplified Chinese *",
+      "Spanish - Latin America",
+      "Thai",
+      "Traditional Chinese",
+      "Turkish",
+      "Ukrainian * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": 86,
+    "ratings": {
+      "steamPositivePercent": 87,
+      "metacritic": 86
+    },
+    "votes": {
+      "steamReviews": 961020,
+      "steamPositive": 832936,
+      "steamNegative": 128084
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1091500,
+    "steamUrl": "https://store.steampowered.com/app/1091500/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/e9047d8ec47ae3d94bb8b464fb0fc9e9972b4ac7/header.jpg?t=1769690377",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/644eb087007768417a847e52c38eeaf34b57fd12/page_bg_raw.jpg?t=1769690377",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_2f649b68d579bf87011487d29bc4ccbfdd97d34f.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_0e64170751e1ae20ff8fdb7001a8892fd48260e7.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_af2804aa4bf35d4251043744412ce3b359a125ef.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_7924f64b6e5d586a80418c9896a1c92881a7905b.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_4eb068b1cf52c91b57157b84bed18a186ed7714b.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_b529b0abc43f55fc23fe8058eddb6e37c9629a6a.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_8640d9db74f7cad714f6ecfb0e1aceaa3f887e58.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_9284d1c5b248726760233a933dbb83757d7d5d95.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_4bda6f67580d94832ed2d5814e41ebe018ba1d9e.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_e5a94665dbfa5a30931cff2f45cdc0ebea9fcebb.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_429db1d013a0366417d650d84f1eff02d1a18c2d.1920x1080.jpg?t=1769690377",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/ss_872822c5e50dc71f345416098d29fc3ae5cd26c1.1920x1080.jpg?t=1769690377"
+    ],
+    "description": "Cyberpunk 2077: Ultimate Edition About the Game",
+    "shortDescription": "Cyberpunk 2077 is an open-world, action-adventure RPG set in the dark future of Night City — a dangerous megalopolis obsessed with power, glamor, and ceaseless body modification.",
+    "topRank": null,
+    "popularityScore": 100,
+    "externalRanks": {
+      "steam": 1091500
+    },
+    "plotHint": "open-world, action-adventure RPG set in the dark future of Night City — a dangerous megalopolis obsessed with power, glamor, and ceaseless body modification.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -16417,6 +17417,146 @@
     }
   },
   {
+    "id": "steam_1845910",
+    "mode": "game",
+    "titleRu": "Dragon Age: На страже Завесы",
+    "titleOriginal": "Dragon Age™: The Veilguard",
+    "alternativeTitles": [
+      "Dragon Age Veilguard",
+      "The Veilguard",
+      "Dragon Age: The Veilguard",
+      "Dragon Age™: The Veilguard"
+    ],
+    "year": 2024,
+    "releaseDate": "2024-10-30",
+    "developers": [
+      "BioWare"
+    ],
+    "publishers": [
+      "Electronic Arts"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Strategy"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "Remote Play on TV",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Strategy",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Steam Cloud",
+      "Remote Play on TV",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian",
+      "German *",
+      "Spanish - Spain",
+      "Japanese",
+      "Korean",
+      "Polish",
+      "Portuguese - Brazil",
+      "Simplified Chinese",
+      "Traditional Chinese",
+      "Russian * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 68,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 44627,
+      "steamPositive": 30472,
+      "steamNegative": 14155
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1845910,
+    "steamUrl": "https://store.steampowered.com/app/1845910/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1845910/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/header.jpg?t=1777414790",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/page_bg_raw.jpg?t=1777414790",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_a252774678fde933d4fbee722db855b731b0e627.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_94c6e6f26435702105b83e76804cd27710543fcc.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_e1cb223c41c80599db057d4101266b4da0d254d3.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_89d0a2e20fd17f28f78bffefc563d2ff246f0e65.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_951d3c6870be42c63c8baf0c1854be0365272798.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_90183c305ccf080f68a9d230a7f97884b7546ff6.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_f1c4c747397d2e5d6265dacfd767c3b27f64c533.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_5165ce61bcc15e27dc8a6217f2bb328cbe46b5c0.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_de8c665ef6664117d62f50368f46afe92e4a0c0c.1920x1080.jpg?t=1777414790",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1845910/ss_f6bd689f8a19e3ad57cb3afe53205ab4360f4d80.1920x1080.jpg?t=1777414790"
+    ],
+    "description": "Dragon Age™: The Veilguard Deluxe Edition Obtain a variety of weapons and armor, including curiosities from a forgotten era, with the Deluxe Edition. You’ll receive cosmetic weapon and armor sets for the Warrior, Mage, and Rogue classes as well as cosmetic armor sets and weapons for each of your 7 companions. That’s 3 armor sets for Rook, 6 weapons for Rook, 7 companion armor sets, and 7 companion weapons — saving Thedas never looked so good. 6 Weapon Appearances for Rook. Cosmetic only. 1 Warrior Armor Set Appearance for Rook. Cosmetic only. 1 Mage Armor Set Appearance for Rook. Cosmetic only. 1 Rogue Armor Set Appearance for Rook. Cosmetic only. 7 Weapon &amp; 7 Armor Set Appearances for Companions. Cosmetic only. About the Game Enter the world of Thedas, a vibrant land of rugged wilderness, treacherous labyrinths, and glittering cities – steeped in conflict and secret magics. Now, a pair of corrupt ancient gods have broken free from centuries of darkness and are hellbent on destroying the world. Thedas needs someone they can count on. Rise as Rook, Dragon Age’s newest hero. Be who you want to be and play how you want to play as you fight to stop the gods from blighting the world. But you can’t do this alone – the odds are stacked against you. Lead a team of seven companions, each with their own rich story to discover and shape, and together you will become The Veilguard. Unite the Veilguard and defy the gods in Dragon Age™: The Veilguard, an immersive single-player RPG. SAVE A BATTERED WORLD Enter Thedas, a vibrant world of rugged wilderness, treacherous labyrinths, and glittering cities. The world is teetering on a knife’s edge while corrupt gods unleash havoc across the continent. Nations war, and factions splinter. Who will you trust? From the Arlathan Forest to the back alleys of Minrathous, this is a broken world. Your actions will affect the fate of Thedas forever. Dramatic Single-Player Campaign — When corrupt Elven Gods threaten Thedas, lead the charge to save it. Rook isn’t afraid of a fight, no matter the odds. No matter the cost. Vibrant &amp; Diverse Environments — Enter a vivid fantasy world, and experience imaginative new locations as well as some you’ve heard of but never seen. Larger-than-life Foes — Battle darkspawn, demons from beyond the Veil, dragons that rule the skies, and unique enemies as you advance your quest and fight for Thedas’s future. UNITE THE VEILGUARD Unite a team of 7 companions, each with rich lives and deep backstories. These are characters to befriend and even fall in love with. Among them, an assassin, a necromancer, a detective, each and all bringing their own expertise and unique abilities to the fight. You are never alone — decide who to take into battle, and together face down demons, dragons, and corrupt gods. Recruit Distinct Companions — Your team is full of individuals with grim and wondrous histories, their own personal struggles and motivations, and rare skills that’ll help you survive. You’ll fight alongside Harding: The Scout, Neve: The Detective, Emmrich: The Necromancer, Taash: The Dragon Hunter, Davrin: The Warden, Bellara: The Veil Jumper, and Lucanis: The Mage Killer. Rich Companion Stories — Deepen relationships with each companion and learn more about them on your adventures in Thedas. Your choices in these stories will impact how they develop, and completing them might unlock powerful abilities. Create memories with your team that will deepen your experiences in Thedas and give you more to fight for. BECOME THE LEADER OTHERS BELIEVE IN Select from different races and combat classes, customize your appearance, choose your character’s backstory, and begin your journey as Rook, Dragon Age’s newest hero. The choice is yours. On your adventures, you’ll gain new abilities and discover unique, powerful artifacts to enhance your own combat style. Brace yourself: there are tough decisions to be made, allies to inspire, and a fight that needs every sword, staff, and bow you can muster. Be Who You Want To Be — Craft your personalized Rook with a robust character creator. Choose from a diverse set of appearance options for Human, Qunari, Dwarf, and Elf lineages. Choose Your Way To Play — Select from 3 classes (Warrior, Mage, and Rogue), each with 2 distinct weapon types and unique abilities you can select between. Experience new strategic depth as you combine fast-paced attacks, parries, and dodges with the companion ability wheel to exploit enemy weaknesses and seize victory with devastating combat combos. Customize a combat style that works for you. Deep RPG Progression — Level up your Rook and companions with their own skill trees. Choose perks and combat abilities as you climb towards more powerful specializations.",
+    "shortDescription": "Unite the Veilguard and defy the gods in Dragon Age™: The Veilguard, an immersive single-player RPG.",
+    "topRank": null,
+    "popularityScore": 86,
+    "externalRanks": {
+      "steam": 1845910
+    },
+    "plotHint": "Unite the and defy the gods in, an immersive single-player RPG.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_20209",
     "mode": "game",
     "titleRu": "Dragon Age: Inquisition",
@@ -18396,6 +19536,145 @@
     }
   },
   {
+    "id": "steam_1245620",
+    "mode": "game",
+    "titleRu": "Elden Ring",
+    "titleOriginal": "ELDEN RING",
+    "alternativeTitles": [
+      "Элден Ринг"
+    ],
+    "year": 2022,
+    "releaseDate": "2022-02-23",
+    "developers": [
+      "FromSoftware, Inc."
+    ],
+    "publishers": [
+      "FromSoftware, Inc.",
+      "Bandai Namco Entertainment"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Multi-player",
+      "PvP",
+      "Online PvP",
+      "Co-op",
+      "Online Co-op",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Camera Comfort",
+      "Custom Volume Controls",
+      "Playable without Timed Input",
+      "Save Anytime",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "RPG",
+      "Single-player",
+      "Multi-player",
+      "PvP",
+      "Online PvP",
+      "Co-op",
+      "Online Co-op",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Camera Comfort",
+      "Custom Volume Controls",
+      "Playable without Timed Input",
+      "Save Anytime",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French",
+      "Italian",
+      "German",
+      "Spanish - Spain",
+      "Japanese",
+      "Korean",
+      "Polish",
+      "Portuguese - Brazil",
+      "Russian",
+      "Simplified Chinese",
+      "Spanish - Latin America",
+      "Thai",
+      "Traditional Chinese",
+      "Arabic * languages with full audio support"
+    ],
+    "ageRating": "16+",
+    "metacritic": 94,
+    "ratings": {
+      "steamPositivePercent": 93,
+      "metacritic": 94
+    },
+    "votes": {
+      "steamReviews": 1144411,
+      "steamPositive": 1065162,
+      "steamNegative": 79249
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1245620,
+    "steamUrl": "https://store.steampowered.com/app/1245620/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg?t=1767883716",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/page_bg_raw.jpg?t=1767883716",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_943bf6fe62352757d9070c1d33e50b92fe8539f1.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_dcdac9e4b26ac0ee5248bfd2967d764fd00cdb42.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_3c41384a24d86dddd58a8f61db77f9dc0bfda8b5.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_e0316c76f8197405c1312d072b84331dd735d60b.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_ef61b771ee6b269b1f0cb484233e07a0bfb5f81b.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_b1b91299d7e4b94201ac840aa64de54d9f5cb7f3.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_510a02cf3045e841e180f2b77fb87545e0c8b59d.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_c494372930ca791bdc6221eca134f2270fb2cb9f.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_fa6b881ef7c30522012ab2b2b83001e79baee093.1920x1080.jpg?t=1767883716",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_c2baf8aada6140beee79d701d14043899e91af47.1920x1080.jpg?t=1767883716"
+    ],
+    "description": "ELDEN RING Shadow of the Erdtree Edition Купите прямо сейчас и получите уникальный бонус: – Особый жест из дополнения ELDEN RING — Shadow of the Erdtree Этот жест можно будет использовать в игре после выхода дополнения Shadow of the Erdtree. *Бонусный материал будет доступен в игре после выхода дополнения. *Игроки также смогут открыть его во время прохождения дополнения. ELDEN RING Shadow of the Erdtree Deluxe Edition ELDEN RING Shadow of the Erdtree Deluxe Edition включает: • игру ELDEN RING; • дополнение ELDEN RING — Shadow of the Erdtree. • цифровой артбук и оригинальный саундтрек ELDEN RING; • артбук и саундтрек ELDEN RING — Shadow of the Erdtree. Об игре НОВЫЙ ФЭНТЕЗИЙНЫЙ РОЛЕВОЙ БОЕВИК. Восстань, погасшая душа! Междуземье ждёт своего повелителя. Пусть благодать приведёт тебя к Кольцу Элден. • Огромный захватывающий мир Огромный мир с открытыми полями, множеством ситуаций и гигантскими подземельями, где сложные трёхмерные конструкции сочетаются воедино. Путешествуйте, преодолевайте смертельные опасности и радуйтесь успехам. • Создайте своего персонажа Вы можете не только изменить внешность персонажа, но также комбинировать оружие, броню и предметы. Развивайте персонажа по своему вкусу. Наращивайте мышцы или постигайте таинства магии. • Эпическая драма, выросшая из мифа Многослойная история, разбитая на фрагменты. Эпическая драма, в которой мысли персонажей пересекаются в Междуземье. • Уникальный сетевой режим, приближающий вас к другим игрокам Помимо многопользовательского режима, в котором вы напрямую подключаетесь к другим игрокам и путешествуете вместе, есть асинхронный сетевой режим, позволяющий ощутить присутствие других игроков.",
+    "shortDescription": "НОВЫЙ ФЭНТЕЗИЙНЫЙ РОЛЕВОЙ БОЕВИК. Восстань, погасшая душа! Междуземье ждёт своего повелителя. Пусть благодать приведёт тебя к Кольцу Элден.",
+    "topRank": null,
+    "popularityScore": 100,
+    "externalRanks": {
+      "steam": 1245620
+    },
+    "plotHint": "НОВЫЙ ФЭНТЕЗИЙНЫЙ РОЛЕВОЙ БОЕВИК. Восстань, погасшая душа! Междуземье ждёт своего повелителя. Пусть благодать приведёт тебя к Кольцу Элден.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_35233",
     "mode": "game",
     "titleRu": "Elite",
@@ -20173,6 +21452,137 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_1151340",
+    "mode": "game",
+    "titleRu": "Fallout 76",
+    "titleOriginal": "Fallout 76",
+    "alternativeTitles": [
+      "Фоллаут 76",
+      "F76"
+    ],
+    "year": 2020,
+    "releaseDate": "2020-04-13",
+    "developers": [
+      "Bethesda Game Studios"
+    ],
+    "publishers": [
+      "Bethesda Softworks"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "RPG"
+    ],
+    "steamCategories": [
+      "Multi-player",
+      "MMO",
+      "PvP",
+      "Online PvP",
+      "Co-op",
+      "Online Co-op",
+      "Steam Achievements",
+      "In-App Purchases",
+      "Chat Speech-to-text",
+      "Playable without Timed Input",
+      "Stereo Sound",
+      "Surround Sound",
+      "Partial Controller Support",
+      "Remote Play on Tablet"
+    ],
+    "steamTags": [
+      "RPG",
+      "Multi-player",
+      "MMO",
+      "PvP",
+      "Online PvP",
+      "Co-op",
+      "Online Co-op",
+      "Steam Achievements",
+      "In-App Purchases",
+      "Chat Speech-to-text",
+      "Playable without Timed Input",
+      "Stereo Sound",
+      "Surround Sound",
+      "Partial Controller Support",
+      "Remote Play on Tablet"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian *",
+      "German *",
+      "Spanish - Spain *",
+      "Japanese *",
+      "Korean",
+      "Polish",
+      "Traditional Chinese",
+      "Russian",
+      "Simplified Chinese",
+      "Spanish - Latin America",
+      "Portuguese - Brazil * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 72,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 139650,
+      "steamPositive": 100430,
+      "steamNegative": 39220
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 3999,
+      "final": 3999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1151340,
+    "steamUrl": "https://store.steampowered.com/app/1151340/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1151340/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/0bd68f952d2abb58a5710964b97f56584ef49f4d/header.jpg?t=1780927266",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/26e95d6239924c533e2afcb863ccde3cf4c87379/page_bg_raw.jpg?t=1780927266",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/0d9b8b403d3c5ffebf054d293ea46607b8e249ab/ss_0d9b8b403d3c5ffebf054d293ea46607b8e249ab.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/943155b933edb9fedb4c221185e885c98e7d03fe/ss_943155b933edb9fedb4c221185e885c98e7d03fe.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/5165184416a48a0f4e2739f16b25a597a096c221/ss_5165184416a48a0f4e2739f16b25a597a096c221.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/9c317dc153b2905648f0b78301cde36f17001327/ss_9c317dc153b2905648f0b78301cde36f17001327.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/0fecafd8ecd749f1e1d6b37e0137d36f237ad4ea/ss_0fecafd8ecd749f1e1d6b37e0137d36f237ad4ea.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/7b7aa311795c79554a0d8c95386beb37b30b021e/ss_7b7aa311795c79554a0d8c95386beb37b30b021e.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/1376bdab9a129e0f56a04059b3d490a1aacb4e85/ss_1376bdab9a129e0f56a04059b3d490a1aacb4e85.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/1d93d54320f1ba83a89b5ac944381a5edaf3ef18/ss_1d93d54320f1ba83a89b5ac944381a5edaf3ef18.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/2e2d22d2c71b8c4b3f2e1b08a00486775c6edfcf/ss_2e2d22d2c71b8c4b3f2e1b08a00486775c6edfcf.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/bc94723dc071ae824000d704abb8375edbc3d29e/ss_bc94723dc071ae824000d704abb8375edbc3d29e.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/ss_b26198ba17c91980b932b7f54a28036828d928e6.1920x1080.jpg?t=1780927266",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1151340/ss_3820f55642a38473932c7214b03afa87daae7c0b.1920x1080.jpg?t=1780927266"
+    ],
+    "description": "Infestations Appalachia’s familiar places can host some unfriendly faces with Infestations! In this free update for all Fallout 76 players, once-peaceful parts of Appalachia are now “infested” with tough enemies offering top-notch rewards for whoever can clear them out. Discover Infestations across the map to earn new 4-Star Legendary weapons and armor mods for clearing them out! (So long as you don't wind up the exterminated ones, that is.) Show off your domesticated Deathclaw Pet to your friends and even keep it comfortable with unique furnishings including a “Don’t Pet the Deathclaw” sign. Fallout 76: Deathclaw Pet Bundle Receive your very own cuddly, carnivous companion with Fallout 76: Deathclaw Pet Bundle! Show off your domesticated Deathclaw Pet to your friends and even keep it comfortable with unique furnishings including a “Don’t Pet the Deathclaw” sign. Deathclaw Claw Sharpener Viscera Bowl Ochre Plating (Deathclaw) Steel Plating (Deathclaw) Don't Pet the Deathclaw Sign Fallout 76 base game required, sold separately. Fallout 76: Deathclaw Pet Deluxe Edition Receive your very own cuddly, carnivorous companion with Fallout 76: Deathclaw Pet Deluxe Edition! Show off your domesticated Deathclaw Pet to your friends and even keep it comfortable with unique furnishings including a “Don’t Pet the Deathclaw” sign. Deathclaw Claw Sharpener Viscera Bowl Ochre Plating (Deathclaw) Steel Plating (Deathclaw) Don't Pet the Deathclaw Sign About the Game Bethesda Game Studios, the award-winning creators of Skyrim and Fallout 4, welcome you to Fallout 76. Twenty-five years after the bombs fell, you and your fellow Vault Dwellers—chosen from the nation’s best and brightest – emerge into post-nuclear America on Reclamation Day, 2102. Play solo or join together as you explore, quest, build, and triumph against the wasteland’s greatest threats. Explore a vast wasteland, devastated by nuclear war, in this open-world multiplayer addition to the Fallout story. Experience the largest, most dynamic world ever created in the legendary Fallout universe. Immersive Questlines and Engaging Characters Uncover the secrets of West Virginia by playing through an immersive main quest, starting from the moment you leave Vault 76. Befriend or betray new neighbors who have come to rebuild, and experience Appalachia through the eyes of its residents. Seasons Progress through each season and unlock free rewards like consumables, C.A.M.P. items and more by completing limited-time challenges. Multiplayer Roleplaying Create your character with the S.P.E.C.I.A.L system and forge your own path and reputation in a new and untamed wasteland with hundreds of locations. Whether you journey alone or with friends, a new and unique Fallout adventure awaits. Mountain Splendorland The story lives and breathes through the world of Fallout 76, which brings to life six distinct West Virginia regions. From the forests of Appalachia to the noxious crimson expanses of the Cranberry Bog, each area offers its own risks and rewards. A New American Dream Use the all-new Construction and Assembly Mobile Platform (C.A.M.P.) to build and craft anywhere in the world. Your C.A.M.P. will provide much-needed shelter, supplies, and safety. You can even set up shop to trade goods with other survivors. Fallout Worlds Play unique adventures in Appalachia with Fallout Worlds, which is an evolving set of features that give players the capability to play Fallout 76 in unique ways with customizable settings.",
+    "shortDescription": "Bethesda Game Studios welcome you to Fallout 76. Twenty-five years after the bombs fall, you and your fellow Vault Dwellers emerge into post-nuclear America. Explore a vast wasteland in this open-world multiplayer addition to the Fallout story.",
+    "topRank": null,
+    "popularityScore": 92,
+    "externalRanks": {
+      "steam": 1151340
+    },
+    "plotHint": "Bethesda Game Studios welcome you to. Twenty-five years after the bombs fall, you and your fellow Vault Dwellers emerge into post-nuclear America. Explore a vast wasteland in this open-world multiplayer addition to the story.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -30036,6 +31446,150 @@
     }
   },
   {
+    "id": "steam_553850",
+    "mode": "game",
+    "titleRu": "Helldivers 2",
+    "titleOriginal": "HELLDIVERS™ 2",
+    "alternativeTitles": [
+      "Хеллдайверс 2",
+      "HELLDIVERS™ 2"
+    ],
+    "year": 2024,
+    "releaseDate": "2024-02-07",
+    "developers": [
+      "Arrowhead Game Studios"
+    ],
+    "publishers": [
+      "PlayStation Publishing LLC"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action"
+    ],
+    "steamCategories": [
+      "Multi-player",
+      "Co-op",
+      "Online Co-op",
+      "Steam Achievements",
+      "In-App Purchases",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Chat Speech-to-text",
+      "Chat Text-to-speech",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Narrated Game Menus",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound",
+      "Partial Controller Support",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Multi-player",
+      "Co-op",
+      "Online Co-op",
+      "Steam Achievements",
+      "In-App Purchases",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Chat Speech-to-text",
+      "Chat Text-to-speech",
+      "Color Alternatives",
+      "Custom Volume Controls",
+      "Adjustable Difficulty",
+      "Narrated Game Menus",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Stereo Sound",
+      "Subtitle Options",
+      "Surround Sound"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian *",
+      "German *",
+      "Spanish - Spain *",
+      "Japanese *",
+      "Korean",
+      "Portuguese - Brazil *",
+      "Spanish - Latin America *",
+      "Polish",
+      "Portuguese - Portugal",
+      "Russian",
+      "Simplified Chinese *",
+      "Traditional Chinese * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 75,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 1151322,
+      "steamPositive": 865199,
+      "steamNegative": 286123
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 3999,
+      "final": 3999,
+      "discountPercent": 0
+    },
+    "steamAppId": 553850,
+    "steamUrl": "https://store.steampowered.com/app/553850/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/553850/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/f11c258b04a5e3e7771c1bab60f324ebf6c6c6fb/header.jpg?t=1779899567",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/56fcbe062798a21624ec45f1325089995883973f/page_bg_raw.jpg?t=1779899567",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_0c79f56fc7be1bd0102f2ca1c92c8f0900daf4fb.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_33e684e9cb2517af1599f0ca2b57d65ee82c2e51.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_8949ed7dd24a02d5ea13b08fc5c04fab400dc4bd.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_50afbbc4d811c38fe9f64c1fc8d7eb9d9da6d24c.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_cb276fe9f0b09683bdbc496f82b405dbe0ffa1f1.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_d0ac3830833a68d19d4a97c70aef0fba20bf0761.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_3b08a991443164a65f84f1bd9f1363e6c2ec4581.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_8f4af550ecbee08abb616b12cbb3896174dce153.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_3d075daf49e21731cd768ee2ea3adf63857f798c.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_bed14617fc317c2d2b59fdc4d8c4f29b8ddf7ed2.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_e45cb071779848564b3d2dcd7c3d38b7bd81cf9c.1920x1080.jpg?t=1779899567",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/553850/ss_5dde7ea6922800dfece2a3a319cb68e4f6f67949.1920x1080.jpg?t=1779899567"
+    ],
+    "description": "Digital Deluxe Edition Edition includes: ‘DP-53 Savior of the Free’ Armor Set. ‘Will of the People’ Cape. ‘MP-98 Knight’ Weapon. Super Citizen Status. Stratagem Hero Ship Game. Premium Warbond Token. About the Game The Galaxy’s Last Line of Offence. Enlist in the Helldivers and join the fight for freedom across a hostile galaxy in a fast, frantic, and ferocious third-person shooter. URGENT BROADCAST – SUPER EARTH ARMED FORCES Freedom. Peace. Democracy. Your Super Earth-born rights. The key pillars of our civilization. Of our very existence. But the war rages on. And everything is once again under threat. Join the greatest military force the galaxy has ever seen and make this a safe and free place to live. BECOME A LEGEND You will be assembled into squads of up to four Helldivers and assigned strategic missions. Watch each other’s back – friendly fire is an unfortunate certainty of war, but victory without teamwork is impossible. LOADOUTS Rain down freedom from above, sneak through enemy territory, or grit your teeth and charge head-first into the jaws of combat. How you deliver liberty is your choice; you’ll have access to a wide array of explosive firepower, life-saving armor and battle-changing stratagems… the jewel in every Helldiver’s arsenal. REQUISITION Super Earth recognises your hard work with valuable Requisition. Use it to access different rewards that benefit you, your squad, your destroyer ship and our overall war effort. THREATS Everything on every planet wants you dead. That’s what we’re dealing with. Each enemy has distinct and unpredictable characteristics, tactics, and behavior – but they all fight ferociously and without fear or morality. THE GALACTIC WAR Capturing enemy planets, defending against invasions, and completing missions will contribute to our overall effort. This war will be won or lost depending on the actions of everyone involved. We stand together, or we fall apart.",
+    "shortDescription": "The Galaxy’s Last Line of Offence. Enlist in the Helldivers and join the fight for freedom across a hostile galaxy in a fast, frantic, and ferocious third-person shooter.",
+    "topRank": null,
+    "popularityScore": 100,
+    "externalRanks": {
+      "steam": 553850
+    },
+    "plotHint": "The Galaxy’s Last Line of Offence. Enlist in the and join the fight for freedom across a hostile galaxy in a fast, frantic, and ferocious third-person shooter.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_32754",
     "mode": "game",
     "titleRu": "Her Story",
@@ -30614,6 +32168,138 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_990080",
+    "mode": "game",
+    "titleRu": "Hogwarts Legacy",
+    "titleOriginal": "Hogwarts Legacy",
+    "alternativeTitles": [
+      "Наследие Хогвартса"
+    ],
+    "year": 2023,
+    "releaseDate": "2023-02-09",
+    "developers": [
+      "Avalanche Software"
+    ],
+    "publishers": [
+      "Warner Bros. Games"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "In-App Purchases",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Custom Volume Controls",
+      "Narrated Game Menus",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "In-App Purchases",
+      "Adjustable Text Size",
+      "Camera Comfort",
+      "Custom Volume Controls",
+      "Narrated Game Menus",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Save Anytime",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian *",
+      "German *",
+      "Spanish - Spain *",
+      "Arabic",
+      "Japanese *",
+      "Korean",
+      "Polish",
+      "Portuguese - Brazil *",
+      "Russian",
+      "Simplified Chinese",
+      "Spanish - Latin America *",
+      "Traditional Chinese * languages with full audio support"
+    ],
+    "ageRating": null,
+    "metacritic": 83,
+    "ratings": {
+      "steamPositivePercent": 90,
+      "metacritic": 83
+    },
+    "votes": {
+      "steamReviews": 369946,
+      "steamPositive": 332260,
+      "steamNegative": 37686
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 990080,
+    "steamUrl": "https://store.steampowered.com/app/990080/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/990080/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/a3cdc6f40d97df8ac993679c2dd1edeb5222421e/header.jpg?t=1778797474",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/1adb0f634bdabb53eb3df99ca727d41d5d965a7d/page_bg_raw.jpg?t=1778797474",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/ss_725bf58485beb4aa37a3a69c1e2baa69bf3e4653.1920x1080.jpg?t=1778797474",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/ss_df93b5e8a183f7232d68be94ae78920a90de1443.1920x1080.jpg?t=1778797474",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/ss_94058497bf0f8fabdde17ee8d59bece609a60663.1920x1080.jpg?t=1778797474",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/ss_8e08976236d29b1897769257ac3c64e9264792a5.1920x1080.jpg?t=1778797474",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/ss_d4930d675af053dc1e61a876a34fc003e85e261f.1920x1080.jpg?t=1778797474"
+    ],
+    "description": "Hogwarts Legacy: Digital Deluxe Edition The Hogwarts Legacy Digital Deluxe Edition Includes: -Thestral Mount -Dark Arts Battle Arena -Dark Arts Cosmetic Set -Dark Arts Garrison Hat About the Game Hogwarts Legacy is an open-world action RPG set in the world first introduced in the Harry Potter books. Embark on a journey through familiar and new locations as you explore and discover magical beasts, customize your character and craft potions, master spell casting, upgrade talents and become the wizard you want to be. Experience Hogwarts in the 1800s. Your character is a student who holds the key to an ancient secret that threatens to tear the wizarding world apart. Make allies, battle Dark wizards, and ultimately decide the fate of the wizarding world. Your legacy is what you make of it. Live the Unwritten. Includes Haunted Hogsmeade Shop Quest which grants access to an additional dungeon, Shopkeeper’s Cosmetic Set, and in-game Hogsmeade shop. New Features Include: -Photo Mode -Talent Resets New cosmetic items now available to all players: The Glasses That Lived, Azkaban Prisoner Uniform and Coat, Onyx Hippogriff Mount, Felix Felicis Potion Recipe, Dark Wizard Brooms (2)",
+    "shortDescription": "Hogwarts Legacy is an immersive, open-world action RPG. Now you can take control of the action and be at the center of your own adventure in the wizarding world.",
+    "topRank": null,
+    "popularityScore": 96,
+    "externalRanks": {
+      "steam": 990080
+    },
+    "plotHint": "immersive, open-world action RPG. Now you can take control of the action and be at the center of your own adventure in the wizarding world.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -33736,6 +35422,137 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_1771300",
+    "mode": "game",
+    "titleRu": "Kingdom Come: Deliverance II",
+    "titleOriginal": "Kingdom Come: Deliverance II",
+    "alternativeTitles": [
+      "Kingdom Come 2",
+      "KCD2"
+    ],
+    "year": 2025,
+    "releaseDate": "2025-02-03",
+    "developers": [
+      "Warhorse Studios"
+    ],
+    "publishers": [
+      "Deep Silver"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Custom Volume Controls",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Custom Volume Controls",
+      "Playable without Timed Input",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "Italian",
+      "French *",
+      "German *",
+      "Spanish - Spain *",
+      "Czech *",
+      "Japanese *",
+      "Korean",
+      "Polish",
+      "Portuguese - Brazil",
+      "Simplified Chinese",
+      "Traditional Chinese",
+      "Turkish",
+      "Russian",
+      "Ukrainian * languages with full audio support"
+    ],
+    "ageRating": "18+",
+    "metacritic": 89,
+    "ratings": {
+      "steamPositivePercent": 94,
+      "metacritic": 89
+    },
+    "votes": {
+      "steamReviews": 189482,
+      "steamPositive": 178047,
+      "steamNegative": 11435
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1771300,
+    "steamUrl": "https://store.steampowered.com/app/1771300/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1771300/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/header.jpg?t=1777975568",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/page_bg_raw.jpg?t=1777975568",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_935ddb59f90bc2c21c706132cb9b446fe7851c19.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_709f3329562cd2cfe6db70bac908b3e72eaef83b.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_bd668f4d12300c019fa3fa73108aa62929fbf862.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_5580d672302cdc5f8b7161dc94f266341e61a182.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_27e006df1aef43380ae7db0d0b08538b26b49daa.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_e9a693d1027ec19c4fdbe5156abc80adac7039f8.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_293abf266a1847da65bb633b9e76e851715a4b58.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_77abcbc203685b38a50a8cee383bd7f47488f090.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_9013f64f459b341d91a4e65bcad2e9c78a9f61af.1920x1080.jpg?t=1777975568",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/ss_b863918a1655050ee6200846cf8abb71137fa13e.1920x1080.jpg?t=1777975568"
+    ],
+    "description": "",
+    "shortDescription": "A thrilling story-driven action RPG, with a rich open world, set in 15th century Medieval Europe. Experience the ultimate medieval adventure - through the eyes of young Henry - as you embark on a journey of epic proportions.",
+    "topRank": null,
+    "popularityScore": 93,
+    "externalRanks": {
+      "steam": 1771300
+    },
+    "plotHint": "A thrilling story-driven action RPG, with a rich open world, set in 15th century Medieval Europe. Experience the ultimate medieval adventure - through the eyes of young Henry - as you embark on a journey of epic proportions.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -55014,6 +56831,138 @@
     }
   },
   {
+    "id": "steam_1643320",
+    "mode": "game",
+    "titleRu": "S.T.A.L.K.E.R. 2: Сердце Чернобыля",
+    "titleOriginal": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+    "alternativeTitles": [
+      "STALKER 2",
+      "Сталкер 2",
+      "S.T.A.L.K.E.R. 2: Heart of Chornobyl"
+    ],
+    "year": 2024,
+    "releaseDate": "2024-11-19",
+    "developers": [
+      "GSC Game World"
+    ],
+    "publishers": [
+      "GSC Game World (worldwide)",
+      "SEGA (Japan)",
+      "4Divinity (China and South East Asia)"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Steam Trading Cards",
+      "Steam Workshop",
+      "DualSense Controller Support",
+      "Partial Controller Support",
+      "Steam Cloud",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Steam Trading Cards",
+      "Steam Workshop",
+      "DualSense Controller Support",
+      "Partial Controller Support",
+      "Steam Cloud",
+      "HDR available",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French",
+      "Italian",
+      "German",
+      "Spanish - Spain",
+      "Japanese",
+      "Korean",
+      "Polish",
+      "Portuguese - Brazil",
+      "Russian",
+      "Simplified Chinese",
+      "Traditional Chinese",
+      "Ukrainian *",
+      "Arabic",
+      "Czech",
+      "Spanish - Latin America",
+      "Turkish",
+      "Serbian * languages with full audio support"
+    ],
+    "ageRating": null,
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 80,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 134830,
+      "steamPositive": 107556,
+      "steamNegative": 27274
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 5999,
+      "final": 5999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1643320,
+    "steamUrl": "https://store.steampowered.com/app/1643320/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1643320/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/3e525c6969728ec1641c5834e660472357fcd4cf/header.jpg?t=1776173087",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/page_bg_raw.jpg?t=1776173087",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_b26b36c06b2e1bb637d616c7b0a2226c18e3d467.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_8589bf4f88762910952fd0f1c3f6072d31f27aad.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_8d05d42210c72480ca9124af1f5e37c72d0b8616.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_9e6718fbf965951c519a1fbe300bcfce85b2ea2f.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_f58915a4b031270732320aaba0f6905c50ed14c3.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_33db24b3dddd9e823e6556a739141c3f9ffd45e8.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_3e81b58486b73000a8e3fde80c6843d6215bedef.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_1fe5db2c19c1deb43e442149760327db8b6876bd.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_3d1db6aef02f006c4876ab6c5286128a411b93c8.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_391a21364954e497894310f1980947ebf6f3182b.1920x1080.jpg?t=1776173087",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1643320/ss_bb0366c211125a7cfeeafe14d34f4acb20efc706.1920x1080.jpg?t=1776173087"
+    ],
+    "description": "S.T.A.L.K.E.R. 2: Cost of Hope Expansion Launching Summer 2026 ULTIMATE EDITION Ultimate Edition for S.T.A.L.K.E.R. 2: Heart of Chornobyl provides all the Deluxe bonuses, including weapon &amp; armor sets and Bonus Side Quest! Weapons: Rhino Revolver “Model Competitor” (transferable to multiplayer) Viper “Monolith” SMG (transferable to multiplayer) Fora-221 Assault Rifle, “Lullaby” (transferable to multiplayer) D12 Smoothbore Shotgun, “Margach D12MT” (transferable to multiplayer) Suits: Ward Exoskeleton “PSZ-21W Shturm” (transferable to multiplayer) Season Pass , granting 2 additional expansions and any future DLC. Official Artbook and Original Soundtrack Set DELUXE EDITION Deluxe bonuses for S.T.A.L.K.E.R. 2: Heart of Chornobyl provide unique in-game items that will wait for you in the Zone: Weapons: PTM pistol “Monolith” (single campaign only) AR416 “Monolith” (transferable to multiplayer) Integral-A SMG “Riemann” (single campaign only) Lavina SA Assault Rifle &quot;Gabion&quot; (single campaign only) M701 Sniper Rifle “Hunter” (transferable to multiplayer) M860 Shotgun “Monolith” (transferable to multiplayer) Suits: SEVA Suit, “Wanderer” modification (transferable to multiplayer) SSP-100M SIRCAA Suit (transferable to multiplayer) Ultra Lightweight Mercenary suit (single campaign only) Bonus Side Quest Official Artbook and Original Soundtrack Set About the Game Discover the legendary S.T.A.L.K.E.R. universe and experience: Unique gameplay built on a blend of FPS, horror, and immersive sim It is a non-linear story, with a variety of paths that lead to one of the several endings Benchmark-setting graphics developed using cutting-edge photogrammetry and scanning technologies Advanced artificial intelligence systems that will keep engaged even the most hard-boiled players Immersive survival mechanics like hunger, sleeping, bleeding, radiation effects that enrich the gameplay Dynamic day-night cycle and weather will add even more realism to the gameplay experience Mod support gives the freedom to the creative stalker to extend and enrich the game universe Multiplayer mode, will be added after release as a free update Chornobyl Exclusion Zone has changed dramatically after the second massive explosion in the year 2006. Violent mutants, deadly anomalies, and warring factions have made the Zone a very tough place to survive. Nevertheless, artifacts of unbelievable value attracted many people called S.T.A.L.K.E.R.s, who entered the Zone for their own risk, striving to make a fortune out of it or even to find the Truth concealed in the Heart of Chornobyl. EPIC NONLINEAR STORY IN SEAMLESS OPEN WORLD Take over a role of the lone stalker and explore photorealistic seamless open world in a 64-km² radioactive zone with a variety of environments that reveal post-apocalyptic atmosphere from different angles. Make your way through the Zone to define your destiny as you choose your paths within highly branching epic story. VARIETY OF ENEMIES AND HUNDREDS OF WEAPON COMBINATIONS Meet members of different factions deciding who of them worth your friendship and who deserve a bullet. Engage intense gunfights with a variety of enemies that follow different tactics trying to outsmart you. Choose your preferable firearms from 30+ types of weapons with numerous modifications that allow creating hundreds of distinctive lethal combinations. LEGENDARY MUTANTS WITH DIFFERENT BEHAVIOUR MODELS Prepare to encounter horrifying mutated creatures that will try to slaughter you following different behaviour model. Each mutant may appear in different subtypes which makes their behaviour less predictible. Truly extreme danger represent regions with lairs with numerous mutants hunting in large groups. ARTIFACTS OF INCREDIBLE VALUE AND UNFORGIVING ANOMALIES The most valuable artifacts and secrets of the Zone are hidden in the most dangerous places. Beware of the hazardous anomalies and unique devastating arch-anomalies as you hunt for highly valuable artifacts scattered around the Zone. Will you dare to unveil the mysteries of the Zone that took lives of many others before you? GOOD HUNTING, STALKER!",
+    "shortDescription": "Discover the vast Chornobyl Exclusion Zone full of dangerous enemies, deadly anomalies and powerful artifacts. Unveil your own epic story as you make your way to the Heart of Chornobyl. Make your choices wisely, as they will determine your fate in the end.",
+    "topRank": null,
+    "popularityScore": 91,
+    "externalRanks": {
+      "steam": 1643320
+    },
+    "plotHint": "Discover the vast Exclusion Zone full of dangerous enemies, deadly anomalies and powerful artifacts. Unveil your own epic story as you make your way to the of. Make your choices wisely, as they will determine your fate in the end.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
     "id": "tgdb_899",
     "mode": "game",
     "titleRu": "S.T.A.L.K.E.R.: Call of Pripyat",
@@ -58302,6 +60251,126 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_2124490",
+    "mode": "game",
+    "titleRu": "Silent Hill 2",
+    "titleOriginal": "SILENT HILL 2",
+    "alternativeTitles": [
+      "Silent Hill 2 Remake",
+      "Сайлент Хилл 2"
+    ],
+    "year": 2024,
+    "releaseDate": "2024-10-06",
+    "developers": [
+      "Bloober Team SA"
+    ],
+    "publishers": [
+      "KONAMI"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Gamepad Recommended",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Gamepad Recommended",
+      "DualShock Controller Support",
+      "DualSense Controller Support",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French",
+      "Italian",
+      "German",
+      "Spanish - Spain",
+      "Spanish - Latin America",
+      "Polish",
+      "Russian",
+      "Simplified Chinese",
+      "Traditional Chinese",
+      "Japanese *",
+      "Korean",
+      "Ukrainian",
+      "Portuguese - Brazil * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 95,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 62785,
+      "steamPositive": 59450,
+      "steamNegative": 3335
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 6999,
+      "final": 2799,
+      "discountPercent": 60
+    },
+    "steamAppId": 2124490,
+    "steamUrl": "https://store.steampowered.com/app/2124490/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/2124490/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/header.jpg?t=1744248682",
+    "backdropUrl": "https://store.akamai.steamstatic.com/images/storepagebackground/app/2124490?t=1744248682",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_1fdda21610fa23d0ce20b5c44fab8aebd509c5cb.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_b20363454a190d737e5ff8e6410d66f0034bd807.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_7ba4f2993853179e3049a7f56d7b690b892f33bf.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_002b780c7a34d50f186456adcc87dc6012741f97.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_b400fbaacc414f558551594c046ec2a941260ad7.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_313dec3dcd7aa9063de8ed68a9cc61901365deef.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_1a5e45381c91088531798b409888a147bc3b30c1.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_d6d0a31e9b571efdd67d9a139af355756f021483.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_c50c394aa90d2107597e3e52e498553a2dfb66a0.1920x1080.jpg?t=1744248682",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_86254630a747666bfa3680b7be4bcbeef0026244.1920x1080.jpg?t=1744248682"
+    ],
+    "description": "Deluxe Edition [Deluxe Edition - Contents] ・SILENT HILL 2 ・Digital Artbook ・Digital Soundtrack ・Pyramid Head Mask（pizza box） The mask is a skin that applies to James (the main character) in the game. About the Game Having received a letter from his deceased wife, James heads to where they shared so many memories, in the hope of seeing her one more time: Silent Hill. There, by the lake, he finds a woman eerily similar to her... &quot;My name… is Maria,&quot; the woman smiles. Her face, her voice... She's just like her. Experience a master-class in psychological horror―lauded as the best in the series―on the latest hardware with chilling visuals and visceral sounds. High-end Graphics and Sound With ray tracing and other cutting-edge technical enhancements, the world of SILENT HILL and its unsettling ambiance is even realer than before. And with the inclusion of new, immersive soundscapes, you'll feel like you're standing in the thick of it. Larger Environments Explore locations and buildings that were once inaccessible, or are newly added in the remake. Enjoy the same acclaimed story, even while you experience the town of Silent Hill with fresh eyes across an expanded map. Over-the-shoulder Camera The remake moves from the original's fixed-camera viewpoints to an over-the-shoulder perspective, putting you closer to what James sees, for a more thrilling, more immersive experience as you explore the town and come face-to-face with monsters. Evolved Combat Gameplay Familiar weapons like the steel pipe and handgun make their return, but now with an updated combat system. Avoid attacks with carefully timed dodges, aim down sights, and more, making monster encounters more engaging and nerve-wracking than ever.",
+    "shortDescription": "Investigating a letter from his late wife, James returns to where they made so many memories - Silent Hill. What he finds is a ghost town, prowled by disturbing monsters and cloaked in deep fog. Confront the monsters, solve puzzles, and search for traces of your wife in this remake of SILENT HILL 2.",
+    "topRank": null,
+    "popularityScore": 88,
+    "externalRanks": {
+      "steam": 2124490
+    },
+    "plotHint": "Investigating a letter from his late wife, James returns to where they made so many memories -. What he finds is a ghost town, prowled by disturbing monsters and cloaked in deep fog. Confront the monsters, solve puzzles, and search for trac...",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -63249,6 +65318,122 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_1716740",
+    "mode": "game",
+    "titleRu": "Starfield",
+    "titleOriginal": "Starfield",
+    "alternativeTitles": [
+      "Старфилд",
+      "Star Field"
+    ],
+    "year": 2023,
+    "releaseDate": "2023-09-04",
+    "developers": [
+      "Bethesda Game Studios"
+    ],
+    "publishers": [
+      "Bethesda Softworks"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "RPG"
+    ],
+    "steamCategories": [
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Color Alternatives",
+      "Playable without Timed Input",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "RPG",
+      "Single-player",
+      "Steam Achievements",
+      "Full controller support",
+      "Steam Trading Cards",
+      "Color Alternatives",
+      "Playable without Timed Input",
+      "Stereo Sound",
+      "Surround Sound",
+      "Steam Cloud",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French *",
+      "Italian",
+      "German *",
+      "Spanish - Spain *",
+      "Japanese *",
+      "Polish",
+      "Portuguese - Brazil",
+      "Simplified Chinese * languages with full audio support"
+    ],
+    "ageRating": "17+",
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 57,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 174410,
+      "steamPositive": 99178,
+      "steamNegative": 75232
+    },
+    "price": {
+      "isFree": false,
+      "currency": "USD",
+      "initial": 4999,
+      "final": 4999,
+      "discountPercent": 0
+    },
+    "steamAppId": 1716740,
+    "steamUrl": "https://store.steampowered.com/app/1716740/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1716740/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/header.jpg?t=1778168061",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/page_bg_raw.jpg?t=1778168061",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_4887dc140a637684ddcfca518458668409f946dc.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_b2821283cb140cd5a6289a8160016b6a60d8f96e.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_68f15d580bf91971f637be5e464bc803482d78f7.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_aae99c177004bb5ec653d2fcb65a5d30489ec7b8.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_c8594798fadfd8e042b2fc8afff7bcf4872c5198.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_2288919a390c0147b7d2226354a61452016fd087.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_45c1dc3cd5399eb16230ed85dab25ce945c46726.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_930710a45c08eaa4c10fa0be7c0663900e1d32f3.1920x1080.jpg?t=1778168061",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1716740/ss_177d2492278d3ccc5b1c58bc96dcb63aacddb1a5.1920x1080.jpg?t=1778168061"
+    ],
+    "description": "STARFIELD DIGITAL PREMIUM EDITION Premium Edition includes: - Starfield Base Game - Terran Armada Story DLC - Shattered Space Story Expansion - 1,000 Creation Credits - Constellation Skin Pack: Equinox Laser Rifle, Spacesuit, Helmet and Boost Pack - Access to Starfield Digital Artbook &amp; Digital Original Soundtrack Buzz About the Game Starfield is the first new universe in over 25 years from Bethesda Game Studios, the award-winning creators of The Elder Scrolls V: Skyrim and Fallout 4. In this next generation role-playing game set amongst the stars, create any character you want and explore with unparalleled freedom as you embark on an epic journey to answer humanity’s greatest mystery. In the year 2330, humanity has ventured beyond our solar system, settling new planets, and living as a spacefaring people. You will join Constellation – the last group of space explorers seeking rare artifacts throughout the galaxy – and navigate the vast expanse of space in Bethesda Game Studios’ biggest and most ambitious game. Tell Your story In Starfield the most important story is the one you tell with your character. Start your journey by customizing your appearance and deciding your Background and Traits. Will you be an experienced explorer, a charming diplomat, a stealthy cyber runner, or something else entirely? The choice is yours. Decide who you will be and what you will become. Explore Outer Space Venture through the stars and explore more than 1000 planets. Navigate bustling cities, explore dangerous bases, and traverse wild landscapes. Meet and recruit a memorable cast of characters, join in the adventures of various factions, and embark on quests across the Settled Systems. A new story or experience is always waiting to be discovered. Captain the Ship Of Your Dreams Pilot and command the ship of your dreams. Personalize the look of your ship, modify critical systems including weapons and shields, and assign crew members to provide unique bonuses. In deep space you will engage in high-stakes dogfights, encounter random missions, dock at star stations, and even board and commandeer enemy ships to add to your collection. Discover, Collect, Build Explore planets and discover the fauna, flora, and resources needed to craft everything from medicine and food to equipment and weapons. Build outposts and hire a crew to passively extract materials and establish cargo links to transfer resources between them. Invest these raw materials into research projects to unlock unique crafting recipes. Lock and Load Space can be a dangerous place. A refined combat system gives you the tools to deal with any situation. Whether you prefer long-range rifles, laser weapons, or demolitions, each weapon type can be modified to complement your playstyle. Zero G environments add a chaotic spectacle to combat, while boost packs give players freedom to maneuver like never before.",
+    "shortDescription": "Starfield is the first new universe in 25 years from Bethesda Game Studios, the award-winning creators of The Elder Scrolls V: Skyrim and Fallout 4.",
+    "topRank": null,
+    "popularityScore": 93,
+    "externalRanks": {
+      "steam": 1716740
+    },
+    "plotHint": "first new universe in 25 years from Bethesda Game Studios, the award-winning creators of The Elder Scrolls V: Skyrim and Fallout 4.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []
@@ -70039,6 +72224,123 @@
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images"
+      ],
+      "verified": true,
+      "missingFields": []
+    }
+  },
+  {
+    "id": "steam_1372880",
+    "mode": "game",
+    "titleRu": "The Day Before",
+    "titleOriginal": "The Day Before",
+    "alternativeTitles": [
+      "Дэй Бифор"
+    ],
+    "year": 2023,
+    "releaseDate": "2023-12-06",
+    "developers": [
+      "FNTASTIC"
+    ],
+    "publishers": [
+      "Mytona Fntastic"
+    ],
+    "platforms": [
+      "windows"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Massively Multiplayer",
+      "Early Access"
+    ],
+    "steamCategories": [
+      "Multi-player",
+      "MMO",
+      "PvP",
+      "Online PvP",
+      "Co-op",
+      "Online Co-op",
+      "Family Sharing"
+    ],
+    "steamTags": [
+      "Action",
+      "Adventure",
+      "Massively Multiplayer",
+      "Early Access",
+      "Multi-player",
+      "MMO",
+      "PvP",
+      "Online PvP",
+      "Co-op",
+      "Online Co-op",
+      "Family Sharing"
+    ],
+    "supportedLanguages": [
+      "English *",
+      "French",
+      "Italian",
+      "German",
+      "Spanish - Spain",
+      "Portuguese - Brazil",
+      "Traditional Chinese",
+      "Simplified Chinese *",
+      "Korean",
+      "Polish",
+      "Russian *",
+      "Japanese",
+      "Ukrainian * languages with full audio support"
+    ],
+    "ageRating": null,
+    "metacritic": null,
+    "ratings": {
+      "steamPositivePercent": 16,
+      "metacritic": null
+    },
+    "votes": {
+      "steamReviews": 23203,
+      "steamPositive": 3639,
+      "steamNegative": 19564
+    },
+    "price": {
+      "isFree": false,
+      "currency": null,
+      "initial": null,
+      "final": null,
+      "discountPercent": 0
+    },
+    "steamAppId": 1372880,
+    "steamUrl": "https://store.steampowered.com/app/1372880/",
+    "posterUrl": "https://cdn.cloudflare.steamstatic.com/steam/apps/1372880/library_600x900_2x.jpg",
+    "headerUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/header.jpg?t=1702943333",
+    "backdropUrl": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/page_bg_raw.jpg?t=1702943333",
+    "screenshots": [
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_351dcf9d6362da4ce432deaebbfb991c36c48414.1920x1080.jpg?t=1702943333",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_a4b0c8866a05df2acf9be3c8eb1e65c2a758e490.1920x1080.jpg?t=1702943333",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_ca644f7203c45c1022e4bb32e8f1ae3eded3fb67.1920x1080.jpg?t=1702943333",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_d89c13c99d500b884ddd2ecd0a3435d120491082.1920x1080.jpg?t=1702943333",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_4f5d654ee44adeacd3d28bec7a07aa49dbf6300e.1920x1080.jpg?t=1702943333",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_4705b95014715242db949b272461639e530f5be2.1920x1080.jpg?t=1702943333",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1372880/ss_011edffb9d2f3f79b046e46700af9015d4cfa9a7.1920x1080.jpg?t=1702943333"
+    ],
+    "description": "The Day Before предлагает уникальное переосмысленное путешествие в постапокалиптический открытый мир в жанре MMO с элементами выживания, действие которой разворачивается в наши дни после разрушительной глобальной пандемии. ВЫЖИВИТЕ ЛЮБОЙ ЦЕНОЙ Сражайтесь с другими игроками за выживание. Выживайте в борьбе со смертоносными зараженными.. Собирайте ценный лут. ИССЛЕДУЙТЕ ПОСТАПОКАЛИПТИЧЕСКИЙ МИР Исследуйте красивый и детализированный мегаполис Нью-Форчун Сити. Входите в небоскребы, бизнес-центры, огромные моллы, грандиозные стадионы и другие здания. Отправляйтесь в дальние окрестности Нью-Форчун Сити на потрясающе детализированных машинах. ВОССТАНОВИТЕ ОБЩЕСТВО Присоединитесь к колонии выживших Вудберри, чтобы вместе восстановить общество. Торгуйте предметами в Вудберри и сохраняйте свои богатства в личном хранилище. Постройте собственную дачу в безопасной зоне.",
+    "shortDescription": "The Day Before предлагает уникальное переосмысленное путешествие в постапокалиптический открытый мир в жанре MMO с элементами выживания, действие которой разворачивается в наши дни после разрушительной глобальной пандемии.",
+    "topRank": null,
+    "popularityScore": 83,
+    "externalRanks": {
+      "steam": 1372880
+    },
+    "plotHint": "предлагает уникальное переосмысленное путешествие в постапокалиптический открытый мир в жанре MMO с элементами выживания, действие которой разворачивается в наши дни после разрушительной глобальной пандемии.",
+    "allowedInGame": true,
+    "notes": [
+      "reddit_pack_catalog_import",
+      "steam_store_enriched"
+    ],
+    "dataQuality": {
+      "source": [
+        "reddit_comment_pack_answer_ref",
+        "steam_store_appdetails",
+        "steam_reviews"
       ],
       "verified": true,
       "missingFields": []

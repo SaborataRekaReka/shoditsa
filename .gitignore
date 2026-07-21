@@ -8,6 +8,7 @@ dist-yandex.zip
 *.log
 test-results/
 playwright-report/
+/var/
 .tmp/
 tmp/
 archive/local/
