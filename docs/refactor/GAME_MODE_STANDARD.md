@@ -9,5 +9,6 @@
 5. Если стандартной карточки попытки недостаточно, зарегистрировать renderer в `ATTEMPT_CARD_BY_MODE`; не создавать отдельный game screen.
 6. Запускать режим через `POST /api/v1/games/start` с `mode` и при необходимости `variantKey`. Экран настройки — `/games/:mode`, серверная игра — `/sessions/:sessionId`, автономная — `/play/:mode`.
 7. Выполнить `npm run lint`, `npm test`, `npm run build` и проверить, что production bundle не содержит закрытых answer datasets.
+8. Проверить титульный экран, карточку и игровую сессию по [каноническому дизайн-гайду](../UI_DESIGN_GUIDELINES.md). Новый режим переиспользует общий shell, кнопки, билетные паттерны и responsive-контракт.
 
 Запрещённые обходные пути: собственный localStorage-формат режима, отдельный history/router, клиентский выбор правильного ответа в hosted runtime, ручные копии списка режимов и публикация answer JSON.

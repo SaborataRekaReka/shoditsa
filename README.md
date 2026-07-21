@@ -62,6 +62,7 @@ npm run content:media:migrate -- --target C:\path\to\media --apply
 
 - [Архитектура](docs/backend/ARCHITECTURE.md)
 - [Стандарт добавления игрового режима](docs/refactor/GAME_MODE_STANDARD.md)
+- [Канонический дизайн-гайд интерфейса](docs/UI_DESIGN_GUIDELINES.md)
 - [База данных](docs/backend/DATABASE.md)
 - [API](docs/backend/API.md)
 - [Импорт контента](docs/backend/CONTENT_IMPORT.md)

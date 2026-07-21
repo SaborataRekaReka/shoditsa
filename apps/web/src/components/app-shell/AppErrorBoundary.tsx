@@ -17,7 +17,7 @@ export class AppErrorBoundary extends Component<{ children: ReactNode }, { error
       <h1>Не удалось открыть экран</h1>
       <p>Обновите страницу. Если ошибка повторится, сообщите её идентификатор поддержке.</p>
       <code>{this.state.error.message}</code>
-      <button className="primary-button" onClick={() => window.location.reload()}>Обновить</button>
+      <button className="ui-button ui-button--primary" onClick={() => window.location.reload()}>Обновить</button>
     </main>
   }
 }

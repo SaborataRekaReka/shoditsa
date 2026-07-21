@@ -1,9 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type { DanetkiRoomMode, DashboardResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { ArrowLeft, ChevronLeft, Clock3, HelpCircle, LoaderCircle, Play, Sparkles, UserRound, Users } from 'lucide-react'
+import { ChevronLeft, Clock3, HelpCircle, LoaderCircle, Play, Sparkles, UserRound, Users } from 'lucide-react'
 import { api, ApiClientError } from '../../api/client'
-import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
+import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOption, GameOptionSelect } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
@@ -105,9 +105,13 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
   </>
 }
 
-export function DanetkiJoinPage({ token, onHome, onJoined }: {
+export function DanetkiJoinPage({ token, onHome, onArchive, onStats, onRules, onReview, onJoined }: {
   token: string
   onHome: () => void
+  onArchive: () => void
+  onStats: () => void
+  onRules: () => void
+  onReview: () => void
   onJoined: (session: GameSessionSnapshot) => void
 }) {
   const [displayName, setDisplayName] = useState('')
@@ -126,16 +130,17 @@ export function DanetkiJoinPage({ token, onHome, onJoined }: {
   }
   const error = preview.error ?? join.error
 
-  return <div className="danetki-entry">
-    <header className="danetki-nav"><button type="button" onClick={onHome} aria-label="На главную"><ArrowLeft /></button><button type="button" className="danetki-brand" onClick={onHome}>Сходится!</button></header>
-    <main className="danetki-join">
-      {preview.isLoading && <section><LoaderCircle className="danetki-spinner" /><h1>Проверяем приглашение…</h1></section>}
-      {error && <section className="is-error"><HelpCircle /><h1>Не получилось войти в комнату</h1><p>{messageFor(error)}</p><button type="button" onClick={onHome}>На главную</button></section>}
-      {preview.data && !join.isSuccess && <section>
+  return <>
+    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
+    <main className="danetki-join-screen">
+      <ScreenBack onBack={onHome} label="На главную" />
+      {preview.isLoading && <section className="danetki-join-card"><LoaderCircle className="danetki-spinner" /><h1>Проверяем приглашение…</h1></section>}
+      {error && <section className="danetki-join-card is-error"><HelpCircle /><h1>Не получилось войти в комнату</h1><p>{messageFor(error)}</p><ActionButton type="button" variant="secondary" onClick={onHome}>На главную</ActionButton></section>}
+      {preview.data && !join.isSuccess && <section className="danetki-join-card">
         <Sparkles /><span>Приглашение в расследование</span><h1>{preview.data.title}</h1>
         <p>Вас приглашает <strong>{preview.data.ownerName}</strong>. В комнате {preview.data.participants} из {preview.data.capacity} участников.</p>
-        <form onSubmit={submit}><label>Как вас показывать другим игрокам<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><button type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</button></form>
+        <form onSubmit={submit}><label>Как вас показывать другим игрокам<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><ActionButton type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</ActionButton></form>
       </section>}
     </main>
-  </div>
+  </>
 }

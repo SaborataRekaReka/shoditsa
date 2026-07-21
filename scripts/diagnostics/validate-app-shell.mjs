@@ -151,6 +151,27 @@ const sourceChecks = [
       ['profile header control', /className=\{`header-profile/],
       ['footer component', /function AppFooter\s*\(/],
       ['current economy view', /<EconomyView\s*\/>/],
+      ['shared back and Escape control', /function ScreenBack[^]*event\.key !== 'Escape'[^]*screen-back-row/],
+    ],
+  },
+  {
+    path: 'apps/web/src/features/danetki/DanetkiEntryPages.tsx',
+    required: [
+      ['shared invite shell', /function DanetkiJoinPage[^]*<AppHeader[^]*<ScreenBack/],
+      ['shared invite action', /danetki-join-card[^]*<ActionButton[^]*type="submit"/],
+    ],
+  },
+  {
+    path: 'apps/web/src/features/commerce/SpecialsScreen.tsx',
+    required: [
+      ['shared specials back control', /function SpecialsScreen[^]*<ScreenBack/],
+    ],
+  },
+  {
+    path: 'apps/web/src/features/private-games/CreateGameScreen.tsx',
+    required: [
+      ['shared corporate back control', /function CreateGameScreen[^]*<ScreenBack/],
+      ['shared corporate actions', /ui-button ui-button--primary corporate-hero__action[^]*<ActionButton[^]*type="submit"/],
     ],
   },
   {

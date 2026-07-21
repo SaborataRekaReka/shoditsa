@@ -3,7 +3,7 @@ import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ApiClientError, api } from '../../api/client'
-import { BrandLogo } from '../../components/app-shell/AppShell'
+import { ActionButton, BrandLogo } from '../../components/app-shell/AppShell'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { notifyAuthSessionChanged } from './use-auth-session'
 import { localizeYandexOAuthUrl } from './yandex-oauth'
@@ -339,10 +339,10 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!register && !resetMode && !forgotMode && <button className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</button>}
                 {error && <div className="login-error" role="alert" aria-live="polite">{error}</div>}
 
-                <button className="login-submit" type="submit" disabled={pending || (!emailAuthEnabled && !resetMode && !forgotMode)}>
+                <ActionButton className="login-submit" type="submit" disabled={pending || (!emailAuthEnabled && !resetMode && !forgotMode)}>
                   {pending && <LoaderCircle className="login-spinner" aria-hidden="true" />}
                   <span>{pending ? resetMode ? 'Сохраняем…' : forgotMode ? 'Отправляем…' : register ? 'Создаём…' : 'Входим…' : forgotMode ? 'Отправить ссылку' : submitLabel}</span>
-                </button>
+                </ActionButton>
 
                 {notice && <div className="login-notice" role="status" aria-live="polite">{notice}</div>}
 

@@ -15,7 +15,6 @@
 .server-lobby .text-button, .server-lobby .server-back { color: var(--color-paper-muted); font-weight: 700; }
 .server-lobby .text-button:hover, .server-lobby .server-back:hover { color: var(--color-ink); }
 .server-lobby select, .auth-form input, .server-assist select { min-height: 48px; border: 1px solid rgba(24,24,24,.18); border-radius: 14px; padding: 0 14px; background: #fff; font: inherit; }
-.primary-button { min-height: 50px; border: 0; border-radius: 16px; padding: 0 24px; background: #171717; color: #fff; font-weight: 900; cursor: pointer; }
 .text-button, .server-back { border: 0; background: transparent; color: inherit; font: inherit; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .server-game { width: min(980px, calc(100% - 24px)); margin: 0 auto; padding: 28px 0 80px; }
 .server-game__head { display: flex; justify-content: space-between; margin: 20px 0; font-size: 1.2rem; font-weight: 900; }

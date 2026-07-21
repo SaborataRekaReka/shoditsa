@@ -11,6 +11,79 @@
 @media(prefers-reduced-motion:reduce){.danetki-host--processing img,.danetki-host--queued img{animation:none}.danetki-new-messages{scroll-behavior:auto}}
 .danetki-title-screen{position:relative;z-index:1}.danetki-title-stage .title-game-mark>span{background:#76be75}.danetki-title-ticket .admit-ticket__stub--danetki{--title-poster-accent:#67a65f}.danetki-title-ticket .admit-ticket__stub-art{object-position:50% 54%}.category-ticket--danetki .category-ticket__watermark{object-position:50% 48%}
 
+.danetki-join-screen {
+  width: min(100%, 960px);
+  min-height: calc(100vh - 64px);
+  margin: 0 auto;
+  padding: 30px 16px 80px;
+  box-sizing: border-box;
+}
+.danetki-join-card {
+  width: min(100%, 560px);
+  margin: 18px auto 0;
+  padding: clamp(26px, 5vw, 42px);
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-lg);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  text-align: center;
+  box-shadow: var(--shadow-paper);
+  box-sizing: border-box;
+}
+.danetki-join-card > svg {
+  width: 48px;
+  height: 48px;
+  color: var(--color-primary-soft);
+}
+.danetki-join-card > span {
+  display: block;
+  margin-top: 14px;
+  color: var(--color-primary-soft);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.danetki-join-card h1 {
+  margin: 10px 0 12px;
+  font: 500 clamp(32px, 6vw, 46px)/1.05 Oswald, sans-serif;
+}
+.danetki-join-card p {
+  margin: 0;
+  color: var(--color-paper-muted-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.danetki-join-card form {
+  margin-top: 26px;
+  display: grid;
+  gap: 16px;
+  text-align: left;
+}
+.danetki-join-card label {
+  display: grid;
+  gap: 8px;
+  color: var(--color-paper-muted-2);
+  font-size: 12px;
+  font-weight: 800;
+}
+.danetki-join-card input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper) 82%, white);
+  font: inherit;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.danetki-join-card form .ui-button,
+.danetki-join-card > .ui-button { width: 100%; }
+.danetki-join-card.is-error > svg { color: var(--color-danger); }
+.danetki-spinner { animation: danetki-spin .8s linear infinite; }
+
 /* The title ticket keeps one calm decision path: format, then start. */
 .danetki-title-ticket .admit-ticket__body{display:flex;flex-direction:column}
 .danetki-launch{margin-top:15px;padding-top:14px;border-top:1px solid var(--color-paper-line)}
@@ -508,7 +581,7 @@
   background: #101a14;
 }
 .danetki-page--session .danetki-composer textarea {
-  min-height: 42px;
+  min-height: 44px;
   max-height: 80px;
   padding: 10px 12px;
   border-color: #8c8269;
@@ -529,7 +602,7 @@
 }
 .danetki-page--session .danetki-composer button {
   width: 46px;
-  min-height: 42px;
+  min-height: 44px;
   border: 1px solid rgba(112, 172, 99, .68);
   border-radius: 4px;
   background: #4d8a48;
@@ -541,7 +614,7 @@
   margin-top: 10px;
 }
 .danetki-page--session .danetki-actions button {
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 20px;
   border-color: var(--danetki-line);
   border-radius: 5px;
@@ -615,7 +688,7 @@
   .danetki-room-summary > strong { font-size: 14px; }
   .danetki-page--session .danetki-room-tools { margin-left: auto; }
   .danetki-question-count { display: none; }
-  .danetki-page--session .danetki-room-tools button { width: 34px; padding: 0; font-size: 0; justify-content: center; }
+  .danetki-page--session .danetki-room-tools button { width: 44px; min-height: 44px; padding: 0; font-size: 0; justify-content: center; }
   .danetki-page--session .danetki-messages { height: 40vh; min-height: 250px; }
   .danetki-page--session .danetki-message { max-width: 88%; }
   .danetki-case-collage { right: 4px; left: 4px; opacity: .34; transform: scale(.85); transform-origin: right bottom; }
@@ -833,7 +906,7 @@
 .danetki-page--session .danetki-members small { color: var(--color-paper-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
 .danetki-page--session .danetki-question-count { color: var(--color-paper-muted); }
 .danetki-page--session .danetki-room-toolbar .ui-button {
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 12px;
   border-color: var(--color-paper-line);
   border-radius: var(--radius-sm);
@@ -925,11 +998,14 @@
 }
 .danetki-page--session .danetki-suggestions::-webkit-scrollbar { display: none; }
 .danetki-page--session .danetki-suggestions button {
+  min-height: 44px;
   padding: 5px 10px;
   border-color: var(--color-paper-line);
   border-radius: 999px;
   color: var(--color-ink);
   background: transparent;
+  display: inline-flex;
+  align-items: center;
 }
 .danetki-page--session .danetki-suggestions button:hover { background: var(--color-paper-2); }
 
@@ -980,7 +1056,7 @@
   .danetki-page--session .danetki-room-summary { gap: 8px; }
   .danetki-page--session .danetki-room-summary > strong { max-width: 108px; font-size: 14px; white-space: normal; }
   .danetki-page--session .danetki-room-tools { margin-left: auto; }
-  .danetki-page--session .danetki-room-toolbar .ui-button { width: 34px; min-height: 34px; padding: 0; display: inline-flex; justify-content: center; font-size: 0; }
+  .danetki-page--session .danetki-room-toolbar .ui-button { width: 44px; min-height: 44px; padding: 0; display: inline-flex; justify-content: center; font-size: 0; }
   .danetki-page--session .danetki-room-toolbar .ui-button svg { width: 17px; height: 17px; }
   .danetki-page--session .danetki-question-count { display: none; }
   .danetki-page--session .danetki-messages { height: min(42vh, 360px); min-height: 240px; padding: 15px 14px; }
@@ -1135,7 +1211,6 @@
 .danetki-page--session .danetki-question-count { margin-right: 2px; }
 .danetki-page--session .danetki-composer textarea { height: 48px; line-height: 22px; }
 .danetki-page--session .danetki-composer button:not(:disabled) { opacity: 1; }
-.danetki-page--session .danetki-suggestions button { min-height: 28px; display: inline-flex; align-items: center; }
 
 @media (min-width: 1280px) and (max-width: 1600px) {
   .danetki-page--session .danetki-artwork { right: 104px; }
@@ -1340,4 +1415,26 @@
     background-size: auto 58%;
   }
   .danetki-page--session .danetki-situation__copy { padding: 28px 20px 20px; }
+}
+
+/* Ticket notches stay open: the card outline must not cross their mouths. */
+@media (min-width: 768px) {
+  .danetki-page--session .danetki-investigation { overflow: visible; }
+  .danetki-page--session .danetki-investigation::before,
+  .danetki-page--session .danetki-investigation::after {
+    border: 1px solid var(--color-paper-line);
+    box-sizing: border-box;
+  }
+  .danetki-page--session .danetki-investigation::before {
+    border-left: 0;
+  }
+  .danetki-page--session .danetki-investigation::after {
+    border-right: 0;
+  }
+  .danetki-page--session .danetki-room-toolbar {
+    border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
+  }
+  .danetki-page--session .danetki-suggestions {
+    border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
+  }
 }

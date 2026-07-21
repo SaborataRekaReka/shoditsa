@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, Crown, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
@@ -90,6 +90,30 @@ export function ActionButton({ variant = 'primary', className = '', children, ..
   variant?: 'primary' | 'secondary' | 'ghost' | 'hint'
 }) {
   return <button className={`ui-button ui-button--${variant} ${className}`.trim()} {...props}>{children}</button>
+}
+
+export function ScreenBack({ onBack, href, label = 'Назад' }: {
+  onBack?: () => void
+  href?: string
+  label?: string
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      if (onBack) onBack()
+      else if (href) window.location.assign(href)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [href, onBack])
+
+  return <div className="screen-back-row">
+    {href
+      ? <a className="screen-back" href={href} aria-label={label} title={label}><ChevronLeft /></a>
+      : <button className="screen-back" type="button" onClick={onBack} aria-label={label} title={label}><ChevronLeft /></button>}
+    <span className="keycap-hint" aria-hidden="true">Esc</span>
+  </div>
 }
 
 export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {

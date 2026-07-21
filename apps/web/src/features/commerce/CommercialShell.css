@@ -11,35 +11,6 @@
   color: var(--color-text);
 }
 
-.specials-back,
-.create-game-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  margin: 0 0 18px;
-  padding: 0 12px;
-  border: 1px solid var(--color-line);
-  border-radius: 11px;
-  color: var(--color-muted);
-  background: var(--color-surface);
-  font-size: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: border-color .2s var(--ease), color .2s var(--ease), background .2s var(--ease);
-}
-
-.specials-back:hover,
-.create-game-back:hover {
-  border-color: var(--color-line-strong);
-  color: var(--color-text);
-  background: var(--color-surface-2);
-}
-
-.specials-back svg,
-.create-game-back svg { width: 16px; height: 16px; }
-
 .specials-hero,
 .create-game-hero {
   position: relative;
@@ -188,7 +159,7 @@
 }
 .club-tip-cta--quiet .club-tip-cta__button {
   min-width: 0;
-  min-height: 40px;
+  min-height: 44px;
   border-color: var(--color-accent-border);
   color: var(--color-text);
   background: transparent;
@@ -266,15 +237,16 @@
 .tip-modal__unavailable { border: 1px solid var(--color-line); color: var(--color-muted); background: var(--color-surface-2); }
 .tip-modal__error { margin: 12px 0 0; border: 1px solid rgba(214, 91, 72, .55); color: #f0a28f; background: rgba(147, 46, 34, .18); }
 .tip-modal__note { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--color-line); color: var(--color-muted-2); font-size: 10px; line-height: 1.5; }
-.tip-modal__acceptance { margin: 0 0 16px; color: var(--color-muted); display: grid; grid-template-columns: 17px minmax(0, 1fr); align-items: start; gap: 9px; font-size: 10px; line-height: 1.45; cursor: pointer; }
+.tip-modal__acceptance { min-height: 44px; margin: 0 0 16px; color: var(--color-muted); display: grid; grid-template-columns: 17px minmax(0, 1fr); align-items: center; gap: 9px; font-size: 10px; line-height: 1.45; cursor: pointer; }
 .tip-modal__acceptance input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--color-accent); cursor: pointer; }
 .checkout-acceptance {
   width: 100%;
+  min-height: 44px;
   margin-bottom: 9px;
   color: var(--color-muted-2);
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr);
-  align-items: start;
+  align-items: center;
   gap: 7px;
   font-size: 9px;
   line-height: 1.4;
@@ -282,7 +254,7 @@
   cursor: pointer;
 }
 .checkout-acceptance input { width: 15px; height: 15px; margin: 0; accent-color: var(--color-primary); cursor: pointer; }
-.checkout-acceptance a, .tip-modal__acceptance a { color: var(--color-accent); font-weight: 800; text-underline-offset: 2px; }
+.checkout-acceptance a, .tip-modal__acceptance a { min-height: 44px; color: var(--color-accent); font-weight: 800; text-underline-offset: 2px; display: inline-flex; align-items: center; }
 @keyframes tipSpinner { to { transform: rotate(360deg); } }
 
 .membership-badge { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--color-primary-border); border-radius: 999px; padding: 8px 12px; color: var(--color-primary); background: var(--color-primary-soft); font-size: 13px; font-weight: 800; }
@@ -342,7 +314,7 @@
 .special-entries article div { display: flex; flex-direction: column; }
 .special-entries article small { color: var(--color-muted); }
 .special-entries button {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 15px;
   border: 1px solid var(--color-primary-border);
   border-radius: 10px;

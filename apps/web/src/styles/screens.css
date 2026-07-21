@@ -66,7 +66,7 @@
   align-items: center;
   justify-content: space-between;
 }
-.brand { width: 132px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; }
+.brand { width: 132px; min-height: 44px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; }
 .brand picture { width: 100%; display: block; }
 .brand img { display: block; width: 100%; height: auto; }
 .brand:hover { transform: translateY(-1px); }
@@ -192,8 +192,10 @@
   border-radius: 11px;
   background: transparent;
   color: var(--color-muted);
+  text-decoration: none;
   display: grid;
   place-items: center;
+  cursor: pointer;
 }
 .screen-back svg { width: 18px; height: 18px; stroke-width: 2; }
 .screen-back:hover {
@@ -255,6 +257,11 @@
 .ui-button--ghost { color: var(--color-muted); background: transparent; border-color: var(--color-line); }
 .ui-button--hint { color: var(--color-ink); background: var(--color-accent); border-color: var(--color-accent-border); }
 .ui-button--hint:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
+
+:where(.screen-back, .ui-button, .app-footer__home, .app-footer__link, .app-footer__legal a, .app-footer__legal button):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 72%, white);
+  outline-offset: 3px;
+}
 
 .game-selector, .period-control {
   min-height: 50px;
@@ -1007,7 +1014,7 @@
 }
 .app-footer__legal a,
 .app-footer__legal button {
-  min-height: 28px;
+  min-height: 44px;
   padding: 0;
   border: 0;
   color: var(--color-muted-2);

@@ -1,6 +1,5 @@
 import { useState, type FormEvent, type MouseEvent } from 'react'
 import {
-  ArrowLeft,
   ArrowRight,
   BriefcaseBusiness,
   CalendarCheck2,
@@ -19,7 +18,7 @@ import {
 } from 'lucide-react'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
-import { AppHeader } from '../../components/app-shell/AppShell'
+import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import './CorporatePage.css'
 
 type Props = {
@@ -141,9 +140,7 @@ export function CreateGameScreen({
       />
 
       <main className="corporate-page">
-        <button type="button" className="corporate-page__back" onClick={onHome}>
-          <ArrowLeft /> На главную
-        </button>
+        <ScreenBack onBack={onHome} label="На главную" />
 
         <section className="corporate-hero" aria-labelledby="partners-title">
           <div className="corporate-hero__media" aria-hidden="true">
@@ -160,10 +157,10 @@ export function CreateGameScreen({
             <h1 id="partners-title">Игра, которая <em>работает</em> на вашу команду</h1>
             <p>Создадим интерактивный игровой сеанс под ваше событие, бренд и аудиторию — от идеи и редакторской сборки до готовой частной ссылки.</p>
             <div className="corporate-hero__actions">
-              <a className="corporate-button corporate-button--primary" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>
+              <a className="ui-button ui-button--primary corporate-hero__action" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>
                 Обсудить проект <ArrowRight />
               </a>
-              <a className="corporate-button corporate-button--ghost" href="/partners#formats" onClick={(event) => scrollToSection(event, 'formats')}>
+              <a className="ui-button ui-button--ghost corporate-hero__action" href="/partners#formats" onClick={(event) => scrollToSection(event, 'formats')}>
                 Посмотреть форматы
               </a>
             </div>
@@ -198,7 +195,7 @@ export function CreateGameScreen({
                   <div className="corporate-format-card__meta"><span>{format.audience}</span><span>{format.duration}</span></div>
                   <h3>{format.title}</h3>
                   <p>{format.text}</p>
-                  <a href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>Подобрать формат <ArrowRight /></a>
+                  <a className="ui-button ui-button--secondary corporate-format-card__action" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>Подобрать формат <ArrowRight /></a>
                 </div>
               </article>
             ))}
@@ -312,7 +309,7 @@ export function CreateGameScreen({
               <Check />
               <h3>Заявка отправлена</h3>
               <p>Спасибо! Мы получили описание и вернёмся с уточнениями по указанной почте.</p>
-              <button type="button" onClick={onHome}>Вернуться к играм</button>
+              <ActionButton type="button" variant="secondary" onClick={onHome}>Вернуться к играм</ActionButton>
             </div>
           ) : (
             <form className="corporate-order__form" onSubmit={(event) => void submit(event)}>
@@ -355,9 +352,9 @@ export function CreateGameScreen({
                 <input type="checkbox" required />
                 <span>Согласен на обработку контактных данных для ответа на заявку.</span>
               </label>
-              <button className="corporate-order__wide" type="submit" disabled={pending}>
+              <ActionButton className="corporate-order__wide" type="submit" disabled={pending}>
                 {pending ? 'Отправляем…' : <>Обсудить проект <ExternalLink /></>}
-              </button>
+              </ActionButton>
               {error && <p className="corporate-order__error corporate-order__wide" role="alert">{error}</p>}
             </form>
           )}

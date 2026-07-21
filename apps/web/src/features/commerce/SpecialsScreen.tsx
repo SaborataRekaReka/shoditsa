@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
-  ArrowLeft,
   Check,
   Clapperboard,
   Lock,
   Play,
   Sparkles,
 } from 'lucide-react'
-import { AppHeader } from '../../components/app-shell/AppShell'
+import { AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import { api, queryKeys } from '../../api/client'
 import {
   SERVER_RUNTIME,
@@ -62,17 +61,15 @@ export function SpecialsScreen({
         onReview={onReview}
       />
       <main className="specials-screen">
-        <button className="specials-back" type="button" onClick={onHome}>
-          <ArrowLeft /> На главную
-        </button>
+        <ScreenBack onBack={onHome} label="На главную" />
         <header className="specials-hero">
           <div className="specials-hero__copy">
             <span>
               <Sparkles /> Спецпоказы
             </span>
             <h1>
-              Тематические
-              <br />
+              Тематические{' '}
+              <br aria-hidden="true" />
               сеансы
             </h1>
             <p>
@@ -200,9 +197,7 @@ export function SpecialDetailScreen({
         onReview={onReview}
       />
       <main className="specials-screen">
-        <a className="specials-back" href="/specials">
-          <ArrowLeft /> Все спецпоказы
-        </a>
+        <ScreenBack href="/specials" label="Все спецпоказы" />
         {packQuery.isLoading && <p>Открываем зал…</p>}
         {packQuery.isError && (
           <p role="alert">Спецпоказ не найден или временно недоступен.</p>
