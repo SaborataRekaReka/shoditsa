@@ -1,14 +1,12 @@
 #!/usr/bin/env tsx
 /**
- * Import a Reddit comment sidecar pack into the active Shoditsa content revision.
+ * Import the DTF comment special into the active Shoditsa content revision.
  *
  * The script never rewrites canonical game cards. It resolves each answer against
  * the active catalog and stores comment clues only in content_pack_entries.prompt_payload.
  *
  * Usage:
- *   pnpm tsx scripts/content/import-reddit-comment-pack.ts \
- *     --source=data/promo/reddit-games-comments-25-v1.json \
- *     --report=var/reddit-games-comments-25-import-report.json
+ *   npm run content:import:dtf-comments-pack
  *
  * Publish the pack instead of keeping it draft:
  *   ... --publish
@@ -19,7 +17,6 @@ import { dirname, resolve } from 'node:path'
 import { and, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import {
-  contentItems,
   contentItemVersions,
   contentPackEntries,
   contentPacks,
@@ -44,14 +41,9 @@ type ProgressiveHint = {
   type: string
   text: string
   spoilerRisk: 'low' | 'medium' | 'high'
-  sourceId: string
+  sourceId?: string
   clueStrength: number
   topics?: string[]
-  attribution?: {
-    author?: string | null
-    scoreAtCollection?: number | null
-    showDuringPlay?: boolean
-  }
 }
 
 type PackItem = {
@@ -59,18 +51,6 @@ type PackItem = {
   gameId: string
   order: number
   answerRef: AnswerRef
-  catalogAction: 'resolve_existing' | 'resolve_or_import'
-  fallbackAnswerCard: Record<string, unknown> & {
-    id: string
-    mode: 'game'
-    titleRu: string
-    titleOriginal: string
-    year: number
-  }
-  sources: Array<Record<string, unknown> & {
-    id: string
-    threadUrl: string
-  }>
   progressiveHints: ProgressiveHint[]
 }
 
@@ -112,8 +92,8 @@ type CatalogRow = {
 
 type Resolution = {
   item: PackItem
-  status: 'resolved' | 'materialized_fallback' | 'unresolved'
-  method: 'steamAppId' | 'normalizedTitleAndYear' | 'normalizedTitle' | 'alias' | 'fallback' | null
+  status: 'resolved' | 'unresolved'
+  method: 'steamAppId' | 'normalizedTitleAndYear' | 'normalizedTitle' | null
   itemId: string | null
   itemVersionId: string | null
   matchedTitle: string | null
@@ -127,11 +107,10 @@ const argValue = (name: string, fallback: string) => {
   return args.find((arg) => arg.startsWith(prefix))?.slice(prefix.length) || fallback
 }
 
-const sourcePath = resolve(process.cwd(), argValue('source', 'data/promo/reddit-games-comments-25-v1.json'))
-const reportPath = resolve(process.cwd(), argValue('report', 'var/reddit-games-comments-25-import-report.json'))
-// This integration enriches canonical catalog games only. Missing matches are
-// reported and never materialized as duplicate/fallback cards.
-const materializeMissing = false
+const sourcePath = resolve(process.cwd(), argValue('source', 'data/promo/dtf-game-comments-25-v1.json'))
+const reportPath = resolve(process.cwd(), argValue('report', 'var/dtf-game-comments-25-import-report.json'))
+// The special enriches canonical catalog games only. Missing matches are
+// reported and never materialized as duplicate cards.
 const publish = hasFlag('publish')
 
 const normalize = (value: unknown) => String(value ?? '')
@@ -184,7 +163,7 @@ const steamIdsForRow = (row: CatalogRow) => {
 }
 
 const candidateScore = (row: CatalogRow) => (
-  (row.contentStatus === 'promo_pack' || row.contentStatus === 'reddit_comment_pack' ? 0 : 100_000)
+  (row.contentStatus === 'promo_pack' ? 0 : 100_000)
   + (row.allowedInGame ? 10_000 : 0)
   + Math.round(Number(row.popularityScore || 0))
 )
@@ -267,9 +246,6 @@ const writeJson = async (path: string, value: unknown) => {
 }
 
 const main = async () => {
-  if (hasFlag('materialize-missing')) {
-    throw new Error('--materialize-missing is disabled: this pack may only enrich existing catalog games')
-  }
   const document = JSON.parse(await readFile(sourcePath, 'utf8')) as PackDocument
   if (document.schemaVersion !== 1) throw new Error(`Unsupported schemaVersion: ${document.schemaVersion}`)
   if (document.items.length !== document.pack.itemCount) {
@@ -320,7 +296,6 @@ const main = async () => {
       sourcePath,
       packId: document.pack.id,
       revisionId,
-      materializeMissing,
       publish,
       counts: {
         requested: document.items.length,
@@ -335,7 +310,6 @@ const main = async () => {
         year: item.answerRef.year,
         steamAppIds: item.answerRef.steamAppIds,
         aliases: item.answerRef.aliases,
-        catalogAction: item.catalogAction,
       })),
       resolutions: resolutions.map((entry) => ({
         gameId: entry.item.gameId,
@@ -372,47 +346,9 @@ const main = async () => {
       await writeJson(reportPath, { ...baseReport, imported: false, error: 'NO_EXISTING_CATALOG_MATCHES' })
       throw new Error('No pack games match existing cards in the active catalog')
     }
-    const resolvedSubtitle = document.pack.subtitle ?? `${importableItems.length} игр по реальным обсуждениям Reddit`
+    const resolvedSubtitle = document.pack.subtitle ?? `Спецпоказ DTF · ${importableItems.length} игр`
 
     await db.transaction(async (tx) => {
-      if (materializeMissing && unresolved.length > 0) {
-        await tx.insert(contentItems).values(unresolved.map(({ item }) => ({
-          id: item.fallbackAnswerCard.id,
-          mode: 'game' as const,
-        }))).onConflictDoNothing()
-
-        await tx.insert(contentItemVersions).values(unresolved.map(({ item }, index) => ({
-          itemId: item.fallbackAnswerCard.id,
-          revisionId,
-          mode: 'game' as const,
-          titleRu: item.fallbackAnswerCard.titleRu,
-          titleOriginal: item.fallbackAnswerCard.titleOriginal,
-          normalizedTitle: normalize(item.fallbackAnswerCard.titleRu),
-          year: item.fallbackAnswerCard.year,
-          popularityScore: Number(item.fallbackAnswerCard.popularityScore ?? 0),
-          sortOrder: 2_100_000 + index,
-          allowedInGame: false,
-          contentStatus: 'reddit_comment_pack',
-          payload: {
-            ...item.fallbackAnswerCard,
-            allowedInGame: false,
-            contentStatus: 'reddit_comment_pack',
-          },
-        }))).onConflictDoNothing()
-
-        for (const entry of unresolved) {
-          resolvedByGameId.set(entry.item.gameId, {
-            ...entry,
-            status: 'materialized_fallback',
-            method: 'fallback',
-            itemId: entry.item.fallbackAnswerCard.id,
-            itemVersionId: null,
-            matchedTitle: entry.item.fallbackAnswerCard.titleRu,
-            matchedYear: entry.item.fallbackAnswerCard.year,
-          })
-        }
-      }
-
       const packStatus = publish ? 'published' : 'draft'
       await tx.insert(contentPacks).values({
         id: document.pack.id,
@@ -476,20 +412,11 @@ const main = async () => {
           promptPayload: {
             schemaVersion: 1,
             sourceOrder: item.order,
-            sourcePlatform: 'reddit',
             prompt: document.pack.uiCopy.prompt,
             disclaimer: document.pack.uiCopy.disclaimer,
             recommendedMaxAttempts: document.pack.recommendedMaxAttempts,
             rightsStatus: document.pack.rightsStatus,
             progressiveHints: item.progressiveHints,
-            // Keep only display-safe source metadata in the database. Original English
-            // text remains in the source JSON and cannot leak through the player API.
-            sources: item.sources.map((source) => ({
-              id: source.id,
-              threadUrl: source.threadUrl,
-              retrievalMethod: source.retrievalMethod,
-              needsDirectRedditUrl: source.needsDirectRedditUrl,
-            })),
           },
         }
       }))
@@ -516,7 +443,6 @@ const main = async () => {
         requested: document.items.length,
         enrichedExisting: importableItems.length,
         skippedMissing: unresolved.length,
-        materializedFallback: 0,
       },
       resolutions: finalResolutions,
     })

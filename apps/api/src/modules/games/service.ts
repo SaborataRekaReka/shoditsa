@@ -1,9 +1,7 @@
-import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { and, asc, eq, inArray, sql } from 'drizzle-orm'
+import { and, asc, eq, sql } from 'drizzle-orm'
 import { ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
-  appSettings, contentItems, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
+  appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
   periodEntitlements,
 } from '@shoditsa/database'
@@ -29,292 +27,9 @@ type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
 type SessionRow = typeof gameSessions.$inferSelect
 
-type PromoAnswerRef = {
-  mode: 'game'
-  titleRu: string
-  titleOriginal: string
-  year: number
-  legacyReleaseYears?: number[]
-  steamAppIds: number[]
-  aliases: string[]
-}
-
-type PromoHint = {
-  key: string
-  unlockAfterAttempts: 0 | 5 | 8 | 9
-  type: 'archetype_comment' | 'satirical_context' | 'community_meme' | 'factual_rescue'
-  authorArchetype?: string
-  text: string
-  spoilerRisk: 'low' | 'medium' | 'high'
-}
-
-type PromoPackItem = {
-  id: string
-  answerRef: PromoAnswerRef
-  fallbackAnswerCard: TitleItem
-  progressiveHints: PromoHint[]
-}
-
-type PromoPackDocument = {
-  pack: {
-    id: string
-    title: string
-    subtitle?: string
-    itemCount?: number
-    recommendedOrder?: string[]
-    uiCopy?: { modeTitle?: string; disclaimer?: string }
-  }
-  items: PromoPackItem[]
-}
-
-type ResolvedPromoEntry = {
-  promoId: string
-  answer: TitleItem
-  progressiveHints: PromoHint[]
-}
-
 type AnswerPoolResult = {
   items: TitleItem[]
   byItemId: Map<string, string>
-}
-
-const PROMO_PACK_ID = 'dtf-games-promo-30-v1'
-const PROMO_PACK_FILENAME = 'dtf-games-promo-30.json'
-const PROMO_SORT_ORDER_BASE = 2_000_000
-const PROMO_PACK_SEARCH_PATHS = [
-  join(process.cwd(), 'data', 'promo', PROMO_PACK_FILENAME),
-  join(process.cwd(), '..', 'data', 'promo', PROMO_PACK_FILENAME),
-]
-const promoPackCache = new Map<string, PromoPackDocument | null>()
-
-const normalizePromoText = (value: unknown) => String(value ?? '')
-  .normalize('NFKD')
-  .toLocaleLowerCase('ru-RU')
-  .replace(/[\u0300-\u036f]/g, '')
-  .replace(/ё/g, 'е')
-  .replace(/[^a-zа-я0-9]+/gi, ' ')
-  .trim()
-
-const numeric = (value: unknown) => {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : NaN
-}
-
-const itemSteamAppIds = (item: TitleItem) => {
-  const record = item as Record<string, unknown>
-  const raw = [
-    record.steamAppId,
-    ...(Array.isArray(record.steamAppIds) ? record.steamAppIds : []),
-  ]
-  return raw
-    .map((value) => numeric(value))
-    .filter((value) => Number.isInteger(value) && value > 0)
-}
-
-const itemNames = (item: TitleItem) => {
-  const names = [item.titleRu, item.titleOriginal, ...(item.alternativeTitles ?? [])]
-  const normalized = names.map((value) => normalizePromoText(value)).filter(Boolean)
-  return [...new Set(normalized)]
-}
-
-const refNames = (ref: PromoAnswerRef) => {
-  const names = [ref.titleRu, ref.titleOriginal, ...(ref.aliases ?? [])]
-  const normalized = names.map((value) => normalizePromoText(value)).filter(Boolean)
-  return [...new Set(normalized)]
-}
-
-const hasNameOverlap = (left: string[], right: string[]) => {
-  if (!left.length || !right.length) return false
-  const rightSet = new Set(right)
-  return left.some((value) => rightSet.has(value))
-}
-
-const matchesPromoAnswerRef = (item: TitleItem, ref: PromoAnswerRef) => {
-  if (item.mode !== 'game') return false
-  const sourceSteamIds = new Set(itemSteamAppIds(item))
-  const targetSteamIds = new Set((ref.steamAppIds ?? []).map((value) => numeric(value)).filter((value) => Number.isInteger(value) && value > 0))
-  if (sourceSteamIds.size > 0 && [...targetSteamIds].some((value) => sourceSteamIds.has(value))) return true
-
-  const sourceNames = itemNames(item)
-  const targetNames = refNames(ref)
-  if (!sourceNames.length || !targetNames.length) return false
-
-  const allowedYears = new Set([ref.year, ...(ref.legacyReleaseYears ?? [])].map((value) => numeric(value)).filter((value) => Number.isInteger(value) && value > 0))
-  const itemYear = numeric(item.year)
-  if (allowedYears.size > 0 && Number.isInteger(itemYear) && allowedYears.has(itemYear) && hasNameOverlap(sourceNames, targetNames)) return true
-
-  return hasNameOverlap(sourceNames, targetNames)
-}
-
-const promoEntriesFromPack = (pack: PromoPackDocument) => pack.items.map<ResolvedPromoEntry>((promoItem) => {
-  const answer = promoItem.fallbackAnswerCard
-  if (!answer || answer.mode !== 'game' || !String(answer.id ?? '').startsWith('promo:')) {
-    throw new ApiError(503, 'PROMO_PACK_CARD_INVALID', `В promo-паке нет самостоятельной карточки для ${promoItem.id}`)
-  }
-  if (!String(answer.titleRu ?? '').trim()) {
-    throw new ApiError(503, 'PROMO_PACK_CARD_INVALID', `У самостоятельной карточки ${promoItem.id} нет названия`)
-  }
-  return {
-    promoId: promoItem.id,
-    answer: { ...answer, mode: 'game', allowedInGame: false },
-    progressiveHints: promoItem.progressiveHints ?? [],
-  }
-})
-
-const positiveModulo = (value: number, divisor: number) => ((value % divisor) + divisor) % divisor
-
-const hashText = (value: string) => {
-  let hash = 0
-  for (let index = 0; index < value.length; index += 1) {
-    hash = ((hash * 31) + value.charCodeAt(index)) >>> 0
-  }
-  return hash
-}
-
-const promoExpectedCount = (pack: PromoPackDocument) => {
-  const configured = numeric(pack.pack.itemCount)
-  if (Number.isInteger(configured) && configured > 0) return configured
-  return pack.items.length
-}
-
-const orderResolvedPromoEntries = (pack: PromoPackDocument, entries: ResolvedPromoEntry[]) => {
-  const byPromoId = new Map(entries.map((entry) => [entry.promoId, entry]))
-  const ordered: ResolvedPromoEntry[] = []
-  for (const rawId of pack.pack.recommendedOrder ?? []) {
-    const promoId = String(rawId)
-    const entry = byPromoId.get(promoId)
-    if (!entry) continue
-    ordered.push(entry)
-    byPromoId.delete(promoId)
-  }
-  const tail = [...byPromoId.values()].sort((left, right) => left.promoId.localeCompare(right.promoId, 'ru-RU'))
-  return [...ordered, ...tail]
-}
-
-const assertPromoCoverage = (pack: PromoPackDocument, entries: ResolvedPromoEntry[]) => {
-  const expected = promoExpectedCount(pack)
-  if (entries.length !== expected) {
-    throw new ApiError(503, 'PROMO_PACK_CARD_COUNT_MISMATCH', `Promo-пак содержит ${expected} элементов, но самостоятельных карточек найдено ${entries.length}`)
-  }
-  const ids = new Set(entries.map((entry) => entry.answer.id))
-  if (ids.size !== entries.length) throw new ApiError(503, 'PROMO_PACK_CARD_DUPLICATE', 'В promo-паке повторяются идентификаторы самостоятельных карточек')
-}
-
-const materializePromoPool = async (tx: Transaction | Database, revisionId: string, packId: string): Promise<AnswerPoolResult> => {
-  const pack = await loadPromoPack(packId)
-  if (!pack) throw new ApiError(422, 'PROMO_PACK_NOT_FOUND', 'Указанный promo-пак не найден')
-
-  const entries = orderResolvedPromoEntries(pack, promoEntriesFromPack(pack))
-  assertPromoCoverage(pack, entries)
-  const ids = entries.map((entry) => entry.answer.id)
-
-  await tx.insert(contentItems).values(entries.map((entry) => ({ id: entry.answer.id, mode: 'game' as const }))).onConflictDoNothing()
-  await tx.insert(contentItemVersions).values(entries.map((entry, index) => ({
-    itemId: entry.answer.id,
-    revisionId,
-    mode: 'game' as const,
-    titleRu: entry.answer.titleRu,
-    titleOriginal: entry.answer.titleOriginal ?? '',
-    normalizedTitle: normalizePromoText(entry.answer.titleRu),
-    year: entry.answer.year ?? null,
-    endYear: entry.answer.endYear ?? null,
-    popularityScore: Number.isFinite(entry.answer.popularityScore) ? Number(entry.answer.popularityScore) : 0,
-    topRank: entry.answer.topRank ?? null,
-    sortOrder: PROMO_SORT_ORDER_BASE + index,
-    // Promo cards live in the active revision only as hidden technical
-    // versions. The regular Games pool still reads allowedInGame=true and
-    // therefore never mixes them into the main daily mode.
-    allowedInGame: false,
-    contentStatus: 'promo_pack',
-    payload: entry.answer,
-  }))).onConflictDoNothing()
-
-  const rows = await tx.select({ id: contentItemVersions.id, itemId: contentItemVersions.itemId, payload: contentItemVersions.payload })
-    .from(contentItemVersions)
-    .where(and(eq(contentItemVersions.revisionId, revisionId), inArray(contentItemVersions.itemId, ids)))
-  const rowByItemId = new Map(rows.map((row) => [row.itemId, row]))
-  const items: TitleItem[] = []
-  const byItemId = new Map<string, string>()
-  for (const entry of entries) {
-    const row = rowByItemId.get(entry.answer.id)
-    if (!row) throw new ApiError(503, 'PROMO_PACK_VERSION_MISSING', `Не удалось подготовить самостоятельную карточку ${entry.answer.id}`)
-    items.push(row.payload as TitleItem)
-    byItemId.set(entry.answer.id, row.id)
-  }
-  return { items, byItemId }
-}
-
-const answerPoolForSession = async (
-  tx: Transaction | Database,
-  revisionId: string,
-  mode: TitleMode,
-  period: PeriodKey,
-  difficulty: ApiDifficultyKey | null,
-  variantKey: string | null,
-) => isPromoSessionVariant(mode, variantKey)
-  ? materializePromoPool(tx, revisionId, String(variantKey))
-  : answerPool(tx, revisionId, mode, period, difficulty, variantKey)
-
-const selectPromoEntry = (entries: ResolvedPromoEntry[], puzzleDate: string, salt: number, variantKey: string) => {
-  if (!entries.length) return null
-  const dayStamp = Date.parse(`${puzzleDate}T00:00:00Z`)
-  const dayNumber = Number.isFinite(dayStamp) ? Math.floor(dayStamp / 86_400_000) : 0
-  const rotation = positiveModulo(hashText(`promo|${variantKey}|${salt}`), entries.length)
-  const index = positiveModulo(dayNumber + rotation, entries.length)
-  return entries[index] ?? null
-}
-
-const loadPromoPack = async (packId: string) => {
-  if (packId !== PROMO_PACK_ID) return null
-  if (promoPackCache.has(packId)) return promoPackCache.get(packId) ?? null
-
-  for (const filePath of PROMO_PACK_SEARCH_PATHS) {
-    try {
-      const parsed = JSON.parse(await readFile(filePath, 'utf8')) as PromoPackDocument
-      if (parsed?.pack?.id !== packId || !Array.isArray(parsed.items)) continue
-      promoPackCache.set(packId, parsed)
-      return parsed
-    } catch {
-      // Try next known path.
-    }
-  }
-
-  promoPackCache.set(packId, null)
-  return null
-}
-
-const isPromoSessionVariant = (mode: TitleMode, variantKey: string | null | undefined) => (
-  mode === 'game' && variantKey === PROMO_PACK_ID
-)
-
-const promoPromptOf = (pack: PromoPackDocument) => ({
-  packId: pack.pack.id,
-  title: pack.pack.uiCopy?.modeTitle ?? pack.pack.title,
-  subtitle: pack.pack.subtitle ?? '',
-  disclaimer: pack.pack.uiCopy?.disclaimer ?? 'Все комментарии вымышлены и созданы для игрового режима.',
-})
-
-const promoSessionPayload = async (mode: TitleMode, variantKey: string | null, answer: TitleItem | undefined, attemptsCount: number) => {
-  if (mode !== 'game' || !variantKey || !answer) return { progressiveHints: [] as Array<{ key: string; value: unknown }>, promoPrompt: null as { packId: string; title: string; subtitle: string; disclaimer: string } | null }
-  const pack = await loadPromoPack(variantKey)
-  if (!pack) return { progressiveHints: [] as Array<{ key: string; value: unknown }>, promoPrompt: null as { packId: string; title: string; subtitle: string; disclaimer: string } | null }
-
-  const entry = pack.items.find((item) => matchesPromoAnswerRef(answer, item.answerRef))
-  const progressiveHints = (entry?.progressiveHints ?? [])
-    .filter((hint) => hint.unlockAfterAttempts <= attemptsCount)
-    .sort((left, right) => left.unlockAfterAttempts - right.unlockAfterAttempts)
-    .map((hint) => ({
-      key: hint.key,
-      value: {
-        unlockAfterAttempts: hint.unlockAfterAttempts,
-        type: hint.type,
-        authorArchetype: hint.authorArchetype ?? null,
-        text: hint.text,
-        spoilerRisk: hint.spoilerRisk,
-      },
-    }))
-
-  return { progressiveHints, promoPrompt: promoPromptOf(pack) }
 }
 
 const legacyMediaUrl = (value: string | null | undefined, mode: TitleMode, itemId: string) => {
@@ -651,18 +366,16 @@ const dailySalt = async (tx: Transaction) => {
 }
 
 export const startGame = async (db: Database, userId: string, input: {
-  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null; packId?: string | null;
-}, authSessionId: string | null = null, actorRole: ApiRole = 'player', config?: AppConfig) => db.transaction(async (tx) => {
+  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null;
+}, authSessionId: string | null = null, _actorRole: ApiRole = 'player', config?: AppConfig) => db.transaction(async (tx) => {
   const capabilities = GAME_MODE_MANIFEST[input.mode]
   const period = capabilities.periodPolicy === 'all' ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
-  const requestedVariant = input.variantKey ?? input.packId ?? null
-  const packId = input.mode === 'game' && typeof requestedVariant === 'string' && requestedVariant.trim().length ? requestedVariant.trim() : null
-  const modeVariant = input.mode === 'city' ? normalizeModeVariant(input.mode, requestedVariant) ?? 'capitals' : packId
+  const requestedVariant = input.variantKey ?? null
+  const modeVariant = input.mode === 'city' ? normalizeModeVariant(input.mode, requestedVariant) ?? 'capitals' : null
   if (input.mode === 'city' && requestedVariant && !normalizeModeVariant(input.mode, requestedVariant)) {
     throw new ApiError(422, 'GAME_VARIANT_INVALID', 'Недопустимый вариант режима')
   }
-  if (packId && actorRole !== 'admin') throw new ApiError(403, 'PROMO_PACK_FORBIDDEN', 'Promo-режим доступен только администратору')
   if (period !== 'all' && capabilities.periodPolicy === 'year') {
     const entitlement = await tx.select({ userId: periodEntitlements.userId }).from(periodEntitlements).where(and(
       eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, input.mode), eq(periodEntitlements.period, period),
@@ -686,22 +399,8 @@ export const startGame = async (db: Database, userId: string, input: {
 
   let challenge = await tx.select().from(dailyChallenges).where(eq(dailyChallenges.challengeKey, challengeKey)).limit(1)
   if (!challenge[0]) {
-    const pool = await answerPoolForSession(tx, revisionId, input.mode, period, difficulty, modeVariant)
-    const answer = packId
-      ? (() => {
-        const resolve = async () => {
-          const pack = await loadPromoPack(packId)
-          if (!pack) throw new ApiError(422, 'PROMO_PACK_NOT_FOUND', 'Указанный promo-пак не найден')
-          const resolved = orderResolvedPromoEntries(pack, promoEntriesFromPack(pack))
-          assertPromoCoverage(pack, resolved)
-          const selected = selectPromoEntry(resolved, puzzleDate, salt, variant)
-          if (!selected) throw new ApiError(503, 'PROMO_PACK_EMPTY', 'В promo-паке нет доступных элементов для запуска')
-          return selected.answer
-        }
-        return resolve()
-      })()
-      : Promise.resolve(dailyTitle(pool.items, input.mode, period, puzzleDate, salt, input.mode === 'city' ? variant : difficulty ?? ''))
-    const selectedAnswer = await answer
+    const pool = await answerPool(tx, revisionId, input.mode, period, difficulty, modeVariant)
+    const selectedAnswer = dailyTitle(pool.items, input.mode, period, puzzleDate, salt, input.mode === 'city' ? variant : difficulty ?? '')
     if (!selectedAnswer) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для выбранного режима нет доступных вариантов')
     const answerItemVersionId = pool.byItemId.get(selectedAnswer.id)
     if (!answerItemVersionId) throw new ApiError(503, 'CONTENT_VERSION_NOT_FOUND', 'Не удалось определить версию ответа для текущей ревизии')
@@ -745,11 +444,8 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
         attemptsCount: session.attemptsCount,
       })
     : null
-  const legacyPromo = packPrompt
-    ? null
-    : await promoSessionPayload(sessionMode, challengeVariant, answer, session.attemptsCount)
-  const promptRuntime = packPrompt ?? legacyPromo
-  const isPromptSession = Boolean(packPrompt) || isPromoSessionVariant(sessionMode, challengeVariant)
+  const promptRuntime = packPrompt
+  const isPromptSession = Boolean(packPrompt)
   const maxAttempts = packPrompt?.maxAttempts ?? 10
   const hintOptions = isPromptSession
     ? []
@@ -816,7 +512,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
     : null)
   const sessionMode = session.mode as TitleMode
-  const pool = await answerPoolForSession(tx, session.revisionId, sessionMode, session.period, session.difficulty, variantKey)
+  const pool = await answerPool(tx, session.revisionId, sessionMode, session.period, session.difficulty, variantKey)
   const guess = pool.items.find((item) => item.id === itemId)
   if (!guess) throw new ApiError(422, 'GAME_ITEM_OUTSIDE_POOL', 'Вариант недоступен в этой игре')
   const guessedVersionId = pool.byItemId.get(guess.id)!
@@ -835,10 +531,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
         attemptsCount: position,
       })
     : null
-  const legacyPromoAfterAttempt = promptAfterAttempt
-    ? null
-    : await promoSessionPayload(sessionMode, variantKey, answer, position)
-  const promptRuntime = promptAfterAttempt ?? legacyPromoAfterAttempt
+  const promptRuntime = promptAfterAttempt
   let reward: Awaited<ReturnType<typeof completeGame>> = null
   if (status !== 'playing') reward = await completeGame(tx, {
     sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
@@ -884,8 +577,8 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
         attemptsCount: session.attemptsCount,
       })
     : null
-  if (packPrompt || isPromoSessionVariant(session.mode as TitleMode, variantKey)) {
-    throw new ApiError(422, 'HINT_DISABLED_FOR_PROMO', 'В промо-режиме доступны только подсказки из пакета')
+  if (packPrompt) {
+    throw new ApiError(422, 'HINT_DISABLED_FOR_PACK', 'В спецпоказе доступны только подсказки из пакета')
   }
   const existingChoices = await tx.select({ checkpoint: gameHintChoices.checkpoint, hintKey: gameHintChoices.hintKey, response: gameHintChoices.responseSnapshot }).from(gameHintChoices).where(eq(gameHintChoices.sessionId, sessionId)).orderBy(asc(gameHintChoices.checkpoint))
   if (existingChoices.some((choice) => choice.checkpoint === checkpoint)) throw new ApiError(409, 'HINT_ALREADY_CHOSEN', 'Подсказка на этом этапе уже выбрана')
@@ -925,7 +618,7 @@ export const searchCatalog = async (db: Database, input: { mode: TitleMode; q: s
   } else {
     revisionId = await activeRevision(db)
   }
-  const pool = await answerPoolForSession(db, revisionId, mode, period, difficulty ?? null, variantKey)
+  const pool = await answerPool(db, revisionId, mode, period, difficulty ?? null, variantKey)
   const { searchTitles } = await import('@shoditsa/game-core')
   return searchTitles(pool.items, input.q, excluded).slice(0, input.limit ?? 10).map(publicCard)
 }

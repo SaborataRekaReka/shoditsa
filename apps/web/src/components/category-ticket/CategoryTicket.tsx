@@ -10,6 +10,9 @@ type Props = Omit<CategoryTicketConfig, 'mode'> & {
   poolCount: number | null
   status: CategoryTicketStatus
   attempts: number | null
+  kicker?: string
+  poolLabel?: string
+  newActionLabel?: string
   href?: string
   onClick: () => void
 }
@@ -32,7 +35,7 @@ const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number
   return `Играть: ${title}`
 }
 
-export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, href, onClick }: Props) {
+export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
   const badge = status === 'active'
     ? `В ПРОЦЕССЕ · ${attempts ?? 0}/10`
@@ -46,14 +49,14 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
     </span>
     <span className="category-ticket__body">
       <span className="category-ticket__top">
-        <span className="category-ticket__kicker">ЕЖЕДНЕВНАЯ ИГРА</span>
-        {status !== 'active' && <span className="category-ticket__meta"><strong>{poolCount ?? '—'}</strong> В ПУЛЕ</span>}
+        <span className="category-ticket__kicker">{kicker}</span>
+        {status !== 'active' && <span className="category-ticket__meta"><strong>{poolCount ?? '—'}</strong> {poolLabel}</span>}
       </span>
       <strong className="category-ticket__title">{title}</strong>
       <span className="category-ticket__description">{description}</span>
       <span className="category-ticket__footer">
         <span className="category-ticket__state">{statusLabel[status]}</span>
-        <span className="category-ticket__action">{actionLabel[status]} <ChevronRight aria-hidden="true" /></span>
+        <span className="category-ticket__action">{status === 'new' && newActionLabel ? newActionLabel : actionLabel[status]} <ChevronRight aria-hidden="true" /></span>
       </span>
     </span>
     {badge && <span className={`category-ticket__badge ${status === 'completed' ? 'category-ticket__badge--completed' : ''}`}>{badge}</span>}

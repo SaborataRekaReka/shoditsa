@@ -67,7 +67,6 @@ ALTER TABLE "game_sessions" ADD CONSTRAINT "game_session_pack_fields_check" CHEC
 ALTER TABLE "game_sessions" ADD CONSTRAINT "game_session_kind_check" CHECK ("game_sessions"."kind" in ('daily','archive','free_play','pack'));
 --> statement-breakpoint
 INSERT INTO "commerce_products" ("id", "kind", "title", "description", "price_minor", "currency", "entitlement_key", "scope", "enabled", "sort_order", "metadata") VALUES
-  ('pack_dtf_games_30', 'pack', '30 игр, которые сходятся', 'Тематический спецпоказ из 30 игр с отдельным прогрессом.', 14900, 'RUB', 'pack', 'dtf-games-promo-30-v1', true, 30, '{"badge":"Навсегда"}'::jsonb),
   ('tip_paper_99', 'tip', 'Бумажный жетон', 'Поддержать кассира и получить отметку в профиле.', 9900, 'RUB', 'supporter', 'paper', true, 90, '{}'::jsonb),
   ('tip_silver_299', 'tip', 'Серебряный жетон', 'Поддержать развитие игры и получить отметку в профиле.', 29900, 'RUB', 'supporter', 'silver', true, 91, '{}'::jsonb),
   ('tip_gold_699', 'tip', 'Золотой жетон', 'Особая поддержка игры с постоянной отметкой в профиле.', 69900, 'RUB', 'supporter', 'gold', true, 92, '{}'::jsonb)

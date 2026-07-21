@@ -19,7 +19,7 @@ describe('typed player routes', () => {
     expect(playerRouteFromPathname('/club')).toEqual({ screen: 'club' })
     expect(pathnameForPlayerRoute({ screen: 'club' })).toBe('/club')
     expect(playerRouteFromPathname('/specials')).toEqual({ screen: 'specials' })
-    expect(playerRouteFromPathname('/specials/dtf-games-promo-30-v1')).toEqual({ screen: 'special', packId: 'dtf-games-promo-30-v1' })
+    expect(playerRouteFromPathname('/specials/dtf-game-comments-25-v1')).toEqual({ screen: 'special', packId: 'dtf-game-comments-25-v1' })
     expect(pathnameForPlayerRoute({ screen: 'special', packId: 'pack one' })).toBe('/specials/pack%20one')
     expect(playerRouteFromPathname('/partners')).toEqual({ screen: 'create-game' })
     expect(pathnameForPlayerRoute({ screen: 'create-game' })).toBe('/partners')

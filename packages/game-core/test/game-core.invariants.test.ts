@@ -91,6 +91,7 @@ describe('game-core invariants', () => {
       const attempts = items.slice(0, 4).map((guess, index) => compareTitles(guess, items[(index + 1) % items.length]))
       const lost = resultText(mode, '2026-07-14', 'all', attempts, false)
       const won = resultText(mode, '2026-07-14', 'all', attempts, true)
+      const special = resultText(mode, '2026-07-14', 'all', attempts, true, 6)
 
       const lostLines = lost.split('\n')
       const wonLines = won.split('\n')
@@ -99,6 +100,7 @@ describe('game-core invariants', () => {
       expect(wonLines.length).toBe(3 + attempts.length)
       expect(lostLines[2]).toContain('X/10')
       expect(wonLines[2]).toContain(`${attempts.length}/10`)
+      expect(special.split('\n')[2]).toContain(`${attempts.length}/6`)
     })
 
     it(`${mode}: searchTitles never returns excluded ids`, () => {

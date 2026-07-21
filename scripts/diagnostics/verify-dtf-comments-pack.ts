@@ -11,18 +11,18 @@ import {
 import { ApiError } from '../../apps/api/src/lib/errors.js'
 import { getPack } from '../../apps/api/src/modules/packs/service.js'
 import { loadPackSessionPrompt } from '../../apps/api/src/modules/packs/prompt-runtime.js'
-import { REDDIT_COMMENTS_PACK_ID } from '../../apps/api/src/modules/packs/policy.js'
+import { DTF_COMMENTS_PACK_ID } from '../../apps/api/src/modules/packs/policy.js'
 
 const { db, client } = createDatabase(loadConfig())
 
 try {
-  const adminPack = await getPack(db, REDDIT_COMMENTS_PACK_ID, null, 'admin')
+  const adminPack = await getPack(db, DTF_COMMENTS_PACK_ID, null, 'admin')
   assert.equal(adminPack.totalItems, 25)
   assert.equal(adminPack.entries.length, 25)
   assert.ok(adminPack.entries.every((entry) => entry.accessible))
 
   await assert.rejects(
-    () => getPack(db, REDDIT_COMMENTS_PACK_ID, null, 'player'),
+    () => getPack(db, DTF_COMMENTS_PACK_ID, null, 'player'),
     (error: unknown) => error instanceof ApiError && error.statusCode === 404,
   )
 
@@ -42,28 +42,28 @@ try {
       eq(contentItemVersions.itemId, contentItems.id),
       eq(contentItemVersions.revisionId, revision[0].id),
     ))
-    .where(eq(contentPackEntries.packId, REDDIT_COMMENTS_PACK_ID))
+    .where(eq(contentPackEntries.packId, DTF_COMMENTS_PACK_ID))
   assert.equal(answers.length, 25)
   assert.ok(answers.every((answer) => answer.allowedInGame))
   assert.ok(answers.every((answer) => !answer.itemId.startsWith('promo:')))
 
   const initial = await loadPackSessionPrompt(db, {
-    packId: REDDIT_COMMENTS_PACK_ID,
+    packId: DTF_COMMENTS_PACK_ID,
     packPosition: 1,
     attemptsCount: 0,
   })
   const rescue = await loadPackSessionPrompt(db, {
-    packId: REDDIT_COMMENTS_PACK_ID,
+    packId: DTF_COMMENTS_PACK_ID,
     packPosition: 1,
     attemptsCount: 5,
   })
   assert.equal(initial?.maxAttempts, 6)
   assert.equal(initial?.progressiveHints.length, 2)
   assert.equal(rescue?.progressiveHints.length, 6)
-  assert.equal(initial?.promoPrompt.packId, REDDIT_COMMENTS_PACK_ID)
+  assert.equal(initial?.promoPrompt.packId, DTF_COMMENTS_PACK_ID)
 
   console.log(JSON.stringify({
-    packId: REDDIT_COMMENTS_PACK_ID,
+    packId: DTF_COMMENTS_PACK_ID,
     entries: adminPack.entries.length,
     canonicalAnswers: answers.length,
     adminAccessible: true,

@@ -1128,10 +1128,10 @@ export const calculateCompletionReward = (input: {
     total: Object.values(components).reduce((sum, value) => sum + value, 0),
   }
 }
-export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean) => {
+export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean, maxAttempts = 10) => {
   const rows = hints.map((row) => row.map((hint) => hint.status === 'match' ? '🟩' : hint.status === 'close' || hint.status === 'partial' ? '🟨' : hint.status === 'unknown' ? '⬜' : '⬛').join('')).join('\n')
   const modeDefinition = GAME_MODE_MANIFEST[mode]
   const dailyLabel = `${modeDefinition.dailyLabel} дня`
   const icon = modeDefinition.shareIcon
-  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/10\n${rows}`
+  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/${maxAttempts}\n${rows}`
 }

@@ -3,9 +3,9 @@ import { resolve } from 'node:path'
 import { buildPlotHint } from '../shared/plot-hint.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
-const packPath = resolve(root, 'data', 'promo', 'reddit-games-comments-25-v1.json')
+const packPath = resolve(root, 'data', 'promo', 'dtf-game-comments-25-v1.json')
 const libraryPath = resolve(root, 'public', 'data', 'libraries', 'games', 'items.json')
-const reportPath = resolve(root, 'data', 'games', 'logs', 'reddit-pack-games-import.json')
+const reportPath = resolve(root, 'data', 'games', 'logs', 'dtf-special-games-import.json')
 
 const cleanText = (value) => String(value ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
 const unique = (values) => [...new Set(values.map(cleanText).filter(Boolean))]
@@ -137,9 +137,9 @@ const buildCanonicalGame = async (packItem) => {
     externalRanks: { steam: appId },
     plotHint: buildPlotHint({ title: titleOriginal || titleRu, text: shortDescription || description }),
     allowedInGame: true,
-    notes: ['reddit_pack_catalog_import', details ? 'steam_store_enriched' : 'steam_delisted'],
+    notes: ['dtf_special_catalog_import', details ? 'steam_store_enriched' : 'steam_delisted'],
     dataQuality: {
-      source: details ? ['reddit_comment_pack_answer_ref', 'steam_store_appdetails', 'steam_reviews'] : ['reddit_comment_pack_answer_ref'],
+      source: details ? ['dtf_special_answer_ref', 'steam_store_appdetails', 'steam_reviews'] : ['dtf_special_answer_ref'],
       verified: Boolean(details),
       missingFields,
     },
@@ -151,7 +151,7 @@ const main = async () => {
     readFile(packPath, 'utf8').then(JSON.parse),
     readFile(libraryPath, 'utf8').then(JSON.parse),
   ])
-  if (!Array.isArray(library) || !Array.isArray(pack.items)) throw new Error('Invalid game library or Reddit pack')
+  if (!Array.isArray(library) || !Array.isArray(pack.items)) throw new Error('Invalid game library or DTF special')
 
   const steamIds = new Set(library.map((item) => Number(item.steamAppId)).filter(Number.isInteger))
   const missing = pack.items.filter((item) => {

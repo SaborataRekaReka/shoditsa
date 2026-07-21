@@ -27,6 +27,7 @@ type Props = {
   mode: TitleMode
   won: boolean
   attempts: number
+  maxAttempts?: number
   poster: ReactNode
   title: string
   meta: string
@@ -61,7 +62,7 @@ export function GameResult(props: Props) {
       <h2>{props.title}</h2>
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
-      <strong>{props.won ? `${props.attempts}/10 — верный ответ` : 'Правильный ответ открыт'}</strong>
+      <strong>{props.won ? `${props.attempts}/${props.maxAttempts ?? 10} — верный ответ` : 'Правильный ответ открыт'}</strong>
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
         <span>{props.nextRewardText}</span>

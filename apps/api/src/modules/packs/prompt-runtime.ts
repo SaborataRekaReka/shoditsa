@@ -1,11 +1,5 @@
 /**
- * Generic runtime adapter for comment-backed content packs.
- *
- * Suggested location:
- *   apps/api/src/modules/packs/prompt-runtime.ts
- *
- * It reads the sidecar prompt from content_pack_entries.prompt_payload and returns
- * the same progressiveHints/promoPrompt shape already consumed by ServerGame.
+ * Runtime adapter for content-pack prompts stored alongside canonical answers.
  */
 
 import { and, eq } from 'drizzle-orm'

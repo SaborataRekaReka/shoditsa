@@ -35,6 +35,7 @@ jobs:
           docker build --build-arg GIT_SHA="$GITHUB_SHA" -f infra/docker/Dockerfile.api -t "shoditsa-api:${GITHUB_SHA}" .
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/server.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-bootstrap-danetki.js
+          docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-import-dtf-comments.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-migrate-media.js
           docker save "shoditsa-api:${GITHUB_SHA}" | gzip -1 > release-api-image.tar.gz
           test -s release-api-image.tar.gz
@@ -233,6 +234,10 @@ jobs:
             fi
           fi
           if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/content-bootstrap-danetki.js </dev/null; then
+            rollback_api
+            exit 1
+          fi
+          if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/content-import-dtf-comments.js --publish </dev/null; then
             rollback_api
             exit 1
           fi

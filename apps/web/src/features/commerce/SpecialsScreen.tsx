@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import {
-  Check,
-  Clapperboard,
-  Lock,
-  Play,
-  Sparkles,
-} from 'lucide-react'
-import { AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
+import { Clapperboard, Gamepad2, Play, Sparkles } from 'lucide-react'
+import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
+import { GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
+import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { api, queryKeys } from '../../api/client'
-import {
-  SERVER_RUNTIME,
-  useServerRuntime,
-} from '../../hooks/use-server-runtime'
+import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
-import { CheckoutButton } from './CheckoutButton'
 import './CommercialShell.css'
 
 type ShellProps = {
@@ -138,24 +130,17 @@ export function SpecialDetailScreen({
   onReview,
   onSession,
 }: ShellProps & { packId: string; onSession: (id: string) => void }) {
-  const runtime = useServerRuntime()
-  const [starting, setStarting] = useState<number | null>(null)
+  const [starting, setStarting] = useState(false)
   const [error, setError] = useState('')
   const packQuery = useQuery({
     queryKey: queryKeys.pack(packId),
     queryFn: () => api.pack(packId),
     enabled: SERVER_RUNTIME && Boolean(packId),
   })
-  const catalog = useQuery({
-    queryKey: queryKeys.commerceCatalog,
-    queryFn: api.commerceCatalog,
-    enabled: SERVER_RUNTIME,
-  })
   const pack = packQuery.data?.pack
-  const product = catalog.data?.products.find(
-    (entry) => entry.id === pack?.productId,
-  )
-  const authenticated = Boolean(runtime.me && !runtime.me.user.isAnonymous)
+  const nextEntry = pack?.entries.find((entry) => entry.accessible && !entry.completed)
+    ?? pack?.entries.find((entry) => entry.accessible)
+    ?? null
 
   useEffect(() => {
     if (!pack) return
@@ -171,21 +156,37 @@ export function SpecialDetailScreen({
       })
   }, [pack])
 
-  const start = async (position: number) => {
-    if (starting !== null) return
-    setStarting(position)
+  const start = async () => {
+    if (starting || !nextEntry) return
+    setStarting(true)
     setError('')
     try {
-      const response = await api.startPack(packId, position)
+      const response = await api.startPack(packId, nextEntry.position)
       onSession(response.session.id)
     } catch (value) {
       setError(
         value instanceof Error ? value.message : 'Не удалось начать игру.',
       )
     } finally {
-      setStarting(null)
+      setStarting(false)
     }
   }
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onHome()
+      }
+      if (event.key === 'Enter' && nextEntry && !starting) {
+        event.preventDefault()
+        void start()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [nextEntry, onHome, starting])
 
   return (
     <>
@@ -196,110 +197,42 @@ export function SpecialDetailScreen({
         onRules={onRules}
         onReview={onReview}
       />
-      <main className="specials-screen">
-        <ScreenBack href="/specials" label="Все спецпоказы" />
-        {packQuery.isLoading && <p>Открываем зал…</p>}
-        {packQuery.isError && (
-          <p role="alert">Спецпоказ не найден или временно недоступен.</p>
-        )}
-        {pack && (
-          <>
-            <header className="specials-hero specials-hero--detail">
-              <div className="specials-hero__copy">
-                <span>
-                  <Clapperboard /> {pack.totalItems} сеансов
-                </span>
-                <h1>{pack.title}</h1>
-                <p>{pack.subtitle}</p>
-                <p>{pack.description}</p>
-                <div className="specials-access">
-                  <strong>
-                    {pack.owned
-                      ? 'Ваш навсегда'
-                      : pack.access === 'club'
-                        ? 'Доступ по клубному билету'
-                        : pack.access === 'free'
-                          ? 'Бесплатный показ'
-                          : pack.access === 'preview'
-                            ? `${pack.previewItems} игры бесплатно`
-                            : `Полный показ · ${money(pack.priceMinor, pack.currency) ?? 'по билету'}`}
-                  </strong>
-                  {pack.access === 'club' && !pack.owned && (
-                    <small>
-                      Это временный доступ: он действует, пока активен клубный
-                      билет.
-                    </small>
-                  )}
-                </div>
-                {pack.access === 'locked' &&
-                  product &&
-                  catalog.data?.enabled && (
-                    <CheckoutButton
-                      product={product}
-                      authenticated={authenticated}
-                      hasClub={Boolean(runtime.dashboard?.membership.active)}
-                      label="Купить спецпоказ навсегда"
-                      placement="pack_paywall"
-                      returnUrl={`/specials/${encodeURIComponent(pack.id)}`}
-                    />
-                  )}
+      {packQuery.isLoading && <main className="specials-screen"><ScreenBack onBack={onHome} label="На главную" /><p>Готовим игру…</p></main>}
+      {packQuery.isError && <main className="specials-screen"><ScreenBack onBack={onHome} label="На главную" /><p role="alert">Спецпоказ не найден или временно недоступен.</p></main>}
+      {pack && <GameScreenShell variant="title" onBack={onHome} className="title-screen special-title-screen">
+        <section className="title-stage">
+          <div className="title-game-mark">
+            <span><Gamepad2 /></span>
+            <i>DTF · спецпоказ · {pack.totalItems} игр</i>
+            <h1>{pack.title}</h1>
+          </div>
+          <time>{pack.subtitle || 'Специальная подборка DTF'}</time>
+          <p>{pack.description}</p>
+          <section className="admit-ticket admit-ticket--dossier special-title-ticket" aria-labelledby="ticket-dtf-comments">
+            <div className="admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--game">
+              <img className="admit-ticket__stub-art" src={pack.coverUrl || fallbackCover} alt="" aria-hidden="true" decoding="async" />
+              <span>ВХОД</span><strong>ОДИН</strong><small>DTF</small><em>{pack.totalItems} ИГР</em><i />
+            </div>
+            <div className="admit-ticket__body">
+              <div className="ticket-kicker"><span>Игра «Игры»</span><i /><small>специальный набор</small></div>
+              <h2 id="ticket-dtf-comments">Угадайте игру по комментариям</h2>
+              <p>Всё работает как в обычной игре «Игры»: выбирайте ответ из общего каталога и сверяйте подсказки. В этом показе — <strong>6 попыток</strong> на каждую игру.</p>
+              <div className="special-title-progress" aria-label={`Пройдено ${pack.completedItems} из ${pack.totalItems}`}>
+                <span><strong>{pack.completedItems}</strong> / {pack.totalItems} пройдено</span>
+                <i><b style={{ width: `${pack.totalItems ? Math.round(pack.completedItems / pack.totalItems * 100) : 0}%` }} /></i>
               </div>
-              <div className="specials-hero__poster">
-                <img
-                  src={pack.coverUrl || fallbackCover}
-                  alt={`Афиша «${pack.title}»`}
-                />
-              </div>
-            </header>
-            <section className="special-entries" aria-label="Игры спецпоказа">
-              {pack.entries.map((entry) => (
-                <article
-                  key={entry.position}
-                  className={entry.accessible ? '' : 'is-locked'}
-                >
-                  <span>
-                    {entry.completed ? (
-                      <Check />
-                    ) : entry.accessible ? (
-                      <Play />
-                    ) : (
-                      <Lock />
-                    )}
-                  </span>
-                  <div>
-                    <strong>Сеанс №{entry.position}</strong>
-                    <small>
-                      {entry.completed
-                        ? 'Пройден'
-                        : entry.preview
-                          ? 'Бесплатный просмотр'
-                          : entry.accessible
-                            ? 'Готов к началу'
-                            : 'Нужен доступ'}
-                    </small>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={!entry.accessible || starting !== null}
-                    onClick={() => void start(entry.position)}
-                  >
-                    {starting === entry.position
-                      ? 'Открываем…'
-                      : entry.completed
-                        ? 'Открыть снова'
-                        : 'Играть'}
-                  </button>
-                </article>
-              ))}
-            </section>
-            {error && (
-              <p className="specials-error" role="alert">
-                {error}
-              </p>
-            )}
-          </>
-        )}
-      </main>
+              <GameLaunchControls
+                mode="game"
+                action={<ActionButton className={`play-button game-launch-controls__play ${!nextEntry ? 'is-disabled' : ''}`} disabled={!nextEntry || starting} onClick={() => void start()}>
+                  <Play /> {starting ? 'Запускаем…' : pack.completedItems > 0 ? `Продолжить · игра ${nextEntry?.position ?? pack.totalItems} из ${pack.totalItems}` : 'Начать игру'}
+                  {nextEntry && !starting && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
+                </ActionButton>}
+              />
+              {error && <p className="specials-error" role="alert">{error}</p>}
+            </div>
+          </section>
+        </section>
+      </GameScreenShell>}
     </>
   )
 }

@@ -326,7 +326,6 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       difficulty: body.difficulty,
       archiveDate: body.archiveDate,
       variantKey: body.variantKey,
-      packId: body.packId,
     }, user!.authSessionId, user!.role, config) }
   })
   app.get('/api/v1/games/:sessionId', { schema: { params: paramsId } }, async (request) => {

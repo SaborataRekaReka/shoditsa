@@ -1,0 +1,2632 @@
+{
+  "schemaVersion": 1,
+  "pack": {
+    "id": "dtf-game-comments-25-v1",
+    "slug": "dtf-game-comments-25",
+    "title": "Что за игра?",
+    "subtitle": "Спецпоказ DTF · 25 игр",
+    "description": "Специальная подборка для DTF: угадайте игру по комментариям игроков.",
+    "itemCount": 25,
+    "recommendedMaxAttempts": 6,
+    "accessModel": "free",
+    "publicationStatus": "published",
+    "rightsStatus": "editorial",
+    "uiCopy": {
+      "prompt": "Узнайте игру по комментариям",
+      "disclaimer": "Комментарии переведены и отредактированы для игрового формата."
+    },
+    "experience": {
+      "format": "dtf_special_show",
+      "commentsPerGame": 6
+    }
+  },
+  "items": [
+    {
+      "id": "dtf-starfield",
+      "gameId": "starfield",
+      "order": 1,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Starfield",
+        "titleOriginal": "Starfield",
+        "year": 2023,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1716740
+        ],
+        "aliases": [
+          "Старфилд",
+          "Star Field"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "starfield-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Тогда почему все говорят: «После 12 часов становится интересно»?",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "slow_start",
+            "time_to_get_good"
+          ]
+        },
+        {
+          "key": "starfield-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Можно пройти игру до конца и ни разу не нуждаться ни в одном аванпосте.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "outposts",
+            "optional_systems",
+            "unused_mechanics"
+          ]
+        },
+        {
+          "key": "starfield-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Корабль просто кажется бесполезным, когда можно везде перемещаться мгновенно и пропустить вообще всё, что связано с кораблём.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "space_travel",
+            "fast_travel",
+            "ship"
+          ]
+        },
+        {
+          "key": "starfield-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Разница лишь в том, что в одном случае ничего не происходит по пути к планете, где ничего не происходит, а в другом — ничего не происходит после быстрого перемещения через 35 экранов загрузки к множеству планет, где ничего не происходит.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "empty_planets",
+            "loading_screens",
+            "fast_travel"
+          ]
+        },
+        {
+          "key": "starfield-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Если [название игры] так уважает твоё время, тогда что, чёрт возьми, происходит с инвентарём и ассортиментом магазинов?",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "inventory",
+            "shops",
+            "time"
+          ]
+        },
+        {
+          "key": "starfield-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Мой первый аванпост был прямо рядом с местом, где я нашёл [персонажа]. Я назначил его туда ещё до того, как позволил ему подняться на корабль. Когда он благодарил меня за спасение с пустынной планеты, он даже не подозревал, что никуда не уедет…",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "outposts",
+            "companions",
+            "roleplay"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-cyberpunk-2077",
+      "gameId": "cyberpunk-2077",
+      "order": 2,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Cyberpunk 2077",
+        "titleOriginal": "Cyberpunk 2077",
+        "year": 2020,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1091500
+        ],
+        "aliases": [
+          "Киберпанк 2077",
+          "Cyberpunk",
+          "CP2077"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "cyberpunk-2077-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "В неё уже можно нормально играть? Я даже не пробовал из-за всех плохих отзывов после выхода.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "launch_reputation",
+            "return_after_patches"
+          ]
+        },
+        {
+          "key": "cyberpunk-2077-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Играл на релизе — было ужасно. Запустил снова пару дней назад: теперь это отличная игра, и меня бесит, что у меня мало времени на неё.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "broken_launch",
+            "redemption"
+          ]
+        },
+        {
+          "key": "cyberpunk-2077-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Если резервная копия всё равно приблизит сохранение к повреждению, единственное решение — не играть.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "save_corruption",
+            "technical_state"
+          ]
+        },
+        {
+          "key": "cyberpunk-2077-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Честно говоря, теперь я жду сообщения, что при определённом стиле игры она форматирует жёсткий диск или взрывает всё в радиусе восьми километров, как Хищник. Мне вообще-то нравится игра. Но это уже полная ерунда.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "bugs",
+            "save_corruption",
+            "launch"
+          ]
+        },
+        {
+          "key": "cyberpunk-2077-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "После обновления с трассировкой пути я начал второе прохождение. В первый раз был кочевником, теперь выбрал дитя улиц — и снова влюбился в эту игру.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "path_tracing",
+            "lifepaths",
+            "replay"
+          ]
+        },
+        {
+          "key": "cyberpunk-2077-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Проблема в том, что игра запоминает каждый проданный предмет. Если выкупить вещи обратно и разобрать их, размер сохранения можно уменьшить.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "inventory",
+            "save_size",
+            "crafting"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-baldurs-gate-3",
+      "gameId": "baldurs-gate-3",
+      "order": 3,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Baldur’s Gate 3",
+        "titleOriginal": "Baldur's Gate 3",
+        "year": 2023,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1086940
+        ],
+        "aliases": [
+          "Baldurs Gate 3",
+          "BG3"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "baldurs-gate-3-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Первый гоблин бросает бутылку с жиром. Я думаю: «Ну и зря потратил действие». Потом все четверо моих идиотов один за другим поскользнулись, упали на спину и потеряли ход.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "turn_based_combat",
+            "grease",
+            "dice"
+          ]
+        },
+        {
+          "key": "baldurs-gate-3-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Один из гоблинов призвал волка, затем забежал в клетку и закрыл за собой дверь. Мы с другом очень долго смеялись.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "systemic_ai",
+            "summoning",
+            "combat"
+          ]
+        },
+        {
+          "key": "baldurs-gate-3-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Самая первая проверка взлома замка у него в моей игре закончилась критическим провалом.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "dice",
+            "critical_failure",
+            "lockpicking"
+          ]
+        },
+        {
+          "key": "baldurs-gate-3-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Во втором акте один спутник не мог перепрыгнуть лавовую яму. Тогда мой персонаж с силой 23 просто перебросил его на другую сторону. Он потерял две трети здоровья, зато долетел.",
+          "spoilerRisk": "medium",
+          "clueStrength": 3,
+          "topics": [
+            "strength",
+            "throwing",
+            "companions",
+            "act_two"
+          ]
+        },
+        {
+          "key": "baldurs-gate-3-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Я впервые решил испытать телекинез на злодее прямо посреди его зловещего монолога. Он улетел в бездонную пропасть, не закончив фразу.",
+          "spoilerRisk": "medium",
+          "clueStrength": 4,
+          "topics": [
+            "telekinesis",
+            "systemic_solution",
+            "dialogue"
+          ]
+        },
+        {
+          "key": "baldurs-gate-3-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Однажды я два или три раза лизнул тушу паука, и Гейл сорвался: «Ты можешь перестать лизать эту чёртову штуку?!»",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "companions",
+            "spider_carcass",
+            "dialogue"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-death-stranding",
+      "gameId": "death-stranding",
+      "order": 4,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Death Stranding",
+        "titleOriginal": "Death Stranding",
+        "year": 2019,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1190460,
+          1850570
+        ],
+        "aliases": [
+          "Дэс Стрэндинг",
+          "ДС"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "death-stranding-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Сначала я не понимал, нравится ли мне это. Диалоги временами ужасны, но почему-то я в восторге. Мир, история и геймплей настолько необычны, что я не играл ни во что похожее.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "unique_gameplay",
+            "dialogue",
+            "first_impression"
+          ]
+        },
+        {
+          "key": "death-stranding-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Мне очень нравилось, пока я не добрался до опасного и долгого участка. Я свалился со скалы, понял, что придётся карабкаться обратно, и подумал: возможно, игра мне всё-таки не нравится.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "traversal",
+            "falling",
+            "terrain"
+          ]
+        },
+        {
+          "key": "death-stranding-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Мне понравилась игра. Вряд ли я смогу пройти её снова, но мне близка её идея: главное здесь путь и всё, что происходит между событиями, а не большие постановочные сцены или сражения. Это очень спокойное и уютное приключение.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "journey",
+            "peaceful",
+            "low_combat"
+          ]
+        },
+        {
+          "key": "death-stranding-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Кодзима — путешественник во времени: он показывает, как через несколько лет будут выглядеть заказы с Amazon. Однажды он уже сделал это с MGS2, а теперь повторил снова.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "kojima",
+            "amazon",
+            "delivery"
+          ]
+        },
+        {
+          "key": "death-stranding-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Вся игра выглядит так: «местный призрак преследует курьера Amazon Prime».",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "ghosts",
+            "delivery",
+            "amazon"
+          ]
+        },
+        {
+          "key": "death-stranding-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "До сих пор смешно, что он прямо написал «термоядерное оружие» на бирке груза.",
+          "spoilerRisk": "medium",
+          "clueStrength": 5,
+          "topics": [
+            "cargo",
+            "thermonuclear_weapon",
+            "delivery"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-the-day-before",
+      "gameId": "the-day-before",
+      "order": 5,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "The Day Before",
+        "titleOriginal": "The Day Before",
+        "year": 2023,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1372880
+        ],
+        "aliases": [
+          "Дэй Бифор"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "the-day-before-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Дико всё это… действительно каждую минуту рождается новый простак.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "scam",
+            "buyers"
+          ]
+        },
+        {
+          "key": "the-day-before-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Некоторые готовы дать игре шанс и, вероятно, в любом случае любят экстракшн-игры. Но потом понимают, что она поверхностная и в ней нет прогрессии, которая могла бы удержать интерес.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "extraction_shooter",
+            "no_progression",
+            "shallow"
+          ]
+        },
+        {
+          "key": "the-day-before-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Или просидели в очереди часов пять-шесть, а потом наиграли ещё два-три часа.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "server_queue",
+            "launch"
+          ]
+        },
+        {
+          "key": "the-day-before-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Проблема в том, что у игры длинное вступление, а ещё трудно попасть на сервер. Я пропускал диалоги, чтобы не выйти за два часа. В самом городе я успел поиграть минут двадцать.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "long_intro",
+            "server_issues",
+            "refund_window",
+            "city"
+          ]
+        },
+        {
+          "key": "the-day-before-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Похоже, ты игру даже не запускал — и это было разумно. Многие провели больше двух часов в меню, пытаясь попасть на сервер. Я потратил больше трёх часов на вход и вылеты, а реально играл, может быть, минут сорок пять.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "server_issues",
+            "crashes",
+            "refund"
+          ]
+        },
+        {
+          "key": "the-day-before-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Я наиграл 3,2 часа и запросил возврат. Написал, что игра не соответствует видео и скриншотам, что это не обещанная MMO, а проблемы с серверами не давали нормально играть.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "bait_and_switch",
+            "not_mmo",
+            "refund",
+            "server_issues"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-atomic-heart",
+      "gameId": "atomic-heart",
+      "order": 6,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Atomic Heart",
+        "titleOriginal": "Atomic Heart",
+        "year": 2023,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          668580
+        ],
+        "aliases": [
+          "Атомик Харт",
+          "Атомное сердце"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "atomic-heart-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "В этой игре слишком много болтовни. Её стоило заметно приглушить.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "banter",
+            "dialogue"
+          ]
+        },
+        {
+          "key": "atomic-heart-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Это, по сути, возбуждённый русский BioShock.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "bioshock_comparison",
+            "sexualized_aesthetic",
+            "russian_setting"
+          ]
+        },
+        {
+          "key": "atomic-heart-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Да, главный герой всю игру ведёт себя как необязательный придурок. Это можно было приглушить. Но место старых BioShock для меня игра действительно заняла.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "protagonist",
+            "bioshock_comparison"
+          ]
+        },
+        {
+          "key": "atomic-heart-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "У него есть нарочито дурацкие реплики, но временами это всё же смешно. Советую русскую озвучку с субтитрами: актёр выкладывается на тысячу процентов.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "russian_voiceover",
+            "dialogue"
+          ]
+        },
+        {
+          "key": "atomic-heart-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Я только закончил New Game+, и там буквально есть подводная база под названием Rapture. А заметную часть музыки написал Мик Гордон, работавший над Doom.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "rapture",
+            "mick_gordon",
+            "doom",
+            "dlc"
+          ]
+        },
+        {
+          "key": "atomic-heart-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Люди говорили, что это советский BioShock.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "soviet_setting",
+            "bioshock_comparison"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-skyrim",
+      "gameId": "skyrim",
+      "order": 7,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "The Elder Scrolls V: Skyrim",
+        "titleOriginal": "The Elder Scrolls V: Skyrim",
+        "year": 2011,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          72850,
+          489830
+        ],
+        "aliases": [
+          "Skyrim",
+          "Скайрим",
+          "TES V"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "skyrim-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Скрытный лучник. Стреляешь человеку в лицо из тени, он подбегает прямо к тебе, осматривается… «Хм… Наверное, ветер».",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "stealth_archer",
+            "enemy_ai"
+          ]
+        },
+        {
+          "key": "skyrim-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "А ещё можно забить дракона кулаками.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "dragons",
+            "unarmed_build"
+          ]
+        },
+        {
+          "key": "skyrim-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Лучник-убийца. Люблю красться и стрелять из [название лука скрыто]: хе-хе, взрывы делают бр-р-р.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "stealth_archer",
+            "unique_bow"
+          ]
+        },
+        {
+          "key": "skyrim-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Трудно превзойти уют этой игры, и способов играть в ней очень много, хотя я всё равно всегда превращаюсь в скрытного лучника.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "comfort_game",
+            "stealth_archer"
+          ]
+        },
+        {
+          "key": "skyrim-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Можно буквально прокрасться мимо врагов, если сидеть на корточках и держаться в тени.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "stealth",
+            "enemy_ai"
+          ]
+        },
+        {
+          "key": "skyrim-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Я всегда любил магию. Но хотел бы такую же игру без магии, чтобы по-настоящему уйти в щит и меч или огромный молот.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "build_variety",
+            "magic",
+            "melee"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-elden-ring",
+      "gameId": "elden-ring",
+      "order": 8,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Elden Ring",
+        "titleOriginal": "Elden Ring",
+        "year": 2022,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1245620
+        ],
+        "aliases": [
+          "Элден Ринг"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "elden-ring-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Она далеко не настолько сложная, как я ожидал, но сурово наказывает. Ошибки убивают. Сначала было очень тяжело и раздражающе, затем я поймал ритм, и стало значительно легче.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "difficulty",
+            "punishment",
+            "learning_curve"
+          ]
+        },
+        {
+          "key": "elden-ring-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "По-моему, в игре уже есть лёгкий режим. Берёшь любое откровенно сломанное оружие или пепел войны, везде призываешь духа, а если и этого мало — зовёшь ещё двух людей, чтобы они донесли тебя до следующей области или босса.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "spirit_summons",
+            "ashes_of_war",
+            "coop"
+          ]
+        },
+        {
+          "key": "elden-ring-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Интересно, сколько раз мой конь мчался на полной скорости полмили, пока я искал место, где можно открыть карту и выяснить, что еду не туда.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "mount",
+            "map",
+            "combat_lock"
+          ]
+        },
+        {
+          "key": "elden-ring-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Я забыл, что после выхода из адской червивой пещеры можно быстро перемещаться, поэтому попытался пешком вернуться через Кейлид.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "trap_chest",
+            "caelid",
+            "fast_travel"
+          ]
+        },
+        {
+          "key": "elden-ring-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "В первое прохождение я победил Малению с помощью Слезы мимика, потом остался помогать другим в кооперативе. В NG+ убил её в одиночку. Соло-бой всё ещё нечестный, но практика в кооперативе сделала его терпимым.",
+          "spoilerRisk": "medium",
+          "clueStrength": 4,
+          "topics": [
+            "malenia",
+            "mimic_tear",
+            "coop",
+            "ng_plus"
+          ]
+        },
+        {
+          "key": "elden-ring-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "«Это ещё даже не моя финальная форма!»",
+          "spoilerRisk": "medium",
+          "clueStrength": 5,
+          "topics": [
+            "malenia",
+            "second_phase",
+            "scarlet_bloom"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-fallout-76",
+      "gameId": "fallout-76",
+      "order": 9,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Fallout 76",
+        "titleOriginal": "Fallout 76",
+        "year": 2018,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1151340
+        ],
+        "aliases": [
+          "Фоллаут 76",
+          "F76"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "fallout-76-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "По сути это многопользовательская версия сильно модифицированного выживания из Fallout 4, только управление ресурсами и само выживание гораздо проще.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "multiplayer",
+            "survival",
+            "fallout4_comparison"
+          ]
+        },
+        {
+          "key": "fallout-76-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Единственное, что здесь сложнее, — вес, лол. Такое чувство, что половина игры — Fallout, а половина — управление весом.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "inventory_weight",
+            "fallout"
+          ]
+        },
+        {
+          "key": "fallout-76-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "А ещё VATS расходует очки действия.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "vats",
+            "action_points"
+          ]
+        },
+        {
+          "key": "fallout-76-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "VATS плюс «Ган-фу» — получается Джон Уик.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "vats",
+            "gun_fu"
+          ]
+        },
+        {
+          "key": "fallout-76-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Это примерно «люди вместе играют в одиночную игру»: как библиотека, где каждый читает свою книгу. Раз в час все собираются с огнемётами, а через пять минут снова расходятся по своим лагерям.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "public_events",
+            "solo_multiplayer",
+            "camp_building"
+          ]
+        },
+        {
+          "key": "fallout-76-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "На релизе я провёл в ней 300 часов, потом ушёл примерно тогда, когда в мир добавили NPC. Вернулся два месяца назад и пока бросать не собираюсь.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "launch",
+            "npc_update",
+            "returning_player"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-concord",
+      "gameId": "concord",
+      "order": 10,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Concord",
+        "titleOriginal": "Concord",
+        "year": 2024,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          2443720
+        ],
+        "aliases": [
+          "Конкорд"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "concord-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Честно говоря, это к лучшему. Лучше рано отключить игру и вернуть всем деньги, чем удваивать ставки на этот бардак.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "shutdown",
+            "refunds"
+          ]
+        },
+        {
+          "key": "concord-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Просить 40 долларов за посредственную игру на перенасыщенном рынке, где конкуренты бесплатны, было не лучшей идеей. Добавьте непривлекательный дизайн персонажей и особенно цветовые схемы — и всё кончено.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "price",
+            "hero_shooter",
+            "character_design",
+            "f2p_competition"
+          ]
+        },
+        {
+          "key": "concord-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Они были настолько уверены, что это будет следующий Overwatch, что решили брать за игру 40 долларов. Это показывает, насколько руководители оторваны от своей аудитории.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "overwatch",
+            "price",
+            "executives"
+          ]
+        },
+        {
+          "key": "concord-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Разве этой игре не посвятили эпизод в Secret Level? Интересно, сколько заплатили, чтобы протолкнуть её туда, если сама игра исчезла ещё до выхода сериала.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "secret_level",
+            "cross_media",
+            "shutdown"
+          ]
+        },
+        {
+          "key": "concord-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Вот что бывает, когда восемь лет вливаешь деньги в продукт для рынка, которого к концу этих восьми лет, возможно, уже не существует.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "eight_years",
+            "market",
+            "development"
+          ]
+        },
+        {
+          "key": "concord-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Уже? Я шутил, что она совсем не протянет, но чёрт — игра едва продержалась месяц.\n\nОтвет: две недели.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "two_week_shutdown",
+            "launch_failure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-the-last-of-us-part-ii",
+      "gameId": "the-last-of-us-part-ii",
+      "order": 11,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Одни из нас: Часть II",
+        "titleOriginal": "The Last of Us Part II",
+        "year": 2020,
+        "legacyReleaseYears": [],
+        "steamAppIds": [],
+        "aliases": [
+          "The Last of Us 2",
+          "TLOU2",
+          "Одни из нас 2"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "the-last-of-us-part-ii-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Раздел за [вторую героиню], пожалуй, лучше и веселее, а её оружие отличное.",
+          "spoilerRisk": "medium",
+          "clueStrength": 1,
+          "topics": [
+            "dual_protagonists",
+            "weapons",
+            "gameplay"
+          ]
+        },
+        {
+          "key": "the-last-of-us-part-ii-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Когда я увидел, как она убивает заражённого голыми руками, что-то изменилось в моём восприятии дофамина.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "melee",
+            "infected",
+            "second_protagonist"
+          ]
+        },
+        {
+          "key": "the-last-of-us-part-ii-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Веселее? Ты явно не падал миллион раз, переходя по небесному мосту… Я травмировал бедную девушку.",
+          "spoilerRisk": "medium",
+          "clueStrength": 2,
+          "topics": [
+            "fear_of_heights",
+            "sky_bridge"
+          ]
+        },
+        {
+          "key": "the-last-of-us-part-ii-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Признаюсь: в первое прохождение я специально заставлял её падать, потому что так сильно ненавидел [эту героиню].",
+          "spoilerRisk": "high",
+          "clueStrength": 3,
+          "topics": [
+            "player_hostility",
+            "forced_perspective"
+          ]
+        },
+        {
+          "key": "the-last-of-us-part-ii-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Абсолютно. Моя любимая часть игры. Отличное оружие, отличный ближний бой. Напоминает Джоэла из первой части, если бы он умел уклоняться.",
+          "spoilerRisk": "medium",
+          "clueStrength": 4,
+          "topics": [
+            "part_one_parallel",
+            "joel",
+            "melee"
+          ]
+        },
+        {
+          "key": "the-last-of-us-part-ii-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Да. И мне понравилось, что игра заставила меня получать удовольствие от неё. Сначала я был так зол, что много раз специально её убивал — хотел, чтобы она страдала за Джоэла. Но чем дольше я играл, тем веселее становилось и тем сильнее я привязывался к ней.",
+          "spoilerRisk": "high",
+          "clueStrength": 5,
+          "topics": [
+            "abby",
+            "joel",
+            "perspective_shift",
+            "revenge"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-bloodborne",
+      "gameId": "bloodborne",
+      "order": 12,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Bloodborne",
+        "titleOriginal": "Bloodborne",
+        "year": 2015,
+        "legacyReleaseYears": [],
+        "steamAppIds": [],
+        "aliases": [
+          "Бладборн"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "bloodborne-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "[Название игры] на PS5 всё ещё заблокирована на 30 кадрах, зато частота хотя бы не проседает постоянно, когда на экране много всего.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "30_fps",
+            "ps5",
+            "performance"
+          ]
+        },
+        {
+          "key": "bloodborne-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "К сожалению, даже на PS5 игра заблокирована на 30 кадрах.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "30_fps",
+            "ps5"
+          ]
+        },
+        {
+          "key": "bloodborne-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Редактирование сохранения не работает для уже существующих подземелий — слава богу, иначе был бы хаос.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "chalice_dungeons",
+            "save_editing"
+          ]
+        },
+        {
+          "key": "bloodborne-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "В подземельях действительно полно кривизны, но именно поэтому мы, искатели, их и любим.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "chalice_dungeons",
+            "jank",
+            "prospectors"
+          ]
+        },
+        {
+          "key": "bloodborne-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Саму карту так называемого «cum dungeon» может сгенерировать кто угодно: это просто корневое подземелье Зловещего Ихилла с удачно расположенным NPC.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "cum_dungeon",
+            "chalice_glyph",
+            "npc"
+          ]
+        },
+        {
+          "key": "bloodborne-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "А смешное название — чистая случайность: все глифы назначает сервер в момент создания подземелья, и через редактирование сохранения их изменить нельзя.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "glyphs",
+            "chalice_dungeons",
+            "server"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-no-mans-sky",
+      "gameId": "no-mans-sky",
+      "order": 13,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "No Man’s Sky",
+        "titleOriginal": "No Man's Sky",
+        "year": 2016,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          275850
+        ],
+        "aliases": [
+          "No Mans Sky",
+          "NMS",
+          "Но Мэнс Скай"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "no-mans-sky-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Оригинальная версия была мусором, спору нет. Но разработчики не бросили проект и обновили его до состояния, которое обещали, и даже дальше.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "bad_launch",
+            "redemption",
+            "free_updates"
+          ]
+        },
+        {
+          "key": "no-mans-sky-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Я скорее отрежу себе конечность, чем стану играть в [название игры] после того, как разработчики несколько раз лгали всем в лицо — в интервью, телешоу и статьях.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "broken_promises",
+            "launch_backlash"
+          ]
+        },
+        {
+          "key": "no-mans-sky-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Даже если деньги, заработанные на этой лжи, они потратили на создание лучшей игры на свете, доверия и уважения уже нет.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "trust",
+            "redemption_debate"
+          ]
+        },
+        {
+          "key": "no-mans-sky-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "То есть им следовало забрать деньги и сбежать?",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "developer_support",
+            "redemption_debate"
+          ]
+        },
+        {
+          "key": "no-mans-sky-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Я не покупал [название игры] на релизе — ажиотажа было слишком много. Купил гораздо позже, уже исправленной и действительно достойной.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "late_adopter",
+            "fixed_state"
+          ]
+        },
+        {
+          "key": "no-mans-sky-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Разве это не та же самая ситуация, только [название игры] уже находится на исправленном конце спектра? Странно приводить её как контрпример.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "redemption",
+            "finished_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-red-dead-redemption-2",
+      "gameId": "red-dead-redemption-2",
+      "order": 14,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Red Dead Redemption 2",
+        "titleOriginal": "Red Dead Redemption 2",
+        "year": 2018,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1174180
+        ],
+        "aliases": [
+          "RDR2",
+          "Red Dead 2"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "red-dead-redemption-2-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "[Название игры] — медленная игра, а управление, похоже, ставит реализм выше отзывчивости.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "slow_pace",
+            "controls",
+            "realism"
+          ]
+        },
+        {
+          "key": "red-dead-redemption-2-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Эту игру делали не для хардкорных поклонников шутеров. Это кинематографическая сюжетная игра, в которой просто есть оружие.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "cinematic",
+            "story",
+            "guns"
+          ]
+        },
+        {
+          "key": "red-dead-redemption-2-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Курение и выпивка заряжают особую способность, позволяя эффектно расправляться с людьми. Автоприцел здесь настолько сильный, что я начал сомневаться, нужны ли мне вообще большие пальцы.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "dead_eye",
+            "smoking",
+            "aim_assist"
+          ]
+        },
+        {
+          "key": "red-dead-redemption-2-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Просто не торопись и рассматривай мир и детали, которые сделала Rockstar. Скоро темп поднимется — нужно лишь сохранять веру.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "slow_pace",
+            "rockstar",
+            "world_detail"
+          ]
+        },
+        {
+          "key": "red-dead-redemption-2-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Всегда казалось смешным, что в игре, где существует Майка, запрещена ненормативная лексика.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "horse_naming",
+            "profanity_filter",
+            "micah"
+          ]
+        },
+        {
+          "key": "red-dead-redemption-2-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Можно сносить людям головы и сжигать их заживо, но боже упаси дать лошади неподобающее имя.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "horse",
+            "violence",
+            "profanity_filter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-hogwarts-legacy",
+      "gameId": "hogwarts-legacy",
+      "order": 15,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Hogwarts Legacy",
+        "titleOriginal": "Hogwarts Legacy",
+        "year": 2023,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          990080
+        ],
+        "aliases": [
+          "Наследие Хогвартса"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "hogwarts-legacy-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "У Мерлина было о-о-очень много свободного времени. Когда разработчики уже поймут, что никому не нужно столько отупляющих повторений?",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "merlin_trials",
+            "repetition"
+          ]
+        },
+        {
+          "key": "hogwarts-legacy-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Необязательно забивать карту скучными занятиями только ради заявления, что в игре сто часов контента.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "open_world",
+            "map_fillers"
+          ]
+        },
+        {
+          "key": "hogwarts-legacy-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Их 95?? Господи, это безумие.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "merlin_trials",
+            "quantity"
+          ]
+        },
+        {
+          "key": "hogwarts-legacy-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Около часа назад закончил 95-е испытание. Повторы и количество меня не раздражали, но ужасно не понравилось, что часть испытаний не появляется на карте даже после полного открытия территории. Хорошо, что Revelio на метле помогал находить их.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "merlin_trials",
+            "revelio",
+            "broom"
+          ]
+        },
+        {
+          "key": "hogwarts-legacy-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Летите на метле и используйте улучшенный Revelio — все точки интереса подсвечиваются издалека. Испытания Мерлина со временем становятся однообразными, но хотя бы искать их удобно.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "broom",
+            "revelio",
+            "merlin_trials"
+          ]
+        },
+        {
+          "key": "hogwarts-legacy-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Всего 95 испытаний. Разочаровывает пройти их все и узнать, что награды почти нет. Я потратил часы и получил только достижение. Зачем они вообще нужны? Почему Мерлин их создал? Только чтобы тратить наше время?",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "merlin_trials",
+            "rewards",
+            "merlin"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-the-witcher-3",
+      "gameId": "the-witcher-3",
+      "order": 16,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Ведьмак 3: Дикая Охота",
+        "titleOriginal": "The Witcher 3: Wild Hunt",
+        "year": 2015,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          292030
+        ],
+        "aliases": [
+          "The Witcher 3",
+          "Ведьмак 3",
+          "Witcher 3"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "the-witcher-3-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "В первое прохождение я так и делал. Потом открыл для себя карточную игру… Бедной девушке пришлось подождать.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "gwent",
+            "main_quest_delay",
+            "ciri"
+          ]
+        },
+        {
+          "key": "the-witcher-3-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Я погружался в этот суровый фэнтезийный мир не для того, чтобы играть в карты!",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "gwent",
+            "fantasy_world",
+            "minigame"
+          ]
+        },
+        {
+          "key": "the-witcher-3-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Я здесь мир спасать, а не искать тысячу волшебных перьев или что там ещё.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "open_world",
+            "collectibles",
+            "main_quest"
+          ]
+        },
+        {
+          "key": "the-witcher-3-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Имя, имя — редкостный гад.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "lambert",
+            "kaer_morhen",
+            "poem"
+          ]
+        },
+        {
+          "key": "the-witcher-3-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Бой снежками — один из моих любимых моментов всей игры. Идеальное затишье перед бурей.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "snowball_fight",
+            "kaer_morhen",
+            "calm_before_storm"
+          ]
+        },
+        {
+          "key": "the-witcher-3-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Я подумал: «Что бы сделал [герой]?» Не знал наверняка, но выпивку с ребятами пропустить не мог. Думал, просто будем травить байки и болтать. Оказалось — это и многое другое.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "geralt",
+            "kaer_morhen",
+            "drinking"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-disco-elysium",
+      "gameId": "disco-elysium",
+      "order": 17,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Disco Elysium",
+        "titleOriginal": "Disco Elysium",
+        "year": 2019,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          632470
+        ],
+        "aliases": [
+          "Диско Элизиум"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "disco-elysium-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Лол, меня убило включение света — это был мой самый первый ход в игре.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "fragile_protagonist",
+            "absurd_death"
+          ]
+        },
+        {
+          "key": "disco-elysium-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Я ни разу по-настоящему не умер, но позвонил в участок и тут же отказался быть хоть каким-то полицейским или человеком.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "dialogue_failure",
+            "cop_identity"
+          ]
+        },
+        {
+          "key": "disco-elysium-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "При первом разговоре с любым NPC я сразу извиняюсь за то, что плохо справляюсь и с полицейской работой, и с человеческой жизнью.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "roleplay",
+            "apology_cop"
+          ]
+        },
+        {
+          "key": "disco-elysium-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Меня убило то, что я слишком пристально смотрел кому-то в рот.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "absurd_death",
+            "skill_checks"
+          ]
+        },
+        {
+          "key": "disco-elysium-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Как думаете, здесь можно умереть от слишком старательного караоке?",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "karaoke",
+            "absurd_death"
+          ]
+        },
+        {
+          "key": "disco-elysium-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Я в первый раз умер, когда пытался поймать свой галстук.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "necktie",
+            "opening_scene"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-grand-theft-auto-v",
+      "gameId": "grand-theft-auto-v",
+      "order": 18,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Grand Theft Auto V",
+        "titleOriginal": "Grand Theft Auto V",
+        "year": 2013,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          271590
+        ],
+        "aliases": [
+          "GTA V",
+          "GTA 5",
+          "ГТА 5"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "grand-theft-auto-v-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "В двенадцатилетней игре? Никогда такого не замечали… :o",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "longevity",
+            "old_game"
+          ]
+        },
+        {
+          "key": "grand-theft-auto-v-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Ты пришёл на вечеринку, где торт уже давно разрезали и съели, объявили последний заказ, а сам момент ты пропустил.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "longevity",
+            "community_knowledge"
+          ]
+        },
+        {
+          "key": "grand-theft-auto-v-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Все тут ведут себя по-дурацки, но да, это довольно известная вещь. Это небольшая отсылка к теории заговора охотников на Бигфута. Там есть ещё много всего, если интересно.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "bigfoot",
+            "easter_eggs",
+            "conspiracies"
+          ]
+        },
+        {
+          "key": "grand-theft-auto-v-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "[Онлайн-режим] переживёт нас всех.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "online",
+            "longevity"
+          ]
+        },
+        {
+          "key": "grand-theft-auto-v-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Следующий онлайн-режим будет самостоятельным: издатель захочет, чтобы все начали с нуля и снова принесли больше денег за Shark Cards. К тому же никому не нужны летающие мотоциклы.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "shark_cards",
+            "flying_bikes",
+            "online"
+          ]
+        },
+        {
+          "key": "grand-theft-auto-v-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Люди ещё не готовы покинуть [онлайн-режим]: нелегко оставить всё, что ты там нагриндил. Я ненавижу летающие мотоциклы и всю новую научно-фантастическую ерунду, но издатель на этом зарабатывает.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "grind",
+            "shark_cards",
+            "flying_bikes",
+            "rockstar"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-helldivers-2",
+      "gameId": "helldivers-2",
+      "order": 19,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Helldivers 2",
+        "titleOriginal": "Helldivers 2",
+        "year": 2024,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          553850
+        ],
+        "aliases": [
+          "Хеллдайверс 2"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "helldivers-2-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Мне нравится версия с синей полосой: она показывает, что всё закончилось хорошо и люди снова начали ставить положительные оценки.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "community_event",
+            "review_bombing",
+            "cape"
+          ]
+        },
+        {
+          "key": "helldivers-2-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Я всеми руками за плащи, посвящённые важным событиям сообщества. Сначала был плащ Крика, а этот тоже выглядел бы отлично.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "capes",
+            "community",
+            "creek"
+          ]
+        },
+        {
+          "key": "helldivers-2-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Очень мощно. Я уже чувствую, как распространяется управляемая демократия, пока я освобождаю галактику в этом плаще. Пожалуйста, добавьте его.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "managed_democracy",
+            "galaxy",
+            "cape"
+          ]
+        },
+        {
+          "key": "helldivers-2-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "А теперь представьте, что этот плащ действительно выпустят и дадут только тем, кто свяжет аккаунты PSN и Steam.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "psn",
+            "steam",
+            "account_linking"
+          ]
+        },
+        {
+          "key": "helldivers-2-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Проблема была не в том, что люди могли привязать аккаунт, но не хотели. Систему отключили, потом внезапно сделали обязательной и подставили примерно 170 стран, где игру продавали, но создать аккаунт PSN было нельзя.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "psn",
+            "regions",
+            "account_linking"
+          ]
+        },
+        {
+          "key": "helldivers-2-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Я бы носил этот плащ в честь памятной победы над угрозой изгнания с Супер-Земли. Плащ должен быть укороченным — решение по PSN тоже отменили довольно быстро.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "super_earth",
+            "psn",
+            "cape"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-dragon-age-the-veilguard",
+      "gameId": "dragon-age-the-veilguard",
+      "order": 20,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Dragon Age: На страже Завесы",
+        "titleOriginal": "Dragon Age: The Veilguard",
+        "year": 2024,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1845910
+        ],
+        "aliases": [
+          "Dragon Age Veilguard",
+          "The Veilguard"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "dragon-age-the-veilguard-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "С другой стороны, довольно странно, что Денерим и Орзаммар разваливаются, пока ты идёшь кормить чёртову галлу.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "past_world_state",
+            "side_quests",
+            "denerim"
+          ]
+        },
+        {
+          "key": "dragon-age-the-veilguard-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Честно говоря, я представляю следующую игру так: Рук просыпается и говорит, что ему приснился очень странный сон — все события [название скрыто]. А состояние мира из первых трёх частей остаётся прежним.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "rook",
+            "continuity",
+            "world_state"
+          ]
+        },
+        {
+          "key": "dragon-age-the-veilguard-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Юг сражается с Мором, а Инквизитор приходит в бар Минратоса поболтать с Руком о его спутниках. Л-л-логика.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "inquisitor",
+            "rook",
+            "minrathous",
+            "blight"
+          ]
+        },
+        {
+          "key": "dragon-age-the-veilguard-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Ну брось. У них было всего десять лет на разработку — откуда время на такие тонкости?",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "development_time",
+            "continuity"
+          ]
+        },
+        {
+          "key": "dragon-age-the-veilguard-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Например, Орлей мог бы принять помощь Ферелдена при Селине или отказаться при Гаспаре; король Алистер, королева Анора или оба могли бы защищать Денерим и Редклиф; Хоук, если не остался в Тени, мог бы помогать Авелин эвакуировать Киркволл.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "past_choices",
+            "alistair",
+            "hawke",
+            "orlais"
+          ]
+        },
+        {
+          "key": "dragon-age-the-veilguard-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Раздражает, что здесь был очевидный способ хотя бы немного учесть прошлые решения. Инквизитор пишет Руку, что южный Тедас гибнет. Почему бы письмам не меняться в зависимости от того, правит Ферелденом Анора или Алистер, Орлеем — Селина или Гаспар, жив ли Логэйн?",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "inquisitor",
+            "rook",
+            "past_choices",
+            "the-das"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-stalker-2",
+      "gameId": "stalker-2",
+      "order": 21,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "S.T.A.L.K.E.R. 2: Сердце Чернобыля",
+        "titleOriginal": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+        "year": 2024,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1643320
+        ],
+        "aliases": [
+          "STALKER 2",
+          "Сталкер 2"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "stalker-2-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Именно этого я и ожидал. Я видел, как система ПЫТАЕТСЯ работать. Не могу дождаться исправления.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "broken_system",
+            "launch_state"
+          ]
+        },
+        {
+          "key": "stalker-2-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Похоже, рабочий радиус A-Life уменьшили, чтобы хоть как-то помочь ужасной производительности.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "a_life",
+            "performance"
+          ]
+        },
+        {
+          "key": "stalker-2-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Нет. Перезагружаешь быстрое сохранение — стая собак превращается в группу бандитов, имена NPC меняются. Вместо A-Life здесь случайный спавнер.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "a_life",
+            "random_spawns",
+            "quicksave"
+          ]
+        },
+        {
+          "key": "stalker-2-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Она работает настолько хорошо, что группа сталкеров за кадром убила кровососа, который должен был напасть на меня в одном из основных заданий. Я увидел только несколько трупов сталкеров и мёртвого кровососа, а финальный диалог всё равно делал вид, будто я встретил его живым.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "a_life",
+            "bloodsucker",
+            "quest"
+          ]
+        },
+        {
+          "key": "stalker-2-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Люди слишком много играли в GAMMA и уже не помнят, что на самом деле было в оригинальных играх.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "mods",
+            "original_trilogy",
+            "expectations"
+          ]
+        },
+        {
+          "key": "stalker-2-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Игровой мир кажется совершенно мёртвым и искусственным по сравнению с оригинальной трилогией. Я не уверен, что A-Life когда-нибудь станет тем, что обещали, особенно после того, как все упоминания системы убрали со страницы магазина.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "a_life",
+            "original_trilogy",
+            "store_page"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-assassins-creed-shadows",
+      "gameId": "assassins-creed-shadows",
+      "order": 22,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Assassin’s Creed Shadows",
+        "titleOriginal": "Assassin's Creed Shadows",
+        "year": 2025,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          3159330
+        ],
+        "aliases": [
+          "AC Shadows",
+          "Assassins Creed Shadows"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "assassins-creed-shadows-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "[Название игры] выглядит и работает прекрасно. Значит, это возможно.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "graphics",
+            "performance"
+          ]
+        },
+        {
+          "key": "assassins-creed-shadows-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "При 30 FPS выглядит хорошо, но 60 FPS с внутренним разрешением 800–900p — катастрофа. Предыдущая игра серии выглядит лучше, если обе запускать в 60 FPS.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "60fps",
+            "resolution",
+            "valhalla"
+          ]
+        },
+        {
+          "key": "assassins-creed-shadows-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Вот что я действительно оценил: [героиня] чертовски уязвима, если терять бдительность. Напоминает, как героя первой части легко сминали, если дать здоровенным стражникам себя окружить.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "naoe",
+            "stealth",
+            "series_comparison"
+          ]
+        },
+        {
+          "key": "assassins-creed-shadows-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "[Игра] была достойной, но ей мешало то, что контент запирали за обновлениями live-service. Эту модель насильно вставляют туда, где она не нужна.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "live_service",
+            "updates",
+            "ubisoft"
+          ]
+        },
+        {
+          "key": "assassins-creed-shadows-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Одна из причин, почему я обожал Odyssey: стелс был лучшим за много лет. Надеюсь, [новая часть] будет не хуже.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "odyssey",
+            "stealth",
+            "series"
+          ]
+        },
+        {
+          "key": "assassins-creed-shadows-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Я не стану покупать [эту часть]: в игры серии я в основном играю на PS4/5, а на этой платформе уже существует Ghost of Tsushima.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "japan",
+            "ghost_of_tsushima",
+            "playstation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-silent-hill-2-remake",
+      "gameId": "silent-hill-2-remake",
+      "order": 23,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Silent Hill 2",
+        "titleOriginal": "Silent Hill 2",
+        "year": 2024,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          2124490
+        ],
+        "aliases": [
+          "Silent Hill 2 Remake",
+          "Сайлент Хилл 2"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "silent-hill-2-remake-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Какое мне дело до мнения обозревателей? Им нравится буквально каждая AAA-игра, а ты даже примеров не привёл — почему я должен верить? 💀",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "reviewers",
+            "remake_debate"
+          ]
+        },
+        {
+          "key": "silent-hill-2-remake-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Качественная игра, в которую вложено много труда, ещё не означает, что у неё есть душа 💀 Хороший продукт не доказывает, что людям, которые над ним работали, было не всё равно. 99% ремейков бездушны, смирись 💀",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "soulless",
+            "remakes",
+            "production"
+          ]
+        },
+        {
+          "key": "silent-hill-2-remake-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Другие игры [этой серии] почти не похожи на ремейк. Ты их пропустил, потому что на самом деле любишь Resident Evil — и ремейк как раз пытается стать им 💀",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "resident_evil",
+            "franchise_identity"
+          ]
+        },
+        {
+          "key": "silent-hill-2-remake-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Я прошёл оригинал уже после платины в ремейке и даже не родился, когда вышла [оригинальная игра], но всё равно считаю ремейк горячей кучей мусора рядом с оригиналом. Объясни это 💀",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "original_vs_remake",
+            "nostalgia"
+          ]
+        },
+        {
+          "key": "silent-hill-2-remake-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "[Этот ремейк], напротив, ощущался свежим и совершенно новым даже для вернувшегося игрока вроде меня.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "fresh_remake",
+            "returning_players"
+          ]
+        },
+        {
+          "key": "silent-hill-2-remake-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "В [ремейке] зоны соединены без экранов загрузки, а сама игра примерно вдвое длиннее оригинала. Арены боссов, расположение врагов и головоломки изменили и осовременили.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "seamless_areas",
+            "double_length",
+            "puzzles",
+            "bosses"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-kingdom-come-deliverance-ii",
+      "gameId": "kingdom-come-deliverance-ii",
+      "order": 24,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Kingdom Come: Deliverance II",
+        "titleOriginal": "Kingdom Come: Deliverance II",
+        "year": 2025,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1771300
+        ],
+        "aliases": [
+          "Kingdom Come 2",
+          "KCD2"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "kingdom-come-deliverance-ii-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Неуклюжесть — это путь [этой серии].",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "clunky_combat",
+            "series_identity"
+          ]
+        },
+        {
+          "key": "kingdom-come-deliverance-ii-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Не знаю, что сказать: «проблема в навыке» или «остальные же как-то справляются».",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "skill_issue",
+            "combat"
+          ]
+        },
+        {
+          "key": "kingdom-come-deliverance-ii-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Учись играть или оформляй возврат.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "difficulty",
+            "refund"
+          ]
+        },
+        {
+          "key": "kingdom-come-deliverance-ii-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Человек хочет реалистичную средневековую игру, но ожидает боёв как в Dynasty Warriors 🤣.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "medieval",
+            "realism",
+            "combat"
+          ]
+        },
+        {
+          "key": "kingdom-come-deliverance-ii-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Нужно разобраться с бандитами, но не можешь победить их в открытую? Дождись ночи и зарежь во сне или отрави еду. Можно научиться варить «Погибель» или «Кукольника».",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "bandits",
+            "poison",
+            "alchemy",
+            "sleep"
+          ]
+        },
+        {
+          "key": "kingdom-come-deliverance-ii-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Нужно понять: здесь нельзя быть кем угодно. Мы играем за Генри, сына кузнеца, которого никто не обучал бою. Чёрт возьми, беги — ты сын кузнеца, а не Драконорождённый.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "henry",
+            "blacksmith_son",
+            "realism",
+            "dragonborn"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dtf-clair-obscur-expedition-33",
+      "gameId": "clair-obscur-expedition-33",
+      "order": 25,
+      "answerRef": {
+        "mode": "game",
+        "titleRu": "Clair Obscur: Expedition 33",
+        "titleOriginal": "Clair Obscur: Expedition 33",
+        "year": 2025,
+        "legacyReleaseYears": [],
+        "steamAppIds": [
+          1903340
+        ],
+        "aliases": [
+          "Expedition 33",
+          "Экспедиция 33"
+        ],
+        "resolutionOrder": [
+          "steamAppId",
+          "normalizedTitleAndYear",
+          "normalizedTitle",
+          "alias",
+          "fallback"
+        ]
+      },
+      "progressiveHints": [
+        {
+          "key": "clair-obscur-expedition-33-comment-1",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Честно говоря, мы с четырьмя друзьями прошли её через Game Pass. Если бы я не скачал игру и не рассказал остальным, никто из нас не стал бы играть: обычно мы не любим пошаговые игры.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "game_pass",
+            "turn_based",
+            "word_of_mouth"
+          ]
+        },
+        {
+          "key": "clair-obscur-expedition-33-comment-2",
+          "unlockAfterAttempts": 0,
+          "type": "player_comment",
+          "text": "Десять долларов? То есть я сыграл в эту красоту за ДЕСЯТЬ ДОЛЛАРОВ? Господи.",
+          "spoilerRisk": "low",
+          "clueStrength": 1,
+          "topics": [
+            "game_pass",
+            "value"
+          ]
+        },
+        {
+          "key": "clair-obscur-expedition-33-comment-3",
+          "unlockAfterAttempts": 1,
+          "type": "player_comment",
+          "text": "Бои вообще не обязательно должны быть пошаговыми. Это был мой первый опыт с такой системой, но парирование в реальном времени сделало её приятной.",
+          "spoilerRisk": "low",
+          "clueStrength": 2,
+          "topics": [
+            "turn_based",
+            "real_time_parry"
+          ]
+        },
+        {
+          "key": "clair-obscur-expedition-33-comment-4",
+          "unlockAfterAttempts": 2,
+          "type": "player_comment",
+          "text": "Система парирования основана на Sekiro. Бои очень быстрые и требуют сочетать агрессивное наступление с точными парированиями. Когда привыкаешь, бой почти ощущается как танец.",
+          "spoilerRisk": "low",
+          "clueStrength": 3,
+          "topics": [
+            "sekiro",
+            "parry",
+            "combat_dance"
+          ]
+        },
+        {
+          "key": "clair-obscur-expedition-33-comment-5",
+          "unlockAfterAttempts": 3,
+          "type": "player_comment",
+          "text": "Да, и они ещё внезапно выпустили Oblivion Remastered за два дня до неё. Они помогли, но это была ожидаемая часть сделки: отдаёшь игру в Game Pass — получаешь рекламу.",
+          "spoilerRisk": "low",
+          "clueStrength": 4,
+          "topics": [
+            "oblivion_remastered",
+            "game_pass",
+            "launch_timing"
+          ]
+        },
+        {
+          "key": "clair-obscur-expedition-33-comment-6",
+          "unlockAfterAttempts": 5,
+          "type": "player_comment",
+          "text": "Игра даёт сильнейшие ощущения от Legend of Dragoon и Final Fantasy X. Для меня это 10 из 10, и я понял это за первые пять минут.",
+          "spoilerRisk": "low",
+          "clueStrength": 5,
+          "topics": [
+            "legend_of_dragoon",
+            "final_fantasy_x",
+            "jrpg"
+          ]
+        }
+      ]
+    }
+  ]
+}

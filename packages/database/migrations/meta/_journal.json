@@ -141,6 +141,13 @@
       "when": 1784572201787,
       "tag": "0019_enable_danetki_mode",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1784653200000,
+      "tag": "0020_remove_retired_game_specials",
+      "breakpoints": true
     }
   ]
 }

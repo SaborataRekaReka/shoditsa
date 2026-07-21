@@ -17,7 +17,7 @@ describe('API schemas', () => {
   it('accepts city through the canonical game route with a supported variant', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'city', variantKey: 'capitals' })).toBe(true))
   it('accepts a solo danetki session through the canonical game route', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'danetki', roomMode: 'solo' })).toBe(true))
   it('accepts free play for the danetki chat engine', () => expect(Value.Check(GameStartBodySchema, { kind: 'free_play', mode: 'danetki', roomMode: 'group' })).toBe(true))
-  it('accepts a pack session selector', () => expect(Value.Check(GameStartBodySchema, { kind: 'pack', mode: 'game', packId: 'dtf-games-promo-30-v1', packPosition: 1 })).toBe(true))
+  it('accepts a pack session selector', () => expect(Value.Check(GameStartBodySchema, { kind: 'pack', mode: 'game', packId: 'dtf-game-comments-25-v1', packPosition: 1 })).toBe(true))
   it('validates the manual private-game order form strictly', () => {
     const valid = { contactName: 'Анна', email: 'anna@example.com', participants: 20, eventDate: null, description: 'Командная игра для летней встречи отдела.', consent: true }
     expect(Value.Check(PrivateGameOrderBodySchema, valid)).toBe(true)
