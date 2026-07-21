@@ -157,7 +157,7 @@ const sourceChecks = [
   {
     path: 'apps/web/src/features/danetki/DanetkiEntryPages.tsx',
     required: [
-      ['shared title shell', /function DanetkiLobbyPage[^]*<DanetkiShell[^]*className="title-screen danetki-title-screen"/],
+      ['shared title shell', /function DanetkiLobbyPage[^]*<GameScreenShell[^]*variant="title"[^]*className="title-screen danetki-title-screen"/],
       ['shared invite shell', /function DanetkiJoinPage[^]*<AppHeader[^]*<ScreenBack/],
       ['shared invite action', /danetki-join-card[^]*<ActionButton[^]*type="submit"/],
     ],
@@ -165,13 +165,26 @@ const sourceChecks = [
   {
     path: 'apps/web/src/features/danetki/DanetkiGamePage.tsx',
     required: [
-      ['shared live session shell', /function DanetkiGamePage[^]*<DanetkiShell[^]*className="game-shell danetki-main"/],
+      ['shared live session shell', /function DanetkiGamePage[^]*<GameScreenShell[^]*variant="session"[^]*className="game-shell danetki-main"/],
     ],
   },
   {
-    path: 'apps/web/src/features/danetki/DanetkiShell.tsx',
+    path: 'apps/web/src/components/game-shell/GameScreenShell.tsx',
     required: [
-      ['stable Danetki navigation row', /function DanetkiShell[^]*<ScreenBack[^]*className="danetki-shell__nav"/],
+      ['stable platform navigation row', /function GameScreenShell[^]*<ScreenBack[^]*className="game-screen-shell__nav"/],
+      ['separate content width from navigation rail', /game-screen-shell__content[^]*game-screen-shell__content--\$\{variant\}/],
+    ],
+  },
+  {
+    path: 'apps/web/src/components/game-shell/GamePageFrame.tsx',
+    required: [
+      ['all regular sessions use platform shell', /function GamePageFrame[^]*<GameScreenShell[^]*variant="session"/],
+    ],
+  },
+  {
+    path: 'apps/web/src/App.tsx',
+    required: [
+      ['all regular titles use platform shell', /function TitleScreen[^]*<GameScreenShell[^]*variant="title"/],
     ],
   },
   {

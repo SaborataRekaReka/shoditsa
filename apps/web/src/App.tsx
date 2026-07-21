@@ -101,6 +101,7 @@ import { MODE_PRESENTATION } from './app/mode-presentation'
 import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
 import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
 import { GamePageFrame } from './components/game-shell/GamePageFrame'
+import { GameScreenShell } from './components/game-shell/GameScreenShell'
 import { trackClientEvent } from './app/client-events'
 import { ClubScreen } from './features/commerce/ClubScreen'
 import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
@@ -1461,16 +1462,12 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
 
   return <>
     <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className={`title-screen ${isLeaving ? 'is-leaving' : ''}`} onTransitionEnd={(event) => {
+    <GameScreenShell variant="title" onBack={() => {
+      trackMetrikaGoal('title_back_click', { mode })
+      onBack()
+    }} className={`title-screen ${isLeaving ? 'is-leaving' : ''}`} onTransitionEnd={(event) => {
       if (isLeaving && event.target === event.currentTarget && event.propertyName === 'opacity') onLeaveComplete?.()
     }}>
-      <div className="screen-back-row">
-        <button className="screen-back" onClick={() => {
-          trackMetrikaGoal('title_back_click', { mode })
-          onBack()
-        }} aria-label="Назад"><ChevronLeft /></button>
-        <span className="keycap-hint" aria-hidden="true">Esc</span>
-      </div>
       <section className="title-stage">
         <div className="title-game-mark">
           <span>{modeIcon(mode)}</span>
@@ -1571,7 +1568,7 @@ function TitleScreen({ mode, promoPackId, variantKey, setVariantKey, period, set
               <GameArtifactSeoDetails mode={mode} />
             </section>}
       </section>
-    </main>
+    </GameScreenShell>
   </>
 }
 
@@ -2916,14 +2913,10 @@ function Game({
       : (answer.genres ?? []).slice(0, 3)
 
   return <>
-    <GamePageFrame controller={{ source: 'local', mode, puzzleDate: date, status, attemptsCount: attempts.length, variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }}>
-      <div className="screen-back-row">
-        <button className="screen-back" onClick={() => {
-          trackMetrikaGoal('game_back_click', { mode, period: effectivePeriod })
-          onBack()
-        }} aria-label="Назад"><ChevronLeft /></button>
-        <span className="keycap-hint" aria-hidden="true">Esc</span>
-      </div>
+    <GamePageFrame controller={{ source: 'local', mode, puzzleDate: date, status, attemptsCount: attempts.length, variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={() => {
+      trackMetrikaGoal('game_back_click', { mode, period: effectivePeriod })
+      onBack()
+    }}>
       <section className={`game-heading${mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}>
         <div>
           <div className="game-heading__kicker">
@@ -3446,8 +3439,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     : []
 
   return <>
-    <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }}>
-      <div className="screen-back-row"><button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
+    <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromoSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromoSession ? 'DTF promo-пак' : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
       {isPromoSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
       {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}

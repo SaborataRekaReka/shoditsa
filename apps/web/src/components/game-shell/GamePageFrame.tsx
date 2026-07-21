@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { AppHeader } from '../app-shell/AppShell'
 import type { GameStatus, TitleMode } from '../../types'
+import { GameScreenShell } from './GameScreenShell'
 
 export type GamePageNavigation = {
   onHome: () => void
@@ -20,16 +21,18 @@ export type GameControllerSnapshot = {
 }
 
 /** Shared visual shell for local and server-authoritative game controllers. */
-export function GamePageFrame({ controller, navigation, children }: { controller: GameControllerSnapshot; navigation: GamePageNavigation; children: ReactNode }) {
+export function GamePageFrame({ controller, navigation, onBack, children }: { controller: GameControllerSnapshot; navigation: GamePageNavigation; onBack: () => void; children: ReactNode }) {
   return <>
     <AppHeader {...navigation} />
-    <main
+    <GameScreenShell
+      variant="session"
+      onBack={onBack}
       className="game-shell"
       data-controller={controller.source}
       data-game-mode={controller.mode}
       data-game-status={controller.status}
       data-attempts={controller.attemptsCount}
       data-variant={controller.variantKey ?? undefined}
-    >{children}</main>
+    >{children}</GameScreenShell>
   </>
 }

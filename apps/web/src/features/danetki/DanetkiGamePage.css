@@ -698,6 +698,157 @@
   .danetki-session-actions .ui-button { flex: 1 1 140px; }
 }
 
+/* Composer action follows the platform button geometry and aligns with the field. */
+.danetki-page--session .danetki-composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  align-items: start;
+  gap: 8px;
+}
+.danetki-page--session .danetki-composer:last-child {
+  padding-bottom: 12px;
+  border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
+}
+.danetki-page--session .danetki-composer textarea {
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
+  margin: 0;
+}
+.danetki-page--session .danetki-composer .danetki-composer__send {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 0;
+  align-self: start;
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: var(--color-primary);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--color-shadow) 72%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.danetki-page--session .danetki-composer .danetki-composer__send:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--color-shadow);
+}
+.danetki-page--session .danetki-composer .danetki-composer__send:disabled {
+  color: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  background: color-mix(in srgb, var(--color-primary) 64%, var(--color-paper));
+  border-color: color-mix(in srgb, var(--color-primary-border) 65%, var(--color-paper-line));
+  opacity: 1;
+  filter: none;
+  box-shadow: none;
+}
+.danetki-page--session .danetki-composer .danetki-composer__send svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.1;
+}
+.danetki-page--session .danetki-composer .danetki-composer__send .lucide-send { transform: translate(-1px, 1px); }
+
+/* A compact case closure replaces the duplicated full-solution banner. */
+.danetki-outcome {
+  --danetki-outcome-accent: var(--color-primary);
+  position: relative;
+  min-height: 132px;
+  margin-top: 10px;
+  padding: 22px 24px;
+  overflow: hidden;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+  background-image: linear-gradient(rgba(239, 231, 215, .94), rgba(239, 231, 215, .94)), url('/images/realistic-grain-paper-texture.webp');
+  background-position: center;
+  background-size: auto, cover;
+  background-blend-mode: normal, multiply;
+  box-shadow: var(--shadow-paper);
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  scroll-margin-top: 82px;
+}
+.danetki-outcome::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--danetki-outcome-accent);
+}
+.danetki-outcome--lost { --danetki-outcome-accent: var(--color-accent); }
+.danetki-outcome__mark {
+  width: 52px;
+  height: 52px;
+  border: 1px solid color-mix(in srgb, var(--danetki-outcome-accent) 72%, var(--color-paper-line));
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--danetki-outcome-accent) 74%, var(--color-paper));
+  display: grid;
+  place-items: center;
+}
+.danetki-outcome__mark svg { width: 25px; height: 25px; stroke-width: 1.8; }
+.danetki-outcome__copy { min-width: 0; }
+.danetki-outcome__copy > span {
+  color: color-mix(in srgb, var(--danetki-outcome-accent) 68%, var(--color-ink));
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.danetki-outcome__copy h2 {
+  margin: 4px 0 5px;
+  font: 500 clamp(27px, 3vw, 34px)/1 Oswald, sans-serif;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.danetki-outcome__copy p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--color-paper-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.danetki-outcome__meta {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.danetki-outcome__meta span {
+  color: var(--color-paper-muted-2);
+  font-size: 10px;
+  font-weight: 750;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.danetki-outcome__meta svg { width: 14px; height: 14px; }
+.danetki-outcome .danetki-outcome__action {
+  min-width: 188px;
+  min-height: 48px;
+  box-shadow: var(--shadow-tile);
+}
+
+@media (max-width: 719px) {
+  .danetki-outcome {
+    min-height: 0;
+    padding: 18px;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 13px;
+  }
+  .danetki-outcome__mark { width: 44px; height: 44px; }
+  .danetki-outcome__mark svg { width: 22px; height: 22px; }
+  .danetki-outcome__copy h2 { font-size: 28px; }
+  .danetki-outcome .danetki-outcome__action { grid-column: 1 / -1; width: 100%; min-width: 0; }
+}
+
 @media (max-width: 560px) {
   .game-launch-controls--danetki { grid-template-columns: 1fr; }
 }
@@ -1437,36 +1588,4 @@
   .danetki-page--session .danetki-suggestions {
     border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
   }
-}
-
-/* One stable frame for the Danetki title and live session. */
-.title-screen.danetki-shell,
-.danetki-page--session .danetki-shell {
-  width: min(100%, 1440px);
-  margin-inline: auto;
-  padding: 24px 14px 64px;
-  align-items: stretch;
-}
-.danetki-shell > .danetki-shell__nav {
-  flex: 0 0 auto;
-  min-height: 44px;
-  margin-bottom: 10px;
-}
-.danetki-title-stage { margin-inline: auto; }
-
-@media (min-width: 720px) {
-  .title-screen.danetki-shell,
-  .danetki-page--session .danetki-shell { padding: 36px 28px 80px; }
-}
-
-@media (min-width: 720px) and (max-height: 950px) {
-  .title-screen.danetki-shell,
-  .danetki-page--session .danetki-shell { padding: 18px 28px 28px; }
-  .danetki-shell > .danetki-shell__nav { margin-bottom: 2px; }
-}
-
-@media (max-width: 719px) {
-  .title-screen.danetki-shell,
-  .danetki-page--session .danetki-shell { width: 100%; padding: 20px 14px 64px; }
-  .danetki-shell > .danetki-shell__nav { margin-bottom: 2px; }
 }

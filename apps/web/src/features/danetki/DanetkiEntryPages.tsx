@@ -8,7 +8,7 @@ import { GameLaunchControls, GameOption, GameOptionSelect } from '../../componen
 import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { publicAssetUrl } from '../../app/public-asset'
-import { DanetkiShell } from './DanetkiShell'
+import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import './DanetkiGamePage.css'
 
 const messageFor = (error: unknown) => error instanceof ApiClientError
@@ -57,7 +57,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
   }, [canLaunch, dailyAvailable, onBack, onStart, onStartFreePlay, roomMode])
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <DanetkiShell onBack={onBack} className="title-screen danetki-title-screen">
+    <GameScreenShell variant="title" onBack={onBack} wide className="title-screen danetki-title-screen">
       <section className="title-stage danetki-title-stage">
         <div className="title-game-mark">
           <span><Sparkles aria-hidden="true" /></span>
@@ -101,7 +101,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
         <GameArtifactSeoDetails mode="danetki" />
       </section>
       </section>
-    </DanetkiShell>
+    </GameScreenShell>
   </>
 }
 

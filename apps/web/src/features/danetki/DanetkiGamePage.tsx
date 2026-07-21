@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { CalendarDays, Check, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
-import { DanetkiShell } from './DanetkiShell'
+import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import './DanetkiGamePage.css'
 
 type Props = {
@@ -44,6 +44,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   const [copied, setCopied] = useState(false)
   const [newMessages, setNewMessages] = useState(0)
   const listRef = useRef<HTMLDivElement>(null)
+  const outcomeRef = useRef<HTMLElement>(null)
   const dialogRef = useRef<HTMLElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
   const wasNearBottom = useRef(true)
@@ -139,6 +140,15 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   }, [runtime.dashboard, session.id, session.kind, session.rulesVersion, state.questionCount, state.questionLimit, state.questionsRemaining, state.roomMode])
 
   useEffect(() => {
+    if (session.status === 'playing') return
+    const frame = window.requestAnimationFrame(() => outcomeRef.current?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'center',
+    }))
+    return () => window.cancelAnimationFrame(frame)
+  }, [session.status])
+
+  useEffect(() => {
     if (!dialog) return
     returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const node = dialogRef.current
@@ -229,8 +239,10 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   return <div className="danetki-page danetki-page--session">
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
 
-    <DanetkiShell
+    <GameScreenShell
+      variant="session"
       onBack={onBack}
+      wide
       className="game-shell danetki-main"
       status={connection !== 'connected' && <span className={`danetki-connection danetki-connection--${connection}`}>{connection === 'offline' ? 'нет сети' : 'переподключение'}</span>}
     >
@@ -291,8 +303,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         {newMessages > 0 && <button type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения · {newMessages}</button>}
 
         {session.status === 'playing' && <>
-          <form className="danetki-composer" onSubmit={submit}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining > 0 ? 'Напишите вопрос…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0} /><button type="submit" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос">{send.isPending ? <LoaderCircle /> : <Send />}</button></form>
-          <div className="danetki-suggestions">{state.puzzle.starterQuestions.slice(0, 3).map((question) => <button key={question} type="button" onClick={() => setDraft(question)}>{question}</button>)}</div>
+          <form className="danetki-composer" onSubmit={submit}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining > 0 ? 'Напишите вопрос…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0} /><ActionButton type="submit" className="danetki-composer__send" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос" title="Отправить вопрос">{send.isPending ? <LoaderCircle className="danetki-spinner" /> : <Send />}</ActionButton></form>
         </>}
       </section>
 
@@ -301,8 +312,20 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         <ActionButton type="button" variant="primary" onClick={() => setDialog('guess')}><Check /> Я знаю разгадку</ActionButton>
         <ActionButton type="button" variant="secondary" onClick={() => setDialog('hint')} disabled={state.hintLevel >= 3}><Lightbulb /> Подсказка {state.hintLevel}/3</ActionButton>
         <ActionButton type="button" variant="ghost" onClick={() => setDialog('surrender')}><DoorOpen /> Сдаться</ActionButton>
-      </div> : <section className={`danetki-result danetki-result--${session.status}`}><Sparkles /><h2>{session.status === 'won' ? 'Расследование завершено!' : 'Данетка раскрыта'}</h2><p>{state.solution}</p><button type="button" onClick={onHome}>На главную</button></section>}
-    </DanetkiShell>
+      </div> : <section ref={outcomeRef} className={`danetki-outcome danetki-outcome--${session.status}`} aria-labelledby="danetki-outcome-title" aria-live="polite">
+        <span className="danetki-outcome__mark" aria-hidden="true"><CheckCircle2 /></span>
+        <div className="danetki-outcome__copy">
+          <span>{session.status === 'won' ? 'Версия подтверждена' : 'Разгадка открыта'}</span>
+          <h2 id="danetki-outcome-title">Дело закрыто</h2>
+          <p>{session.status === 'won' ? 'Вы восстановили цепочку событий.' : 'Расследование завершено.'} Полная разгадка сохранена в протоколе выше.</p>
+          <div className="danetki-outcome__meta">
+            <span><HelpCircle aria-hidden="true" /> {state.questionCount} {questionWord}</span>
+            <span><Lightbulb aria-hidden="true" /> {state.hintLevel > 0 ? `Подсказки: ${state.hintLevel}/3` : 'Без подсказок'}</span>
+          </div>
+        </div>
+        <ActionButton type="button" className="danetki-outcome__action" onClick={onHome}>К другим играм <ArrowRight aria-hidden="true" /></ActionButton>
+      </section>}
+    </GameScreenShell>
 
     {dialog && <div className="danetki-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null) }}><section ref={dialogRef} className="danetki-dialog" role="dialog" aria-modal="true" aria-labelledby="danetki-dialog-title">
       {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><textarea rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><button type="button" onClick={() => setDialog(null)}>Отмена</button><button type="button" className="is-primary" disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</button></div></>}
