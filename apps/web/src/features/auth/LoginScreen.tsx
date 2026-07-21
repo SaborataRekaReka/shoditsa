@@ -92,9 +92,6 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [pending, setPending] = useState(false)
-  const [termsAccepted, setTermsAccepted] = useState(false)
-  const [personalDataAccepted, setPersonalDataAccepted] = useState(false)
-  const [legalError, setLegalError] = useState('')
 
   const returnUrl = useMemo(() => currentReturnUrl(), [])
   const resetMode = Boolean(resetToken) && !register
@@ -138,11 +135,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     if (!password) nextErrors.password = 'Введите пароль.'
     else if (register && password.length < 10) nextErrors.password = 'Минимум 10 символов.'
     setFieldErrors(nextErrors)
-    const nextLegalError = register && (!termsAccepted || !personalDataAccepted)
-      ? 'Для регистрации подтвердите оба пункта отдельно.'
-      : ''
-    setLegalError(nextLegalError)
-    return !Object.values(nextErrors).some(Boolean) && !nextLegalError
+    return !Object.values(nextErrors).some(Boolean)
   }
 
   const redirectAfterAuth = () => {
@@ -267,7 +260,6 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setForgotMode(false)
     setResetToken('')
     setFieldErrors(emptyFieldErrors)
-    setLegalError('')
     clearMessages()
     removeResetTokenFromAddress()
   }
@@ -345,21 +337,6 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 </div>}
 
                 {!register && !resetMode && !forgotMode && <button className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</button>}
-                {register && !resetMode && <p className="login-form-hint">После регистрации проверьте почту, если подтверждение email включено на сервере.</p>}
-
-                {register && !resetMode && <fieldset className="login-legal-consents" aria-describedby={legalError ? 'login-legal-error' : undefined}>
-                  <legend className="sr-only">Юридические согласия</legend>
-                  <label>
-                    <input type="checkbox" checked={termsAccepted} onChange={(event) => { setTermsAccepted(event.target.checked); setLegalError('') }} />
-                    <span>Я принимаю <a href="/legal/terms" target="_blank" rel="noreferrer">Пользовательское соглашение и публичную оферту</a>.</span>
-                  </label>
-                  <label>
-                    <input type="checkbox" checked={personalDataAccepted} onChange={(event) => { setPersonalDataAccepted(event.target.checked); setLegalError('') }} />
-                    <span>Отдельно даю <a href="/legal/personal-data-consent" target="_blank" rel="noreferrer">согласие на обработку персональных данных</a> на условиях <a href="/legal/privacy" target="_blank" rel="noreferrer">Политики</a>.</span>
-                  </label>
-                </fieldset>}
-                {legalError && <small id="login-legal-error" className="login-field-error login-legal-error">{legalError}</small>}
-
                 {error && <div className="login-error" role="alert" aria-live="polite">{error}</div>}
 
                 <button className="login-submit" type="submit" disabled={pending || (!emailAuthEnabled && !resetMode && !forgotMode)}>
@@ -369,7 +346,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
                 {notice && <div className="login-notice" role="status" aria-live="polite">{notice}</div>}
 
-                {!resetMode && !forgotMode && !register && <>
+                {!resetMode && !forgotMode && <>
                   <div className="login-divider" aria-hidden="true"><span />ИЛИ<span /></div>
                   <button className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending || !yandexAuthEnabled}>
                     <span className="login-yandex-mark" aria-hidden="true">Я</span>

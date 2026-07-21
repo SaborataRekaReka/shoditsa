@@ -1272,3 +1272,72 @@
 @media (max-width: 420px) {
   .danetki-page--session .danetki-situation { min-height: 650px; grid-template-rows: auto 235px 44px; }
 }
+
+/* Match the platform home hero: roomier composition, grid and vector backdrop. */
+.danetki-page--session .danetki-situation {
+  background-color: var(--color-surface);
+}
+.danetki-page--session .danetki-situation::before {
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(242, 236, 223, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 236, 223, .025) 1px, transparent 1px);
+  background-position: center;
+  background-size: 32px 32px;
+  background-repeat: repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+  opacity: 1;
+}
+.danetki-page--session .danetki-situation::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: .42;
+  background: left top / auto 100% no-repeat url('/images/Vector.svg');
+  pointer-events: none;
+}
+
+@media (min-width: 1280px) {
+  .danetki-page--session .danetki-situation {
+    min-height: 368px;
+    grid-template-rows: minmax(0, 324px) 44px;
+  }
+  .danetki-page--session .danetki-host { inset: 0 0 44px 42%; }
+  .danetki-page--session .danetki-situation__copy {
+    width: 59%;
+    padding: 34px 32px 38px 46px;
+  }
+  .danetki-page--session .danetki-situation__copy > h1 { margin-block: 8px 7px; }
+  .danetki-page--session .danetki-case-meta { margin-bottom: 20px; }
+  .danetki-page--session .danetki-situation__copy > p { margin-bottom: 3px; }
+  .danetki-page--session .danetki-situation__copy > small { margin-top: 15px; }
+  .danetki-page--session .danetki-artwork {
+    bottom: -104px;
+    height: calc(100% + 104px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .danetki-page--session .danetki-situation {
+    min-height: 348px;
+    grid-template-rows: minmax(0, 304px) 44px;
+  }
+  .danetki-page--session .danetki-situation__copy {
+    padding: 30px 26px 34px 34px;
+  }
+  .danetki-page--session .danetki-case-meta { margin-bottom: 18px; }
+  .danetki-page--session .danetki-artwork {
+    bottom: -100px;
+    height: calc(100% + 100px);
+  }
+}
+
+@media (max-width: 767px) {
+  .danetki-page--session .danetki-situation::after {
+    opacity: .28;
+    background-size: auto 58%;
+  }
+  .danetki-page--session .danetki-situation__copy { padding: 28px 20px 20px; }
+}
