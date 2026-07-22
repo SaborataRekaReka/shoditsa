@@ -40,7 +40,7 @@ describe('search index contract', () => {
   })
 
   it('keeps personal and transactional routes out of the index', () => {
-    for (const pathname of ['/login', '/register', '/archive', '/profile', '/play/movie', '/sessions/id-1', '/review/music', '/admin', '/missing']) {
+    for (const pathname of ['/login', '/register', '/archive', '/profile', '/play/movie', '/games/together', '/sessions/id-1', '/review/music', '/admin', '/missing']) {
       const route = seoRouteFromPathname(pathname)
       expect(route.indexable, pathname).toBe(false)
       expect(route.robots, pathname).toContain('noindex')

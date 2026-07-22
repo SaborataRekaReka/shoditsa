@@ -12,6 +12,8 @@ describe('commerce config', () => {
     process.env.COMMERCE_RETURN_URL = 'http://localhost:5173/purchase/return'
     process.env.ARCHIVE_FIRST_DATE = '2026-07-01'
     process.env.FREE_ARCHIVE_DAYS = '7'
+    delete process.env.FRIENDS_ROOM_PREVIEW
+    delete process.env.VITE_FRIENDS_ROOM_PREVIEW
   })
 
   afterEach(() => {
@@ -21,6 +23,14 @@ describe('commerce config', () => {
 
   it('loads disabled stub commerce with public archive settings', () => {
     expect(loadConfig().commerce).toMatchObject({ enabled: false, provider: 'stub', currency: 'RUB', archiveFirstDate: '2026-07-01', freeArchiveDays: 7 })
+    expect(loadConfig().friendsRoomPreview).toBe(false)
+  })
+
+  it('supports the server preview flag and its Vite-compatible fallback', () => {
+    process.env.VITE_FRIENDS_ROOM_PREVIEW = 'true'
+    expect(loadConfig().friendsRoomPreview).toBe(true)
+    process.env.FRIENDS_ROOM_PREVIEW = 'false'
+    expect(loadConfig().friendsRoomPreview).toBe(false)
   })
 
   it('rejects an untrusted return origin', () => {

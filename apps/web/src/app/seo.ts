@@ -59,6 +59,9 @@ const utilitySeo = (pathname: string): SeoRoute | null => {
   if (pathname === '/admin' || pathname.startsWith('/admin/')) return {
     kind: 'utility', title: 'Админ-панель — Сходится!', description: 'Служебная административная панель.', canonicalPath: '/admin', heading: 'Админ-панель', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }
+  if (pathname === '/games/together') return {
+    kind: 'utility', title: 'Игра с друзьями — Сходится!', description: 'Предпросмотр тестовой комнаты многопользовательского режима.', canonicalPath: '/games/together', heading: 'Игра с друзьями', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
   if (pathname === '/archive') return {
     kind: 'utility', title: 'Архив игр — Сходится!', description: 'Личная история ежедневных игр.', canonicalPath: '/archive', heading: 'Архив', lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }

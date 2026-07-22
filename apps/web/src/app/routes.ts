@@ -1,7 +1,7 @@
 import { isPlayableModeId, type PlayableModeId } from '@shoditsa/contracts'
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
 
-export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-join' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
+export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-join' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
 
 export type PlayerRouteState = {
   screen: PlayerScreen
@@ -32,6 +32,7 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   if (normalized === '/purchase/return') return { screen: 'purchase-return' }
   if (normalized === '/review/music') return { screen: 'review', mode: 'music' }
   if (normalized === '/games/danetki') return { screen: 'danetki' }
+  if (normalized === '/games/together') return { screen: 'friends-room' }
   const danetkiJoinMatch = normalized.match(/^\/danetki\/join\/([^/]+)$/)
   if (danetkiJoinMatch) return { screen: 'danetki-join', inviteToken: decodedSegment(danetkiJoinMatch[1]) }
   const legalMatch = normalized.match(/^\/legal\/([^/]+)$/)
@@ -59,6 +60,7 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
 
 export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken }: PlayerRouteState) => {
   if (screen === 'danetki') return '/games/danetki'
+  if (screen === 'friends-room') return '/games/together'
   if (screen === 'danetki-join' && inviteToken) return `/danetki/join/${encodeURIComponent(inviteToken)}`
   if (screen === 'title' && mode) return `/games/${encodeURIComponent(mode)}`
   if (screen === 'game' && sessionId) return `/sessions/${encodeURIComponent(sessionId)}`

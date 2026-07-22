@@ -100,6 +100,19 @@
 .header-club span { font-size: 11px; font-weight: 800; white-space: nowrap; }
 .app-header nav svg, .modal-head svg { width: 18px; height: 18px; stroke-width: 1.8; }
 .app-header nav button:hover { transform: translateY(-2px); border-color: var(--color-line-strong); background: var(--color-surface-2); }
+.app-header nav .header-create-room {
+  width: auto;
+  min-width: 44px;
+  padding: 0 14px;
+  color: var(--color-bg);
+  background: var(--color-accent);
+  display: inline-flex;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.app-header nav .header-create-room:hover { border-color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 88%, white); }
 .app-header nav .header-profile {
   width: auto;
   min-width: 40px;
@@ -2756,6 +2769,8 @@
   .brand picture { width: 36px; }
   .app-header__inner { padding: 0 6px; }
   .app-header nav { gap: 2px; }
+  .app-header nav .header-create-room { padding: 0; }
+  .header-create-room span { display: none; }
   .app-header nav button,
   .app-header nav .header-club { width: 44px; height: 44px; border-radius: 12px; }
   .app-header nav .header-club { padding: 0; }

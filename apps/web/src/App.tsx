@@ -37,6 +37,7 @@ import {
   Trophy,
   Tv,
   UserRound,
+  Users,
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
@@ -107,6 +108,7 @@ import { ClubScreen } from './features/commerce/ClubScreen'
 import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
 import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
 import { CreateGameScreen } from './features/private-games/CreateGameScreen'
+import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
 import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
 import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
@@ -1215,9 +1217,10 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectDtfSpecial: () => void
+  onSelectFriends: () => void
   onDanetki: () => void
   danetkiEnabled: boolean
   danetkiPoolCount: number | null
@@ -1228,6 +1231,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, da
   onResume: () => void
   onOpenSaved: (game: SavedGame) => void
   isAdmin: boolean
+  canAccessFriendsRoom: boolean
   activeSessionsCount: number
   games: SavedGame[]
   preferredMode: TitleMode
@@ -1317,10 +1321,10 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, da
           />}
         </div>
       </section>
-      {isAdmin && <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
+      {canAccessFriendsRoom && <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
         <div className="category-heading"><span id="special-shows-heading">СПЕЦПОКАЗЫ</span></div>
         <div className="category-grid category-grid--active">
-          <CategoryTicket
+          {isAdmin && <CategoryTicket
             mode="game"
             title="Что за игра?"
             description="Специальная подборка для DTF: угадайте 25 игр по комментариям игроков."
@@ -1337,6 +1341,25 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, da
             onClick={() => {
               trackMetrikaGoal('pack_opened', { packId: DTF_COMMENTS_PACK_ID, placement: 'hub_specials' })
               onSelectDtfSpecial()
+            }}
+          />}
+          <CategoryTicket
+            mode="series"
+            title="Игра с друзьями"
+            description="Соберите комнату, выберите любую категорию и угадывайте одновременно. Открытый предпросмотр нового режима."
+            color="#57B777"
+            icon={Users}
+            watermarkUrl={publicAssetUrl('images/title-posters/series-ticket-poster.webp')}
+            poolCount={7}
+            poolLabel="КАТЕГОРИЙ"
+            kicker="ПРЕДПРОСМОТР"
+            newActionLabel="СОЗДАТЬ КОМНАТУ"
+            status="new"
+            attempts={null}
+            href={pathnameForPlayerRoute({ screen: 'friends-room' })}
+            onClick={() => {
+              trackMetrikaGoal('friends_room_opened', { placement: 'hub_specials' })
+              onSelectFriends()
             }}
           />
         </div>
@@ -4242,6 +4265,10 @@ function GameApp() {
   const routeLocation = useRouterState({ select: (state) => state.location })
   const initialPlayerRoute = playerRouteFromPathname(routeLocation.pathname)
   const serverRuntime = useServerRuntime()
+  const isAdmin = Boolean(SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin')
+  const canAccessFriendsRoom = isAdmin
+    || import.meta.env.DEV
+    || import.meta.env.VITE_FRIENDS_ROOM_PREVIEW === 'true'
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ app: true }),
     queryFn: () => api.archive(),
@@ -4631,6 +4658,7 @@ function GameApp() {
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
+    if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
     if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
     if (target.screen === 'title' && target.mode) return navigate({ to: '/games/$mode', params: { mode: target.mode }, replace })
     if (target.screen === 'game' && target.sessionId) return navigate({ to: '/sessions/$sessionId', params: { sessionId: target.sessionId }, replace })
@@ -4680,6 +4708,12 @@ function GameApp() {
     lastRoutePathRef.current = desiredPath
     void navigateToPlayerRoute(target)
   }, [mode, navigateToPlayerRoute, routeLocation.pathname, screen, serverSessionId])
+
+  useEffect(() => {
+    if (screen !== 'friends-room' || canAccessFriendsRoom || serverRuntime.loading) return
+    setScreen('hub')
+    setModal(null)
+  }, [canAccessFriendsRoom, screen, serverRuntime.loading])
 
   useEffect(() => {
     document.body.dataset.seansScreen = screen
@@ -4744,7 +4778,6 @@ function GameApp() {
     ]
   }, [serverArchive.data, serverRuntime.dashboard])
   const activeDanetkiSessionId = (serverRuntime.dashboard?.activeSessions ?? []).find((session) => String(session.mode) === 'danetki' && session.status === 'playing')?.id ?? null
-  const isAdmin = SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin'
   const currentCompletedPeriods = useMemo(() => {
     if (!canUnlockPeriods(mode)) return [] as PeriodKey[]
     const completed = new Set<PeriodKey>()
@@ -4899,6 +4932,13 @@ function GameApp() {
     setServerActionError('')
     setModal(null)
     void navigateToPlayerRoute({ screen: 'special', packId: DTF_COMMENTS_PACK_ID })
+  }
+
+  const selectFriendsRoom = () => {
+    if (!canAccessFriendsRoom) return
+    setServerActionError('')
+    setModal(null)
+    void navigateToPlayerRoute({ screen: 'friends-room' })
   }
 
   const acceptChallenge = () => {
@@ -5199,7 +5239,10 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+
+    {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} />}
+    {screen === 'friends-room' && !canAccessFriendsRoom && serverRuntime.loading && <main className="loading" role="status">Проверяем доступ…</main>}
 
     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
@@ -5271,7 +5314,7 @@ function GameApp() {
           onConfigureMode={() => moveToScreen('title')}
             />)}
 
-    {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
+    {screen !== 'game' && screen !== 'friends-room' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
 
     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} difficulty={mode === 'music' ? difficulty : undefined} /></Modal>}

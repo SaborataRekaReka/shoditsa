@@ -46,6 +46,7 @@ import { registerPrivateGameRoutes } from './modules/private-games/routes.js'
 import { getDanetkiSession, loadDanetkiFeatureFlags, startDanetkiSession } from './modules/danetki/service.js'
 import { registerDanetkiRoutes, type DanetkiRealtimeMetrics } from './modules/danetki/routes.js'
 import { registerDanetkiAdminRoutes } from './modules/danetki/admin-routes.js'
+import { registerFriendsRoomRoutes } from './modules/friends-room/routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -427,6 +428,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   registerPrivateGameRoutes(app, { db, auth, config })
   registerDanetkiRoutes(app, { db, auth, config, realtimeMetrics: danetkiRealtimeMetrics })
   registerDanetkiAdminRoutes(app, { db, auth, config })
+  registerFriendsRoomRoutes(app, { db, auth, config })
 
   await registerClientEventRoutes(app, { db, auth, config })
   await registerAdminRoutes(app, { db, auth, config })

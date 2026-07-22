@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { CONTENT_MODE_IDS } from '@shoditsa/contracts'
+import { CONTENT_MODE_IDS, type FriendsRoomPackSelection, type FriendsRoomScorePart } from '@shoditsa/contracts'
 import {
   bigint, boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
   numeric, real, smallint, text, timestamp, unique, uniqueIndex, uuid,
@@ -18,6 +18,8 @@ export const danetkiMessageType = pgEnum('danetki_message_type', ['question', 'a
 export const danetkiGuessStatus = pgEnum('danetki_guess_status', ['pending', 'correct', 'incorrect'])
 export const danetkiAiPurpose = pgEnum('danetki_ai_purpose', ['answer', 'evaluate_guess', 'hint', 'summarize'])
 export const danetkiAiCallStatus = pgEnum('danetki_ai_call_status', ['pending', 'success', 'error'])
+export const friendsRoomPhase = pgEnum('friends_room_phase', ['lobby', 'countdown', 'active', 'results', 'finished'])
+export const friendsRoomMemberRole = pgEnum('friends_room_member_role', ['owner', 'player'])
 
 // Better Auth schema. IDs are UUIDs so domain foreign keys remain native UUID columns.
 export const user = pgTable('user', {
@@ -534,6 +536,100 @@ export const danetkiSurrenderVotes = pgTable('danetki_surrender_votes', {
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [primaryKey({ columns: [table.sessionId, table.userId] })])
+
+export const friendsRooms = pgTable('friends_rooms', {
+  id: uuid().primaryKey().defaultRandom(),
+  code: text().notNull().unique(),
+  ownerUserId: uuid('owner_user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  revisionId: uuid('revision_id').notNull().references(() => contentRevisions.id),
+  mode: contentMode().notNull(),
+  packs: jsonb().$type<FriendsRoomPackSelection[]>().notNull().default(sql`'[{"mode":"series","variant":"all"}]'::jsonb`),
+  roundsTotal: smallint('rounds_total').notNull().default(5),
+  answerTimeSeconds: smallint('answer_time_seconds').notNull().default(30),
+  phase: friendsRoomPhase().notNull().default('lobby'),
+  currentRound: smallint('current_round').notNull().default(0),
+  phaseStartedAt: timestamp('phase_started_at', { withTimezone: true }),
+  phaseEndsAt: timestamp('phase_ends_at', { withTimezone: true }),
+  nextMessageSeq: bigint('next_message_seq', { mode: 'number' }).notNull().default(1),
+  version: bigint({ mode: 'number' }).notNull().default(1),
+  closedAt: timestamp('closed_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index('friends_room_owner_idx').on(table.ownerUserId, table.createdAt),
+  check('friends_room_code_check', sql`char_length(${table.code}) = 5`),
+  check('friends_room_rounds_check', sql`${table.roundsTotal} in (3, 5, 7)`),
+  check('friends_room_answer_time_check', sql`${table.answerTimeSeconds} in (15, 20, 30, 45)`),
+  check('friends_room_current_round_check', sql`${table.currentRound} between 0 and ${table.roundsTotal}`),
+])
+
+export const friendsRoomMembers = pgTable('friends_room_members', {
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  role: friendsRoomMemberRole().notNull().default('player'),
+  displayNameSnapshot: text('display_name_snapshot').notNull(),
+  colorKey: text('color_key').notNull(),
+  score: integer().notNull().default(0),
+  joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow(),
+  leftAt: timestamp('left_at', { withTimezone: true }),
+  lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  primaryKey({ columns: [table.roomId, table.userId] }),
+  index('friends_room_members_active_idx').on(table.roomId, table.leftAt, table.joinedAt),
+  check('friends_room_member_name_check', sql`char_length(${table.displayNameSnapshot}) between 1 and 40`),
+  check('friends_room_member_score_check', sql`${table.score} >= 0`),
+])
+
+export const friendsRoomRounds = pgTable('friends_room_rounds', {
+  id: uuid().primaryKey().defaultRandom(),
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  position: smallint().notNull(),
+  contentItemVersionId: uuid('content_item_version_id').notNull().references(() => contentItemVersions.id),
+  packVariant: text('pack_variant').notNull().default('all'),
+  prompt: text().notNull(),
+  hints: jsonb().notNull(),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  revealedAt: timestamp('revealed_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('friends_room_round_position_unique').on(table.roomId, table.position),
+  index('friends_room_round_item_idx').on(table.roomId, table.contentItemVersionId),
+  check('friends_room_round_position_check', sql`${table.position} between 1 and 7`),
+])
+
+export const friendsRoomAnswers = pgTable('friends_room_answers', {
+  id: uuid().primaryKey().defaultRandom(),
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  roundId: uuid('round_id').notNull().references(() => friendsRoomRounds.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  text: text().notNull(),
+  isCorrect: boolean('is_correct').notNull(),
+  points: integer().notNull().default(0),
+  scoreBreakdown: jsonb('score_breakdown').$type<FriendsRoomScorePart[]>().notNull().default(sql`'[]'::jsonb`),
+  idempotencyKey: text('idempotency_key').notNull(),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('friends_room_answer_round_user_unique').on(table.roundId, table.userId),
+  unique('friends_room_answer_idempotency_unique').on(table.roomId, table.userId, table.idempotencyKey),
+  index('friends_room_answer_room_round_idx').on(table.roomId, table.roundId, table.submittedAt),
+  check('friends_room_answer_text_check', sql`char_length(${table.text}) between 1 and 160`),
+  check('friends_room_answer_points_check', sql`${table.points} between 0 and 1000`),
+])
+
+export const friendsRoomMessages = pgTable('friends_room_messages', {
+  id: uuid().primaryKey().defaultRandom(),
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  seq: bigint({ mode: 'number' }).notNull(),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  text: text().notNull(),
+  idempotencyKey: text('idempotency_key').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('friends_room_message_seq_unique').on(table.roomId, table.seq),
+  unique('friends_room_message_idempotency_unique').on(table.roomId, table.userId, table.idempotencyKey),
+  index('friends_room_message_room_created_idx').on(table.roomId, table.createdAt),
+  check('friends_room_message_text_check', sql`char_length(${table.text}) between 1 and 300`),
+])
 
 export const contentReports = pgTable('content_reports', {
   id: uuid().primaryKey().defaultRandom(),

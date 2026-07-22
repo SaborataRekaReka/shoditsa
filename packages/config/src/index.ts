@@ -132,6 +132,7 @@ export const loadConfig = () => {
     danetkiEnabled: bool('DANETKI_ENABLED', !production),
     danetkiMultiplayerEnabled: bool('DANETKI_MULTIPLAYER_ENABLED', true),
     danetkiHostModel: process.env.DANETKI_HOST_MODEL?.trim() || 'gpt-5-mini',
+    friendsRoomPreview: bool('FRIENDS_ROOM_PREVIEW', bool('VITE_FRIENDS_ROOM_PREVIEW', false)),
     appVersion: process.env.APP_VERSION?.trim() || '0.1.0',
     gitSha: process.env.GIT_SHA?.trim() || 'dev',
     metricsToken: process.env.METRICS_TOKEN?.trim() || '',

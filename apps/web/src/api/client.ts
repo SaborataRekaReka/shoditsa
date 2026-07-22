@@ -9,6 +9,7 @@ import type {
   PackDetailResponse, PackListResponse, PackProgressResponse,
   PrivateGameOrderBody, PrivateGameOrderResponse,
   DanetkiMessage,
+  FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomPreview, FriendsRoomResponse,
 } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
@@ -166,6 +167,18 @@ export const api = {
   danetkiInvitePreview: (token: string) => request<{ title: string; ownerName: string; participants: number; capacity: number; expiresAt: string }>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}`),
   danetkiJoin: (token: string, displayName: string, idempotencyKey: string) => request<GameResponse>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}/join`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ displayName, idempotencyKey }), retries: 1 }),
   danetkiLeave: (id: string, idempotencyKey: string) => request<{ left: boolean; newOwnerUserId: string | null }>(`${API_BASE}/danetki/sessions/${id}/leave`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }) }),
+  friendsRoomCreate: (body: FriendsRoomCreateBody = {}) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms`, { method: 'POST', body: JSON.stringify(body) }),
+  friendsRoomPreview: (code: string) => request<FriendsRoomPreview>(`${API_BASE}/friends/rooms/code/${encodeURIComponent(code)}`),
+  friendsRoomJoin: (code: string, displayName?: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/code/${encodeURIComponent(code)}/join`, { method: 'POST', body: JSON.stringify({ ...(displayName ? { displayName } : {}) }) }),
+  friendsRoomSnapshot: (id: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/snapshot`, { retries: 1 }),
+  friendsRoomConfigure: (id: string, body: FriendsRoomConfigBody) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  friendsRoomStart: (id: string, idempotencyKey: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/start`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  friendsRoomAnswer: (id: string, text: string, idempotencyKey: string, itemId?: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/answers`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ text, itemId, idempotencyKey }), retries: 1 }),
+  friendsRoomReveal: (id: string, idempotencyKey: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/reveal`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  friendsRoomNext: (id: string, idempotencyKey: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/next`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  friendsRoomRestart: (id: string, idempotencyKey: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/restart`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
+  friendsRoomMessage: (id: string, text: string, idempotencyKey: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/messages`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ text, idempotencyKey }), retries: 1 }),
+  friendsRoomLeave: (id: string, idempotencyKey: string) => request<{ left: true }>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/leave`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
   search: (params: URLSearchParams) => request<CatalogSearchResponse>(`${API_BASE}/catalog/search?${params}`, { retries: 1 }),
   attempt: (id: string, itemId: string, idempotencyKey: string) => request<AttemptResponse>(`${API_BASE}/games/${id}/attempts`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ itemId }), timeoutMs: 15_000, retries: 1, maxRateLimitRetryMs: 10_000 }),
   hint: (id: string, checkpoint: 5 | 8, hintKey: AssistHintKey, idempotencyKey: string) => request<HintResponse>(`${API_BASE}/games/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ checkpoint, hintKey }), retries: 1, maxRateLimitRetryMs: 10_000 }),
@@ -223,10 +236,12 @@ export const api = {
 }
 
 export const danetkiEventsUrl = (sessionId: string) => `${API_BASE}/danetki/sessions/${encodeURIComponent(sessionId)}/events`
+export const friendsRoomEventsUrl = (roomId: string) => `${API_BASE}/friends/rooms/${encodeURIComponent(roomId)}/events`
 
 export const queryKeys = {
   me: ['me'] as const, dashboard: ['dashboard'] as const,
   game: (id: string) => ['game', id] as const,
+  friendsRoom: (id: string) => ['friends-room', id] as const,
   search: (id: string, query: string) => ['search', id, query] as const,
   archive: (filters: unknown) => ['archive', filters] as const,
   ledger: ['ledger'] as const,

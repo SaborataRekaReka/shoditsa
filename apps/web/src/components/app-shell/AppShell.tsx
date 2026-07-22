@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, LayoutDashboard, LogIn, LogOut, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
@@ -137,10 +137,11 @@ export type AppHeaderProps = {
   onStats: () => void
   onRules: () => void
   onReview: () => void
+  onCreateRoom?: () => void
   profileActive?: boolean
 }
 
-export function AppHeader({ onHome, onArchive, onStats, profileActive = false }: AppHeaderProps) {
+export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileActive = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -148,6 +149,10 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
   const profileTriggerRef = useRef<HTMLButtonElement>(null)
   const { session } = useAuthSession()
   const serverRuntime = useServerRuntime()
+  const canAccessFriendsRoom = serverRuntime.me?.user.role === 'admin'
+    || import.meta.env.DEV
+    || import.meta.env.VITE_FRIENDS_ROOM_PREVIEW === 'true'
+  const createRoom = onCreateRoom ?? (() => window.location.assign('/games/together'))
   const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
   const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
   const profileLabel = session && !session.isAnonymous
@@ -193,6 +198,7 @@ export function AppHeader({ onHome, onArchive, onStats, profileActive = false }:
       <div className="app-header__inner">
         <button className="brand" aria-label="На главный экран" onClick={() => { trackMetrikaGoal('header_home_click'); onHome() }}><BrandLogo /></button>
         <nav aria-label="Навигация">
+          {canAccessFriendsRoom && <button className="header-create-room" type="button" onClick={createRoom}><Plus /><span>Создать комнату</span></button>}
           <div className="header-profile-menu" ref={profileMenuRef}>
             <button ref={profileTriggerRef} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label="Открыть меню" title="Меню" aria-haspopup="menu" aria-expanded={profileMenuOpen}>
               <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
