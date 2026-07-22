@@ -305,7 +305,7 @@ describe('server hint options', () => {
     expect(options.find((option) => option.key === 'fact')).toBeUndefined()
   })
 
-  it('falls back to the plot hint when anime facts only mirror model fields', () => {
+  it('offers the plot hint independently when facts only mirror model fields', () => {
     const answer = {
       id: 'anime_2',
       mode: 'anime',
@@ -322,7 +322,22 @@ describe('server hint options', () => {
 
     const options = buildHintOptions(answer, [])
 
-    expect(options.find((option) => option.key === 'fact')?.value).toBe('Безопасная сюжетная подсказка.')
+    expect(options.find((option) => option.key === 'plot')?.value).toBe('Безопасная сюжетная подсказка.')
+    expect(options.find((option) => option.key === 'fact')).toBeUndefined()
+  })
+
+  it('keeps the plot choice available until the player selects it', () => {
+    const answer = {
+      id: 'movie_plot_choice', mode: 'movie', titleRu: 'Пример фильма', titleOriginal: 'Example Movie', alternativeTitles: [], popularityScore: 0,
+      year: 2003,
+      plotHint: 'Герой получает опасное задание и вынужден отправиться в неизвестность.',
+      facts: ['Съёмки проходили сразу в нескольких странах.'],
+    } as TitleItem
+
+    expect(buildHintOptions(answer, []).map((option) => option.key)).toContain('plot')
+    expect(buildHintOptions(answer, [{ hintKey: 'info' }]).map((option) => option.key)).toContain('plot')
+    expect(buildHintOptions(answer, [{ hintKey: 'fact' }]).map((option) => option.key)).toContain('plot')
+    expect(buildHintOptions(answer, [{ hintKey: 'plot' }]).map((option) => option.key)).not.toContain('plot')
   })
 
   it('never substitutes descriptions for plotHint and hides invalid plot hints', () => {
@@ -332,9 +347,9 @@ describe('server hint options', () => {
       shortDescription: 'A short description that must never become an in-game fact hint.',
     } as TitleItem
 
-    expect(buildHintOptions(baseAnswer, []).find((option) => option.key === 'fact')).toBeUndefined()
+    expect(buildHintOptions(baseAnswer, []).find((option) => option.key === 'plot')).toBeUndefined()
     for (const plotHint of ['This imported hint was visibly truncated...', 'Too short', 'Text with _KEEP_1_ service marker inside']) {
-      expect(buildHintOptions({ ...baseAnswer, plotHint }, []).find((option) => option.key === 'fact')).toBeUndefined()
+      expect(buildHintOptions({ ...baseAnswer, plotHint }, []).find((option) => option.key === 'plot')).toBeUndefined()
     }
   })
 })

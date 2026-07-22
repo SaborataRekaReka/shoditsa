@@ -290,16 +290,21 @@ type AdminWindow = Window & {
   SEANS_ADMIN_GET_DAILY_SALT?: () => number
 }
 
-const ASSIST_HINT_KEYS: AssistHintKey[] = ['info', 'fact']
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'info', 'fact']
 const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
   info: 'info',
   fact: 'fact',
-  plot: 'info',
+  plot: 'plot',
   slogan: 'info',
   cast_main: 'info',
   cast_secondary: 'info',
   awards: 'info',
 }
+const assistHintTitle = (key: AssistHintKey) => key === 'plot'
+  ? 'Подсказка о сюжете'
+  : key === 'fact'
+    ? 'Интересный факт'
+    : 'Неоткрытая информация'
 const normalizeAssistHintKeyValue = (value: unknown): AssistHintKey | null => {
   if (typeof value !== 'string') return null
   const normalized = value.trim()
@@ -813,13 +818,28 @@ const buildFactHintValue = (item: TitleItem) => {
   ].map(normalizeTextMatch).filter(Boolean))
   const isModeledField = (candidate: string) => modelFacts.has(normalizeTextMatch(candidate))
   const fact = cleanHintText((item.facts ?? []).find((candidate) => !isModeledField(candidate)) ?? '')
-  if (fact) return cropHintText(fact)
-  const fallback = cleanHintText(item.plotHint || '')
-  return fallback && !invalidFactFallback(fallback) && !isModeledField(fallback) ? cropHintText(fallback) : ''
+  return fact ? cropHintText(fact) : ''
+}
+
+const buildPlotHintValue = (item: TitleItem) => {
+  const value = cleanHintText(item.plotHint || '')
+  return value && !invalidFactFallback(value) ? cropHintText(value) : ''
 }
 
 const buildAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {
   const out: AssistHintView[] = []
+
+  const plotAlreadyOpened = choices.some((choice) => choice.key === 'plot')
+  const plotBody = plotAlreadyOpened ? '' : buildPlotHintValue(item)
+  if (plotBody) {
+    out.push({
+      key: 'plot',
+      title: 'Подсказка о сюжете',
+      subtitle: 'Краткое описание завязки без названия и ключевых спойлеров',
+      body: plotBody,
+      available: true,
+    })
+  }
 
   const infoCandidates = buildInfoHintCandidates(item)
   const infoIndex = choices.filter((choice) => choice.key === 'info').length
@@ -840,7 +860,7 @@ const buildAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintVie
     out.push({
       key: 'fact',
       title: 'Интересный факт',
-      subtitle: 'Факт из карточки или поле подсказки без спойлеров',
+      subtitle: 'Дополнительный факт о правильном ответе без спойлеров',
       body: factBody,
       available: true,
     })
@@ -853,10 +873,25 @@ const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): Assis
   const out: AssistHintView[] = []
   const infoCandidates = buildInfoHintCandidates(item)
   const factBody = buildFactHintValue(item)
+  const plotBody = buildPlotHintValue(item)
   let infoIndex = 0
   let factOpened = false
+  let plotOpened = false
 
   for (const choice of [...choices].sort((a, b) => a.round - b.round)) {
+    if (choice.key === 'plot') {
+      if (plotOpened || !plotBody) continue
+      plotOpened = true
+      out.push({
+        key: 'plot',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: 'Подсказка о сюжете',
+        body: plotBody,
+        available: true,
+      })
+      continue
+    }
+
     if (choice.key === 'info') {
       const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
       infoIndex += 1
@@ -2449,8 +2484,64 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
   </article>
 }
 
+const CITY_RANK_METRICS: Array<{ key: keyof NonNullable<TitleItem['ranks']>; label: string }> = [
+  { key: 'economy', label: 'Экономика' },
+  { key: 'humanCapital', label: 'Человеческий капитал' },
+  { key: 'qualityOfLife', label: 'Качество жизни' },
+  { key: 'ecology', label: 'Экология' },
+  { key: 'governance', label: 'Работа властей' },
+]
+const CITY_RANK_HINT_KEYS = new Set<string>(CITY_RANK_METRICS.map(({ key }) => key))
+const cityRankStrength = (rank: number | null) => rank == null
+  ? 0
+  : Math.max(1, Math.min(100, Math.round(((1001 - rank) / 1000) * 100)))
+const cityRankComparisonLabel = (hint: Attempt['hints'][number] | undefined) => {
+  if (!hint || hint.status === 'unknown') return 'Нет данных'
+  if (hint.status === 'match') return 'Совпало'
+  if (hint.direction === 'up') return hint.status === 'close' ? 'Искомый выше · близко' : 'Искомый выше'
+  if (hint.direction === 'down') return hint.status === 'close' ? 'Искомый ниже · близко' : 'Искомый ниже'
+  return 'Сравните место'
+}
+
+function CityRankProfile({ item, hints }: { item: TitleItem; hints: Attempt['hints'] }) {
+  const hintsByKey = new Map(hints.map((hint) => [hint.key, hint]))
+  return <section className="city-rank-profile" aria-label="Рейтинговый профиль города">
+    <header className="city-rank-profile__heading">
+      <span><BarChart3 /> Городской профиль</span>
+      <small>Длиннее шкала — выше место в рейтинге</small>
+    </header>
+    <div className="city-rank-profile__grid">
+      {CITY_RANK_METRICS.map(({ key, label }) => {
+        const rank = item.ranks?.[key] ?? null
+        const hint = hintsByKey.get(key)
+        const strength = cityRankStrength(rank)
+        return <div className={`city-rank-meter city-rank-meter--${hint?.status ?? 'unknown'}`} key={key}>
+          <span className="city-rank-meter__label" title={label}>{label}</span>
+          <strong>{rank == null ? '—' : `№ ${rank}`}</strong>
+          <i
+            className="city-rank-meter__track"
+            role="progressbar"
+            aria-label={`${label}: ${rank == null ? 'нет данных' : `место ${rank} из 1000`}`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={strength}
+          >
+            <b style={{ width: `${strength}%` }} />
+          </i>
+          <small className="city-rank-meter__comparison">
+            {hint?.status === 'match' ? <Check /> : hint?.direction === 'up' ? <ArrowUp /> : hint?.direction === 'down' ? <ArrowDown /> : null}
+            {cityRankComparisonLabel(hint)}
+          </small>
+        </div>
+      })}
+    </div>
+  </section>
+}
+
 function CityAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const score = progressStats(attempt.hints)
+  const primaryHints = attempt.hints.filter((hint) => !CITY_RANK_HINT_KEYS.has(hint.key))
+  const rankHints = attempt.hints.filter((hint) => CITY_RANK_HINT_KEYS.has(hint.key))
   return <article className="attempt-card attempt-card--city">
     <div className="attempt-card__header">
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
@@ -2467,8 +2558,9 @@ function CityAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
     </div>
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
     <div className="attempt-clue-grid city-attempt__clues">
-      {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+      {primaryHints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
+    <CityRankProfile item={item} hints={rankHints} />
   </article>
 }
 
@@ -3457,7 +3549,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
-      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {choice.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
+      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={completedToday} nextRewardText={isPackSession ? 'Выберите следующий сеанс в подборке' : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession ? onBack : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
@@ -3511,7 +3603,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         </div> : revealedHint ? <>
           <h2>Подсказка открыта</h2>
           <article className="hint-modal__reveal">
-            <span><Sparkles /> {revealedHint.hintKey === 'fact' ? 'Интересный факт' : 'Неоткрытая информация'} · после {revealedHint.checkpoint} попыток</span>
+            <span><Sparkles /> {assistHintTitle(revealedHint.hintKey)} · после {revealedHint.checkpoint} попыток</span>
             <p>{Array.isArray(revealedHint.value) ? revealedHint.value.join(', ') : String(revealedHint.value ?? '—')}</p>
           </article>
           <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>

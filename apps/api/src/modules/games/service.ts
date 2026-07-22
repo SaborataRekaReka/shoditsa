@@ -258,13 +258,15 @@ const factHintValue = (answer: TitleItem, matched: Set<string>) => {
       || [...matched].some((value) => value.length >= 3 && normalized.includes(value))
   }
   const fact = (answer.facts ?? []).map(cleanHintText).find((candidate) => !isRedundant(candidate)) ?? ''
-  if (fact) return cropHintText(fact)
+  return fact ? cropHintText(fact) : ''
+}
 
-  const fallback = cleanHintText(answer.plotHint ?? '')
-  const invalidFallback = fallback.length < 30
-    || /(?:\.\.\.|…)\s*$/.test(fallback)
-    || /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(fallback)
-  return fallback && !invalidFallback && !isRedundant(fallback) ? cropHintText(fallback) : ''
+const plotHintValue = (answer: TitleItem) => {
+  const value = cleanHintText(answer.plotHint ?? '')
+  const invalid = value.length < 30
+    || /(?:\.\.\.|…)\s*$/.test(value)
+    || /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(value)
+  return invalid ? '' : cropHintText(value)
 }
 
 type BuiltHintOption = {
@@ -286,6 +288,17 @@ const hintChoiceSourceKey = (choice: ExistingHintChoice) => {
 export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = []): BuiltHintOption[] => {
   const options: BuiltHintOption[] = []
   const evidence = revealedAttemptEvidence(attempts)
+
+  const plotAlreadyOpened = choices.some((choice) => choice.hintKey === 'plot')
+  const plotValue = plotAlreadyOpened ? '' : plotHintValue(answer)
+  if (plotValue) {
+    options.push({
+      key: 'plot',
+      title: 'Подсказка о сюжете',
+      subtitle: 'Краткое описание завязки без названия и ключевых спойлеров',
+      value: plotValue,
+    })
+  }
 
   const openedInfoSourceKeys = new Set(choices
     .filter((choice) => choice.hintKey === 'info')
@@ -312,7 +325,7 @@ export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[
     options.push({
       key: 'fact',
       title: 'Интересный факт',
-      subtitle: 'Факт из карточки или поле подсказки без спойлеров',
+      subtitle: 'Дополнительный факт о правильном ответе без спойлеров',
       value: factValue,
     })
   }

@@ -45,11 +45,11 @@ const TITLE_MODES: TitleMode[] = [...PLAYABLE_MODE_IDS]
 const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020']
 const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost']
 const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]
-const ASSIST_HINT_KEYS: AssistHintKey[] = ['info', 'fact']
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'info', 'fact']
 const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
   info: 'info',
   fact: 'fact',
-  plot: 'info',
+  plot: 'plot',
   slogan: 'info',
   cast_main: 'info',
   cast_secondary: 'info',

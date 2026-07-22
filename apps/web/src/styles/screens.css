@@ -2202,6 +2202,36 @@
 .attempt-card--screen .attempt-card__header { padding: 13px 13px 12px; border-bottom: 1px solid var(--color-line); }
 .attempt-card--screen .attempt-clue-grid { padding: 12px 13px 13px; }
 
+.city-rank-profile { margin: 10px 0 0; padding: 11px; border: 1px solid var(--color-line); border-radius: 13px; background: color-mix(in srgb, var(--color-surface-2) 72%, transparent); }
+.city-rank-profile__heading { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.city-rank-profile__heading > span { display: inline-flex; align-items: center; gap: 6px; color: var(--color-primary); font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.city-rank-profile__heading svg { width: 15px; height: 15px; }
+.city-rank-profile__heading > small { color: var(--color-muted-2); font-size: 9px; text-align: right; }
+.city-rank-profile__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.city-rank-meter { min-width: 0; padding: 9px; border: 1px solid var(--color-line); border-radius: 10px; background: var(--color-surface); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 8px; }
+.city-rank-meter:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.city-rank-meter__label { overflow: hidden; color: var(--color-muted); font-size: 9px; font-weight: 800; letter-spacing: .045em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.city-rank-meter > strong { font-size: 11px; }
+.city-rank-meter__track { position: relative; grid-column: 1 / -1; height: 7px; overflow: hidden; border-radius: 999px; background: var(--color-surface-3); box-shadow: inset 0 0 0 1px var(--color-line); }
+.city-rank-meter__track > b { position: absolute; inset: 0 auto 0 0; min-width: 2px; border-radius: inherit; background: var(--color-primary); transition: width .45s ease; }
+.city-rank-meter__comparison { grid-column: 1 / -1; min-height: 13px; display: flex; align-items: center; gap: 3px; color: var(--color-muted-2); font-size: 9px; font-weight: 750; }
+.city-rank-meter__comparison svg { width: 12px; height: 12px; }
+.city-rank-meter--match { border-color: var(--color-primary-border); background: var(--color-primary-soft); }
+.city-rank-meter--match .city-rank-meter__comparison { color: var(--color-primary); }
+.city-rank-meter--close { border-color: var(--color-accent-border); background: var(--color-accent-soft); }
+.city-rank-meter--close .city-rank-meter__track > b { background: var(--color-accent); }
+.city-rank-meter--close .city-rank-meter__comparison { color: var(--color-accent); }
+
+@media (min-width: 720px) {
+  .city-rank-profile__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .city-rank-meter:last-child:nth-child(odd) { grid-column: auto; }
+}
+
+@media (max-width: 579px) {
+  .city-rank-profile__heading { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .city-rank-profile__heading > small { text-align: left; }
+}
+
 .attempt-card--music { padding: 0; overflow: hidden; }
 .attempt-card--music .attempt-card__header { padding: 13px 13px 12px; border-bottom: 1px solid var(--color-line); }
 .music-attempt__clues,

@@ -10,7 +10,7 @@ export type MusicContentStatus = 'ready' | 'limited' | 'blocked'
 
 export type Person = { nameRu: string; nameOriginal: string; photoUrl?: string | null }
 export type FilmAwards = { wins: number; nominations: number; notable: string[] }
-export type AssistHintKey = 'info' | 'fact'
+export type AssistHintKey = 'plot' | 'info' | 'fact'
 export type HintCheckpoint = 5 | 8
 export type HintChoice = { round: HintCheckpoint; key: AssistHintKey }
 export type TitleRatings = {
