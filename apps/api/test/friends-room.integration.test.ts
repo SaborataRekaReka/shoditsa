@@ -1,4 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
 import { and, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import type { FriendsRoomSnapshot, TitleItem } from '@shoditsa/contracts'
@@ -25,6 +27,7 @@ describe('friends room multiplayer API', () => {
   let roomId = ''
   let roomCode = ''
   let productionRoomId = ''
+  let answerMediaPath = ''
 
   const createGuest = async () => {
     const response = await app.inject({ method: 'POST', url: '/api/v1/auth/guest' })
@@ -46,6 +49,9 @@ describe('friends room multiplayer API', () => {
     process.env.AUTH_EMAIL_ENABLED = 'false'
     process.env.FRIENDS_ROOM_PREVIEW = 'false'
     const config = loadConfig()
+    answerMediaPath = resolve(config.mediaRoot, 'friends-room-integration', 'answer.png')
+    await mkdir(dirname(answerMediaPath), { recursive: true })
+    await writeFile(answerMediaPath, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64'))
     database = createDatabase(config)
     app = await buildApp({ config, db: database.db })
     await app.ready()
@@ -58,6 +64,7 @@ describe('friends room multiplayer API', () => {
     if (productionRoomId) await database.db.delete(friendsRooms).where(eq(friendsRooms.id, productionRoomId))
     await app?.close()
     await database?.client.end()
+    if (answerMediaPath) await rm(answerMediaPath, { force: true })
   })
 
   it('keeps a two-player room synchronized without leaking the answer', async () => {
@@ -137,11 +144,14 @@ describe('friends room multiplayer API', () => {
       eq(friendsRoomRounds.roomId, roomId), eq(friendsRoomRounds.position, 1),
     ))
 
-    const roundRow = (await database.db.select({ payload: contentItemVersions.payload })
+    const roundRow = (await database.db.select({ id: contentItemVersions.id, payload: contentItemVersions.payload })
       .from(friendsRoomRounds)
       .innerJoin(contentItemVersions, eq(contentItemVersions.id, friendsRoomRounds.contentItemVersionId))
       .where(and(eq(friendsRoomRounds.roomId, roomId), eq(friendsRoomRounds.position, 1))).limit(1))[0]
     const correctTitle = (roundRow.payload as TitleItem).titleRu
+    await database.db.update(contentItemVersions).set({
+      payload: { ...(roundRow.payload as TitleItem), posterUrl: '/media/friends-room-integration/answer.png' },
+    }).where(eq(contentItemVersions.id, roundRow.id))
 
     const activeRoom = await snapshot(playerCookie)
     expect(activeRoom.phase).toBe('active')
