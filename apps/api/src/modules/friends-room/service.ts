@@ -88,9 +88,9 @@ const safeName = (value: string) => clean(value).slice(0, 40) || 'Игрок'
 const roomCode = () => [...randomBytes(5)].map((byte) => ROOM_CODE_ALPHABET[byte % ROOM_CODE_ALPHABET.length]).join('')
 const iso = (value: Date | null) => value?.toISOString() ?? null
 
-export const assertFriendsRoomAccess = (config: AppConfig, role: 'player' | 'admin') => {
-  if (config.production && role !== 'admin' && !config.friendsRoomPreview) {
-    throw new ApiError(403, 'FRIENDS_ROOM_ADMIN_REQUIRED', 'Режим «Игра с друзьями» пока доступен только администратору')
+export const assertFriendsRoomAccess = (config: AppConfig, isAnonymous: boolean) => {
+  if (config.production && isAnonymous && !config.friendsRoomPreview) {
+    throw new ApiError(403, 'FRIENDS_ROOM_ACCOUNT_REQUIRED', 'Сначала зарегистрируйтесь, чтобы играть с друзьями')
   }
 }
 

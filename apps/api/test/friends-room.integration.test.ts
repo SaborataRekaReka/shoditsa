@@ -8,6 +8,7 @@ import {
   friendsRoomRounds,
   friendsRooms,
   playerProfiles,
+  user,
 } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
 
@@ -194,7 +195,7 @@ describe('friends room multiplayer API', () => {
     expect(replayedPlayerAnswer.json().room.answers.find((entry: { userId: string; text: string }) => entry.userId === results.currentUserId)?.text).toBe('заведомо неверный ответ')
   })
 
-  it('enforces the admin-only boundary on the production API route', async () => {
+  it('requires registration but allows regular players on the production API route', async () => {
     const productionApp = await buildApp({
       config: { ...loadConfig(), production: true, friendsRoomPreview: false },
       db: database.db,
@@ -211,9 +212,9 @@ describe('friends room multiplayer API', () => {
         method: 'POST', url: '/api/v1/friends/rooms', headers: { cookie }, payload: { mode: 'movie' },
       })
       expect(denied.statusCode).toBe(403)
-      expect(denied.json().error.code).toBe('FRIENDS_ROOM_ADMIN_REQUIRED')
+      expect(denied.json().error.code).toBe('FRIENDS_ROOM_ACCOUNT_REQUIRED')
 
-      await database.db.update(playerProfiles).set({ role: 'admin' }).where(eq(playerProfiles.userId, userId))
+      await database.db.update(user).set({ isAnonymous: false }).where(eq(user.id, userId))
       const allowed = await productionApp.inject({
         method: 'POST', url: '/api/v1/friends/rooms', headers: { cookie }, payload: { mode: 'movie' },
       })

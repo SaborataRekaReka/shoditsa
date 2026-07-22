@@ -109,6 +109,7 @@ import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
 import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
 import { CreateGameScreen } from './features/private-games/CreateGameScreen'
 import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
+import { canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
 import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
 import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
@@ -1321,7 +1322,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
           />}
         </div>
       </section>
-      {canAccessFriendsRoom && <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
+      <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
         <div className="category-heading"><span id="special-shows-heading">СПЕЦПОКАЗЫ</span></div>
         <div className="category-grid category-grid--active">
           {isAdmin && <CategoryTicket
@@ -1356,14 +1357,16 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
             newActionLabel="СОЗДАТЬ КОМНАТУ"
             status="new"
             attempts={null}
-            href={pathnameForPlayerRoute({ screen: 'friends-room' })}
+            href={canAccessFriendsRoom
+              ? pathnameForPlayerRoute({ screen: 'friends-room' })
+              : friendsRoomRegistrationHref(pathnameForPlayerRoute({ screen: 'friends-room' }))}
             onClick={() => {
               trackMetrikaGoal('friends_room_opened', { placement: 'hub_specials' })
               onSelectFriends()
             }}
           />
         </div>
-      </section>}
+      </section>
     </main>
   </>
 }
@@ -4266,9 +4269,7 @@ function GameApp() {
   const initialPlayerRoute = playerRouteFromPathname(routeLocation.pathname)
   const serverRuntime = useServerRuntime()
   const isAdmin = Boolean(SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin')
-  const canAccessFriendsRoom = isAdmin
-    || import.meta.env.DEV
-    || import.meta.env.VITE_FRIENDS_ROOM_PREVIEW === 'true'
+  const canAccessFriendsRoom = canUseFriendsRoom(serverRuntime.me?.user)
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ app: true }),
     queryFn: () => api.archive(),
@@ -4711,8 +4712,7 @@ function GameApp() {
 
   useEffect(() => {
     if (screen !== 'friends-room' || canAccessFriendsRoom || serverRuntime.loading) return
-    setScreen('hub')
-    setModal(null)
+    window.location.replace(friendsRoomRegistrationHref(currentFriendsRoomReturnUrl()))
   }, [canAccessFriendsRoom, screen, serverRuntime.loading])
 
   useEffect(() => {
@@ -4935,7 +4935,10 @@ function GameApp() {
   }
 
   const selectFriendsRoom = () => {
-    if (!canAccessFriendsRoom) return
+    if (!canAccessFriendsRoom) {
+      window.location.assign(friendsRoomRegistrationHref('/games/together'))
+      return
+    }
     setServerActionError('')
     setModal(null)
     void navigateToPlayerRoute({ screen: 'friends-room' })
@@ -5242,7 +5245,7 @@ function GameApp() {
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} />}
-    {screen === 'friends-room' && !canAccessFriendsRoom && serverRuntime.loading && <main className="loading" role="status">Проверяем доступ…</main>}
+    {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}
 
     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 

@@ -69,7 +69,7 @@ const writeSse = (raw: NodeJS.WritableStream, event: string, data: unknown, id?:
 
 const authorizedUser = async (request: Parameters<typeof getRequestUser>[0], deps: Deps) => {
   const user = await getRequestUser(request, deps.auth, deps.db, true, deps.config)
-  assertFriendsRoomAccess(deps.config, user!.role)
+  assertFriendsRoomAccess(deps.config, user!.isAnonymous)
   return user!
 }
 

@@ -59,6 +59,12 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
+    location = /games/together {
+        try_files /index.html =404;
+        add_header X-Robots-Tag "noindex, follow, noarchive" always;
+        add_header Cache-Control "no-cache" always;
+    }
+
     location /games/ {
         return 404;
     }
