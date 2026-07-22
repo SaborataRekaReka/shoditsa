@@ -17,7 +17,6 @@
 .friends-room button:disabled { opacity: .68; cursor: not-allowed; }
 .friends-room fieldset:disabled button { opacity: .82; cursor: not-allowed; }
 .friends-room > .game-screen-shell__nav { margin-bottom: 14px; }
-.friends-room > .game-screen-shell__nav .keycap-hint { display: none; }
 .room-connection { margin-left: auto; color: color-mix(in srgb, var(--room-accent) 72%, #fff); display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .room-connection .room-icon { width: 14px; height: 14px; }
 
