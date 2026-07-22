@@ -1,0 +1,798 @@
+diff --git a/apps/web/src/App.tsx b/apps/web/src/App.tsx
+index 834b2fb..64ee650 100644
+--- a/apps/web/src/App.tsx
++++ b/apps/web/src/App.tsx
+@@ -37,6 +37,7 @@ import {
+   Trophy,
+   Tv,
+   UserRound,
++  Users,
+   X,
+ } from 'lucide-react'
+ import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
+@@ -107,6 +108,7 @@ import { ClubScreen } from './features/commerce/ClubScreen'
+ import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
+ import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
+ import { CreateGameScreen } from './features/private-games/CreateGameScreen'
++import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
+ import { LegalScreen } from './features/legal/LegalScreen'
+ import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
+ import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
+@@ -1215,9 +1217,10 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
+   </main>
+ }
+ 
+-function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
++function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+   onSelect: (mode: TitleMode) => void
+   onSelectDtfSpecial: () => void
++  onSelectFriends: () => void
+   onDanetki: () => void
+   danetkiEnabled: boolean
+   danetkiPoolCount: number | null
+@@ -1317,10 +1320,10 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, da
+           />}
+         </div>
+       </section>
+-      {isAdmin && <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
++      <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
+         <div className="category-heading"><span id="special-shows-heading">СПЕЦПОКАЗЫ</span></div>
+         <div className="category-grid category-grid--active">
+-          <CategoryTicket
++          {isAdmin && <CategoryTicket
+             mode="game"
+             title="Что за игра?"
+             description="Специальная подборка для DTF: угадайте 25 игр по комментариям игроков."
+@@ -1338,9 +1341,28 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onDanetki, danetkiEnabled, da
+               trackMetrikaGoal('pack_opened', { packId: DTF_COMMENTS_PACK_ID, placement: 'hub_specials' })
+               onSelectDtfSpecial()
+             }}
++          />}
++          <CategoryTicket
++            mode="series"
++            title="Игра с друзьями"
++            description="Соберите комнату, выберите любую категорию и угадывайте одновременно. Открытый предпросмотр нового режима."
++            color="#57B777"
++            icon={Users}
++            watermarkUrl={publicAssetUrl('images/title-posters/series-ticket-poster.webp')}
++            poolCount={7}
++            poolLabel="КАТЕГОРИЙ"
++            kicker="ПРЕДПРОСМОТР"
++            newActionLabel="СОЗДАТЬ КОМНАТУ"
++            status="new"
++            attempts={null}
++            href={pathnameForPlayerRoute({ screen: 'friends-room' })}
++            onClick={() => {
++              trackMetrikaGoal('friends_room_opened', { placement: 'hub_specials' })
++              onSelectFriends()
++            }}
+           />
+         </div>
+-      </section>}
++      </section>
+     </main>
+   </>
+ }
+@@ -4631,6 +4653,7 @@ function GameApp() {
+ 
+   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
+     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
++    if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
+     if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
+     if (target.screen === 'title' && target.mode) return navigate({ to: '/games/$mode', params: { mode: target.mode }, replace })
+     if (target.screen === 'game' && target.sessionId) return navigate({ to: '/sessions/$sessionId', params: { sessionId: target.sessionId }, replace })
+@@ -4901,6 +4924,12 @@ function GameApp() {
+     void navigateToPlayerRoute({ screen: 'special', packId: DTF_COMMENTS_PACK_ID })
+   }
+ 
++  const selectFriendsRoom = () => {
++    setServerActionError('')
++    setModal(null)
++    void navigateToPlayerRoute({ screen: 'friends-room' })
++  }
++
+   const acceptChallenge = () => {
+     if (!challenge) return
+     trackMetrikaGoal('challenge_accepted', { mode: challenge.mode, date: challenge.date, from: challenge.from })
+@@ -5199,7 +5228,9 @@ function GameApp() {
+ 
+   return <div className={`app app--${appTone}`}>
+     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
+-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
++    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={Boolean(isAdmin)} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
++
++    {screen === 'friends-room' && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} />}
+ 
+     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+ 
+@@ -5271,7 +5302,7 @@ function GameApp() {
+           onConfigureMode={() => moveToScreen('title')}
+             />)}
+ 
+-    {screen !== 'game' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
++    {screen !== 'game' && screen !== 'friends-room' && <AppFooter onHome={goHome} onArchive={() => moveToScreen('rewatch')} onProfile={() => moveToScreen('profile')} onRules={() => setModal('rules')} />}
+ 
+     {modal === 'rules' && <Modal title="Как играть" onClose={() => setModal(null)}><RulesView /></Modal>}
+     {modal === 'stats' && <Modal title="Статистика" onClose={() => setModal(null)}><div className="modal-mode">{modeMeta(mode).plural}</div><StatsView mode={mode} difficulty={mode === 'music' ? difficulty : undefined} /></Modal>}
+diff --git a/apps/web/src/app/router.tsx b/apps/web/src/app/router.tsx
+index 5a99093..7c5978a 100644
+--- a/apps/web/src/app/router.tsx
++++ b/apps/web/src/app/router.tsx
+@@ -35,6 +35,7 @@ const playerLayoutRoute = createRoute({ getParentRoute: () => rootRoute, id: 'pl
+ const playerRoutes = [
+   createRoute({ getParentRoute: () => playerLayoutRoute, path: '/', component: RouteMarker }),
+   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'games/$mode', component: RouteMarker }),
++  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'games/together', component: RouteMarker }),
+   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'play/$mode', component: RouteMarker }),
+   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'sessions/$sessionId', component: RouteMarker }),
+   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'danetki/join/$token', component: RouteMarker }),
+diff --git a/apps/web/src/app/routes.test.ts b/apps/web/src/app/routes.test.ts
+index 58b1818..577e66a 100644
+--- a/apps/web/src/app/routes.test.ts
++++ b/apps/web/src/app/routes.test.ts
+@@ -29,6 +29,8 @@ describe('typed player routes', () => {
+     expect(pathnameForPlayerRoute({ screen: 'legal', legalDocument: 'tariffs' })).toBe('/legal/tariffs')
+     expect(playerRouteFromPathname('/legal/not-a-document')).toEqual({ screen: 'hub' })
+     expect(playerRouteFromPathname('/games/danetki')).toEqual({ screen: 'danetki' })
++    expect(playerRouteFromPathname('/games/together')).toEqual({ screen: 'friends-room' })
++    expect(pathnameForPlayerRoute({ screen: 'friends-room' })).toBe('/games/together')
+     expect(playerRouteFromPathname('/play/danetki')).toEqual({ screen: 'hub' })
+     expect(playerRouteFromPathname('/danetki/join/abc-123')).toEqual({ screen: 'danetki-join', inviteToken: 'abc-123' })
+     expect(playerRouteFromPathname('/games/not-a-mode')).toEqual({ screen: 'hub' })
+diff --git a/apps/web/src/app/routes.ts b/apps/web/src/app/routes.ts
+index 3e4137a..3b6041c 100644
+--- a/apps/web/src/app/routes.ts
++++ b/apps/web/src/app/routes.ts
+@@ -1,7 +1,7 @@
+ import { isPlayableModeId, type PlayableModeId } from '@shoditsa/contracts'
+ import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
+ 
+-export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-join' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
++export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-join' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
+ 
+ export type PlayerRouteState = {
+   screen: PlayerScreen
+@@ -32,6 +32,7 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
+   if (normalized === '/purchase/return') return { screen: 'purchase-return' }
+   if (normalized === '/review/music') return { screen: 'review', mode: 'music' }
+   if (normalized === '/games/danetki') return { screen: 'danetki' }
++  if (normalized === '/games/together') return { screen: 'friends-room' }
+   const danetkiJoinMatch = normalized.match(/^\/danetki\/join\/([^/]+)$/)
+   if (danetkiJoinMatch) return { screen: 'danetki-join', inviteToken: decodedSegment(danetkiJoinMatch[1]) }
+   const legalMatch = normalized.match(/^\/legal\/([^/]+)$/)
+@@ -59,6 +60,7 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
+ 
+ export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken }: PlayerRouteState) => {
+   if (screen === 'danetki') return '/games/danetki'
++  if (screen === 'friends-room') return '/games/together'
+   if (screen === 'danetki-join' && inviteToken) return `/danetki/join/${encodeURIComponent(inviteToken)}`
+   if (screen === 'title' && mode) return `/games/${encodeURIComponent(mode)}`
+   if (screen === 'game' && sessionId) return `/sessions/${encodeURIComponent(sessionId)}`
+diff --git a/apps/web/src/app/seo.ts b/apps/web/src/app/seo.ts
+index 03b9ca3..75eaa65 100644
+--- a/apps/web/src/app/seo.ts
++++ b/apps/web/src/app/seo.ts
+@@ -59,6 +59,9 @@ const utilitySeo = (pathname: string): SeoRoute | null => {
+   if (pathname === '/admin' || pathname.startsWith('/admin/')) return {
+     kind: 'utility', title: 'Админ-панель — Сходится!', description: 'Служебная административная панель.', canonicalPath: '/admin', heading: 'Админ-панель', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+   }
++  if (pathname === '/games/together') return {
++    kind: 'utility', title: 'Игра с друзьями — Сходится!', description: 'Предпросмотр тестовой комнаты многопользовательского режима.', canonicalPath: '/games/together', heading: 'Игра с друзьями', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
++  }
+   if (pathname === '/archive') return {
+     kind: 'utility', title: 'Архив игр — Сходится!', description: 'Личная история ежедневных игр.', canonicalPath: '/archive', heading: 'Архив', lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+   }
+diff --git a/apps/web/src/features/friends-room/FriendsRoomScreen.css b/apps/web/src/features/friends-room/FriendsRoomScreen.css
+new file mode 100644
+index 0000000..f2934fd
+--- /dev/null
++++ b/apps/web/src/features/friends-room/FriendsRoomScreen.css
+@@ -0,0 +1,240 @@
++.friends-room-page {
++  --room-paper: #eee7d8;
++  --room-paper-2: #e2d8c5;
++  --room-ink: #171a17;
++  min-height: 100vh;
++  color: #f2ecdf;
++  background:
++    radial-gradient(circle at 50% 24%, color-mix(in srgb, var(--room-accent) 8%, transparent), transparent 36%),
++    repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0, rgba(255,255,255,.012) 1px, transparent 1px, transparent 5px),
++    #111411;
++}
++
++.friends-room { width: min(1480px, calc(100% - 40px)); margin: 0 auto; padding: 20px 0 80px; }
++.friends-room__utility { min-height: 44px; margin: 0 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
++.friends-room__utility button { min-height: 40px; padding: 0 14px; border: 1px solid var(--color-line-strong); border-radius: 10px; color: var(--color-muted); background: rgba(20,23,20,.76); display: inline-flex; align-items: center; gap: 8px; font: 600 12px Manrope, sans-serif; cursor: pointer; }
++.friends-room__utility button:hover { color: var(--color-text); border-color: var(--color-muted); }
++.friends-room__utility button svg { width: 15px; }
++.friends-room__utility > span { color: color-mix(in srgb, var(--room-accent) 72%, #fff); display: inline-flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
++.friends-room__utility > span svg { width: 14px; }
++
++.room-panel { border: 1px solid rgba(239,231,215,.13); border-radius: 12px; background: linear-gradient(150deg, rgba(31,35,31,.92), rgba(22,25,22,.92)); box-shadow: 0 14px 40px rgba(0,0,0,.16); }
++.room-panel > span, .room-activity > span { color: #aaa395; font-size: 10px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
++
++/* Lobby */
++.room-lobby { min-height: 690px; border: 1px solid rgba(239,231,215,.14); border-radius: 20px; overflow: hidden; display: grid; grid-template-columns: .88fr 1.12fr; background: rgba(20,23,20,.85); box-shadow: 0 30px 90px rgba(0,0,0,.25); }
++.room-lobby__intro { position: relative; overflow: hidden; padding: clamp(46px, 6vw, 86px); background: var(--room-paper); color: var(--room-ink); }
++.room-lobby__intro::before { content: ''; position: absolute; inset: 0; opacity: .12; pointer-events: none; background: url('/images/realistic-grain-paper-texture.webp') center/cover; mix-blend-mode: multiply; }
++.room-lobby__intro::after { content: ''; position: absolute; right: -12px; top: 0; width: 24px; height: 100%; background: radial-gradient(circle at center, #111411 0 8px, transparent 9px) center top/24px 48px repeat-y; }
++.room-lobby__intro > * { position: relative; z-index: 1; }
++.room-kicker { color: #3b7f52; font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
++.room-lobby__intro h1 { max-width: 620px; margin: 25px 0 22px; font: 500 clamp(50px, 6vw, 82px)/.94 Oswald, sans-serif; letter-spacing: -.035em; text-transform: uppercase; }
++.room-lobby__intro > p { max-width: 540px; margin: 0; color: #665f53; font-size: 13px; line-height: 1.75; }
++.room-code-card { width: min(390px, 100%); margin-top: 42px; padding: 18px 20px; border: 1px solid rgba(23,26,23,.18); border-radius: 12px; display: grid; grid-template-columns: 1fr auto; gap: 3px 18px; }
++.room-code-card > span { color: #746c5e; font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
++.room-code-card > strong { grid-row: 1 / 3; grid-column: 1; font: 500 35px/1 Oswald, sans-serif; letter-spacing: .08em; }
++.room-code-card button { grid-row: 1 / 3; grid-column: 2; align-self: center; border: 0; color: #2e6c44; background: transparent; display: inline-flex; align-items: center; gap: 7px; font: 700 10px Manrope, sans-serif; cursor: pointer; }
++.room-code-card button svg { width: 15px; }
++.room-lobby__people { margin-top: 28px; display: flex; align-items: center; }
++.room-lobby__people > span { width: 31px; height: 31px; margin-left: -7px; border: 2px solid var(--room-paper); border-radius: 50%; color: #111; background: var(--avatar); display: grid; place-items: center; font-size: 9px; font-weight: 900; }
++.room-lobby__people > span:first-child { margin-left: 0; }
++.room-lobby__people small { margin-left: 10px; color: #746c5e; font-size: 10px; }
++.room-lobby__settings { padding: clamp(36px, 5vw, 70px); display: flex; flex-direction: column; }
++.room-settings-heading { padding-bottom: 25px; border-bottom: 1px dashed rgba(239,231,215,.16); display: flex; justify-content: space-between; align-items: baseline; }
++.room-settings-heading span { color: #aaa395; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
++.room-settings-heading strong { color: var(--room-accent); font: 500 27px Oswald, sans-serif; text-transform: uppercase; }
++.room-lobby fieldset { min-width: 0; margin: 28px 0 0; padding: 0; border: 0; }
++.room-lobby legend { margin-bottom: 13px; color: #aaa395; font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
++.room-mode-picker > div { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
++.room-mode-picker button { position: relative; min-width: 0; height: 105px; padding: 0; overflow: hidden; border: 1px solid rgba(239,231,215,.13); border-radius: 11px; color: #f2ecdf; background: #181b18; cursor: pointer; }
++.room-mode-picker button::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 10%, rgba(10,12,10,.9)); }
++.room-mode-picker img { width: 100%; height: 100%; object-fit: cover; opacity: .48; filter: saturate(.75); transition: opacity .2s, transform .25s; }
++.room-mode-picker button:hover img, .room-mode-picker button.is-active img { opacity: .75; transform: scale(1.035); }
++.room-mode-picker button.is-active { border-color: var(--mode-color); box-shadow: inset 0 -3px 0 var(--mode-color); }
++.room-mode-picker button span { position: absolute; z-index: 2; left: 10px; bottom: 9px; font: 500 17px Oswald, sans-serif; text-transform: uppercase; }
++.room-mode-picker button svg { position: absolute; z-index: 2; right: 8px; top: 8px; width: 15px; color: var(--mode-color); }
++.room-rule-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 28px; }
++.room-rule-grid fieldset > div { padding: 4px; border: 1px solid rgba(239,231,215,.13); border-radius: 10px; display: flex; }
++.room-rule-grid button { flex: 1; min-height: 39px; padding: 0 8px; border: 0; border-radius: 7px; color: #aaa395; background: transparent; font: 700 10px Manrope, sans-serif; cursor: pointer; }
++.room-rule-grid button.is-active { color: #152017; background: var(--room-accent); }
++.room-start { min-height: 57px; margin-top: auto; padding: 0 20px; border: 0; border-radius: 11px; color: #132117; background: var(--room-accent); display: flex; align-items: center; justify-content: center; gap: 9px; font: 800 12px Manrope, sans-serif; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 24px color-mix(in srgb, var(--room-accent) 18%, transparent); }
++.room-start svg { width: 17px; fill: currentColor; }
++.room-start span { margin-left: auto; opacity: .65; font-size: 9px; }
++
++/* Active room */
++.friends-room__columns { display: grid; grid-template-columns: 250px minmax(520px, 1fr) 280px; gap: 16px; align-items: start; }
++.room-left-rail, .room-right-rail { display: grid; gap: 14px; }
++.room-panel--code, .room-progress, .room-chat, .room-players, .room-answers, .room-podium { padding: 18px; }
++.room-panel--code > strong { margin: 9px 0 2px; display: block; font: 500 32px Oswald, sans-serif; letter-spacing: .08em; }
++.room-panel--code > small { color: #aaa395; display: flex; align-items: center; gap: 6px; font-size: 10px; }
++.room-panel--code > small svg { width: 13px; }
++.room-panel--code button { width: 100%; min-height: 44px; margin-top: 18px; border: 0; border-radius: 9px; color: #183120; background: var(--room-accent); display: flex; align-items: center; justify-content: center; gap: 8px; font: 800 9px Manrope, sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
++.room-panel--code button svg { width: 14px; }
++.room-progress > div { margin-top: 14px; padding: 13px; border: 1px solid rgba(239,231,215,.13); border-radius: 9px; display: grid; gap: 12px; }
++.room-progress strong { color: var(--room-accent); font-size: 11px; }
++.room-progress small { display: flex; align-items: center; justify-content: space-between; color: #c8c0b2; font-size: 10px; }
++.room-progress small svg { width: 14px; color: #858b82; }
++.room-chat > div { min-height: 140px; margin-top: 14px; display: grid; align-content: start; gap: 10px; }
++.room-chat p { margin: 0; color: #d7cfc0; font-size: 10px; line-height: 1.45; }
++.room-chat form { min-height: 42px; padding: 0 6px 0 12px; border: 1px solid rgba(239,231,215,.16); border-radius: 8px; display: flex; align-items: center; }
++.room-chat input { min-width: 0; flex: 1; border: 0; outline: 0; color: #f2ecdf; background: transparent; font: 10px Manrope, sans-serif; }
++.room-chat button { width: 30px; height: 30px; border: 0; border-radius: 7px; color: #cfc8bb; background: transparent; cursor: pointer; }
++.room-chat button svg { width: 14px; }
++.friends-room__stage { min-width: 0; display: grid; gap: 16px; }
++
++.room-ticket { position: relative; min-height: 440px; overflow: hidden; border-radius: 18px; color: var(--room-ink); display: grid; grid-template-columns: 175px 1fr; background: var(--room-paper); box-shadow: 0 28px 80px rgba(0,0,0,.25); }
++.room-ticket::before { content: ''; position: absolute; z-index: 3; top: 0; bottom: 0; left: 173px; width: 10px; background: radial-gradient(circle, #111411 0 2px, transparent 2.7px) center/10px 14px repeat-y; }
++.room-ticket::after { content: ''; position: absolute; inset: 0; opacity: .08; pointer-events: none; background: url('/images/realistic-grain-paper-texture.webp') center/cover; mix-blend-mode: multiply; }
++.room-ticket__stub { position: relative; overflow: hidden; background: #222; }
++.room-ticket__stub::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent, rgba(8,10,8,.35)); }
++.room-ticket__stub img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.2) saturate(.75) contrast(1.1); }
++.room-ticket__stub > span { position: absolute; z-index: 2; left: 16px; top: 18px; padding: 3px 8px 5px; color: #ece5d8; background: rgba(17,20,17,.92); font: 400 18px/1 Oswald, sans-serif; text-transform: uppercase; }
++.room-ticket__stub > span strong { font-size: 31px; }
++.room-ticket__stub > small { position: absolute; z-index: 2; right: 13px; bottom: 23px; padding: 7px 10px; color: #453f36; background: #e8e0d2; font: 500 12px Oswald, sans-serif; transform: rotate(-2deg); }
++.room-ticket__body { position: relative; z-index: 1; min-width: 0; padding: 31px 40px 28px 46px; }
++.room-ticket__meta { color: #477558; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
++.room-ticket h1 { margin: 5px 0 12px; font: 500 clamp(46px, 5vw, 72px)/1 Oswald, sans-serif; letter-spacing: -.02em; text-transform: uppercase; }
++.room-ticket__question { padding-top: 19px; border-top: 1px dashed rgba(23,26,23,.26); }
++.room-ticket__question > span { color: #746c5e; font-size: 8px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
++.room-ticket__question h2 { max-width: 630px; margin: 7px 0 16px; font: 500 clamp(21px, 2.2vw, 30px)/1.12 Oswald, sans-serif; text-transform: uppercase; }
++.room-hints { display: flex; flex-wrap: wrap; gap: 8px; }
++.room-hints span { min-height: 34px; padding: 0 14px; border: 1px solid rgba(23,26,23,.15); border-radius: 8px; background: rgba(255,255,255,.18); display: inline-flex; align-items: center; font-size: 10px; }
++.room-answer { position: relative; min-height: 53px; margin-top: 20px; padding: 5px; border: 1px solid color-mix(in srgb, var(--room-accent) 58%, transparent); border-radius: 9px; display: flex; background: rgba(255,255,255,.25); }
++.room-answer input { min-width: 0; flex: 1; padding: 0 12px; border: 0; outline: 0; color: var(--room-ink); background: transparent; font: 11px Manrope, sans-serif; }
++.room-answer > button { min-width: 125px; border: 0; border-radius: 7px; color: #fff; background: color-mix(in srgb, var(--room-accent) 78%, #15321f); font: 800 9px Manrope, sans-serif; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
++.room-answer > button:disabled { opacity: .45; cursor: default; }
++.room-answer.is-submitted { border-color: #5d9b70; background: rgba(87,183,119,.11); }
++.room-answer.is-submitted > div:first-child { padding: 3px 12px; display: flex; align-items: center; gap: 12px; }
++.room-answer.is-submitted svg { width: 20px; color: #34794d; }
++.room-answer.is-submitted span { display: grid; gap: 2px; }
++.room-answer.is-submitted small { color: #477558; font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
++.room-answer.is-submitted strong { font-size: 11px; }
++.room-answer__suggestions { position: absolute; z-index: 8; top: calc(100% + 5px); left: 0; right: 0; padding: 5px; border: 1px solid #b8ad98; border-radius: 8px; background: #f5efe3; box-shadow: 0 15px 35px rgba(0,0,0,.18); display: grid; }
++.room-answer__suggestions button { padding: 10px 12px; border: 0; border-radius: 6px; color: #282a27; background: transparent; text-align: left; font: 600 10px Manrope, sans-serif; cursor: pointer; }
++.room-answer__suggestions button:hover { background: #e7decd; }
++.room-ticket__foot { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
++.room-ticket__foot span { color: #7b7366; font-size: 8px; }
++.room-ticket__foot button { border: 0; color: #55725e; background: transparent; font: 700 8px Manrope, sans-serif; text-transform: uppercase; cursor: pointer; }
++
++.room-reveal { min-height: 255px; padding-top: 27px; border-top: 1px dashed rgba(23,26,23,.26); }
++.room-reveal > span { color: #477558; font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
++.room-reveal h2 { margin: 9px 0 4px; font: 500 clamp(38px, 4vw, 60px) Oswald, sans-serif; text-transform: uppercase; }
++.room-reveal p { margin: 0; color: #6d665a; font-size: 10px; }
++.room-reveal button { min-height: 45px; margin-top: 24px; padding: 0 19px; border: 0; border-radius: 8px; color: #fff; background: #397b50; display: inline-flex; align-items: center; gap: 8px; font: 800 9px Manrope, sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
++.room-reveal button svg { width: 14px; fill: currentColor; }
++
++.room-countdown { min-height: 440px; border: 1px solid rgba(239,231,215,.14); border-radius: 18px; background: linear-gradient(145deg, #212721, #171a17); display: grid; place-content: center; justify-items: center; text-align: center; box-shadow: 0 28px 80px rgba(0,0,0,.25); }
++.room-countdown span { color: var(--room-accent); font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
++.room-countdown strong { color: #efe7d7; font: 500 140px/.95 Oswald, sans-serif; text-shadow: 0 10px 50px color-mix(in srgb, var(--room-accent) 24%, transparent); }
++.room-countdown p { margin: 7px 0 0; color: #aaa395; font-size: 11px; text-transform: uppercase; letter-spacing: .14em; }
++
++.room-activity { min-height: 150px; padding: 18px 22px; border: 1px solid rgba(239,231,215,.12); border-radius: 12px; background: rgba(26,30,26,.88); }
++.room-activity article { min-height: 49px; padding: 0 8px; border-bottom: 1px solid rgba(239,231,215,.08); display: grid; grid-template-columns: 25px 1fr auto; align-items: center; gap: 8px; }
++.room-activity article:last-child { border-bottom: 0; }
++.room-activity article > i { width: 19px; height: 19px; border: 1px solid color-mix(in srgb, var(--room-accent) 65%, transparent); border-radius: 50%; color: var(--room-accent); display: grid; place-items: center; }
++.room-activity article > i svg { width: 10px; }
++.room-activity article > div { display: grid; gap: 2px; }
++.room-activity article strong { color: #dcd4c6; font-size: 9px; }
++.room-activity article small, .room-activity time { color: #858b82; font-size: 8px; }
++
++.room-players > div, .room-answers > div:not(.room-waiting) { margin-top: 13px; display: grid; gap: 10px; }
++.room-players article { min-width: 0; display: grid; grid-template-columns: 29px minmax(0, 1fr) 14px auto; align-items: center; gap: 8px; }
++.room-players i, .room-answers i { width: 27px; height: 27px; border-radius: 50%; color: #151715; background: var(--avatar); display: grid; place-items: center; font-style: normal; font-size: 8px; font-weight: 900; }
++.room-players strong { overflow: hidden; color: #e8e0d2; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
++.room-players article > svg { width: 12px; color: #d6a546; fill: currentColor; }
++.room-players small { color: #d0c7b8; font-size: 9px; font-variant-numeric: tabular-nums; }
++.room-waiting { min-height: 115px; margin-top: 12px; display: grid; place-content: center; justify-items: center; text-align: center; }
++.room-waiting svg { width: 23px; color: #646b64; }
++.room-waiting p { max-width: 165px; margin: 6px 0 0; color: #858b82; font-size: 9px; line-height: 1.5; }
++.room-answers article { min-width: 0; display: grid; grid-template-columns: 29px minmax(0,1fr) 16px; align-items: center; gap: 8px; }
++.room-answers article > span { min-width: 0; display: grid; gap: 2px; }
++.room-answers article strong, .room-answers article small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
++.room-answers article strong { color: #e8e0d2; font-size: 8px; }
++.room-answers article small { color: #858b82; font-size: 8px; }
++.room-answers article > svg { width: 14px; color: #57b777; }
++.room-answers article > svg.lucide-circle-x { color: #b85c56; }
++.room-podium > div { height: 105px; margin-top: 14px; display: flex; align-items: end; justify-content: center; gap: 7px; }
++.room-podium article { width: 45px; height: 57px; border-radius: 6px 6px 0 0; color: #eee6d8; background: #59605a; display: grid; place-content: center; justify-items: center; }
++.room-podium .place-1 { height: 87px; order: 2; color: #33260c; background: #d6a546; }
++.room-podium .place-2 { height: 66px; order: 1; }
++.room-podium .place-3 { height: 50px; order: 3; background: #8c573e; }
++.room-podium article strong { font: 500 24px Oswald, sans-serif; }
++.room-podium article small { font-size: 7px; }
++
++/* Final */
++.room-final { min-height: 690px; display: grid; place-items: center; }
++.room-final__ticket { position: relative; width: min(620px, 100%); padding: 54px 60px; border-radius: 20px; color: var(--room-ink); background: var(--room-paper); text-align: center; box-shadow: 0 35px 100px rgba(0,0,0,.3); }
++.room-final__ticket::before, .room-final__ticket::after { content: ''; position: absolute; top: -12px; width: 24px; height: 24px; border-radius: 50%; background: #111411; }
++.room-final__ticket::before { left: 40px; }
++.room-final__ticket::after { right: 40px; }
++.room-final__ticket > span { color: #477558; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
++.room-final__ticket > svg { width: 58px; height: 58px; margin: 20px auto 10px; color: #d6a546; fill: rgba(214,165,70,.18); display: block; }
++.room-final__ticket > small { color: #746c5e; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; }
++.room-final__ticket h1 { margin: 6px 0 0; font: 500 clamp(52px, 7vw, 78px)/1 Oswald, sans-serif; text-transform: uppercase; }
++.room-final__ticket > strong { color: #3b7f52; font-size: 13px; }
++.room-final__ticket > div { margin: 30px 0; border-top: 1px dashed rgba(23,26,23,.22); }
++.room-final__ticket article { min-height: 48px; padding: 0 6px; border-bottom: 1px solid rgba(23,26,23,.1); display: grid; grid-template-columns: 30px 1fr auto; align-items: center; text-align: left; }
++.room-final__ticket article i { width: 23px; height: 23px; border-radius: 6px; background: #d6a546; display: grid; place-items: center; font: 500 13px Oswald, sans-serif; }
++.room-final__ticket article span { font-size: 11px; font-weight: 700; }
++.room-final__ticket article strong { font-size: 10px; }
++.room-final__ticket > button { min-height: 44px; margin: 4px; padding: 0 15px; border: 1px solid rgba(23,26,23,.18); border-radius: 8px; color: #2b302b; background: transparent; display: inline-flex; align-items: center; gap: 7px; font: 800 9px Manrope, sans-serif; text-transform: uppercase; cursor: pointer; }
++.room-final__ticket > button:first-of-type { color: #fff; border-color: #397b50; background: #397b50; }
++.room-final__ticket > button svg { width: 14px; }
++
++@media (max-width: 1180px) {
++  .friends-room__columns { grid-template-columns: 220px minmax(500px, 1fr); }
++  .room-right-rail { grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0,1fr)); }
++  .room-lobby { grid-template-columns: 1fr; }
++  .room-lobby__intro { min-height: 530px; }
++  .room-lobby__intro::after { display: none; }
++  .room-lobby__settings { min-height: 620px; }
++}
++
++@media (max-width: 800px) {
++  .friends-room { width: min(100% - 22px, 680px); padding-top: 8px; }
++  .friends-room__utility > span { display: none; }
++  .friends-room__columns { display: flex; flex-direction: column; }
++  .friends-room__stage { order: 1; width: 100%; }
++  .room-left-rail { order: 2; width: 100%; grid-template-columns: repeat(2, minmax(0,1fr)); }
++  .room-chat { grid-column: 1 / -1; }
++  .room-right-rail { order: 3; width: 100%; grid-template-columns: 1fr; }
++  .room-ticket { grid-template-columns: 110px 1fr; }
++  .room-ticket::before { left: 108px; }
++  .room-ticket__body { padding: 28px 25px 24px 32px; }
++  .room-mode-picker > div { grid-template-columns: repeat(3, minmax(0, 1fr)); }
++}
++
++@media (max-width: 560px) {
++  .friends-room-page .app-header { position: relative; }
++  .friends-room { width: min(100% - 16px, 500px); }
++  .room-lobby__intro, .room-lobby__settings { padding: 32px 24px; }
++  .room-lobby__intro { min-height: 520px; }
++  .room-lobby__intro h1 { font-size: 48px; }
++  .room-code-card { grid-template-columns: 1fr; }
++  .room-code-card > strong, .room-code-card button { grid-row: auto; grid-column: 1; }
++  .room-code-card button { margin-top: 11px; justify-content: flex-start; }
++  .room-lobby__settings { min-height: 670px; }
++  .room-mode-picker > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
++  .room-rule-grid { grid-template-columns: 1fr; gap: 0; }
++  .room-start { margin-top: 28px; }
++  .room-start span { display: none; }
++  .room-left-rail { grid-template-columns: 1fr; }
++  .room-chat { grid-column: auto; }
++  .room-ticket { display: block; }
++  .room-ticket::before { display: none; }
++  .room-ticket__stub { height: 105px; }
++  .room-ticket__stub img { object-position: center 35%; }
++  .room-ticket__stub > small { bottom: 14px; }
++  .room-ticket__body { padding: 24px 19px 24px; }
++  .room-ticket h1 { font-size: 48px; }
++  .room-ticket__question h2 { font-size: 23px; }
++  .room-answer { display: grid; gap: 5px; }
++  .room-answer input { min-height: 43px; }
++  .room-answer > button { min-height: 42px; }
++  .room-ticket__foot { align-items: flex-start; }
++  .room-final__ticket { padding: 44px 20px; }
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .room-mode-picker img { transition: none; }
++}
+diff --git a/apps/web/src/features/friends-room/FriendsRoomScreen.tsx b/apps/web/src/features/friends-room/FriendsRoomScreen.tsx
+new file mode 100644
+index 0000000..6b699a7
+--- /dev/null
++++ b/apps/web/src/features/friends-room/FriendsRoomScreen.tsx
+@@ -0,0 +1,362 @@
++import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
++import {
++  ArrowLeft, Check, CheckCircle2, Clock3, Copy, Crown, Gamepad2, LogOut,
++  MessageCircle, Play, RotateCcw, Send, Share2, Trophy, Users, X, XCircle,
++} from 'lucide-react'
++import { AppHeader, type AppHeaderProps } from '../../components/app-shell/AppShell'
++import { publicAssetUrl } from '../../app/public-asset'
++import './FriendsRoomScreen.css'
++
++type Phase = 'lobby' | 'countdown' | 'active' | 'results' | 'finished'
++type ModeId = 'movie' | 'series' | 'anime' | 'game' | 'city' | 'music' | 'diagnosis'
++
++type Mode = {
++  id: ModeId
++  label: string
++  prompt: string
++  poster: string
++  color: string
++  rounds: Array<{ answer: string; aliases?: string[]; hints: string[] }>
++}
++
++type Player = {
++  id: string
++  name: string
++  initials: string
++  color: string
++  score: number
++  answer?: string
++  correct?: boolean
++  delta?: number
++  isHost?: boolean
++  isYou?: boolean
++}
++
++const MODES: Mode[] = [
++  {
++    id: 'series', label: 'Сериалы', prompt: 'Какой сериал соответствует этим подсказкам?', color: '#d6a546',
++    poster: 'images/title-posters/series-ticket-poster.webp',
++    rounds: [
++      { answer: 'Хорошие девочки', aliases: ['Good Girls'], hints: ['2017 год', 'США', 'тёмная комедия', 'про благотворительность'] },
++      { answer: 'Офис', aliases: ['The Office'], hints: ['2005 год', 'США', 'псевдодокументальный', 'бумажная компания'] },
++      { answer: 'Очень странные дела', aliases: ['Stranger Things'], hints: ['2016 год', 'США', 'научная фантастика', 'маленький город'] },
++    ],
++  },
++  {
++    id: 'movie', label: 'Кино', prompt: 'Какой фильм соответствует этим подсказкам?', color: '#57b777',
++    poster: 'images/title-posters/movie-ticket-poster.webp',
++    rounds: [
++      { answer: 'Паразиты', hints: ['2019 год', 'Южная Корея', 'триллер', 'две семьи'] },
++      { answer: 'Достать ножи', aliases: ['Knives Out'], hints: ['2019 год', 'США', 'детектив', 'писательский особняк'] },
++      { answer: 'Интерстеллар', hints: ['2014 год', 'США', 'космос', 'время'] },
++    ],
++  },
++  {
++    id: 'anime', label: 'Аниме', prompt: 'Какое аниме соответствует этим подсказкам?', color: '#cf7a5d',
++    poster: 'images/title-posters/anime-ticket-poster.webp',
++    rounds: [
++      { answer: 'Тетрадь смерти', aliases: ['Death Note'], hints: ['2006 год', 'триллер', 'школьник', 'тайное оружие'] },
++      { answer: 'Атака титанов', aliases: ['Attack on Titan'], hints: ['2013 год', 'фэнтези', 'стены', 'разведкорпус'] },
++      { answer: 'Унесённые призраками', hints: ['2001 год', 'полнометражное', 'баня', 'другой мир'] },
++    ],
++  },
++  {
++    id: 'game', label: 'Игры', prompt: 'Какая игра соответствует этим подсказкам?', color: '#5270ab',
++    poster: 'images/title-posters/game-ticket-poster.webp',
++    rounds: [
++      { answer: 'Disco Elysium', hints: ['2019 год', 'детектив', 'изометрия', 'потеря памяти'] },
++      { answer: 'Portal 2', hints: ['2011 год', 'головоломка', 'лаборатория', 'две точки пространства'] },
++      { answer: 'The Last of Us', hints: ['2013 год', 'приключение', 'пандемия', 'путешествие вдвоём'] },
++    ],
++  },
++  {
++    id: 'city', label: 'Города', prompt: 'Какой город соответствует этим подсказкам?', color: '#67aa7c',
++    poster: 'images/title-posters/city-ticket-poster.webp',
++    rounds: [
++      { answer: 'Токио', hints: ['Азия', 'столица', 'агломерация 37 млн', 'высокий Human Capital'] },
++      { answer: 'Барселона', hints: ['Европа', 'Средиземное море', 'архитектура', 'летняя Олимпиада'] },
++      { answer: 'Алматы', hints: ['Центральная Азия', 'горы', 'бывшая столица', 'яблоки'] },
++    ],
++  },
++  {
++    id: 'music', label: 'Музыка', prompt: 'Какой артист соответствует этим подсказкам?', color: '#8a4c7d',
++    poster: 'images/title-posters/music-ticket-poster.webp',
++    rounds: [
++      { answer: 'Radiohead', hints: ['Великобритания', 'альтернативный рок', '1985 год', '5 участников'] },
++      { answer: 'Земфира', hints: ['Россия', 'рок', 'дебют в 1999', 'сольная исполнительница'] },
++      { answer: 'Daft Punk', hints: ['Франция', 'электроника', 'дуэт', 'шлемы'] },
++    ],
++  },
++  {
++    id: 'diagnosis', label: 'Диагнозы', prompt: 'Какой диагноз соответствует этому случаю?', color: '#5cb5cc',
++    poster: 'images/title-posters/diagnosis-ticket-poster.webp',
++    rounds: [
++      { answer: 'Мигрень', hints: ['приступами', 'одна сторона головы', 'чувствительность к свету', 'тошнота'] },
++      { answer: 'Гастрит', hints: ['эпигастрий', 'связь с едой', 'тошнота', 'изжога'] },
++      { answer: 'Анемия', hints: ['слабость', 'бледность', 'головокружение', 'низкий гемоглобин'] },
++    ],
++  },
++]
++
++const INITIAL_PLAYERS: Player[] = [
++  { id: 'alex', name: 'Алекс', initials: 'АБ', color: '#57b777', score: 2230, isHost: true, isYou: true },
++  { id: 'anna', name: 'Аня', initials: 'А', color: '#cf7a5d', score: 4620 },
++  { id: 'dima', name: 'Дима', initials: 'Д', color: '#d6a546', score: 4210 },
++  { id: 'lena', name: 'Лена', initials: 'Л', color: '#a7c957', score: 3980 },
++  { id: 'kirill', name: 'Кирилл', initials: 'К', color: '#62bd68', score: 3440 },
++  { id: 'maks', name: 'Макс', initials: 'М', color: '#d98b50', score: 2870 },
++]
++
++const normalize = (value: string) => value.trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/gi, ' ')
++const isCorrect = (answer: string, round: Mode['rounds'][number]) => [round.answer, ...(round.aliases ?? [])].some((candidate) => normalize(candidate) === normalize(answer))
++const formatScore = (value: number) => new Intl.NumberFormat('ru-RU').format(value)
++
++const fakeAnswers = (round: Mode['rounds'][number], index: number) => [
++  round.answer,
++  round.answer,
++  index % 2 ? 'Не успела' : round.answer,
++  index % 2 ? round.answer : 'Другой вариант',
++  'Почти угадал',
++]
++
++export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeaderProps; onExit: () => void }) {
++  const [phase, setPhase] = useState<Phase>('lobby')
++  const [modeId, setModeId] = useState<ModeId>('series')
++  const [roundsTotal, setRoundsTotal] = useState<3 | 5 | 7>(5)
++  const [answerTime, setAnswerTime] = useState<15 | 20 | 30 | 45>(30)
++  const [roundIndex, setRoundIndex] = useState(0)
++  const [timeLeft, setTimeLeft] = useState(30)
++  const [countdown, setCountdown] = useState(3)
++  const [answer, setAnswer] = useState('')
++  const [submitted, setSubmitted] = useState(false)
++  const [players, setPlayers] = useState<Player[]>(INITIAL_PLAYERS)
++  const [copied, setCopied] = useState(false)
++  const [chat, setChat] = useState(['Дима: это будет сложно 😅', 'Аня: ставлю на фантастику', 'Макс: уже есть идеи 💡'])
++  const [message, setMessage] = useState('')
++  const mode = MODES.find((entry) => entry.id === modeId) ?? MODES[0]
++  const round = mode.rounds[roundIndex % mode.rounds.length]
++
++  useEffect(() => {
++    if (phase !== 'countdown') return
++    if (countdown <= 0) {
++      setPhase('active')
++      setTimeLeft(answerTime)
++      return
++    }
++    const timer = window.setTimeout(() => setCountdown((value) => value - 1), 700)
++    return () => window.clearTimeout(timer)
++  }, [answerTime, countdown, phase])
++
++  useEffect(() => {
++    if (phase !== 'active' || timeLeft <= 0) return
++    const timer = window.setInterval(() => setTimeLeft((value) => Math.max(0, value - 1)), 1000)
++    return () => window.clearInterval(timer)
++  }, [phase, timeLeft])
++
++  useEffect(() => {
++    if (phase === 'active' && timeLeft === 0) revealResults()
++  }, [phase, timeLeft])
++
++  const rankedPlayers = useMemo(() => [...players].sort((a, b) => b.score - a.score), [players])
++  const answeredCount = players.filter((player) => player.answer).length
++
++  const copyInvite = async () => {
++    const invite = `${window.location.origin}/games/together?room=K3L7P`
++    await navigator.clipboard?.writeText(invite)
++    setCopied(true)
++    window.setTimeout(() => setCopied(false), 1600)
++  }
++
++  const startGame = () => {
++    setRoundIndex(0)
++    setPlayers(INITIAL_PLAYERS.map((player) => ({ ...player, answer: undefined, correct: undefined, delta: undefined })))
++    setAnswer('')
++    setSubmitted(false)
++    setCountdown(3)
++    setPhase('countdown')
++  }
++
++  const submitAnswer = (event?: FormEvent) => {
++    event?.preventDefault()
++    if (!answer.trim() || submitted || phase !== 'active') return
++    setSubmitted(true)
++    setPlayers((current) => current.map((player) => player.isYou ? { ...player, answer: answer.trim() } : player))
++  }
++
++  const revealResults = () => {
++    const simulated = fakeAnswers(round, roundIndex)
++    setPlayers((current) => current.map((player, index) => {
++      const submittedAnswer = player.isYou ? player.answer ?? answer.trim() : simulated[Math.max(0, index - 1)]
++      const correct = Boolean(submittedAnswer) && isCorrect(submittedAnswer, round)
++      const delta = correct ? Math.max(200, 1000 - index * 120) : 0
++      return { ...player, answer: submittedAnswer || 'Нет ответа', correct, delta, score: player.score + delta }
++    }))
++    setPhase('results')
++  }
++
++  const nextRound = () => {
++    if (roundIndex + 1 >= roundsTotal) {
++      setPhase('finished')
++      return
++    }
++    setRoundIndex((value) => value + 1)
++    setPlayers((current) => current.map((player) => ({ ...player, answer: undefined, correct: undefined, delta: undefined })))
++    setAnswer('')
++    setSubmitted(false)
++    setCountdown(3)
++    setPhase('countdown')
++  }
++
++  const sendMessage = (event: FormEvent) => {
++    event.preventDefault()
++    if (!message.trim()) return
++    setChat((current) => [...current, `Вы: ${message.trim()}`])
++    setMessage('')
++  }
++
++  return <div className="friends-room-page" style={{ '--room-accent': mode.color } as CSSProperties}>
++    <AppHeader {...navigation} />
++    <main className="friends-room">
++      <header className="friends-room__utility">
++        <button type="button" onClick={onExit}><ArrowLeft /> Выйти из комнаты</button>
++        <span><Crown /> Открытый предпросмотр</span>
++      </header>
++
++      {phase === 'lobby'
++        ? <Lobby
++            mode={mode}
++            players={players}
++            roundsTotal={roundsTotal}
++            answerTime={answerTime}
++            copied={copied}
++            onMode={setModeId}
++            onRounds={setRoundsTotal}
++            onTime={setAnswerTime}
++            onCopy={copyInvite}
++            onStart={startGame}
++          />
++        : phase === 'finished'
++          ? <FinalScreen players={rankedPlayers} onAgain={startGame} onLobby={() => setPhase('lobby')} onExit={onExit} />
++          : <div className="friends-room__columns">
++              <LeftRail
++                round={roundIndex + 1}
++                roundsTotal={roundsTotal}
++                timeLeft={timeLeft}
++                answered={answeredCount}
++                players={players.length}
++                copied={copied}
++                chat={chat}
++                message={message}
++                onCopy={copyInvite}
++                onMessage={setMessage}
++                onSend={sendMessage}
++              />
++              <section className="friends-room__stage">
++                {phase === 'countdown'
++                  ? <div className="room-countdown" aria-live="polite"><span>Раунд {roundIndex + 1}</span><strong>{Math.max(1, countdown)}</strong><p>Приготовьтесь</p></div>
++                  : <GameTicket
++                      mode={mode}
++                      round={round}
++                      roundNumber={roundIndex + 1}
++                      answer={answer}
++                      submitted={submitted}
++                      phase={phase}
++                      players={players}
++                      onAnswer={setAnswer}
++                      onSubmit={submitAnswer}
++                      onReveal={revealResults}
++                      onNext={nextRound}
++                    />}
++                <ActivityLog phase={phase} round={roundIndex + 1} players={players} />
++              </section>
++              <RightRail players={rankedPlayers} phase={phase} />
++            </div>}
++    </main>
++  </div>
++}
++
++function Lobby({ mode, players, roundsTotal, answerTime, copied, onMode, onRounds, onTime, onCopy, onStart }: {
++  mode: Mode; players: Player[]; roundsTotal: 3 | 5 | 7; answerTime: 15 | 20 | 30 | 45; copied: boolean
++  onMode: (mode: ModeId) => void; onRounds: (value: 3 | 5 | 7) => void; onTime: (value: 15 | 20 | 30 | 45) => void
++  onCopy: () => void; onStart: () => void
++}) {
++  return <section className="room-lobby">
++    <div className="room-lobby__intro">
++      <span className="room-kicker">Игра с друзьями · тестовый показ</span>
++      <h1>Соберите свою<br />игровую комнату</h1>
++      <p>Выберите тему и правила. После запуска все участники одновременно увидят подсказки и отправят по одному ответу.</p>
++      <div className="room-code-card"><span>Код комнаты</span><strong>K3L7P</strong><button type="button" onClick={onCopy}>{copied ? <Check /> : <Copy />}{copied ? 'Скопировано' : 'Копировать ссылку'}</button></div>
++      <div className="room-lobby__people">
++        {players.map((player) => <span key={player.id} style={{ '--avatar': player.color } as CSSProperties}>{player.initials}</span>)}
++        <small>{players.length} игроков в комнате</small>
++      </div>
++    </div>
++    <div className="room-lobby__settings">
++      <div className="room-settings-heading"><span>Настройки сеанса</span><strong>{mode.label}</strong></div>
++      <fieldset className="room-mode-picker">
++        <legend>Категория</legend>
++        <div>{MODES.map((entry) => <button key={entry.id} type="button" className={entry.id === mode.id ? 'is-active' : ''} style={{ '--mode-color': entry.color } as CSSProperties} onClick={() => onMode(entry.id)}><img src={publicAssetUrl(entry.poster)} alt="" /><span>{entry.label}</span>{entry.id === mode.id && <CheckCircle2 />}</button>)}</div>
++      </fieldset>
++      <div className="room-rule-grid">
++        <fieldset><legend>Раундов</legend><div>{([3, 5, 7] as const).map((value) => <button type="button" className={roundsTotal === value ? 'is-active' : ''} key={value} onClick={() => onRounds(value)}>{value}</button>)}</div></fieldset>
++        <fieldset><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <button type="button" className={answerTime === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</button>)}</div></fieldset>
++      </div>
++      <button className="room-start" type="button" onClick={onStart}><Play /> Начать игру <span>{roundsTotal} раундов · {answerTime} сек</span></button>
++    </div>
++  </section>
++}
++
++function LeftRail({ round, roundsTotal, timeLeft, answered, players, copied, chat, message, onCopy, onMessage, onSend }: {
++  round: number; roundsTotal: number; timeLeft: number; answered: number; players: number; copied: boolean; chat: string[]; message: string
++  onCopy: () => void; onMessage: (value: string) => void; onSend: (event: FormEvent) => void
++}) {
++  return <aside className="room-left-rail">
++    <section className="room-panel room-panel--code"><span>Комната</span><strong>K3L7P</strong><small><Users /> {players} игроков</small><button type="button" onClick={onCopy}><Share2 /> {copied ? 'Ссылка скопирована' : 'Пригласить друзей'}</button></section>
++    <section className="room-panel room-progress"><span>Прогресс игры</span><div><strong>Раунд {round} из {roundsTotal}</strong><small><Clock3 /> {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:{String(timeLeft % 60).padStart(2, '0')}</small><small><CheckCircle2 /> Ответили {answered} / {players}</small></div></section>
++    <section className="room-panel room-chat"><span>Чат комнаты</span><div>{chat.slice(-5).map((entry, index) => <p key={`${entry}-${index}`}>{entry}</p>)}</div><form onSubmit={onSend}><input value={message} onChange={(event) => onMessage(event.target.value)} placeholder="Сообщение…" aria-label="Сообщение в чат" /><button type="submit" aria-label="Отправить"><Send /></button></form></section>
++  </aside>
++}
++
++function GameTicket({ mode, round, roundNumber, answer, submitted, phase, players, onAnswer, onSubmit, onReveal, onNext }: {
++  mode: Mode; round: Mode['rounds'][number]; roundNumber: number; answer: string; submitted: boolean; phase: Phase; players: Player[]
++  onAnswer: (value: string) => void; onSubmit: (event?: FormEvent) => void; onReveal: () => void; onNext: () => void
++}) {
++  const suggestions = [round.answer, ...(round.aliases ?? [])].filter((entry) => normalize(entry).includes(normalize(answer)) && normalize(answer).length > 1)
++  return <article className={`room-ticket ${phase === 'results' ? 'is-results' : ''}`}>
++    <div className="room-ticket__stub"><img src={publicAssetUrl(mode.poster)} alt="" /><span>Вход<br /><strong>один</strong></span><small>№ {String(roundNumber).padStart(3, '0')}</small></div>
++    <div className="room-ticket__body">
++      <div className="room-ticket__meta">Игра с друзьями · Раунд №{String(roundNumber).padStart(3, '0')}</div>
++      <h1>{mode.label}</h1>
++      {phase === 'results'
++        ? <div className="room-reveal"><span>Правильный ответ</span><h2>{round.answer}</h2><p>{players.filter((player) => player.correct).length} из {players.length} игроков ответили правильно</p><button type="button" onClick={onNext}>Следующий раунд <Play /></button></div>
++        : <>
++            <div className="room-ticket__question"><span>Задание</span><h2>{mode.prompt}</h2></div>
++            <div className="room-hints">{round.hints.map((hint) => <span key={hint}>{hint}</span>)}</div>
++            <form className={`room-answer ${submitted ? 'is-submitted' : ''}`} onSubmit={onSubmit}>
++              {submitted ? <div><CheckCircle2 /><span><small>Ответ принят</small><strong>{answer}</strong></span></div> : <><input autoFocus value={answer} onChange={(event) => onAnswer(event.target.value)} placeholder={`Введите ${mode.id === 'city' ? 'город' : 'название'}…`} aria-label="Ваш ответ" /><button type="submit" disabled={!answer.trim()}>Отправить</button></>}
++              {!submitted && suggestions.length > 0 && <div className="room-answer__suggestions">{suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => onAnswer(suggestion)}>{suggestion}</button>)}</div>}
++            </form>
++            <div className="room-ticket__foot"><span>Можно отправить только один вариант</span><button type="button" onClick={onReveal}>Показать результаты</button></div>
++          </>}
++    </div>
++  </article>
++}
++
++function RightRail({ players, phase }: { players: Player[]; phase: Phase }) {
++  return <aside className="room-right-rail">
++    <section className="room-panel room-players"><span>Игроки ({players.length})</span><div>{players.map((player, index) => <article key={player.id}><i style={{ '--avatar': player.color } as CSSProperties}>{player.initials}</i><strong>{player.name}{player.isYou ? ' (вы)' : ''}</strong>{index === 0 && <Crown />}<small>{formatScore(player.score)}</small></article>)}</div></section>
++    <section className="room-panel room-answers"><span>Ответы раунда</span>{phase === 'results' ? <div>{players.map((player) => <article key={player.id}><i style={{ '--avatar': player.color } as CSSProperties}>{player.initials}</i><span><strong>{player.name}</strong><small>{player.answer}</small></span>{player.correct ? <CheckCircle2 /> : <XCircle />}</article>)}</div> : <div className="room-waiting"><MessageCircle /><p>Ответы откроются после завершения раунда</p></div>}</section>
++    {phase === 'results' && <section className="room-panel room-podium"><span>Счёт за раунд</span><div>{players.slice(0, 3).map((player, index) => <article key={player.id} className={`place-${index + 1}`}><strong>{index + 1}</strong><small>+{player.delta ?? 0}</small></article>)}</div></section>}
++  </aside>
++}
++
++function ActivityLog({ phase, round, players }: { phase: Phase; round: number; players: Player[] }) {
++  return <section className="room-activity"><span>Ход игры</span><article><i><Play /></i><div><strong>Раунд {round} начался</strong><small>Угадайте ответ по подсказкам</small></div><time>сейчас</time></article>{players.filter((player) => player.answer).slice(0, 3).map((player) => <article key={player.id}><i>{phase === 'results' ? player.correct ? <Check /> : <X /> : <Check />}</i><div><strong>{player.name} {phase === 'results' ? player.correct ? 'дал правильный ответ' : 'ошибся' : 'отправил ответ'}</strong>{phase === 'results' && <small>+{player.delta ?? 0} очков</small>}</div><time>сейчас</time></article>)}</section>
++}
++
++function FinalScreen({ players, onAgain, onLobby, onExit }: { players: Player[]; onAgain: () => void; onLobby: () => void; onExit: () => void }) {
++  const winner = players[0]
++  return <section className="room-final">
++    <div className="room-final__ticket"><span>Сеанс завершён</span><Trophy /><small>Победитель</small><h1>{winner.name}</h1><strong>{formatScore(winner.score)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.id}><i>{index + 1}</i><span>{player.name}</span><strong>{formatScore(player.score)}</strong></article>)}</div><button type="button" onClick={onAgain}><RotateCcw /> Сыграть ещё раз</button><button type="button" onClick={onLobby}><Gamepad2 /> Сменить категорию</button><button type="button" onClick={onExit}><LogOut /> Выйти</button></div>
++  </section>
++}
