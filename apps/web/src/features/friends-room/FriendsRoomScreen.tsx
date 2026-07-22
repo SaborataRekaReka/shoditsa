@@ -46,6 +46,7 @@ const colorByKey: Record<string, string> = {
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'Не удалось выполнить действие'
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU') || 'И'
 const score = (value: number) => new Intl.NumberFormat('ru-RU').format(value)
+const packCountLabel = (count: number) => `${count} ${count === 1 ? 'пак' : count < 5 ? 'пака' : 'паков'}`
 const activeMembers = (room: FriendsRoomSnapshot) => room.members.filter((member) => !member.leftAt)
 const idempotencyKey = () => crypto.randomUUID()
 const withConfigDraft = (snapshot: FriendsRoomSnapshot, draft: FriendsRoomConfigBody): FriendsRoomSnapshot => {
@@ -337,7 +338,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRou
       <MemberStack members={members} capacity={room.capacity} />
     </div>
     <div className="room-lobby__settings">
-      <header className="room-settings-heading"><span>Настройки сеанса</span><strong>{room.packs.length === 1 ? mode.label : `${room.packs.length} пака`}</strong></header>
+      <header className="room-settings-heading"><span>Настройки сеанса</span><strong>{room.packs.length === 1 ? mode.label : packCountLabel(room.packs.length)}</strong></header>
       <fieldset className="room-mode-picker" disabled={!room.isHost}>
         <legend>Игровые паки <small>можно несколько</small></legend>
         <div>{MODES.map((entry) => {
@@ -361,7 +362,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRou
         <fieldset disabled={!room.isHost}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <button type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</button>)}</div></fieldset>
       </div>
       {room.isHost
-        ? <button className="room-start" type="button" onClick={onStart} disabled={busy || configSaving}><RoomIcon name="play" />{busy ? 'Запускаем…' : 'Начать игру'}<span>{room.packs.length} {room.packs.length === 1 ? 'пак' : room.packs.length < 5 ? 'пака' : 'паков'} · {room.roundsTotal} раундов · {room.answerTimeSeconds} сек</span></button>
+        ? <button className="room-start" type="button" onClick={onStart} disabled={busy || configSaving}><RoomIcon name="play" />{busy ? 'Запускаем…' : 'Начать игру'}<span>{packCountLabel(room.packs.length)} · {room.roundsTotal} раундов · {room.answerTimeSeconds} сек</span></button>
         : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>Ждём ведущего</strong><small>Настройки и запуск доступны создателю комнаты</small></span></div>}
     </div>
   </section>
