@@ -10,7 +10,7 @@ import type {
   PlayableMode,
   TitleItem,
 } from '@shoditsa/contracts'
-import { FRIENDS_ROOM_CAPACITY } from '@shoditsa/contracts'
+import { FRIENDS_ROOM_CAPACITY, friendsRoomMinimumRounds } from '@shoditsa/contracts'
 import { musicDifficultyPool } from '@shoditsa/game-core'
 import {
   contentItemVersions,
@@ -24,7 +24,7 @@ import {
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { publicCard } from '../games/service.js'
-import { defaultFriendsRoomPack, friendsRoomItemMatchesPack, normalizeFriendsRoomPacks } from './packs.js'
+import { buildFriendsRoomPackSchedule, defaultFriendsRoomPack, friendsRoomItemMatchesPack, normalizeFriendsRoomPacks } from './packs.js'
 import { scoreFriendsRoomGuess } from './scoring.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
@@ -124,7 +124,8 @@ const roomPacks = (room: RoomRow) => normalizeFriendsRoomPacks(
 
 const createRound = async (tx: Transaction, room: RoomRow, position: number) => {
   const packs = roomPacks(room)
-  const pack = packs[(position - 1) % packs.length]
+  const pack = buildFriendsRoomPackSchedule(packs, room.roundsTotal, room.id, room.shufflePacks)[position - 1]
+  if (!pack) throw new ApiError(500, 'FRIENDS_ROOM_PACK_SCHEDULE_INVALID', 'Не удалось распределить игровые паки')
   const used = await tx.select({ id: friendsRoomRounds.contentItemVersionId }).from(friendsRoomRounds).where(eq(friendsRoomRounds.roomId, room.id))
   const filters = [
     eq(contentItemVersions.revisionId, room.revisionId),
@@ -214,7 +215,8 @@ const buildSnapshot = async (db: ReadDatabase, roomId: string, currentUserId: st
     mode: room.mode as PlayableMode,
     packs,
     capacity: FRIENDS_ROOM_CAPACITY,
-    roundsTotal: room.roundsTotal as 3 | 5 | 7,
+    roundsTotal: room.roundsTotal,
+    shufflePacks: room.shufflePacks,
     answerTimeSeconds: room.answerTimeSeconds as 15 | 20 | 30 | 45,
     phase: room.phase,
     currentRound: room.currentRound,
@@ -315,11 +317,13 @@ export const createFriendsRoom = async (db: Database, user: RequestUser, input: 
   const revisionId = await activeRevisionId(db)
   const packs = normalizeFriendsRoomPacks(input.packs, input.mode ?? 'series')
   const mode = packs[0].mode
+  const roundsTotal = input.roundsTotal ?? Math.max(6, friendsRoomMinimumRounds(packs.length))
+  if (roundsTotal < packs.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const code = roomCode()
     const room = await db.transaction(async (tx) => {
       const inserted = await tx.insert(friendsRooms).values({
-        code, ownerUserId: user.id, revisionId, mode, packs, roundsTotal: input.roundsTotal ?? 5, answerTimeSeconds: input.answerTimeSeconds ?? 30,
+        code, ownerUserId: user.id, revisionId, mode, packs, roundsTotal, shufflePacks: input.shufflePacks ?? false, answerTimeSeconds: input.answerTimeSeconds ?? 30,
       }).onConflictDoNothing().returning()
       if (!inserted[0]) return null
       await tx.insert(friendsRoomMembers).values({ roomId: inserted[0].id, userId: user.id, role: 'owner', displayNameSnapshot: safeName(user.name), colorKey: colorFor(user.id) })
@@ -363,6 +367,9 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
       : requestedMode
         ? [defaultFriendsRoomPack(requestedMode)]
         : null
+    const nextPacks = packs ?? roomPacks(room)
+    const nextRoundsTotal = rules.roundsTotal ?? room.roundsTotal
+    if (nextRoundsTotal < nextPacks.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
     await tx.update(friendsRooms).set({
       ...rules,
       ...(packs ? { packs, mode: packs[0].mode } : {}),

@@ -51,3 +51,41 @@ export const friendsRoomItemMatchesPack = (item: TitleItem, pack: FriendsRoomPac
   if (pack.mode === 'music' && ['easy', 'medium', 'hard', 'expert'].includes(pack.variant)) return true
   return false
 }
+
+const seededOrder = (seed: string) => {
+  let state = 0x811c9dc5
+  for (const character of seed) {
+    state ^= character.codePointAt(0) ?? 0
+    state = Math.imul(state, 0x01000193)
+  }
+  return () => {
+    state += 0x6d2b79f5
+    let value = state
+    value = Math.imul(value ^ (value >>> 15), value | 1)
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61)
+    return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296
+  }
+}
+
+/**
+ * Builds a balanced pack rotation for one room. Every selected pack is used
+ * once before any pack repeats. The host may preserve the selected order or
+ * enable a stable shuffle for the whole game.
+ */
+export const buildFriendsRoomPackSchedule = (
+  packs: FriendsRoomPackSelection[],
+  roundsTotal: number,
+  seed: string,
+  shuffle = false,
+) => {
+  if (!packs.length || roundsTotal <= 0) return []
+  const shuffled = [...packs]
+  if (shuffle) {
+    const random = seededOrder(`${seed}:${packs.map((pack) => `${pack.mode}/${pack.variant}`).join('|')}`)
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(random() * (index + 1))
+      ;[shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]]
+    }
+  }
+  return Array.from({ length: roundsTotal }, (_, index) => shuffled[index % shuffled.length])
+}

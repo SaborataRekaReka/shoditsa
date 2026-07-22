@@ -162,6 +162,20 @@
       "when": 1784738395594,
       "tag": "0022_round_killer_shrike",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1784743017356,
+      "tag": "0023_bent_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1784743251681,
+      "tag": "0024_opposite_red_wolf",
+      "breakpoints": true
     }
   ]
 }

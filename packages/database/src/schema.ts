@@ -544,7 +544,8 @@ export const friendsRooms = pgTable('friends_rooms', {
   revisionId: uuid('revision_id').notNull().references(() => contentRevisions.id),
   mode: contentMode().notNull(),
   packs: jsonb().$type<FriendsRoomPackSelection[]>().notNull().default(sql`'[{"mode":"series","variant":"all"}]'::jsonb`),
-  roundsTotal: smallint('rounds_total').notNull().default(5),
+  roundsTotal: smallint('rounds_total').notNull().default(6),
+  shufflePacks: boolean('shuffle_packs').notNull().default(false),
   answerTimeSeconds: smallint('answer_time_seconds').notNull().default(30),
   phase: friendsRoomPhase().notNull().default('lobby'),
   currentRound: smallint('current_round').notNull().default(0),
@@ -558,7 +559,7 @@ export const friendsRooms = pgTable('friends_rooms', {
 }, (table) => [
   index('friends_room_owner_idx').on(table.ownerUserId, table.createdAt),
   check('friends_room_code_check', sql`char_length(${table.code}) = 5`),
-  check('friends_room_rounds_check', sql`${table.roundsTotal} in (3, 5, 7)`),
+  check('friends_room_rounds_check', sql`${table.roundsTotal} between 3 and 30`),
   check('friends_room_answer_time_check', sql`${table.answerTimeSeconds} in (15, 20, 30, 45)`),
   check('friends_room_current_round_check', sql`${table.currentRound} between 0 and ${table.roundsTotal}`),
 ])

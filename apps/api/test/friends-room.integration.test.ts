@@ -99,7 +99,7 @@ describe('friends room multiplayer API', () => {
       method: 'PATCH',
       url: `/api/v1/friends/rooms/${roomId}`,
       headers: { cookie: playerCookie },
-      payload: { roundsTotal: 5 },
+      payload: { roundsTotal: 6 },
     })
     expect(forbiddenConfig.statusCode).toBe(403)
     expect(forbiddenConfig.json().error.code).toBe('FRIENDS_ROOM_HOST_REQUIRED')

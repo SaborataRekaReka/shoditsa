@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { FRIENDS_ROOM_PACK_VARIANTS, type TitleItem } from '@shoditsa/contracts'
-import { friendsRoomItemMatchesPack, normalizeFriendsRoomPacks } from '../src/modules/friends-room/packs.js'
+import { buildFriendsRoomPackSchedule, friendsRoomItemMatchesPack, normalizeFriendsRoomPacks } from '../src/modules/friends-room/packs.js'
 
 const item = (values: Partial<TitleItem>): TitleItem => ({
   id: 'item',
@@ -42,5 +42,47 @@ describe('friends room packs', () => {
     expect(friendsRoomItemMatchesPack(item({ mode: 'city', capital: false }), { mode: 'city', variant: 'capitals' })).toBe(false)
     expect(friendsRoomItemMatchesPack(item({ mode: 'movie', year: 1999 }), { mode: 'movie', variant: 'from_2000' })).toBe(false)
     expect(friendsRoomItemMatchesPack(item({ mode: 'movie', year: 2010 }), { mode: 'movie', variant: 'from_2000' })).toBe(true)
+  })
+
+  it('shuffles a full pack cycle once and keeps it stable for the room', () => {
+    const packs = normalizeFriendsRoomPacks([
+      { mode: 'series', variant: 'all' },
+      { mode: 'movie', variant: 'all' },
+      { mode: 'anime', variant: 'all' },
+      { mode: 'game', variant: 'all' },
+      { mode: 'city', variant: 'capitals' },
+      { mode: 'music', variant: 'medium' },
+    ])
+    const fullSchedule = buildFriendsRoomPackSchedule(packs, 6, 'room-one', true)
+
+    expect(new Set(fullSchedule.map((pack) => pack.mode)).size).toBe(6)
+    expect(buildFriendsRoomPackSchedule(packs, 6, 'room-one', true)).toEqual(fullSchedule)
+  })
+
+  it('keeps the selected order unless shuffle is enabled', () => {
+    const packs = normalizeFriendsRoomPacks([
+      { mode: 'city', variant: 'capitals' },
+      { mode: 'movie', variant: 'all' },
+      { mode: 'music', variant: 'medium' },
+    ])
+    expect(buildFriendsRoomPackSchedule(packs, 6, 'room-three').map((pack) => pack.mode)).toEqual([
+      'city', 'movie', 'music', 'city', 'movie', 'music',
+    ])
+  })
+
+  it('keeps pack counts balanced through a thirty-round game', () => {
+    const packs = normalizeFriendsRoomPacks([
+      { mode: 'series', variant: 'all' },
+      { mode: 'movie', variant: 'all' },
+      { mode: 'city', variant: 'capitals' },
+      { mode: 'music', variant: 'medium' },
+      { mode: 'diagnosis', variant: 'all' },
+      { mode: 'game', variant: 'all' },
+    ])
+    const counts = new Map<string, number>()
+    for (const pack of buildFriendsRoomPackSchedule(packs, 30, 'room-two')) {
+      counts.set(pack.mode, (counts.get(pack.mode) ?? 0) + 1)
+    }
+    expect([...counts.values()]).toEqual([5, 5, 5, 5, 5, 5])
   })
 })

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import {
   FRIENDS_ROOM_DEFAULT_PACK_VARIANTS,
   FRIENDS_ROOM_PACK_VARIANTS,
+  friendsRoomMinimumRounds,
   type FriendsRoomConfigBody,
   type FriendsRoomPackSelection,
   type FriendsRoomSnapshot,
@@ -15,7 +16,7 @@ import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { friendsRoomTimeLeft } from './friends-room-time'
 import './FriendsRoomScreen.css'
 
-type IconName = 'apps' | 'back' | 'chat' | 'check' | 'copy' | 'exit' | 'play' | 'remove' | 'replay' | 'send' | 'share' | 'timer' | 'trophy' | 'users'
+type IconName = 'apps' | 'back' | 'chat' | 'check' | 'copy' | 'exit' | 'play' | 'remove' | 'replay' | 'send' | 'share' | 'shuffle' | 'timer' | 'trophy' | 'users'
 
 const RoomIcon = ({ name }: { name: IconName }) => <i
   className="room-icon"
@@ -33,6 +34,9 @@ const MODES: Array<{ id: PlayableMode; label: string; poster: string; color: str
   { id: 'diagnosis', label: 'Диагнозы', poster: 'images/title-posters/diagnosis-ticket-poster.webp', color: '#4f9fa6' },
 ]
 
+const FRIENDS_ROOM_ROUND_MAX = 30
+const FRIENDS_ROOM_ROUND_STEP = 3
+
 const colorByKey: Record<string, string> = {
   'player-1': '#57b777', 'player-2': '#d6a546', 'player-3': '#cf7a5d', 'player-4': '#5270ab',
   'player-5': '#9a6c96', 'player-6': '#4f9fa6', 'player-7': '#c58d55', 'player-8': '#6f9d72',
@@ -44,11 +48,23 @@ const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2)
 const score = (value: number) => new Intl.NumberFormat('ru-RU').format(value)
 const activeMembers = (room: FriendsRoomSnapshot) => room.members.filter((member) => !member.leftAt)
 const idempotencyKey = () => crypto.randomUUID()
+const withConfigDraft = (snapshot: FriendsRoomSnapshot, draft: FriendsRoomConfigBody): FriendsRoomSnapshot => {
+  const packs = draft.packs ?? snapshot.packs
+  return {
+    ...snapshot,
+    ...(draft.roundsTotal == null ? {} : { roundsTotal: draft.roundsTotal }),
+    ...(draft.shufflePacks == null ? {} : { shufflePacks: draft.shufflePacks }),
+    ...(draft.answerTimeSeconds == null ? {} : { answerTimeSeconds: draft.answerTimeSeconds }),
+    ...(draft.packs == null ? {} : { packs }),
+    mode: draft.mode ?? draft.packs?.[0]?.mode ?? snapshot.mode,
+  }
+}
 
 export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeaderProps; onExit: () => void }) {
   const [room, setRoom] = useState<FriendsRoomSnapshot | null>(null)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
+  const [configSaving, setConfigSaving] = useState(false)
   const [error, setError] = useState('')
   const [connection, setConnection] = useState<'connected' | 'reconnecting' | 'offline'>('reconnecting')
   const [answer, setAnswer] = useState('')
@@ -57,6 +73,16 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
   const [copied, setCopied] = useState(false)
   const [now, setNow] = useState(Date.now())
   const bootstrapRef = useRef<Promise<FriendsRoomSnapshot> | null>(null)
+  const roomRef = useRef<FriendsRoomSnapshot | null>(null)
+  const configQueueRef = useRef<Promise<void>>(Promise.resolve())
+  const configMutationRef = useRef(0)
+  const configDraftRef = useRef<FriendsRoomConfigBody>({})
+
+  const applyIncomingRoom = useCallback((snapshot: FriendsRoomSnapshot) => {
+    const next = withConfigDraft(snapshot, configDraftRef.current)
+    roomRef.current = next
+    setRoom(next)
+  }, [])
 
   useEffect(() => {
     if (!bootstrapRef.current) {
@@ -68,6 +94,7 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
     let cancelled = false
     void bootstrapRef.current.then((snapshot) => {
       if (cancelled) return
+      roomRef.current = snapshot
       setRoom(snapshot)
       setLoading(false)
       const url = new URL(window.location.href)
@@ -88,7 +115,7 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
     let source: EventSource | null = null
     let poll: number | null = null
     const refresh = async () => {
-      try { setRoom((await api.friendsRoomSnapshot(room.id)).room) } catch { /* SSE will retry as well. */ }
+      try { applyIncomingRoom((await api.friendsRoomSnapshot(room.id)).room) } catch { /* SSE will retry as well. */ }
     }
     const startPolling = () => {
       if (poll != null) return
@@ -105,7 +132,7 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
         startPolling()
       }
       source.addEventListener('room.snapshot', (event) => {
-        setRoom(JSON.parse((event as MessageEvent).data) as FriendsRoomSnapshot)
+        applyIncomingRoom(JSON.parse((event as MessageEvent).data) as FriendsRoomSnapshot)
         setConnection('connected')
       })
       source.addEventListener('room.error', (event) => {
@@ -126,7 +153,7 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
       window.removeEventListener('online', online)
       window.removeEventListener('offline', offline)
     }
-  }, [room?.id])
+  }, [applyIncomingRoom, room?.id])
 
   useEffect(() => {
     if (room?.phase !== 'active' && room?.phase !== 'countdown') return
@@ -187,7 +214,40 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
     }
   }
 
-  const updateConfig = (input: FriendsRoomConfigBody) => room && void run(() => api.friendsRoomConfigure(room.id, input))
+  const updateConfig = useCallback((input: FriendsRoomConfigBody) => {
+    const snapshot = roomRef.current
+    if (!snapshot?.isHost || snapshot.phase !== 'lobby') return
+    const mutation = ++configMutationRef.current
+    configDraftRef.current = { ...configDraftRef.current, ...input }
+    const optimistic = withConfigDraft(snapshot, input)
+    roomRef.current = optimistic
+    setRoom(optimistic)
+    setConfigSaving(true)
+    setError('')
+
+    const execute = async () => {
+      try {
+        const response = await api.friendsRoomConfigure(snapshot.id, input)
+        if (mutation === configMutationRef.current) {
+          configDraftRef.current = {}
+          roomRef.current = response.room
+          setRoom(response.room)
+          setConfigSaving(false)
+        }
+      } catch (reason) {
+        if (mutation !== configMutationRef.current) return
+        configDraftRef.current = {}
+        setError(errorText(reason))
+        setConfigSaving(false)
+        try {
+          const fresh = (await api.friendsRoomSnapshot(snapshot.id)).room
+          roomRef.current = fresh
+          setRoom(fresh)
+        } catch { /* Keep the optimistic room visible while realtime reconnects. */ }
+      }
+    }
+    configQueueRef.current = configQueueRef.current.then(execute, execute)
+  }, [])
   const submitAnswer = (event: FormEvent) => {
     event.preventDefault()
     if (!room || !answer.trim()) return
@@ -213,7 +273,9 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
     maximum: room?.phase === 'countdown' ? 3 : room?.phase === 'active' ? room.answerTimeSeconds : 0,
   })
 
-  return <div className="friends-room-page" style={{ '--room-accent': mode.color } as CSSProperties}>
+  const pageAccent = room?.phase === 'lobby' ? '#d6a546' : mode.color
+
+  return <div className="friends-room-page" style={{ '--room-accent': pageAccent } as CSSProperties}>
     <AppHeader {...navigation} onHome={() => void leave()} onCreateRoom={() => void createNewRoom()} />
     <main className="friends-room">
       <header className="friends-room__utility">
@@ -224,7 +286,7 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
       {error && <div className="room-alert" role="alert"><span>{error}</span><button type="button" onClick={() => setError('')}>Закрыть</button></div>}
       {loading && <RoomLoading />}
       {!loading && !room && <RoomError onRetry={() => window.location.reload()} onExit={onExit} />}
-      {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} onPacks={(packs) => updateConfig({ packs })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onCopy={copyInvite} onStart={() => void run(() => api.friendsRoomStart(room.id, idempotencyKey()))} />}
+      {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} configSaving={configSaving} onPacks={(packs) => updateConfig({ packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(() => api.friendsRoomStart(room.id, idempotencyKey()))} />}
       {room?.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} copied={copied} busy={busy} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} />}
       {room && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} copied={copied} busy={busy} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
       {room?.phase === 'finished' && <FinalScreen room={room} players={ranked} busy={busy} onAgain={() => void run(() => api.friendsRoomRestart(room.id, idempotencyKey()))} onExit={() => void leave()} />}
@@ -240,18 +302,21 @@ function RoomError({ onRetry, onExit }: { onRetry: () => void; onExit: () => voi
   return <section className="room-state"><h1>Комната не открылась</h1><p>Проверьте ссылку или попробуйте создать новую комнату.</p><div><button className="room-button room-button--primary" type="button" onClick={onRetry}>Повторить</button><button className="room-button" type="button" onClick={onExit}>На главную</button></div></section>
 }
 
-function Lobby({ room, mode, members, copied, busy, onPacks, onRounds, onTime, onCopy, onStart }: {
+function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRounds, onTime, onShuffle, onCopy, onStart }: {
   room: FriendsRoomSnapshot
   mode: (typeof MODES)[number]
   members: FriendsRoomSnapshot['members']
   copied: boolean
   busy: boolean
+  configSaving: boolean
   onPacks: (value: FriendsRoomPackSelection[]) => void
-  onRounds: (value: 3 | 5 | 7) => void
+  onRounds: (value: number) => void
   onTime: (value: 15 | 20 | 30 | 45) => void
+  onShuffle: () => void
   onCopy: () => void
   onStart: () => void
 }) {
+  const minimumRounds = friendsRoomMinimumRounds(room.packs.length)
   const togglePack = (modeId: PlayableMode) => {
     const existing = room.packs.find((pack) => pack.mode === modeId)
     if (existing) {
@@ -273,11 +338,11 @@ function Lobby({ room, mode, members, copied, busy, onPacks, onRounds, onTime, o
     </div>
     <div className="room-lobby__settings">
       <header className="room-settings-heading"><span>Настройки сеанса</span><strong>{room.packs.length === 1 ? mode.label : `${room.packs.length} пака`}</strong></header>
-      <fieldset className="room-mode-picker" disabled={!room.isHost || busy}>
+      <fieldset className="room-mode-picker" disabled={!room.isHost}>
         <legend>Игровые паки <small>можно несколько</small></legend>
         <div>{MODES.map((entry) => {
           const order = room.packs.findIndex((pack) => pack.mode === entry.id)
-          return <button key={entry.id} type="button" className={order >= 0 ? 'is-active' : ''} aria-pressed={order >= 0} style={{ '--mode-color': entry.color } as CSSProperties} onClick={() => togglePack(entry.id)}><img src={publicAssetUrl(entry.poster)} alt="" /><span>{entry.label}</span>{order >= 0 && <><em>{order + 1}</em><RoomIcon name="check" /></>}</button>
+          return <button key={entry.id} type="button" className={order >= 0 ? 'is-active' : ''} aria-pressed={order >= 0} style={{ '--mode-color': entry.color } as CSSProperties} onClick={() => togglePack(entry.id)}><img src={publicAssetUrl(entry.poster)} alt="" /><span>{entry.label}</span>{order >= 0 && <em>{order + 1}</em>}</button>
         })}</div>
       </fieldset>
       <div className="room-pack-options">
@@ -286,16 +351,17 @@ function Lobby({ room, mode, members, copied, busy, onPacks, onRounds, onTime, o
           const variants = FRIENDS_ROOM_PACK_VARIANTS[pack.mode]
           return <section key={pack.mode} style={{ '--mode-color': packMode.color } as CSSProperties}>
             <header><span>{index + 1}</span><div><strong>{packMode.label}</strong><small>{variants.find((variant) => variant.id === pack.variant)?.description}</small></div></header>
-            <div>{variants.map((variant) => <button type="button" key={variant.id} className={variant.id === pack.variant ? 'is-active' : ''} disabled={!room.isHost || busy} onClick={() => selectVariant(pack.mode, variant.id)}>{variant.label}</button>)}</div>
+            <div>{variants.map((variant) => <button type="button" key={variant.id} className={variant.id === pack.variant ? 'is-active' : ''} disabled={!room.isHost} onClick={() => selectVariant(pack.mode, variant.id)}>{variant.label}</button>)}</div>
           </section>
         })}
       </div>
+      <button className={`room-shuffle${room.shufflePacks ? ' is-active' : ''}`} type="button" aria-pressed={room.shufflePacks} disabled={!room.isHost} onClick={onShuffle}><RoomIcon name="shuffle" /><span><strong>Перемешивать паки</strong><small>{room.shufflePacks ? 'Порядок будет случайным для этой игры' : 'Сейчас паки идут в порядке выбора'}</small></span><em>{room.shufflePacks ? 'Включено' : 'Выключено'}</em></button>
       <div className="room-rule-grid">
-        <fieldset disabled={!room.isHost || busy}><legend>Раундов</legend><div>{([3, 5, 7] as const).map((value) => <button type="button" className={room.roundsTotal === value ? 'is-active' : ''} key={value} onClick={() => onRounds(value)}>{value}</button>)}</div></fieldset>
-        <fieldset disabled={!room.isHost || busy}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <button type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</button>)}</div></fieldset>
+        <fieldset className="room-rounds" disabled={!room.isHost}><legend>Раундов <output>{room.roundsTotal}</output></legend><input type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>Не меньше одного раунда на пак. Дальше паки повторяются по кругу.</small></fieldset>
+        <fieldset disabled={!room.isHost}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <button type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</button>)}</div></fieldset>
       </div>
       {room.isHost
-        ? <button className="room-start" type="button" onClick={onStart} disabled={busy}><RoomIcon name="play" />{busy ? 'Запускаем…' : 'Начать игру'}<span>{room.packs.length} {room.packs.length === 1 ? 'пак' : room.packs.length < 5 ? 'пака' : 'паков'} · {room.roundsTotal} раундов · {room.answerTimeSeconds} сек</span></button>
+        ? <button className="room-start" type="button" onClick={onStart} disabled={busy || configSaving}><RoomIcon name="play" />{busy ? 'Запускаем…' : 'Начать игру'}<span>{room.packs.length} {room.packs.length === 1 ? 'пак' : room.packs.length < 5 ? 'пака' : 'паков'} · {room.roundsTotal} раундов · {room.answerTimeSeconds} сек</span></button>
         : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>Ждём ведущего</strong><small>Настройки и запуск доступны создателю комнаты</small></span></div>}
     </div>
   </section>

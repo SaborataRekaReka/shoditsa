@@ -12,7 +12,8 @@
 
 .friends-room { width: min(1480px, calc(100% - 40px)); margin: 0 auto; padding: 20px 0 80px; }
 .room-icon { display: inline-block; width: 16px; height: 16px; flex: 0 0 16px; background: currentColor; mask: var(--room-icon-url) center/contain no-repeat; mask-mode: alpha; -webkit-mask: var(--room-icon-url) center/contain no-repeat; color: inherit; font-style: normal; vertical-align: middle; }
-.friends-room button:disabled, .friends-room fieldset:disabled button { opacity: .5; cursor: not-allowed; }
+.friends-room button:disabled { opacity: .68; cursor: not-allowed; }
+.friends-room fieldset:disabled button { opacity: .82; cursor: not-allowed; }
 .friends-room__utility { min-height: 44px; margin: 0 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .friends-room__utility button { min-height: 40px; padding: 0 14px; border: 1px solid var(--color-line-strong); border-radius: 10px; color: var(--color-muted); background: rgba(20,23,20,.76); display: inline-flex; align-items: center; gap: 8px; font: 600 12px Manrope, sans-serif; cursor: pointer; }
 .friends-room__utility button:hover { color: var(--color-text); border-color: var(--color-muted); }
@@ -64,28 +65,47 @@
 .room-mode-picker > div { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
 .room-mode-picker button { position: relative; min-width: 0; height: 105px; padding: 0; overflow: hidden; border: 1px solid rgba(239,231,215,.13); border-radius: 11px; color: #f2ecdf; background: #181b18; cursor: pointer; }
 .room-mode-picker button::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 10%, rgba(10,12,10,.9)); }
-.room-mode-picker img { width: 100%; height: 100%; object-fit: cover; opacity: .48; filter: saturate(.75); transition: opacity .2s, transform .25s; }
-.room-mode-picker button:hover img, .room-mode-picker button.is-active img { opacity: .75; transform: scale(1.035); }
-.room-mode-picker button.is-active { border-color: var(--mode-color); box-shadow: inset 0 -3px 0 var(--mode-color); }
+.room-mode-picker img { width: 100%; height: 100%; object-fit: cover; opacity: .68; filter: saturate(.92) contrast(1.04); transition: opacity .2s, transform .25s; }
+.room-mode-picker button:hover img { opacity: .84; transform: scale(1.035); }
+.room-mode-picker button.is-active { border-color: rgba(242,236,223,.52); box-shadow: inset 0 -3px 0 rgba(242,236,223,.35); }
 .room-mode-picker button span { position: absolute; z-index: 2; left: 10px; bottom: 9px; font: 500 17px Oswald, sans-serif; text-transform: uppercase; }
 .room-mode-picker button svg { position: absolute; z-index: 2; right: 8px; top: 8px; width: 15px; color: var(--mode-color); }
 .room-mode-picker button .room-icon { position: absolute; z-index: 2; right: 8px; top: 8px; width: 15px; height: 15px; color: var(--mode-color); }
 .room-mode-picker button em { position: absolute; z-index: 2; left: 8px; top: 8px; width: 22px; height: 22px; border-radius: 50%; color: #131713; background: var(--mode-color); display: grid; place-items: center; font: 900 12px Manrope, sans-serif; font-style: normal; }
 .room-pack-options { max-height: 230px; margin-top: 15px; padding-right: 5px; overflow-y: auto; display: grid; gap: 8px; }
-.room-pack-options > section { min-width: 0; padding: 10px 11px; border: 1px solid color-mix(in srgb, var(--mode-color) 38%, rgba(239,231,215,.13)); border-radius: 10px; background: rgba(255,255,255,.025); display: grid; grid-template-columns: minmax(145px,.72fr) minmax(220px,1.28fr); gap: 12px; align-items: center; }
+.room-pack-options > section { min-width: 0; padding: 10px 11px; border: 1px solid rgba(239,231,215,.16); border-radius: 10px; background: rgba(255,255,255,.035); display: grid; grid-template-columns: minmax(145px,.72fr) minmax(220px,1.28fr); gap: 12px; align-items: center; }
 .room-pack-options header { min-width: 0; display: grid; grid-template-columns: 25px minmax(0,1fr); gap: 8px; align-items: center; }
 .room-pack-options header > span { width: 25px; height: 25px; border-radius: 7px; color: #141714; background: var(--mode-color); display: grid; place-items: center; font-size: 12px; font-weight: 900; }
 .room-pack-options header > div { min-width: 0; display: grid; gap: 2px; }
 .room-pack-options header strong { color: #ede5d7; font: 500 17px/1.1 Oswald, sans-serif; text-transform: uppercase; }
-.room-pack-options header small { overflow: hidden; color: #858b82; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.room-pack-options header small { overflow: hidden; color: #a7ada4; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .room-pack-options section > div { padding: 3px; border: 1px solid rgba(239,231,215,.12); border-radius: 8px; display: flex; flex-wrap: wrap; gap: 3px; }
-.room-pack-options button { min-width: 0; min-height: 34px; flex: 1 1 68px; padding: 0 7px; border: 0; border-radius: 6px; color: #aaa395; background: transparent; font: 700 12px Manrope, sans-serif; cursor: pointer; }
-.room-pack-options button.is-active { color: #111511; background: var(--mode-color); }
+.room-pack-options button { min-width: 0; min-height: 34px; flex: 1 1 68px; padding: 0 7px; border: 0; border-radius: 6px; color: #c5beb0; background: transparent; font: 700 12px Manrope, sans-serif; cursor: pointer; }
+.room-pack-options button.is-active { color: #f3ecdf; background: rgba(239,231,215,.13); box-shadow: inset 0 0 0 1px rgba(239,231,215,.22); }
+.room-shuffle { width: 100%; min-height: 46px; margin-top: 10px; padding: 7px 10px; border: 1px solid rgba(239,231,215,.16); border-radius: 10px; color: #c5beb0; background: rgba(255,255,255,.025); display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer; }
+.room-shuffle.is-active { color: #f3ecdf; border-color: rgba(239,231,215,.34); background: rgba(239,231,215,.08); }
+.room-shuffle .room-icon { width: 18px; height: 18px; }
+.room-shuffle > span { min-width: 0; display: grid; gap: 1px; }
+.room-shuffle strong { font-size: 12px; }
+.room-shuffle small { overflow: hidden; color: #a7ada4; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.room-shuffle em { margin-left: auto; padding: 4px 7px; border: 1px solid rgba(239,231,215,.17); border-radius: 6px; color: #aaa395; font-size: 12px; font-style: normal; }
 .room-rule-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 28px; }
-.room-rule-grid fieldset > div { padding: 4px; border: 1px solid rgba(239,231,215,.13); border-radius: 10px; display: flex; }
+.room-shuffle + .room-rule-grid fieldset { margin-top: 18px; }
+.room-rule-grid fieldset > div { padding: 4px; border: 1px solid rgba(239,231,215,.16); border-radius: 10px; display: flex; }
 .room-rule-grid button { flex: 1; min-height: 39px; padding: 0 8px; border: 0; border-radius: 7px; color: #aaa395; background: transparent; font: 700 12px Manrope, sans-serif; cursor: pointer; }
-.room-rule-grid button.is-active { color: #152017; background: var(--room-accent); }
+.room-rule-grid button.is-active { color: #f3ecdf; background: rgba(239,231,215,.13); box-shadow: inset 0 0 0 1px rgba(239,231,215,.22); }
+.room-rounds legend { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+.room-rounds output { min-width: 35px; min-height: 25px; border: 1px solid rgba(239,231,215,.22); border-radius: 7px; color: #f3ecdf; background: rgba(239,231,215,.09); display: inline-grid; place-items: center; font-size: 12px; letter-spacing: 0; }
+.room-rounds input { width: 100%; height: 22px; margin: 0; appearance: none; background: transparent; cursor: pointer; }
+.room-rounds input::-webkit-slider-runnable-track { height: 4px; border-radius: 999px; background: rgba(239,231,215,.2); }
+.room-rounds input::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -7px; appearance: none; border: 2px solid #171a17; border-radius: 50%; background: #eee7d8; box-shadow: 0 0 0 1px rgba(239,231,215,.28); }
+.room-rounds input::-moz-range-track { height: 4px; border: 0; border-radius: 999px; background: rgba(239,231,215,.2); }
+.room-rounds input::-moz-range-thumb { width: 16px; height: 16px; border: 2px solid #171a17; border-radius: 50%; background: #eee7d8; box-shadow: 0 0 0 1px rgba(239,231,215,.28); }
+.room-rounds input:focus-visible { outline: 2px solid #eee7d8; outline-offset: 4px; border-radius: 4px; }
+.room-rounds__scale { margin-top: -2px; padding: 0 !important; border: 0 !important; color: #858b82; display: flex !important; justify-content: space-between; font-size: 12px; }
+.room-rounds > small { margin-top: 7px; color: #a7ada4; display: block; font-size: 12px; line-height: 1.45; }
 .room-start { min-height: 57px; margin-top: auto; padding: 0 20px; border: 0; border-radius: 11px; color: #132117; background: var(--room-accent); display: flex; align-items: center; justify-content: center; gap: 9px; font: 800 12px Manrope, sans-serif; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 24px color-mix(in srgb, var(--room-accent) 18%, transparent); }
+.room-start:disabled { opacity: 1; cursor: wait; }
 .room-start svg { width: 17px; fill: currentColor; }
 .room-start .room-icon { width: 17px; height: 17px; }
 .room-start span { margin-left: auto; opacity: .65; font-size: 12px; }

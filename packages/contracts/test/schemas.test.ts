@@ -6,6 +6,7 @@ import {
   LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema,
   PrivateGameOrderBodySchema,
+  FriendsRoomConfigBodySchema, FriendsRoomCreateBodySchema, friendsRoomMinimumRounds,
 } from '../src/index.js'
 
 FormatRegistry.Set('uuid', (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
@@ -14,6 +15,15 @@ FormatRegistry.Set('date-time', (value) => !Number.isNaN(Date.parse(value)))
 
 describe('API schemas', () => {
   it('rejects unknown start fields', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'movie', answerId: 'secret' })).toBe(false))
+  it('accepts friends-room round counts from 3 to 30 in steps of 3', () => {
+    expect(Value.Check(FriendsRoomCreateBodySchema, { roundsTotal: 3 })).toBe(true)
+    expect(Value.Check(FriendsRoomConfigBodySchema, { roundsTotal: 30 })).toBe(true)
+    expect(Value.Check(FriendsRoomConfigBodySchema, { roundsTotal: 5 })).toBe(false)
+    expect(Value.Check(FriendsRoomConfigBodySchema, { roundsTotal: 33 })).toBe(false)
+    expect(friendsRoomMinimumRounds(1)).toBe(3)
+    expect(friendsRoomMinimumRounds(6)).toBe(6)
+    expect(friendsRoomMinimumRounds(7)).toBe(9)
+  })
   it('accepts city through the canonical game route with a supported variant', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'city', variantKey: 'capitals' })).toBe(true))
   it('accepts a solo danetki session through the canonical game route', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'danetki', roomMode: 'solo' })).toBe(true))
   it('accepts free play for the danetki chat engine', () => expect(Value.Check(GameStartBodySchema, { kind: 'free_play', mode: 'danetki', roomMode: 'group' })).toBe(true))

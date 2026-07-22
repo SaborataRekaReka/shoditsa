@@ -1,0 +1,1 @@
+ALTER TABLE "friends_rooms" ADD COLUMN "shuffle_packs" boolean DEFAULT false NOT NULL;

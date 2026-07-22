@@ -79,10 +79,14 @@ export const FriendsRoomPackSelectionSchema = Type.Object({
   variant: Type.String({ minLength: 1, maxLength: 40 }),
 }, { additionalProperties: false })
 
+export const FriendsRoomRoundsTotalSchema = Type.Integer({ minimum: 3, maximum: 30, multipleOf: 3 })
+export const friendsRoomMinimumRounds = (packCount: number) => Math.max(3, Math.ceil(packCount / 3) * 3)
+
 export const FriendsRoomCreateBodySchema = Type.Object({
   mode: Type.Optional(PlayableModeSchema),
   packs: Type.Optional(Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 })),
-  roundsTotal: Type.Optional(Type.Union([Type.Literal(3), Type.Literal(5), Type.Literal(7)])),
+  roundsTotal: Type.Optional(FriendsRoomRoundsTotalSchema),
+  shufflePacks: Type.Optional(Type.Boolean()),
   answerTimeSeconds: Type.Optional(Type.Union([Type.Literal(15), Type.Literal(20), Type.Literal(30), Type.Literal(45)])),
 }, { additionalProperties: false })
 
@@ -93,7 +97,8 @@ export const FriendsRoomJoinBodySchema = Type.Object({
 export const FriendsRoomConfigBodySchema = Type.Partial(Type.Object({
   mode: PlayableModeSchema,
   packs: Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 }),
-  roundsTotal: Type.Union([Type.Literal(3), Type.Literal(5), Type.Literal(7)]),
+  roundsTotal: FriendsRoomRoundsTotalSchema,
+  shufflePacks: Type.Boolean(),
   answerTimeSeconds: Type.Union([Type.Literal(15), Type.Literal(20), Type.Literal(30), Type.Literal(45)]),
 }, { additionalProperties: false }), { minProperties: 1 })
 
@@ -177,7 +182,8 @@ export type FriendsRoomSnapshot = {
   mode: Static<typeof PlayableModeSchema>
   packs: FriendsRoomPackSelection[]
   capacity: number
-  roundsTotal: 3 | 5 | 7
+  roundsTotal: number
+  shufflePacks: boolean
   answerTimeSeconds: 15 | 20 | 30 | 45
   phase: FriendsRoomPhase
   currentRound: number
