@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react'
+import { AlertTriangle, X } from 'lucide-react'
 import {
   FRIENDS_ROOM_DEFAULT_PACK_VARIANTS,
   FRIENDS_ROOM_PACK_VARIANTS,
@@ -9,7 +10,8 @@ import {
   type PlayableMode,
   type PublicContentItem,
 } from '@shoditsa/contracts'
-import { AppHeader, type AppHeaderProps } from '../../components/app-shell/AppShell'
+import { ActionButton, AppHeader, type AppHeaderProps } from '../../components/app-shell/AppShell'
+import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { api, friendsRoomEventsUrl } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
@@ -278,29 +280,31 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
 
   return <div className="friends-room-page" style={{ '--room-accent': pageAccent } as CSSProperties}>
     <AppHeader {...navigation} onHome={() => void leave()} onCreateRoom={() => void createNewRoom()} />
-    <main className="friends-room">
-      <header className="friends-room__utility">
-        <button type="button" onClick={() => void leave()}><RoomIcon name="back" /> Выйти из комнаты</button>
-        <span className={`room-connection room-connection--${connection}`}><RoomIcon name="trophy" />{connection === 'connected' ? 'Онлайн-комната · на связи' : connection === 'offline' ? 'Онлайн-комната · нет сети' : 'Онлайн-комната · подключаемся'}</span>
-      </header>
-
-      {error && <div className="room-alert" role="alert"><span>{error}</span><button type="button" onClick={() => setError('')}>Закрыть</button></div>}
+    <GameScreenShell
+      variant="session"
+      wide
+      className="game-shell friends-room"
+      onBack={() => void leave()}
+      backLabel="Выйти из комнаты"
+      status={<span className={`room-connection room-connection--${connection}`}><RoomIcon name="trophy" />{connection === 'connected' ? 'Онлайн-комната · на связи' : connection === 'offline' ? 'Онлайн-комната · нет сети' : 'Онлайн-комната · подключаемся'}</span>}
+    >
+      {error && <div className="room-alert" role="alert"><span>{error}</span><ActionButton variant="ghost" className="room-alert__dismiss" type="button" onClick={() => setError('')} aria-label="Закрыть"><X /> <span>Закрыть</span></ActionButton></div>}
       {loading && <RoomLoading />}
       {!loading && !room && <RoomError onRetry={() => window.location.reload()} onExit={onExit} />}
       {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} configSaving={configSaving} onPacks={(packs) => updateConfig({ packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(() => api.friendsRoomStart(room.id, idempotencyKey()))} />}
       {room?.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} copied={copied} busy={busy} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} />}
       {room && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} copied={copied} busy={busy} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
       {room?.phase === 'finished' && <FinalScreen room={room} players={ranked} busy={busy} onAgain={() => void run(() => api.friendsRoomRestart(room.id, idempotencyKey()))} onExit={() => void leave()} />}
-    </main>
+    </GameScreenShell>
   </div>
 }
 
 function RoomLoading() {
-  return <section className="room-state" role="status"><span className="room-state__spinner" /><h1>Готовим комнату</h1><p>Подключаем realtime и загружаем игровую сессию.</p></section>
+  return <section className="room-state" role="status"><span className="room-state__spinner" /><h1>Готовим комнату</h1><p>Подключаемся к комнате и загружаем игровую сессию.</p></section>
 }
 
 function RoomError({ onRetry, onExit }: { onRetry: () => void; onExit: () => void }) {
-  return <section className="room-state"><h1>Комната не открылась</h1><p>Проверьте ссылку или попробуйте создать новую комнату.</p><div><button className="room-button room-button--primary" type="button" onClick={onRetry}>Повторить</button><button className="room-button" type="button" onClick={onExit}>На главную</button></div></section>
+  return <section className="room-state room-state--error" role="alert"><AlertTriangle /><h1>Комната не открылась</h1><p>Проверьте ссылку или попробуйте создать новую комнату.</p><div><ActionButton type="button" onClick={onRetry}>Повторить</ActionButton><ActionButton variant="secondary" type="button" onClick={onExit}>На главную</ActionButton></div></section>
 }
 
 function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRounds, onTime, onShuffle, onCopy, onStart }: {
