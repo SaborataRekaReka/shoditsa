@@ -2,6 +2,8 @@
   --room-paper: #eee7d8;
   --room-paper-2: #e2d8c5;
   --room-ink: #171a17;
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   color: #f2ecdf;
   background:
