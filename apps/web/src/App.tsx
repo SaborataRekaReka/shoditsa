@@ -41,7 +41,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
-import { ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -91,6 +91,7 @@ import {
 } from './game'
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { freePlayAnswerSalt, freePlayGameKey, freePlayLaunchFromGameKey } from './game/free-play'
+import { collectMatchSummaryTags } from './game/match-summary'
 import { copyText, shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
@@ -300,11 +301,13 @@ const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
   cast_secondary: 'info',
   awards: 'info',
 }
-const assistHintTitle = (key: AssistHintKey) => key === 'plot'
+const assistHintTitle = (key: AssistHintKey, mode?: TitleMode) => key === 'plot'
   ? 'Подсказка о сюжете'
   : key === 'fact'
     ? 'Интересный факт'
-    : 'Неоткрытая информация'
+    : mode
+      ? CATALOG_HINT_COPY[mode].optionTitle
+      : 'Неоткрытая информация'
 const normalizeAssistHintKeyValue = (value: unknown): AssistHintKey | null => {
   if (typeof value !== 'string') return null
   const normalized = value.trim()
@@ -387,10 +390,6 @@ const cleanHintText = (value: string) => {
     .replace(/\s+/g, ' ')
     .trim()
 }
-const cropHintText = (value: string, max = 210) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
-const invalidFactFallback = (value: string) => value.length < 30
-  || /(?:\.\.\.|…)\s*$/.test(value)
-  || /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(value)
 const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
 const isRedactedToken = (value: string) => /^\[+\s*REDACTED\s*\]+$/i.test(value)
 const renderHintBody = (value: string): ReactNode => {
@@ -712,33 +711,29 @@ const dedupeGameCategories = (categories: string[], removePlayerCategories: bool
 
   return result
 }
-const collectMatchedTags = (attempts: Attempt[]) => {
-  const tags: string[] = []
-  const seen = new Set<string>()
+function GameMatchStrip({ attempts, open, onToggle }: { attempts: Attempt[]; open: boolean; onToggle: () => void }) {
+  const tags = useMemo(() => collectMatchSummaryTags(attempts), [attempts])
 
-  for (const attempt of attempts) {
-    for (const hint of attempt.hints) {
-      const matchedValues = (hint.matchedValues ?? []).map((value) => value.trim()).filter(Boolean)
-      for (const value of matchedValues) {
-        const hash = `value:${normalizeTextMatch(value)}`
-        if (seen.has(hash)) continue
-        seen.add(hash)
-        tags.push(value)
-      }
-
-      if (matchedValues.length || hint.status !== 'match') continue
-      if (['creator', 'cast'].includes(hint.key)) continue
-      if (!hint.value || hint.value === '—' || hint.value === 'Нет данных') continue
-
-      const exactTag = `${hint.label}: ${hint.value}`
-      const hash = `exact:${hint.key}:${normalizeTextMatch(hint.value)}`
-      if (seen.has(hash)) continue
-      seen.add(hash)
-      tags.push(exactTag)
-    }
-  }
-
-  return tags
+  return <div className={`game-match-strip ${open ? 'is-open' : ''}`}>
+    <button
+      type="button"
+      className="game-match-strip__toggle"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-controls="game-match-strip-panel"
+    >
+      <span className="game-match-strip__logo" aria-hidden="true"><img src={publicAssetUrl('images/symbol.svg')} alt="" /></span>
+      <span className="game-match-strip__title">Что сходится</span>
+      <ChevronRight aria-hidden="true" />
+    </button>
+    <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!open}>
+      <HorizontalScrollLane className="game-match-strip__tags">
+        {tags.length
+          ? tags.map((tag) => <span key={tag.id} className="game-match-strip__tag"><small>{tag.label}</small><strong>{tag.value}</strong></span>)
+          : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
+      </HorizontalScrollLane>
+    </div>
+  </div>
 }
 
 const compactAssistList = (label: string, values: Array<string | null | undefined>, limit = 3) => {
@@ -808,90 +803,50 @@ const buildInfoHintCandidates = (item: TitleItem) => {
   ].filter(Boolean)
 }
 
-const buildFactHintValue = (item: TitleItem) => {
-  const modelFacts = new Set([
-    ...buildInfoHintCandidates(item),
-    item.mode === 'music' && item.musicOrigin ? `Сцена: ${musicOriginLabel(item.musicOrigin)}` : '',
-    item.mode === 'anime' && item.animeKind ? `Формат: ${item.animeKind}` : '',
-    item.mode === 'anime' && item.animeStatus ? `Статус: ${item.animeStatus}` : '',
-    item.mode === 'anime' && item.animeEpisodesAired != null ? `Вышло эпизодов: ${item.animeEpisodesAired}` : '',
-  ].map(normalizeTextMatch).filter(Boolean))
-  const isModeledField = (candidate: string) => modelFacts.has(normalizeTextMatch(candidate))
-  const fact = cleanHintText((item.facts ?? []).find((candidate) => !isModeledField(candidate)) ?? '')
-  return fact ? cropHintText(fact) : ''
+const renderUnopenedLocalInfo = (item: TitleItem, candidate: string, attempts: Attempt[]) => {
+  const separator = candidate.indexOf(':')
+  if (separator < 0) return candidate
+  const label = candidate.slice(0, separator)
+  const value = candidate.slice(separator + 1).trim()
+  const answerHint = compareTitles(item, item).find((hint) => normalizeTextMatch(hint.value) === normalizeTextMatch(value))
+  if (!answerHint) return candidate
+
+  const fieldHints = attempts.flatMap((attempt) => attempt.hints).filter((hint) => hint.key === answerHint.key)
+  if (fieldHints.some((hint) => hint.status === 'match')) return ''
+
+  const revealedValues = new Set(fieldHints.flatMap((hint) => [
+    ...(hint.matchedValues ?? []),
+    ...(hint.people ?? []).filter((person) => person.matched).flatMap((person) => [person.nameRu, person.nameOriginal]),
+  ]).map(normalizeTextMatch).filter(Boolean))
+  if (!revealedValues.size) return candidate
+
+  const remaining = value.split(',').map((entry) => entry.trim()).filter((entry) => entry && !revealedValues.has(normalizeTextMatch(entry)))
+  return remaining.length ? `${label}: ${remaining.join(', ')}` : ''
 }
 
-const buildPlotHintValue = (item: TitleItem) => {
-  const value = cleanHintText(item.plotHint || '')
-  return value && !invalidFactFallback(value) ? cropHintText(value) : ''
-}
-
-const buildAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {
-  const out: AssistHintView[] = []
-
-  const plotAlreadyOpened = choices.some((choice) => choice.key === 'plot')
-  const plotBody = plotAlreadyOpened ? '' : buildPlotHintValue(item)
-  if (plotBody) {
-    out.push({
-      key: 'plot',
-      title: 'Подсказка о сюжете',
-      subtitle: 'Краткое описание завязки без названия и ключевых спойлеров',
-      body: plotBody,
-      available: true,
-    })
-  }
-
+const buildAssistHints = (item: TitleItem, choices: HintChoice[], attempts: Attempt[] = []): AssistHintView[] => {
   const infoCandidates = buildInfoHintCandidates(item)
+    .map((candidate) => renderUnopenedLocalInfo(item, candidate, attempts))
+    .filter(Boolean)
   const infoIndex = choices.filter((choice) => choice.key === 'info').length
   const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
-  if (infoBody) {
-    out.push({
+  return infoBody
+    ? [{
       key: 'info',
-      title: 'Неоткрытая информация',
-      subtitle: 'Деталь о правильном ответе, которая ещё не открывалась',
+      title: CATALOG_HINT_COPY[item.mode].optionTitle,
+      subtitle: CATALOG_HINT_COPY[item.mode].optionSubtitle,
       body: infoBody,
       available: true,
-    })
-  }
-
-  const factAlreadyOpened = choices.some((choice) => choice.key === 'fact')
-  const factBody = factAlreadyOpened ? '' : buildFactHintValue(item)
-  if (factBody) {
-    out.push({
-      key: 'fact',
-      title: 'Интересный факт',
-      subtitle: 'Дополнительный факт о правильном ответе без спойлеров',
-      body: factBody,
-      available: true,
-    })
-  }
-
-  return out
+    }]
+    : []
 }
 
 const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {
   const out: AssistHintView[] = []
   const infoCandidates = buildInfoHintCandidates(item)
-  const factBody = buildFactHintValue(item)
-  const plotBody = buildPlotHintValue(item)
   let infoIndex = 0
-  let factOpened = false
-  let plotOpened = false
 
   for (const choice of [...choices].sort((a, b) => a.round - b.round)) {
-    if (choice.key === 'plot') {
-      if (plotOpened || !plotBody) continue
-      plotOpened = true
-      out.push({
-        key: 'plot',
-        title: `Подсказка после ${choice.round} попыток`,
-        subtitle: 'Подсказка о сюжете',
-        body: plotBody,
-        available: true,
-      })
-      continue
-    }
-
     if (choice.key === 'info') {
       const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
       infoIndex += 1
@@ -899,21 +854,8 @@ const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): Assis
       out.push({
         key: 'info',
         title: `Подсказка после ${choice.round} попыток`,
-        subtitle: 'Неоткрытая информация',
+        subtitle: CATALOG_HINT_COPY[item.mode].optionTitle,
         body: infoBody,
-        available: true,
-      })
-      continue
-    }
-
-    if (choice.key === 'fact') {
-      if (factOpened || !factBody) continue
-      factOpened = true
-      out.push({
-        key: 'fact',
-        title: `Подсказка после ${choice.round} попыток`,
-        subtitle: 'Интересный факт',
-        body: factBody,
         available: true,
       })
     }
@@ -2661,7 +2603,7 @@ function Game({
   const searchPickerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const assistHintCatalog = useMemo(() => answer ? buildAssistHints(answer, []) : [], [answer])
-  const assistHints = useMemo(() => answer ? buildAssistHints(answer, hintChoices) : [], [answer, hintChoices])
+  const assistHints = useMemo(() => answer ? buildAssistHints(answer, hintChoices, attempts) : [], [answer, attempts, hintChoices])
   const availableAssistHintKeys = useMemo(
     () => new Set<AssistHintKey>(assistHintCatalog.filter((hint) => hint.available).map((hint) => hint.key)),
     [assistHintCatalog],
@@ -2749,7 +2691,6 @@ function Game({
     }
     return next
   }, [pool, debouncedQuery, used, mode, searchIndex])
-  const matchedTags = useMemo(() => collectMatchedTags(attempts), [attempts])
   const latestMatchCount = attempts.at(-1)?.hints.filter((hint) => hint.status === 'match').length ?? 0
 
   const isSuggestionsOpen = isSearchDropdownOpen && Boolean(query) && !selected
@@ -3186,29 +3127,10 @@ function Game({
           </button>) : <div className="empty-search">Ничего не найдено</div>}
         </div>}
         </div>
-        {(mode === 'diagnosis' || !!attempts.length) && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
-          <button
-            type="button"
-            className="game-match-strip__toggle"
-            onClick={() => {
-              trackMetrikaGoal('toggle_match_strip', { mode, period: effectivePeriod })
-              setGameMatchStripOpen((current) => !current)
-            }}
-            aria-expanded={gameMatchStripOpen}
-            aria-controls="game-match-strip-panel"
-          >
-            <span className="game-match-strip__logo" aria-hidden="true"><img src={publicAssetUrl('images/symbol.svg')} alt="" /></span>
-            <span className="game-match-strip__title">Что сходится</span>
-            <ChevronRight aria-hidden="true" />
-          </button>
-          <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!gameMatchStripOpen}>
-            <HorizontalScrollLane className="game-match-strip__tags">
-              {matchedTags.length
-                ? matchedTags.map((tag) => <span key={tag} className="dx-chip match game-match-strip__tag">{tag}</span>)
-                : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
-            </HorizontalScrollLane>
-          </div>
-        </div>}
+        <GameMatchStrip attempts={attempts} open={gameMatchStripOpen} onToggle={() => {
+          trackMetrikaGoal('toggle_match_strip', { mode, period: effectivePeriod })
+          setGameMatchStripOpen((current) => !current)
+        }} />
         {message && <div className="search-meta"><strong>{message}</strong></div>}
       </section>}
 
@@ -3238,7 +3160,7 @@ function Game({
           <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
           <button onClick={dismissHintModal} aria-label="Закрыть"><X /></button>
         </div>
-        <h2 id="hint-modal-title">Выберите подсказку</h2>
+        <h2 id="hint-modal-title">{CATALOG_HINT_COPY[mode].modalTitle}</h2>
         <p>{hintModalRound === 5 ? 'Это первая возможность. Если пропустить её сейчас, она всё равно останется доступной до конца сеанса.' : 'Это вторая возможность. Её также можно открыть в любой момент до конца сеанса.'}</p>
         <div className="hint-modal__options">
           {assistHints.filter((hint) => hint.available).map((hint, index) => <button key={`${hint.key}-${index}`} onClick={() => revealAssistHint(hint.key)}>
@@ -3468,7 +3390,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const promptSourceLabel = 'Спецпоказ DTF'
 
   const attempts = session.attempts.map(serverAttemptToLegacy)
-  const matchedTags = collectMatchedTags(attempts)
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
@@ -3549,7 +3470,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
-      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
+      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={completedToday} nextRewardText={isPackSession ? 'Выберите следующий сеанс в подборке' : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession ? onBack : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
@@ -3557,29 +3478,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           <div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>
           {query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}
         </div>
-        {(session.mode === 'diagnosis' || !!attempts.length) && <div className={`game-match-strip ${gameMatchStripOpen ? 'is-open' : ''}`}>
-          <button
-            type="button"
-            className="game-match-strip__toggle"
-            onClick={() => {
-              trackMetrikaGoal('toggle_match_strip', { mode: session.mode, period: session.period })
-              setGameMatchStripOpen((current) => !current)
-            }}
-            aria-expanded={gameMatchStripOpen}
-            aria-controls="game-match-strip-panel"
-          >
-            <span className="game-match-strip__logo" aria-hidden="true"><img src={publicAssetUrl('images/symbol.svg')} alt="" /></span>
-            <span className="game-match-strip__title">Что сходится</span>
-            <ChevronRight aria-hidden="true" />
-          </button>
-          <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!gameMatchStripOpen}>
-            <HorizontalScrollLane className="game-match-strip__tags">
-              {matchedTags.length
-                ? matchedTags.map((tag) => <span key={tag} className="dx-chip match game-match-strip__tag">{tag}</span>)
-                : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
-            </HorizontalScrollLane>
-          </div>
-        </div>}
+        <GameMatchStrip attempts={attempts} open={gameMatchStripOpen} onToggle={() => {
+          trackMetrikaGoal('toggle_match_strip', { mode: session.mode, period: session.period })
+          setGameMatchStripOpen((current) => !current)
+        }} />
         {message && <div className="search-meta"><strong>{message}</strong></div>}
       </section>}
       {!attempts.length && session.status === 'playing' && <section className="empty-card"><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>Начните с первой попытки</h2><p>После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.</p></div></section>}
@@ -3599,16 +3501,16 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         {hint.isPending ? <div className="hint-modal__state" role="status" aria-live="polite">
           <Sparkles className="hint-modal__spinner" />
           <h2>Открываем подсказку</h2>
-          <p>{pendingHintOption?.title ?? 'Проверяем доступную информацию'}…</p>
+          <p>{pendingHintOption?.title ?? CATALOG_HINT_COPY[session.mode].loadingText}…</p>
         </div> : revealedHint ? <>
           <h2>Подсказка открыта</h2>
           <article className="hint-modal__reveal">
-            <span><Sparkles /> {assistHintTitle(revealedHint.hintKey)} · после {revealedHint.checkpoint} попыток</span>
+            <span><Sparkles /> {assistHintTitle(revealedHint.hintKey, session.mode)} · после {revealedHint.checkpoint} попыток</span>
             <p>{Array.isArray(revealedHint.value) ? revealedHint.value.join(', ') : String(revealedHint.value ?? '—')}</p>
           </article>
           <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>
         </> : <>
-          <h2>Выберите подсказку</h2>
+          <h2>{CATALOG_HINT_COPY[session.mode].modalTitle}</h2>
           <div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div>
           <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
         </>}

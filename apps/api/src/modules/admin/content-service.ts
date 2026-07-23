@@ -108,9 +108,7 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
     if (duplicatedFacts.length) error('facts', 'duplicate_model_fact', 'Интересные факты не должны повторять формат, статус или количество эпизодов')
   }
   const hint = mode === 'danetki' ? '' : text(payload.plotHint)
-  const playableGameHintRequired = mode === 'game' && payload.allowedInGame !== false
-  if (playableGameHintRequired && !hint) error('plotHint', 'missing_hint', 'Игра не может участвовать в игровом пуле без подсказки')
-  else if (mode !== 'danetki' && !hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
+  if (mode !== 'danetki' && !hint) warning('plotHint', 'missing_hint', 'Описание не заполнено')
   if (hint && mode === 'game' && hint.length < 30) error('plotHint', 'short_hint', 'Игровая подсказка должна содержать не меньше 30 символов')
   else if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
   if (hint && /(?:\.\.\.|…)\s*$/.test(hint)) error('plotHint', 'truncated_hint', 'Подсказка не должна заканчиваться многоточием')

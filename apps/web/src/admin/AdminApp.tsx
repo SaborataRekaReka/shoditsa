@@ -8,7 +8,7 @@ import {
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
-import type { AdminContentListItem, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
 import { publicAssetUrl } from '../app/public-asset'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { adminCommentUnlockLabel, adminContentComments } from './content-comments'
@@ -479,7 +479,8 @@ function FieldEditor({ name, value, disabled, onChange }: { name: string; value:
 function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode: ContentMode }) {
   const poster = typeof payload.posterUrl === 'string' ? payload.posterUrl : typeof payload.headerUrl === 'string' ? payload.headerUrl : null
   const hint = String(mode === 'danetki' ? payload.condition ?? 'Условие пока не заполнено' : payload.plotHint ?? payload.description ?? 'Подсказка пока не заполнена')
-  return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>Подсказка о сюжете</button><button>Интересный факт</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><ContentCommentsPreview payload={payload} mode={mode} compact /><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
+  const hintTitle = mode === 'danetki' ? 'Подсказка данетки' : CATALOG_HINT_COPY[mode].optionTitle
+  return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>{hintTitle}</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><ContentCommentsPreview payload={payload} mode={mode} compact /><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
 }
 
 function ContentCommentsPreview({ payload, mode, compact = false }: { payload: Record<string, unknown>; mode: ContentMode; compact?: boolean }) {

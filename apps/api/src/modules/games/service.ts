@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
@@ -8,7 +8,6 @@ import {
 import {
   compareTitles,
   dailyTitle,
-  isPlayableGamePlotHint,
   localizeMusicCountry,
   musicDifficultyPool,
   musicOriginLabel,
@@ -61,11 +60,10 @@ const normalizeHintPeople = (hints: Hint[]) => hints.map((hint) => (
 ))
 
 const cleanHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
-const cropHintText = (value: string, max = 190) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const normalizeHintMatch = (value: unknown) => cleanHintText(value).toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 
 type RevealedFieldEvidence = { fullyRevealed: boolean; values: Set<string>; excludedValues: Set<string> }
-type RevealedAttemptEvidence = { byHintKey: Map<string, RevealedFieldEvidence>; values: Set<string> }
+type RevealedAttemptEvidence = { byHintKey: Map<string, RevealedFieldEvidence> }
 type InfoHintCandidate = { sourceKey: string | null; label: string; values: string[] }
 
 const addRevealedValue = (target: Set<string>, value: unknown) => {
@@ -81,37 +79,30 @@ const addRevealedDisplayValues = (target: Set<string>, value: unknown) => {
 
 const revealedAttemptEvidence = (attempts: Array<{ hints: Hint[] }>): RevealedAttemptEvidence => {
   const byHintKey = new Map<string, RevealedFieldEvidence>()
-  const values = new Set<string>()
 
   for (const attempt of attempts) {
     for (const hint of attempt.hints) {
       const field = byHintKey.get(hint.key) ?? { fullyRevealed: false, values: new Set<string>(), excludedValues: new Set<string>() }
       if (hint.status === 'match') {
         field.fullyRevealed = true
-        addRevealedValue(values, hint.value)
-        addRevealedDisplayValues(values, hint.value)
       } else if (hint.status === 'partial') {
         addRevealedDisplayValues(field.values, hint.value)
-        addRevealedDisplayValues(values, hint.value)
       } else if (hint.status === 'miss' && hint.direction == null) {
         addRevealedDisplayValues(field.excludedValues, hint.value)
       }
       for (const value of hint.matchedValues ?? []) {
         addRevealedValue(field.values, value)
-        addRevealedValue(values, value)
       }
       for (const person of hint.people ?? []) {
         if (!person.matched) continue
         addRevealedValue(field.values, person.nameRu)
         addRevealedValue(field.values, person.nameOriginal)
-        addRevealedValue(values, person.nameRu)
-        addRevealedValue(values, person.nameOriginal)
       }
       byHintKey.set(hint.key, field)
     }
   }
 
-  return { byHintKey, values }
+  return { byHintKey }
 }
 
 const infoListCandidate = (sourceKey: string | null, label: string, values: Array<string | null | undefined>, limit = 3): InfoHintCandidate | null => {
@@ -245,28 +236,6 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
   ])
 }
 
-const modelFactValues = (answer: TitleItem) => new Set([
-    ...infoHintCandidates(answer).map((candidate) => `${candidate.label}: ${candidate.values.join(', ')}`),
-    answer.mode === 'anime' && answer.animeEpisodesAired != null ? `Вышло эпизодов: ${answer.animeEpisodesAired}` : '',
-  ].map(normalizeHintMatch).filter(Boolean))
-
-const factHintValue = (answer: TitleItem, matched: Set<string>) => {
-  const modelFacts = modelFactValues(answer)
-  const isRedundant = (candidate: string) => {
-    const normalized = normalizeHintMatch(candidate)
-    return !normalized
-      || modelFacts.has(normalized)
-      || [...matched].some((value) => value.length >= 3 && normalized.includes(value))
-  }
-  const fact = (answer.facts ?? []).map(cleanHintText).find((candidate) => !isRedundant(candidate)) ?? ''
-  return fact ? cropHintText(fact) : ''
-}
-
-const plotHintValue = (answer: TitleItem) => {
-  if (!isPlayableGamePlotHint(answer)) return ''
-  return cropHintText(cleanHintText(answer.plotHint ?? ''))
-}
-
 type BuiltHintOption = {
   key: AssistHintKey
   title: string
@@ -286,17 +255,7 @@ const hintChoiceSourceKey = (choice: ExistingHintChoice) => {
 export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = []): BuiltHintOption[] => {
   const options: BuiltHintOption[] = []
   const evidence = revealedAttemptEvidence(attempts)
-
-  const plotAlreadyOpened = choices.some((choice) => choice.hintKey === 'plot')
-  const plotValue = plotAlreadyOpened ? '' : plotHintValue(answer)
-  if (plotValue) {
-    options.push({
-      key: 'plot',
-      title: 'Подсказка о сюжете',
-      subtitle: 'Краткое описание завязки без названия и ключевых спойлеров',
-      value: plotValue,
-    })
-  }
+  const copy = CATALOG_HINT_COPY[answer.mode]
 
   const openedInfoSourceKeys = new Set(choices
     .filter((choice) => choice.hintKey === 'info')
@@ -310,21 +269,10 @@ export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[
   if (infoCandidate) {
     options.push({
       key: 'info',
-      title: 'Неоткрытая информация',
-      subtitle: 'Деталь о правильном ответе, которая ещё не показывалась',
+      title: copy.optionTitle,
+      subtitle: copy.optionSubtitle,
       value: infoCandidate.value,
       ...(infoCandidate.candidate.sourceKey ? { sourceKey: infoCandidate.candidate.sourceKey } : {}),
-    })
-  }
-
-  const factAlreadyOpened = choices.some((choice) => choice.hintKey === 'fact')
-  const factValue = factAlreadyOpened ? '' : factHintValue(answer, evidence.values)
-  if (factValue) {
-    options.push({
-      key: 'fact',
-      title: 'Интересный факт',
-      subtitle: 'Дополнительный факт о правильном ответе без спойлеров',
-      value: factValue,
     })
   }
 
@@ -332,7 +280,14 @@ export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[
 }
 
 export const publicCard = (item: TitleItem) => ({
-  ...(({ comments: _privateComments, ...publicItem }) => publicItem)(item),
+  ...(({
+    comments: _privateComments,
+    plotHint: _privatePlotHint,
+    facts: _privateFacts,
+    description: _privateDescription,
+    shortDescription: _privateShortDescription,
+    ...publicItem
+  }) => publicItem)(item),
   titleOriginal: item.titleOriginal ?? '',
   year: item.mode === 'music' ? null : item.year ?? null,
   genres: item.genres ?? [],
@@ -485,7 +440,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
           ? 'available'
           : 'locked',
     })),
-    hintChoices: isPromptSession ? [] : choices,
+    hintChoices: isPromptSession ? [] : choices.filter((choice) => choice.hintKey === 'info'),
     hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
     progressiveHints: promptRuntime?.progressiveHints ?? [],
     promoPrompt: promptRuntime?.promoPrompt ?? null,

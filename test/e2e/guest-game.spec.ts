@@ -244,7 +244,7 @@ test('server exposes the first assist checkpoint after five attempts', async ({ 
   await page.getByRole('button', { name: 'Не сейчас' }).click()
   await expect(page.locator('.hint-modal-backdrop')).toBeHidden()
   await page.locator('.hint-trigger').first().click()
-  await expect(page.getByRole('heading', { name: 'Выберите подсказку' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Подсказка о фильме' })).toBeVisible()
   let releaseHintRequest: () => void = () => undefined
   const hintRequestGate = new Promise<void>((resolve) => { releaseHintRequest = resolve })
   await page.route('**/api/v1/games/*/hints', async (route) => {

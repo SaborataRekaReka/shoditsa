@@ -75,7 +75,7 @@ describe('deterministic rules', () => {
     expect(isAllowedInRegularGame(promotedByStatus as TitleItem)).toBe(true)
     expect(isAllowedInRegularGame(explicitlyHidden as TitleItem)).toBe(false)
   })
-  it('keeps broken plot hints out of the games pool', () => {
+  it('keeps game availability independent from optional plot copy', () => {
     const base = {
       id: 'game:hint',
       mode: 'game',
@@ -91,7 +91,7 @@ describe('deterministic rules', () => {
     expect(isPlayableGamePlotHint({ ...base, plotHint: 'Герой исследует опасный мир и сражается...' })).toBe(false)
     expect(isPlayableGamePlotHint({ ...base, plotHint: 'В Secret Game герой исследует опасный мир и сражается.' })).toBe(false)
     expect(poolFor([good, { ...base, id: 'game:bad', plotHint: '[REDACTED] ведёт героя через опасный мир.' }], 'game', 'all')
-      .map((item) => item.id)).toEqual(['game:hint'])
+      .map((item) => item.id)).toEqual(['game:hint', 'game:bad'])
   })
   it('deduplicates search results that share an external catalog id', () => {
     const base = {

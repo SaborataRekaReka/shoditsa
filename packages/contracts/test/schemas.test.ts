@@ -2,7 +2,7 @@ import { Value } from '@sinclair/typebox/value'
 import { FormatRegistry } from '@sinclair/typebox'
 import { describe, expect, it } from 'vitest'
 import {
-  AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentExchangeDocumentSchema, ContentExchangeExportBodySchema, ContentReportBodySchema, GameStartBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
+  AnimePipelineManualPreviewBodySchema, AnimePipelineRunBodySchema, AttemptBodySchema, CatalogSearchQuerySchema, ContentExchangeDocumentSchema, ContentExchangeExportBodySchema, ContentReportBodySchema, GameStartBodySchema, HintChoiceBodySchema, IntegrationKeySchema, IntegrationSecretUpdateBodySchema,
   LegacyImportBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema, MusicPipelineManualPreviewBodySchema, MusicPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema,
   PrivateGameOrderBodySchema,
@@ -35,6 +35,11 @@ describe('API schemas', () => {
     expect(Value.Check(PrivateGameOrderBodySchema, { ...valid, price: 100 })).toBe(false)
   })
   it('rejects invalid attempts', () => expect(Value.Check(AttemptBodySchema, { itemId: '' })).toBe(false))
+  it('accepts only unopened-information hints', () => {
+    expect(Value.Check(HintChoiceBodySchema, { checkpoint: 5, hintKey: 'info' })).toBe(true)
+    expect(Value.Check(HintChoiceBodySchema, { checkpoint: 5, hintKey: 'plot' })).toBe(false)
+    expect(Value.Check(HintChoiceBodySchema, { checkpoint: 8, hintKey: 'fact' })).toBe(false)
+  })
   it('bounds search limits', () => expect(Value.Check(CatalogSearchQuerySchema, { mode: 'movie', q: 'a', limit: 21 })).toBe(false))
   it('requires explicit consent for a legacy import', () => {
     const payload = { deviceId: crypto.randomUUID(), schemaVersion: 1, games: [], wallet: { tickets: 0 }, periodUnlocks: {} }

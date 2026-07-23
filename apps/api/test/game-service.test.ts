@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Hint, TitleItem } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, PLAYABLE_MODE_IDS, type Hint, type TitleItem } from '@shoditsa/contracts'
 import { answerPool, buildHintOptions, publicCard } from '../src/modules/games/service.js'
 
 describe('public game card', () => {
@@ -12,6 +12,28 @@ describe('public game card', () => {
     } as TitleItem
 
     expect(publicCard(item).genres).toEqual(['фантастика', 'боевик'])
+  })
+
+  it('never sends plot or fact copy to the player runtime', () => {
+    const item = {
+      id: 'game_private_hint',
+      mode: 'game',
+      titleRu: 'Игра',
+      titleOriginal: 'Game',
+      alternativeTitles: [],
+      popularityScore: 0,
+      plotHint: 'Сюжетный текст не должен попадать в игровой API.',
+      facts: ['Факт не должен становиться отдельной подсказкой.'],
+      description: 'Внутреннее описание карточки.',
+      shortDescription: 'Короткое внутреннее описание.',
+    } as TitleItem
+
+    expect(publicCard(item)).not.toMatchObject({
+      plotHint: expect.anything(),
+      facts: expect.anything(),
+      description: expect.anything(),
+      shortDescription: expect.anything(),
+    })
   })
 
   it('keeps extended facts required by server runtime cards', () => {
@@ -207,7 +229,7 @@ describe('server hint options', () => {
     expect(options.find((option) => option.key === 'info')?.value).toBe('Платформы: Nintendo 64')
   })
 
-  it('does not repeat matched facts and removes matched values from list facts', () => {
+  it('removes matched values from unopened list fields and offers no other hint kind', () => {
     const answer = {
       id: 'game_1',
       mode: 'game',
@@ -231,10 +253,10 @@ describe('server hint options', () => {
     const options = buildHintOptions(answer, [], attempts)
 
     expect(options.find((option) => option.key === 'info')?.value).toBe('Жанры: Action')
-    expect(options.find((option) => option.key === 'fact')?.value).toBe('It introduced a new championship mode.')
+    expect(options.map((option) => option.key)).toEqual(['info'])
   })
 
-  it('does not expose anime model fields as interesting facts', () => {
+  it('never exposes facts as a separate hint kind', () => {
     const answer = {
       id: 'anime_1',
       mode: 'anime',
@@ -258,7 +280,7 @@ describe('server hint options', () => {
 
     const options = buildHintOptions(answer, [])
 
-    expect(options.find((option) => option.key === 'fact')?.value).toBe('Настоящий дополнительный факт.')
+    expect(options.map((option) => option.key)).toEqual(['info'])
   })
 
   it('does not spend a hint on a binary value already implied by a miss', () => {
@@ -285,7 +307,7 @@ describe('server hint options', () => {
     const options = buildHintOptions(answer, [], attempts)
 
     expect(options.find((option) => option.key === 'info')?.value).toBe('Эпизоды: 1')
-    expect(options.find((option) => option.key === 'fact')).toBeUndefined()
+    expect(options.map((option) => option.key)).toEqual(['info'])
   })
 
   it('keeps a categorical hint when the answer is outside the small inferred pair', () => {
@@ -346,10 +368,10 @@ describe('server hint options', () => {
     const options = buildHintOptions(answer, [])
 
     expect(options.find((option) => option.key === 'info')?.value).toBe('Год релиза: 2003')
-    expect(options.find((option) => option.key === 'fact')).toBeUndefined()
+    expect(options.map((option) => option.key)).toEqual(['info'])
   })
 
-  it('offers the plot hint independently when facts only mirror model fields', () => {
+  it('ignores plot and fact copy even when both are present', () => {
     const answer = {
       id: 'anime_2',
       mode: 'anime',
@@ -366,11 +388,11 @@ describe('server hint options', () => {
 
     const options = buildHintOptions(answer, [])
 
-    expect(options.find((option) => option.key === 'plot')?.value).toBe('Безопасная сюжетная подсказка.')
-    expect(options.find((option) => option.key === 'fact')).toBeUndefined()
+    expect(options.map((option) => option.key)).toEqual(['info'])
+    expect(options[0]?.value).toBe('Формат: TV сериал')
   })
 
-  it('keeps the plot choice available until the player selects it', () => {
+  it('never offers plot or fact choices', () => {
     const answer = {
       id: 'movie_plot_choice', mode: 'movie', titleRu: 'Пример фильма', titleOriginal: 'Example Movie', alternativeTitles: [], popularityScore: 0,
       year: 2003,
@@ -378,22 +400,52 @@ describe('server hint options', () => {
       facts: ['Съёмки проходили сразу в нескольких странах.'],
     } as TitleItem
 
-    expect(buildHintOptions(answer, []).map((option) => option.key)).toContain('plot')
-    expect(buildHintOptions(answer, [{ hintKey: 'info' }]).map((option) => option.key)).toContain('plot')
-    expect(buildHintOptions(answer, [{ hintKey: 'fact' }]).map((option) => option.key)).toContain('plot')
-    expect(buildHintOptions(answer, [{ hintKey: 'plot' }]).map((option) => option.key)).not.toContain('plot')
+    expect(buildHintOptions(answer, []).map((option) => option.key)).toEqual(['info'])
+    expect(buildHintOptions(answer, [{ hintKey: 'info' }]).map((option) => option.key)).toEqual([])
+    expect(buildHintOptions(answer, [{ hintKey: 'fact' }]).map((option) => option.key)).toEqual(['info'])
+    expect(buildHintOptions(answer, [{ hintKey: 'plot' }]).map((option) => option.key)).toEqual(['info'])
   })
 
-  it('never substitutes descriptions for plotHint and hides invalid plot hints', () => {
+  it('never substitutes descriptions or plot text for unopened information', () => {
     const baseAnswer = {
       id: 'game_bad_hint', mode: 'game', titleRu: 'Example', titleOriginal: 'Example', alternativeTitles: [], popularityScore: 0,
       description: 'A long description that must never become an in-game fact hint.',
       shortDescription: 'A short description that must never become an in-game fact hint.',
     } as TitleItem
 
-    expect(buildHintOptions(baseAnswer, []).find((option) => option.key === 'plot')).toBeUndefined()
+    expect(buildHintOptions(baseAnswer, [])).toEqual([])
     for (const plotHint of ['This imported hint was visibly truncated...', 'Too short', 'Text with _KEEP_1_ service marker inside']) {
-      expect(buildHintOptions({ ...baseAnswer, plotHint }, []).find((option) => option.key === 'plot')).toBeUndefined()
+      expect(buildHintOptions({ ...baseAnswer, plotHint }, [])).toEqual([])
+    }
+  })
+
+  it('uses exhaustive mode-specific copy for the only supported hint kind', () => {
+    const answers = {
+      movie: { year: 2000 },
+      series: { year: 2000 },
+      anime: { year: 2000 },
+      game: { year: 2000 },
+      city: { country: 'Казахстан' },
+      music: { countries: ['KZ'] },
+      diagnosis: { bodySystems: ['Нервная система'] },
+    } as const
+
+    for (const mode of PLAYABLE_MODE_IDS) {
+      const answer = {
+        id: `${mode}:copy`,
+        mode,
+        titleRu: 'Ответ',
+        titleOriginal: 'Answer',
+        alternativeTitles: [],
+        popularityScore: 0,
+        ...answers[mode],
+      } as TitleItem
+      const options = buildHintOptions(answer, [])
+
+      expect(options).toHaveLength(1)
+      expect(options[0]?.key).toBe('info')
+      expect(options[0]?.title).toBe(CATALOG_HINT_COPY[mode].optionTitle)
+      expect(options[0]?.subtitle).toBe(CATALOG_HINT_COPY[mode].optionSubtitle)
     }
   })
 })

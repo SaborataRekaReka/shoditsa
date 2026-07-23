@@ -230,10 +230,10 @@ export const isPlayableGamePlotHint = (
 }
 
 export const isAllowedInRegularGame = (
-  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame' | 'plotHint' | 'titleRu' | 'titleOriginal'>,
+  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame'>,
 ) => {
   const explicitlyAllowed = item.allowedInGame !== false && (item.allowedInGame === true || !isPromoGameItem(item))
-  return explicitlyAllowed && (item.mode !== 'game' || isPlayableGamePlotHint(item))
+  return explicitlyAllowed
 }
 
 const isAllowedInMode = (item: TitleItem, mode: TitleMode) => {

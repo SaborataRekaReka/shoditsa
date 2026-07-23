@@ -1,4 +1,5 @@
 export * from './game-modes.js'
+export * from './hint-copy.js'
 export * from './danetki.js'
 export * from './economy.js'
 export * from './legacy-types.js'
