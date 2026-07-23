@@ -22,6 +22,7 @@
     "dev:worker": "tsx watch apps/api/src/worker.ts",
     "worker": "node apps/api/dist/worker.js",
     "validate:shell": "node scripts/diagnostics/validate-app-shell.mjs",
+    "ci:seed-content-admin": "tsx scripts/diagnostics/seed-ci-content-admin.ts",
     "verify:dtf-comments-pack": "tsx scripts/diagnostics/verify-dtf-comments-pack.ts",
     "typecheck": "tsc -b",
     "lint": "npm run validate:shell && npm run typecheck",

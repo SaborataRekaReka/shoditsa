@@ -253,6 +253,14 @@ const stable = (value: unknown): unknown => Array.isArray(value) ? value.map(sta
   : value
 const sha256 = (value: unknown) => createHash('sha256').update(JSON.stringify(stable(value))).digest('hex')
 export const contentPayloadsEqual = (left: unknown, right: unknown) => sha256(left) === sha256(right)
+export const workspaceContainsOnlyRedundantImports = (
+  changes: Array<{ itemId: string; afterPayload: unknown; source: string }>,
+  activePayloads: ReadonlyMap<string, unknown>,
+) => changes.length > 0 && changes.every((change) => (
+  change.source === 'import'
+  && activePayloads.has(change.itemId)
+  && contentPayloadsEqual(change.afterPayload, activePayloads.get(change.itemId))
+))
 
 const aliasesFor = (payload: Record<string, unknown>) => {
   const entries: Array<[unknown, string]> = [

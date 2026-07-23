@@ -28,9 +28,11 @@ import {
   activateWorkspaceRevision,
   buildWorkspaceRevision,
   contentPayloadsEqual,
+  discardWorkspaceItem,
   getOrCreateWorkspace,
   saveWorkspaceItem,
   validateWorkspace,
+  workspaceContainsOnlyRedundantImports,
 } from '../../apps/api/src/modules/admin/content-service.js'
 
 type HintPatchDocument = {
@@ -130,6 +132,7 @@ const main = async () => {
 
     let workspaceId: string | null = null
     let resumedWorkspace = false
+    let discardedRedundantWorkspaceChanges = 0
     let validation: Awaited<ReturnType<typeof validateWorkspace>> | null = null
     let activatedRevision: { id: string; version: string } | null = active
     if (changed.length) {
@@ -147,11 +150,19 @@ const main = async () => {
       if (workspace.status !== 'open') throw new Error(`Content workspace ${workspace.id} is ${workspace.status}, expected open`)
       if (workspace.baseRevisionId !== active.id) throw new Error('Content workspace is based on a different revision')
 
-      const existingChanges = await db.select({
+      let existingChanges = await db.select({
         itemId: contentWorkspaceChanges.itemId,
         afterPayload: contentWorkspaceChanges.afterPayload,
         source: contentWorkspaceChanges.source,
       }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id))
+      if (workspaceContainsOnlyRedundantImports(existingChanges, activeById)) {
+        const cleanupRequestId = `approved-game-hints:discard-redundant:${randomUUID()}`
+        for (const change of existingChanges) {
+          const result = await discardWorkspaceItem(db, actor, change.itemId, cleanupRequestId)
+          if (result.discarded) discardedRedundantWorkspaceChanges += 1
+        }
+        existingChanges = []
+      }
       const intendedById = new Map(changed.map((entry) => [entry.itemId, entry.after]))
       const canResume = existingChanges.length === changed.length
         && existingChanges.every((change) => change.source === 'import'
@@ -189,6 +200,7 @@ const main = async () => {
       imported: true,
       workspaceId,
       resumedWorkspace,
+      discardedRedundantWorkspaceChanges,
       validation,
       activatedRevision,
     }

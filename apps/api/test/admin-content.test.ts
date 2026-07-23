@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { blockingContentValidationIssues, contentPayloadsEqual, validateContentPayload } from '../src/modules/admin/content-service.js'
+import {
+  blockingContentValidationIssues,
+  contentPayloadsEqual,
+  validateContentPayload,
+  workspaceContainsOnlyRedundantImports,
+} from '../src/modules/admin/content-service.js'
 
 const base = {
   id: 'admin-test-card',
@@ -89,5 +94,21 @@ describe('admin content validation', () => {
   it('compares pipeline source payloads semantically instead of by object key order', () => {
     expect(contentPayloadsEqual({ titleRu: 'Карточка', nested: { b: 2, a: 1 } }, { nested: { a: 1, b: 2 }, titleRu: 'Карточка' })).toBe(true)
     expect(contentPayloadsEqual({ titleRu: 'Карточка' }, { titleRu: 'Другая' })).toBe(false)
+  })
+
+  it('allows cleanup only for redundant imported workspace changes', () => {
+    const active = new Map<string, unknown>([
+      ['game-1', { titleRu: 'Карточка', nested: { a: 1, b: 2 } }],
+    ])
+    expect(workspaceContainsOnlyRedundantImports([
+      { itemId: 'game-1', source: 'import', afterPayload: { nested: { b: 2, a: 1 }, titleRu: 'Карточка' } },
+    ], active)).toBe(true)
+    expect(workspaceContainsOnlyRedundantImports([
+      { itemId: 'game-1', source: 'manual', afterPayload: active.get('game-1') },
+    ], active)).toBe(false)
+    expect(workspaceContainsOnlyRedundantImports([
+      { itemId: 'game-1', source: 'import', afterPayload: { titleRu: 'Другая карточка' } },
+    ], active)).toBe(false)
+    expect(workspaceContainsOnlyRedundantImports([], active)).toBe(false)
   })
 })
