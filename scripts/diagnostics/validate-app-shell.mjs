@@ -41,6 +41,7 @@ const sourceChecks = [
       ['concert-ticket guide integration', /<GameArtifactSeoDetails\s+mode="music"\s*\/>/],
       ['medical-chart guide integration', /<GameArtifactSeoDetails\s+mode="diagnosis"\s*\/>/],
       ['home guide integrated with hero ticket', /hub-hero-ticket[^]*<DailyProgressStub[^]*<HomeSeoContent/],
+      ['city attempts keep their five-meter rank profile', /function CityRankProfile[^]*CITY_RANK_METRICS\.map[^]*city-rank-meter__track[^]*role="progressbar"[^]*<b style=\{\{ width:/],
     ],
   },
   {
@@ -180,6 +181,13 @@ const sourceChecks = [
     path: 'apps/web/src/styles/screens.css',
     required: [
       ['wide shell navigation follows canvas edge', /game-screen-shell--wide > \.game-screen-shell__nav\s*\{\s*width:\s*100%/],
+      ['city rank tracks remain visible', /\.city-rank-meter__track\s*\{[^}]*height:\s*7px[^}]*\}[^]*\.city-rank-meter__track > b\s*\{[^}]*background:\s*var\(--color-primary\)/],
+    ],
+  },
+  {
+    path: 'apps/web/src/app/release-update.ts',
+    required: [
+      ['active attempts defer release reloads', /releaseReloadIsSafe\(window\.location\)[^]*window\.location\.reload\(\)/],
     ],
   },
   {

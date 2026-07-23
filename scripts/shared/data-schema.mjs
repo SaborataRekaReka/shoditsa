@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis']
+const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city']
+const CITY_RANK_KEYS = ['economy', 'humanCapital', 'qualityOfLife', 'ecology', 'governance']
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -31,6 +32,12 @@ const validateTitleItem = (item, file) => {
   if (typeof item.titleRu !== 'string' || !item.titleRu.trim()) errors.push(`${file}: item.titleRu is missing or invalid`)
   if (!Array.isArray(item.alternativeTitles)) errors.push(`${file}: item.alternativeTitles must be array`)
   if (typeof item.popularityScore !== 'number') errors.push(`${file}: item.popularityScore must be number`)
+  if (item.mode === 'city') {
+    if (!isObject(item.ranks)) errors.push(`${file}: city ${item.id ?? '(unknown)'} must have ranks`)
+    else for (const key of CITY_RANK_KEYS) {
+      if (!Number.isFinite(item.ranks[key])) errors.push(`${file}: city ${item.id ?? '(unknown)'} ranks.${key} must be a number`)
+    }
+  }
   return errors
 }
 
@@ -86,6 +93,7 @@ export const validateGeneratedData = async (rootDir) => {
     animes: 'animes.generated.json',
     games: 'games.generated.json',
     diagnoses: 'diagnoses.generated.json',
+    cities: 'cities.generated.json',
     vignettes: 'diagnosis-case-vignettes.by-id.json',
     source: 'source.json',
   }
@@ -98,6 +106,7 @@ export const validateGeneratedData = async (rootDir) => {
     animes: [path.join(dataDir, files.animes), path.join(dataDir, 'libraries', 'animes', 'items.json')],
     games: [path.join(dataDir, files.games), path.join(dataDir, 'libraries', 'games', 'items.json')],
     diagnoses: [path.join(dataDir, files.diagnoses), path.join(dataDir, 'libraries', 'diagnoses', 'items.json')],
+    cities: [path.join(dataDir, 'libraries', 'cities', 'items.json'), path.join(dataDir, files.cities)],
   }
 
   for (const [datasetName, locations] of Object.entries(datasetLocations)) {
