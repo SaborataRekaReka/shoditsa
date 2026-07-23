@@ -37,7 +37,7 @@
 /* Lobby */
 .room-lobby { min-height: 690px; border: 1px solid rgba(239,231,215,.14); border-radius: 20px; overflow: hidden; display: grid; grid-template-columns: .88fr 1.12fr; background: rgba(20,23,20,.85); box-shadow: 0 30px 90px rgba(0,0,0,.25); }
 .room-lobby__intro { position: relative; overflow: hidden; padding: clamp(46px, 6vw, 86px); background: var(--room-paper) url('/assets/club/club-paper-ivory.webp') center/cover no-repeat; color: var(--room-ink); }
-.room-lobby__intro::before { content: ''; position: absolute; right: -7%; bottom: -3%; width: min(116%, 760px); aspect-ratio: 7 / 10; pointer-events: none; background: url('/images/friends-room/lobby-collage.webp') center bottom/contain no-repeat; transform: scaleX(-1); transform-origin: center; }
+.room-lobby__intro::before { content: ''; position: absolute; right: -7%; bottom: -3%; width: min(145%, 900px); aspect-ratio: 3 / 2; pointer-events: none; background: url('/images/friends-room/lobby-collage-lower.webp') center bottom/contain no-repeat; }
 .room-lobby__intro::after { content: ''; position: absolute; right: -12px; top: 0; width: 24px; height: 100%; background: radial-gradient(circle at center, #111411 0 8px, transparent 9px) center top/24px 48px repeat-y; }
 .room-lobby__intro > * { position: relative; z-index: 1; }
 .room-kicker { color: #3b7f52; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }

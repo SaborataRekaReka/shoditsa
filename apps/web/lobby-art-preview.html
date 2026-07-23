@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lobby art preview</title>
+    <link rel="stylesheet" href="/src/features/friends-room/FriendsRoomScreen.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 32px; background: #111411; font-family: Arial, sans-serif; }
+      .friends-room-page { min-height: 0; }
+      body { min-width: 1344px; }
+      .preview { width: 1280px; margin: 0 auto; }
+      .room-lobby { height: 850px; grid-template-columns: .88fr 1.12fr !important; }
+      .room-lobby__intro, .room-lobby__settings { min-height: 0 !important; }
+      .room-lobby__settings { color: #f2ecdf; }
+    </style>
+  </head>
+  <body>
+    <main class="friends-room-page">
+      <div class="preview">
+        <section class="room-lobby">
+          <div class="room-lobby__intro">
+            <span class="room-kicker">Игра с друзьями · онлайн-комната</span>
+            <h1>Онлайн-комната</h1>
+            <p>Выберите один или несколько паков и правила. В комнате могут играть до 8 человек — все одновременно увидят подсказки и отправят по одному ответу.</p>
+            <div class="room-code-card">
+              <span>Код игры</span>
+              <strong>CH58B</strong>
+              <button type="button">⧉ Копировать</button>
+            </div>
+            <div class="room-lobby__people">
+              <span style="--avatar:#6f8fc9">АБ</span>
+              <small>1 из 8 игроков в комнате</small>
+            </div>
+          </div>
+          <div class="room-lobby__settings">
+            <header class="room-settings-heading"><span>Настройки сеанса</span><strong>Сериалы</strong></header>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

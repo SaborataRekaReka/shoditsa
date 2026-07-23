@@ -17,6 +17,7 @@ const requiredFiles = [
   'apps/web/src/features/economy/EconomyView.tsx',
   'apps/web/src/features/friends-room/FriendsRoomScreen.tsx',
   'apps/web/src/features/friends-room/FriendsRoomScreen.css',
+  'public/images/friends-room/lobby-collage-lower.webp',
   'apps/web/src/api/client.ts',
   'apps/api/src/server.ts',
   'compose.production.yml',
@@ -166,7 +167,7 @@ const sourceChecks = [
   {
     path: 'apps/web/src/features/friends-room/FriendsRoomScreen.css',
     required: [
-      ['lobby collage keeps a column-width scale and overflows the lower-right edges', /\.room-lobby__intro::before\s*\{[^}]*right:\s*-7%[^}]*bottom:\s*-3%[^}]*width:\s*min\(116%,\s*760px\)[^}]*aspect-ratio:\s*7\s*\/\s*10[^}]*\/contain no-repeat/],
+      ['lobby collage uses the regenerated lower-edge asset at a column-width scale', /\.room-lobby__intro::before\s*\{[^}]*right:\s*-7%[^}]*bottom:\s*-3%[^}]*width:\s*min\(145%,\s*900px\)[^}]*aspect-ratio:\s*3\s*\/\s*2[^}]*lobby-collage-lower\.webp[^}]*\/contain no-repeat/],
       ['lobby game code has a high-contrast badge', /\.room-code-card\s*\{[^}]*background:\s*linear-gradient[^}]*box-shadow:[^}]*grid-template-columns/],
       ['lobby copy action stays visually prominent', /\.room-code-card button\s*\{[^}]*min-height:\s*64px[^}]*background:\s*linear-gradient[^}]*box-shadow:/],
     ],
