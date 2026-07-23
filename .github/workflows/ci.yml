@@ -38,7 +38,7 @@ jobs:
       - run: npm run content:import -- --dry-run
       - run: npm run content:import -- --apply
       - run: npm run content:activate -- --latest-ready
-      - run: npm run content:import:dtf-comments-pack
+      - run: npm run content:import:dtf-comments-pack -- --apply --publish
       - run: npm run verify:dtf-comments-pack
       - run: npm run test:integration
       - run: npm run build
