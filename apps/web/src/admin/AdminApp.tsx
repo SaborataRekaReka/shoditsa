@@ -2,15 +2,16 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
-  Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye,
+  Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
   Download, FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
-  LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
+  LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
   Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
 import type { AdminContentListItem, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, ContentMode } from '@shoditsa/contracts'
 import { publicAssetUrl } from '../app/public-asset'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
+import { adminCommentUnlockLabel, adminContentComments } from './content-comments'
 import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
 import { GameBuilderPage } from './GameBuilderPage'
 import './admin.css'
@@ -478,7 +479,36 @@ function FieldEditor({ name, value, disabled, onChange }: { name: string; value:
 function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode: ContentMode }) {
   const poster = typeof payload.posterUrl === 'string' ? payload.posterUrl : typeof payload.headerUrl === 'string' ? payload.headerUrl : null
   const hint = String(mode === 'danetki' ? payload.condition ?? 'Условие пока не заполнено' : payload.plotHint ?? payload.description ?? 'Подсказка пока не заполнена')
-  return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>Подсказка о сюжете</button><button>Интересный факт</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
+  return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints"><button>Подсказка о сюжете</button><button>Интересный факт</button></div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><ContentCommentsPreview payload={payload} mode={mode} compact /><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
+}
+
+function ContentCommentsPreview({ payload, mode, compact = false }: { payload: Record<string, unknown>; mode: ContentMode; compact?: boolean }) {
+  if (mode !== 'game') return null
+  const comments = adminContentComments(payload, mode)
+  return <section className={`admin-content-comments${compact ? ' admin-content-comments--compact' : ''}`}>
+    <header>
+      <div><MessageSquareText /><span><strong>Комментарии-подсказки</strong><small>{comments.length ? `В карточке: ${comments.length}` : 'Для этой карточки комментарии не добавлены'}</small></span></div>
+      <b>{comments.length}</b>
+    </header>
+    {comments.length ? <div className="admin-content-comments__list">{comments.map((comment, index) => {
+      const originalDiffers = comment.sourceExcerpt && comment.sourceExcerpt !== comment.text
+      return <article key={`${comment.key}:${index}`}>
+        <div className="admin-content-comments__number">{index + 1}</div>
+        <div className="admin-content-comments__body">
+          <header><span>{adminCommentUnlockLabel(comment.unlockAfterAttempts)}</span>{comment.clueStrength != null && <span>Сила {comment.clueStrength}</span>}{comment.wasRedacted && <span>Название скрыто</span>}</header>
+          <p>{comment.text}</p>
+          {!!comment.topics.length && <div className="admin-content-comments__topics">{comment.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>}
+          <footer>
+            {comment.sourceUrl
+              ? <a href={comment.sourceUrl} target="_blank" rel="noreferrer noopener"><ExternalLink />Открыть источник{comment.sourceId ? ` · #${comment.sourceId}` : ''}</a>
+              : <span className="admin-content-comments__missing">Источник не сохранён{comment.sourcePackId ? ` · ${comment.sourcePackId}` : ''}</span>}
+            {comment.sourceVerifiedAt && <time>Проверен {comment.sourceVerifiedAt}</time>}
+          </footer>
+          {originalDiffers && <details><summary>Исходный фрагмент до скрытия ответа</summary><p>{comment.sourceExcerpt}</p></details>}
+        </div>
+      </article>
+    })}</div> : <div className="admin-content-comments__empty"><MessageSquareText /><span><strong>Комментариев нет</strong><small>Поле <code>comments</code> в payload пустое.</small></span></div>}
+  </section>
 }
 
 const previewValue = (value: unknown): string => {
@@ -723,6 +753,7 @@ function ContentPreviewModal({
             <div className="admin-attempt-fields">{fields.length ? fields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
           </section>
           <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{hint}</p></article></section>
+          <ContentCommentsPreview payload={payload} mode={mode} />
           <section className={`admin-content-preview-review is-${reviewStatus}`}>
             <label>
               <input type="checkbox" checked={reviewStatus === 'issue'} disabled={review.isPending} onChange={(event) => submitReview(!event.target.checked)} />

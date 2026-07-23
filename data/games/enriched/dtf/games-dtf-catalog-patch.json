@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-23T12:47:46.148Z",
+  "generatedAt": "2026-07-23T13:07:48.255Z",
   "items": [
     {
       "canonicalGameId": "steam_1716740",
@@ -18,6 +18,8 @@
           "sourceExcerpt": "А ты? Много потешного детского хейта было к игре за последнее время, настроение повышает знатно.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2e6417fb7dd6b3e2fff83e4478bef88cf361707d50740bb9c04287a33ff82353",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -36,6 +38,8 @@
           "sourceExcerpt": "Спасибо. Хоть один нормальный разъёб без очередного \"я не могу подлететь к планете, Тодд Говард сломал моё погружение\". А тут всё по делу и возразить нечего.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:3afb5b1b6706de34d7a39b6fe022409e26c76c0bd0c5a42761cc9f66e2ef8155",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -54,6 +58,8 @@
           "sourceExcerpt": "Bioware хотя бы не говорила всем подряд что они изобрели NASApunk какой-то для игры. Если у Bioware в игре магия есть, то какого черта нет инопланетян? Было бы не так тоскливо сотни тысяч одинаковых спэйсеров убивать",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:fb8a0149fdd397ba233a8b368da67536b9a3ee796a83d844178e1f320ed3b037",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -72,6 +78,10 @@
           "sourceExcerpt": "База. Старфилд не имеет ничего общего с теми самыми играми бесезды за которые студию любят. Это всё равно что Биовары бы сделали игру без романов и напарников.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:1de5e2015441d93883a18c975b9fd14f28dd657d28d37c09a20232dad39e576e",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -90,6 +100,10 @@
           "sourceExcerpt": "на дтф началась арка старфилд, всех поздравляю!",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:188059bf93fe2bc2e585293323ddf40871c31f6bbdc2f8b64874ae09ace70809",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "community-humor"
@@ -108,6 +122,10 @@
           "sourceExcerpt": "Новости про Старфилд с каждым разом всё смешнее.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:412507394bca2c39659a8b1e4799349e5e413ab306673354a22d93fc3227dc4f",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "community-humor"
@@ -391,6 +409,8 @@
           "sourceExcerpt": "Готовятся удалять со всех торрент-трекеров.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:95ec4323f4c485c7960fed7dd7a7201cabe50300bcc098214b42430f21576d07",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -409,6 +429,8 @@
           "sourceExcerpt": "Так ещё и аудитория вокруг игры собралась такая, не очень притязательная, потому что не часто в игры играет, за пределами очень популярных проектов.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:1c437b94d6765746bc1d299b50ca6d9c96ce58d6a5b5cec31884f730703cece6",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -427,6 +449,8 @@
           "sourceExcerpt": "Огромное количество игр (от третьего ведьмака до бэтмена архэм сити) ставят персонажа и игрока в нарративно жёсткие временные рамки и...",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:fc3d1bd96b22d35394eb5e57f5e03cb1983610f9abc586a311d3cd213f4fd782",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "story"
@@ -445,6 +469,8 @@
           "sourceExcerpt": "Реально, можно вспомнит... КП вышел на релизе жутко забагованным, на старых поколениях консолей почти неиграбельным куском кода, но....",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:0064337fb609b21876235ecee4f31e194882cd42605aa049965ae293000867d9",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "technical",
@@ -464,6 +490,10 @@
           "sourceExcerpt": "Кибер кал 2077 может и хорошая, не играл, а вот Cyberpunk 2077 шикарное произведение, ставшее флагманом едва ли не канувшего в лету жанра киберпанк",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:64422ebda9106e1b886231459a9a686b5ee1733f7ddc66a68db4e20bd5a21466",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "technical"
@@ -482,6 +512,10 @@
           "sourceExcerpt": "Хейтерам предлагаю вспомнить релиз Cyberpunk 2077 Вспоминаю. Как их позор отменяет этот?",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:83df7e757d23da16f1d509d840f0009a4e02b6cdc36670713a56bbc2f2332224",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "technical",
@@ -766,6 +800,8 @@
           "sourceExcerpt": "То, что ты в каждой новости по BG3 пишешь одно и то же) Покажи, где тебя трогал изометрический медведь",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:7ac80d4b3a3a8e7396aed621a63ac119bd859c31a7112328e6061a7ac394fa79",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -784,6 +820,8 @@
           "sourceExcerpt": "Окей, ожидать адекватного ответа от быдлана, который в нг заходит в комменты оскорбить человека, было глупо.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:75d3ce9bf8a47ef33823d8a34e13445e5ed1c8e2ef1a72a9063f0eb1ac9fa6f5",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -802,6 +840,8 @@
           "sourceExcerpt": "Предсказуемо печальный итог. Дать BG3 не просто место в топе, а вообще первое место - это не просто шаг назад для игрожура, это двойное сальто с тулупом и приземлением на шею, а для геймдева это ответ на вопрос \"почему игры всё ещё не искусство\".",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:6f672ba7775fca72e8c8984302ca3601adecf2efae00e242220168f2a9054234",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -820,6 +860,8 @@
           "sourceExcerpt": "Вся эта простыня текста особого смысла не имеет, UI/UX в BG3 просто ужасен, максимально неудобен, перегружен и неинформативен, чего стоит интерфейс торговли или кнопка мультикласса, которая запрятана куда-то в жопу и я её нашёл например только спустя 80 часов игры, только потому,",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:73a110e35cc2c7c660b651e2c5d8f4ff53c138b2681fadcec873e833f91ca3ec",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -838,6 +880,8 @@
           "sourceExcerpt": "Не знаю, что у него там по швам разошлось. Второй акт бомбезный на сюжетные события. Именно в нем наконец понимаешь, с чем и с кем имеешь дело и охуеваешь. Третий акт сдаёт, но у меня все более менее лаконично завершилось.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2ffaaee2cd19529b19f13b6ea3829c1d086d530df48eb1a4a8448a92ebcf435e",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "story"
@@ -856,6 +900,8 @@
           "sourceExcerpt": ">Геймплей Скудный и убогий >персонажи, сюжет, мир В это ларианы не умеют, что в очередной раз и продемонстрировали >интерактив мнимый >вариативность её нет >ВСЁ есть и исполнение на уровне на уровне говна. традиционно для ларианов.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:0f3ca51a15dbeb5a6c32e5dd4550cff5a892d22b382badb26fcd095607532b27",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 6,
           "topics": [
             "mechanics",
@@ -1136,6 +1182,8 @@
           "sourceExcerpt": "Пиздец Кодзима выдал, ахуй… Просто дайте мне блять эту игру. Я хочу поиграть в игру года",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:22ea64f5ebd27c3b5f093294c6d238de8824a618402e35d7ba4b025822e8e5ce",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -1154,6 +1202,8 @@
           "sourceExcerpt": "2025 тупо один из лучших годов в игровой индустрии! Сначала шедевральный KCDII, потом DOOM, потом DS2... А если еще и GTA VI и Silksong выйдут, то я вообще всё закончу",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:e0f7d98c5e3eca621a962eefdc1b0837f54bfcfa5217d0d04b0a62b83def9b32",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -1172,6 +1222,8 @@
           "sourceExcerpt": "То есть лучший год в который вышло 3 игры все из которых являются продолжением других франшиз? Братишка, посмотри что такое 1998, 2004, 2007 годы если хочешь знать что такое один из лучших годов в игровой индустрии.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:ade9fd50a61c25336c37a1bc618a161724ebfe85456c8cb88c0f7a4496377d79",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -1190,6 +1242,8 @@
           "sourceExcerpt": "Fable, VTMB, The Suffering, LOTR: Battle for middle earth, Ninja Gaiden, World of Warcraft, Rome: Total War, Sacred, Painkiller, Chronicles of RIddick: Escape from butcher bay, Star Wars Battlefront, Killzone, Flatout и еще целую кучу игр поменьше которые либо открывали новые",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:d071acef839cd0b2576d12937c24c1f4f14de646ec4a0ca36e1cff97b8e36fe0",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -1208,6 +1262,8 @@
           "sourceExcerpt": "Первая часть доступна в Стиме. Кардинальных изменений в геймплее замечено не было",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:74f9c1e451c22af0f14bcfb77875ba8faa08f4efdc06ca52426102cf4bf9c206",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "mechanics"
@@ -1226,6 +1282,10 @@
           "sourceExcerpt": "DEATH STRANDING 2 - В С Ё Игра получила 60 баллов из 100 на Metacritic.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2ab46a5e217a3b7736868f724affdb45c2c8c730bab840b37ecbd9066e89091b",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "player-experience"
@@ -1503,6 +1563,8 @@
           "sourceExcerpt": "Ребята, в студии Fntastic прислали нам ключи игры, а мы отправляем их вам.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:0101223132bf3260c2c582a18ca3f7fd07cd74c48fe1b5914d213384d595778a",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -1521,6 +1583,8 @@
           "sourceExcerpt": "Нет, со Смутой все Смутно. Много ты там Геймплея увидел за все время?",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:e115e089402e79e66b6e5e55643a1b9c2166d7ef180fcb617b5f4cdc4f7054d0",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "mechanics"
@@ -1539,6 +1603,10 @@
           "sourceExcerpt": "Равно как и сингапурские разрабы The Day Before",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2873d16e736cf31ef3fbbac830c44813c0b7b0d64ee360b3e58f611f6b628379",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -1557,6 +1625,10 @@
           "sourceExcerpt": ">The Day Before меняли под впечатлением от других игр Да не может такого быть",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:845c2d78a8902c8b96077b1a82346708817590ac5690b9f2d2ff368cd69c366b",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -1575,6 +1647,10 @@
           "sourceExcerpt": "Скажи это Atomic Heart. Если бы разрабы The Day Before сделали хотя бы на приемлимом уровне шутан в советском постапокалипсисе, то игра бы разлетелась как горячие пирожки, даже я бы её купил.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:706c77e0899e6a42adcf76d03fc32c9bfcbca94e201be3f00ac4fed8cc34f361",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -1593,6 +1669,10 @@
           "sourceExcerpt": "Студия создавшая The Day Before закрылась The Day After релиза",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:7c5b30559e3c462932016b1d8c39c053915f97d8d2749ba487fc2db8f6a598f4",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "release-context"
@@ -1875,6 +1955,8 @@
           "sourceExcerpt": "Близняшки, конечно, горячие, но она...",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:bdd8e7c5d6734c7b1e707d3543fabaa7b8e07fae1a16f89cc08eb37045436e2c",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -1893,6 +1975,8 @@
           "sourceExcerpt": "Мужик, спасибо тебе огромное за то, что собрал всё это. Но есть один важный момент, на который не обращают многие - Стим спокойно позволяет бесплатно генерировать ключи.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:c89b30c52a69019bfd6986a2e9a0286648b3f4c4364ac274dd8e84952c0b27e2",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -1911,6 +1995,8 @@
           "sourceExcerpt": "Купил и что?) Это ведь ранняя сборка, которая не получит апдейты, а твоя сборка получит. Плюс вообще неясно, как эта сборка работает. Смотри на вещи с положительной точки зрения)",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a4d790bba0cdbd639a771e8a928071b1bdb89acdbbdb21c207817aae6297cc88",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -1929,6 +2015,8 @@
           "sourceExcerpt": ">это не показатель, они бы просто разорились. Разорились от того, что оставили возможность выбрать, покупать в стиме или vk play? Логика уровня ботов из тематических пабликов, активно защищающих эксклюзивность игры для VK Play под предлогом \"сделали удобнее\".",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:19eaca5b0fbbec6bc6bd8b69ad8097ce775807cc6a5af0261c37342305db918f",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -1947,6 +2035,8 @@
           "sourceExcerpt": "Напомнило серию Саус Парка, где расизм замечали только взрослые. А дети, чей разум еще чист и не забит всяким дерьмом, видели на картинке только человечков, а не различия в цветах кожи.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a9f97c35e3ffa1e75adef0e0f999b1ce76272b13c5ee182f1146c9a464bb9841",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "community-humor"
@@ -1965,6 +2055,10 @@
           "sourceExcerpt": "> Разработчики Atomic Heart пообещали убрать из игры фрагмент мультфильма «Ну, погоди!» Скорее всего, заменят на фрагмент про Федю из «Приключений Шурика».",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:e69908546f5d21cd73585fd4cbf2b849f855d2e249b08f1364288f6473b7d74c",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "player-experience"
@@ -2244,6 +2338,8 @@
           "sourceExcerpt": "Игроки в 2050г: Это типичная игра от Bethesda, почему вы от нее чего то требуете? Да, у нас 50 лет нет окон в зданиях, ну и что?",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a824b47227d6c0b4ab66bd59f595b44a4a96ac6c8ca343ff39f2d54e30ed7b6e",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -2262,6 +2358,8 @@
           "sourceExcerpt": ">стандартная игра Беседки Это деградация каждой \"игры Бесезды\" начиная с Облы. Сейчас они достигли своего отрицательного пика, но то ли ещё будет, раз хавают и это.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:212f3242f2834065e3df33b40972ef2df79e724b9b7704abe94a2c00189e7100",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -2280,6 +2378,8 @@
           "sourceExcerpt": ">На деле же игры Bethesda настолько детализированы и графически насыщены, что просто невозможно всё это загружать одновременно. это звучит довольно смешно, учитывая, что киберпанк существует",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:661dd3ecb5a508db978221e136ef7454e3fd543680bea9f7887bb574db632271",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "community-humor"
@@ -2298,6 +2398,8 @@
           "sourceExcerpt": "Раньше мир был единый. Выходишь после стартовой локации и идёшь куда глаза глядят. В филде у тебя глаза глядят на 2д карту и вечные подзагрузки туда сюда. Локации не связаны, просто набор 1000 генерированого кала с повторяющимся контентом",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:763163873b014968b6af5170dbc2bc3e07aa7d1c0e07b3e9b25f1946f2638969",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "technical"
@@ -2316,6 +2418,10 @@
           "sourceExcerpt": "Кроме Секиро и Бладборн все одно и то же с рыцорями и башнями. У Тодда в одном ТЕС есть Морровинд, Обла и Скайрим.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:3256b7e56b54d1759962b2c0f631208cb830f07923f98ca95427526ec5ec80ff",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -2334,6 +2440,10 @@
           "sourceExcerpt": "Ну а если серьёзно, тут тебе скорее всего никто не поможет, потому что вряд ли кто-то играл в скайрим с этими читами, когда есть легальный абуз, и консольные читы. Тут скорее на портал создателя сей поделки.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:42c5e7f6064d68065539b93d670c2f0f682a0a3dbbf3b09430ceb267dba515b1",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "player-experience"
@@ -2618,6 +2728,8 @@
           "sourceExcerpt": "так наоборот же, это фанаты Бабадзаки перед каждым заходом в игру свою попу готовят",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:42366e366eef67d29df986f7b3fb27cb5ca17709306a8b187a780240763a593c",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -2636,6 +2748,8 @@
           "sourceExcerpt": "Я уже представляю как эта хуета будет крутиться в ритме вальса, попутно опиздошивая гг. Просто ненавижу копейщиков в соулс-лайках, всем сердцем блять. Однако, где там мой кошелек...",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:9e35344bfaf9f068d1348d2e6aa05d2f394f3d5bb26996857011d9aff7242427",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -2654,6 +2768,8 @@
           "sourceExcerpt": "> Подача квестов у Миядзаки — один из вариантов, как убедить игрока в живости мира на экране. Мы, похоже, в разные игры играли. Более мертвого мира, чем в соулсах, еще поискать надо.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:cbfcac82c0af255ea41169f8dc3db4c03708e719f0a2b266d43c536606219f5f",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "story"
@@ -2672,6 +2788,10 @@
           "sourceExcerpt": "Игрокам приготовиться к куче тредов с нытьем, почему Элден Ринг, продавшийся в 20+ миллионов копий, имевший пиковый онлайн в 850к и довольно долго его державший, на самом деле плохая и никому ненужная игра.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:77b2d64dcdc8cb81990c79a59b8b5206cf523e8d579f9dee8e8a8df3b275066c",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -2690,6 +2810,10 @@
           "sourceExcerpt": "Да я уже заметил. Вообще это забавно, как у каждой великой игры есть вот такие хейтеры, которые бегут быстрее высказать своё важное мнение) Я понимаю, что можно не любить Elden Ring и не считать её никакой великой.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:294bb448fff3c16a9a578718a541034b6fd34c641525703e00dfd36a3590cbbf",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -2708,6 +2832,8 @@
           "sourceExcerpt": "Квесты в ER: - пойди туда, не знаю куда - найди там NPC и поговори с ним - еще раз поговори с ним - ещё раз поговори с ним, пока у него не закончатся фразы - отдохни у благодати - ещё раз поговори с NPC и получи от него квестовый предмет - догадайся, нахрена нужен этот квестовый",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:146016441e13cf8166aa1d6a8b0d0a628778902c8ddb56550a7aa9cb5711bd64",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 6,
           "topics": [
             "technical",
@@ -2989,6 +3115,8 @@
           "sourceExcerpt": ">не учли, что аудитория уже устала от однотипных геройских шутеров без изюминки Ну да, а райвалс выстрелила потому что она офигеть какая изюмистая.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a0b23bf8064885060f9667f612b27890accedd06f9e3b7049e7d7431f40e3de4",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -3007,6 +3135,8 @@
           "sourceExcerpt": "\"В связи с этим игра официально не продаётся в странах, где такую учётную запись создать нельзя, например, в Казахстане.\" Спасибо Sony что уберегли нас от этой игры",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:4421a1133524de7af9cca768069cf69e425209fc5fd31cfa9518abbcb3efb86f",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -3025,6 +3155,8 @@
           "sourceExcerpt": "Имхо: могут посадить клепать ремастеры шутеров Sony от первого лица. Не могут сделать своё, пусть хоть с пользой время проводят. В них уже слишком много денег вложено было, чтобы просто увольнять. P.S.: чо, пацаны, Killzone?",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:ab68b64e791af43a40f827de02da4220f6c81b08c53d2c41a52e42e5c875586a",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -3043,6 +3175,10 @@
           "sourceExcerpt": "Молвят, Concord войдёт в топ по онлайну и продажам.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:f1da5db6fa9213b468def299068ae7cc957b4eb07caf7c9c049be9c3339c80a0",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -3061,6 +3197,8 @@
           "sourceExcerpt": "Вот это реально смешно. Посты с шутками про барнаулцев и успех Веилгарда никто не то что не удалял, но даже в шб не отправляли. А вот стоило кому-то из пользователей написать что-то плохое про игру или про то, что у нее плохие продажи, так сразу же удаление поста.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:1c9539066d3ce89e99340c6c482cc6259203945adb1fc5679f260d0a40e1c687",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "community-humor"
@@ -3079,6 +3217,10 @@
           "sourceExcerpt": "Чет вообще не понятно, для кого Конкорд делается, очередная жвачка про каличей с абилками. Видимо, лавры Bleeding Edge покоя не дают",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:1b73be5fafd717e8dd2084216b3ece2d81907df9f8d29174ac5f440df2db9d1b",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "player-experience"
@@ -3364,6 +3506,8 @@
           "sourceExcerpt": "> Обозреватели назвали ремастер лучшей версией игры, которую обязательно следует опробовать всем поклонникам > Разработчики внесли лишь небольшие визуальные изменения > Многие журналисты признались, что большой разницы с обычной версией всё-таки не увидели Суууууука",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:5fc69eaa9e04724add5a2bbf90d1e2d20eceed38ed4d896bad849bd1b9ca1cc8",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "atmosphere"
@@ -3382,6 +3526,8 @@
           "sourceExcerpt": ">Элли и Эбби зеркальные отражения >даже имена похожи >приходят к тому, что смысла в этом круговороте насилия нет >поэтому поддерживать кого-то в этой борьбе смысла нет Блять.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:19880350d0ac98a750922489d5422663ffc84fb99b57cedd6230eb4f6c6e9f00",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -3400,6 +3546,8 @@
           "sourceExcerpt": "Всё так, сюжет субъективен но как игра супер, особенно стрельба и импакт.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:d757ef32f3f9d66b55ac5e302731b8f39a2fddde9d3671de29ccbeda81403851",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "story"
@@ -3418,6 +3566,8 @@
           "sourceExcerpt": "Категорически не разделяю хейта ко второй части. На мой взгляд, при всех своих тараканах в голове Дракманн все-таки один из немногих, кто продвигает сингловые сюжетные высокобюджетные игры, а не дроч на вышки и цифры в красивых декорациях (наравне с Лэйком, Кодзимой и",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:8090d8ca1ddaef76b308f8a498e3b97df08077fb75819cfb3818e4cb659e7a43",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "story",
@@ -3437,6 +3587,8 @@
           "sourceExcerpt": "Если у тебя турбины перегреваются от того что один набор пикселей убил другой набор пикселей, то соболезнуем) А вообще игра выстроена нормально, ты ВНЕЗАПНО (если не ловить спойлеры), начинаешь играть за персонажа который намеренно выставлен антагонистом, а Дракманн начинает лить",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a58b3cffda79ef06050830e0d27386dfb9d80f2e7d2cbec0cc278537ee3f74f4",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "story"
@@ -3455,6 +3607,10 @@
           "sourceExcerpt": "The Last Of Us 2 неиронично крутая игра, и она лучше первой части. Не набрасываю, не провоцирую, я и ещё многие люди реально так считаем",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:6b33caee8321b4ced9553237e41b7ab469a493e1bd1992d3db80078cc9fdc2e3",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "player-experience"
@@ -3733,6 +3889,8 @@
           "sourceExcerpt": "Sony и FromSoftware увернулось от его предложения и ловко бэкстебнуло игнором в спину",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:66c4ce3e07b92c4f2fc653e5767a05eb54e6bd905f6c3ec3ffe2509aa2acf4b5",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -3751,6 +3909,8 @@
           "sourceExcerpt": ">В Shadow of the Erdtree появится ещё одно отравленное болото. Миядзаки заявил, что после выпуска Elden Ring провёл самоанализ и понял, что ему нравится создавать такие локации. Да кто бы блять сомневался...",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:cb3d028787c278bc96878b59610d32e54af18c689621c254af33dde39c91aa07",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -3769,6 +3929,8 @@
           "sourceExcerpt": "Я справочная служба тебе? Открываешь реддит, протираешь глаза и смотришь посты на сабреддитах по fromsoftware и souls и делаешь выводы. Ты сам сидишь в посте про выпрашивание у разрабов порта и говоришь, что никому не надо. Найди хоть один пост про сиквел Sekiro или DS.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:4ad26b0969ea78527b587c59cc0a70ee6075e4310efa5b6fa0101dfec1b900bf",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -3787,6 +3949,8 @@
           "sourceExcerpt": "Людям хочется пройти игру в хорошем качестве и при 60 FPS, что тут плохого? Даже мне, прошедшему бладик на пс4, хочется ремастер или ремейк",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:65373fd5787b0f0c5605769fe7caeba46e9cff6fa5b3c46e9a70d9d2b2dc1a36",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "technical"
@@ -3805,6 +3969,10 @@
           "sourceExcerpt": "не, мне поебать если честно что на сони, что на бладборн, что на конкорд, я просто интересуюсь откуда у тебя статистика",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:9327b13badcc1ae36d2622f6cf40fd041b241e1aac765aa135bf8732595eff2a",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -3823,6 +3991,10 @@
           "sourceExcerpt": "Bloodborne 2 сегодня анонсируют, проверяй!",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a8a445bd0cb1c8c356f8ade92fa5c07223e3c19f6c4fefe11183c12fb3559119",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "release-context"
@@ -4104,6 +4276,8 @@
           "sourceExcerpt": "NMS: Выпускают недоделанную игру но спустя годы всё исправляют - Вот же Шон молодец, респект. CDPR: Выпускают недоделанную игру но спустя годы всё исправляют - раньше надо было, идите дальше лохов разводите, говноделы.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:ff2fed9d0bc298a61362140b4d1d24514ef2454b6970181e82c0aa67f82362c9",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -4122,6 +4296,8 @@
           "sourceExcerpt": "NMS: Выпускают недоделанную игру но спустя 8 лет всё исправляют - всем дтфом продолжаем вспоминать отвратительный релиз. CDPR: Выпускают недоделанную игру но спустя три года решили забить болт и оставить игру в состоянии кривой поделки- молодцы, респект",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2c057d2103dc24bbea4bed1d9766928cb4c564bdef7fb92600b54058402fccbc",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "release-context"
@@ -4140,6 +4316,8 @@
           "sourceExcerpt": "Можно элементарно дать игроку выбор - как он хочет перемещаться: фасттревелом через загрузочный экран или ручками. Самое простое и логичное решение. Не понимаю тех, кто так яро дефает безальтернативные загрузочные экраны - это фанбойство в последней стадии.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:749c694d70b24e333012e3675cb7ee8121417cfda5164700c41e01ee6ddcb027",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "technical"
@@ -4158,6 +4336,8 @@
           "sourceExcerpt": "Посмотрел когда-то видос от Internet Historian'a, где он подробно рассказал историю разработки NMS. Какой бы игра не была, но Шон и команда действительно достойны уважения",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:6c656053dc03af3839bae248384928bf6726a6b2d5a9b456800b200feb9493d1",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "story",
@@ -4177,6 +4357,10 @@
           "sourceExcerpt": ">No Man's Sky и Cyberpunk 2077 — самые известные игры, которым удалось пережить катастрофический релиз, а их разработчикам — вернуть доверие игроков.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:c0ed42706f16ef65a2923e8aa749da1e758800c22ea985d9adff9a88ad256cea",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "release-context"
@@ -4195,6 +4379,10 @@
           "sourceExcerpt": "По сравнению с историей No Man's Sky, исправление багов в Cyberpunk 2077 и рядом не стояло.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:89328f7d40131f36c0e1d9f4e56fd76f31d32fcf1b34f9bc6a0005bc3d124945",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "technical",
@@ -4477,6 +4665,8 @@
           "sourceExcerpt": "ааааыыыыы пачиму озвучили хогвартс, ааааыыы лучши бы киберпанк ааааыыыыы",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:f8275cfda440f4c4ca733cb853b97044dae2cef6fea8ad8f4f09f2bdb6e0a3a2",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -4495,6 +4685,8 @@
           "sourceExcerpt": "Дико извеняюс пробегал кобанчиком увидел ваш хогвартс легаси чё тут? АХАХХААХ бляяя 25+ лет мужику сидят палочками машут и увороты жмут, я в твоих годах уже в интернешенал участвовал)) ладно до встречи Задроты бляя)))",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:b26914a90b1d64906df104dfdef27c44492f924327fb29c9fe2a7393e05a1187",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -4513,6 +4705,8 @@
           "sourceExcerpt": "пишут что аваланчи не обосрались, хогвартс ебейший который интересно пылесосить, что боевка не такая хуевая какая кажется, даже РЕИГРАБЕЛЬНОСТЬ какая-то есть, в игре тонны фансервиса, прочих приколов но ругают скучные активности за пределами школы, небольшие технические огрехи и",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:47055eefd2dd77147440f0171643cbf58f04d5e6a0c86a15188ef20c63c16f96",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "mechanics"
@@ -4531,6 +4725,10 @@
           "sourceExcerpt": "Ну конечно конечно, есть только твое мнение и не правильное, ясненько. Но все же это твои влажные фантазии, а то что Hogwarts Legacy самая продаваемая игра года - это факт, с которым не поспоришь.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2f1d21a97baf8df2f46d591d723d79a3f0da01db80101a9d2bffe61981b82cc5",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -4549,6 +4747,10 @@
           "sourceExcerpt": "Свич ахуй, каждый раз думаю: \"ну нет doom/wolfensten 2/doom eternal/witcher 3/dying light/borderlands 3/hogwarts legacy он тооочно не потянет\", а он тянет. Походу время купить какой-нить лайт перед сном гонять... вспомнил что туда ещё и Arkham Knight портанут, кайф🙄",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:7e3359318cad27929143502fb9c23c7d105be09236d7902180fd2eb4b3bf8e42",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -4567,6 +4769,10 @@
           "sourceExcerpt": "\"Многочисленные оптимизации не привели к тому, чтобы Hogwarts Legacy стала бы выглядеть плохо\" Привели. Выглядит как говно",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:6d97455624f95f6c65229bfbbcb8ab92067648b56f32505c7ba79d1abe553701",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "technical"
@@ -4849,6 +5055,8 @@
           "sourceExcerpt": "Тревор и семья майкла ахуеные хз о чем ты",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:87182917e8a426dda634c07f9d499f5038aa18836eeafc7820c9689c6a5270b9",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -4867,6 +5075,8 @@
           "sourceExcerpt": "Хз, вродь норм. Но прям вау эффекта не вызывло. Рокстары ударились в визуальный симс ещё с пятерки, ну минимум с четвёрки, поэтому ощущается, будто за такой красивой обёрткой будут вялые и деревянные персонажи, а сюжет проседать.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:6dae216b97a73262e7813ba02ed65f3daa6aac8f6da999eec12bdc0d9d9e534a",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "story",
@@ -4886,6 +5096,10 @@
           "sourceExcerpt": "В первом трейлере GTA V только Майкл на полторы секунды появляется, и то при условии, что ты знаешь, кто это.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:5b96c73bc08f452c40ca632e5cbfd986ca7e448ebb96ce21955709d68abd1fca",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -4904,6 +5118,10 @@
           "sourceExcerpt": "Это буквально на несколько голов выше чем трейлер гта 5. А то что там у тебя «атмосферно» это потому что ты эту игру уже 10 лет видишь. Через 10 лет и этот трейлер будет атмосферным",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:aeb82f89c9283dfc709bafad0207a3865094ee887808e54ce29684e231768e0b",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "atmosphere"
@@ -4922,6 +5140,10 @@
           "sourceExcerpt": ">Разница графики минимальная, а DLSS, как и FSR, — пустышка Кандидат на самый пиздабольский отзыв ДЛСС ГТА 5 нужен был, как воздух. Спасибо убогим вариантам сглаживания в Легаси версии Что действительно херово - отсутствие текстового чата",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:ce7b764c4c2af684e16eb4ce21a85c99d5e6e91e37d99d8f80340c96bb6d5423",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "atmosphere"
@@ -4940,6 +5162,10 @@
           "sourceExcerpt": "я раньше мечтал поиграть в гта 5. Но поиграв.... какой же она была клоунской...какие же неинтересные и скучные персонажи... Так и не понял за что ее так многие любят. Может для многих она была первой и потому им нравится",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:aff2c1a09c79bd610d9fcaf3454878625efc9ddfe3393aaf6def88e09f537b17",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "story"
@@ -5227,6 +5453,8 @@
           "sourceExcerpt": "Цифровая площадка VK Play запустила продажи ключей активации игр для Steam.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:026a4e370fc5cedcf3dca622b79cf60c31623e1cbf83dab447a27a5e9b413e00",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -5245,6 +5473,8 @@
           "sourceExcerpt": "Давай будем честны, ты порвался не потому, что это сессионка, а потому, что это игра от Sony.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:70f76e957f11ced1b8ea3239185ff2e9118cc3fb1b203477afe463141335211a",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -5263,6 +5493,8 @@
           "sourceExcerpt": "> ну конечно, комфортную игру убить из-за пары нытиков Так никто и не ныл, всем похуй, глобал похуй.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:d9bfed5daf3335cd9395b435893015aa594e00dd3d027d1d51deae67a011349b",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -5281,6 +5513,8 @@
           "sourceExcerpt": "Вчера плевались на беседку за платный скин на лошадь в подливионе, а сегодня благодарим за отсутствие p2w в АА платной игре 😁 Поезд давно уехал, потребители в массе своей люди ведомые и неприхотливые, мы уже приняли что за пейволлом теперь и доступ к игре раньше(чего блять?) и",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:c6a4348981726869ff9f11d0ccb390b89051d520710223e1d08739c93aa66b81",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "technical"
@@ -5299,6 +5533,10 @@
           "sourceExcerpt": ">Один из пользователей поблагодарил разработчиков Helldivers 2 за «нехищные» микротранзакции >поблагодарил >за микротранзакции",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:4101b1706902d31544987ae2cf4adc403b2ee6cc0913ec9fd13ab47e9af30fc8",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "technical"
@@ -5317,6 +5555,10 @@
           "sourceExcerpt": "> Один из пользователей поблагодарил разработчиков Helldivers 2 за «нехищные» микротранзакции В очередной раз убеждаюсь что геймеры сами заслужили то что сейчас происходит с монетизацией в индустрии.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:27273a6b13da8009d7451458cc3dedcd9c5e422ff38c4191fb672567ae8951e7",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "technical",
@@ -5598,6 +5840,8 @@
           "sourceExcerpt": "Надо помнить, что Вейлгард очень дорогой и блокбастерный. Сколько было влито бабла во все эти ассеты, в гигантскую говнотонну эмбиентной озвучки (зачастую еще и динамически меняющейся по ходу игры, с новыми неписями появляющимися в зачищенных данжах вроде подземки Cock City), в",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:b9eececfe5b97aba3b8755ac7352743b85c8d730e4aa35f7369f25aa702ee5b1",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -5616,6 +5860,8 @@
           "sourceExcerpt": "я тоже не особо силен в английском, но вроде там написано про то, что британские ученые провели исследования и выявили множество целебных свойств у Балтики 7, если же употреблять Балтику 7 в некоторых регионах, таких как Воркута, например, то целебные свойства удваиваются и даже",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:cc9976ff621540883bc957b2ad06d79e1f625e28ab815e867baaecd4df469945",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -5634,6 +5880,8 @@
           "sourceExcerpt": "Тут игра уже сама себе занижает оценку",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:21a1db9bddbfc74444f256c3fae483dc85cc15898608177e1651b43454b49440",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "release-context"
@@ -5652,6 +5900,8 @@
           "sourceExcerpt": "Тааш это следствие проблемы, на ней проще всего показать что не так, а основная проблема то, что все делалось инклюзивно, чтобы никто не обиделся, чтобы не дай бог не было перегруженной механиками и именно поэтому получился беззубый результат.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:ff5aae3009b5953f5b14fe2f26d221af5a14f8f9de8d94be316858044c0ef3ae",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "mechanics"
@@ -5670,6 +5920,8 @@
           "sourceExcerpt": "Вариативный редактор персонажа, а не полдюжины лиц на расу✅ Современная экшоновая боевка без кубов ✅ Озвученный персонаж, а не немой болванчик ✅ Качественные катсцены с ПОСТАНОВОЙ ✅ Колоритные сопартийцы в лучших традициях BioWare ✅ Вот он - рецепт легендарной премиум-ААА-RPG.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:0bdb39305543ed07789900d1aab5e2986c95060674304ca27b9df87571047150",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "mechanics",
@@ -5689,6 +5941,10 @@
           "sourceExcerpt": "Главная причина провала Dragon Age: The Veilguard - в том, что биовар контора тридварасов, которая давно забыла как делать нормальные ролевые игры с интересными квестами и персонажами. Но виновата, конечно, ЕА.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:006aace4c09d42710a49e156cab98f7678863c73c9800d59a3fabfa4f9360c63",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "story"
@@ -5968,6 +6224,8 @@
           "sourceExcerpt": "Охренеть сколько неадекватов из рф в чате. Приходят в чат просто насрать гадости. Выглядит игра красиво. Звуки нравятся.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:b57e7988695956f8adcf59179d8c57e464de8f9250dd755a00235922b3051f8e",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "atmosphere"
@@ -5986,6 +6244,8 @@
           "sourceExcerpt": "Рофл за рофлом, в 2022 говорили, что переносов на 2024 не будет.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:b18f1fd5a49918fab36d0f0c801466fe70d9269c093b90462258d3f682faeb02",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -6004,6 +6264,8 @@
           "sourceExcerpt": "> В S.T.A.L.K.E.R. 2 нет традиционной системы прокачки уровней. Что значит традиционной? Ни в одном сталкере не было такой системы",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:512d299dd854168f14f276354a175e0d73703e2b933b6d7fad336a2d6a7b05a7",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "mechanics"
@@ -6022,6 +6284,10 @@
           "sourceExcerpt": "Идут по лесу Дюймовочка, Белоснежка и Сталкер 2. Дюймовочка: — Я самая маленькая на свете.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:b0da00d3c6191e78eb8768d5ac4fc4e399938897705516a86823864f7433daca",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 4,
           "topics": [
             "player-experience"
@@ -6040,6 +6306,10 @@
           "sourceExcerpt": "единственная разница в том, что в них вливают бабло западные студии, но даже так они умудряются делать лютые обсёры типа той же The Sinking City, издатель Deep Silver думаю в восторге был) а теперь вот 10 лет в страшных потугах рожают Stalker 2, которого Юбисофт могли бы за 1 год",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:073e89c6f90de8346d17d245b845f626ae93e7d135969f72b907702a44610e45",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -6058,6 +6328,10 @@
           "sourceExcerpt": "Я только внесу небольшую правку дорожной карты разработки Сталкер 2: 2020 - Первый тизер 2021 - первый анонс даты выхода 2022 - первый перенос 2023 - второй перенос 2024 - третий перенос 2024 - четвертый перенос <———- ВЫ ЗДЕСЬ 2025 - разработка игры 2026 - разработка игры 2027 -",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:62d3c5e7bcedc33ebd7fef1bc9dede5b0f0444bed47a976c98b4b6d1fce5d7cc",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "release-context"
@@ -6312,6 +6586,8 @@
           "sourceExcerpt": "Virgin Warhorse studios: не добавляют негров в Kingdom Come Deliverance, потому что в реальной средневековой Богемии их не было, а те 2.5, что могли быть, были рабами. Chad Ubisoft: находят единственного на всю Японию негра и делают его главным героем.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2324760d38dab6d2b8355123c0e0ca15f2e03f3d7f65067ee29d0df70fe41ad1",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -6330,6 +6606,8 @@
           "sourceExcerpt": "Если геймплеем за Ясукэ будет стирка набедренных повязок, то я согласен с отсутствием повестки",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:1f04248eb3e8d038dbbe115fa7958ab470fd0e2b8ba82aa29b29463516bc468b",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "mechanics"
@@ -6348,6 +6626,8 @@
           "sourceExcerpt": ">В это же время геймплей за Ясукэ не всегда ощущается правильно и удачно Потому что не пришей кобыле хвост. Во всех отношениях.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:a87b0826215fdbc136d3e2951e5edf3482890f22eaebbadd3acb55e81e3b9a95",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "mechanics"
@@ -6366,6 +6646,8 @@
           "sourceExcerpt": "Только в итоге Самураем он не был. Там сами черные покопались в истории и оказалось, что он был рабом, а потом носильщиком. Про это большая дискуссия в твиттере была.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:38a81c78c0b2ec9d9d8fd8f626cdbe0feaf2ac87b59563adf77663b1e84bf792",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "story"
@@ -6384,6 +6666,10 @@
           "sourceExcerpt": ">Разработчики Assassin's Creed Shadows сделают столы и полки в игровых святилищах неразрушаемыми, а также уменьшат количество сцен с кровопролитием, которые происходят в храмах.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:5aa2fb8d7d0898dc34b88f8bf3cccdcfe7d0c93db6bb74745e0ec6234ed58bb7",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -6402,6 +6688,10 @@
           "sourceExcerpt": "Наконец-то Assassin's Creed Shadows уже совсем близко, и я просто не могу дождаться Ubisoft снова удивляет, и эта игра выглядит как эпическое приключение. Не могу дождаться, чтобы исследовать мир, освоить стелс- механики и погрузиться в экшен. Уровень хайпа зашкаливает",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:43958281ce4c1c73a807933ea503cd1a7c363ab8533f7d535a971aacf279bba0",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "mechanics"
@@ -6682,6 +6972,8 @@
           "sourceExcerpt": "Нет. Остаются сюжет, локации, атмосфера.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:49ecaee5bf05949641a78a4cc0053703835b8e506d5c1c8cf6ce18857e7661cc",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "story",
@@ -6701,6 +6993,8 @@
           "sourceExcerpt": ">разъебать >Dragon Age Dreadwolf >Avowed >STALKER 2 )) Даже маскарад, зв и ассасин не так сомнительно, как эти.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:f301a1a9c8a9066906737fa2f1269fcbca4ee476e15aa01ba1f306ade2ebe6f3",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -6719,6 +7013,8 @@
           "sourceExcerpt": "Мне очень сильно нравится RDR2(прошёл 2 раза) хотя её называют очень медлительной и скучной, из этого можно сделать вывод, что я люблю погружаться в мир и исследовать его.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:78f273108ece7f7cde57bb6f558a0ba2db10cba3d5358a1ce6b7d2cfa7fc6bbb",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "player-experience"
@@ -6737,6 +7033,8 @@
           "sourceExcerpt": "Банальная условность для оправдание прокачки персонажа, которая под разными вводными кочует из игры в игру последние лет 30",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:49ffaf2c9a647eabf4971e2472c6fbc419147fa7723d89f67421aacef3414769",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "mechanics",
@@ -6756,6 +7054,8 @@
           "sourceExcerpt": ">кривая боевка это не боевка кривая, это руки не в ту сторону завернуты и персонаж твой слабый и ничего не умеет, ты хотя бы удар в колено, рипост на противоходе, связки? абсолютно убежден, что ты бездумно махаешь мечом и срешь то в чем не разобрался и не понимаешь",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:c3159730067d85f3c536e81039212e7e0dccc1f491d0d5df1fc9c69c0a4fa774",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 5,
           "topics": [
             "mechanics",
@@ -6775,6 +7075,10 @@
           "sourceExcerpt": "Чот в конце года нас грозятся разъебать большими рпг/экшен-рпг в открытом мире - Kingdom Come 2, Dragon Age Dreadwolf, Avowed, Vampire Masquerade Bloodlines 2, STALKER 2, Star Wars Outlaws, новый ассассин.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:4687d44e489e92c8f8fee08cc3d1070ba7772e92e4948e44b164c6b905619e9c",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "player-experience"
@@ -7054,6 +7358,8 @@
           "sourceExcerpt": ">что на пике у Sandfall было около 40 штатных сотрудников, однако над игрой также активно трудились восемь корейских аниматоров, а четверо разработчиков Scorn помогали с консольными версиями те самые \"только 30 человека работало над игрой\"",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:e11ed76de19334ce6be71e3995dfeae9c44c0d1eee2790f13916a40400e1e00b",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 1,
           "topics": [
             "player-experience"
@@ -7072,6 +7378,8 @@
           "sourceExcerpt": "Блять тебе в пролог говорят, что Густав детей хотел завести, а Софи наоборот не хотела (она считала жестоко заводить детей и обрекать их на раннюю смерть) Разъебал бы тебя и дальше, но как было сказано раньше, твой наброс в стиле претензий папича, не стоит того.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:59c613e8a231351e75096e6f095f8a3936c719c27d665152cf12ed36ad250b7e",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 2,
           "topics": [
             "player-experience"
@@ -7090,6 +7398,8 @@
           "sourceExcerpt": "Blue Prince я бы даже на первое мог поставить, невероятно глубокая игра, возрождающая жанр квестов. А Clair Obscur в художественном плане прекрасна.",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:908ad73e78636d268c484e4c99882584d3752319f5d59a17bcdb3fdfd44bab2b",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 3,
           "topics": [
             "story"
@@ -7108,6 +7418,8 @@
           "sourceExcerpt": "В подаче. Не буду утверждать что тема эскапизма из Экспедиции 33 нигде ранее не всплывала, но разница в том как этот сюжет подается - через характеры персонажей, через их живые диалоги, через актерскую игру...",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:c647597ededb7f9958e229a95b01601e5b050f3d2594bd51e7811dd644266df3",
+          "wasRedacted": false,
+          "redactionReasons": [],
           "clueStrength": 4,
           "topics": [
             "story"
@@ -7126,6 +7438,10 @@
           "sourceExcerpt": "Не припомню такой год, где было бы настолько очевидно, кто станет ГОТИ 😎 экспедиция 33",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:41ec39b99a79be3a1e8b2e871b593365cf81847c3413919bf6cb9f430ada5630",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 5,
           "topics": [
             "player-experience"
@@ -7144,6 +7460,10 @@
           "sourceExcerpt": ">«Качество» — около 1440p, 30 fps >«Качество» — около 1224p, 30 fps >«Производительность» — около 864p, 60 fps >Expedition 33 хорошо выглядит и стабильно работает на всех «старших» консолях Это шутка такая?",
           "sourceVerifiedAt": "2026-07-23",
           "contentHash": "sha256:2684cbecf1968b3a22b61f96cae1d5cb8538c279cdbcb569b302457331a4eda2",
+          "wasRedacted": true,
+          "redactionReasons": [
+            "direct_answer"
+          ],
           "clueStrength": 6,
           "topics": [
             "technical",

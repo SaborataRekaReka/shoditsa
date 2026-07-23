@@ -44,6 +44,8 @@ const generatedPath = resolve(root, 'public/data/games.generated.json')
 const libraryPath = resolve(root, 'public/data/libraries/games/items.json')
 const searchIndexPath = resolve(root, 'public/data/libraries/games/search-index.json')
 const packPath = resolve(root, 'data/promo/dtf-game-comments-25-v1.json')
+const dtfCommentsPatchPath = resolve(root, 'data/games/enriched/dtf/games-dtf-catalog-patch.json')
+const dtfCommentsReviewPath = resolve(root, 'data/games/enriched/dtf/games-dtf-review-required.json')
 const outputDir = resolve(root, 'data/games/enriched')
 const steamSpyCachePath = resolve(root, 'data/games/cache/steamspy-candidates.json')
 const detailsCachePath = resolve(root, 'data/games/cache/steam-store-enrichment.json')
@@ -973,11 +975,39 @@ const main = async () => {
   const baselinePath = !hasFlag('use-current-source') && await exists(paths.backup) ? paths.backup : sourceLibraryPath
   const sourceItems = await readJson(baselinePath)
   if (!Array.isArray(sourceItems)) throw new Error('Game source root must be an array')
-  const [dtfPack, overrides] = await Promise.all([
+  const [dtfPack, overrides, dtfCommentsPatch, dtfCommentsReview] = await Promise.all([
     readJson(packPath),
     readJson(enrichmentOverridesPath, { schemaVersion: 1, bySteamAppId: {} }),
+    readJson(dtfCommentsPatchPath, { schemaVersion: 1, items: [] }),
+    readJson(dtfCommentsReviewPath, { schemaVersion: 1, items: [] }),
   ])
   const dtfSteamIds = new Set(dtfPack.items.flatMap((item) => item.answerRef?.steamAppIds ?? []).map(Number))
+  const dtfCommentsByGameId = new Map(
+    (dtfCommentsPatch.items ?? [])
+      .filter((item) => item?.canonicalGameId && Array.isArray(item.comments))
+      .map((item) => [item.canonicalGameId, item.comments.map((comment) => {
+        const {
+          sourceExcerpt: _editorialSourceExcerpt,
+          contentHash: _editorialContentHash,
+          ...runtimeComment
+        } = comment
+        return runtimeComment
+      })]),
+  )
+  const legacyDtfCommentsByGameId = new Map(
+    dtfPack.items
+      .filter((item) => item?.gameId && Array.isArray(item.progressiveHints))
+      .map((item) => [item.gameId, item.progressiveHints]),
+  )
+  const reviewDtfCommentsByGameId = new Map(
+    (dtfCommentsReview.items ?? [])
+      .filter((item) => item?.canonicalGameId)
+      .map((item) => [item.canonicalGameId, legacyDtfCommentsByGameId.get(item.gameId) ?? []]),
+  )
+  const dtfTargetGameIds = new Set([
+    ...dtfCommentsByGameId.keys(),
+    ...reviewDtfCommentsByGameId.keys(),
+  ])
   const overrideBySteamAppId = overrides.bySteamAppId ?? {}
   const mustIncludeSteamIds = Object.entries(overrideBySteamAppId)
     .filter(([, override]) => override.mustIncludeDaily)
@@ -1062,8 +1092,16 @@ const main = async () => {
       const thematic = thematicPoolsFor(item)
       if (dtfSteamIds.has(Number(item.steamAppId))) thematic.push('dtf-comments')
       const poolIds = uniqueStrings([...(dailyIds.has(item.id) ? ['daily-general'] : []), ...thematic])
+      const verifiedDtfComments = dtfCommentsByGameId.get(item.id)
+      const reviewDtfComments = reviewDtfCommentsByGameId.get(item.id)
+      const hasLegacyDtfComments = Array.isArray(item.comments)
+        && item.comments.some((comment) => comment?.sourcePackId === dtfPack.pack.id)
+      const comments = verifiedDtfComments
+        ?? reviewDtfComments
+        ?? (hasLegacyDtfComments && !dtfTargetGameIds.has(item.id) ? undefined : item.comments)
       return {
         ...item,
+        comments,
         poolIds,
         allowedInGame: dailyIds.has(item.id),
         contentStatus: dailyIds.has(item.id) ? 'ready' : 'limited',
