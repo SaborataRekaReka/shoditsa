@@ -39,15 +39,21 @@ describe('deterministic rules', () => {
     expect(poolFor(items, 'city', 'all', 'capitals-popular').map((item) => item.id)).toEqual(['city:capital', 'city:popular'])
     expect(compareTitles(capital, capital).every((hint) => hint.status === 'match')).toBe(true)
   })
-  it('never includes promo cards in the regular games pool', () => {
+  it('requires an explicit opt-in before including promo cards in the regular games pool', () => {
     const regular = { id: 'tgdb_1', mode: 'game', titleRu: 'Regular', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }
     const promoById = { ...regular, id: 'promo:dtf-test', titleRu: 'Promo by id' }
     const promoByStatus = { ...regular, id: 'game-promo-copy', titleRu: 'Promo by status', contentStatus: 'promo_pack' }
-    const items = [regular, promoById, promoByStatus] as TitleItem[]
+    const promotedById = { ...promoById, allowedInGame: true }
+    const promotedByStatus = { ...promoByStatus, allowedInGame: true }
+    const explicitlyHidden = { ...promotedById, id: 'promo:dtf-hidden', allowedInGame: false }
+    const items = [regular, promoById, promoByStatus, promotedById, promotedByStatus, explicitlyHidden] as TitleItem[]
 
-    expect(poolFor(items, 'game', 'all').map((item) => item.id)).toEqual(['tgdb_1'])
+    expect(poolFor(items, 'game', 'all').map((item) => item.id)).toEqual(['tgdb_1', 'promo:dtf-test', 'game-promo-copy'])
     expect(isAllowedInRegularGame(promoById as TitleItem)).toBe(false)
     expect(isAllowedInRegularGame(promoByStatus as TitleItem)).toBe(false)
+    expect(isAllowedInRegularGame(promotedById as TitleItem)).toBe(true)
+    expect(isAllowedInRegularGame(promotedByStatus as TitleItem)).toBe(true)
+    expect(isAllowedInRegularGame(explicitlyHidden as TitleItem)).toBe(false)
   })
   it('deduplicates search results that share an external catalog id', () => {
     const base = {

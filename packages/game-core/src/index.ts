@@ -207,11 +207,11 @@ export const isPromoGameItem = (item: Pick<TitleItem, 'id' | 'mode' | 'contentSt
   item.mode === 'game' && (item.id.startsWith('promo:') || String(item.contentStatus ?? '') === 'promo_pack')
 
 export const isAllowedInRegularGame = (item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame'>) =>
-  item.allowedInGame !== false && !isPromoGameItem(item)
+  item.allowedInGame !== false && (item.allowedInGame === true || !isPromoGameItem(item))
 
 const isAllowedInMode = (item: TitleItem, mode: TitleMode) => {
   if (item.mode !== mode) return false
-  if (isPromoGameItem(item)) return false
+  if (!isAllowedInRegularGame(item)) return false
   if (mode !== 'series') return true
 
   if (isAnimatedEntry(item)) return false
