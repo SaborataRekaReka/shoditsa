@@ -13,7 +13,7 @@
 import { randomUUID } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import type { TitleItem } from '@shoditsa/contracts'
 import { loadConfig } from '@shoditsa/config'
 import {
@@ -29,6 +29,7 @@ import {
 import {
   activateWorkspaceRevision,
   buildWorkspaceRevision,
+  contentPayloadsEqual,
   getOrCreateWorkspace,
   saveWorkspaceItem,
   validateWorkspace,
@@ -182,7 +183,7 @@ const main = async () => {
           document.pack.id,
         ),
       }))
-    const changed = merged.filter(({ before, after }) => JSON.stringify(before) !== JSON.stringify(after))
+    const changed = merged.filter(({ before, after }) => !contentPayloadsEqual(before, after))
     const baseReport = {
       generatedAt: new Date().toISOString(),
       mode: apply ? activate ? 'apply-and-activate' : 'apply' : 'dry-run',
@@ -239,6 +240,8 @@ const main = async () => {
 
     let workspaceId: string | null = null
     let activatedRevision: { id: string; version: string } | null = null
+    let resumedWorkspace = false
+    let validation: Awaited<ReturnType<typeof validateWorkspace>> | null = null
     if (changed.length) {
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(actorId)) {
         throw new Error('--actor-id with a valid admin user UUID is required for --apply')
@@ -253,25 +256,34 @@ const main = async () => {
       workspaceId = workspace.id
       if (workspace.status !== 'open') throw new Error(`Content workspace ${workspace.id} is ${workspace.status}, expected open`)
       if (workspace.baseRevisionId !== active.id) throw new Error('Content workspace is based on a different revision')
-      const existingChanges = (await db.select({
-        count: sql<number>`count(*)::int`,
-      }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id)))[0]?.count ?? 0
-      if (existingChanges) {
-        throw new Error(`Content workspace ${workspace.id} already contains ${existingChanges} change(s); publish or discard them before the DTF merge`)
+      const existingChanges = await db.select({
+        itemId: contentWorkspaceChanges.itemId,
+        afterPayload: contentWorkspaceChanges.afterPayload,
+        source: contentWorkspaceChanges.source,
+      }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id))
+      const intendedByItem = new Map(changed.map((entry) => [entry.resolution.catalog!.itemId, entry.after]))
+      const canResume = existingChanges.length === changed.length
+        && existingChanges.every((change) => change.source === 'import'
+          && intendedByItem.has(change.itemId)
+          && contentPayloadsEqual(change.afterPayload, intendedByItem.get(change.itemId)))
+      if (existingChanges.length && !canResume) {
+        throw new Error(`Content workspace ${workspace.id} already contains ${existingChanges.length} unrelated or conflicting change(s); publish or discard them before the DTF merge`)
       }
+      resumedWorkspace = existingChanges.length > 0 && canResume
 
       const requestId = `dtf-comments-merge:${randomUUID()}`
-      for (const { resolution, after } of changed) {
-        await saveWorkspaceItem(db, actor, resolution.catalog!.itemId, {
-          mode: 'game',
-          payload: after as unknown as Record<string, unknown>,
-          expectedVersion: 0,
-          source: 'import',
-          reason: `Merge ${document.pack.id} comments into canonical game data`,
-        }, requestId)
+      if (!canResume) {
+        for (const { resolution, after } of changed) {
+          await saveWorkspaceItem(db, actor, resolution.catalog!.itemId, {
+            mode: 'game',
+            payload: after as unknown as Record<string, unknown>,
+            expectedVersion: 0,
+            source: 'import',
+            reason: `Merge ${document.pack.id} comments into canonical game data`,
+          }, requestId)
+        }
       }
-      const validation = await validateWorkspace(db, actor)
-      if (validation.errors) throw new Error(`Workspace validation failed with ${validation.errors} error(s)`)
+      validation = await validateWorkspace(db, actor)
 
       if (activate) {
         await buildWorkspaceRevision(db, actor, workspace.id, requestId)
@@ -292,6 +304,8 @@ const main = async () => {
       imported: true,
       workspaceId,
       activatedRevision,
+      resumedWorkspace,
+      validation,
       packUpdated,
       packStatus: packUpdated ? publish ? 'published' : 'draft' : 'unchanged',
       nextStep: !activate && changed.length
