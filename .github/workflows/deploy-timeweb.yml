@@ -237,7 +237,7 @@ jobs:
             rollback_api
             exit 1
           fi
-          if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/content-import-dtf-comments.js --publish --report=/tmp/dtf-game-comments-25-import-report.json </dev/null; then
+          if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/content-import-dtf-comments.js --apply --activate --publish --actor-id="$ADMIN_USER_ID" --report=/tmp/dtf-game-comments-25-import-report.json </dev/null; then
             rollback_api
             exit 1
           fi
