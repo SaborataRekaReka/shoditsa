@@ -338,7 +338,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRou
       <span className="room-kicker">Игра с друзьями · онлайн-комната</span>
       <h1>Онлайн-комната</h1>
       <p>Выберите один или несколько паков и правила. В комнате могут играть до {room.capacity} человек — все одновременно увидят подсказки и отправят по одному ответу.</p>
-      <div className="room-code-card"><span>Код комнаты</span><strong>{room.code}</strong><button type="button" onClick={onCopy}><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать ссылку'}</button></div>
+      <div className={`room-code-card${copied ? ' is-copied' : ''}`}><span>Код игры</span><strong>{room.code}</strong><button type="button" onClick={onCopy} title="Копировать ссылку-приглашение"><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать'}</button></div>
       <MemberStack members={members} capacity={room.capacity} />
     </div>
     <div className="room-lobby__settings">
