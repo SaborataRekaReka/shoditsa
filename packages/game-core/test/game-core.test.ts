@@ -7,6 +7,7 @@ import {
   compareTitles,
   dailyTitle,
   isAllowedInRegularGame,
+  isPlayableGamePlotHint,
   isExactTitleSearchMatch,
   musicDifficultyPool,
   normalize,
@@ -51,7 +52,15 @@ describe('deterministic rules', () => {
     expect(compareTitles(capital, capital).every((hint) => hint.status === 'match')).toBe(true)
   })
   it('requires an explicit opt-in before including promo cards in the regular games pool', () => {
-    const regular = { id: 'tgdb_1', mode: 'game', titleRu: 'Regular', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }
+    const regular = {
+      id: 'tgdb_1',
+      mode: 'game',
+      titleRu: 'Regular',
+      titleOriginal: '',
+      alternativeTitles: [],
+      popularityScore: 1,
+      plotHint: 'Игрок исследует мир, сражается с противниками и развивает героя.',
+    }
     const promoById = { ...regular, id: 'promo:dtf-test', titleRu: 'Promo by id' }
     const promoByStatus = { ...regular, id: 'game-promo-copy', titleRu: 'Promo by status', contentStatus: 'promo_pack' }
     const promotedById = { ...promoById, allowedInGame: true }
@@ -65,6 +74,24 @@ describe('deterministic rules', () => {
     expect(isAllowedInRegularGame(promotedById as TitleItem)).toBe(true)
     expect(isAllowedInRegularGame(promotedByStatus as TitleItem)).toBe(true)
     expect(isAllowedInRegularGame(explicitlyHidden as TitleItem)).toBe(false)
+  })
+  it('keeps broken plot hints out of the games pool', () => {
+    const base = {
+      id: 'game:hint',
+      mode: 'game',
+      titleRu: 'Секретная игра',
+      titleOriginal: 'Secret Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+    } as TitleItem
+    const good = { ...base, plotHint: 'Герой исследует опасный мир, собирает ресурсы и принимает трудные решения.' }
+
+    expect(isPlayableGamePlotHint(good)).toBe(true)
+    expect(isPlayableGamePlotHint({ ...base, plotHint: '[REDACTED] ведёт героя через опасный мир.' })).toBe(false)
+    expect(isPlayableGamePlotHint({ ...base, plotHint: 'Герой исследует опасный мир и сражается...' })).toBe(false)
+    expect(isPlayableGamePlotHint({ ...base, plotHint: 'В Secret Game герой исследует опасный мир и сражается.' })).toBe(false)
+    expect(poolFor([good, { ...base, id: 'game:bad', plotHint: '[REDACTED] ведёт героя через опасный мир.' }], 'game', 'all')
+      .map((item) => item.id)).toEqual(['game:hint'])
   })
   it('deduplicates search results that share an external catalog id', () => {
     const base = {

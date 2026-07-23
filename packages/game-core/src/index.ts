@@ -206,8 +206,35 @@ const looksLikeFeatureFilm = (item: TitleItem) => {
 export const isPromoGameItem = (item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus'>) =>
   item.mode === 'game' && (item.id.startsWith('promo:') || String(item.contentStatus ?? '') === 'promo_pack')
 
-export const isAllowedInRegularGame = (item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame'>) =>
-  item.allowedInGame !== false && (item.allowedInGame === true || !isPromoGameItem(item))
+const normalizePlotHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
+const normalizePlotHintMatch = (value: unknown) => normalizePlotHintText(value)
+  .normalize('NFKD')
+  .toLocaleLowerCase('ru-RU')
+  .replace(/\p{M}+/gu, '')
+  .replace(/[^\p{L}\p{N}]+/gu, ' ')
+  .trim()
+
+export const isPlayableGamePlotHint = (
+  item: Pick<TitleItem, 'plotHint' | 'titleRu' | 'titleOriginal'>,
+) => {
+  const hint = normalizePlotHintText(item.plotHint)
+  if (hint.length < 30) return false
+  if (/(?:\.\.\.|\u2026)\s*$/.test(hint)) return false
+  if (/\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(hint)) return false
+  if (/(?:json|undefined|null|nan|stack trace|exception|https?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) return false
+
+  const normalizedHint = normalizePlotHintMatch(hint)
+  return [item.titleRu, item.titleOriginal]
+    .map(normalizePlotHintMatch)
+    .every((title) => title.length < 4 || !normalizedHint.includes(title))
+}
+
+export const isAllowedInRegularGame = (
+  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame' | 'plotHint' | 'titleRu' | 'titleOriginal'>,
+) => {
+  const explicitlyAllowed = item.allowedInGame !== false && (item.allowedInGame === true || !isPromoGameItem(item))
+  return explicitlyAllowed && (item.mode !== 'game' || isPlayableGamePlotHint(item))
+}
 
 const isAllowedInMode = (item: TitleItem, mode: TitleMode) => {
   if (item.mode !== mode) return false

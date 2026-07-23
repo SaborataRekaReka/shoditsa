@@ -12,6 +12,7 @@ tar -xzf "$TMP/release.tar.gz" -C "$TMP"
 export APP_IMAGE_TAG="$RELEASE_SHA"
 docker compose -f "$ROOT/app/compose.production.yml" --profile migrate run --rm migrate
 docker compose -f "$ROOT/app/compose.production.yml" --profile migrate run --rm --no-deps --entrypoint node migrate apps/api/dist/content-import-dtf-comments.js --apply --activate --publish --actor-id="$ADMIN_USER_ID" --report=/tmp/dtf-game-comments-25-import-report.json
+docker compose -f "$ROOT/app/compose.production.yml" --profile migrate run --rm --no-deps --entrypoint node migrate apps/api/dist/content-import-game-hints.js --apply --activate --actor-id="$ADMIN_USER_ID" --report=/tmp/game-plot-hints-import-report.json
 docker compose -f "$ROOT/app/compose.production.yml" up -d postgres api worker
 for attempt in {1..12}; do curl -fsS http://127.0.0.1:3001/api/v1/health/ready >/dev/null && break; sleep 5; done
 curl -fsS http://127.0.0.1:3001/api/v1/health/ready >/dev/null

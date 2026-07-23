@@ -383,6 +383,7 @@ export const selectDailyPool = (catalog, mustIncludeSteamIds = []) => {
   const selected = []
   const selectedIds = new Set()
   const franchiseCounts = new Map()
+  const franchiseFallbackIds = []
   const eraCounts = Object.fromEntries(Object.keys(ERA_QUOTAS).map((key) => [key, 0]))
 
   const canTake = (item, force = false) => {
@@ -422,11 +423,24 @@ export const selectDailyPool = (catalog, mustIncludeSteamIds = []) => {
     }
   }
 
+  // A complete, validated hint is more important than a soft diversity cap.
+  // When the curated catalog is temporarily smaller than the ideal mix, fill
+  // the remaining slots with valid cards and expose the fallback in the report.
+  if (selected.length < 1000) {
+    for (const item of eligible) {
+      if (selected.length >= 1000) break
+      if (selectedIds.has(item.id)) continue
+      take(item)
+      franchiseFallbackIds.push(item.id)
+    }
+  }
+
   return {
     selected,
     eraCounts,
     franchiseCounts: Object.fromEntries([...franchiseCounts.entries()].sort((left, right) => right[1] - left[1])),
     eligibleCount: eligible.length,
+    franchiseFallbackIds,
   }
 }
 

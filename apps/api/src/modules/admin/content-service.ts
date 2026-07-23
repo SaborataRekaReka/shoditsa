@@ -108,10 +108,18 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
     if (duplicatedFacts.length) error('facts', 'duplicate_model_fact', 'Интересные факты не должны повторять формат, статус или количество эпизодов')
   }
   const hint = mode === 'danetki' ? '' : text(payload.plotHint)
-  if (mode !== 'danetki' && !hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
-  if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
+  const playableGameHintRequired = mode === 'game' && payload.allowedInGame !== false
+  if (playableGameHintRequired && !hint) error('plotHint', 'missing_hint', 'Игра не может участвовать в игровом пуле без подсказки')
+  else if (mode !== 'danetki' && !hint) warning('plotHint', 'missing_hint', 'Подсказка не заполнена')
+  if (hint && mode === 'game' && hint.length < 30) error('plotHint', 'short_hint', 'Игровая подсказка должна содержать не меньше 30 символов')
+  else if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
   if (hint && /(?:\.\.\.|…)\s*$/.test(hint)) error('plotHint', 'truncated_hint', 'Подсказка не должна заканчиваться многоточием')
-  if (hint && text(payload.titleRu) && normalize(hint).includes(normalize(text(payload.titleRu)))) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')
+  if (hint && /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(hint)) error('plotHint', 'placeholder_hint', 'Подсказка содержит служебную заглушку вместо готового текста')
+  const normalizedHint = normalize(hint)
+  const hintLeaksAnswer = [text(payload.titleRu), text(payload.titleOriginal)]
+    .map(normalize)
+    .some((title) => title.length >= 4 && normalizedHint.includes(title))
+  if (hint && hintLeaksAnswer) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')
   if (hint && /(?:json|undefined|null|nan|stack trace|exception|http(?:s)?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) error('plotHint', 'technical_leak', 'Подсказка содержит технический текст')
   return issues
 }

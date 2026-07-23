@@ -36,6 +36,7 @@ jobs:
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/server.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-bootstrap-danetki.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-import-dtf-comments.js
+          docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-import-game-hints.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-migrate-media.js
           docker save "shoditsa-api:${GITHUB_SHA}" | gzip -1 > release-api-image.tar.gz
           test -s release-api-image.tar.gz
@@ -251,6 +252,10 @@ jobs:
             exit 1
           fi
           if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/content-import-dtf-comments.js --apply --activate --publish --actor-id="$ADMIN_USER_ID" --report=/tmp/dtf-game-comments-25-import-report.json </dev/null; then
+            rollback_api
+            exit 1
+          fi
+          if ! api_compose --profile migrate run --rm --no-deps --entrypoint node shoditsa-migrate apps/api/dist/content-import-game-hints.js --apply --activate --actor-id="$ADMIN_USER_ID" --report=/tmp/game-plot-hints-import-report.json </dev/null; then
             rollback_api
             exit 1
           fi

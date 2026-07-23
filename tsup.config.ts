@@ -7,6 +7,7 @@ export default defineConfig({
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
     'content-bootstrap-danetki': 'scripts/content/bootstrap-danetki.ts',
     'content-import-dtf-comments': 'scripts/content/import-dtf-comment-pack.ts',
+    'content-import-game-hints': 'scripts/content/import-game-plot-hints.ts',
     'content-migrate-media': 'scripts/content/migrate-media.ts',
     'city-hints': 'scripts/cities/operate-city-hints.ts',
     'city-facts': 'scripts/cities/operate-city-facts.ts',

@@ -64,3 +64,26 @@ test('builds exactly 1000 daily entries with the requested era composition', () 
     ERA_QUOTAS,
   )
 })
+
+test('fills a short curated pool after applying the soft franchise cap', () => {
+  const catalog = Array.from({ length: 1000 }, (_, index) => ({
+    id: `franchise-${index}`,
+    titleRu: `Игра ${index}`,
+    titleOriginal: `Game ${index}`,
+    alternativeTitles: [],
+    year: 2019,
+    genres: ['Action'],
+    developers: ['Developer'],
+    publishers: ['Publisher'],
+    platforms: ['PC'],
+    dailyEligible: true,
+    reviewStatus: 'machine_verified',
+    recognitionScore: 100 - index / 100,
+    scoreConfidence: 1,
+    franchiseKey: 'one-franchise',
+  }))
+
+  const result = selectDailyPool(catalog)
+  assert.equal(result.selected.length, 1000)
+  assert.equal(result.franchiseFallbackIds.length, 997)
+})

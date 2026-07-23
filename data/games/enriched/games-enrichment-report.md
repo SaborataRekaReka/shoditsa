@@ -1,30 +1,30 @@
 # Отчёт об обогащении базы игр
 
-Дата: 2026-07-23T13:22:59.119Z
+Дата: 2026-07-23T15:21:38.809Z
 
 ## Результат
 
-- Исходных объектов: **1016**
+- Исходных объектов: **2270**
 - Широкий пул SteamSpy: **3000**
 - Получено карточек Steam Store: **1322**
 - Канонический каталог: **2270**
 - Daily-general: **1000**
-- Добавлено из публичных Steam-источников: **1257**
-- Объединено/перенаправлено: **60**
-- Отклонено: **8**
+- Добавлено из публичных Steam-источников: **0**
+- Объединено/перенаправлено: **1316**
+- Отклонено: **6**
 - В очереди ручной проверки: **1760**
 
 ## До и после
 
 | Метрика | До | После |
 | --- | --- | --- |
-| Всего объектов | 1016 | 2270 |
-| Steam App ID | 17 | 1289 |
+| Всего объектов | 2270 | 2270 |
+| Steam App ID | 1289 | 1289 |
 | IGDB ID | 0 | 0 |
-| Карточки с алиасами | 17 | 503 |
-| 2022+ | 14 | 230 |
-| Nintendo в daily | не ограничено | 55 |
-| Console-only в daily | не ограничено | 397 |
+| Карточки с алиасами | 32 | 503 |
+| 2022+ | 394 | 29 |
+| Nintendo в daily | не ограничено | 148 |
+| Console-only в daily | не ограничено | 902 |
 
 ## Распределение daily-general
 
@@ -32,49 +32,48 @@
 
 | Эпоха | Цель | Факт |
 | --- | --- | --- |
-| before_2000 | 80 | 80 |
-| 2000_2009 | 170 | 170 |
-| 2010_2016 | 250 | 250 |
-| 2017_2021 | 270 | 270 |
-| 2022_current | 230 | 230 |
+| before_2000 | 80 | 363 |
+| 2000_2009 | 170 | 301 |
+| 2010_2016 | 250 | 214 |
+| 2017_2021 | 270 | 93 |
+| 2022_current | 230 | 29 |
 
 Уровни узнаваемости:
 
 | Уровень | Количество |
 | --- | --- |
-| cult_or_genre | 107 |
-| mainstream | 850 |
-| mass | 43 |
+| cult_or_genre | 235 |
+| mainstream | 765 |
 
 Крупнейшие франшизы:
 
 | Франшиза | Количество |
 | --- | --- |
-| the-legend-of-zelda | 5 |
-| mario | 5 |
-| final-fantasy | 5 |
-| star-wars | 5 |
-| call-of-duty | 5 |
-| grand-theft-auto | 5 |
-| the-elder-scrolls | 5 |
-| assassins-creed | 5 |
-| divinity | 3 |
-| metal-gear | 3 |
-| street-fighter | 3 |
-| resident-evil | 3 |
-| sonic | 3 |
-| civilization | 3 |
-| diablo | 3 |
-| fallout | 3 |
-| mortal-kombat | 3 |
-| warcraft | 3 |
-| silent-hill | 3 |
-| halo | 3 |
-| the-sims | 3 |
-| mass-effect | 3 |
-| counter-strike | 3 |
-| god-of-war | 3 |
-| gears-of-war | 3 |
+| mario | 38 |
+| the-legend-of-zelda | 16 |
+| final-fantasy | 16 |
+| star-wars | 14 |
+| metal-gear | 8 |
+| sonic | 8 |
+| grand-theft-auto | 8 |
+| halo | 7 |
+| street-fighter | 6 |
+| civilization | 6 |
+| fallout | 6 |
+| call-of-duty | 6 |
+| assassins-creed | 6 |
+| god-of-war | 6 |
+| battlefield | 6 |
+| counter-strike | 5 |
+| gears-of-war | 5 |
+| forza | 5 |
+| fifa | 5 |
+| resident-evil | 4 |
+| doom | 4 |
+| warcraft | 4 |
+| the-sims | 4 |
+| hitman | 4 |
+| far-cry | 4 |
 
 ## Ожидаемые современные игры
 
@@ -82,7 +81,7 @@
 | --- | --- | --- |
 | Divinity: Original Sin 2 | steam_435150 | да |
 | Valheim | steam_892970 | да |
-| Palworld | steam_1623730 | да |
+| Palworld | steam_1623730 | нет |
 | Lethal Company | steam_1966720 | да |
 
 ## Аудит исходной схемы
@@ -93,45 +92,80 @@
 - Сравнительные подсказки: год, topRank, жанры, Steam-категории, платформы, разработчики, издатели, Steam-рейтинг/отзывы, Metacritic, цена и возрастной рейтинг.
 - `steamAppId` не обязателен: игровой движок имеет полноценный fallback по остальным полям.
 - `allowedInGame` теперь является совместимым флагом daily-general; специальные карточки остаются в каталоге с `allowedInGame: false`.
-- Корреляция старого `popularityScore` с рангом PlayThatGame: **-0.9999**.
+- Корреляция старого `popularityScore` с рангом PlayThatGame: **-0.2093**.
 
 | Поле | Типы | Заполнено | Доля |
 | --- | --- | --- | --- |
-| ageRating | null, string | 933/1016 | 91.8% |
-| allowedInGame | boolean | 17/1016 | 1.7% |
-| alternativeTitles | array | 17/1016 | 1.7% |
-| backdropUrl | string | 1016/1016 | 100% |
-| comments | array | 25/1016 | 2.5% |
-| dataQuality | object | 1016/1016 | 100% |
-| description | string | 1016/1016 | 100% |
-| developers | array | 1007/1016 | 99.1% |
-| externalRanks | object | 1016/1016 | 100% |
-| genres | array | 1016/1016 | 100% |
-| headerUrl | string | 1016/1016 | 100% |
-| id | string | 1016/1016 | 100% |
-| metacritic | null, number | 8/1016 | 0.8% |
-| mode | string | 1016/1016 | 100% |
-| notes | array | 1016/1016 | 100% |
-| platforms | array | 1016/1016 | 100% |
-| plotHint | string | 1016/1016 | 100% |
-| popularityScore | number | 1016/1016 | 100% |
-| posterUrl | string | 1016/1016 | 100% |
-| price | object | 1016/1016 | 100% |
-| publishers | array | 954/1016 | 93.9% |
-| ratings | object | 1016/1016 | 100% |
-| releaseDate | null, string | 999/1016 | 98.3% |
-| screenshots | array | 726/1016 | 71.5% |
-| shortDescription | string | 1016/1016 | 100% |
-| steamAppId | null, number | 17/1016 | 1.7% |
-| steamCategories | array | 975/1016 | 96% |
-| steamTags | array | 999/1016 | 98.3% |
-| steamUrl | null, string | 17/1016 | 1.7% |
-| supportedLanguages | array | 17/1016 | 1.7% |
-| titleOriginal | string | 1016/1016 | 100% |
-| titleRu | string | 1016/1016 | 100% |
-| topRank | null, number | 999/1016 | 98.3% |
-| votes | object | 1016/1016 | 100% |
-| year | number | 1016/1016 | 100% |
+| acceptedAnswers | array | 2270/2270 | 100% |
+| ageRating | null, string | 920/2270 | 40.5% |
+| aliases | array | 4/2270 | 0.2% |
+| allowedInGame | boolean | 2270/2270 | 100% |
+| alternativeTitles | array | 32/2270 | 1.4% |
+| backdropUrl | string | 2270/2270 | 100% |
+| calibration | object | 2270/2270 | 100% |
+| canonicalGameId | string | 2270/2270 | 100% |
+| cisScore | number | 2270/2270 | 100% |
+| comments | array | 25/2270 | 1.1% |
+| contentStatus | string | 2270/2270 | 100% |
+| dailyEligible | boolean | 2270/2270 | 100% |
+| dataQuality | object | 2270/2270 | 100% |
+| description | null, string | 1121/2270 | 49.4% |
+| developers | array | 2261/2270 | 99.6% |
+| editionType | string | 2270/2270 | 100% |
+| externalRanks | object | 2270/2270 | 100% |
+| franchiseKey | null, string | 376/2270 | 16.6% |
+| genres | array | 2267/2270 | 99.9% |
+| guessabilityScore | number | 2270/2270 | 100% |
+| headerUrl | string | 2270/2270 | 100% |
+| id | string | 2270/2270 | 100% |
+| igdbId | null | 0/2270 | 0% |
+| legacyIds | array | 42/2270 | 1.9% |
+| legacyPopularityScore | number | 2270/2270 | 100% |
+| legacySteamTags | array | 996/2270 | 43.9% |
+| localizedTitles | object | 2270/2270 | 100% |
+| matchConfidence | number | 2270/2270 | 100% |
+| metacritic | null, number | 81/2270 | 3.6% |
+| mode | string | 2270/2270 | 100% |
+| normalizedAnswers | array | 2270/2270 | 100% |
+| notes | array | 2270/2270 | 100% |
+| parentCanonicalGameId | null | 0/2270 | 0% |
+| platforms | array | 2270/2270 | 100% |
+| plotHint | string | 2270/2270 | 100% |
+| poolIds | array | 2230/2270 | 98.2% |
+| popularityScore | number | 2270/2270 | 100% |
+| posterUrl | string | 2270/2270 | 100% |
+| price | null, object | 1121/2270 | 49.4% |
+| priceSnapshotAt | string | 1315/2270 | 57.9% |
+| publishers | array | 2208/2270 | 97.3% |
+| ratings | object | 2270/2270 | 100% |
+| recognitionComponents | object | 2270/2270 | 100% |
+| recognitionLevel | string | 2270/2270 | 100% |
+| recognitionScore | number | 2270/2270 | 100% |
+| recognitionSignals | object | 2270/2270 | 100% |
+| relatedVersions | array | 0/2270 | 0% |
+| releaseDate | null, string | 2130/2270 | 93.8% |
+| releaseYear | number | 2270/2270 | 100% |
+| reviewStatus | string | 2270/2270 | 100% |
+| scoreConfidence | number | 2270/2270 | 100% |
+| scoreFormulaVersion | string | 2270/2270 | 100% |
+| screenshots | array | 839/2270 | 37% |
+| shortDescription | null, string | 1121/2270 | 49.4% |
+| sourceFlags | array | 2270/2270 | 100% |
+| steamAppId | null, number | 1289/2270 | 56.8% |
+| steamCategories | array | 1081/2270 | 47.6% |
+| steamTags | array | 1185/2270 | 52.2% |
+| steamUrl | null, string | 1289/2270 | 56.8% |
+| supportedLanguages | array | 1315/2270 | 57.9% |
+| title | string | 2270/2270 | 100% |
+| titleOriginal | string | 2270/2270 | 100% |
+| titleRu | string | 2270/2270 | 100% |
+| topRank | null, number | 1000/2270 | 44.1% |
+| trendScore | number | 2270/2270 | 100% |
+| verifiedAt | string | 2270/2270 | 100% |
+| votes | object | 2270/2270 | 100% |
+| wikidataId | null, string | 1186/2270 | 52.2% |
+| wikidataUrl | null, string | 1186/2270 | 52.2% |
+| year | null, number | 2268/2270 | 99.9% |
 
 ## Карта совместимости
 
@@ -158,7 +192,7 @@
 - Daily-general содержит ровно 1000 уникальных canonicalGameId.
 - Конфликтов Steam App ID нет.
 - Технические приложения и невышедшие игры исключены из daily.
-- Лимиты франшиз соблюдены.
+- Для 112 карточек мягкие лимиты эпох и франшиз ослаблены, чтобы в daily оставались только игры с валидной подсказкой.
 - Все daily-карточки имеют обязательные поля движка и принимаемый ответ.
 - Все score и confidence находятся в допустимом диапазоне.
 - Все старые ID сохранены либо перечислены в migration map.

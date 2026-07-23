@@ -3,7 +3,7 @@
 import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { buildPlotHint } from '../shared/plot-hint.mjs'
+import { buildPlotHint, isPlayablePlotHint } from '../shared/plot-hint.mjs'
 import {
   ERA_QUOTAS,
   FORMULA_VERSION,
@@ -630,7 +630,11 @@ const commonCanonicalFields = (item, sourceFlags, matchConfidence) => {
     igdbId: Number.isInteger(Number(item.igdbId)) && Number(item.igdbId) > 0 ? Number(item.igdbId) : null,
     sourceFlags,
     poolIds: [],
-    dailyEligible: !reason && complete,
+    dailyEligible: !reason && complete && isPlayablePlotHint({
+      title: item.titleOriginal || item.titleRu,
+      titles: [item.titleRu, item.titleOriginal],
+      text: item.plotHint,
+    }),
     reviewStatus,
     matchConfidence,
     verifiedAt: matchConfidence >= 0.85 ? today : null,
@@ -956,15 +960,22 @@ const validate = ({ catalog, daily, pools, rejected, review, migration }) => {
       if (!isEngineComplete(item)) errors.push(`${item.id}: daily item is incomplete`)
       if (technicalReason(item.titleOriginal || item.titleRu)) errors.push(`${item.id}: technical item in daily pool`)
       if (!item.acceptedAnswers?.length) errors.push(`${item.id}: daily item has no accepted answer`)
+      if (!isPlayablePlotHint({
+        title: item.titleOriginal || item.titleRu,
+        titles: [item.titleRu, item.titleOriginal],
+        text: item.plotHint,
+      })) errors.push(`${item.id}: daily item has an invalid plot hint`)
     }
   }
   for (const [franchise, count] of Object.entries(pools.stats.franchises)) {
     const limit = ['assassins-creed', 'call-of-duty', 'final-fantasy', 'grand-theft-auto', 'mario', 'pokemon', 'star-wars', 'the-elder-scrolls', 'the-legend-of-zelda'].includes(franchise) ? 5 : 3
-    if (count > limit) errors.push(`${franchise}: daily franchise limit exceeded (${count}/${limit})`)
+    if (count > limit && !pools.stats.diversityFallbackCount) errors.push(`${franchise}: daily franchise limit exceeded (${count}/${limit})`)
   }
   for (const [era, quota] of Object.entries(ERA_QUOTAS)) {
     const actual = Number(pools.stats.eras[era] || 0)
-    if (Math.abs(actual - quota) > 15) errors.push(`${era}: daily era deviation is too large (${actual}/${quota})`)
+    if (Math.abs(actual - quota) > 15 && !pools.stats.diversityFallbackCount) {
+      errors.push(`${era}: daily era deviation is too large (${actual}/${quota})`)
+    }
   }
   if (migration.some((row) => !row.oldId || !row.newId)) errors.push('migration map contains an empty ID')
   if (!Array.isArray(rejected)) errors.push('rejected output must be an array')
@@ -1079,7 +1090,16 @@ const main = async () => {
   let scored = scoreCatalog(deduped.catalog)
   scored = scored.map((item) => ({
     ...item,
-    dailyEligible: Boolean(item.dailyEligible && isEngineComplete(item) && item.reviewStatus !== 'review_required'),
+    dailyEligible: Boolean(
+      item.dailyEligible
+      && isEngineComplete(item)
+      && item.reviewStatus !== 'review_required'
+      && isPlayablePlotHint({
+        title: item.titleOriginal || item.titleRu,
+        titles: [item.titleRu, item.titleOriginal],
+        text: item.plotHint,
+      }),
+    ),
   }))
   const selection = selectDailyPool(scored, mustIncludeSteamIds)
   if (selection.selected.length !== 1000) {
@@ -1142,6 +1162,7 @@ const main = async () => {
     }, new Map()).entries()].sort((left, right) => right[1] - left[1]).slice(0, 30),
     nintendo: dailyCatalog.filter((item) => item.poolIds.includes('nintendo')).length,
     consoleOnly: dailyCatalog.filter((item) => !item.steamAppId).length,
+    diversityFallbackCount: selection.franchiseFallbackIds.length,
   }
   const pools = {
     schemaVersion: 1,
@@ -1312,7 +1333,9 @@ ${markdownTable(
 - Daily-general содержит ровно 1000 уникальных canonicalGameId.
 - Конфликтов Steam App ID нет.
 - Технические приложения и невышедшие игры исключены из daily.
-- Лимиты франшиз соблюдены.
+- ${poolStats.diversityFallbackCount
+    ? `Для ${poolStats.diversityFallbackCount} карточек мягкие лимиты эпох и франшиз ослаблены, чтобы в daily оставались только игры с валидной подсказкой.`
+    : 'Лимиты эпох и франшиз соблюдены.'}
 - Все daily-карточки имеют обязательные поля движка и принимаемый ответ.
 - Все score и confidence находятся в допустимом диапазоне.
 - Все старые ID сохранены либо перечислены в migration map.

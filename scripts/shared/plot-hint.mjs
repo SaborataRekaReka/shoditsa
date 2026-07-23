@@ -87,6 +87,21 @@ const normalizePunctuation = (text) => text
   .replace(/[\s,;:!?-]+$/, '')
   .trim()
 
+const cropCompleteText = (text, maxLength) => {
+  if (!Number.isFinite(maxLength) || maxLength <= 0 || text.length <= maxLength) return text
+
+  const prefix = text.slice(0, maxLength + 1)
+  const sentenceEnds = [...prefix.matchAll(/[.!?](?=\s|$)/g)].map((match) => match.index ?? -1)
+  const sentenceEnd = sentenceEnds.at(-1) ?? -1
+  if (sentenceEnd >= Math.min(80, Math.floor(maxLength * 0.45))) {
+    return normalizePunctuation(prefix.slice(0, sentenceEnd + 1))
+  }
+
+  const wordSafe = prefix.slice(0, maxLength).replace(/\s+\S*$/, '').trim()
+  if (!wordSafe) return ''
+  return `${normalizePunctuation(wordSafe)}.`
+}
+
 const redactNamedSequences = (text, replacement = REDACTION) => text.replace(
   /\b(?:[A-ZА-ЯЁ][a-zа-яё0-9']{2,}|[A-Z]{3,}|[А-ЯЁ]{3,})(?:[-\s](?:[A-ZА-ЯЁ][a-zа-яё0-9']{2,}|[A-Z]{3,}|[А-ЯЁ]{3,}|of|the|and|de|da|van|von))*\b/g,
   (match) => {
@@ -138,6 +153,7 @@ export const buildPlotHint = ({ title, text, maxLength = 240 }) => {
     title,
     text: hint,
     maxLength,
+    replacement: '',
     maskNames: false,
   })
 }
@@ -160,9 +176,17 @@ export const redactSpoilers = ({ title, titles = [], text, maxLength = 420, repl
   }
   result = normalizePunctuation(result)
 
-  if (result.length > maxLength) {
-    result = `${result.slice(0, maxLength).trimEnd()}...`
-  }
+  return cropCompleteText(result, maxLength)
+}
 
-  return result
+export const isPlayablePlotHint = ({ title = '', titles = [], text }) => {
+  const hint = cleanText(text)
+  if (hint.length < 30) return false
+  if (/(?:\.\.\.|\u2026)\s*$/.test(hint)) return false
+  if (/\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(hint)) return false
+  if (/(?:json|undefined|null|nan|stack trace|exception|https?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) return false
+
+  const normalizedHint = normalize(hint)
+  return unique([title, ...titles].map(normalize))
+    .every((candidate) => candidate.length < 4 || !normalizedHint.includes(candidate))
 }

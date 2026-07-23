@@ -8,6 +8,7 @@ import {
 import {
   compareTitles,
   dailyTitle,
+  isPlayableGamePlotHint,
   localizeMusicCountry,
   musicDifficultyPool,
   musicOriginLabel,
@@ -262,11 +263,8 @@ const factHintValue = (answer: TitleItem, matched: Set<string>) => {
 }
 
 const plotHintValue = (answer: TitleItem) => {
-  const value = cleanHintText(answer.plotHint ?? '')
-  const invalid = value.length < 30
-    || /(?:\.\.\.|…)\s*$/.test(value)
-    || /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(value)
-  return invalid ? '' : cropHintText(value)
+  if (!isPlayableGamePlotHint(answer)) return ''
+  return cropHintText(cleanHintText(answer.plotHint ?? ''))
 }
 
 type BuiltHintOption = {
