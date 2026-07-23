@@ -85,6 +85,36 @@ describe('DTF comment merge', () => {
         sourcePackId: 'dtf-pack',
       }),
     ])
+    expect(merged.comments?.[1]).not.toHaveProperty('sourceUrl')
+    expect(merged.comments?.[1]).not.toHaveProperty('wasRedacted')
+  })
+
+  it('preserves provenance when a sourced comment provides it', () => {
+    const payload = catalogGame('game:example').payload
+    const merged = mergeDtfComments(payload, [{
+      key: 'sourced-comment',
+      text: 'Комментарий с источником',
+      unlockAfterAttempts: 0,
+      sourceId: '123',
+      sourceUrl: 'https://dtf.ru/games/1-post?comment=123',
+      sourcePostUrl: 'https://dtf.ru/games/1-post',
+      sourceExcerpt: '  Исходный   комментарий  ',
+      sourceVerifiedAt: '2026-07-23',
+      contentHash: 'sha256:abc',
+      wasRedacted: true,
+      redactionReasons: ['direct_answer', 'direct_answer'],
+    }], 'dtf-pack')
+
+    expect(merged.comments?.[0]).toMatchObject({
+      sourceId: '123',
+      sourceUrl: 'https://dtf.ru/games/1-post?comment=123',
+      sourcePostUrl: 'https://dtf.ru/games/1-post',
+      sourceExcerpt: 'Исходный комментарий',
+      sourceVerifiedAt: '2026-07-23',
+      contentHash: 'sha256:abc',
+      wasRedacted: true,
+      redactionReasons: ['direct_answer'],
+    })
   })
 
   it('resolves the complete checked-in pack into the main library', () => {

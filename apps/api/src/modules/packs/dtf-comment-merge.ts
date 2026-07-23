@@ -147,27 +147,36 @@ export const resolveDtfPack = (document: DtfPackDocument, games: DtfCatalogGame[
     .map((item) => resolveDtfPackItem(item, games))
 )
 
-const cleanComment = (comment: GameComment, packId: string): GameComment => ({
-  key: String(comment.key ?? '').trim(),
-  text: String(comment.text ?? '').replace(/\s+/g, ' ').trim(),
-  unlockAfterAttempts: Math.max(0, Math.trunc(Number(comment.unlockAfterAttempts) || 0)),
-  type: String(comment.type ?? 'player_comment').trim() || 'player_comment',
-  spoilerRisk: comment.spoilerRisk === 'medium' || comment.spoilerRisk === 'high'
-    ? comment.spoilerRisk
-    : 'low',
-  sourceId: String(comment.sourceId ?? '').trim() || null,
-  sourcePackId: packId,
-  clueStrength: Math.trunc(Number(comment.clueStrength) || 0),
-  topics: [...new Set((comment.topics ?? []).map((topic) => String(topic).trim()).filter(Boolean))],
-  authorArchetype: String(comment.authorArchetype ?? '').trim() || null,
-  sourceUrl: String(comment.sourceUrl ?? '').trim() || null,
-  sourcePostUrl: String(comment.sourcePostUrl ?? '').trim() || null,
-  sourceExcerpt: String(comment.sourceExcerpt ?? '').replace(/\s+/g, ' ').trim() || null,
-  sourceVerifiedAt: String(comment.sourceVerifiedAt ?? '').trim() || null,
-  contentHash: String(comment.contentHash ?? '').trim() || null,
-  wasRedacted: Boolean(comment.wasRedacted),
-  redactionReasons: [...new Set((comment.redactionReasons ?? []).map((reason) => String(reason).trim()).filter(Boolean))],
-})
+const cleanComment = (comment: GameComment, packId: string): GameComment => {
+  const sourceUrl = String(comment.sourceUrl ?? '').trim()
+  const sourcePostUrl = String(comment.sourcePostUrl ?? '').trim()
+  const sourceExcerpt = String(comment.sourceExcerpt ?? '').replace(/\s+/g, ' ').trim()
+  const sourceVerifiedAt = String(comment.sourceVerifiedAt ?? '').trim()
+  const contentHash = String(comment.contentHash ?? '').trim()
+  return {
+    key: String(comment.key ?? '').trim(),
+    text: String(comment.text ?? '').replace(/\s+/g, ' ').trim(),
+    unlockAfterAttempts: Math.max(0, Math.trunc(Number(comment.unlockAfterAttempts) || 0)),
+    type: String(comment.type ?? 'player_comment').trim() || 'player_comment',
+    spoilerRisk: comment.spoilerRisk === 'medium' || comment.spoilerRisk === 'high'
+      ? comment.spoilerRisk
+      : 'low',
+    sourceId: String(comment.sourceId ?? '').trim() || null,
+    sourcePackId: packId,
+    clueStrength: Math.trunc(Number(comment.clueStrength) || 0),
+    topics: [...new Set((comment.topics ?? []).map((topic) => String(topic).trim()).filter(Boolean))],
+    authorArchetype: String(comment.authorArchetype ?? '').trim() || null,
+    ...(sourceUrl ? { sourceUrl } : {}),
+    ...(sourcePostUrl ? { sourcePostUrl } : {}),
+    ...(sourceExcerpt ? { sourceExcerpt } : {}),
+    ...(sourceVerifiedAt ? { sourceVerifiedAt } : {}),
+    ...(contentHash ? { contentHash } : {}),
+    ...(comment.wasRedacted != null ? { wasRedacted: Boolean(comment.wasRedacted) } : {}),
+    ...(comment.redactionReasons != null ? {
+      redactionReasons: [...new Set(comment.redactionReasons.map((reason) => String(reason).trim()).filter(Boolean))],
+    } : {}),
+  }
+}
 
 export const mergeDtfComments = (
   payload: TitleItem,
