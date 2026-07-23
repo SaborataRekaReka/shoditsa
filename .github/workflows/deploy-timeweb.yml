@@ -46,7 +46,19 @@ jobs:
           test -f dist/build-manifest.json
           ! grep -Fq '<script src="/sdk.js"></script>' dist/index.html
           tar -czf release-web.tar.gz -C dist .
+      - name: Confirm release is still main tip
+        id: main_tip
+        run: |
+          set -euo pipefail
+          LATEST_MAIN_SHA="$(git ls-remote origin refs/heads/main | awk '{ print $1 }')"
+          if [ "$LATEST_MAIN_SHA" = "$GITHUB_SHA" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "Release ${GITHUB_SHA} is superseded by main ${LATEST_MAIN_SHA}; skipping production activation."
+          fi
       - name: Configure SSH
+        if: steps.main_tip.outputs.deploy == 'true'
         env:
           SSH_KEY: ${{ secrets.TIMEWEB_SSH_KEY }}
         run: |
@@ -60,6 +72,7 @@ jobs:
           ssh-keygen -y -f ~/.ssh/id_rsa >/dev/null
           ssh-keyscan -p "$DEPLOY_PORT" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
       - name: Upload and activate web release
+        if: steps.main_tip.outputs.deploy == 'true'
         run: |
           set -euo pipefail
           REMOTE="$DEPLOY_USER@$DEPLOY_HOST"
@@ -430,6 +443,7 @@ jobs:
           done < <(docker images --format '{{.Repository}}:{{.Tag}}' shoditsa-api)
           REMOTE
       - name: External smoke
+        if: steps.main_tip.outputs.deploy == 'true'
         env:
           EXPECTED_SHA: ${{ github.sha }}
           PRODUCTION_URL: https://shoditsa.ru
