@@ -1,306 +1,200 @@
 #!/usr/bin/env tsx
 /**
- * Import the DTF comment special into the active Shoditsa content revision.
+ * Merge curated DTF comments into canonical game cards and maintain the DTF
+ * content pack as selection/order metadata.
  *
- * The script never rewrites canonical game cards. It resolves each answer against
- * the active catalog and stores comment clues only in content_pack_entries.prompt_payload.
- *
- * Usage:
+ * Dry run:
  *   npm run content:import:dtf-comments-pack
  *
- * Publish the pack instead of keeping it draft:
- *   ... --publish
+ * Stage, build, activate and publish:
+ *   npm run content:import:dtf-comments-pack -- --apply --activate --publish --actor-id=<admin UUID>
  */
 
+import { randomUUID } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
+import type { TitleItem } from '@shoditsa/contracts'
 import { loadConfig } from '@shoditsa/config'
 import {
   contentItemVersions,
   contentPackEntries,
   contentPacks,
   contentRevisions,
+  contentWorkspaceChanges,
   createDatabase,
+  playerProfiles,
+  user,
 } from '@shoditsa/database'
-
-type AnswerRef = {
-  mode: 'game'
-  titleRu: string
-  titleOriginal: string
-  year: number
-  legacyReleaseYears: number[]
-  steamAppIds: number[]
-  aliases: string[]
-  resolutionOrder: string[]
-}
-
-type ProgressiveHint = {
-  key: string
-  unlockAfterAttempts: number
-  type: string
-  text: string
-  spoilerRisk: 'low' | 'medium' | 'high'
-  sourceId?: string
-  clueStrength: number
-  topics?: string[]
-}
-
-type PackItem = {
-  id: string
-  gameId: string
-  order: number
-  answerRef: AnswerRef
-  progressiveHints: ProgressiveHint[]
-}
-
-type PackDocument = {
-  schemaVersion: number
-  pack: {
-    id: string
-    slug: string
-    title: string
-    subtitle?: string
-    description: string
-    itemCount: number
-    recommendedMaxAttempts: number
-    accessModel: 'free' | 'club' | 'purchase'
-    publicationStatus: string
-    rightsStatus: string
-    uiCopy: {
-      prompt: string
-      disclaimer: string
-      [key: string]: string
-    }
-    experience?: Record<string, unknown>
-    playSets?: unknown[]
-  }
-  items: PackItem[]
-}
-
-type CatalogRow = {
-  itemVersionId: string
-  itemId: string
-  titleRu: string
-  titleOriginal: string
-  year: number | null
-  allowedInGame: boolean
-  contentStatus: string | null
-  popularityScore: number
-  payload: Record<string, unknown>
-}
-
-type Resolution = {
-  item: PackItem
-  status: 'resolved' | 'unresolved'
-  method: 'steamAppId' | 'normalizedTitleAndYear' | 'normalizedTitle' | null
-  itemId: string | null
-  itemVersionId: string | null
-  matchedTitle: string | null
-  matchedYear: number | null
-}
+import {
+  activateWorkspaceRevision,
+  buildWorkspaceRevision,
+  getOrCreateWorkspace,
+  saveWorkspaceItem,
+  validateWorkspace,
+} from '../../apps/api/src/modules/admin/content-service.js'
+import {
+  mergeDtfComments,
+  resolveDtfPack,
+  type DtfCatalogGame,
+  type DtfPackDocument,
+} from '../../apps/api/src/modules/packs/dtf-comment-merge.js'
 
 const args = process.argv.slice(2)
 const hasFlag = (name: string) => args.includes(`--${name}`)
-const argValue = (name: string, fallback: string) => {
+const argValue = (name: string, fallback = '') => {
   const prefix = `--${name}=`
   return args.find((arg) => arg.startsWith(prefix))?.slice(prefix.length) || fallback
 }
 
 const sourcePath = resolve(process.cwd(), argValue('source', 'data/promo/dtf-game-comments-25-v1.json'))
 const reportPath = resolve(process.cwd(), argValue('report', 'var/dtf-game-comments-25-import-report.json'))
-// The special enriches canonical catalog games only. Missing matches are
-// reported and never materialized as duplicate cards.
+const apply = hasFlag('apply')
+const activate = hasFlag('activate')
 const publish = hasFlag('publish')
-
-const normalize = (value: unknown) => String(value ?? '')
-  .normalize('NFKD')
-  .toLocaleLowerCase('ru-RU')
-  .replace(/[\u0300-\u036f]/g, '')
-  .replace(/ё/g, 'е')
-  .replace(/&/g, ' and ')
-  .replace(/['’`]/g, '')
-  .replace(/[^a-zа-я0-9]+/gi, ' ')
-  .trim()
-
-const asRecord = (value: unknown): Record<string, unknown> => (
-  value && typeof value === 'object' && !Array.isArray(value)
-    ? value as Record<string, unknown>
-    : {}
-)
-
-const uniqueStrings = (values: unknown[]) => [...new Set(
-  values
-    .flatMap((value) => Array.isArray(value) ? value : [value])
-    .map((value) => String(value ?? '').trim())
-    .filter(Boolean),
-)]
-
-const numericSteamIds = (value: unknown) => (
-  (Array.isArray(value) ? value : [value])
-    .map((entry) => Number(entry))
-    .filter((entry) => Number.isInteger(entry) && entry > 0)
-)
-
-const namesForRow = (row: CatalogRow) => {
-  const payload = asRecord(row.payload)
-  return uniqueStrings([
-    row.titleRu,
-    row.titleOriginal,
-    payload.titleRu,
-    payload.titleOriginal,
-    payload.alternativeTitles,
-    payload.aliases,
-  ])
-}
-
-const steamIdsForRow = (row: CatalogRow) => {
-  const payload = asRecord(row.payload)
-  return [...new Set([
-    ...numericSteamIds(payload.steamAppId),
-    ...numericSteamIds(payload.steamAppIds),
-  ])]
-}
-
-const candidateScore = (row: CatalogRow) => (
-  (row.contentStatus === 'promo_pack' ? 0 : 100_000)
-  + (row.allowedInGame ? 10_000 : 0)
-  + Math.round(Number(row.popularityScore || 0))
-)
-
-const chooseBest = (rows: CatalogRow[]) => (
-  [...rows].sort((left, right) => candidateScore(right) - candidateScore(left))[0] ?? null
-)
-
-const resolveItem = (item: PackItem, rows: CatalogRow[]): Resolution => {
-  const ref = item.answerRef
-  const refSteam = new Set(ref.steamAppIds.map(Number))
-  const refNames = uniqueStrings([
-    ref.titleRu,
-    ref.titleOriginal,
-    ref.aliases,
-  ]).map(normalize).filter(Boolean)
-  const allowedYears = new Set([ref.year, ...(ref.legacyReleaseYears ?? [])].map(Number))
-
-  if (refSteam.size > 0) {
-    const candidates = rows.filter((row) => steamIdsForRow(row).some((id) => refSteam.has(id)))
-    const match = chooseBest(candidates)
-    if (match) return {
-      item,
-      status: 'resolved',
-      method: 'steamAppId',
-      itemId: match.itemId,
-      itemVersionId: match.itemVersionId,
-      matchedTitle: match.titleRu || match.titleOriginal,
-      matchedYear: match.year,
-    }
-  }
-
-  const titleYearCandidates = rows.filter((row) => (
-    row.year !== null
-    && allowedYears.has(Number(row.year))
-    && namesForRow(row).map(normalize).some((name) => refNames.includes(name))
-  ))
-  const titleYearMatch = chooseBest(titleYearCandidates)
-  if (titleYearMatch) return {
-    item,
-    status: 'resolved',
-    method: 'normalizedTitleAndYear',
-    itemId: titleYearMatch.itemId,
-    itemVersionId: titleYearMatch.itemVersionId,
-    matchedTitle: titleYearMatch.titleRu || titleYearMatch.titleOriginal,
-    matchedYear: titleYearMatch.year,
-  }
-
-  // Title-only matching is deliberately restricted to cards with a missing year
-  // or an allowed year. This avoids binding a remake to the original edition.
-  const titleCandidates = rows.filter((row) => (
-    (row.year === null || allowedYears.has(Number(row.year)))
-    && namesForRow(row).map(normalize).some((name) => refNames.includes(name))
-  ))
-  const titleMatch = chooseBest(titleCandidates)
-  if (titleMatch) return {
-    item,
-    status: 'resolved',
-    method: 'normalizedTitle',
-    itemId: titleMatch.itemId,
-    itemVersionId: titleMatch.itemVersionId,
-    matchedTitle: titleMatch.titleRu || titleMatch.titleOriginal,
-    matchedYear: titleMatch.year,
-  }
-
-  return {
-    item,
-    status: 'unresolved',
-    method: null,
-    itemId: null,
-    itemVersionId: null,
-    matchedTitle: null,
-    matchedYear: null,
-  }
-}
+const actorId = argValue('actor-id').trim()
+if (activate && !apply) throw new Error('--activate requires --apply')
 
 const writeJson = async (path: string, value: unknown) => {
   await mkdir(dirname(path), { recursive: true })
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
 }
 
+const persistPack = async (
+  db: ReturnType<typeof createDatabase>['db'],
+  document: DtfPackDocument,
+  bindings: Array<{ itemId: string; order: number }>,
+) => db.transaction(async (tx) => {
+  const status = publish ? 'published' : 'draft'
+  const subtitle = document.pack.subtitle ?? `Спецпоказ DTF · ${bindings.length} игр`
+  const metadata = {
+    source: sourcePath,
+    integrationStrategy: 'canonical_game_comments',
+    commentsField: 'comments',
+    recommendedMaxAttempts: document.pack.recommendedMaxAttempts,
+    publicationStatus: document.pack.publicationStatus,
+    rightsStatus: document.pack.rightsStatus,
+    experience: document.pack.experience ?? {},
+    playSets: document.pack.playSets ?? [],
+    uiCopy: document.pack.uiCopy,
+  }
+  await tx.insert(contentPacks).values({
+    id: document.pack.id,
+    slug: document.pack.slug,
+    mode: 'game',
+    title: document.pack.title,
+    subtitle,
+    description: document.pack.description,
+    status,
+    accessModel: document.pack.accessModel,
+    productId: null,
+    includedInClub: true,
+    previewItems: bindings.length,
+    manifestVersion: document.schemaVersion,
+    metadata,
+  }).onConflictDoUpdate({
+    target: contentPacks.id,
+    set: {
+      slug: document.pack.slug,
+      title: document.pack.title,
+      subtitle,
+      description: document.pack.description,
+      status,
+      accessModel: document.pack.accessModel,
+      productId: null,
+      includedInClub: true,
+      previewItems: bindings.length,
+      manifestVersion: document.schemaVersion,
+      metadata,
+      updatedAt: new Date(),
+    },
+  })
+
+  await tx.delete(contentPackEntries).where(eq(contentPackEntries.packId, document.pack.id))
+  await tx.insert(contentPackEntries).values(bindings.map((binding, index) => ({
+    packId: document.pack.id,
+    position: index + 1,
+    answerItemId: binding.itemId,
+    promptPayload: {
+      schemaVersion: 2,
+      sourceOrder: binding.order,
+      prompt: document.pack.uiCopy.prompt,
+      disclaimer: document.pack.uiCopy.disclaimer,
+      recommendedMaxAttempts: document.pack.recommendedMaxAttempts,
+      rightsStatus: document.pack.rightsStatus,
+      commentsSource: 'answer.comments',
+    },
+  })))
+})
+
 const main = async () => {
-  const document = JSON.parse(await readFile(sourcePath, 'utf8')) as PackDocument
+  const document = JSON.parse(await readFile(sourcePath, 'utf8')) as DtfPackDocument
   if (document.schemaVersion !== 1) throw new Error(`Unsupported schemaVersion: ${document.schemaVersion}`)
   if (document.items.length !== document.pack.itemCount) {
     throw new Error(`Pack declares ${document.pack.itemCount} items, got ${document.items.length}`)
   }
 
-  const config = loadConfig()
-  const { db, client } = createDatabase(config)
-
+  const { db, client } = createDatabase(loadConfig())
   try {
-    const revisionRows = await db.select({ id: contentRevisions.id })
-      .from(contentRevisions)
-      .where(eq(contentRevisions.status, 'active'))
-      .limit(1)
-    const revisionId = revisionRows[0]?.id
-    if (!revisionId) throw new Error('Active content revision is required')
+    const active = (await db.select({
+      id: contentRevisions.id,
+      version: contentRevisions.version,
+    }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
+    if (!active) throw new Error('Active content revision is required')
 
     const rows = await db.select({
       itemVersionId: contentItemVersions.id,
       itemId: contentItemVersions.itemId,
-      titleRu: contentItemVersions.titleRu,
-      titleOriginal: contentItemVersions.titleOriginal,
-      year: contentItemVersions.year,
       allowedInGame: contentItemVersions.allowedInGame,
       contentStatus: contentItemVersions.contentStatus,
       popularityScore: contentItemVersions.popularityScore,
       payload: contentItemVersions.payload,
     }).from(contentItemVersions).where(and(
-      eq(contentItemVersions.revisionId, revisionId),
+      eq(contentItemVersions.revisionId, active.id),
       eq(contentItemVersions.mode, 'game'),
-    )) as CatalogRow[]
-
-    const resolutions = document.items
-      .sort((left, right) => left.order - right.order)
-      .map((item) => resolveItem(item, rows))
-
+    ))
+    const games: DtfCatalogGame[] = rows.map((row) => ({
+      ...row,
+      payload: row.payload as TitleItem,
+    }))
+    const resolutions = resolveDtfPack(document, games)
+    const unresolved = resolutions.filter((resolution) => !resolution.catalog)
     const canonicalIds = resolutions
-      .filter((entry) => entry.status === 'resolved')
-      .map((entry) => entry.itemId)
+      .map((resolution) => resolution.catalog?.itemId)
       .filter((value): value is string => Boolean(value))
     const duplicateCanonicalBindings = [...new Set(
       canonicalIds.filter((value, index) => canonicalIds.indexOf(value) !== index),
     )]
-
-    const unresolved = resolutions.filter((entry) => entry.status === 'unresolved')
+    const bindings = resolutions
+      .filter((resolution) => resolution.catalog)
+      .map((resolution) => ({
+        itemId: resolution.catalog!.itemId,
+        order: resolution.item.order,
+      }))
+    const merged = resolutions
+      .filter((resolution) => resolution.catalog)
+      .map((resolution) => ({
+        resolution,
+        before: resolution.catalog!.payload,
+        after: mergeDtfComments(
+          resolution.catalog!.payload,
+          resolution.item.progressiveHints,
+          document.pack.id,
+        ),
+      }))
+    const changed = merged.filter(({ before, after }) => JSON.stringify(before) !== JSON.stringify(after))
     const baseReport = {
       generatedAt: new Date().toISOString(),
+      mode: apply ? activate ? 'apply-and-activate' : 'apply' : 'dry-run',
       sourcePath,
       packId: document.pack.id,
-      revisionId,
-      publish,
+      activeRevision: active,
       counts: {
         requested: document.items.length,
         resolved: resolutions.length - unresolved.length,
         unresolved: unresolved.length,
+        comments: document.items.reduce((total, item) => total + item.progressiveHints.length, 0),
+        changedGames: changed.length,
       },
       duplicateCanonicalBindings,
       missingGames: unresolved.map(({ item }) => ({
@@ -311,148 +205,101 @@ const main = async () => {
         steamAppIds: item.answerRef.steamAppIds,
         aliases: item.answerRef.aliases,
       })),
-      resolutions: resolutions.map((entry) => ({
-        gameId: entry.item.gameId,
-        packItemId: entry.item.id,
-        status: entry.status,
-        method: entry.method,
-        itemId: entry.itemId,
-        itemVersionId: entry.itemVersionId,
-        matchedTitle: entry.matchedTitle,
-        matchedYear: entry.matchedYear,
+      resolutions: resolutions.map((resolution) => ({
+        gameId: resolution.item.gameId,
+        packItemId: resolution.item.id,
+        status: resolution.status,
+        method: resolution.method,
+        itemId: resolution.catalog?.itemId ?? null,
+        itemVersionId: resolution.catalog?.itemVersionId ?? null,
+        matchedTitle: resolution.catalog?.payload.titleRu ?? null,
+        matchedYear: resolution.catalog?.payload.year ?? null,
+        comments: resolution.item.progressiveHints.length,
       })),
     }
 
-    if (duplicateCanonicalBindings.length > 0) {
-      await writeJson(reportPath, { ...baseReport, imported: false, error: 'DUPLICATE_CANONICAL_BINDING' })
-      throw new Error(`Several pack items resolved to the same catalog card: ${duplicateCanonicalBindings.join(', ')}`)
-    }
-
-    if (unresolved.length > 0) {
+    if (duplicateCanonicalBindings.length || unresolved.length) {
       await writeJson(reportPath, {
         ...baseReport,
         imported: false,
-        nextStep: 'Import the missing games into the canonical game catalog, activate that revision, then rerun this importer.',
+        error: duplicateCanonicalBindings.length
+          ? 'DUPLICATE_CANONICAL_BINDING'
+          : 'UNRESOLVED_CANONICAL_GAME',
       })
-      console.error(`Import stopped: ${unresolved.length} game(s) are absent from the active catalog.`)
-      console.error(`Resolution report: ${reportPath}`)
-      process.exitCode = 2
+      throw new Error(duplicateCanonicalBindings.length
+        ? `Several pack items resolved to the same card: ${duplicateCanonicalBindings.join(', ')}`
+        : `${unresolved.length} DTF games are absent from the active catalog`)
+    }
+
+    if (!apply) {
+      await writeJson(reportPath, { ...baseReport, imported: false, dryRun: true })
+      console.log(JSON.stringify({ ...baseReport, reportPath }, null, 2))
       return
     }
 
-    const resolvedByGameId = new Map(resolutions.map((entry) => [entry.item.gameId, entry]))
-    const importableItems = document.items.filter((item) => Boolean(resolvedByGameId.get(item.gameId)?.itemId))
-    if (importableItems.length === 0) {
-      await writeJson(reportPath, { ...baseReport, imported: false, error: 'NO_EXISTING_CATALOG_MATCHES' })
-      throw new Error('No pack games match existing cards in the active catalog')
-    }
-    const resolvedSubtitle = document.pack.subtitle ?? `Спецпоказ DTF · ${importableItems.length} игр`
-
-    await db.transaction(async (tx) => {
-      const packStatus = publish ? 'published' : 'draft'
-      await tx.insert(contentPacks).values({
-        id: document.pack.id,
-        slug: document.pack.slug,
-        mode: 'game',
-        title: document.pack.title,
-        subtitle: resolvedSubtitle,
-        description: document.pack.description,
-        status: packStatus,
-        accessModel: document.pack.accessModel,
-        productId: null,
-        includedInClub: true,
-        previewItems: importableItems.length,
-        manifestVersion: document.schemaVersion,
-        metadata: {
-          source: sourcePath,
-          integrationStrategy: 'content_pack_sidecar_enrichment',
-          recommendedMaxAttempts: document.pack.recommendedMaxAttempts,
-          publicationStatus: document.pack.publicationStatus,
-          rightsStatus: document.pack.rightsStatus,
-          experience: document.pack.experience ?? {},
-          playSets: document.pack.playSets ?? [],
-          uiCopy: document.pack.uiCopy,
-        },
-      }).onConflictDoUpdate({
-        target: contentPacks.id,
-        set: {
-          slug: document.pack.slug,
-          title: document.pack.title,
-          subtitle: resolvedSubtitle,
-          description: document.pack.description,
-          status: packStatus,
-          accessModel: document.pack.accessModel,
-          productId: null,
-          includedInClub: true,
-          previewItems: importableItems.length,
-          manifestVersion: document.schemaVersion,
-          metadata: {
-            source: sourcePath,
-            integrationStrategy: 'content_pack_sidecar_enrichment',
-            recommendedMaxAttempts: document.pack.recommendedMaxAttempts,
-            publicationStatus: document.pack.publicationStatus,
-            rightsStatus: document.pack.rightsStatus,
-            experience: document.pack.experience ?? {},
-            playSets: document.pack.playSets ?? [],
-            uiCopy: document.pack.uiCopy,
-          },
-          updatedAt: new Date(),
-        },
-      })
-
-      await tx.delete(contentPackEntries).where(eq(contentPackEntries.packId, document.pack.id))
-
-      await tx.insert(contentPackEntries).values(importableItems.map((item, index) => {
-        const resolution = resolvedByGameId.get(item.gameId)
-        if (!resolution?.itemId) throw new Error(`No answer item binding for ${item.gameId}`)
-        return {
-          packId: document.pack.id,
-          position: index + 1,
-          answerItemId: resolution.itemId,
-          promptPayload: {
-            schemaVersion: 1,
-            sourceOrder: item.order,
-            prompt: document.pack.uiCopy.prompt,
-            disclaimer: document.pack.uiCopy.disclaimer,
-            recommendedMaxAttempts: document.pack.recommendedMaxAttempts,
-            rightsStatus: document.pack.rightsStatus,
-            progressiveHints: item.progressiveHints,
-          },
-        }
-      }))
-    })
-
-    const finalResolutions = document.items.map((item) => {
-      const entry = resolvedByGameId.get(item.gameId)!
-      return {
-        gameId: item.gameId,
-        packItemId: item.id,
-        status: entry.status,
-        method: entry.method,
-        itemId: entry.itemId,
-        itemVersionId: entry.itemVersionId,
-        matchedTitle: entry.matchedTitle,
-        matchedYear: entry.matchedYear,
+    let workspaceId: string | null = null
+    let activatedRevision: { id: string; version: string } | null = null
+    if (changed.length) {
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(actorId)) {
+        throw new Error('--actor-id with a valid admin user UUID is required for --apply')
       }
-    })
-    await writeJson(reportPath, {
+      const actor = (await db.select({ id: user.id, role: playerProfiles.role }).from(user)
+        .innerJoin(playerProfiles, eq(playerProfiles.userId, user.id))
+        .where(eq(user.id, actorId))
+        .limit(1))[0]
+      if (!actor || actor.role !== 'admin') throw new Error('--actor-id must identify an admin user')
+
+      const workspace = await getOrCreateWorkspace(db, actor)
+      workspaceId = workspace.id
+      if (workspace.status !== 'open') throw new Error(`Content workspace ${workspace.id} is ${workspace.status}, expected open`)
+      if (workspace.baseRevisionId !== active.id) throw new Error('Content workspace is based on a different revision')
+      const existingChanges = (await db.select({
+        count: sql<number>`count(*)::int`,
+      }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id)))[0]?.count ?? 0
+      if (existingChanges) {
+        throw new Error(`Content workspace ${workspace.id} already contains ${existingChanges} change(s); publish or discard them before the DTF merge`)
+      }
+
+      const requestId = `dtf-comments-merge:${randomUUID()}`
+      for (const { resolution, after } of changed) {
+        await saveWorkspaceItem(db, actor, resolution.catalog!.itemId, {
+          mode: 'game',
+          payload: after as unknown as Record<string, unknown>,
+          expectedVersion: 0,
+          source: 'import',
+          reason: `Merge ${document.pack.id} comments into canonical game data`,
+        }, requestId)
+      }
+      const validation = await validateWorkspace(db, actor)
+      if (validation.errors) throw new Error(`Workspace validation failed with ${validation.errors} error(s)`)
+
+      if (activate) {
+        await buildWorkspaceRevision(db, actor, workspace.id, requestId)
+        const activated = await activateWorkspaceRevision(db, actor, workspace.id, requestId)
+        activatedRevision = {
+          id: activated.revision.id,
+          version: activated.revision.version,
+        }
+      }
+    } else {
+      activatedRevision = active
+    }
+
+    const packUpdated = Boolean(activate || !changed.length)
+    if (packUpdated) await persistPack(db, document, bindings)
+    const report = {
       ...baseReport,
       imported: true,
-      status: publish ? 'published' : 'draft',
-      counts: {
-        requested: document.items.length,
-        enrichedExisting: importableItems.length,
-        skippedMissing: unresolved.length,
-      },
-      resolutions: finalResolutions,
-    })
-    console.log(JSON.stringify({
-      imported: document.pack.id,
-      status: publish ? 'published' : 'draft',
-      entries: importableItems.length,
-      skippedMissing: unresolved.length,
-      reportPath,
-    }))
+      workspaceId,
+      activatedRevision,
+      packUpdated,
+      packStatus: packUpdated ? publish ? 'published' : 'draft' : 'unchanged',
+      nextStep: !activate && changed.length
+        ? 'Review and publish the staged workspace, then rerun with --apply to update pack metadata.'
+        : null,
+    }
+    await writeJson(reportPath, report)
+    console.log(JSON.stringify({ ...report, reportPath }, null, 2))
   } finally {
     await client.end()
   }

@@ -1,37 +1,30 @@
 /**
- * Runtime adapter for content-pack prompts stored alongside canonical answers.
+ * Runtime adapter for comment-based prompts stored on canonical game cards.
  */
 
 import { and, eq } from 'drizzle-orm'
+import type { GameComment, TitleItem } from '@shoditsa/contracts'
 import {
+  contentItemVersions,
   contentPackEntries,
   contentPacks,
   type Database,
 } from '@shoditsa/database'
+import { DTF_COMMENTS_PACK_ID } from './policy.js'
 
 type ReadDatabase = Pick<Database, 'select'>
 
 type PackSessionLike = {
   packId: string | null
   packPosition: number | null
+  answerItemVersionId: string | null
   attemptsCount: number
 }
 
-type StoredProgressiveHint = {
-  key?: unknown
-  unlockAfterAttempts?: unknown
-  type?: unknown
-  text?: unknown
-  spoilerRisk?: unknown
-  sourceId?: unknown
-  clueStrength?: unknown
-  topics?: unknown
-}
-
 type StoredPrompt = {
-  prompt?: unknown
   disclaimer?: unknown
   recommendedMaxAttempts?: unknown
+  /** Transitional fallback for revisions imported before game.comments existed. */
   progressiveHints?: unknown
 }
 
@@ -50,24 +43,90 @@ const cleanText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').t
 
 const clampAttempts = (value: unknown) => Math.min(10, Math.max(1, asInteger(value, 10)))
 
-const normalizeHint = (value: unknown): StoredProgressiveHint | null => {
+export const normalizeGameComment = (value: unknown): GameComment | null => {
   const row = asRecord(value)
   if (!row) return null
   const key = cleanText(row.key)
   const text = cleanText(row.text)
   const unlockAfterAttempts = Math.max(0, asInteger(row.unlockAfterAttempts, 0))
   if (!key || !text) return null
+  const spoilerRisk = cleanText(row.spoilerRisk)
   return {
     key,
     text,
     unlockAfterAttempts,
-    type: cleanText(row.type) || 'pack_comment',
-    spoilerRisk: cleanText(row.spoilerRisk) || 'low',
+    type: cleanText(row.type) || 'player_comment',
+    spoilerRisk: spoilerRisk === 'medium' || spoilerRisk === 'high' ? spoilerRisk : 'low',
     sourceId: cleanText(row.sourceId) || null,
+    sourcePackId: cleanText(row.sourcePackId) || null,
     clueStrength: asInteger(row.clueStrength, 0),
     topics: Array.isArray(row.topics)
       ? row.topics.map(cleanText).filter(Boolean)
       : [],
+    authorArchetype: cleanText(row.authorArchetype) || null,
+  }
+}
+
+type DtfCommentPromptInput = {
+  packId: string
+  attemptsCount: number
+  promptPayload: unknown
+  pack: { id: string; title: string; subtitle: string | null }
+  answer: Pick<TitleItem, 'comments'> | null
+}
+
+export const buildDtfCommentPrompt = ({
+  packId,
+  attemptsCount,
+  promptPayload,
+  pack,
+  answer,
+}: DtfCommentPromptInput) => {
+  if (packId !== DTF_COMMENTS_PACK_ID) return null
+  const rawPrompt = asRecord(promptPayload) as StoredPrompt | null
+  if (!rawPrompt) return null
+
+  // Canonical game data is authoritative. The fallback only keeps a previous
+  // active revision playable during a rolling deployment.
+  const canonicalComments = Array.isArray(answer?.comments)
+    ? answer.comments.filter((comment) => !comment.sourcePackId || comment.sourcePackId === packId)
+    : []
+  const sourceComments = canonicalComments.length
+    ? canonicalComments
+    : Array.isArray(rawPrompt.progressiveHints)
+      ? rawPrompt.progressiveHints
+      : []
+  const allHints = sourceComments
+    .map(normalizeGameComment)
+    .filter((hint): hint is GameComment => Boolean(hint))
+    .sort((left, right) => left.unlockAfterAttempts - right.unlockAfterAttempts)
+
+  if (!allHints.length) return null
+  const visibleHints = allHints.filter((hint) => hint.unlockAfterAttempts <= attemptsCount)
+  const maxAttempts = clampAttempts(rawPrompt.recommendedMaxAttempts)
+
+  return {
+    maxAttempts,
+    progressiveHints: visibleHints.map((hint) => ({
+      key: hint.key,
+      value: {
+        unlockAfterAttempts: hint.unlockAfterAttempts,
+        type: hint.type ?? 'player_comment',
+        text: hint.text,
+        spoilerRisk: hint.spoilerRisk ?? 'low',
+        sourceId: hint.sourceId ?? null,
+        clueStrength: hint.clueStrength ?? 0,
+        topics: hint.topics ?? [],
+        authorArchetype: hint.authorArchetype ?? null,
+      },
+    })),
+    promoPrompt: {
+      packId: pack.id,
+      title: pack.title,
+      subtitle: pack.subtitle ?? '',
+      disclaimer: cleanText(rawPrompt.disclaimer)
+        || 'Комментарии переведены и отредактированы для игрового режима.',
+    },
   }
 }
 
@@ -75,9 +134,13 @@ export const loadPackSessionPrompt = async (
   db: ReadDatabase,
   session: PackSessionLike,
 ) => {
-  if (!session.packId || !session.packPosition) return null
+  if (
+    session.packId !== DTF_COMMENTS_PACK_ID
+    || !session.packPosition
+    || !session.answerItemVersionId
+  ) return null
 
-  const [entryRows, packRows] = await Promise.all([
+  const [entryRows, packRows, answerRows] = await Promise.all([
     db.select({ promptPayload: contentPackEntries.promptPayload })
       .from(contentPackEntries)
       .where(and(
@@ -94,47 +157,19 @@ export const loadPackSessionPrompt = async (
       .from(contentPacks)
       .where(eq(contentPacks.id, session.packId))
       .limit(1),
+    db.select({ payload: contentItemVersions.payload })
+      .from(contentItemVersions)
+      .where(eq(contentItemVersions.id, session.answerItemVersionId))
+      .limit(1),
   ])
 
-  const rawPrompt = asRecord(entryRows[0]?.promptPayload) as StoredPrompt | null
   const pack = packRows[0]
-  if (!rawPrompt || !pack) return null
-
-  const allHints = Array.isArray(rawPrompt.progressiveHints)
-    ? rawPrompt.progressiveHints
-        .map(normalizeHint)
-        .filter((hint): hint is NonNullable<typeof hint> => Boolean(hint))
-        .sort((left, right) => (
-          Number(left.unlockAfterAttempts) - Number(right.unlockAfterAttempts)
-        ))
-    : []
-
-  const visibleHints = allHints.filter((hint) => (
-    Number(hint.unlockAfterAttempts) <= session.attemptsCount
-  ))
-
-  const maxAttempts = clampAttempts(rawPrompt.recommendedMaxAttempts)
-
-  return {
-    maxAttempts,
-    progressiveHints: visibleHints.map((hint) => ({
-      key: String(hint.key),
-      value: {
-        unlockAfterAttempts: Number(hint.unlockAfterAttempts),
-        type: String(hint.type),
-        text: String(hint.text),
-        spoilerRisk: String(hint.spoilerRisk),
-        sourceId: hint.sourceId ? String(hint.sourceId) : null,
-        clueStrength: Number(hint.clueStrength),
-        topics: Array.isArray(hint.topics) ? hint.topics : [],
-      },
-    })),
-    promoPrompt: {
-      packId: pack.id,
-      title: pack.title,
-      subtitle: pack.subtitle ?? '',
-      disclaimer: cleanText(rawPrompt.disclaimer)
-        || 'Комментарии переведены и отредактированы для игрового режима.',
-    },
-  }
+  if (!entryRows[0] || !pack || !answerRows[0]) return null
+  return buildDtfCommentPrompt({
+    packId: session.packId,
+    attemptsCount: session.attemptsCount,
+    promptPayload: entryRows[0].promptPayload,
+    pack,
+    answer: answerRows[0].payload as TitleItem,
+  })
 }

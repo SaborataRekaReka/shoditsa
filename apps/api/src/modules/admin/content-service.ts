@@ -46,6 +46,27 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
       break
     }
   }
+  if (payload.comments != null) {
+    if (mode !== 'game') {
+      error('comments', 'game_only', 'Комментарии-подсказки доступны только карточкам игр')
+    } else if (!Array.isArray(payload.comments)) {
+      error('comments', 'invalid_type', 'Комментарии-подсказки должны быть массивом')
+    } else {
+      const comments = payload.comments.map(asRecord)
+      const keys = comments.map((comment) => text(comment.key)).filter(Boolean)
+      if (comments.some((comment) => (
+        !text(comment.key)
+        || !text(comment.text)
+        || number(comment.unlockAfterAttempts) == null
+        || !Number.isInteger(number(comment.unlockAfterAttempts))
+        || Number(comment.unlockAfterAttempts) < 0
+        || Number(comment.unlockAfterAttempts) > 10
+      ))) {
+        error('comments', 'invalid_comment', 'Каждому комментарию нужны key, text и unlockAfterAttempts от 0 до 10')
+      }
+      if (new Set(keys).size !== keys.length) error('comments', 'duplicate_key', 'Ключи комментариев должны быть уникальными')
+    }
+  }
   if (mode === 'music' && typeof payload.allowedInGame !== 'boolean') error('allowedInGame', 'required', 'Для музыки нужен явный статус участия в игре')
   if (mode === 'music' && payload.year != null) warning('year', 'legacy_music_year', 'Для музыки используйте activityStartYear; поле year неоднозначно и не показывается игрокам')
   if (mode === 'diagnosis' && !(Array.isArray(payload.icd10) && payload.icd10.length) && !text(payload.icdGroup)) error('icd10', 'required', 'Укажите ICD-10 или группу диагноза')

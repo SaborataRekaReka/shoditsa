@@ -1,0 +1,113 @@
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+import type { TitleItem } from '@shoditsa/contracts'
+import {
+  mergeDtfComments,
+  resolveDtfPack,
+  resolveDtfPackItem,
+  type DtfCatalogGame,
+  type DtfPackDocument,
+  type DtfPackItem,
+} from '../src/modules/packs/dtf-comment-merge.js'
+
+const packItem = {
+  id: 'dtf-example',
+  gameId: 'example',
+  order: 1,
+  answerRef: {
+    mode: 'game',
+    titleRu: 'Пример',
+    titleOriginal: 'Example',
+    year: 2024,
+    legacyReleaseYears: [],
+    steamAppIds: [42],
+    aliases: [],
+    resolutionOrder: [],
+  },
+  progressiveHints: [],
+} satisfies DtfPackItem
+
+const catalogGame = (itemId: string, extra: Partial<TitleItem> = {}): DtfCatalogGame => ({
+  itemId,
+  itemVersionId: `${itemId}:version`,
+  allowedInGame: true,
+  contentStatus: null,
+  popularityScore: 1,
+  payload: {
+    id: itemId,
+    mode: 'game',
+    titleRu: 'Пример',
+    titleOriginal: 'Example',
+    alternativeTitles: [],
+    popularityScore: 1,
+    year: 2024,
+    steamAppId: 42,
+    ...extra,
+  },
+})
+
+describe('DTF comment merge', () => {
+  it('prefers a canonical card over a promo duplicate', () => {
+    const resolution = resolveDtfPackItem(packItem, [
+      catalogGame('promo:dtf-example', { contentStatus: 'promo_pack' as never }),
+      catalogGame('game:example'),
+    ])
+
+    expect(resolution.catalog?.itemId).toBe('game:example')
+    expect(resolution.method).toBe('steamAppId')
+  })
+
+  it('replaces only comments from the same pack', () => {
+    const payload = catalogGame('game:example').payload
+    payload.comments = [{
+      key: 'other-comment',
+      text: 'Другая подборка',
+      unlockAfterAttempts: 0,
+      sourcePackId: 'other-pack',
+    }, {
+      key: 'old-dtf-comment',
+      text: 'Старая версия',
+      unlockAfterAttempts: 0,
+      sourcePackId: 'dtf-pack',
+    }]
+
+    const merged = mergeDtfComments(payload, [{
+      key: 'new-dtf-comment',
+      text: '  Новая   версия  ',
+      unlockAfterAttempts: 2,
+    }], 'dtf-pack')
+
+    expect(merged.comments).toEqual([
+      expect.objectContaining({ key: 'other-comment', sourcePackId: 'other-pack' }),
+      expect.objectContaining({
+        key: 'new-dtf-comment',
+        text: 'Новая версия',
+        sourcePackId: 'dtf-pack',
+      }),
+    ])
+  })
+
+  it('resolves the complete checked-in pack into the main library', () => {
+    const document = JSON.parse(readFileSync(
+      new URL('../../../data/promo/dtf-game-comments-25-v1.json', import.meta.url),
+      'utf8',
+    )) as DtfPackDocument
+    const library = JSON.parse(readFileSync(
+      new URL('../../../public/data/libraries/games/items.json', import.meta.url),
+      'utf8',
+    )) as TitleItem[]
+    const games = library.map((payload) => ({
+      itemId: payload.id,
+      allowedInGame: payload.allowedInGame !== false,
+      contentStatus: payload.contentStatus ?? null,
+      popularityScore: payload.popularityScore,
+      payload,
+    }))
+    const resolutions = resolveDtfPack(document, games)
+
+    expect(resolutions).toHaveLength(25)
+    expect(resolutions.every((resolution) => resolution.status === 'resolved')).toBe(true)
+    expect(new Set(resolutions.map((resolution) => resolution.catalog?.itemId)).size).toBe(25)
+    expect(document.items.reduce((total, item) => total + item.progressiveHints.length, 0)).toBe(150)
+  })
+})

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { and, eq } from 'drizzle-orm'
+import { and, asc, eq } from 'drizzle-orm'
+import type { TitleItem } from '@shoditsa/contracts'
 import { loadConfig } from '@shoditsa/config'
 import {
   contentItems,
@@ -34,7 +35,11 @@ try {
 
   const answers = await db.select({
     itemId: contentItems.id,
+    itemVersionId: contentItemVersions.id,
     allowedInGame: contentItemVersions.allowedInGame,
+    payload: contentItemVersions.payload,
+    promptPayload: contentPackEntries.promptPayload,
+    position: contentPackEntries.position,
   })
     .from(contentPackEntries)
     .innerJoin(contentItems, eq(contentItems.id, contentPackEntries.answerItemId))
@@ -43,18 +48,27 @@ try {
       eq(contentItemVersions.revisionId, revision[0].id),
     ))
     .where(eq(contentPackEntries.packId, DTF_COMMENTS_PACK_ID))
+    .orderBy(asc(contentPackEntries.position))
   assert.equal(answers.length, 25)
   assert.ok(answers.every((answer) => answer.allowedInGame))
   assert.ok(answers.every((answer) => !answer.itemId.startsWith('promo:')))
+  assert.ok(answers.every((answer) => {
+    const comments = (answer.payload as TitleItem).comments ?? []
+    return comments.length === 6
+      && comments.every((comment) => comment.sourcePackId === DTF_COMMENTS_PACK_ID)
+  }))
+  assert.ok(answers.every((answer) => !('progressiveHints' in (answer.promptPayload as Record<string, unknown>))))
 
   const initial = await loadPackSessionPrompt(db, {
     packId: DTF_COMMENTS_PACK_ID,
     packPosition: 1,
+    answerItemVersionId: answers[0].itemVersionId,
     attemptsCount: 0,
   })
   const rescue = await loadPackSessionPrompt(db, {
     packId: DTF_COMMENTS_PACK_ID,
     packPosition: 1,
+    answerItemVersionId: answers[0].itemVersionId,
     attemptsCount: 5,
   })
   assert.equal(initial?.maxAttempts, 6)
@@ -66,6 +80,7 @@ try {
     packId: DTF_COMMENTS_PACK_ID,
     entries: adminPack.entries.length,
     canonicalAnswers: answers.length,
+    canonicalComments: answers.reduce((total, answer) => total + ((answer.payload as TitleItem).comments?.length ?? 0), 0),
     adminAccessible: true,
     playerHidden: true,
     maxAttempts: initial.maxAttempts,

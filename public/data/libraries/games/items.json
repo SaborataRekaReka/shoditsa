@@ -303,7 +303,105 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "the-witcher-3-comment-1",
+        "text": "В первое прохождение я так и делал. Потом открыл для себя карточную игру… Бедной девушке пришлось подождать.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "gwent",
+          "main_quest_delay",
+          "ciri"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-witcher-3-comment-2",
+        "text": "Я погружался в этот суровый фэнтезийный мир не для того, чтобы играть в карты!",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "gwent",
+          "fantasy_world",
+          "minigame"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-witcher-3-comment-3",
+        "text": "Я здесь мир спасать, а не искать тысячу волшебных перьев или что там ещё.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "open_world",
+          "collectibles",
+          "main_quest"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-witcher-3-comment-4",
+        "text": "Имя, имя — редкостный гад.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "lambert",
+          "kaer_morhen",
+          "poem"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-witcher-3-comment-5",
+        "text": "Бой снежками — один из моих любимых моментов всей игры. Идеальное затишье перед бурей.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "snowball_fight",
+          "kaer_morhen",
+          "calm_before_storm"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-witcher-3-comment-6",
+        "text": "Я подумал: «Что бы сделал [герой]?» Не знал наверняка, но выпивку с ребятами пропустить не мог. Думал, просто будем травить байки и болтать. Оказалось — это и многое другое.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "geralt",
+          "kaer_morhen",
+          "drinking"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_105602",
@@ -3147,7 +3245,104 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "assassins-creed-shadows-comment-1",
+        "text": "[Название игры] выглядит и работает прекрасно. Значит, это возможно.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "graphics",
+          "performance"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "assassins-creed-shadows-comment-2",
+        "text": "При 30 FPS выглядит хорошо, но 60 FPS с внутренним разрешением 800–900p — катастрофа. Предыдущая игра серии выглядит лучше, если обе запускать в 60 FPS.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "60fps",
+          "resolution",
+          "valhalla"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "assassins-creed-shadows-comment-3",
+        "text": "Вот что я действительно оценил: [героиня] чертовски уязвима, если терять бдительность. Напоминает, как героя первой части легко сминали, если дать здоровенным стражникам себя окружить.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "naoe",
+          "stealth",
+          "series_comparison"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "assassins-creed-shadows-comment-4",
+        "text": "[Игра] была достойной, но ей мешало то, что контент запирали за обновлениями live-service. Эту модель насильно вставляют туда, где она не нужна.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "live_service",
+          "updates",
+          "ubisoft"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "assassins-creed-shadows-comment-5",
+        "text": "Одна из причин, почему я обожал Odyssey: стелс был лучшим за много лет. Надеюсь, [новая часть] будет не хуже.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "odyssey",
+          "stealth",
+          "series"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "assassins-creed-shadows-comment-6",
+        "text": "Я не стану покупать [эту часть]: в игры серии я в основном играю на PS4/5, а на этой платформе уже существует Ghost of Tsushima.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "japan",
+          "ghost_of_tsushima",
+          "playstation"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_8170",
@@ -3544,7 +3739,102 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "atomic-heart-comment-1",
+        "text": "В этой игре слишком много болтовни. Её стоило заметно приглушить.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "banter",
+          "dialogue"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "atomic-heart-comment-2",
+        "text": "Это, по сути, возбуждённый русский BioShock.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "bioshock_comparison",
+          "sexualized_aesthetic",
+          "russian_setting"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "atomic-heart-comment-3",
+        "text": "Да, главный герой всю игру ведёт себя как необязательный придурок. Это можно было приглушить. Но место старых BioShock для меня игра действительно заняла.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "protagonist",
+          "bioshock_comparison"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "atomic-heart-comment-4",
+        "text": "У него есть нарочито дурацкие реплики, но временами это всё же смешно. Советую русскую озвучку с субтитрами: актёр выкладывается на тысячу процентов.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "russian_voiceover",
+          "dialogue"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "atomic-heart-comment-5",
+        "text": "Я только закончил New Game+, и там буквально есть подводная база под названием Rapture. А заметную часть музыки написал Мик Гордон, работавший над Doom.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "rapture",
+          "mick_gordon",
+          "doom",
+          "dlc"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "atomic-heart-comment-6",
+        "text": "Люди говорили, что это советский BioShock.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "soviet_setting",
+          "bioshock_comparison"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_2530",
@@ -4117,7 +4407,106 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "baldurs-gate-3-comment-1",
+        "text": "Первый гоблин бросает бутылку с жиром. Я думаю: «Ну и зря потратил действие». Потом все четверо моих идиотов один за другим поскользнулись, упали на спину и потеряли ход.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "turn_based_combat",
+          "grease",
+          "dice"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "baldurs-gate-3-comment-2",
+        "text": "Один из гоблинов призвал волка, затем забежал в клетку и закрыл за собой дверь. Мы с другом очень долго смеялись.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "systemic_ai",
+          "summoning",
+          "combat"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "baldurs-gate-3-comment-3",
+        "text": "Самая первая проверка взлома замка у него в моей игре закончилась критическим провалом.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "dice",
+          "critical_failure",
+          "lockpicking"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "baldurs-gate-3-comment-4",
+        "text": "Во втором акте один спутник не мог перепрыгнуть лавовую яму. Тогда мой персонаж с силой 23 просто перебросил его на другую сторону. Он потерял две трети здоровья, зато долетел.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "strength",
+          "throwing",
+          "companions",
+          "act_two"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "baldurs-gate-3-comment-5",
+        "text": "Я впервые решил испытать телекинез на злодее прямо посреди его зловещего монолога. Он улетел в бездонную пропасть, не закончив фразу.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "telekinesis",
+          "systemic_solution",
+          "dialogue"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "baldurs-gate-3-comment-6",
+        "text": "Однажды я два или три раза лизнул тушу паука, и Гейл сорвался: «Ты можешь перестать лизать эту чёртову штуку?!»",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "companions",
+          "spider_carcass",
+          "dialogue"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_132297",
@@ -6789,7 +7178,103 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "bloodborne-comment-1",
+        "text": "[Название игры] на PS5 всё ещё заблокирована на 30 кадрах, зато частота хотя бы не проседает постоянно, когда на экране много всего.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "30_fps",
+          "ps5",
+          "performance"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "bloodborne-comment-2",
+        "text": "К сожалению, даже на PS5 игра заблокирована на 30 кадрах.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "30_fps",
+          "ps5"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "bloodborne-comment-3",
+        "text": "Редактирование сохранения не работает для уже существующих подземелий — слава богу, иначе был бы хаос.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "chalice_dungeons",
+          "save_editing"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "bloodborne-comment-4",
+        "text": "В подземельях действительно полно кривизны, но именно поэтому мы, искатели, их и любим.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "chalice_dungeons",
+          "jank",
+          "prospectors"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "bloodborne-comment-5",
+        "text": "Саму карту так называемого «cum dungeon» может сгенерировать кто угодно: это просто корневое подземелье Зловещего Ихилла с удачно расположенным NPC.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "cum_dungeon",
+          "chalice_glyph",
+          "npc"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "bloodborne-comment-6",
+        "text": "А смешное название — чистая случайность: все глифы назначает сервер в момент создания подземелья, и через редактирование сохранения их изменить нельзя.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "glyphs",
+          "chalice_dungeons",
+          "server"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_104280",
@@ -10632,7 +11117,103 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "clair-obscur-expedition-33-comment-1",
+        "text": "Честно говоря, мы с четырьмя друзьями прошли её через Game Pass. Если бы я не скачал игру и не рассказал остальным, никто из нас не стал бы играть: обычно мы не любим пошаговые игры.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "game_pass",
+          "turn_based",
+          "word_of_mouth"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "clair-obscur-expedition-33-comment-2",
+        "text": "Десять долларов? То есть я сыграл в эту красоту за ДЕСЯТЬ ДОЛЛАРОВ? Господи.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "game_pass",
+          "value"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "clair-obscur-expedition-33-comment-3",
+        "text": "Бои вообще не обязательно должны быть пошаговыми. Это был мой первый опыт с такой системой, но парирование в реальном времени сделало её приятной.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "turn_based",
+          "real_time_parry"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "clair-obscur-expedition-33-comment-4",
+        "text": "Система парирования основана на Sekiro. Бои очень быстрые и требуют сочетать агрессивное наступление с точными парированиями. Когда привыкаешь, бой почти ощущается как танец.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "sekiro",
+          "parry",
+          "combat_dance"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "clair-obscur-expedition-33-comment-5",
+        "text": "Да, и они ещё внезапно выпустили Oblivion Remastered за два дня до неё. Они помогли, но это была ожидаемая часть сделки: отдаёшь игру в Game Pass — получаешь рекламу.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "oblivion_remastered",
+          "game_pass",
+          "launch_timing"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "clair-obscur-expedition-33-comment-6",
+        "text": "Игра даёт сильнейшие ощущения от Legend of Dragoon и Final Fantasy X. Для меня это 10 из 10, и я понял это за первые пять минут.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "legend_of_dragoon",
+          "final_fantasy_x",
+          "jrpg"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_3487",
@@ -11183,7 +11764,104 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "concord-comment-1",
+        "text": "Честно говоря, это к лучшему. Лучше рано отключить игру и вернуть всем деньги, чем удваивать ставки на этот бардак.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "shutdown",
+          "refunds"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "concord-comment-2",
+        "text": "Просить 40 долларов за посредственную игру на перенасыщенном рынке, где конкуренты бесплатны, было не лучшей идеей. Добавьте непривлекательный дизайн персонажей и особенно цветовые схемы — и всё кончено.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "price",
+          "hero_shooter",
+          "character_design",
+          "f2p_competition"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "concord-comment-3",
+        "text": "Они были настолько уверены, что это будет следующий Overwatch, что решили брать за игру 40 долларов. Это показывает, насколько руководители оторваны от своей аудитории.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "overwatch",
+          "price",
+          "executives"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "concord-comment-4",
+        "text": "Разве этой игре не посвятили эпизод в Secret Level? Интересно, сколько заплатили, чтобы протолкнуть её туда, если сама игра исчезла ещё до выхода сериала.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "secret_level",
+          "cross_media",
+          "shutdown"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "concord-comment-5",
+        "text": "Вот что бывает, когда восемь лет вливаешь деньги в продукт для рынка, которого к концу этих восьми лет, возможно, уже не существует.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "eight_years",
+          "market",
+          "development"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "concord-comment-6",
+        "text": "Уже? Я шутил, что она совсем не протянет, но чёрт — игра едва продержалась месяц. Ответ: две недели.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "two_week_shutdown",
+          "launch_failure"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_7166",
@@ -12852,7 +13530,102 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "cyberpunk-2077-comment-1",
+        "text": "В неё уже можно нормально играть? Я даже не пробовал из-за всех плохих отзывов после выхода.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "launch_reputation",
+          "return_after_patches"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "cyberpunk-2077-comment-2",
+        "text": "Играл на релизе — было ужасно. Запустил снова пару дней назад: теперь это отличная игра, и меня бесит, что у меня мало времени на неё.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "broken_launch",
+          "redemption"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "cyberpunk-2077-comment-3",
+        "text": "Если резервная копия всё равно приблизит сохранение к повреждению, единственное решение — не играть.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "save_corruption",
+          "technical_state"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "cyberpunk-2077-comment-4",
+        "text": "Честно говоря, теперь я жду сообщения, что при определённом стиле игры она форматирует жёсткий диск или взрывает всё в радиусе восьми километров, как Хищник. Мне вообще-то нравится игра. Но это уже полная ерунда.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "bugs",
+          "save_corruption",
+          "launch"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "cyberpunk-2077-comment-5",
+        "text": "После обновления с трассировкой пути я начал второе прохождение. В первый раз был кочевником, теперь выбрал дитя улиц — и снова влюбился в эту игру.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "path_tracing",
+          "lifepaths",
+          "replay"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "cyberpunk-2077-comment-6",
+        "text": "Проблема в том, что игра запоминает каждый проданный предмет. Если выкупить вещи обратно и разобрать их, размер сохранения можно уменьшить.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "inventory",
+          "save_size",
+          "crafting"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_16155",
@@ -14028,7 +14801,105 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "death-stranding-comment-1",
+        "text": "Сначала я не понимал, нравится ли мне это. Диалоги временами ужасны, но почему-то я в восторге. Мир, история и геймплей настолько необычны, что я не играл ни во что похожее.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "unique_gameplay",
+          "dialogue",
+          "first_impression"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "death-stranding-comment-2",
+        "text": "Мне очень нравилось, пока я не добрался до опасного и долгого участка. Я свалился со скалы, понял, что придётся карабкаться обратно, и подумал: возможно, игра мне всё-таки не нравится.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "traversal",
+          "falling",
+          "terrain"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "death-stranding-comment-3",
+        "text": "Мне понравилась игра. Вряд ли я смогу пройти её снова, но мне близка её идея: главное здесь путь и всё, что происходит между событиями, а не большие постановочные сцены или сражения. Это очень спокойное и уютное приключение.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "journey",
+          "peaceful",
+          "low_combat"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "death-stranding-comment-4",
+        "text": "Кодзима — путешественник во времени: он показывает, как через несколько лет будут выглядеть заказы с Amazon. Однажды он уже сделал это с MGS2, а теперь повторил снова.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "kojima",
+          "amazon",
+          "delivery"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "death-stranding-comment-5",
+        "text": "Вся игра выглядит так: «местный призрак преследует курьера Amazon Prime».",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "ghosts",
+          "delivery",
+          "amazon"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "death-stranding-comment-6",
+        "text": "До сих пор смешно, что он прямо написал «термоядерное оружие» на бирке груза.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "cargo",
+          "thermonuclear_weapon",
+          "delivery"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_8153",
@@ -15540,7 +16411,99 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "disco-elysium-comment-1",
+        "text": "Лол, меня убило включение света — это был мой самый первый ход в игре.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "fragile_protagonist",
+          "absurd_death"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "disco-elysium-comment-2",
+        "text": "Я ни разу по-настоящему не умер, но позвонил в участок и тут же отказался быть хоть каким-то полицейским или человеком.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "dialogue_failure",
+          "cop_identity"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "disco-elysium-comment-3",
+        "text": "При первом разговоре с любым NPC я сразу извиняюсь за то, что плохо справляюсь и с полицейской работой, и с человеческой жизнью.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "roleplay",
+          "apology_cop"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "disco-elysium-comment-4",
+        "text": "Меня убило то, что я слишком пристально смотрел кому-то в рот.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "absurd_death",
+          "skill_checks"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "disco-elysium-comment-5",
+        "text": "Как думаете, здесь можно умереть от слишком старательного караоке?",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "karaoke",
+          "absurd_death"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "disco-elysium-comment-6",
+        "text": "Я в первый раз умер, когда пытался поймать свой галстук.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "necktie",
+          "opening_scene"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_7216",
@@ -17554,7 +18517,107 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "dragon-age-the-veilguard-comment-1",
+        "text": "С другой стороны, довольно странно, что Денерим и Орзаммар разваливаются, пока ты идёшь кормить чёртову галлу.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "past_world_state",
+          "side_quests",
+          "denerim"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "dragon-age-the-veilguard-comment-2",
+        "text": "Честно говоря, я представляю следующую игру так: Рук просыпается и говорит, что ему приснился очень странный сон — все события [название скрыто]. А состояние мира из первых трёх частей остаётся прежним.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "rook",
+          "continuity",
+          "world_state"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "dragon-age-the-veilguard-comment-3",
+        "text": "Юг сражается с Мором, а Инквизитор приходит в бар Минратоса поболтать с Руком о его спутниках. Л-л-логика.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "inquisitor",
+          "rook",
+          "minrathous",
+          "blight"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "dragon-age-the-veilguard-comment-4",
+        "text": "Ну брось. У них было всего десять лет на разработку — откуда время на такие тонкости?",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "development_time",
+          "continuity"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "dragon-age-the-veilguard-comment-5",
+        "text": "Например, Орлей мог бы принять помощь Ферелдена при Селине или отказаться при Гаспаре; король Алистер, королева Анора или оба могли бы защищать Денерим и Редклиф; Хоук, если не остался в Тени, мог бы помогать Авелин эвакуировать Киркволл.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "past_choices",
+          "alistair",
+          "hawke",
+          "orlais"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "dragon-age-the-veilguard-comment-6",
+        "text": "Раздражает, что здесь был очевидный способ хотя бы немного учесть прошлые решения. Инквизитор пишет Руку, что южный Тедас гибнет. Почему бы письмам не меняться в зависимости от того, правит Ферелденом Анора или Алистер, Орлеем — Селина или Гаспар, жив ли Логэйн?",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "inquisitor",
+          "rook",
+          "past_choices",
+          "the-das"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_20209",
@@ -19672,7 +20735,106 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "elden-ring-comment-1",
+        "text": "Она далеко не настолько сложная, как я ожидал, но сурово наказывает. Ошибки убивают. Сначала было очень тяжело и раздражающе, затем я поймал ритм, и стало значительно легче.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "difficulty",
+          "punishment",
+          "learning_curve"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "elden-ring-comment-2",
+        "text": "По-моему, в игре уже есть лёгкий режим. Берёшь любое откровенно сломанное оружие или пепел войны, везде призываешь духа, а если и этого мало — зовёшь ещё двух людей, чтобы они донесли тебя до следующей области или босса.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "spirit_summons",
+          "ashes_of_war",
+          "coop"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "elden-ring-comment-3",
+        "text": "Интересно, сколько раз мой конь мчался на полной скорости полмили, пока я искал место, где можно открыть карту и выяснить, что еду не туда.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "mount",
+          "map",
+          "combat_lock"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "elden-ring-comment-4",
+        "text": "Я забыл, что после выхода из адской червивой пещеры можно быстро перемещаться, поэтому попытался пешком вернуться через Кейлид.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "trap_chest",
+          "caelid",
+          "fast_travel"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "elden-ring-comment-5",
+        "text": "В первое прохождение я победил Малению с помощью Слезы мимика, потом остался помогать другим в кооперативе. В NG+ убил её в одиночку. Соло-бой всё ещё нечестный, но практика в кооперативе сделала его терпимым.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "malenia",
+          "mimic_tear",
+          "coop",
+          "ng_plus"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "elden-ring-comment-6",
+        "text": "«Это ещё даже не моя финальная форма!»",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "malenia",
+          "second_phase",
+          "scarlet_bloom"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_35233",
@@ -21586,7 +22748,102 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "fallout-76-comment-1",
+        "text": "По сути это многопользовательская версия сильно модифицированного выживания из Fallout 4, только управление ресурсами и само выживание гораздо проще.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "multiplayer",
+          "survival",
+          "fallout4_comparison"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "fallout-76-comment-2",
+        "text": "Единственное, что здесь сложнее, — вес, лол. Такое чувство, что половина игры — Fallout, а половина — управление весом.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "inventory_weight",
+          "fallout"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "fallout-76-comment-3",
+        "text": "А ещё VATS расходует очки действия.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "vats",
+          "action_points"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "fallout-76-comment-4",
+        "text": "VATS плюс «Ган-фу» — получается Джон Уик.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "vats",
+          "gun_fu"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "fallout-76-comment-5",
+        "text": "Это примерно «люди вместе играют в одиночную игру»: как библиотека, где каждый читает свою книгу. Раз в час все собираются с огнемётами, а через пять минут снова расходятся по своим лагерям.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "public_events",
+          "solo_multiplayer",
+          "camp_building"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "fallout-76-comment-6",
+        "text": "На релизе я провёл в ней 300 часов, потом ушёл примерно тогда, когда в мир добавили NPC. Вернулся два месяца назад и пока бросать не собираюсь.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "launch",
+          "npc_update",
+          "returning_player"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_311",
@@ -29055,7 +30312,103 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "grand-theft-auto-v-comment-1",
+        "text": "В двенадцатилетней игре? Никогда такого не замечали… :o",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "longevity",
+          "old_game"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "grand-theft-auto-v-comment-2",
+        "text": "Ты пришёл на вечеринку, где торт уже давно разрезали и съели, объявили последний заказ, а сам момент ты пропустил.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "longevity",
+          "community_knowledge"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "grand-theft-auto-v-comment-3",
+        "text": "Все тут ведут себя по-дурацки, но да, это довольно известная вещь. Это небольшая отсылка к теории заговора охотников на Бигфута. Там есть ещё много всего, если интересно.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "bigfoot",
+          "easter_eggs",
+          "conspiracies"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "grand-theft-auto-v-comment-4",
+        "text": "[Онлайн-режим] переживёт нас всех.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "online",
+          "longevity"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "grand-theft-auto-v-comment-5",
+        "text": "Следующий онлайн-режим будет самостоятельным: издатель захочет, чтобы все начали с нуля и снова принесли больше денег за Shark Cards. К тому же никому не нужны летающие мотоциклы.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "shark_cards",
+          "flying_bikes",
+          "online"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "grand-theft-auto-v-comment-6",
+        "text": "Люди ещё не готовы покинуть [онлайн-режим]: нелегко оставить всё, что ты там нагриндил. Я ненавижу летающие мотоциклы и всю новую научно-фантастическую ерунду, но издатель на этом зарабатывает.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "grind",
+          "shark_cards",
+          "flying_bikes",
+          "rockstar"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_7084",
@@ -31587,7 +32940,105 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "helldivers-2-comment-1",
+        "text": "Мне нравится версия с синей полосой: она показывает, что всё закончилось хорошо и люди снова начали ставить положительные оценки.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "community_event",
+          "review_bombing",
+          "cape"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "helldivers-2-comment-2",
+        "text": "Я всеми руками за плащи, посвящённые важным событиям сообщества. Сначала был плащ Крика, а этот тоже выглядел бы отлично.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "capes",
+          "community",
+          "creek"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "helldivers-2-comment-3",
+        "text": "Очень мощно. Я уже чувствую, как распространяется управляемая демократия, пока я освобождаю галактику в этом плаще. Пожалуйста, добавьте его.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "managed_democracy",
+          "galaxy",
+          "cape"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "helldivers-2-comment-4",
+        "text": "А теперь представьте, что этот плащ действительно выпустят и дадут только тем, кто свяжет аккаунты PSN и Steam.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "psn",
+          "steam",
+          "account_linking"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "helldivers-2-comment-5",
+        "text": "Проблема была не в том, что люди могли привязать аккаунт, но не хотели. Систему отключили, потом внезапно сделали обязательной и подставили примерно 170 стран, где игру продавали, но создать аккаунт PSN было нельзя.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "psn",
+          "regions",
+          "account_linking"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "helldivers-2-comment-6",
+        "text": "Я бы носил этот плащ в честь памятной победы над угрозой изгнания с Супер-Земли. Плащ должен быть укороченным — решение по PSN тоже отменили довольно быстро.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "super_earth",
+          "psn",
+          "cape"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_32754",
@@ -32303,7 +33754,102 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "hogwarts-legacy-comment-1",
+        "text": "У Мерлина было о-о-очень много свободного времени. Когда разработчики уже поймут, что никому не нужно столько отупляющих повторений?",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "merlin_trials",
+          "repetition"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "hogwarts-legacy-comment-2",
+        "text": "Необязательно забивать карту скучными занятиями только ради заявления, что в игре сто часов контента.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "open_world",
+          "map_fillers"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "hogwarts-legacy-comment-3",
+        "text": "Их 95?? Господи, это безумие.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "merlin_trials",
+          "quantity"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "hogwarts-legacy-comment-4",
+        "text": "Около часа назад закончил 95-е испытание. Повторы и количество меня не раздражали, но ужасно не понравилось, что часть испытаний не появляется на карте даже после полного открытия территории. Хорошо, что Revelio на метле помогал находить их.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "merlin_trials",
+          "revelio",
+          "broom"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "hogwarts-legacy-comment-5",
+        "text": "Летите на метле и используйте улучшенный Revelio — все точки интереса подсвечиваются издалека. Испытания Мерлина со временем становятся однообразными, но хотя бы искать их удобно.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "broom",
+          "revelio",
+          "merlin_trials"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "hogwarts-legacy-comment-6",
+        "text": "Всего 95 испытаний. Разочаровывает пройти их все и узнать, что награды почти нет. Я потратил часы и получил только достижение. Зачем они вообще нужны? Почему Мерлин их создал? Только чтобы тратить наше время?",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "merlin_trials",
+          "rewards",
+          "merlin"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_43548",
@@ -35556,7 +37102,104 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "kingdom-come-deliverance-ii-comment-1",
+        "text": "Неуклюжесть — это путь [этой серии].",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "clunky_combat",
+          "series_identity"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "kingdom-come-deliverance-ii-comment-2",
+        "text": "Не знаю, что сказать: «проблема в навыке» или «остальные же как-то справляются».",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "skill_issue",
+          "combat"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "kingdom-come-deliverance-ii-comment-3",
+        "text": "Учись играть или оформляй возврат.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "difficulty",
+          "refund"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "kingdom-come-deliverance-ii-comment-4",
+        "text": "Человек хочет реалистичную средневековую игру, но ожидает боёв как в Dynasty Warriors 🤣.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "medieval",
+          "realism",
+          "combat"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "kingdom-come-deliverance-ii-comment-5",
+        "text": "Нужно разобраться с бандитами, но не можешь победить их в открытую? Дождись ночи и зарежь во сне или отрави еду. Можно научиться варить «Погибель» или «Кукольника».",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "bandits",
+          "poison",
+          "alchemy",
+          "sleep"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "kingdom-come-deliverance-ii-comment-6",
+        "text": "Нужно понять: здесь нельзя быть кем угодно. Мы играем за Генри, сына кузнеца, которого никто не обучал бою. Чёрт возьми, беги — ты сын кузнеца, а не Драконорождённый.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "henry",
+          "blacksmith_son",
+          "realism",
+          "dragonborn"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_2559",
@@ -46538,7 +48181,100 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "no-mans-sky-comment-1",
+        "text": "Оригинальная версия была мусором, спору нет. Но разработчики не бросили проект и обновили его до состояния, которое обещали, и даже дальше.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "bad_launch",
+          "redemption",
+          "free_updates"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "no-mans-sky-comment-2",
+        "text": "Я скорее отрежу себе конечность, чем стану играть в [название игры] после того, как разработчики несколько раз лгали всем в лицо — в интервью, телешоу и статьях.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "broken_promises",
+          "launch_backlash"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "no-mans-sky-comment-3",
+        "text": "Даже если деньги, заработанные на этой лжи, они потратили на создание лучшей игры на свете, доверия и уважения уже нет.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "trust",
+          "redemption_debate"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "no-mans-sky-comment-4",
+        "text": "То есть им следовало забрать деньги и сбежать?",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "developer_support",
+          "redemption_debate"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "no-mans-sky-comment-5",
+        "text": "Я не покупал [название игры] на релизе — ажиотажа было слишком много. Купил гораздо позже, уже исправленной и действительно достойной.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "late_adopter",
+          "fixed_state"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "no-mans-sky-comment-6",
+        "text": "Разве это не та же самая ситуация, только [название игры] уже находится на исправленном конце спектра? Странно приводить её как контрпример.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "redemption",
+          "finished_state"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_115823",
@@ -54972,7 +56708,105 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "red-dead-redemption-2-comment-1",
+        "text": "[Название игры] — медленная игра, а управление, похоже, ставит реализм выше отзывчивости.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "slow_pace",
+          "controls",
+          "realism"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "red-dead-redemption-2-comment-2",
+        "text": "Эту игру делали не для хардкорных поклонников шутеров. Это кинематографическая сюжетная игра, в которой просто есть оружие.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "cinematic",
+          "story",
+          "guns"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "red-dead-redemption-2-comment-3",
+        "text": "Курение и выпивка заряжают особую способность, позволяя эффектно расправляться с людьми. Автоприцел здесь настолько сильный, что я начал сомневаться, нужны ли мне вообще большие пальцы.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "dead_eye",
+          "smoking",
+          "aim_assist"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "red-dead-redemption-2-comment-4",
+        "text": "Просто не торопись и рассматривай мир и детали, которые сделала Rockstar. Скоро темп поднимется — нужно лишь сохранять веру.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "slow_pace",
+          "rockstar",
+          "world_detail"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "red-dead-redemption-2-comment-5",
+        "text": "Всегда казалось смешным, что в игре, где существует Майка, запрещена ненормативная лексика.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "horse_naming",
+          "profanity_filter",
+          "micah"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "red-dead-redemption-2-comment-6",
+        "text": "Можно сносить людям головы и сжигать их заживо, но боже упаси дать лошади неподобающее имя.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "horse",
+          "violence",
+          "profanity_filter"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_74539",
@@ -56960,7 +58794,103 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "stalker-2-comment-1",
+        "text": "Именно этого я и ожидал. Я видел, как система ПЫТАЕТСЯ работать. Не могу дождаться исправления.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "broken_system",
+          "launch_state"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "stalker-2-comment-2",
+        "text": "Похоже, рабочий радиус A-Life уменьшили, чтобы хоть как-то помочь ужасной производительности.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "a_life",
+          "performance"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "stalker-2-comment-3",
+        "text": "Нет. Перезагружаешь быстрое сохранение — стая собак превращается в группу бандитов, имена NPC меняются. Вместо A-Life здесь случайный спавнер.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "a_life",
+          "random_spawns",
+          "quicksave"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "stalker-2-comment-4",
+        "text": "Она работает настолько хорошо, что группа сталкеров за кадром убила кровососа, который должен был напасть на меня в одном из основных заданий. Я увидел только несколько трупов сталкеров и мёртвого кровососа, а финальный диалог всё равно делал вид, будто я встретил его живым.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "a_life",
+          "bloodsucker",
+          "quest"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "stalker-2-comment-5",
+        "text": "Люди слишком много играли в GAMMA и уже не помнят, что на самом деле было в оригинальных играх.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "mods",
+          "original_trilogy",
+          "expectations"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "stalker-2-comment-6",
+        "text": "Игровой мир кажется совершенно мёртвым и искусственным по сравнению с оригинальной трилогией. Я не уверен, что A-Life когда-нибудь станет тем, что обещали, особенно после того, как все упоминания системы убрали со страницы магазина.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "a_life",
+          "original_trilogy",
+          "store_page"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_899",
@@ -60374,7 +62304,102 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "silent-hill-2-remake-comment-1",
+        "text": "Какое мне дело до мнения обозревателей? Им нравится буквально каждая AAA-игра, а ты даже примеров не привёл — почему я должен верить? 💀",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "reviewers",
+          "remake_debate"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "silent-hill-2-remake-comment-2",
+        "text": "Качественная игра, в которую вложено много труда, ещё не означает, что у неё есть душа 💀 Хороший продукт не доказывает, что людям, которые над ним работали, было не всё равно. 99% ремейков бездушны, смирись 💀",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "soulless",
+          "remakes",
+          "production"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "silent-hill-2-remake-comment-3",
+        "text": "Другие игры [этой серии] почти не похожи на ремейк. Ты их пропустил, потому что на самом деле любишь Resident Evil — и ремейк как раз пытается стать им 💀",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "resident_evil",
+          "franchise_identity"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "silent-hill-2-remake-comment-4",
+        "text": "Я прошёл оригинал уже после платины в ремейке и даже не родился, когда вышла [оригинальная игра], но всё равно считаю ремейк горячей кучей мусора рядом с оригиналом. Объясни это 💀",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "original_vs_remake",
+          "nostalgia"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "silent-hill-2-remake-comment-5",
+        "text": "[Этот ремейк], напротив, ощущался свежим и совершенно новым даже для вернувшегося игрока вроде меня.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "fresh_remake",
+          "returning_players"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "silent-hill-2-remake-comment-6",
+        "text": "В [ремейке] зоны соединены без экранов загрузки, а сама игра примерно вдвое длиннее оригинала. Арены боссов, расположение врагов и головоломки изменили и осовременили.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "seamless_areas",
+          "double_length",
+          "puzzles",
+          "bosses"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "fallback_seed_748",
@@ -65437,7 +67462,104 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "starfield-comment-1",
+        "text": "Тогда почему все говорят: «После 12 часов становится интересно»?",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "slow_start",
+          "time_to_get_good"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "starfield-comment-2",
+        "text": "Можно пройти игру до конца и ни разу не нуждаться ни в одном аванпосте.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "outposts",
+          "optional_systems",
+          "unused_mechanics"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "starfield-comment-3",
+        "text": "Корабль просто кажется бесполезным, когда можно везде перемещаться мгновенно и пропустить вообще всё, что связано с кораблём.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "space_travel",
+          "fast_travel",
+          "ship"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "starfield-comment-4",
+        "text": "Разница лишь в том, что в одном случае ничего не происходит по пути к планете, где ничего не происходит, а в другом — ничего не происходит после быстрого перемещения через 35 экранов загрузки к множеству планет, где ничего не происходит.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "empty_planets",
+          "loading_screens",
+          "fast_travel"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "starfield-comment-5",
+        "text": "Если [название игры] так уважает твоё время, тогда что, чёрт возьми, происходит с инвентарём и ассортиментом магазинов?",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "inventory",
+          "shops",
+          "time"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "starfield-comment-6",
+        "text": "Мой первый аванпост был прямо рядом с местом, где я нашёл [персонажа]. Я назначил его туда ещё до того, как позволил ему подняться на корабль. Когда он благодарил меня за спасение с пустынной планеты, он даже не подозревал, что никуда не уедет…",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "outposts",
+          "companions",
+          "roleplay"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_50044",
@@ -72344,7 +74466,105 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "the-day-before-comment-1",
+        "text": "Дико всё это… действительно каждую минуту рождается новый простак.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "scam",
+          "buyers"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-day-before-comment-2",
+        "text": "Некоторые готовы дать игре шанс и, вероятно, в любом случае любят экстракшн-игры. Но потом понимают, что она поверхностная и в ней нет прогрессии, которая могла бы удержать интерес.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "extraction_shooter",
+          "no_progression",
+          "shallow"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-day-before-comment-3",
+        "text": "Или просидели в очереди часов пять-шесть, а потом наиграли ещё два-три часа.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "server_queue",
+          "launch"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-day-before-comment-4",
+        "text": "Проблема в том, что у игры длинное вступление, а ещё трудно попасть на сервер. Я пропускал диалоги, чтобы не выйти за два часа. В самом городе я успел поиграть минут двадцать.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "long_intro",
+          "server_issues",
+          "refund_window",
+          "city"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-day-before-comment-5",
+        "text": "Похоже, ты игру даже не запускал — и это было разумно. Многие провели больше двух часов в меню, пытаясь попасть на сервер. Я потратил больше трёх часов на вход и вылеты, а реально играл, может быть, минут сорок пять.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "server_issues",
+          "crashes",
+          "refund"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-day-before-comment-6",
+        "text": "Я наиграл 3,2 часа и запросил возврат. Написал, что игра не соответствует видео и скриншотам, что это не обещанная MMO, а проблемы с серверами не давали нормально играть.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "bait_and_switch",
+          "not_mmo",
+          "refund",
+          "server_issues"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_180",
@@ -72751,7 +74971,100 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "skyrim-comment-1",
+        "text": "Скрытный лучник. Стреляешь человеку в лицо из тени, он подбегает прямо к тебе, осматривается… «Хм… Наверное, ветер».",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "stealth_archer",
+          "enemy_ai"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "skyrim-comment-2",
+        "text": "А ещё можно забить дракона кулаками.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "dragons",
+          "unarmed_build"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "skyrim-comment-3",
+        "text": "Лучник-убийца. Люблю красться и стрелять из [название лука скрыто]: хе-хе, взрывы делают бр-р-р.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "stealth_archer",
+          "unique_bow"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "skyrim-comment-4",
+        "text": "Трудно превзойти уют этой игры, и способов играть в ней очень много, хотя я всё равно всегда превращаюсь в скрытного лучника.",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "comfort_game",
+          "stealth_archer"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "skyrim-comment-5",
+        "text": "Можно буквально прокрасться мимо врагов, если сидеть на корточках и держаться в тени.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "stealth",
+          "enemy_ai"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "skyrim-comment-6",
+        "text": "Я всегда любил магию. Но хотел бы такую же игру без магии, чтобы по-настоящему уйти в щит и меч или огромный молот.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "build_variety",
+          "magic",
+          "melee"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_126681",
@@ -73097,7 +75410,104 @@
       ],
       "verified": true,
       "missingFields": []
-    }
+    },
+    "comments": [
+      {
+        "key": "the-last-of-us-part-ii-comment-1",
+        "text": "Раздел за [вторую героиню], пожалуй, лучше и веселее, а её оружие отличное.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "dual_protagonists",
+          "weapons",
+          "gameplay"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-last-of-us-part-ii-comment-2",
+        "text": "Когда я увидел, как она убивает заражённого голыми руками, что-то изменилось в моём восприятии дофамина.",
+        "unlockAfterAttempts": 0,
+        "type": "player_comment",
+        "spoilerRisk": "low",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 1,
+        "topics": [
+          "melee",
+          "infected",
+          "second_protagonist"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-last-of-us-part-ii-comment-3",
+        "text": "Веселее? Ты явно не падал миллион раз, переходя по небесному мосту… Я травмировал бедную девушку.",
+        "unlockAfterAttempts": 1,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 2,
+        "topics": [
+          "fear_of_heights",
+          "sky_bridge"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-last-of-us-part-ii-comment-4",
+        "text": "Признаюсь: в первое прохождение я специально заставлял её падать, потому что так сильно ненавидел [эту героиню].",
+        "unlockAfterAttempts": 2,
+        "type": "player_comment",
+        "spoilerRisk": "high",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 3,
+        "topics": [
+          "player_hostility",
+          "forced_perspective"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-last-of-us-part-ii-comment-5",
+        "text": "Абсолютно. Моя любимая часть игры. Отличное оружие, отличный ближний бой. Напоминает Джоэла из первой части, если бы он умел уклоняться.",
+        "unlockAfterAttempts": 3,
+        "type": "player_comment",
+        "spoilerRisk": "medium",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 4,
+        "topics": [
+          "part_one_parallel",
+          "joel",
+          "melee"
+        ],
+        "authorArchetype": null
+      },
+      {
+        "key": "the-last-of-us-part-ii-comment-6",
+        "text": "Да. И мне понравилось, что игра заставила меня получать удовольствие от неё. Сначала я был так зол, что много раз специально её убивал — хотел, чтобы она страдала за Джоэла. Но чем дольше я играл, тем веселее становилось и тем сильнее я привязывался к ней.",
+        "unlockAfterAttempts": 5,
+        "type": "player_comment",
+        "spoilerRisk": "high",
+        "sourceId": null,
+        "sourcePackId": "dtf-game-comments-25-v1",
+        "clueStrength": 5,
+        "topics": [
+          "abby",
+          "joel",
+          "perspective_shift",
+          "revenge"
+        ],
+        "authorArchetype": null
+      }
+    ]
   },
   {
     "id": "tgdb_113",

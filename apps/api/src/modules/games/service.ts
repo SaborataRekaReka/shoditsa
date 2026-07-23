@@ -334,7 +334,7 @@ export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[
 }
 
 export const publicCard = (item: TitleItem) => ({
-  ...item,
+  ...(({ comments: _privateComments, ...publicItem }) => publicItem)(item),
   titleOriginal: item.titleOriginal ?? '',
   year: item.mode === 'music' ? null : item.year ?? null,
   genres: item.genres ?? [],
@@ -454,6 +454,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     ? await loadPackSessionPrompt(tx, {
         packId: session.packId,
         packPosition: session.packPosition,
+        answerItemVersionId: session.answerItemVersionId,
         attemptsCount: session.attemptsCount,
       })
     : null
@@ -515,6 +516,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
     ? await loadPackSessionPrompt(tx, {
         packId: session.packId,
         packPosition: session.packPosition,
+        answerItemVersionId: session.answerItemVersionId,
         attemptsCount: session.attemptsCount,
       })
     : null
@@ -541,6 +543,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
     ? await loadPackSessionPrompt(tx, {
         packId: session.packId,
         packPosition: session.packPosition,
+        answerItemVersionId: session.answerItemVersionId,
         attemptsCount: position,
       })
     : null
@@ -587,6 +590,7 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
     ? await loadPackSessionPrompt(tx, {
         packId: session.packId,
         packPosition: session.packPosition,
+        answerItemVersionId: session.answerItemVersionId,
         attemptsCount: session.attemptsCount,
       })
     : null

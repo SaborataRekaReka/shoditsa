@@ -32,7 +32,7 @@ export type PublicContentItem = {
   year: number | null
   genres?: string[]
   posterUrl: string | null
-} & Partial<Omit<TitleItem, 'id' | 'mode' | 'titleRu' | 'titleOriginal' | 'year' | 'genres' | 'posterUrl'>>
+} & Partial<Omit<TitleItem, 'id' | 'mode' | 'titleRu' | 'titleOriginal' | 'year' | 'genres' | 'posterUrl' | 'comments'>>
 
 export type MetaResponse = {
   serverTime: string

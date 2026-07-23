@@ -49,6 +49,18 @@ export type MusicSimilarArtist = {
   match?: number | null
   source?: string | null
 }
+export type GameComment = {
+  key: string
+  text: string
+  unlockAfterAttempts: number
+  type?: string
+  spoilerRisk?: 'low' | 'medium' | 'high'
+  sourceId?: string | null
+  sourcePackId?: string | null
+  clueStrength?: number
+  topics?: string[]
+  authorArchetype?: string | null
+}
 export type TitleItem = {
   id: string
   mode: TitleMode
@@ -115,6 +127,8 @@ export type TitleItem = {
   slogan?: string | null
   supportingCast?: Person[]
   facts?: string[]
+  /** Curated player comments used as progressive clues by comment-based specials. */
+  comments?: GameComment[]
   awards?: FilmAwards | null
   topRank?: number | null
   externalRanks?: Record<string, number>
