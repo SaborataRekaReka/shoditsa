@@ -37,6 +37,21 @@ describe('friends room service helpers', () => {
     expect(isFriendsRoomAnswerCorrect('Ирония судьбы', movie)).toBe(false)
   })
 
+  it('shares punctuation and original-name rules with catalog search', () => {
+    const band = {
+      id: 'music:236_даите-танк',
+      mode: 'music',
+      titleRu: 'Дайте танк (!)',
+      titleOriginal: 'Daite Tank (!)',
+      alternativeTitles: ['ДТ!'],
+      aliases: [],
+      popularityScore: 1,
+    } as TitleItem
+
+    expect(isFriendsRoomAnswerCorrect('Дайте танк(!)', band)).toBe(true)
+    expect(isFriendsRoomAnswerCorrect('Daite Tank (!)', band)).toBe(true)
+  })
+
   it('builds concise, non-answer hints from content metadata', () => {
     const hints = buildFriendsRoomHints(movie)
     expect(hints.length).toBeGreaterThanOrEqual(3)

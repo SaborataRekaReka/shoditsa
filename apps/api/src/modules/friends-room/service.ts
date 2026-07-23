@@ -11,7 +11,7 @@ import type {
   TitleItem,
 } from '@shoditsa/contracts'
 import { FRIENDS_ROOM_CAPACITY, friendsRoomMinimumRounds } from '@shoditsa/contracts'
-import { musicDifficultyPool } from '@shoditsa/game-core'
+import { isExactTitleSearchMatch, musicDifficultyPool, normalize } from '@shoditsa/game-core'
 import {
   contentItemVersions,
   contentRevisions,
@@ -67,20 +67,10 @@ export const buildFriendsRoomHints = (item: TitleItem): string[] => {
   return result.length ? result : ['Подсказки появятся после обновления контента']
 }
 
-export const normalizeFriendsRoomAnswer = (value: string) => value
-  .normalize('NFKC')
-  .toLocaleLowerCase('ru-RU')
-  .replace(/ё/g, 'е')
-  .replace(/[^a-zа-я0-9]+/gi, ' ')
-  .trim()
+export const normalizeFriendsRoomAnswer = normalize
 
-export const isFriendsRoomAnswerCorrect = (value: string, item: TitleItem) => {
-  const normalized = normalizeFriendsRoomAnswer(value)
-  if (!normalized) return false
-  return [item.titleRu, item.titleOriginal, ...(item.alternativeTitles ?? []), ...(item.aliases ?? [])]
-    .map(normalizeFriendsRoomAnswer)
-    .some((candidate) => candidate === normalized)
-}
+export const isFriendsRoomAnswerCorrect = (value: string, item: TitleItem) =>
+  isExactTitleSearchMatch(value, item)
 
 const stableIndex = (value: string, length: number) => createHash('sha256').update(value).digest().readUInt32BE(0) % length
 const colorFor = (userId: string) => `player-${stableIndex(userId, 12) + 1}`
@@ -422,14 +412,11 @@ export const submitFriendsRoomAnswer = async (
         eq(contentItemVersions.mode, item.mode),
         eq(contentItemVersions.allowedInGame, true),
       ))
-    const normalizedAnswer = normalizeFriendsRoomAnswer(answerText)
     const guessedRow = itemId
       ? candidates.find((entry) => entry.itemId === itemId)
       : candidates.find((entry) => {
           const candidate = entry.payload as TitleItem
-          return [candidate.titleRu, candidate.titleOriginal, ...(candidate.alternativeTitles ?? []), ...(candidate.aliases ?? [])]
-            .map(normalizeFriendsRoomAnswer)
-            .includes(normalizedAnswer)
+          return isExactTitleSearchMatch(answerText, candidate)
         })
     const elapsedSeconds = Math.max(0, (Date.now() - (room.phaseStartedAt?.getTime() ?? Date.now())) / 1_000)
     const scoring = scoreFriendsRoomGuess({

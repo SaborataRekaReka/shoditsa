@@ -1,8 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { GAME_MODE_MANIFEST, PLAYABLE_MODE_IDS, type TitleItem, type TitleMode } from '@shoditsa/contracts'
-import { calculateCompletionReward, compareTitles, dailyTitle, isAllowedInRegularGame, normalize, poolFor, searchTitles } from '../src/index.js'
+import { GAME_MODE_MANIFEST, PLAYABLE_MODE_IDS, type LibrarySearchIndex, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import {
+  calculateCompletionReward,
+  compareTitles,
+  dailyTitle,
+  isAllowedInRegularGame,
+  isExactTitleSearchMatch,
+  musicDifficultyPool,
+  normalize,
+  poolFor,
+  searchTitles,
+  titleSearchNames,
+} from '../src/index.js'
 
 const libraryDirs = Object.fromEntries(PLAYABLE_MODE_IDS.map((mode) => [mode, GAME_MODE_MANIFEST[mode].dataDir])) as Record<TitleMode, string>
 const fixtures = JSON.parse(readFileSync(new URL('./fixtures/compare-golden.json', import.meta.url), 'utf8')) as Partial<Record<TitleMode, { answerId: string; cases: Array<{ guessId: string; digest: string }> }>>
@@ -63,6 +74,80 @@ describe('deterministic rules', () => {
     const items = [{ ...base, id: 'tgdb_10221' }, { ...base, id: 'tgdb_10221_1' }] as TitleItem[]
 
     expect(searchTitles(items, 'divinity', new Set()).map((item) => item.id)).toEqual(['tgdb_10221'])
+  })
+
+  it('uses the same searchable title fields in every catalog game', () => {
+    for (const mode of PLAYABLE_MODE_IDS) {
+      const item = {
+        id: `${mode}:search-contract`,
+        mode,
+        titleRu: 'Основное название',
+        titleOriginal: 'English Original',
+        alternativeTitles: ['Альтернативное название'],
+        aliases: ['Legacy Alias'],
+        popularityScore: 1,
+      } as TitleItem
+
+      for (const query of ['основное', 'english original', 'альтернативное', 'legacy alias']) {
+        expect(searchTitles([item], query, new Set()).map((entry) => entry.id), `${mode}: ${query}`)
+          .toEqual([item.id])
+      }
+    }
+  })
+
+  it('finds the reported music title with or without punctuation and by Latin alias', () => {
+    const items = JSON.parse(readFileSync(new URL('../../../public/data/libraries/music/items.json', import.meta.url), 'utf8')) as TitleItem[]
+    const pool = musicDifficultyPool(items, 'medium')
+    const item = pool.find((entry) => entry.id === 'music:236_даите-танк')
+    expect(item).toBeDefined()
+
+    for (const query of ['Дайте танк (!)', 'Дайте танк(!)', 'дайте танк', 'Daite Tank (!)', 'ДТ!']) {
+      expect(searchTitles(pool, query, new Set()).map((entry) => entry.id)).toContain(item!.id)
+      expect(isExactTitleSearchMatch(query, item!)).toBe(true)
+    }
+  })
+
+  it('does not let an incomplete or stale index hide a valid alias', () => {
+    const target = {
+      id: 'movie:target',
+      mode: 'movie',
+      titleRu: 'Целевой фильм',
+      titleOriginal: 'Target Movie',
+      alternativeTitles: ['Общее слово'],
+      aliases: ['Hidden Alias'],
+      popularityScore: 1,
+    } as TitleItem
+    const unrelated = {
+      id: 'movie:unrelated',
+      mode: 'movie',
+      titleRu: 'Hidden Fortress',
+      titleOriginal: 'Hidden Fortress',
+      alternativeTitles: [],
+      popularityScore: 1,
+    } as TitleItem
+    const staleIndex = {
+      version: 1,
+      library: 'movies',
+      generatedAt: new Date(0).toISOString(),
+      totalItems: 2,
+      tokensCount: 1,
+      docs: [],
+      tokenToIds: { hidden: [unrelated.id] },
+    } satisfies LibrarySearchIndex
+
+    expect(searchTitles([target, unrelated], 'Hidden Alias', new Set(), staleIndex).map((item) => item.id))
+      .toEqual([target.id])
+  })
+
+  it('deduplicates all accepted names through the centralized title contract', () => {
+    const item = {
+      titleRu: 'Ёлки',
+      titleOriginal: 'Six Degrees of Celebration',
+      alternativeTitles: ['Елки'],
+      aliases: ['  ЁЛКИ  ', 'New Year Trees'],
+    }
+
+    expect(titleSearchNames(item)).toEqual(['Ёлки', 'Six Degrees of Celebration', 'New Year Trees'])
   })
 })
 

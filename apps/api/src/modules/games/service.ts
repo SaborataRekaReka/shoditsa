@@ -362,7 +362,9 @@ export const answerPool = async (tx: ReadDatabase, revisionId: string, mode: Tit
       eq(contentItemVersions.revisionId, revisionId), eq(contentItemVersions.mode, mode), eq(contentItemVersions.allowedInGame, true),
     )).orderBy(asc(contentItemVersions.sortOrder))
   let items = poolFor(rows.map((row) => row.payload as TitleItem), mode, period, variantKey)
-  if (mode === 'music') items = musicDifficultyPool(items, difficulty ?? 'medium')
+  // Session searches always carry their selected difficulty. A standalone
+  // catalog search (friends rooms/autocomplete) must cover every music tier.
+  if (mode === 'music' && difficulty) items = musicDifficultyPool(items, difficulty)
   const byItemId = new Map(rows.map((row) => [(row.payload as TitleItem).id, row.id]))
   return { items, byItemId }
 }
@@ -527,7 +529,8 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
     ? (await tx.select({ variantKey: dailyChallenges.variantKey }).from(dailyChallenges).where(eq(dailyChallenges.id, session.challengeId)).limit(1))[0]?.variantKey ?? null
     : null)
   const sessionMode = session.mode as TitleMode
-  const pool = await answerPool(tx, session.revisionId, sessionMode, session.period, session.difficulty, variantKey)
+  const poolDifficulty = sessionMode === 'music' ? session.difficulty ?? 'medium' : null
+  const pool = await answerPool(tx, session.revisionId, sessionMode, session.period, poolDifficulty, variantKey)
   const guess = pool.items.find((item) => item.id === itemId)
   if (!guess) throw new ApiError(422, 'GAME_ITEM_OUTSIDE_POOL', 'Вариант недоступен в этой игре')
   const guessedVersionId = pool.byItemId.get(guess.id)!
@@ -635,7 +638,8 @@ export const searchCatalog = async (db: Database, input: { mode: TitleMode; q: s
   } else {
     revisionId = await activeRevision(db)
   }
-  const pool = await answerPool(db, revisionId, mode, period, difficulty ?? null, variantKey)
+  const poolDifficulty = mode === 'music' && input.sessionId ? difficulty ?? 'medium' : difficulty
+  const pool = await answerPool(db, revisionId, mode, period, poolDifficulty, variantKey)
   const { searchTitles } = await import('@shoditsa/game-core')
   return searchTitles(pool.items, input.q, excluded).slice(0, input.limit ?? 10).map(publicCard)
 }

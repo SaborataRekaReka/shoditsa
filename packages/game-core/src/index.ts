@@ -287,12 +287,42 @@ export const pickDailyVignette = <T,>(vignettes: T[], diagnosisId: string, date:
 export const normalizeArtistName = (value: string) => value
   .normalize('NFKD')
   .toLocaleLowerCase('ru-RU')
-  .replace(/[\u0300-\u036f]/g, '')
-  .replace(/ё/g, 'е')
-  .replace(/[^a-zа-я0-9]+/gi, ' ')
+  .replace(/\p{M}+/gu, '')
+  .replace(/[^\p{L}\p{N}]+/gu, ' ')
   .trim()
 
 export const normalize = (value: string) => normalizeArtistName(value)
+
+/**
+ * The single source of truth for names accepted by every catalog game.
+ * `titleOriginal` covers English/original names, while both alias collections
+ * cover legacy and imported alternative names.
+ */
+export const titleSearchNames = (item: Pick<TitleItem, 'titleRu' | 'titleOriginal' | 'alternativeTitles' | 'aliases'>) => {
+  const seen = new Set<string>()
+  const result: string[] = []
+  for (const value of [
+    item.titleRu,
+    item.titleOriginal,
+    ...(item.alternativeTitles ?? []),
+    ...(item.aliases ?? []),
+  ]) {
+    const title = String(value ?? '').trim()
+    const key = normalize(title)
+    if (!key || seen.has(key)) continue
+    seen.add(key)
+    result.push(title)
+  }
+  return result
+}
+
+export const isExactTitleSearchMatch = (
+  query: string,
+  item: Pick<TitleItem, 'titleRu' | 'titleOriginal' | 'alternativeTitles' | 'aliases'>,
+) => {
+  const normalizedQuery = normalize(query)
+  return Boolean(normalizedQuery) && titleSearchNames(item).some((name) => normalize(name) === normalizedQuery)
+}
 
 const queryTokens = (value: string) => normalize(value).split(/\s+/).filter((token) => token.length >= 2)
 
@@ -386,18 +416,19 @@ export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<str
     : excluded
 
   const candidateIds = !isMusicPool && searchIndex ? candidateIdsFromIndex(searchIndex, q) : new Set<string>()
+  // The generated index is only an acceleration hint. It may be stale or come
+  // from an older schema without aliases, so it must never become a hard
+  // filter: doing so makes valid original/alternative names disappear.
   const candidatePool = candidateIds.size
-    ? pool.filter((item) => candidateIds.has(item.id))
+    ? [
+        ...pool.filter((item) => candidateIds.has(item.id)),
+        ...pool.filter((item) => !candidateIds.has(item.id)),
+      ]
     : pool
 
   const seenIdentities = new Set<string>()
   return candidatePool.map((item) => {
-    const names = [
-      item.titleRu,
-      item.titleOriginal,
-      ...(item.alternativeTitles ?? []),
-      ...(item.aliases ?? []),
-    ].filter(Boolean).map(normalize)
+    const names = titleSearchNames(item).map(normalize)
     const exact = names.some((name) => name === q)
     const starts = names.some((name) => name.startsWith(q))
     const includes = names.some((name) => name.includes(q))

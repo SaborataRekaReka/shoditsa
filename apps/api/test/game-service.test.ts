@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Hint, TitleItem } from '@shoditsa/contracts'
-import { buildHintOptions, publicCard } from '../src/modules/games/service.js'
+import { answerPool, buildHintOptions, publicCard } from '../src/modules/games/service.js'
 
 describe('public game card', () => {
   it('keeps genres required by attempt cards', () => {
@@ -67,6 +67,50 @@ describe('public game card', () => {
 
     const card = publicCard(item)
     expect(card.cast?.[0]?.photoUrl).toBe('/media/people/84/842c7705dac914e1a3765e58bb2ca6d50117a5eb20e833d38133af5ca19a9ab3.webp')
+  })
+})
+
+describe('catalog search pool', () => {
+  it('keeps every music tier for standalone search and filters only an explicit difficulty', async () => {
+    const items = [
+      {
+        id: 'music:core',
+        mode: 'music',
+        titleRu: 'Core Artist',
+        titleOriginal: 'Core Artist',
+        alternativeTitles: [],
+        popularityScore: 2,
+        gameTier: 'core',
+        contentStatus: 'ready',
+        allowedInGame: true,
+      },
+      {
+        id: 'music:niche',
+        mode: 'music',
+        titleRu: 'Niche Artist',
+        titleOriginal: 'Niche Artist',
+        alternativeTitles: [],
+        popularityScore: 1,
+        gameTier: 'niche',
+        contentStatus: 'ready',
+        allowedInGame: true,
+      },
+    ] as TitleItem[]
+    const rows = items.map((payload, index) => ({ id: `version-${index}`, payload }))
+    const db = {
+      select: () => ({
+        from: () => ({
+          where: () => ({
+            orderBy: async () => rows,
+          }),
+        }),
+      }),
+    } as never
+
+    expect((await answerPool(db, 'revision', 'music', 'all', null)).items.map((item) => item.id))
+      .toEqual(['music:core', 'music:niche'])
+    expect((await answerPool(db, 'revision', 'music', 'all', 'medium')).items.map((item) => item.id))
+      .toEqual(['music:core'])
   })
 })
 
