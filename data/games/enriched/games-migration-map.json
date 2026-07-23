@@ -1,0 +1,6338 @@
+[
+  {
+    "oldId": "tgdb_237",
+    "newId": "tgdb_237",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_30049",
+    "newId": "tgdb_30049",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_292030",
+    "newId": "steam_292030",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_105602",
+    "newId": "tgdb_105602",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2495",
+    "newId": "tgdb_2495",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3305",
+    "newId": "tgdb_3305",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6570",
+    "newId": "tgdb_6570",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2570",
+    "newId": "tgdb_2570",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_97524",
+    "newId": "tgdb_97524",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_748",
+    "newId": "tgdb_748",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_749",
+    "newId": "tgdb_749",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_80893",
+    "newId": "tgdb_80893",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100324",
+    "newId": "tgdb_100324",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2684",
+    "newId": "tgdb_2684",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10683",
+    "newId": "tgdb_10683",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_21189",
+    "newId": "tgdb_21189",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10080",
+    "newId": "tgdb_10080",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2547",
+    "newId": "tgdb_2547",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2389",
+    "newId": "tgdb_2389",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117142",
+    "newId": "tgdb_117142",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_61029",
+    "newId": "tgdb_61029",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_104767",
+    "newId": "tgdb_104767",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6573",
+    "newId": "tgdb_6573",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10703",
+    "newId": "tgdb_10703",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4987",
+    "newId": "tgdb_4987",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_63344",
+    "newId": "tgdb_63344",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_64556",
+    "newId": "tgdb_64556",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_36990",
+    "newId": "tgdb_36990",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16136",
+    "newId": "tgdb_16136",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_42339",
+    "newId": "tgdb_42339",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114329",
+    "newId": "tgdb_114329",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11913",
+    "newId": "tgdb_11913",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_102948",
+    "newId": "tgdb_102948",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_102951",
+    "newId": "tgdb_102951",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_50681",
+    "newId": "tgdb_50681",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_3159330",
+    "newId": "steam_3159330",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_8170",
+    "newId": "tgdb_8170",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5482",
+    "newId": "tgdb_5482",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3320",
+    "newId": "tgdb_3320",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_668580",
+    "newId": "steam_668580",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_2530",
+    "newId": "tgdb_2530",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1573",
+    "newId": "tgdb_1573",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_27456",
+    "newId": "tgdb_27456",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_63899",
+    "newId": "tgdb_63899",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2190",
+    "newId": "tgdb_2190",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1086940",
+    "newId": "steam_1086940",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_132297",
+    "newId": "tgdb_132297",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_162",
+    "newId": "tgdb_162",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_176",
+    "newId": "tgdb_176",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1635",
+    "newId": "tgdb_1635",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6234",
+    "newId": "tgdb_6234",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10686",
+    "newId": "tgdb_10686",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_190",
+    "newId": "tgdb_190",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9058",
+    "newId": "tgdb_9058",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_21415",
+    "newId": "tgdb_21415",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_36618",
+    "newId": "tgdb_36618",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2311",
+    "newId": "tgdb_2311",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_751",
+    "newId": "tgdb_751",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_110868",
+    "newId": "tgdb_110868",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120141",
+    "newId": "tgdb_120141",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113485",
+    "newId": "tgdb_113485",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2770",
+    "newId": "tgdb_2770",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8810",
+    "newId": "tgdb_8810",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100560",
+    "newId": "tgdb_100560",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_123721",
+    "newId": "tgdb_123721",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_30333",
+    "newId": "tgdb_30333",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10170",
+    "newId": "tgdb_10170",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5986",
+    "newId": "tgdb_5986",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_76",
+    "newId": "tgdb_76",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_132250",
+    "newId": "tgdb_132250",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10916",
+    "newId": "tgdb_10916",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_108503",
+    "newId": "tgdb_108503",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_125557",
+    "newId": "tgdb_125557",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5546",
+    "newId": "tgdb_5546",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1037",
+    "newId": "tgdb_1037",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1070",
+    "newId": "tgdb_1070",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1038",
+    "newId": "tgdb_1038",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_20960",
+    "newId": "tgdb_20960",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_104280",
+    "newId": "tgdb_104280",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115084",
+    "newId": "tgdb_115084",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5647",
+    "newId": "tgdb_5647",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_29631",
+    "newId": "tgdb_29631",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2384",
+    "newId": "tgdb_2384",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103626",
+    "newId": "tgdb_103626",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_34929",
+    "newId": "tgdb_34929",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_112145",
+    "newId": "tgdb_112145",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17607",
+    "newId": "tgdb_17607",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126575",
+    "newId": "tgdb_126575",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_909",
+    "newId": "tgdb_909",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3931",
+    "newId": "tgdb_3931",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_31868",
+    "newId": "tgdb_31868",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4158",
+    "newId": "tgdb_4158",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6588",
+    "newId": "tgdb_6588",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_95379",
+    "newId": "tgdb_95379",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_64487",
+    "newId": "tgdb_64487",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3812",
+    "newId": "tgdb_3812",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_753",
+    "newId": "tgdb_753",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_109986",
+    "newId": "tgdb_109986",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_952",
+    "newId": "tgdb_952",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_128264",
+    "newId": "tgdb_128264",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_108506",
+    "newId": "tgdb_108506",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22632",
+    "newId": "tgdb_22632",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9577",
+    "newId": "tgdb_9577",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5648",
+    "newId": "tgdb_5648",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_119052",
+    "newId": "tgdb_119052",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11017",
+    "newId": "tgdb_11017",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115",
+    "newId": "tgdb_115",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_135",
+    "newId": "tgdb_135",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_339",
+    "newId": "tgdb_339",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3349",
+    "newId": "tgdb_3349",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6702",
+    "newId": "tgdb_6702",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16793",
+    "newId": "tgdb_16793",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_511",
+    "newId": "tgdb_511",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11988",
+    "newId": "tgdb_11988",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8333",
+    "newId": "tgdb_8333",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_62554",
+    "newId": "tgdb_62554",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_49861",
+    "newId": "tgdb_49861",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1005",
+    "newId": "tgdb_1005",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_67935",
+    "newId": "tgdb_67935",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_79165",
+    "newId": "tgdb_79165",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_63240",
+    "newId": "tgdb_63240",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_116987",
+    "newId": "tgdb_116987",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1903340",
+    "newId": "steam_1903340",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_3487",
+    "newId": "tgdb_3487",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_217",
+    "newId": "tgdb_217",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_220",
+    "newId": "tgdb_220",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_221",
+    "newId": "tgdb_221",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5290",
+    "newId": "tgdb_5290",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_2443720",
+    "newId": "steam_2443720",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_7166",
+    "newId": "tgdb_7166",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_249",
+    "newId": "tgdb_249",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2859",
+    "newId": "tgdb_2859",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_122",
+    "newId": "tgdb_122",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120376",
+    "newId": "tgdb_120376",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6030",
+    "newId": "tgdb_6030",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10771",
+    "newId": "tgdb_10771",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3372",
+    "newId": "tgdb_3372",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7167",
+    "newId": "tgdb_7167",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_85162",
+    "newId": "tgdb_85162",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5689",
+    "newId": "tgdb_5689",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_515",
+    "newId": "tgdb_515",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124583",
+    "newId": "tgdb_124583",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_28627",
+    "newId": "tgdb_28627",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22965",
+    "newId": "tgdb_22965",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9279",
+    "newId": "tgdb_9279",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_132266",
+    "newId": "tgdb_132266",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_134372",
+    "newId": "tgdb_134372",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1091500",
+    "newId": "steam_1091500",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_16155",
+    "newId": "tgdb_16155",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_133544",
+    "newId": "tgdb_133544",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115088",
+    "newId": "tgdb_115088",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16966",
+    "newId": "tgdb_16966",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_33364",
+    "newId": "tgdb_33364",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25806",
+    "newId": "tgdb_25806",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_73850",
+    "newId": "tgdb_73850",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10900",
+    "newId": "tgdb_10900",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_46810",
+    "newId": "tgdb_46810",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_98369",
+    "newId": "tgdb_98369",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10798",
+    "newId": "tgdb_10798",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114343",
+    "newId": "tgdb_114343",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11991",
+    "newId": "tgdb_11991",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_131054",
+    "newId": "tgdb_131054",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8153",
+    "newId": "tgdb_8153",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1347",
+    "newId": "tgdb_1347",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7135",
+    "newId": "tgdb_7135",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115096",
+    "newId": "tgdb_115096",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_470",
+    "newId": "tgdb_470",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17967",
+    "newId": "tgdb_17967",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_50624",
+    "newId": "tgdb_50624",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_65748",
+    "newId": "tgdb_65748",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114828",
+    "newId": "tgdb_114828",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19213",
+    "newId": "tgdb_19213",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_69297",
+    "newId": "tgdb_69297",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_99027",
+    "newId": "tgdb_99027",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_109815",
+    "newId": "tgdb_109815",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11577",
+    "newId": "tgdb_11577",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_132293",
+    "newId": "tgdb_132293",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11958",
+    "newId": "tgdb_11958",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_178",
+    "newId": "tgdb_178",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_67691",
+    "newId": "tgdb_67691",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7216",
+    "newId": "tgdb_7216",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10847",
+    "newId": "tgdb_10847",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35051",
+    "newId": "tgdb_35051",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10221",
+    "newId": "tgdb_10221",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_106873",
+    "newId": "tgdb_106873",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7862",
+    "newId": "tgdb_7862",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_250",
+    "newId": "tgdb_250",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_131",
+    "newId": "tgdb_131",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_99913",
+    "newId": "tgdb_99913",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3297",
+    "newId": "tgdb_3297",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19536",
+    "newId": "tgdb_19536",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7863",
+    "newId": "tgdb_7863",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2302",
+    "newId": "tgdb_2302",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118093",
+    "newId": "tgdb_118093",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_745",
+    "newId": "tgdb_745",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_122985",
+    "newId": "tgdb_122985",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_760",
+    "newId": "tgdb_760",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2474",
+    "newId": "tgdb_2474",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6910",
+    "newId": "tgdb_6910",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8726",
+    "newId": "tgdb_8726",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8383",
+    "newId": "tgdb_8383",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_80597",
+    "newId": "tgdb_80597",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1845910",
+    "newId": "steam_1845910",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_20209",
+    "newId": "tgdb_20209",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_867",
+    "newId": "tgdb_867",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_52993",
+    "newId": "tgdb_52993",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11171",
+    "newId": "tgdb_11171",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_33052",
+    "newId": "tgdb_33052",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_53075",
+    "newId": "tgdb_53075",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6794",
+    "newId": "tgdb_6794",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11043",
+    "newId": "tgdb_11043",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3559",
+    "newId": "tgdb_3559",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7226",
+    "newId": "tgdb_7226",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_90593",
+    "newId": "tgdb_90593",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113195",
+    "newId": "tgdb_113195",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_60321",
+    "newId": "tgdb_60321",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115764",
+    "newId": "tgdb_115764",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_94664",
+    "newId": "tgdb_94664",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_26955",
+    "newId": "tgdb_26955",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3791",
+    "newId": "tgdb_3791",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_26597",
+    "newId": "tgdb_26597",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_761",
+    "newId": "tgdb_761",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_21367",
+    "newId": "tgdb_21367",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_87788",
+    "newId": "tgdb_87788",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7611",
+    "newId": "tgdb_7611",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1583",
+    "newId": "tgdb_1583",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_87149",
+    "newId": "tgdb_87149",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1245620",
+    "newId": "steam_1245620",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_35233",
+    "newId": "tgdb_35233",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6797",
+    "newId": "tgdb_6797",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17802",
+    "newId": "tgdb_17802",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_947",
+    "newId": "tgdb_947",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7243",
+    "newId": "tgdb_7243",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6970",
+    "newId": "tgdb_6970",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7626",
+    "newId": "tgdb_7626",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6653",
+    "newId": "tgdb_6653",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_213",
+    "newId": "tgdb_213",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_87370",
+    "newId": "tgdb_87370",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103874",
+    "newId": "tgdb_103874",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10836",
+    "newId": "tgdb_10836",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_102182",
+    "newId": "tgdb_102182",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3818",
+    "newId": "tgdb_3818",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6055",
+    "newId": "tgdb_6055",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100332",
+    "newId": "tgdb_100332",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124519",
+    "newId": "tgdb_124519",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_235",
+    "newId": "tgdb_235",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2419",
+    "newId": "tgdb_2419",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_86",
+    "newId": "tgdb_86",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_29225",
+    "newId": "tgdb_29225",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1151340",
+    "newId": "steam_1151340",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_311",
+    "newId": "tgdb_311",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_769",
+    "newId": "tgdb_769",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_770",
+    "newId": "tgdb_770",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113466",
+    "newId": "tgdb_113466",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_20810",
+    "newId": "tgdb_20810",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_52745",
+    "newId": "tgdb_52745",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7251",
+    "newId": "tgdb_7251",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3659",
+    "newId": "tgdb_3659",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14162",
+    "newId": "tgdb_14162",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_102703",
+    "newId": "tgdb_102703",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120733",
+    "newId": "tgdb_120733",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_90057",
+    "newId": "tgdb_90057",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3182",
+    "newId": "tgdb_3182",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7869",
+    "newId": "tgdb_7869",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7878",
+    "newId": "tgdb_7878",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9418",
+    "newId": "tgdb_9418",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_80996",
+    "newId": "tgdb_80996",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1550",
+    "newId": "tgdb_1550",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2497",
+    "newId": "tgdb_2497",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1762",
+    "newId": "tgdb_1762",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_34358",
+    "newId": "tgdb_34358",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_68681",
+    "newId": "tgdb_68681",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_29221",
+    "newId": "tgdb_29221",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_80997",
+    "newId": "tgdb_80997",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_74347",
+    "newId": "tgdb_74347",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_87",
+    "newId": "tgdb_87",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_107692",
+    "newId": "tgdb_107692",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_123782",
+    "newId": "tgdb_123782",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5480",
+    "newId": "tgdb_5480",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3428",
+    "newId": "tgdb_3428",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14459",
+    "newId": "tgdb_14459",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6978",
+    "newId": "tgdb_6978",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_125793",
+    "newId": "tgdb_125793",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35044",
+    "newId": "tgdb_35044",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_24011",
+    "newId": "tgdb_24011",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_62557",
+    "newId": "tgdb_62557",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16687",
+    "newId": "tgdb_16687",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113778",
+    "newId": "tgdb_113778",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120749",
+    "newId": "tgdb_120749",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_56011",
+    "newId": "tgdb_56011",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6067",
+    "newId": "tgdb_6067",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100347",
+    "newId": "tgdb_100347",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8864",
+    "newId": "tgdb_8864",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_49993",
+    "newId": "tgdb_49993",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10700",
+    "newId": "tgdb_10700",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126536",
+    "newId": "tgdb_126536",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10202",
+    "newId": "tgdb_10202",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13801",
+    "newId": "tgdb_13801",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_179",
+    "newId": "tgdb_179",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10998",
+    "newId": "tgdb_10998",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_44093",
+    "newId": "tgdb_44093",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7866",
+    "newId": "tgdb_7866",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13069",
+    "newId": "tgdb_13069",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7842",
+    "newId": "tgdb_7842",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120280",
+    "newId": "tgdb_120280",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23",
+    "newId": "tgdb_23",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100351",
+    "newId": "tgdb_100351",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124347",
+    "newId": "tgdb_124347",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_32352",
+    "newId": "tgdb_32352",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10935",
+    "newId": "tgdb_10935",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10936",
+    "newId": "tgdb_10936",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_55760",
+    "newId": "tgdb_55760",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13203",
+    "newId": "tgdb_13203",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6382",
+    "newId": "tgdb_6382",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8733",
+    "newId": "tgdb_8733",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25",
+    "newId": "tgdb_25",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_102985",
+    "newId": "tgdb_102985",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_26",
+    "newId": "tgdb_26",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_88",
+    "newId": "tgdb_88",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_122056",
+    "newId": "tgdb_122056",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_89",
+    "newId": "tgdb_89",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8493",
+    "newId": "tgdb_8493",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_209",
+    "newId": "tgdb_209",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3769",
+    "newId": "tgdb_3769",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_136151",
+    "newId": "tgdb_136151",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_51276",
+    "newId": "tgdb_51276",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17677",
+    "newId": "tgdb_17677",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_52069",
+    "newId": "tgdb_52069",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25780",
+    "newId": "tgdb_25780",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9604",
+    "newId": "tgdb_9604",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_37021",
+    "newId": "tgdb_37021",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_93267",
+    "newId": "tgdb_93267",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4164",
+    "newId": "tgdb_4164",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113325",
+    "newId": "tgdb_113325",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100307",
+    "newId": "tgdb_100307",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2539",
+    "newId": "tgdb_2539",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_89302",
+    "newId": "tgdb_89302",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120171",
+    "newId": "tgdb_120171",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_128912",
+    "newId": "tgdb_128912",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7084",
+    "newId": "tgdb_7084",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126047",
+    "newId": "tgdb_126047",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_92670",
+    "newId": "tgdb_92670",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4264",
+    "newId": "tgdb_4264",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16779",
+    "newId": "tgdb_16779",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2390",
+    "newId": "tgdb_2390",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124044",
+    "newId": "tgdb_124044",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_861",
+    "newId": "tgdb_861",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7189",
+    "newId": "tgdb_7189",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7187",
+    "newId": "tgdb_7187",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23863",
+    "newId": "tgdb_23863",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_78275",
+    "newId": "tgdb_78275",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_647",
+    "newId": "tgdb_647",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_146",
+    "newId": "tgdb_146",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1548",
+    "newId": "tgdb_1548",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_15061",
+    "newId": "tgdb_15061",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6079",
+    "newId": "tgdb_6079",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_90",
+    "newId": "tgdb_90",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_80801",
+    "newId": "tgdb_80801",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3597",
+    "newId": "tgdb_3597",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_21335",
+    "newId": "tgdb_21335",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3996",
+    "newId": "tgdb_3996",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_638",
+    "newId": "tgdb_638",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1921",
+    "newId": "tgdb_1921",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6412",
+    "newId": "tgdb_6412",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18552",
+    "newId": "tgdb_18552",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_70434",
+    "newId": "tgdb_70434",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22721",
+    "newId": "tgdb_22721",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_553850",
+    "newId": "steam_553850",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_32754",
+    "newId": "tgdb_32754",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9308",
+    "newId": "tgdb_9308",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_40895",
+    "newId": "tgdb_40895",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113943",
+    "newId": "tgdb_113943",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113944",
+    "newId": "tgdb_113944",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13880",
+    "newId": "tgdb_13880",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4182",
+    "newId": "tgdb_4182",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_990080",
+    "newId": "steam_990080",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_43548",
+    "newId": "tgdb_43548",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_766",
+    "newId": "tgdb_766",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_29523",
+    "newId": "tgdb_29523",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13958",
+    "newId": "tgdb_13958",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_37928",
+    "newId": "tgdb_37928",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2239",
+    "newId": "tgdb_2239",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_101766",
+    "newId": "tgdb_101766",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35480",
+    "newId": "tgdb_35480",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1986",
+    "newId": "tgdb_1986",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6416",
+    "newId": "tgdb_6416",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5655",
+    "newId": "tgdb_5655",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_815",
+    "newId": "tgdb_815",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_41003",
+    "newId": "tgdb_41003",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_123328",
+    "newId": "tgdb_123328",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_53161",
+    "newId": "tgdb_53161",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_53558",
+    "newId": "tgdb_53558",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_53585",
+    "newId": "tgdb_53585",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14045",
+    "newId": "tgdb_14045",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4872",
+    "newId": "tgdb_4872",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4865",
+    "newId": "tgdb_4865",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4867",
+    "newId": "tgdb_4867",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_260",
+    "newId": "tgdb_260",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_130391",
+    "newId": "tgdb_130391",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6742",
+    "newId": "tgdb_6742",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_286",
+    "newId": "tgdb_286",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14338",
+    "newId": "tgdb_14338",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8817",
+    "newId": "tgdb_8817",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7317",
+    "newId": "tgdb_7317",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16134",
+    "newId": "tgdb_16134",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14495",
+    "newId": "tgdb_14495",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_130",
+    "newId": "tgdb_130",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12598",
+    "newId": "tgdb_12598",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7873",
+    "newId": "tgdb_7873",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_34",
+    "newId": "tgdb_34",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111479",
+    "newId": "tgdb_111479",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6568",
+    "newId": "tgdb_6568",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2499",
+    "newId": "tgdb_2499",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1771300",
+    "newId": "steam_1771300",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_2559",
+    "newId": "tgdb_2559",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1903",
+    "newId": "tgdb_1903",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6814",
+    "newId": "tgdb_6814",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_121",
+    "newId": "tgdb_121",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8706",
+    "newId": "tgdb_8706",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3190",
+    "newId": "tgdb_3190",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5608",
+    "newId": "tgdb_5608",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_558",
+    "newId": "tgdb_558",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6649",
+    "newId": "tgdb_6649",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_902",
+    "newId": "fallback_seed_902",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_928",
+    "newId": "tgdb_928",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22",
+    "newId": "tgdb_22",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_855",
+    "newId": "tgdb_855",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_559",
+    "newId": "tgdb_559",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4845",
+    "newId": "tgdb_4845",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_75030",
+    "newId": "tgdb_4845",
+    "action": "redirect",
+    "reason": "same_title_year_developer"
+  },
+  {
+    "oldId": "tgdb_9545",
+    "newId": "tgdb_9545",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_133",
+    "newId": "tgdb_133",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25467",
+    "newId": "tgdb_25467",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_15760",
+    "newId": "tgdb_15760",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8852",
+    "newId": "tgdb_8852",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_121171",
+    "newId": "tgdb_121171",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_121137",
+    "newId": "tgdb_121137",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6747",
+    "newId": "tgdb_6747",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118037",
+    "newId": "tgdb_118037",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117749",
+    "newId": "tgdb_117749",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_77613",
+    "newId": "tgdb_77613",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_61018",
+    "newId": "tgdb_61018",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113416",
+    "newId": "tgdb_113416",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5053",
+    "newId": "tgdb_5053",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5054",
+    "newId": "tgdb_5054",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10369",
+    "newId": "tgdb_10369",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5507",
+    "newId": "tgdb_5507",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_26354",
+    "newId": "tgdb_26354",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18366",
+    "newId": "tgdb_18366",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_781",
+    "newId": "tgdb_781",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4815",
+    "newId": "tgdb_4815",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6479",
+    "newId": "tgdb_6479",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3779",
+    "newId": "tgdb_3779",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6917",
+    "newId": "tgdb_6917",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_53296",
+    "newId": "tgdb_53296",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8096",
+    "newId": "tgdb_8096",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_438",
+    "newId": "tgdb_438",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6835",
+    "newId": "tgdb_6835",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6691",
+    "newId": "tgdb_6691",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118846",
+    "newId": "tgdb_118846",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_133330",
+    "newId": "tgdb_133330",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_119134",
+    "newId": "tgdb_119134",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_106592",
+    "newId": "tgdb_106592",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6837",
+    "newId": "tgdb_6837",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_108597",
+    "newId": "tgdb_108597",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_166",
+    "newId": "tgdb_166",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8704",
+    "newId": "tgdb_8704",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_42",
+    "newId": "tgdb_42",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1137",
+    "newId": "tgdb_1137",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11615",
+    "newId": "tgdb_11615",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7871",
+    "newId": "tgdb_7871",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_186",
+    "newId": "tgdb_186",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_72842",
+    "newId": "tgdb_72842",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3300",
+    "newId": "tgdb_3300",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23124",
+    "newId": "tgdb_23124",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_780",
+    "newId": "tgdb_780",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_779",
+    "newId": "tgdb_779",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111402",
+    "newId": "tgdb_111402",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9257",
+    "newId": "tgdb_9257",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10826",
+    "newId": "tgdb_10826",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3149",
+    "newId": "tgdb_3149",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_360",
+    "newId": "tgdb_360",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_361",
+    "newId": "tgdb_361",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_362",
+    "newId": "tgdb_362",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_143",
+    "newId": "tgdb_143",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111521",
+    "newId": "tgdb_111521",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_196",
+    "newId": "tgdb_196",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3854",
+    "newId": "tgdb_3854",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_44",
+    "newId": "tgdb_44",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_45",
+    "newId": "tgdb_45",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23507",
+    "newId": "tgdb_23507",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3927",
+    "newId": "tgdb_3927",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3925",
+    "newId": "tgdb_3925",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_82554",
+    "newId": "tgdb_82554",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118708",
+    "newId": "tgdb_118708",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_32222",
+    "newId": "tgdb_32222",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2638",
+    "newId": "tgdb_2638",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6771",
+    "newId": "tgdb_6771",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_172",
+    "newId": "tgdb_172",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6426",
+    "newId": "tgdb_6426",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_233",
+    "newId": "tgdb_233",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3745",
+    "newId": "tgdb_3745",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1589",
+    "newId": "tgdb_1589",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18857",
+    "newId": "tgdb_18857",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_50155",
+    "newId": "tgdb_50155",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_68757",
+    "newId": "tgdb_68757",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10614",
+    "newId": "tgdb_10614",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7875",
+    "newId": "tgdb_7875",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_746",
+    "newId": "tgdb_746",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4426",
+    "newId": "tgdb_4426",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_15181",
+    "newId": "tgdb_15181",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25632",
+    "newId": "tgdb_25632",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_87870",
+    "newId": "tgdb_87870",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22946",
+    "newId": "tgdb_22946",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13768",
+    "newId": "tgdb_13768",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5537",
+    "newId": "tgdb_5537",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23433",
+    "newId": "tgdb_23433",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9388",
+    "newId": "tgdb_9388",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5188",
+    "newId": "tgdb_5188",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7924",
+    "newId": "tgdb_7924",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118531",
+    "newId": "tgdb_118531",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12324",
+    "newId": "tgdb_12324",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12729",
+    "newId": "tgdb_12729",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_39623",
+    "newId": "tgdb_39623",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7416",
+    "newId": "tgdb_7416",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4814",
+    "newId": "tgdb_4814",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19709",
+    "newId": "tgdb_19709",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_785",
+    "newId": "tgdb_785",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6859",
+    "newId": "tgdb_6859",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_123737",
+    "newId": "tgdb_123737",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124359",
+    "newId": "tgdb_124359",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_28619",
+    "newId": "tgdb_28619",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5070",
+    "newId": "tgdb_5070",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14536",
+    "newId": "tgdb_14536",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19561",
+    "newId": "tgdb_19561",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_112083",
+    "newId": "tgdb_112083",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_43177",
+    "newId": "tgdb_43177",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_48",
+    "newId": "tgdb_48",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4197",
+    "newId": "tgdb_4197",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_96011",
+    "newId": "tgdb_96011",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_370",
+    "newId": "tgdb_370",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_42572",
+    "newId": "tgdb_42572",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114990",
+    "newId": "tgdb_114990",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115823",
+    "newId": "tgdb_115823",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5646",
+    "newId": "tgdb_5646",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4180",
+    "newId": "tgdb_4180",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111863",
+    "newId": "tgdb_111863",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2420",
+    "newId": "tgdb_2420",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118407",
+    "newId": "tgdb_118407",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_51",
+    "newId": "tgdb_51",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16106",
+    "newId": "tgdb_16106",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_82723",
+    "newId": "tgdb_82723",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_20797",
+    "newId": "tgdb_20797",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_56169",
+    "newId": "tgdb_56169",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23978",
+    "newId": "tgdb_23978",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_64893",
+    "newId": "tgdb_64893",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17769",
+    "newId": "tgdb_17769",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_89966",
+    "newId": "tgdb_89966",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_38546",
+    "newId": "tgdb_38546",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114604",
+    "newId": "tgdb_114604",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_44237",
+    "newId": "tgdb_44237",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_34636",
+    "newId": "tgdb_34636",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_48943",
+    "newId": "tgdb_48943",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35824",
+    "newId": "tgdb_35824",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_54763",
+    "newId": "tgdb_54763",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_20323",
+    "newId": "tgdb_20323",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6828",
+    "newId": "tgdb_6828",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10135",
+    "newId": "tgdb_10135",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_141",
+    "newId": "tgdb_141",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2319",
+    "newId": "tgdb_2319",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18354",
+    "newId": "tgdb_18354",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6442",
+    "newId": "tgdb_6442",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_94236",
+    "newId": "tgdb_94236",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11131",
+    "newId": "tgdb_11131",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8691",
+    "newId": "tgdb_8691",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124330",
+    "newId": "tgdb_124330",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115009",
+    "newId": "tgdb_115009",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2965",
+    "newId": "tgdb_2965",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_678",
+    "newId": "tgdb_678",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_127",
+    "newId": "tgdb_127",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_79157",
+    "newId": "tgdb_79157",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6865",
+    "newId": "tgdb_6865",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_923",
+    "newId": "fallback_seed_923",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2519",
+    "newId": "tgdb_2519",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_99948",
+    "newId": "tgdb_99948",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_105789",
+    "newId": "tgdb_105789",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_105600",
+    "newId": "tgdb_105600",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124999",
+    "newId": "tgdb_124999",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4079",
+    "newId": "tgdb_4079",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124357",
+    "newId": "tgdb_124357",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12968",
+    "newId": "tgdb_12968",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3135",
+    "newId": "tgdb_3135",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_52158",
+    "newId": "tgdb_52158",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_492",
+    "newId": "fallback_seed_492",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_134350",
+    "newId": "tgdb_134350",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_671",
+    "newId": "fallback_seed_671",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117396",
+    "newId": "tgdb_117396",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_173",
+    "newId": "fallback_seed_173",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_626",
+    "newId": "fallback_seed_626",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_41",
+    "newId": "fallback_seed_41",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_527",
+    "newId": "fallback_seed_527",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_130442",
+    "newId": "tgdb_130442",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_122106",
+    "newId": "tgdb_122106",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_67292",
+    "newId": "tgdb_67292",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118717",
+    "newId": "tgdb_118717",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_568",
+    "newId": "fallback_seed_568",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_77986",
+    "newId": "tgdb_77986",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126548",
+    "newId": "tgdb_126548",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22904",
+    "newId": "tgdb_22904",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_39477",
+    "newId": "tgdb_39477",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_158",
+    "newId": "tgdb_158",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118754",
+    "newId": "tgdb_118754",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3577",
+    "newId": "tgdb_3577",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_44781",
+    "newId": "tgdb_44781",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14329",
+    "newId": "tgdb_14329",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3537",
+    "newId": "tgdb_3537",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4806",
+    "newId": "tgdb_4806",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4807",
+    "newId": "tgdb_4807",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_29065",
+    "newId": "tgdb_29065",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_75469",
+    "newId": "tgdb_75469",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_807",
+    "newId": "fallback_seed_807",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6869",
+    "newId": "tgdb_6869",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6116",
+    "newId": "tgdb_6116",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1004",
+    "newId": "tgdb_1004",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_131957",
+    "newId": "tgdb_131957",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3255",
+    "newId": "tgdb_3255",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_55215",
+    "newId": "tgdb_55215",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_124024",
+    "newId": "tgdb_124024",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17621",
+    "newId": "tgdb_17621",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_777",
+    "newId": "tgdb_777",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_393",
+    "newId": "tgdb_393",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_427",
+    "newId": "tgdb_427",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5479",
+    "newId": "tgdb_5479",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1405",
+    "newId": "tgdb_1405",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11320",
+    "newId": "tgdb_11320",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113840",
+    "newId": "tgdb_113840",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114007",
+    "newId": "tgdb_114007",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7797",
+    "newId": "tgdb_7797",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_75152",
+    "newId": "tgdb_75152",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13150",
+    "newId": "tgdb_13150",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7992",
+    "newId": "tgdb_7992",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_395",
+    "newId": "tgdb_395",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12237",
+    "newId": "tgdb_12237",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8300",
+    "newId": "tgdb_8300",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25350",
+    "newId": "tgdb_25350",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100167",
+    "newId": "tgdb_100167",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103202",
+    "newId": "tgdb_103202",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_74539",
+    "newId": "tgdb_74539",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_122743",
+    "newId": "tgdb_122743",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_56094",
+    "newId": "tgdb_56094",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_116494",
+    "newId": "tgdb_116494",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_98948",
+    "newId": "tgdb_98948",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_428",
+    "newId": "tgdb_428",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_61041",
+    "newId": "tgdb_61041",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_94999",
+    "newId": "tgdb_94999",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_43133",
+    "newId": "tgdb_43133",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_86059",
+    "newId": "tgdb_86059",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_30055",
+    "newId": "tgdb_30055",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117117",
+    "newId": "tgdb_117117",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1304",
+    "newId": "tgdb_1304",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19992",
+    "newId": "tgdb_19992",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_31219",
+    "newId": "tgdb_31219",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_15134",
+    "newId": "tgdb_15134",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2723",
+    "newId": "tgdb_2723",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10938",
+    "newId": "tgdb_10938",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_29478",
+    "newId": "tgdb_29478",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_52883",
+    "newId": "tgdb_52883",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_78580",
+    "newId": "tgdb_78580",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5511",
+    "newId": "tgdb_5511",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1643320",
+    "newId": "steam_1643320",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_899",
+    "newId": "tgdb_899",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_795",
+    "newId": "tgdb_795",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_90119",
+    "newId": "tgdb_90119",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111051",
+    "newId": "tgdb_111051",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6418",
+    "newId": "tgdb_6418",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_61",
+    "newId": "tgdb_61",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_130219",
+    "newId": "tgdb_130219",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4857",
+    "newId": "tgdb_4857",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25788",
+    "newId": "tgdb_25788",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3578",
+    "newId": "tgdb_3578",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_75312",
+    "newId": "tgdb_75312",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_52211",
+    "newId": "tgdb_52211",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1253",
+    "newId": "tgdb_1253",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_24314",
+    "newId": "tgdb_24314",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11173",
+    "newId": "tgdb_11173",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_60138",
+    "newId": "tgdb_60138",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_91205",
+    "newId": "tgdb_91205",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12959",
+    "newId": "tgdb_12959",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_49006",
+    "newId": "tgdb_49006",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10940",
+    "newId": "tgdb_10940",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_99081",
+    "newId": "tgdb_99081",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_430",
+    "newId": "tgdb_430",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16260",
+    "newId": "tgdb_16260",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_20818",
+    "newId": "tgdb_20818",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9328",
+    "newId": "tgdb_9328",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_184",
+    "newId": "tgdb_184",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_185",
+    "newId": "tgdb_185",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_45436",
+    "newId": "tgdb_45436",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22516",
+    "newId": "tgdb_22516",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13949",
+    "newId": "tgdb_13949",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2548",
+    "newId": "tgdb_2548",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14035",
+    "newId": "tgdb_14035",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_100224",
+    "newId": "tgdb_100224",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10823",
+    "newId": "tgdb_10823",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_902",
+    "newId": "tgdb_902",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_36612",
+    "newId": "tgdb_36612",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_123136",
+    "newId": "tgdb_123136",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_78848",
+    "newId": "tgdb_78848",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4793",
+    "newId": "tgdb_4793",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_2124490",
+    "newId": "steam_2124490",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "fallback_seed_748",
+    "newId": "fallback_seed_748",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9502",
+    "newId": "tgdb_9502",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_55325",
+    "newId": "tgdb_55325",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_829",
+    "newId": "fallback_seed_829",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9186",
+    "newId": "tgdb_9186",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_431",
+    "newId": "tgdb_431",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_651",
+    "newId": "fallback_seed_651",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_66611",
+    "newId": "tgdb_66611",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_102133",
+    "newId": "tgdb_102133",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9815",
+    "newId": "tgdb_9815",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_121826",
+    "newId": "tgdb_121826",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5095",
+    "newId": "tgdb_5095",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_42738",
+    "newId": "tgdb_42738",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18477",
+    "newId": "tgdb_18477",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23690",
+    "newId": "tgdb_23690",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_99158",
+    "newId": "tgdb_99158",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_129661",
+    "newId": "tgdb_129661",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_432",
+    "newId": "tgdb_432",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_129",
+    "newId": "tgdb_129",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_46073",
+    "newId": "tgdb_46073",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5754",
+    "newId": "tgdb_5754",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5755",
+    "newId": "tgdb_5755",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5569",
+    "newId": "tgdb_5569",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_94821",
+    "newId": "tgdb_94821",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_79162",
+    "newId": "tgdb_79162",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19777",
+    "newId": "tgdb_19777",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_74352",
+    "newId": "tgdb_74352",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_116",
+    "newId": "tgdb_116",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35875",
+    "newId": "tgdb_35875",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9357",
+    "newId": "tgdb_9357",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9505",
+    "newId": "tgdb_9505",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9680",
+    "newId": "tgdb_9680",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5248",
+    "newId": "tgdb_5248",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_119124",
+    "newId": "tgdb_119124",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_42299",
+    "newId": "tgdb_42299",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22182",
+    "newId": "tgdb_22182",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9337",
+    "newId": "tgdb_9337",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4984",
+    "newId": "tgdb_4984",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113298",
+    "newId": "tgdb_113298",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11458",
+    "newId": "tgdb_11458",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9889",
+    "newId": "tgdb_9889",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_83382",
+    "newId": "tgdb_83382",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4",
+    "newId": "tgdb_4",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5217",
+    "newId": "tgdb_5217",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_381",
+    "newId": "tgdb_381",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8825",
+    "newId": "tgdb_8825",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_402",
+    "newId": "tgdb_402",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5240",
+    "newId": "tgdb_5240",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9003",
+    "newId": "tgdb_9003",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_64448",
+    "newId": "tgdb_64448",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7055",
+    "newId": "tgdb_7055",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_110960",
+    "newId": "tgdb_110960",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_110930",
+    "newId": "tgdb_110930",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6204",
+    "newId": "tgdb_6204",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_403",
+    "newId": "tgdb_403",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7967",
+    "newId": "tgdb_7967",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7966",
+    "newId": "tgdb_7966",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_153",
+    "newId": "tgdb_153",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_64513",
+    "newId": "tgdb_64513",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35320",
+    "newId": "tgdb_35320",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1716740",
+    "newId": "steam_1716740",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_50044",
+    "newId": "tgdb_50044",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_106020",
+    "newId": "tgdb_106020",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_108260",
+    "newId": "tgdb_108260",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_25785",
+    "newId": "tgdb_25785",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_24878",
+    "newId": "tgdb_24878",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103",
+    "newId": "tgdb_103",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_971",
+    "newId": "tgdb_971",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3033",
+    "newId": "tgdb_3033",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2960",
+    "newId": "tgdb_2960",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114513",
+    "newId": "tgdb_114513",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111910",
+    "newId": "tgdb_111910",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_20792",
+    "newId": "tgdb_20792",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_67943",
+    "newId": "tgdb_67943",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1308",
+    "newId": "tgdb_1308",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2224",
+    "newId": "tgdb_2224",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16103",
+    "newId": "tgdb_16103",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10605",
+    "newId": "tgdb_10605",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_105119",
+    "newId": "tgdb_105119",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_216",
+    "newId": "tgdb_216",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2093",
+    "newId": "tgdb_2093",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126692",
+    "newId": "tgdb_126692",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_171",
+    "newId": "tgdb_171",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_112",
+    "newId": "tgdb_112",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_40",
+    "newId": "tgdb_40",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_908",
+    "newId": "tgdb_908",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_41",
+    "newId": "tgdb_41",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_82747",
+    "newId": "tgdb_82747",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1727",
+    "newId": "tgdb_1727",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_108807",
+    "newId": "tgdb_108807",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_106886",
+    "newId": "tgdb_106886",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_42320",
+    "newId": "tgdb_42320",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_232",
+    "newId": "tgdb_232",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2236",
+    "newId": "tgdb_2236",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_136",
+    "newId": "tgdb_136",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2260",
+    "newId": "tgdb_2260",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_83385",
+    "newId": "tgdb_83385",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6780",
+    "newId": "tgdb_6780",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2526",
+    "newId": "tgdb_2526",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1307",
+    "newId": "tgdb_1307",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_616",
+    "newId": "tgdb_616",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_701",
+    "newId": "fallback_seed_701",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_404",
+    "newId": "tgdb_404",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3518",
+    "newId": "tgdb_3518",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11151",
+    "newId": "tgdb_11151",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114211",
+    "newId": "tgdb_114211",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_60766",
+    "newId": "tgdb_60766",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2304",
+    "newId": "tgdb_2304",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_66734",
+    "newId": "tgdb_66734",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4026",
+    "newId": "tgdb_4026",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_85847",
+    "newId": "tgdb_85847",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_94249",
+    "newId": "tgdb_94249",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19965",
+    "newId": "tgdb_19965",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4174",
+    "newId": "tgdb_4174",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14806",
+    "newId": "tgdb_14806",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_27805",
+    "newId": "tgdb_27805",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_99950",
+    "newId": "tgdb_99950",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_643",
+    "newId": "tgdb_643",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18521",
+    "newId": "tgdb_18521",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1383",
+    "newId": "tgdb_1383",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1905",
+    "newId": "tgdb_1905",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19711",
+    "newId": "tgdb_19711",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_83384",
+    "newId": "tgdb_83384",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126620",
+    "newId": "tgdb_126620",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_28623",
+    "newId": "tgdb_28623",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126130",
+    "newId": "tgdb_126130",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_75576",
+    "newId": "tgdb_75576",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8827",
+    "newId": "tgdb_8827",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3987",
+    "newId": "tgdb_3987",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8350",
+    "newId": "tgdb_8350",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2642",
+    "newId": "tgdb_2642",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_65556",
+    "newId": "tgdb_65556",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117062",
+    "newId": "tgdb_117062",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3281",
+    "newId": "tgdb_3281",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_116335",
+    "newId": "tgdb_116335",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_61672",
+    "newId": "tgdb_61672",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_114845",
+    "newId": "tgdb_114845",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8419",
+    "newId": "tgdb_8419",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_23778",
+    "newId": "tgdb_23778",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6210",
+    "newId": "tgdb_6210",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_754",
+    "newId": "tgdb_754",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_1372880",
+    "newId": "steam_1372880",
+    "action": "merge_fields",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "tgdb_180",
+    "newId": "tgdb_180",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_859",
+    "newId": "fallback_seed_859",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_786",
+    "newId": "tgdb_786",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_112367",
+    "newId": "tgdb_112367",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2511",
+    "newId": "tgdb_2511",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126681",
+    "newId": "tgdb_126681",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_34990",
+    "newId": "tgdb_34990",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103667",
+    "newId": "tgdb_103667",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_55731",
+    "newId": "tgdb_55731",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_113",
+    "newId": "tgdb_113",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_96963",
+    "newId": "tgdb_96963",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18165",
+    "newId": "tgdb_18165",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1318",
+    "newId": "tgdb_1318",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_38455",
+    "newId": "tgdb_38455",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117811",
+    "newId": "tgdb_117811",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3193",
+    "newId": "tgdb_3193",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_63379",
+    "newId": "tgdb_63379",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_175",
+    "newId": "tgdb_175",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_133332",
+    "newId": "tgdb_133332",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6123",
+    "newId": "tgdb_6123",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2245",
+    "newId": "tgdb_2245",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8080",
+    "newId": "tgdb_8080",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6818",
+    "newId": "tgdb_6818",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_117814",
+    "newId": "tgdb_117814",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_109",
+    "newId": "tgdb_109",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8974",
+    "newId": "tgdb_8974",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4882",
+    "newId": "tgdb_4882",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4173",
+    "newId": "tgdb_4173",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_13745",
+    "newId": "tgdb_13745",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_62528",
+    "newId": "tgdb_62528",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_55988",
+    "newId": "tgdb_55988",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_144",
+    "newId": "tgdb_144",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2455",
+    "newId": "tgdb_2455",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7774",
+    "newId": "tgdb_7774",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7775",
+    "newId": "tgdb_7775",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1784",
+    "newId": "tgdb_1784",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_132294",
+    "newId": "tgdb_132294",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_18045",
+    "newId": "tgdb_18045",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_60432",
+    "newId": "tgdb_60432",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_75574",
+    "newId": "tgdb_75574",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_853",
+    "newId": "tgdb_853",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_939",
+    "newId": "tgdb_939",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_34972",
+    "newId": "tgdb_34972",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_55094",
+    "newId": "tgdb_55094",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_32373",
+    "newId": "tgdb_32373",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16087",
+    "newId": "tgdb_16087",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6890",
+    "newId": "tgdb_6890",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4881",
+    "newId": "tgdb_4881",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3856",
+    "newId": "tgdb_3856",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3855",
+    "newId": "tgdb_3855",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10858",
+    "newId": "tgdb_10858",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_30051",
+    "newId": "tgdb_30051",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_48109",
+    "newId": "tgdb_48109",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_53249",
+    "newId": "tgdb_53249",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126679",
+    "newId": "tgdb_126679",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3878",
+    "newId": "tgdb_3878",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6216",
+    "newId": "tgdb_6216",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17252",
+    "newId": "tgdb_17252",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118941",
+    "newId": "tgdb_118941",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_15265",
+    "newId": "tgdb_15265",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2289",
+    "newId": "tgdb_2289",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1216",
+    "newId": "tgdb_1216",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4441",
+    "newId": "tgdb_4441",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_134709",
+    "newId": "tgdb_134709",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_118772",
+    "newId": "tgdb_118772",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_95464",
+    "newId": "tgdb_95464",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_873",
+    "newId": "tgdb_873",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120840",
+    "newId": "tgdb_120840",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2756",
+    "newId": "tgdb_2756",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2779",
+    "newId": "tgdb_2779",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_619",
+    "newId": "tgdb_619",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4177",
+    "newId": "tgdb_4177",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_22103",
+    "newId": "tgdb_22103",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_94372",
+    "newId": "tgdb_94372",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9041",
+    "newId": "tgdb_9041",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_918",
+    "newId": "tgdb_918",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_49726",
+    "newId": "tgdb_49726",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_21302",
+    "newId": "tgdb_21302",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8671",
+    "newId": "tgdb_8671",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_14382",
+    "newId": "tgdb_14382",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_30032",
+    "newId": "tgdb_30032",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_37208",
+    "newId": "tgdb_37208",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_68",
+    "newId": "tgdb_68",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_9311",
+    "newId": "tgdb_9311",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5453",
+    "newId": "tgdb_5453",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35786",
+    "newId": "tgdb_35786",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17152",
+    "newId": "tgdb_17152",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_62091",
+    "newId": "tgdb_62091",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_69496",
+    "newId": "tgdb_69496",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19708",
+    "newId": "tgdb_19708",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_19877",
+    "newId": "tgdb_19877",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17154",
+    "newId": "tgdb_17154",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_8783",
+    "newId": "tgdb_8783",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_201",
+    "newId": "tgdb_201",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2264",
+    "newId": "tgdb_2264",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_21416",
+    "newId": "tgdb_21416",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_70",
+    "newId": "tgdb_70",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103113",
+    "newId": "tgdb_103113",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_31602",
+    "newId": "tgdb_31602",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_767",
+    "newId": "tgdb_767",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_800",
+    "newId": "tgdb_800",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_24327",
+    "newId": "tgdb_24327",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_63014",
+    "newId": "tgdb_63014",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3667",
+    "newId": "tgdb_3667",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_105788",
+    "newId": "tgdb_105788",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12403",
+    "newId": "tgdb_12403",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5664",
+    "newId": "tgdb_5664",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_992",
+    "newId": "tgdb_992",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_71",
+    "newId": "tgdb_71",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_31733",
+    "newId": "tgdb_31733",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16866",
+    "newId": "tgdb_16866",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111718",
+    "newId": "tgdb_111718",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6641",
+    "newId": "tgdb_6641",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_31051",
+    "newId": "tgdb_31051",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5894",
+    "newId": "tgdb_5894",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_801",
+    "newId": "tgdb_801",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_802",
+    "newId": "tgdb_802",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_903",
+    "newId": "fallback_seed_903",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_16807",
+    "newId": "tgdb_16807",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_804",
+    "newId": "tgdb_804",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_111",
+    "newId": "tgdb_111",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_82746",
+    "newId": "tgdb_82746",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "fallback_seed_330",
+    "newId": "fallback_seed_330",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4137",
+    "newId": "tgdb_4137",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10368",
+    "newId": "tgdb_10368",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_40835",
+    "newId": "tgdb_40835",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_411",
+    "newId": "tgdb_411",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_47911",
+    "newId": "tgdb_47911",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_110755",
+    "newId": "tgdb_110755",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_109988",
+    "newId": "tgdb_109988",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_120133",
+    "newId": "tgdb_120133",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_3664",
+    "newId": "tgdb_3664",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4431",
+    "newId": "tgdb_4431",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2457",
+    "newId": "tgdb_2457",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_11517",
+    "newId": "tgdb_11517",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_112250",
+    "newId": "tgdb_112250",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_115051",
+    "newId": "tgdb_115051",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_35787",
+    "newId": "tgdb_35787",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6411",
+    "newId": "tgdb_6411",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_4228",
+    "newId": "tgdb_4228",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_50459",
+    "newId": "tgdb_50459",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_17003",
+    "newId": "tgdb_17003",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1312",
+    "newId": "tgdb_1312",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_149",
+    "newId": "tgdb_149",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_95031",
+    "newId": "tgdb_95031",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1240",
+    "newId": "tgdb_1240",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_416",
+    "newId": "tgdb_416",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10681",
+    "newId": "tgdb_10681",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_39907",
+    "newId": "tgdb_39907",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_10850",
+    "newId": "tgdb_10850",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_6648",
+    "newId": "tgdb_6648",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126004",
+    "newId": "tgdb_126004",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_126019",
+    "newId": "tgdb_126019",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_627",
+    "newId": "tgdb_627",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_103553",
+    "newId": "tgdb_103553",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_5686",
+    "newId": "tgdb_5686",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_7744",
+    "newId": "tgdb_7744",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_2758",
+    "newId": "tgdb_2758",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_80691",
+    "newId": "tgdb_80691",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_12550",
+    "newId": "tgdb_12550",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_1361",
+    "newId": "tgdb_1361",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "tgdb_82341",
+    "newId": "tgdb_82341",
+    "action": "preserve",
+    "reason": "stable_project_id"
+  },
+  {
+    "oldId": "steam_72850",
+    "newId": "tgdb_2511",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_275850",
+    "newId": "tgdb_114990",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1174180",
+    "newId": "tgdb_103202",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_105600",
+    "newId": "tgdb_2642",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_413150",
+    "newId": "tgdb_35320",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_230410",
+    "newId": "tgdb_16807",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_238960",
+    "newId": "tgdb_11131",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_255710",
+    "newId": "tgdb_116987",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_250900",
+    "newId": "tgdb_23778",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_367520",
+    "newId": "tgdb_43548",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_374320",
+    "newId": "tgdb_33364",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_620",
+    "newId": "tgdb_118754",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1145360",
+    "newId": "tgdb_78275",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_22380",
+    "newId": "tgdb_311",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1238840",
+    "newId": "tgdb_36618",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1237970",
+    "newId": "tgdb_118941",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_782330",
+    "newId": "tgdb_122985",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_379720",
+    "newId": "tgdb_745",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_268910",
+    "newId": "tgdb_134372",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_268500",
+    "newId": "tgdb_39907",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_262060",
+    "newId": "tgdb_25806",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1172380",
+    "newId": "tgdb_64448",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_204360",
+    "newId": "tgdb_11017",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_238320",
+    "newId": "tgdb_17769",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_219150",
+    "newId": "tgdb_13958",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_212680",
+    "newId": "tgdb_13801",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_203770",
+    "newId": "tgdb_9279",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_447040",
+    "newId": "tgdb_40835",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_582160",
+    "newId": "tgdb_50681",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_42700",
+    "newId": "tgdb_952",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1284210",
+    "newId": "tgdb_861",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_107100",
+    "newId": "tgdb_6234",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_236430",
+    "newId": "tgdb_16966",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_42710",
+    "newId": "tgdb_952",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1097840",
+    "newId": "tgdb_120280",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_960910",
+    "newId": "tgdb_70434",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_1238820",
+    "newId": "tgdb_110868",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_448510",
+    "newId": "tgdb_38546",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_40990",
+    "newId": "tgdb_781",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_12900",
+    "newId": "tgdb_2530",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_232430",
+    "newId": "tgdb_17677",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  },
+  {
+    "oldId": "steam_966330",
+    "newId": "tgdb_16687",
+    "action": "redirect",
+    "reason": "same_steam_app_id"
+  }
+]

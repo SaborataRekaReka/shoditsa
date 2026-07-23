@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bySteamAppId": {
+    "435150": {
+      "titleOriginal": "Divinity: Original Sin 2",
+      "titleRu": "Divinity: Original Sin 2",
+      "aliases": [
+        "Divinity Original Sin 2",
+        "Divinity: Original Sin II",
+        "DOS2",
+        "Дивинити 2"
+      ],
+      "mustIncludeDaily": true,
+      "reason": "Expected modern CRPG; canonical answer merges the Definitive Edition suffix."
+    },
+    "892970": {
+      "aliases": [
+        "Вальхейм"
+      ],
+      "mustIncludeDaily": true,
+      "reason": "Expected modern survival hit."
+    },
+    "1623730": {
+      "aliases": [
+        "Палворлд"
+      ],
+      "releaseYear": 2024,
+      "releaseDate": "2024-01-19",
+      "mustIncludeDaily": true,
+      "reason": "Expected modern viral hit. Use the first public Early Access release, not Steam's later full-release date."
+    },
+    "1966720": {
+      "aliases": [
+        "Летал Компани"
+      ],
+      "mustIncludeDaily": true,
+      "reason": "Expected modern co-op hit."
+    }
+  }
+}

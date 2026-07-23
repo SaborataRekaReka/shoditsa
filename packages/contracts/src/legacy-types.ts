@@ -60,6 +60,41 @@ export type GameComment = {
   clueStrength?: number
   topics?: string[]
   authorArchetype?: string | null
+  /** Provenance retained for editorial audit/import; presentation clients render displayText. */
+  sourceUrl?: string | null
+  sourcePostUrl?: string | null
+  sourceExcerpt?: string | null
+  sourceVerifiedAt?: string | null
+  contentHash?: string | null
+  wasRedacted?: boolean
+  redactionReasons?: string[]
+}
+export type GameRecognitionSignals = {
+  steamTotalReviews?: number | null
+  steamRussianReviews?: number | null
+  steamOwnersMidpoint?: number | null
+  steamCcu?: number | null
+  steamTotalReviewsPercentileByEra?: number | null
+  steamRussianReviewsPercentileByEra?: number | null
+  igdbPlayed?: number | null
+  igdbVisits?: number | null
+  currentInterest?: number | null
+  chartsCount?: number
+  majorAwardsCount?: number
+  legacyPtgRank?: number | null
+  steamSpyRank?: number | null
+  manualCisAdjustment?: number
+  manualCisAdjustmentReason?: string | null
+  observedAt?: string | null
+}
+export type GameRecognitionCalibration = {
+  knownRate: number | null
+  knownResponses: number
+  guessRate: number | null
+  medianAttemptsToGuess: number | null
+  skipRate: number | null
+  lastGameplayCalibrationAt: string | null
+  minimumResponsesForBlend: number
 }
 export type TitleItem = {
   id: string
@@ -134,6 +169,37 @@ export type TitleItem = {
   externalRanks?: Record<string, number>
   notes?: string[]
   canonicalId?: string | null
+  canonicalGameId?: string | null
+  legacyIds?: string[]
+  title?: string
+  localizedTitles?: { ru: string; en: string }
+  acceptedAnswers?: string[]
+  normalizedAnswers?: string[]
+  releaseYear?: number | null
+  franchiseKey?: string | null
+  editionType?: 'original' | 'remake' | 'remaster' | 'edition' | 'dlc' | 'technical'
+  parentCanonicalGameId?: string | null
+  relatedVersions?: string[]
+  igdbId?: number | null
+  sourceFlags?: string[]
+  poolIds?: string[]
+  dailyEligible?: boolean
+  reviewStatus?: 'verified' | 'machine_verified' | 'review_required' | 'rejected'
+  matchConfidence?: number
+  verifiedAt?: string | null
+  legacyPopularityScore?: number
+  legacySteamTags?: string[]
+  recognitionSignals?: GameRecognitionSignals
+  recognitionComponents?: Record<string, number | null>
+  recognitionScore?: number
+  cisScore?: number | null
+  trendScore?: number | null
+  guessabilityScore?: number
+  scoreConfidence?: number
+  scoreFormulaVersion?: string
+  recognitionLevel?: 'mass' | 'mainstream' | 'cult_or_genre' | 'special_only' | 'reject'
+  calibration?: GameRecognitionCalibration
+  priceSnapshotAt?: string | null
   aliases?: string[]
   gameTier?: MusicGameTier | null
   contentStatus?: MusicContentStatus | null

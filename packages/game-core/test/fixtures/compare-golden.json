@@ -6351,9 +6351,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#681",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6423,7 +6423,7 @@
             "direction": null
           }
         ],
-        "digest": "5deca5c6e90a42f29309dd45f8731ef3df9dc20f23522330da0b2130f2b668c5"
+        "digest": "bcc236191286637985c1208cb443da723ef0fc8b92a04b106b56557d7f6890bb"
       },
       {
         "guessId": "tgdb_30049",
@@ -6438,9 +6438,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#483",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6504,7 +6504,7 @@
             "direction": null
           }
         ],
-        "digest": "cef55bedc2cb79e56107f78bd53b9f0cb6af15eb8839033595f4715ebab80e16"
+        "digest": "cbb8ae8d9d2e392ffc12ac4a2bfdf7ff0fefdfbcee9f679e724719d0d51f6276"
       },
       {
         "guessId": "tgdb_105602",
@@ -6519,9 +6519,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#418",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6585,7 +6585,7 @@
             "direction": null
           }
         ],
-        "digest": "224af08ddb4fd4372e0504a15444a8d6a89760a2526da92441e5ab998d4728ef"
+        "digest": "24a29c29e3374dd2af576567f426cdc4a2bd19cd0dabf19315c215fcac113049"
       },
       {
         "guessId": "tgdb_2495",
@@ -6600,7 +6600,7 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#135",
+            "value": "#132",
             "status": "miss",
             "direction": "down"
           },
@@ -6669,7 +6669,7 @@
             "direction": null
           }
         ],
-        "digest": "4771b3a1f6a900dd6c558f967301403d03154c111372f2bccdd4207c674d412c"
+        "digest": "2c2b31aa68b207f3d0e98c44625c9e2b96c4cfc662c8af7b1d629db8b99e46c9"
       },
       {
         "guessId": "tgdb_3305",
@@ -6684,9 +6684,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#944",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6753,7 +6753,7 @@
             "direction": null
           }
         ],
-        "digest": "4925ef9c6624a4d4a170bad157b0dbf502d61d4b9f4f0cf56c332f96e97be04a"
+        "digest": "07bac0ba41b7d38f6bbb443f96b50fbea54fc982304fdd4ba2eb2eb4147db20d"
       },
       {
         "guessId": "tgdb_6570",
@@ -6768,9 +6768,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#735",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6837,7 +6837,7 @@
             "direction": null
           }
         ],
-        "digest": "37788ffd06a84c297a166b6fb238293756dbdd9abe78413f5875c5c58eaa886b"
+        "digest": "0794d05b1f679cb40f260786a735c6a50b447ced0a1fbaa246e739106344d18c"
       },
       {
         "guessId": "tgdb_2570",
@@ -6852,9 +6852,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#356",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6918,7 +6918,7 @@
             "direction": null
           }
         ],
-        "digest": "4b26a48d3793173dac85c2b551b2565bd0a3e65513bd828a50209372c7465e89"
+        "digest": "1ae6413b70d105a1b57d73f83736a7f95f0d39e7e751c55a981d28eff0e12d9d"
       },
       {
         "guessId": "tgdb_97524",
@@ -6933,9 +6933,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#638",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -6999,7 +6999,7 @@
             "direction": null
           }
         ],
-        "digest": "3f0443b637d5de4fc83e79e2a99ae069bc2bef2aafb6e43a50edf78d209953bc"
+        "digest": "2a37b860bb16b4e193be9402a035ed777e64ccd20c9201a44ac4f011edd7ec7f"
       },
       {
         "guessId": "tgdb_748",
@@ -7014,9 +7014,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#518",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -7080,7 +7080,7 @@
             "direction": null
           }
         ],
-        "digest": "7aa9899f603e093fb6980bf1fd74efc2b73b2da874a2bca9bcfe637ed1e24541"
+        "digest": "638a540032d3422aa3451a2e231e9f677bf8b383ebf1ff315828ee7f22597592"
       },
       {
         "guessId": "tgdb_749",
@@ -7095,7 +7095,7 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#152",
+            "value": "#54",
             "status": "miss",
             "direction": "down"
           },
@@ -7161,7 +7161,7 @@
             "direction": null
           }
         ],
-        "digest": "f37c437bd46155e6c44af48007c9a3d6322a5634670883912414ecfaa31f43ed"
+        "digest": "8933cc35dbafc1504bfb355b5de859f02c618e6584735b8a398e9b2062d796bd"
       },
       {
         "guessId": "tgdb_80893",
@@ -7176,9 +7176,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#495",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -7242,7 +7242,7 @@
             "direction": null
           }
         ],
-        "digest": "753d69368f23199751f58b0df819861ed52e5b9c4220c49dbc7bdaad94ce739e"
+        "digest": "e717e4957c92e18ee646bf2be24ea5d8d3b0a603638b761f4a7d9b07f271df1c"
       },
       {
         "guessId": "tgdb_100324",
@@ -7257,7 +7257,7 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#355",
+            "value": "#377",
             "status": "miss",
             "direction": "up"
           },
@@ -7323,7 +7323,7 @@
             "direction": null
           }
         ],
-        "digest": "3514f3313df1f8fd4e5778104444ebc2d7f4c0bb2c20977f100bb75be4d10e0e"
+        "digest": "b4c08a97fa4087ca556dfea23d8408b04b3d7ae46bb107a9c5b888b364492636"
       },
       {
         "guessId": "tgdb_2684",
@@ -7338,9 +7338,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#965",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -7404,7 +7404,7 @@
             "direction": null
           }
         ],
-        "digest": "436c0dc3389ada26d59dc9da2b35080f1815eb57dcc4624abfde07a537ebd025"
+        "digest": "5cea0b9f2a534245a50a80a45cd6853eef48c6b546acb6f8c1a82f1bfefa03cf"
       },
       {
         "guessId": "tgdb_10683",
@@ -7419,9 +7419,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#783",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -7487,7 +7487,7 @@
             "direction": null
           }
         ],
-        "digest": "f803226edae669938e474238ffbc6c789980e1970966aa04afb10d50fb3f1d3e"
+        "digest": "228dd41cd3b2ae52d976bec43ea837e68236578834cede3e604153fb42488220"
       },
       {
         "guessId": "tgdb_21189",
@@ -7502,7 +7502,7 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#169",
+            "value": "#335",
             "status": "miss",
             "direction": "down"
           },
@@ -7568,7 +7568,7 @@
             "direction": null
           }
         ],
-        "digest": "b95ade33a66d60a5861f95d85af8b126fa72beb41eac999e967659fe29798820"
+        "digest": "f1c89770ee3a39126ca662e258df4667acc86f57bbe1f3118079b4e983de8fd8"
       },
       {
         "guessId": "tgdb_10080",
@@ -7583,9 +7583,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#282",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -7649,7 +7649,7 @@
             "direction": null
           }
         ],
-        "digest": "fd309766f3ff2bb541b43d9aef13e71fdfcb5398ef090ade04b57d97bda500aa"
+        "digest": "293596b00ceaa5061b06e6f143e9cf4ecf860f3cf28643ba9092ae12ce8d811f"
       },
       {
         "guessId": "tgdb_2547",
@@ -7664,7 +7664,7 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#368",
+            "value": "#382",
             "status": "miss",
             "direction": "up"
           },
@@ -7730,7 +7730,7 @@
             "direction": null
           }
         ],
-        "digest": "4c742c0df62ff67a37298ebc6a368a3f214a8ae9d9a0bff16d148b3268f459b7"
+        "digest": "7fa36139aee1843bbe4af2c5db3e959aced261eed08f895f9ea3c8111bf5a666"
       },
       {
         "guessId": "tgdb_2389",
@@ -7745,9 +7745,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#327",
+            "value": "#184",
             "status": "miss",
-            "direction": "up"
+            "direction": "down"
           },
           {
             "key": "players",
@@ -7811,7 +7811,7 @@
             "direction": null
           }
         ],
-        "digest": "a106ec9a045218652cef887982b64905f062855c040aa80616dd4d026bca38ca"
+        "digest": "12703f668cf65b9d4f4a573a01a4f52517b65e8f89c1ca76bfd8e0f2be096f2a"
       },
       {
         "guessId": "tgdb_117142",
@@ -7826,7 +7826,7 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#231",
+            "value": "#159",
             "status": "miss",
             "direction": "down"
           },
@@ -7901,7 +7901,7 @@
             "direction": null
           }
         ],
-        "digest": "300e6253d9f5a5e5bbb3e270e6b2a28b203486c63d36e51ae8046be5ecfdce55"
+        "digest": "735f62276984c5f91eee81b7480bf66b8193b86a860e3f247fcac3d9add75e5f"
       },
       {
         "guessId": "tgdb_61029",
@@ -7916,9 +7916,9 @@
           {
             "key": "rank",
             "label": "Место в топе",
-            "value": "#683",
-            "status": "miss",
-            "direction": "up"
+            "value": "—",
+            "status": "unknown",
+            "direction": null
           },
           {
             "key": "players",
@@ -7988,7 +7988,7 @@
             "direction": null
           }
         ],
-        "digest": "3a14bcb3130c4260f4e599198b850a51dd93fd281ea4b4e154bfe2f56ee8de09"
+        "digest": "568b2a0b9c27a7054a8ecd16f5437f6c842dd7cac847c64c93573ff5eb4174eb"
       }
     ]
   },

@@ -160,6 +160,13 @@ const cleanComment = (comment: GameComment, packId: string): GameComment => ({
   clueStrength: Math.trunc(Number(comment.clueStrength) || 0),
   topics: [...new Set((comment.topics ?? []).map((topic) => String(topic).trim()).filter(Boolean))],
   authorArchetype: String(comment.authorArchetype ?? '').trim() || null,
+  sourceUrl: String(comment.sourceUrl ?? '').trim() || null,
+  sourcePostUrl: String(comment.sourcePostUrl ?? '').trim() || null,
+  sourceExcerpt: String(comment.sourceExcerpt ?? '').replace(/\s+/g, ' ').trim() || null,
+  sourceVerifiedAt: String(comment.sourceVerifiedAt ?? '').trim() || null,
+  contentHash: String(comment.contentHash ?? '').trim() || null,
+  wasRedacted: Boolean(comment.wasRedacted),
+  redactionReasons: [...new Set((comment.redactionReasons ?? []).map((reason) => String(reason).trim()).filter(Boolean))],
 })
 
 export const mergeDtfComments = (

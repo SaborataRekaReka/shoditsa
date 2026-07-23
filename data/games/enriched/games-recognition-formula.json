@@ -1,0 +1,56 @@
+{
+  "formulaVersion": "games-recognition-v1",
+  "sourceVersion": "games-public-sources-2026-07",
+  "generatedAt": "2026-07-23T12:47:16.890Z",
+  "formula": {
+    "globalAccumulatedReach": 0.3,
+    "cisRecognition": 0.25,
+    "igdbPlayedAndVisits": 0.15,
+    "chartsAwardsAndLegacy": 0.1,
+    "currentAgeAdjustedInterest": 0.1,
+    "guessabilityScore": 0.1
+  },
+  "missingSignalRule": "Renormalize over available independent components and reduce scoreConfidence.",
+  "transforms": [
+    "log10 for review, owner, audience and concurrent-user counters",
+    "percentiles within release-era cohorts",
+    "review velocity adjusted by square root of release age"
+  ],
+  "sources": [
+    {
+      "id": "legacy_ptg",
+      "url": "https://playthatgame.co.uk/",
+      "role": "low-weight historical signal"
+    },
+    {
+      "id": "thegamesdb",
+      "url": "https://thegamesdb.net/",
+      "role": "legacy identity and metadata"
+    },
+    {
+      "id": "steam_store",
+      "url": "https://store.steampowered.com/api/appdetails",
+      "role": "identity and current metadata"
+    },
+    {
+      "id": "steam_reviews",
+      "url": "https://store.steampowered.com/appreviews/",
+      "role": "Russian review count"
+    },
+    {
+      "id": "steamspy",
+      "url": "https://steamspy.com/api.php",
+      "role": "wide candidate pool and aggregate audience signals"
+    }
+  ],
+  "unavailableSources": [
+    {
+      "id": "igdb",
+      "reason": "No IGDB/Twitch API credential was available; fields remain null."
+    },
+    {
+      "id": "steam_community_tags",
+      "reason": "SteamSpy appdetails tags were used only when fetched for a confirmed App ID; legacy mixed values were moved to legacySteamTags."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "canonicalGameId": "tgdb_70190",
+    "legacyId": "tgdb_70190",
+    "title": "Nintendogs [Not For Resale]",
+    "reason": "not_for_resale",
+    "source": "legacy"
+  },
+  {
+    "canonicalGameId": "tgdb_107864",
+    "legacyId": "tgdb_107864",
+    "title": "Super Mario World 2: Yoshi's Island (Not for Resale)",
+    "reason": "not_for_resale",
+    "source": "legacy"
+  },
+  {
+    "canonicalGameId": "steam_2707900",
+    "title": "NIGHT-RUNNERS PROLOGUE",
+    "steamAppId": 2707900,
+    "reason": "prologue",
+    "source": "steamspy_candidate_pool"
+  },
+  {
+    "canonicalGameId": "steam_3132990",
+    "title": "Black Myth: Wukong Benchmark Tool",
+    "steamAppId": 3132990,
+    "reason": "benchmark",
+    "source": "steamspy_candidate_pool"
+  },
+  {
+    "canonicalGameId": "steam_1340530",
+    "title": "Mr. Prepper: Prologue",
+    "steamAppId": 1340530,
+    "reason": "prologue",
+    "source": "steamspy_candidate_pool"
+  },
+  {
+    "canonicalGameId": "steam_869760",
+    "title": "Stoneshard: Prologue",
+    "steamAppId": 869760,
+    "reason": "prologue",
+    "source": "steamspy_candidate_pool"
+  },
+  {
+    "canonicalGameId": "steam_1310520",
+    "title": "Occupy Mars: Prologue",
+    "steamAppId": 1310520,
+    "reason": "prologue",
+    "source": "steamspy_candidate_pool"
+  },
+  {
+    "canonicalGameId": "steam_1362420",
+    "title": "Siege Survival: Gloria Victis Prologue",
+    "steamAppId": 1362420,
+    "reason": "prologue",
+    "source": "steamspy_candidate_pool"
+  }
+]
