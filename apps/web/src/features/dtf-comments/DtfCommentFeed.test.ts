@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  dtfCommentDateLabel,
+  dtfCommentDisplayText,
   dtfCommentUnlockLabel,
   newestDtfCommentKey,
   type DtfCommentCardData,
@@ -13,6 +15,14 @@ const comment = (
   text: key,
   unlockAfterAttempts,
   authorArchetype: '',
+  authorName: '',
+  authorAvatarUrl: '',
+  authorIsVerified: false,
+  authorIsPlus: false,
+  publishedAt: '',
+  likesCount: null,
+  dislikesCount: null,
+  replyCount: null,
 })
 
 describe('DTF comment feed', () => {
@@ -27,5 +37,19 @@ describe('DTF comment feed', () => {
     expect(newestDtfCommentKey(comments.slice(0, 2), 0)).toBe('second')
     expect(newestDtfCommentKey(comments, 2)).toBe('third')
     expect(newestDtfCommentKey(comments, 1)).toBeNull()
+  })
+
+  it('formats the public DTF publication date', () => {
+    expect(dtfCommentDateLabel('2023-09-04T04:43:11.000Z')).toContain('2023')
+    expect(dtfCommentDateLabel('not-a-date')).toBe('')
+  })
+
+  it('naturally rewrites placeholders left in an already-running session', () => {
+    expect(dtfCommentDisplayText('База. [название игры] не имеет ничего общего'))
+      .toBe('База. Эта игра не имеет ничего общего')
+    expect(dtfCommentDisplayText('Новости про [Название игры] всё смешнее'))
+      .toBe('Новости про эту игру всё смешнее')
+    expect(dtfCommentDisplayText('[название игры] 2 сегодня анонсируют'))
+      .toBe('Продолжение этой игры сегодня анонсируют')
   })
 })

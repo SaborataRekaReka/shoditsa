@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import type { TitleItem } from '@shoditsa/contracts'
 import {
   mergeDtfComments,
+  removeUnverifiedPlayerComments,
   resolveDtfPack,
   type DtfCatalogGame,
   type DtfPackDocument,
@@ -47,9 +48,11 @@ let changed = 0
 let comments = 0
 const merged = library.map((payload) => {
   const incoming = commentsById.get(payload.id)
-  if (!incoming) return payload
-  comments += incoming.length
-  const next = mergeDtfComments(payload, incoming, document.pack.id)
+  const cleaned = removeUnverifiedPlayerComments(payload)
+  if (incoming) comments += incoming.length
+  const next = incoming
+    ? mergeDtfComments(cleaned, incoming, document.pack.id)
+    : cleaned
   if (JSON.stringify(next) !== JSON.stringify(payload)) changed += 1
   return next
 })

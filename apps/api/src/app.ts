@@ -6,7 +6,7 @@ import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
 import { Type } from '@sinclair/typebox'
 import { fromNodeHeaders } from 'better-auth/node'
-import { and, asc, desc, eq, gt, lt, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, gt, lt, ne, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import {
   AdminContentReviewDecisionSchema, AdminContentReviewParamsSchema, AdminContentReviewQuerySchema,
@@ -404,7 +404,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.get('/api/v1/archive', { schema: { querystring: ArchiveQuerySchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const query = request.query as ArchiveQuery
     const limit = query.limit ?? 30
-    const filters = [eq(gameSessions.userId, user!.id), sql`${gameSessions.status} <> 'playing'`]
+    const filters = [
+      eq(gameSessions.userId, user!.id),
+      ne(gameSessions.kind, 'pack'),
+      sql`${gameSessions.status} <> 'playing'`,
+    ]
     if (query.mode) filters.push(eq(gameSessions.mode, query.mode))
     if (query.cursor) filters.push(lt(gameSessions.completedAt, new Date(query.cursor)))
     const rows = await db.select({ id: gameSessions.id, mode: gameSessions.mode, variantKey: dailyChallenges.variantKey, period: gameSessions.period, difficulty: gameSessions.difficulty, puzzleDate: gameSessions.puzzleDate, status: gameSessions.status, attemptsCount: gameSessions.attemptsCount, completedAt: gameSessions.completedAt })
@@ -419,7 +423,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   })
   app.get('/api/v1/archive/:date/status', { schema: { params: ArchiveDateParamsSchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const { date } = request.params as { date: string }
-    return { items: await db.select({ mode: gameSessions.mode, status: gameSessions.status, id: gameSessions.id }).from(gameSessions).where(and(eq(gameSessions.userId, user!.id), eq(gameSessions.puzzleDate, date))) }
+    return { items: await db.select({ mode: gameSessions.mode, status: gameSessions.status, id: gameSessions.id }).from(gameSessions).where(and(
+      eq(gameSessions.userId, user!.id),
+      ne(gameSessions.kind, 'pack'),
+      eq(gameSessions.puzzleDate, date),
+    )) }
   })
 
   await registerCommerceRoutes(app, { db, auth, config })

@@ -14,11 +14,25 @@ describe('match summary', () => {
       ],
     }] as Attempt[]
 
-    expect(collectMatchSummaryTags(attempts).map(({ label, value }) => ({ label, value }))).toEqual([
+    expect(collectMatchSummaryTags(attempts, 'movie').map(({ label, value }) => ({ label, value }))).toEqual([
       { label: 'Цена', value: 'Платно' },
       { label: 'Игроки', value: '1 игрок' },
       { label: 'Жанры', value: 'Action' },
       { label: 'Категории', value: 'Одиночная игра' },
     ])
+  })
+
+  it('keeps only compact fields from game cards and drops verbose category clouds', () => {
+    const attempts = [{
+      titleId: 'game:guess',
+      hints: [
+        { key: 'price', label: 'Цена', value: '15 ₽', status: 'match', direction: null },
+        { key: 'genres', label: 'Жанры', value: 'Racing', status: 'partial', direction: null, matchedValues: ['Racing'] },
+        { key: 'steam_categories', label: 'Категории', value: 'Stereo Sound, Steam Cloud', status: 'partial', direction: null, matchedValues: ['Stereo Sound', 'Steam Cloud'] },
+        { key: 'platforms', label: 'Платформы', value: 'windows', status: 'partial', direction: null, matchedValues: ['windows'] },
+      ],
+    }] as Attempt[]
+
+    expect(collectMatchSummaryTags(attempts, 'game').map(({ value }) => value)).toEqual(['15 ₽', 'Racing'])
   })
 })

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
@@ -163,6 +163,17 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
     : 'Гость'
   const signedIn = Boolean(session && !session.isAnonymous)
   const hasClub = Boolean(serverRuntime.dashboard?.membership.active)
+  const hashRoute = typeof window === 'undefined' ? null : window.location.hash.match(/^#(\/[^?]*)/)
+  const currentPath = hashRoute?.[1] ?? (typeof window === 'undefined' ? '/' : window.location.pathname)
+  const mobileSection = currentPath === '/archive'
+    ? 'archive'
+    : currentPath === '/club'
+      ? 'club'
+      : currentPath === '/games/together'
+        ? 'room'
+        : profileActive || currentPath === '/profile'
+          ? 'profile'
+          : 'games'
   const openProfile = (tab: ProfileMenuTab = 'overview') => {
     trackMetrikaGoal('open_profile')
     setProfileMenuOpen(false)
@@ -200,7 +211,25 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
     <header className="app-header">
       <div className="app-header__inner">
         <button className="brand" aria-label="На главный экран" onClick={() => { trackMetrikaGoal('header_home_click'); onHome() }}><BrandLogo /></button>
+        <button
+          className="header-economy"
+          type="button"
+          aria-label={`Билеты: ${wallet.tickets}. Стрик: ${attendance.currentDailyStreak} дней`}
+          onClick={() => { trackMetrikaGoal('open_economy_modal'); setEconomyOpen(true) }}
+        >
+          <span><Ticket /> <strong>{wallet.tickets}</strong></span>
+          <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
+        </button>
         <nav aria-label="Навигация">
+          <a
+            className={`header-club ${hasClub ? 'is-active' : ''}`}
+            href="/club"
+            aria-label={hasClub ? 'Клубный билет активен' : 'Клуб'}
+            title={hasClub ? 'Клубный билет активен' : 'Клуб «Сходится!»'}
+            onClick={() => trackMetrikaGoal('open_club', { placement: 'header' })}
+          >
+            <Crown /><span>Клуб</span>
+          </a>
           <button className="header-create-room" type="button" onClick={createRoom}><Plus /><span>Создать комнату</span></button>
           <div className="header-profile-menu" ref={profileMenuRef}>
             <button ref={profileTriggerRef} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label="Открыть меню" title="Меню" aria-haspopup="menu" aria-expanded={profileMenuOpen}>
@@ -232,6 +261,48 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         </nav>
       </div>
     </header>
+    <nav className="mobile-app-nav" aria-label="Основная навигация">
+      <button
+        className={`mobile-app-nav__item ${mobileSection === 'games' ? 'is-active' : ''}`}
+        type="button"
+        aria-current={mobileSection === 'games' ? 'page' : undefined}
+        onClick={() => { trackMetrikaGoal('header_home_click', { placement: 'mobile_nav' }); onHome() }}
+      >
+        <Gamepad2 /><span>Игры</span>
+      </button>
+      <button
+        className={`mobile-app-nav__item ${mobileSection === 'archive' ? 'is-active' : ''}`}
+        type="button"
+        aria-current={mobileSection === 'archive' ? 'page' : undefined}
+        onClick={() => { trackMetrikaGoal('open_archive', { placement: 'mobile_nav' }); onArchive() }}
+      >
+        <Archive /><span>Архив</span>
+      </button>
+      <button
+        className={`mobile-app-nav__item mobile-app-nav__create ${mobileSection === 'room' ? 'is-active' : ''}`}
+        type="button"
+        aria-current={mobileSection === 'room' ? 'page' : undefined}
+        onClick={() => { trackMetrikaGoal('friends_room_opened', { placement: 'mobile_nav' }); createRoom() }}
+      >
+        <i aria-hidden="true"><Plus /></i><span>Комната</span>
+      </button>
+      <a
+        className={`mobile-app-nav__item mobile-app-nav__club ${mobileSection === 'club' ? 'is-active' : ''}`}
+        href="/club"
+        aria-current={mobileSection === 'club' ? 'page' : undefined}
+        onClick={() => trackMetrikaGoal('open_club', { placement: 'mobile_nav' })}
+      >
+        <Crown /><span>Клуб</span>
+      </a>
+      <button
+        className={`mobile-app-nav__item ${mobileSection === 'profile' ? 'is-active' : ''}`}
+        type="button"
+        aria-current={mobileSection === 'profile' ? 'page' : undefined}
+        onClick={() => openProfile('overview')}
+      >
+        <UserRound /><span>Профиль</span>
+      </button>
+    </nav>
     {economyOpen && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
   </>
 }

@@ -42,6 +42,11 @@ const asInteger = (value: unknown, fallback: number) => {
 const cleanText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
 
 const clampAttempts = (value: unknown) => Math.min(10, Math.max(1, asInteger(value, 10)))
+const nullableCount = (value: unknown) => {
+  if (value == null || value === '') return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? Math.max(0, Math.trunc(parsed)) : null
+}
 
 export const normalizeGameComment = (value: unknown): GameComment | null => {
   const row = asRecord(value)
@@ -64,6 +69,22 @@ export const normalizeGameComment = (value: unknown): GameComment | null => {
       ? row.topics.map(cleanText).filter(Boolean)
       : [],
     authorArchetype: cleanText(row.authorArchetype) || null,
+    authorId: cleanText(row.authorId) || null,
+    authorName: cleanText(row.authorName) || null,
+    authorAvatarUrl: cleanText(row.authorAvatarUrl) || null,
+    authorProfileUrl: cleanText(row.authorProfileUrl) || null,
+    authorIsVerified: Boolean(row.authorIsVerified),
+    authorIsPlus: Boolean(row.authorIsPlus),
+    publishedAt: cleanText(row.publishedAt) || null,
+    likesCount: nullableCount(row.likesCount),
+    dislikesCount: nullableCount(row.dislikesCount),
+    replyCount: nullableCount(row.replyCount),
+    reactionCounts: asRecord(row.reactionCounts)
+      ? Object.fromEntries(Object.entries(asRecord(row.reactionCounts)!)
+        .map(([key, count]) => [cleanText(key), nullableCount(count)] as const)
+        .filter((entry): entry is readonly [string, number] => Boolean(entry[0]) && entry[1] != null))
+      : {},
+    sourceUrl: cleanText(row.sourceUrl) || null,
   }
 }
 
@@ -118,14 +139,23 @@ export const buildDtfCommentPrompt = ({
         clueStrength: hint.clueStrength ?? 0,
         topics: hint.topics ?? [],
         authorArchetype: hint.authorArchetype ?? null,
+        authorId: hint.authorId ?? null,
+        authorName: hint.authorName ?? null,
+        authorAvatarUrl: hint.authorAvatarUrl ?? null,
+        authorIsVerified: hint.authorIsVerified ?? false,
+        authorIsPlus: hint.authorIsPlus ?? false,
+        publishedAt: hint.publishedAt ?? null,
+        likesCount: hint.likesCount ?? null,
+        dislikesCount: hint.dislikesCount ?? null,
+        replyCount: hint.replyCount ?? null,
+        reactionCounts: hint.reactionCounts ?? {},
       },
     })),
     promoPrompt: {
       packId: pack.id,
       title: pack.title,
       subtitle: pack.subtitle ?? '',
-      disclaimer: cleanText(rawPrompt.disclaimer)
-        || 'Комментарии переведены и отредактированы для игрового режима.',
+      disclaimer: '',
     },
   }
 }

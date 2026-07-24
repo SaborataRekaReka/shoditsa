@@ -59,6 +59,7 @@ import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, next
 import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyView'
 import { GameResult } from './features/result/GameResult'
 import { activeSessionToSavedGame, archiveItemToSavedGame, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
+import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
 import type { ContentReportReason } from './features/content-report/ContentReport'
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
@@ -142,7 +143,7 @@ const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS)
 const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS)
 const DTF_COMMENTS_PACK_ID = 'dtf-game-comments-25-v1'
-const DTF_COMMENTS_POOL_COUNT = 25
+const DTF_COMMENTS_POOL_COUNT = 20
 
 type EconomyAward = {
   total: number
@@ -716,8 +717,8 @@ const dedupeGameCategories = (categories: string[], removePlayerCategories: bool
 
   return result
 }
-function GameMatchStrip({ attempts, open, onToggle }: { attempts: Attempt[]; open: boolean; onToggle: () => void }) {
-  const tags = useMemo(() => collectMatchSummaryTags(attempts), [attempts])
+function GameMatchStrip({ attempts, mode, open, onToggle }: { attempts: Attempt[]; mode: TitleMode; open: boolean; onToggle: () => void }) {
+  const tags = useMemo(() => collectMatchSummaryTags(attempts, mode), [attempts, mode])
 
   return <div className={`game-match-strip ${open ? 'is-open' : ''}`}>
     <button
@@ -740,7 +741,6 @@ function GameMatchStrip({ attempts, open, onToggle }: { attempts: Attempt[]; ope
     </div>
   </div>
 }
-
 const compactAssistList = (label: string, values: Array<string | null | undefined>, limit = 3) => {
   const normalized = values.map((value) => cleanHintText(String(value ?? ''))).filter(Boolean)
   if (!normalized.length) return ''
@@ -1339,7 +1339,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
           {isAdmin && <CategoryTicket
             mode="game"
             title="Что за игра?"
-            description="Специальная подборка для DTF: угадайте 25 игр по комментариям игроков."
+            description="Специальная подборка для DTF: угадайте 20 игр по комментариям игроков."
             color="#FF6B35"
             icon={Gamepad2}
             watermarkUrl={publicAssetUrl('images/category-stubs/game-stub.webp')}
@@ -3161,7 +3161,7 @@ function Game({
           </button>) : <div className="empty-search">Ничего не найдено</div>}
         </div>}
         </div>
-        <GameMatchStrip attempts={attempts} open={gameMatchStripOpen} onToggle={() => {
+        <GameMatchStrip attempts={attempts} mode={mode} open={gameMatchStripOpen} onToggle={() => {
           trackMetrikaGoal('toggle_match_strip', { mode, period: effectivePeriod })
           setGameMatchStripOpen((current) => !current)
         }} />
@@ -3246,7 +3246,7 @@ const withRevealedServerHint = (current: GameResponse | undefined, response: Hin
   }
 }
 
-function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, onConfigureMode, onSessionLoaded }: {
+function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, onConfigureMode, onSessionLoaded, onPackSession }: {
   sessionId: string
   onHome: () => void
   onBack: () => void
@@ -3258,6 +3258,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   onReplay: () => void
   onConfigureMode: () => void
   onSessionLoaded: (session: GameSessionSnapshot) => void
+  onPackSession: (session: GameSessionSnapshot) => void
 }) {
   const client = useQueryClient()
   const [query, setQuery] = useState('')
@@ -3273,6 +3274,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const hintKeyRef = useRef<string | null>(null)
   const game = useQuery({ queryKey: queryKeys.game(sessionId), queryFn: () => api.game(sessionId), refetchOnWindowFocus: true })
   const session = game.data?.session
+  const packDetail = useQuery({
+    queryKey: queryKeys.pack(session?.packId ?? ''),
+    queryFn: () => api.pack(session!.packId!),
+    enabled: Boolean(session?.kind === 'pack' && session.packId),
+  })
   const dashboard = useQuery({ queryKey: queryKeys.dashboard, queryFn: api.dashboard })
   const searchParams = useMemo(() => {
     if (!session || !debouncedQuery) return null
@@ -3330,6 +3336,14 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       setMessage(apiErrorMessage(error))
       if (error instanceof ApiClientError && (error.status === 409 || error.code === 'NETWORK_TIMEOUT')) await client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
     },
+  })
+  const nextPackSession = useMutation({
+    mutationFn: ({ packId, position }: { packId: string; position: number }) => api.startPack(packId, position),
+    onSuccess: (response) => {
+      setMessage('')
+      onPackSession(response.session)
+    },
+    onError: (error) => setMessage(apiErrorMessage(error)),
   })
 
   useEffect(() => {
@@ -3415,7 +3429,26 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         if (!text) return null
         const unlockAfterAttempts = typeof value?.unlockAfterAttempts === 'number' ? value.unlockAfterAttempts : null
         const authorArchetype = typeof value?.authorArchetype === 'string' ? value.authorArchetype.trim() : ''
-        return { key: entry.key, text, unlockAfterAttempts, authorArchetype }
+        const stringField = (key: string) => typeof value?.[key] === 'string'
+          ? String(value[key]).trim()
+          : ''
+        const countField = (key: string) => typeof value?.[key] === 'number' && Number.isFinite(value[key])
+          ? Math.max(0, Math.trunc(value[key] as number))
+          : null
+        return {
+          key: entry.key,
+          text,
+          unlockAfterAttempts,
+          authorArchetype,
+          authorName: stringField('authorName'),
+          authorAvatarUrl: stringField('authorAvatarUrl'),
+          authorIsVerified: value?.authorIsVerified === true,
+          authorIsPlus: value?.authorIsPlus === true,
+          publishedAt: stringField('publishedAt'),
+          likesCount: countField('likesCount'),
+          dislikesCount: countField('dislikesCount'),
+          replyCount: countField('replyCount'),
+        }
       })
       .filter((entry): entry is DtfCommentCardData => Boolean(entry))
     : []
@@ -3446,8 +3479,29 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
   const isPackSession = session.kind === 'pack'
-  const nextLabel = isPackSession ? 'К подборке' : nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'Сыграть ещё раз'
-  const configureLabel = isPackSession ? 'На главную' : routeCompleted ? 'Выбрать другой режим' : resultConfigureLabel(session.mode)
+  const packTotalItems = packDetail.data?.pack.totalItems ?? (isDtfCommentSession ? DTF_COMMENTS_POOL_COUNT : null)
+  const nextPackPosition = isPackSession
+    && session.packPosition
+    && packTotalItems
+    && session.packPosition < packTotalItems
+    ? session.packPosition + 1
+    : null
+  const nextLabel = isPackSession
+    ? nextPackPosition
+      ? nextPackSession.isPending
+        ? 'Запускаем следующую…'
+        : `Следующая игра · ${nextPackPosition} из ${packTotalItems}`
+      : 'К подборке'
+    : nextMode
+      ? `Играть дальше: ${modeMeta(nextMode).title}`
+      : 'Сыграть ещё раз'
+  const configureLabel = isPackSession
+    ? nextPackPosition
+      ? 'К подборке'
+      : 'На главную'
+    : routeCompleted
+      ? 'Выбрать другой режим'
+      : resultConfigureLabel(session.mode)
   const headingPeriodBadge = session.mode === 'music' && session.difficulty
     ? DIFFICULTIES[session.difficulty].label
     : session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime'
@@ -3502,7 +3556,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
       {isPromptSession && (isDtfCommentSession
-        ? <DtfCommentIntro subtitle={promoSubtitle} disclaimer={promoDisclaimer} />
+        ? <DtfCommentIntro subtitle={promoSubtitle} />
         : <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
       {!!promoHints.length && (isDtfCommentSession
         ? <DtfCommentFeed comments={promoHints} attemptsCount={session.attemptsCount} />
@@ -3510,14 +3564,23 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
-      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={completedToday} nextRewardText={isPackSession ? 'Выберите следующий сеанс в подборке' : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession ? onBack : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isPackSession ? undefined : completedToday} nextRewardText={isPackSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession
+        ? () => {
+            if (!session.packId || !nextPackPosition || nextPackSession.isPending) {
+              onBack()
+              return
+            }
+            nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
+          }
+        : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && message && <p className="specials-error" role="alert">{message}</p>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
         <div className="search-picker">
           <div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>
           {query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}
         </div>
-        <GameMatchStrip attempts={attempts} open={gameMatchStripOpen} onToggle={() => {
+        <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => {
           trackMetrikaGoal('toggle_match_strip', { mode: session.mode, period: session.period })
           setGameMatchStripOpen((current) => !current)
         }} />
@@ -4317,7 +4380,6 @@ function GameApp() {
       : initialPlayerRoute.screen)
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
   const [mode, setMode] = useState<TitleMode>(() => challenge?.mode ?? initialPlayerRoute.mode ?? 'movie')
-  const [packId, setPackId] = useState<string | null>(null)
   const [period, setPeriod] = useState<PeriodKey>(() => challenge?.period ?? 'all')
   const [difficulty, setDifficulty] = useState<DifficultyKey>(() => challenge?.difficulty ?? 'medium')
   const [modeVariant, setModeVariant] = useState<string | null>(() => GAME_MODE_MANIFEST.city.variants[0].id)
@@ -4327,7 +4389,7 @@ function GameApp() {
   const [freePlayArmed, setFreePlayArmed] = useState(false)
   const [serverSessionId, setServerSessionId] = useState<string | null>(() => initialPlayerRoute.sessionId ?? null)
   const [serverActionError, setServerActionError] = useState('')
-  const [gameBackTarget, setGameBackTarget] = useState<'title' | 'rewatch' | 'hub' | 'special'>('title')
+  const [gameExperience, setGameExperience] = useState(() => catalogGameExperience('title'))
   const [reviewBackTarget, setReviewBackTarget] = useState<'hub' | 'title' | 'rewatch'>('hub')
   const { data, titleCounts: localTitleCounts, caseVignettes, loading, loadError, retryLoading, globalDailySalt, searchIndex } = useDataLoader(mode, !SERVER_RUNTIME)
   const [modal, setModal] = useState<'stats' | 'rules' | 'resume' | 'anamnesis' | null>(null)
@@ -4390,14 +4452,13 @@ function GameApp() {
     window.scrollTo({ top: 0, left: 0 })
   }, [routeLocation.pathname, screen])
 
-  const activateServerSession = useCallback((session: GameSessionSnapshot, backTarget: 'title' | 'rewatch' | 'hub' | 'special') => {
+  const activateServerSession = useCallback((session: GameSessionSnapshot, backTarget: CatalogGameBackTarget) => {
     setServerActionError('')
     setServerSessionId(session.id)
     window.sessionStorage.setItem('shoditsa:active-server-session', session.id)
-    setGameBackTarget(backTarget)
+    setGameExperience(gameExperienceForSession(session, backTarget))
     if (session.engine !== 'danetki_chat') {
       setMode(session.mode)
-      setPackId(session.mode === 'game' ? session.packId : null)
       setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
       setPeriod(session.period)
       if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
@@ -4416,7 +4477,10 @@ function GameApp() {
       return
     }
     setMode(session.mode)
-    setPackId(session.mode === 'game' ? session.packId : null)
+    setGameExperience((current) => gameExperienceForSession(
+      session,
+      current.source === 'catalog' ? current.backTarget : 'title',
+    ))
     setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
     setPeriod(session.period)
     if (session.mode === 'music' && session.difficulty) setDifficulty(session.difficulty)
@@ -4718,7 +4782,10 @@ function GameApp() {
     setTransition('idle')
     setModal(null)
     setScreen(target.screen)
-    if (target.mode) setModeSafe(target.mode)
+    if (target.mode) {
+      setModeSafe(target.mode)
+      if (target.screen === 'title') setGameExperience(catalogGameExperience('title'))
+    }
     if (target.sessionId) setServerSessionId(target.sessionId)
     window.scrollTo({ top: 0 })
   }, [routeLocation.pathname])
@@ -4767,7 +4834,6 @@ function GameApp() {
 
   const setModeSafe = (nextMode: TitleMode) => {
     setMode(nextMode)
-    setPackId(null)
     setModeVariant(nextMode === 'city' ? (current => current ?? GAME_MODE_MANIFEST.city.variants[0].id) : null)
     if (GAME_MODE_MANIFEST[nextMode].periodPolicy === 'all') {
       setPeriod('all')
@@ -4806,7 +4872,7 @@ function GameApp() {
   const games = useMemo<SavedGame[]>(() => {
     if (!SERVER_RUNTIME) return allGames()
     return [
-      ...(serverRuntime.dashboard?.activeSessions ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(activeSessionToSavedGame),
+      ...catalogActiveSessions(serverRuntime.dashboard?.activeSessions ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(activeSessionToSavedGame),
       ...(serverArchive.data?.items ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(archiveItemToSavedGame),
     ]
   }, [serverArchive.data, serverRuntime.dashboard])
@@ -4846,11 +4912,11 @@ function GameApp() {
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
   const goBackFromGame = () => {
-    if (gameBackTarget === 'special' && packId) {
-      void navigateToPlayerRoute({ screen: 'special', packId })
+    if (gameExperience.source === 'pack') {
+      void navigateToPlayerRoute({ screen: 'special', packId: gameExperience.packId })
       return
     }
-    moveToScreen(gameBackTarget === 'special' ? 'hub' : gameBackTarget)
+    moveToScreen(gameExperience.backTarget)
   }
   const goBackFromReview = () => moveToScreen(reviewBackTarget)
 
@@ -4869,9 +4935,8 @@ function GameApp() {
       const sessionId = savedGame.key.slice('server:'.length)
       setServerSessionId(sessionId)
       window.sessionStorage.setItem('shoditsa:active-server-session', sessionId)
-      setGameBackTarget(backTarget)
+      setGameExperience(catalogGameExperience(backTarget))
       setModeSafe(savedGame.mode)
-      setPackId(null)
       setModeVariant(savedGame.mode === 'city' ? savedGame.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
       setPeriod(savedGame.period)
       if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
@@ -4881,10 +4946,9 @@ function GameApp() {
       window.scrollTo({ top: 0 })
       return
     }
-    setGameBackTarget(backTarget)
+    setGameExperience(catalogGameExperience(backTarget))
     setFreePlayLaunch(freePlayLaunchFromGameKey(savedGame.key))
     setModeSafe(savedGame.mode)
-    setPackId(null)
     setModeVariant(savedGame.mode === 'city' ? savedGame.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
     setPeriod(GAME_MODE_MANIFEST[savedGame.mode].periodPolicy === 'year' ? savedGame.period : 'all')
     if (savedGame.mode === 'music' && savedGame.difficulty) setDifficulty(savedGame.difficulty)
@@ -4917,6 +4981,7 @@ function GameApp() {
     }
     setFreePlayLaunch(null)
     setFreePlayArmed(false)
+    setGameExperience(catalogGameExperience('title'))
     setModeSafe(nextMode)
     setDate(getMoscowDate())
     setScreen('title')
@@ -4954,7 +5019,7 @@ function GameApp() {
     if (!activeDanetkiSessionId) return
     setServerSessionId(activeDanetkiSessionId)
     window.sessionStorage.setItem('shoditsa:active-server-session', activeDanetkiSessionId)
-    setGameBackTarget('hub')
+    setGameExperience(catalogGameExperience('hub'))
     setScreen('game')
     setModal(null)
     window.scrollTo({ top: 0 })
@@ -4989,7 +5054,7 @@ function GameApp() {
     setPeriod(challenge.mode === 'movie' || challenge.mode === 'series' || challenge.mode === 'anime' ? challenge.period : 'all')
     if (challenge.difficulty) setDifficulty(challenge.difficulty)
     setDate(challenge.date)
-    setGameBackTarget(challenge.date === getMoscowDate() ? 'hub' : 'rewatch')
+    setGameExperience(catalogGameExperience(challenge.date === getMoscowDate() ? 'hub' : 'rewatch'))
     setChallengeAccepted(true)
     if (SERVER_RUNTIME) {
       const today = serverRuntime.meta?.moscowDate ?? getMoscowDate()
@@ -5031,7 +5096,7 @@ function GameApp() {
     }
     setModeSafe(nextMode)
     setDate(getMoscowDate())
-    setGameBackTarget('hub')
+    setGameExperience(catalogGameExperience('hub'))
     setScreen('title')
     window.scrollTo({ top: 0 })
   }
@@ -5106,7 +5171,7 @@ function GameApp() {
       if (activeServerFreePlay) {
         setServerSessionId(activeServerFreePlay.id)
         window.sessionStorage.setItem('shoditsa:active-server-session', activeServerFreePlay.id)
-        setGameBackTarget(backTarget)
+        setGameExperience(catalogGameExperience(backTarget))
         setModeSafe(activeServerFreePlay.mode)
         setPeriod(activeServerFreePlay.period)
         if (activeServerFreePlay.mode === 'music' && activeServerFreePlay.difficulty) setDifficulty(activeServerFreePlay.difficulty)
@@ -5158,7 +5223,7 @@ function GameApp() {
       nextLaunchNumber,
     })
 
-    setGameBackTarget(backTarget)
+    setGameExperience(catalogGameExperience(backTarget))
     setPeriod('all')
     setDate(today)
     setFreePlayLaunch(nextLaunchNumber)
@@ -5207,7 +5272,7 @@ function GameApp() {
     setFreePlayLaunch(null)
     setFreePlayArmed(false)
     const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
-    setGameBackTarget(backTarget)
+    setGameExperience(catalogGameExperience(backTarget))
     setDate(getMoscowDate())
     setModal(null)
     window.scrollTo({ top: 0 })
@@ -5251,7 +5316,7 @@ function GameApp() {
     }
     clearTransitionTimer()
     setTransition('idle')
-    setGameBackTarget('rewatch')
+    setGameExperience(catalogGameExperience('rewatch'))
     setFreePlayLaunch(null)
     setFreePlayArmed(false)
     setDate(archiveDate)
@@ -5296,7 +5361,7 @@ function GameApp() {
 
     {screen === 'specials' && <SpecialsScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(id) => { const currentPackId = playerRouteFromPathname(routeLocation.pathname).packId ?? null; setPackId(currentPackId); setGameBackTarget('special'); setServerSessionId(id); setScreen('game'); window.scrollTo({ top: 0 }) }} />}
+    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(session) => activateServerSession(session, 'hub')} />}
 
     {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
@@ -5318,6 +5383,7 @@ function GameApp() {
             onReplay={launchFreePlay}
             onConfigureMode={() => moveToScreen('title')}
             onSessionLoaded={syncServerSessionContext}
+            onPackSession={(session) => activateServerSession(session, 'hub')}
           />
         : <GameDataLoadError onRetry={goHome} onHome={goHome} />
       : loading
@@ -5327,7 +5393,7 @@ function GameApp() {
           : <Game
           titles={data[mode]}
           mode={mode}
-          variantKey={mode === 'city' ? modeVariant : packId}
+          variantKey={mode === 'city' ? modeVariant : null}
           period={period}
           difficulty={difficulty}
           date={date}

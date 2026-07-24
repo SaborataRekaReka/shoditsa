@@ -1,41 +1,5 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-23T13:07:48.255Z",
-  "items": [
-    {
-      "gameId": "fallout-76",
-      "canonicalGameId": "steam_1151340",
-      "reason": "insufficient_source_material",
-      "usableComments": 4,
-      "requestedComments": 6
-    },
-    {
-      "gameId": "red-dead-redemption-2",
-      "canonicalGameId": "tgdb_103202",
-      "reason": "insufficient_source_material",
-      "usableComments": 4,
-      "requestedComments": 6
-    },
-    {
-      "gameId": "the-witcher-3",
-      "canonicalGameId": "steam_292030",
-      "reason": "insufficient_source_material",
-      "usableComments": 0,
-      "requestedComments": 6
-    },
-    {
-      "gameId": "disco-elysium",
-      "canonicalGameId": "steam_632470",
-      "reason": "insufficient_source_material",
-      "usableComments": 4,
-      "requestedComments": 6
-    },
-    {
-      "gameId": "silent-hill-2-remake",
-      "canonicalGameId": "steam_2124490",
-      "reason": "insufficient_source_material",
-      "usableComments": 4,
-      "requestedComments": 6
-    }
-  ]
+  "generatedAt": "2026-07-24T10:06:43.010Z",
+  "items": []
 }

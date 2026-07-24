@@ -60,6 +60,17 @@ export type GameComment = {
   clueStrength?: number
   topics?: string[]
   authorArchetype?: string | null
+  authorId?: string | null
+  authorName?: string | null
+  authorAvatarUrl?: string | null
+  authorProfileUrl?: string | null
+  authorIsVerified?: boolean
+  authorIsPlus?: boolean
+  publishedAt?: string | null
+  likesCount?: number | null
+  dislikesCount?: number | null
+  replyCount?: number | null
+  reactionCounts?: Record<string, number>
   /** Provenance retained for editorial audit/import; presentation clients render displayText. */
   sourceUrl?: string | null
   sourcePostUrl?: string | null

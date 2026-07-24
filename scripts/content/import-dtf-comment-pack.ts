@@ -28,6 +28,7 @@ import {
 } from '@shoditsa/database'
 import {
   activateWorkspaceRevision,
+  activateContentRevision,
   buildWorkspaceRevision,
   contentPayloadsEqual,
   getOrCreateWorkspace,
@@ -36,6 +37,7 @@ import {
 } from '../../apps/api/src/modules/admin/content-service.js'
 import {
   mergeDtfComments,
+  removeUnverifiedPlayerComments,
   resolveDtfPack,
   type DtfCatalogGame,
   type DtfPackDocument,
@@ -172,17 +174,21 @@ const main = async () => {
         itemId: resolution.catalog!.itemId,
         order: resolution.item.order,
       }))
-    const merged = resolutions
+    const incomingByItemId = new Map(resolutions
       .filter((resolution) => resolution.catalog)
-      .map((resolution) => ({
-        resolution,
-        before: resolution.catalog!.payload,
-        after: mergeDtfComments(
-          resolution.catalog!.payload,
-          resolution.item.progressiveHints,
-          document.pack.id,
-        ),
-      }))
+      .map((resolution) => [resolution.catalog!.itemId, resolution.item.progressiveHints]))
+    const merged = games.map((game) => {
+      const before = game.payload
+      const cleaned = removeUnverifiedPlayerComments(before)
+      const incoming = incomingByItemId.get(game.itemId)
+      return {
+        itemId: game.itemId,
+        before,
+        after: incoming
+          ? mergeDtfComments(cleaned, incoming, document.pack.id)
+          : cleaned,
+      }
+    })
     const changed = merged.filter(({ before, after }) => !contentPayloadsEqual(before, after))
     const baseReport = {
       generatedAt: new Date().toISOString(),
@@ -252,16 +258,26 @@ const main = async () => {
         .limit(1))[0]
       if (!actor || actor.role !== 'admin') throw new Error('--actor-id must identify an admin user')
 
-      const workspace = await getOrCreateWorkspace(db, actor)
+      let workspace = await getOrCreateWorkspace(db, actor)
       workspaceId = workspace.id
       if (workspace.status !== 'open') throw new Error(`Content workspace ${workspace.id} is ${workspace.status}, expected open`)
-      if (workspace.baseRevisionId !== active.id) throw new Error('Content workspace is based on a different revision')
+      if (workspace.baseRevisionId !== active.id) {
+        await activateContentRevision(
+          db,
+          actor,
+          active.id,
+          `dtf-comments-rebase:${randomUUID()}`,
+          `Rebase empty workspace before importing ${document.pack.id}`,
+        )
+        workspace = await getOrCreateWorkspace(db, actor)
+        workspaceId = workspace.id
+      }
       const existingChanges = await db.select({
         itemId: contentWorkspaceChanges.itemId,
         afterPayload: contentWorkspaceChanges.afterPayload,
         source: contentWorkspaceChanges.source,
       }).from(contentWorkspaceChanges).where(eq(contentWorkspaceChanges.workspaceId, workspace.id))
-      const intendedByItem = new Map(changed.map((entry) => [entry.resolution.catalog!.itemId, entry.after]))
+      const intendedByItem = new Map(changed.map((entry) => [entry.itemId, entry.after]))
       const canResume = existingChanges.length === changed.length
         && existingChanges.every((change) => change.source === 'import'
           && intendedByItem.has(change.itemId)
@@ -273,8 +289,8 @@ const main = async () => {
 
       const requestId = `dtf-comments-merge:${randomUUID()}`
       if (!canResume) {
-        for (const { resolution, after } of changed) {
-          await saveWorkspaceItem(db, actor, resolution.catalog!.itemId, {
+        for (const { itemId, after } of changed) {
+          await saveWorkspaceItem(db, actor, itemId, {
             mode: 'game',
             payload: after as unknown as Record<string, unknown>,
             expectedVersion: 0,

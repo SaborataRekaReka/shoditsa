@@ -5,6 +5,9 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   cleanText,
+  completeTruncatedExcerpt,
+  containsObfuscatedNumberedAnswer,
+  naturalGameReference,
   normalizeTitle,
   sha256,
   uniqueStrings,
@@ -13,6 +16,7 @@ import {
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const args = process.argv.slice(2)
 const verifySources = args.includes('--verify-sources')
+const writePack = args.includes('--write-pack')
 const catalogPath = resolve(root, 'data/games/enriched/games-catalog.enriched.json')
 const poolsPath = resolve(root, 'data/games/enriched/games-special-pools.json')
 const packPath = resolve(root, 'data/promo/dtf-game-comments-25-v1.json')
@@ -112,12 +116,31 @@ const redactAnswer = (excerpt, answerRef, catalogGame) => {
   ]).filter((value) => normalizeTitle(value).length >= 4)
     .sort((left, right) => right.length - left.length)
   for (const alias of aliases) {
-    const pattern = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegExp(alias)}(?![\\p{L}\\p{N}])`, 'giu')
-    displayText = displayText.replace(pattern, () => {
+    const canHideSequelNumber = !/(?:^|\s)(?:2|ii)$/iu.test(normalizeTitle(alias))
+    const sequelSuffix = canHideSequelNumber ? '(\\s+2)?' : '()'
+    const pattern = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegExp(alias)}${sequelSuffix}(?![\\p{L}\\p{N}])`, 'giu')
+    displayText = displayText.replace(pattern, (match, sequelNumber, offset, source) => {
       replacements += 1
-      return '[название игры]'
+      const matchOffset = typeof offset === 'number' ? offset : source.indexOf(match)
+      return naturalGameReference(
+        source.slice(0, matchOffset),
+        source.slice(matchOffset + match.length),
+        Boolean(sequelNumber),
+      )
     })
   }
+  displayText = displayText
+    .replace(/эта игра\s+шикарное произведение/giu, 'эта игра — шикарное произведение')
+    .replace(/эта игра\s+неиронично крутая игра/giu, 'это неиронично крутая игра')
+    .replace(/эта игра\s+самая продаваемая игра/giu, 'это самая продаваемая игра')
+    .replace(/эта игра,\s+продавшийся/giu, 'эта игра, продавшаяся')
+    .replace(/,\s+имевший/giu, ', имевшая')
+    .replace(/\s+его державший/giu, ' его державшая')
+    .replace(/эту игру,\s+которого/giu, 'эту игру, которую')
+    .replace(/продолжение этой игры\s+-\s+/giu, 'продолжение этой игры — ')
+    .replace(/(^|[.!?]\s+|>\s*)(эта игра|этой игры|эту игру|этой игре|это неиронично|это самая|продолжение этой игры)/giu, (_match, lead, phrase) => (
+      `${lead}${phrase.charAt(0).toLocaleUpperCase('ru-RU')}${phrase.slice(1)}`
+    ))
   const normalizedDisplay = normalizeTitle(displayText)
   const leaked = aliases.some((alias) => {
     const normalized = normalizeTitle(alias)
@@ -197,6 +220,47 @@ const chooseDiverse = (rows, count) => {
   return selected
 }
 
+const nullableCount = (value) => {
+  if (value == null || value === '') return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? Math.max(0, Math.trunc(parsed)) : null
+}
+
+const dtfAvatarUrl = (value) => {
+  const raw = value && typeof value === 'object'
+    ? value.data?.uuid ?? value.uuid ?? value.data?.url ?? value.url
+    : value
+  const avatar = cleanText(raw)
+  if (!avatar) return null
+  return /^https?:\/\//i.test(avatar)
+    ? avatar
+    : `https://leonardo.osnova.io/${avatar}/-/scale_crop/96x96/`
+}
+
+const liveCommentRecord = (comment) => {
+  const author = comment?.author && typeof comment.author === 'object' ? comment.author : {}
+  const authorId = cleanText(author.id)
+  const publishedTimestamp = Number(comment?.date)
+  return {
+    text: cleanText(comment?.text),
+    authorId: authorId || null,
+    authorName: cleanText(author.nickname || author.name || author.uri) || null,
+    authorAvatarUrl: dtfAvatarUrl(author.avatar),
+    authorProfileUrl: authorId ? `https://dtf.ru/id${authorId}` : null,
+    authorIsVerified: Boolean(author.isVerified),
+    authorIsPlus: Boolean(author.isPlus),
+    publishedAt: Number.isFinite(publishedTimestamp) && publishedTimestamp > 0
+      ? new Date(publishedTimestamp * 1000).toISOString()
+      : null,
+    likesCount: nullableCount(comment?.likes?.counterLikes),
+    dislikesCount: nullableCount(comment?.likes?.counterDislikes),
+    replyCount: nullableCount(comment?.replyCount),
+    reactionCounts: Object.fromEntries((comment?.reactions?.counters ?? [])
+      .map((reaction) => [cleanText(reaction?.id), nullableCount(reaction?.count)])
+      .filter(([id, count]) => id && count != null)),
+  }
+}
+
 const flattenComments = (payload) => {
   const rows = new Map()
   const stack = [payload?.result?.items ?? payload?.result ?? payload]
@@ -206,7 +270,7 @@ const flattenComments = (payload) => {
     if (!current || typeof current !== 'object' || seen.has(current)) continue
     seen.add(current)
     if (Number.isInteger(Number(current.id)) && typeof current.text === 'string') {
-      rows.set(String(current.id), cleanText(current.text))
+      rows.set(String(current.id), liveCommentRecord(current))
     }
     if (Array.isArray(current)) stack.push(...current)
     else stack.push(...Object.values(current))
@@ -247,6 +311,9 @@ const toCsv = (columns, rows) => [
 ].join('\n') + '\n'
 
 const main = async () => {
+  if (writePack && !verifySources) {
+    throw new Error('--write-pack requires --verify-sources so unpublished data never enters the production pack')
+  }
   const [catalog, pools, pack] = await Promise.all([
     readJson(catalogPath),
     readJson(poolsPath),
@@ -319,8 +386,23 @@ const main = async () => {
         continue
       }
       const redaction = redactAnswer(excerpt, packItem.answerRef, catalogGame)
-      if (redaction.containsDirectAnswer || redaction.replacements > 1 || cleanText(redaction.displayText).length < 28) {
-        rejectedLocal.push({ commentId: row.commentId, postId: row.postId, reason: 'answer_leak_not_safely_redactable', text: excerpt })
+      const answerAliases = uniqueStrings([
+        packItem.answerRef.titleRu,
+        packItem.answerRef.titleOriginal,
+        ...(packItem.answerRef.aliases ?? []),
+        catalogGame.titleRu,
+        catalogGame.titleOriginal,
+        ...(catalogGame.alternativeTitles ?? []),
+        ...(catalogGame.aliases ?? []),
+      ])
+      const containsObfuscatedAnswer = containsObfuscatedNumberedAnswer(redaction.displayText, answerAliases)
+      if (redaction.containsDirectAnswer || redaction.replacements > 1 || containsObfuscatedAnswer || cleanText(redaction.displayText).length < 28) {
+        rejectedLocal.push({
+          commentId: row.commentId,
+          postId: row.postId,
+          reason: containsObfuscatedAnswer ? 'obfuscated_answer_leak' : 'answer_leak_not_safely_redactable',
+          text: excerpt,
+        })
         continue
       }
       const hash = sha256(normalizeTitle(excerpt))
@@ -388,10 +470,31 @@ const main = async () => {
         }
       }
       const post = livePosts.get(candidate.sourcePostId)
-      const liveText = post?.comments.get(candidate.sourceCommentId)
-      const exact = liveText && normalizeTitle(liveText).startsWith(normalizeTitle(candidate.sourceExcerpt))
+      const liveComment = post?.comments.get(candidate.sourceCommentId)
+      const exact = liveComment?.text
+        && normalizeTitle(liveComment.text).startsWith(normalizeTitle(candidate.sourceExcerpt))
+      const completedExcerpt = exact
+        ? completeTruncatedExcerpt(candidate.sourceExcerpt, liveComment.text)
+        : candidate.sourceExcerpt
+      const completedRedaction = completedExcerpt !== candidate.sourceExcerpt
+        ? redactAnswer(completedExcerpt, packItem.answerRef, catalogGame)
+        : null
+      const canPublishCompletedExcerpt = Boolean(
+        completedRedaction
+        && !completedRedaction.containsDirectAnswer
+        && completedRedaction.replacements <= 1
+        && cleanText(completedRedaction.displayText).length >= 28,
+      )
       return {
         ...candidate,
+        ...(liveComment ?? {}),
+        ...(canPublishCompletedExcerpt ? {
+          sourceExcerpt: completedExcerpt,
+          displayText: completedRedaction.displayText,
+          wasRedacted: completedRedaction.wasRedacted,
+          redactionReasons: completedRedaction.redactionReasons,
+          contentHash: sha256(normalizeTitle(completedExcerpt)),
+        } : {}),
         sourceVerifiedAt: exact ? today : null,
         sourceVerificationStatus: exact ? 'verified' : post?.status === 'unavailable' ? 'source_unavailable' : 'text_mismatch_or_removed',
       }
@@ -474,6 +577,17 @@ const main = async () => {
         redactionReasons: clue.redactionReasons,
         clueStrength: index + 1,
         topics: clue.signalTags,
+        authorId: clue.authorId,
+        authorName: clue.authorName,
+        authorAvatarUrl: clue.authorAvatarUrl,
+        authorProfileUrl: clue.authorProfileUrl,
+        authorIsVerified: clue.authorIsVerified,
+        authorIsPlus: clue.authorIsPlus,
+        publishedAt: clue.publishedAt,
+        likesCount: clue.likesCount,
+        dislikesCount: clue.dislikesCount,
+        replyCount: clue.replyCount,
+        reactionCounts: clue.reactionCounts,
       }))
       patch.push({ canonicalGameId: catalogGame.id, comments, dtfMode })
       compatibleItems.push({
@@ -566,9 +680,12 @@ const main = async () => {
   if (publishedItems.some((item) => !catalogIds.has(item.canonicalGameId))) validationErrors.push('published DTF item without canonical game')
   if (publishedItems.some((item) => item.dtfMode.publishedClues.length !== 6)) validationErrors.push('published DTF game without six clues')
   if (publishedItems.some((item) => item.dtfMode.publishedClues.some((clue) => !clue.sourceUrl || !clue.sourceVerifiedAt))) validationErrors.push('published clue without verified source')
+  if (publishedItems.some((item) => item.dtfMode.publishedClues.some((clue) => !clue.authorName))) validationErrors.push('published clue without a public author name')
+  if (publishedItems.some((item) => item.dtfMode.publishedClues.some((clue) => !/^https?:\/\//.test(clue.authorAvatarUrl ?? '') || clue.authorAvatarUrl.includes('[object Object]')))) validationErrors.push('published clue without a valid public author avatar')
   if (duplicateCommentIds.length) validationErrors.push(`duplicate sourceCommentId: ${uniqueStrings(duplicateCommentIds).join(', ')}`)
   if (duplicateHashes.length) validationErrors.push(`duplicate contentHash: ${uniqueStrings(duplicateHashes).join(', ')}`)
   if (publishedItems.some((item) => item.dtfMode.publishedClues.some((clue) => clue.containsDirectAnswer))) validationErrors.push('answer leak in published clue')
+  if (publishedItems.some((item) => item.dtfMode.publishedClues.some((clue) => /\[\s*название игры\s*\]/iu.test(clue.displayText)))) validationErrors.push('technical game-title placeholder in published clue')
   if (publishedItems.some((item) => item.dtfMode.publishedClues.some((clue, index) => clue.clueOrder !== index + 1))) validationErrors.push('non-sequential clueOrder')
   if (validationErrors.length) throw new Error(`DTF validation failed:\n- ${validationErrors.join('\n- ')}`)
 
@@ -586,15 +703,12 @@ const main = async () => {
     schemaVersion: 1,
     pack: {
       ...pack.pack,
-      id: `${pack.pack.id}-sourced-v2`,
-      slug: `${pack.pack.slug}-sourced-v2`,
-      subtitle: `Спецпоказ DTF · ${compatibleItems.length} игр с проверяемыми источниками`,
+      subtitle: `Спецпоказ DTF · ${compatibleItems.length} игр`,
       itemCount: compatibleItems.length,
-      publicationStatus: 'editorial_review',
       rightsStatus: 'public_short_excerpts_with_source',
       uiCopy: {
         ...pack.pack.uiCopy,
-        disclaimer: 'Короткие фрагменты публичных комментариев DTF; источники сохранены для редакционной проверки.',
+        disclaimer: '',
       },
     },
     items: compatibleItems,
@@ -653,6 +767,7 @@ npm run data:enrich:games:dtf -- --verify-sources
     writeAtomic(paths.report, report),
     writeAtomic(paths.patch, { schemaVersion: 1, generatedAt: now, items: patch }),
     writeAtomic(paths.compatiblePack, compatiblePack),
+    ...(writePack ? [writeAtomic(packPath, compatiblePack)] : []),
   ])
 
   console.log(JSON.stringify({
@@ -663,6 +778,7 @@ npm run data:enrich:games:dtf -- --verify-sources
     reserveComments: publishedItems.reduce((sum, item) => sum + item.dtfMode.reserveClues.length, 0),
     insufficientSourceMaterial: insufficient,
     reviewRequired: globalReview.length,
+    packUpdated: writePack,
     outputDir,
   }, null, 2))
 }

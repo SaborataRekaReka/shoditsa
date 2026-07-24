@@ -1119,9 +1119,15 @@ const main = async () => {
       const comments = verifiedDtfComments
         ?? reviewDtfComments
         ?? (hasLegacyDtfComments && !dtfTargetGameIds.has(item.id) ? undefined : item.comments)
+      const sourcedComments = Array.isArray(comments)
+        ? comments.filter((comment) => (
+          comment?.type !== 'player_comment'
+          || Boolean(cleanText(comment?.sourceId) && cleanText(comment?.sourceUrl))
+        ))
+        : comments
       return {
         ...item,
-        comments,
+        comments: sourcedComments,
         poolIds,
         allowedInGame: dailyIds.has(item.id),
         contentStatus: dailyIds.has(item.id) ? 'ready' : 'limited',

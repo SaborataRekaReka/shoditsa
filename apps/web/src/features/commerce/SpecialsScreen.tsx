@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Clapperboard, Gamepad2, Play, Sparkles } from 'lucide-react'
+import type { GameSessionSnapshot } from '@shoditsa/contracts'
 import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
@@ -129,9 +130,10 @@ export function SpecialDetailScreen({
   onRules,
   onReview,
   onSession,
-}: ShellProps & { packId: string; onSession: (id: string) => void }) {
+}: ShellProps & { packId: string; onSession: (session: GameSessionSnapshot) => void }) {
   const [starting, setStarting] = useState(false)
   const [error, setError] = useState('')
+  const mountedRef = useRef(true)
   const packQuery = useQuery({
     queryKey: queryKeys.pack(packId),
     queryFn: () => api.pack(packId),
@@ -141,6 +143,13 @@ export function SpecialDetailScreen({
   const nextEntry = pack?.entries.find((entry) => entry.accessible && !entry.completed)
     ?? pack?.entries.find((entry) => entry.accessible)
     ?? null
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
 
   useEffect(() => {
     if (!pack) return
@@ -162,13 +171,13 @@ export function SpecialDetailScreen({
     setError('')
     try {
       const response = await api.startPack(packId, nextEntry.position)
-      onSession(response.session.id)
+      if (mountedRef.current) onSession(response.session)
     } catch (value) {
-      setError(
+      if (mountedRef.current) setError(
         value instanceof Error ? value.message : 'Не удалось начать игру.',
       )
     } finally {
-      setStarting(false)
+      if (mountedRef.current) setStarting(false)
     }
   }
 

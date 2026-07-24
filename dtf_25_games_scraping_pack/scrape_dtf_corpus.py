@@ -91,6 +91,39 @@ def stable_author_hash(author: Any) -> str | None:
     return hashlib.sha256(token).hexdigest()
 
 
+def public_author_fields(author: Any) -> dict[str, Any]:
+    if not isinstance(author, dict):
+        return {
+            "author_id": None,
+            "author_name": None,
+            "author_avatar_url": None,
+            "author_profile_url": None,
+            "author_is_verified": False,
+            "author_is_plus": False,
+        }
+    author_id = str(author.get("id")) if author.get("id") is not None else None
+    raw_avatar = author.get("avatar")
+    if isinstance(raw_avatar, dict):
+        avatar_data = raw_avatar.get("data") if isinstance(raw_avatar.get("data"), dict) else {}
+        raw_avatar = avatar_data.get("uuid") or raw_avatar.get("uuid") or avatar_data.get("url") or raw_avatar.get("url")
+    avatar = str(raw_avatar or "").strip()
+    avatar_url = (
+        avatar
+        if avatar.startswith(("http://", "https://"))
+        else f"https://leonardo.osnova.io/{avatar}/-/scale_crop/96x96/"
+        if avatar
+        else None
+    )
+    return {
+        "author_id": author_id,
+        "author_name": author.get("nickname") or author.get("name") or author.get("uri"),
+        "author_avatar_url": avatar_url,
+        "author_profile_url": f"https://dtf.ru/id{author_id}" if author_id else None,
+        "author_is_verified": bool(author.get("isVerified")),
+        "author_is_plus": bool(author.get("isPlus")),
+    }
+
+
 def html_to_text(value: Any) -> str:
     if not isinstance(value, str):
         return ""
@@ -377,6 +410,7 @@ def comment_record(comment: dict[str, Any], post_id: int, bucket: str, game: dic
         "text": html_to_text(comment.get("text")),
         "is_deleted": bool(comment.get("isRemoved") or comment.get("isRemovedByModerator") or comment.get("isHiddenByBan")),
         "sampling_bucket": bucket,
+        **public_author_fields(comment.get("author")),
     }
     if game.get("spoiler"):
         output["spoiler"] = True

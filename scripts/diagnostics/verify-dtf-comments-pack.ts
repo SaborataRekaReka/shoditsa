@@ -18,8 +18,8 @@ const { db, client } = createDatabase(loadConfig())
 
 try {
   const adminPack = await getPack(db, DTF_COMMENTS_PACK_ID, null, 'admin')
-  assert.equal(adminPack.totalItems, 25)
-  assert.equal(adminPack.entries.length, 25)
+  assert.equal(adminPack.totalItems, 20)
+  assert.equal(adminPack.entries.length, 20)
   assert.ok(adminPack.entries.every((entry) => entry.accessible))
 
   await assert.rejects(
@@ -49,13 +49,16 @@ try {
     ))
     .where(eq(contentPackEntries.packId, DTF_COMMENTS_PACK_ID))
     .orderBy(asc(contentPackEntries.position))
-  assert.equal(answers.length, 25)
+  assert.equal(answers.length, 20)
   assert.ok(answers.every((answer) => answer.allowedInGame))
   assert.ok(answers.every((answer) => !answer.itemId.startsWith('promo:')))
   assert.ok(answers.every((answer) => {
     const comments = (answer.payload as TitleItem).comments ?? []
     return comments.length === 6
-      && comments.every((comment) => comment.sourcePackId === DTF_COMMENTS_PACK_ID)
+      && comments.every((comment) => (
+        comment.sourcePackId === DTF_COMMENTS_PACK_ID
+        && Boolean(comment.sourceId && comment.sourceUrl && comment.authorName && comment.authorAvatarUrl)
+      ))
   }))
   assert.ok(answers.every((answer) => !('progressiveHints' in (answer.promptPayload as Record<string, unknown>))))
 

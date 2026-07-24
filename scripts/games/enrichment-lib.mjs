@@ -106,6 +106,71 @@ export const normalizeTitle = (value) => cleanText(value)
   .replace(/[^\p{L}\p{N}]+/gu, ' ')
   .trim()
 
+const trailingEllipsis = /(?:\.{3,}|\u2026)$/u
+
+export const completeTruncatedExcerpt = (excerpt, verifiedText) => {
+  const source = cleanText(excerpt)
+  const live = cleanText(verifiedText)
+  if (!source || !trailingEllipsis.test(source) || live.length <= source.length || !live.startsWith(source)) {
+    return source
+  }
+
+  for (let index = source.length; index < live.length; index += 1) {
+    const character = live[index]
+    const next = live[index + 1] ?? ''
+    if (next && !/\s/u.test(next)) continue
+    if (character === '!' || character === '?') return live.slice(0, index + 1)
+    if (character === '.' && live[index - 1] !== '.' && next !== '.') return live.slice(0, index + 1)
+  }
+
+  return live
+}
+
+export const containsObfuscatedNumberedAnswer = (text, aliases) => {
+  const textTokens = normalizeTitle(text).split(' ').filter(Boolean)
+  if (!textTokens.length) return false
+
+  return cleanArray(aliases).some((alias) => {
+    const aliasTokens = normalizeTitle(alias).split(' ').filter(Boolean)
+    const numbers = aliasTokens.filter((token) => /^\d+$/u.test(token))
+    const words = aliasTokens.filter((token) => !/^\d+$/u.test(token) && token.length >= 5)
+    if (!numbers.length || !words.length) return false
+
+    return numbers.some((number) => {
+      const numberPositions = textTokens.flatMap((token, index) => token === number ? [index] : [])
+      return numberPositions.some((numberPosition) => words.some((word) => {
+        const prefix = word.slice(0, 5)
+        return textTokens.some((token, wordPosition) => (
+          Math.abs(wordPosition - numberPosition) <= 3
+          && token.startsWith(prefix)
+        ))
+      }))
+    })
+  })
+}
+
+const capitalizeFirst = (value) => value.charAt(0).toLocaleUpperCase('ru-RU') + value.slice(1)
+
+export const naturalGameReference = (prefix, suffix, sequel = false) => {
+  const before = String(prefix ?? '')
+  const after = String(suffix ?? '')
+  const trimmedBefore = before.trimEnd()
+  const startsSentence = !trimmedBefore || /(?:[.!?](?:["»')\]]*)|>)$/u.test(trimmedBefore)
+
+  let phrase = 'эта игра'
+  if (sequel) {
+    phrase = 'продолжение этой игры'
+  } else if (/(?:^|[^\p{L}\p{N}])(?:арка|релиз|релиза|разрабы|разработчики|разработчиков|разработка|разработки|история|истории|историей|трейлер|трейлере|провал|провала|фанаты|версия|версии|ремастер|продолжение|создатели)\s*$/iu.test(before)) {
+    phrase = 'этой игры'
+  } else if (/\/\s*$/u.test(before) || /(?:^|[^\p{L}\p{N}])(?:про|в|на)\s*$/iu.test(before) || /(?:^|[^\p{L}\p{N}])(?:любить|создавшая|рожают)\s*$/iu.test(before) || /^\s+меняли(?:$|[^\p{L}\p{N}])/iu.test(after)) {
+    phrase = 'эту игру'
+  } else if (/(?:^|[^\p{L}\p{N}])(?:dlss|длсс|fsr)\s*$/iu.test(before)) {
+    phrase = 'этой игре'
+  }
+
+  return startsSentence ? capitalizeFirst(phrase) : phrase
+}
+
 const romanPairs = [
   ['viii', '8'],
   ['vii', '7'],

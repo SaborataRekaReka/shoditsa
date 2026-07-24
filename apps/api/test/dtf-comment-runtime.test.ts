@@ -18,6 +18,15 @@ const answer = {
       text: 'Стартовый комментарий',
       unlockAfterAttempts: 0,
       sourcePackId: DTF_COMMENTS_PACK_ID,
+      sourceId: '123',
+      sourceUrl: 'https://dtf.ru/games/1-post?comment=123',
+      authorId: '42',
+      authorName: 'Игрок DTF',
+      authorAvatarUrl: 'https://leonardo.osnova.io/avatar/-/scale_crop/96x96/',
+      authorProfileUrl: 'https://dtf.ru/id42',
+      publishedAt: '2023-09-04T04:43:11.000Z',
+      likesCount: 80,
+      replyCount: 3,
     },
     {
       key: 'rescue',
@@ -61,6 +70,17 @@ describe('DTF comment runtime', () => {
     expect(buildDtfCommentPrompt(input(5))?.progressiveHints.map((hint) => hint.key))
       .toEqual(['start', 'rescue'])
     expect(buildDtfCommentPrompt({ ...input(5), packId: 'regular-pack' })).toBeNull()
+  })
+
+  it('exposes public author and reaction metadata without direct DTF links', () => {
+    expect(buildDtfCommentPrompt(input(0))?.progressiveHints[0]?.value).toMatchObject({
+      authorId: '42',
+      authorName: 'Игрок DTF',
+      likesCount: 80,
+      replyCount: 3,
+    })
+    expect(buildDtfCommentPrompt(input(0))?.progressiveHints[0]?.value).not.toHaveProperty('authorProfileUrl')
+    expect(buildDtfCommentPrompt(input(0))?.progressiveHints[0]?.value).not.toHaveProperty('sourceUrl')
   })
 
   it('never exposes the private comment array through ordinary game cards', () => {

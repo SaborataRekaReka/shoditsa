@@ -153,6 +153,16 @@ const cleanComment = (comment: GameComment, packId: string): GameComment => {
   const sourceExcerpt = String(comment.sourceExcerpt ?? '').replace(/\s+/g, ' ').trim()
   const sourceVerifiedAt = String(comment.sourceVerifiedAt ?? '').trim()
   const contentHash = String(comment.contentHash ?? '').trim()
+  const authorAvatarUrl = String(comment.authorAvatarUrl ?? '').trim()
+  const authorProfileUrl = String(comment.authorProfileUrl ?? '').trim()
+  const publishedAt = String(comment.publishedAt ?? '').trim()
+  const nullableCount = (value: unknown) => {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? Math.max(0, Math.trunc(parsed)) : null
+  }
+  const reactionCounts = Object.fromEntries(Object.entries(comment.reactionCounts ?? {})
+    .map(([key, value]) => [String(key).trim(), nullableCount(value)] as const)
+    .filter((entry): entry is readonly [string, number] => Boolean(entry[0]) && entry[1] != null))
   return {
     key: String(comment.key ?? '').trim(),
     text: String(comment.text ?? '').replace(/\s+/g, ' ').trim(),
@@ -166,6 +176,17 @@ const cleanComment = (comment: GameComment, packId: string): GameComment => {
     clueStrength: Math.trunc(Number(comment.clueStrength) || 0),
     topics: [...new Set((comment.topics ?? []).map((topic) => String(topic).trim()).filter(Boolean))],
     authorArchetype: String(comment.authorArchetype ?? '').trim() || null,
+    authorId: String(comment.authorId ?? '').trim() || null,
+    authorName: String(comment.authorName ?? '').replace(/\s+/g, ' ').trim() || null,
+    ...(authorAvatarUrl ? { authorAvatarUrl } : {}),
+    ...(authorProfileUrl ? { authorProfileUrl } : {}),
+    ...(comment.authorIsVerified != null ? { authorIsVerified: Boolean(comment.authorIsVerified) } : {}),
+    ...(comment.authorIsPlus != null ? { authorIsPlus: Boolean(comment.authorIsPlus) } : {}),
+    ...(publishedAt ? { publishedAt } : {}),
+    ...(nullableCount(comment.likesCount) != null ? { likesCount: nullableCount(comment.likesCount) } : {}),
+    ...(nullableCount(comment.dislikesCount) != null ? { dislikesCount: nullableCount(comment.dislikesCount) } : {}),
+    ...(nullableCount(comment.replyCount) != null ? { replyCount: nullableCount(comment.replyCount) } : {}),
+    ...(Object.keys(reactionCounts).length ? { reactionCounts } : {}),
     ...(sourceUrl ? { sourceUrl } : {}),
     ...(sourcePostUrl ? { sourcePostUrl } : {}),
     ...(sourceExcerpt ? { sourceExcerpt } : {}),
@@ -178,19 +199,31 @@ const cleanComment = (comment: GameComment, packId: string): GameComment => {
   }
 }
 
+export const removeUnverifiedPlayerComments = (payload: TitleItem): TitleItem => {
+  const comments = (payload.comments ?? []).filter((comment) => (
+    comment.type !== 'player_comment'
+    || Boolean(String(comment.sourceId ?? '').trim() && String(comment.sourceUrl ?? '').trim())
+  ))
+  return comments.length === (payload.comments ?? []).length
+    ? payload
+    : { ...payload, comments }
+}
+
 export const mergeDtfComments = (
   payload: TitleItem,
   incoming: GameComment[],
   packId: string,
 ): TitleItem => {
-  const preserved = (payload.comments ?? []).filter((comment) => comment.sourcePackId !== packId)
+  const cleanedPayload = removeUnverifiedPlayerComments(payload)
+  const preserved = (cleanedPayload.comments ?? []).filter((comment) => comment.sourcePackId !== packId)
   const comments = incoming.map((comment) => cleanComment(comment, packId))
   const keys = new Set<string>()
   for (const comment of comments) {
     if (!comment.key || !comment.text) throw new Error(`${payload.id}: DTF comment key and text are required`)
+    if (!comment.sourceId || !comment.sourceUrl) throw new Error(`${payload.id}: DTF comment ${comment.key} has no verified source`)
     if (comment.unlockAfterAttempts > 10) throw new Error(`${payload.id}: invalid unlockAfterAttempts for ${comment.key}`)
     if (keys.has(comment.key)) throw new Error(`${payload.id}: duplicate DTF comment key ${comment.key}`)
     keys.add(comment.key)
   }
-  return { ...payload, comments: [...preserved, ...comments] }
+  return { ...cleanedPayload, comments: [...preserved, ...comments] }
 }
