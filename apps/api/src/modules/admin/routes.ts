@@ -460,14 +460,23 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
         if (fieldOperator === 'lte') filters.push(sql`${comparableField} <= ${numericNeedle}`)
       } else filters.push(sql`position(${fieldNeedle} in ${normalizedFieldText}) > 0`)
     }
-    const tagOffset = query.sort === 'tag' && query.cursor?.startsWith('tag:') ? Math.max(0, Number(query.cursor.slice(4)) || 0) : 0
-    if (query.cursor && query.sort !== 'tag') filters.push(gt(contentItemVersions.itemId, query.cursor))
+    const usesOffsetPagination = Boolean(query.sort && query.sort !== 'id')
+    const sortOffset = usesOffsetPagination && query.cursor?.startsWith(`${query.sort}:`)
+      ? Math.max(0, Number(query.cursor.slice(query.sort!.length + 1)) || 0)
+      : 0
+    if (query.cursor && !usesOffsetPagination) filters.push(query.order === 'desc'
+      ? lt(contentItemVersions.itemId, query.cursor)
+      : gt(contentItemVersions.itemId, query.cursor))
     const limit = query.limit ?? 40
+    const updatedAtField = sql<Date>`coalesce((select cwc."updatedAt" from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ${contentItemVersions.createdAt})`
+    const reportsCountField = sql<number>`(select count(*)::int from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`
     const orderField = query.sort === 'id' ? contentItemVersions.itemId
       : query.sort === 'createdAt' ? contentItemVersions.createdAt
         : query.sort === 'title' ? contentItemVersions.titleRu
           : query.sort === 'tag' ? sql<string>`coalesce((select min(lower(ct.name)) from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '')`
-          : contentItemVersions.itemId
+            : query.sort === 'updatedAt' ? updatedAtField
+              : query.sort === 'reports' ? reportsCountField
+                : contentItemVersions.itemId
     const order = query.order === 'desc' ? desc(orderField) : asc(orderField)
     const selected = await deps.db.select({
       id: contentItemVersions.itemId, versionId: contentItemVersions.id, mode: contentItemVersions.mode,
@@ -475,14 +484,14 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       payload: contentItemVersions.payload, allowedInGame: contentItemVersions.allowedInGame,
       source: sql<string | null>`(select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1)`,
       pipelineKey: sql<string | null>`(select pr.pipeline_key from content_workspace_changes cwc inner join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1)`,
-      updatedAt: sql<Date>`coalesce((select cwc."updatedAt" from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), ${contentItemVersions.createdAt})`,
-      reportsCount: sql<number>`(select count(*)::int from content_reports cr where cr.item_id = ${contentItemVersions.itemId} and cr.status in ('open','in_progress'))`,
+      updatedAt: updatedAtField,
+      reportsCount: reportsCountField,
       issuesCount,
       draftVersion: contentWorkspaceChanges.version,
       tags: sql<Array<{ id: string; name: string; slug: string; color: string }>>`coalesce((select jsonb_agg(jsonb_build_object('id', ct.id, 'name', ct.name, 'slug', ct.slug, 'color', ct.color) order by lower(ct.name)) from content_item_tags cit join content_tags ct on ct.id = cit.tag_id where cit.item_id = ${contentItemVersions.itemId}), '[]'::jsonb)`,
     }).from(contentItemVersions)
       .leftJoin(contentWorkspaceChanges, and(eq(contentWorkspaceChanges.workspaceId, workspace.id), eq(contentWorkspaceChanges.itemId, contentItemVersions.itemId)))
-      .where(and(...filters)).orderBy(order, asc(contentItemVersions.itemId)).limit(limit + 1).offset(tagOffset)
+      .where(and(...filters)).orderBy(order, asc(contentItemVersions.itemId)).limit(limit + 1).offset(sortOffset)
     const totalFilters = filters.filter((_, index) => !(query.cursor && query.sort !== 'tag' && index === filters.length - 1))
     const total = query.cursor ? null : await deps.db.select({ count: sql<number>`count(*)::int` }).from(contentItemVersions).where(and(...totalFilters))
     return {
@@ -499,7 +508,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
           hasHint: completion.hasHint,
         }
       }),
-      nextCursor: selected.length > limit ? (query.sort === 'tag' ? `tag:${tagOffset + limit}` : selected[limit - 1].id) : null,
+      nextCursor: selected.length > limit ? (usesOffsetPagination ? `${query.sort}:${sortOffset + limit}` : selected[limit - 1].id) : null,
       total: total?.[0]?.count ?? 0,
       filters: query,
     }

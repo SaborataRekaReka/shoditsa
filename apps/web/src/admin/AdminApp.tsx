@@ -604,13 +604,6 @@ function FieldEditor({ name, value, disabled, onChange }: { name: string; value:
     : <input type={name === 'releaseDate' ? 'date' : 'text'} value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />}</label>
 }
 
-function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode: ContentMode }) {
-  const poster = typeof payload.posterUrl === 'string' ? payload.posterUrl : typeof payload.headerUrl === 'string' ? payload.headerUrl : null
-  const hint = String(mode === 'danetki' ? payload.condition ?? 'Условие пока не заполнено' : payload.plotHint ?? payload.description ?? 'Подсказка пока не заполнена')
-  const hasPlotHint = mode !== 'danetki' && String(payload.plotHint ?? '').trim().length > 0
-  return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints">{mode === 'danetki' ? <button>Подсказка данетки</button> : <>{hasPlotHint && <button>{CATALOG_HINT_COPY[mode].plotOptionTitle}</button>}<button>{CATALOG_HINT_COPY[mode].optionTitle}</button></>}</div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><ContentCommentsPreview payload={payload} mode={mode} compact /><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
-}
-
 const contentCommentsProblem = (payload: Record<string, unknown>, mode: ContentMode) => {
   if (mode !== 'game' || payload.comments == null) return null
   if (!Array.isArray(payload.comments)) return 'Комментарии должны быть списком'
@@ -618,6 +611,7 @@ const contentCommentsProblem = (payload: Record<string, unknown>, mode: ContentM
   if (comments.some((comment) => !String(comment.key ?? '').trim())) return 'У каждого комментария должен быть технический ключ'
   if (comments.some((comment) => !String(comment.text ?? '').trim())) return 'Заполните текст каждого комментария'
   if (comments.some((comment) => !Number.isInteger(Number(comment.unlockAfterAttempts)) || Number(comment.unlockAfterAttempts) < 0 || Number(comment.unlockAfterAttempts) > 10)) return 'Момент показа должен быть от 0 до 10 попыток'
+  if (comments.some((comment) => comment.clueStrength != null && (!Number.isInteger(Number(comment.clueStrength)) || Number(comment.clueStrength) < 1 || Number(comment.clueStrength) > 10))) return 'Сила подсказки должна быть целым числом от 1 до 10'
   const keys = comments.map((comment) => String(comment.key).trim())
   return new Set(keys).size === keys.length ? null : 'Технические ключи комментариев не должны повторяться'
 }
@@ -640,7 +634,7 @@ function ContentCommentsEditor({ payload, onChange }: { payload: Record<string, 
       key: `comment-${sequence}`,
       text: '',
       unlockAfterAttempts: Math.min(comments.length, 10),
-      clueStrength: Math.min(comments.length + 1, 5),
+      clueStrength: Math.min(comments.length + 1, 10),
       topics: [],
       wasRedacted: false,
     }])
@@ -668,7 +662,7 @@ function ContentCommentsEditor({ payload, onChange }: { payload: Record<string, 
         <div className="admin-comments-editor__fields">
           <label className="admin-field admin-field--wide"><span>Текст комментария<small>{String(comment.text ?? '').length}</small></span><textarea value={String(comment.text ?? '')} onChange={(event) => update(index, { text: event.target.value })} placeholder="Текст, который увидит игрок" /></label>
           <label className="admin-field"><span>Когда показать</span><select value={Number.isFinite(attempts) ? attempts : 0} onChange={(event) => update(index, { unlockAfterAttempts: Number(event.target.value) })}>{Array.from({ length: 11 }, (_, attempt) => <option key={attempt} value={attempt}>{attempt === 0 ? 'Сразу' : `После ${attempt} попыток`}</option>)}</select></label>
-          <label className="admin-field"><span>Сила подсказки<small>1–5</small></span><input type="number" min="1" max="5" value={comment.clueStrength == null ? '' : String(comment.clueStrength)} onChange={(event) => update(index, { clueStrength: event.target.value === '' ? null : Number(event.target.value) })} placeholder="Не задана" /></label>
+          <label className="admin-field"><span>Сила подсказки<small>1–10</small></span><input type="number" min="1" max="10" value={comment.clueStrength == null ? '' : String(comment.clueStrength)} onChange={(event) => update(index, { clueStrength: event.target.value === '' ? null : Number(event.target.value) })} placeholder="Не задана" /></label>
           <label className="admin-field admin-field--wide"><span>Темы<small>через запятую</small></span><input value={topics.join(', ')} onChange={(event) => update(index, { topics: event.target.value.split(',').map((entry) => entry.trim()).filter(Boolean) })} placeholder="atmosphere, player-experience" /></label>
         </div>
         <details>
@@ -1011,7 +1005,7 @@ function MediaUpload({ itemId, field, onUploaded, notify }: { itemId: string; fi
 
 function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () => void; notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const detail = useQuery({ queryKey: ['admin', 'item', itemId], queryFn: () => adminApi.contentItem(itemId) })
-  const [tab, setTab] = useState<'data' | 'preview' | 'reports' | 'history' | 'technical'>('data')
+  const [tab, setTab] = useState<'data' | 'reports' | 'history' | 'technical'>('data')
   const [payload, setPayload] = useState<Record<string, unknown>>({}); const [original, setOriginal] = useState(''); const [advanced, setAdvanced] = useState(false); const [restored, setRestored] = useState(false)
   const historyQuery = useQuery({ queryKey: ['admin', 'history', itemId], queryFn: () => adminApi.contentHistory(itemId), enabled: tab === 'history' })
   const allTags = useQuery({ queryKey: ['admin', 'content-tags'], queryFn: adminApi.tags })
@@ -1063,6 +1057,7 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
   const fields = data.schema.groups.flatMap((group) => group.fields); const known = new Set([...fields, 'comments'])
   const filledFields = fields.filter((field) => payload[field] != null && payload[field] !== '').length
   const extraFields = Object.keys(payload).filter((field) => !known.has(field))
+  const historyVersions = historyQuery.data?.versions ?? []
   const renderGroup = (group: AdminItemDetail['schema']['groups'][number]) => <section className="admin-form-section" key={group.key}>
     <header><div><h3>{group.title}</h3><small>{group.fields.filter((field) => payload[field] != null && payload[field] !== '').length} из {group.fields.length} заполнено</small></div><span>{Math.round(group.fields.filter((field) => payload[field] != null && payload[field] !== '').length / Math.max(group.fields.length, 1) * 100)}%</span></header>
     <div className="admin-form-grid">{group.fields.map((field) => {
@@ -1072,7 +1067,6 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
   </section>
   const tabs = [
     ['data', 'Данные', SquarePen, null],
-    ['preview', 'Как в игре', Eye, null],
     ['reports', 'Баг-репорты', Bug, data.reports.length],
     ['history', 'История', History, null],
     ['technical', 'Техническое', FileJson, null],
@@ -1086,20 +1080,26 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
     <nav className="admin-tabs" aria-label="Разделы карточки">{tabs.map(([key, label, Icon, count]) => <button key={key} className={tab === key ? 'is-active' : ''} onClick={() => setTab(key)} aria-current={tab === key ? 'page' : undefined}><Icon /><span>{label}</span>{count ? <b>{count}</b> : null}</button>)}</nav>
     <div className={`admin-drawer__body admin-drawer__body--${tab}`}>
       {tab === 'data' && <div className="admin-card-editor">
+        <div className="admin-card-editor__overview">
+          <section className="admin-form-section admin-card-summary"><header><div><h3>Состояние карточки</h3><small>Обновляется вместе с данными</small></div></header><div className="admin-card-summary__progress"><span><strong>Заполнено</strong><b>{filledFields}/{fields.length}</b></span><i><b style={{ width: `${Math.round(filledFields / Math.max(fields.length, 1) * 100)}%` }} /></i></div><dl><div><dt>Рабочая версия</dt><dd>{data.draft ? `Черновик v${data.draft.version}` : 'Активная'}</dd></div><div><dt>Проблемы качества</dt><dd className={data.issues.length ? 'is-warning' : 'is-ok'}>{data.issues.length || 'Нет'}</dd></div><div><dt>Баг-репорты</dt><dd>{data.reports.length || 'Нет'}</dd></div></dl></section>
+          <section className="admin-form-section admin-card-tags"><header><div><h3>Теги карточки</h3><small>Сохраняются сразу</small></div><span>{data.tags.length}</span></header><TagPicker tags={allTags.data?.items ?? []} value={data.tags.map((tag) => tag.id)} disabled={changeTag.isPending} onChange={(ids) => { const before = new Set(data.tags.map((tag) => tag.id)); const added = ids.find((id) => !before.has(id)); const removed = data.tags.find((tag) => !ids.includes(tag.id))?.id; if (added) changeTag.mutate({ tagId: added, operation: 'add_tag' }); else if (removed) changeTag.mutate({ tagId: removed, operation: 'remove_tag' }) }} onCreate={async (name) => { try { const tag = await adminApi.createTag(name.trim()); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); return tag } catch (error) { notify('error', errorText(error)); throw error } }} label="Операционные теги" /></section>
+        </div>
         <main>
           {data.schema.groups.filter((group) => group.key !== 'media').map(renderGroup)}
           {mode === 'game' && <ContentCommentsEditor payload={payload} onChange={(comments) => setPayload((current) => ({ ...current, comments }))} />}
           {data.schema.groups.filter((group) => group.key === 'media').map(renderGroup)}
           {extraFields.length > 0 && <details className="admin-extra-fields"><summary>Дополнительные поля <span>{extraFields.length}</span><ChevronDown /></summary><div className="admin-form-grid">{extraFields.map((field) => <FieldEditor key={field} name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />)}</div></details>}
         </main>
-        <aside className="admin-card-editor__aside">
-          <section className="admin-form-section admin-card-summary"><header><div><h3>Состояние карточки</h3><small>Обновляется вместе с данными</small></div></header><div className="admin-card-summary__progress"><span><strong>Заполнено</strong><b>{filledFields}/{fields.length}</b></span><i><b style={{ width: `${Math.round(filledFields / Math.max(fields.length, 1) * 100)}%` }} /></i></div><dl><div><dt>Рабочая версия</dt><dd>{data.draft ? `Черновик v${data.draft.version}` : 'Активная'}</dd></div><div><dt>Проблемы качества</dt><dd className={data.issues.length ? 'is-warning' : 'is-ok'}>{data.issues.length || 'Нет'}</dd></div><div><dt>Баг-репорты</dt><dd>{data.reports.length || 'Нет'}</dd></div></dl></section>
-          <section className="admin-form-section admin-card-tags"><header><div><h3>Теги карточки</h3><small>Сохраняются сразу</small></div><span>{data.tags.length}</span></header><TagPicker tags={allTags.data?.items ?? []} value={data.tags.map((tag) => tag.id)} disabled={changeTag.isPending} onChange={(ids) => { const before = new Set(data.tags.map((tag) => tag.id)); const added = ids.find((id) => !before.has(id)); const removed = data.tags.find((tag) => !ids.includes(tag.id))?.id; if (added) changeTag.mutate({ tagId: added, operation: 'add_tag' }); else if (removed) changeTag.mutate({ tagId: removed, operation: 'remove_tag' }) }} onCreate={async (name) => { try { const tag = await adminApi.createTag(name.trim()); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); return tag } catch (error) { notify('error', errorText(error)); throw error } }} label="Операционные теги" /></section>
-        </aside>
       </div>}
-      {tab === 'preview' && <PreviewCard payload={payload} mode={mode} />}
       {tab === 'reports' && <div className="admin-related-list">{data.reports.length ? data.reports.map((raw) => { const report = record(raw); return <article key={String(report.id)}><header><Status value={report.status} /><time>{formatDate(report.createdAt)}</time></header><strong>{REPORT_REASON[String(report.reason)] ?? title(report.reason)}</strong><p>{title(report.comment || 'Комментарий не добавлен')}</p></article> }) : <Empty title="Репортов нет" text="По этой карточке игроки пока ничего не сообщали." icon={<BadgeCheck />} />}</div>}
-      {tab === 'history' && (historyQuery.isLoading ? <Loading /> : <div className="admin-history">{historyQuery.data?.versions.map((raw) => { const version = record(raw); const versionPayload = record(version.payload); return <article key={String(version.id)}><span><History /></span><div><header><strong>{title(version.revisionVersion)}</strong><Status value={version.revisionStatus} /><time>{formatDate(version.createdAt)}</time></header><p>{title(versionPayload.titleRu)} · {Object.keys(versionPayload).length} полей</p><button className="admin-link" onClick={() => { setPayload(versionPayload); setTab('data') }}>Взять это значение в рабочую версию</button></div></article> })}</div>)}
+      {tab === 'history' && (historyQuery.isLoading
+        ? <Loading />
+        : historyQuery.error
+          ? <ErrorState error={historyQuery.error} retry={() => void historyQuery.refetch()} />
+          : historyVersions.length
+            ? <div className="admin-history">{historyVersions.map((raw) => { const version = record(raw); const versionPayload = record(version.payload); return <article key={String(version.id)}><span><History /></span><div><header><strong>{title(version.revisionVersion)}</strong><Status value={version.revisionStatus} /><time>{formatDate(version.createdAt)}</time></header><p>{title(versionPayload.titleRu)} · {Object.keys(versionPayload).length} полей</p><button className="admin-link" onClick={() => { setPayload(versionPayload); setTab('data') }}>Взять это значение в рабочую версию</button></div></article> })}
+            </div>
+            : <Empty title="Истории пока нет" text="Версии появятся после первого сохранения или публикации карточки." icon={<History />} />)}
       {tab === 'technical' && <div className="admin-technical"><div className="admin-technical__actions"><button className="admin-btn admin-btn--secondary" onClick={() => void navigator.clipboard.writeText(JSON.stringify(payload, null, 2))}><Copy />Копировать JSON</button><button className="admin-btn admin-btn--secondary" onClick={() => { if (!advanced && !confirm('Расширенное редактирование позволяет изменить технические поля. Продолжить?')) return; setAdvanced((value) => !value) }}><SquarePen />{advanced ? 'Закрыть редактирование' : 'Расширенное редактирование'}</button></div><textarea readOnly={!advanced} value={JSON.stringify(payload, null, 2)} onChange={(event) => { try { setPayload(JSON.parse(event.target.value)) } catch { /* keep valid JSON */ } }} /></div>}
     </div>
     <footer className="admin-drawer__footer"><div>{commentsProblem ? <span className="admin-inline-warning"><AlertTriangle />{commentsProblem}</span> : dirty ? <span className="admin-inline-warning"><i />Изменения ещё не сохранены</span> : <span className="admin-inline-ok"><Check />Все изменения сохранены</span>}</div><button className="admin-btn admin-btn--ghost" onClick={reset} disabled={(!dirty && !data.draft) || discard.isPending}>{discard.isPending ? <LoaderCircle /> : <RotateCcw />}{dirty ? 'Сбросить' : 'Удалить черновик'}</button><button className="admin-btn admin-btn--primary" onClick={() => save.mutate()} disabled={!dirty || Boolean(commentsProblem) || save.isPending}>{save.isPending ? <LoaderCircle /> : <Save />}Сохранить изменения <kbd>Ctrl S</kbd></button></footer>
@@ -1693,6 +1693,17 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   >(null);
   const [adding, setAdding] = useState(false);
   const [exchange, setExchange] = useState<"export" | "import" | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(() => Boolean(
+    params.get("source")
+    || params.get("pipeline")
+    || params.get("hasHint")
+    || params.get("hasReports")
+    || params.get("hasIssues")
+    || params.get("includeTags")
+    || params.get("excludeTags")
+    || params.get("field")
+    || params.get("fieldQ"),
+  ));
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const tags = useQuery({
     queryKey: ["admin", "content-tags"],
@@ -1704,6 +1715,12 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const debouncedFieldFilterValue = useDebouncedValue(fieldFilterValue.trim(), 350);
   const appliedFieldFilterValue = fieldOperatorNeedsValue ? debouncedFieldFilterValue : '';
   const filtersPending = q.trim() !== debouncedQ || (fieldOperatorNeedsValue && fieldFilterValue.trim() !== debouncedFieldFilterValue);
+  const apiSort = sortBy === 'titleRu' ? 'title'
+    : sortBy === 'reportsCount' ? 'reports'
+      : sortBy === 'updatedAt' ? 'updatedAt'
+        : sortBy === 'tags' ? 'tag'
+          : sortBy === 'id' ? 'id'
+            : undefined;
 
   useEffect(() => {
     const next = new URLSearchParams();
@@ -1804,8 +1821,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         field: fieldFilter,
         fieldOp: fieldFilterOperator !== 'contains' ? fieldFilterOperator : undefined,
         fieldQ: appliedFieldFilterValue || undefined,
-        sort: sortBy === "tags" ? "tag" : undefined,
-        order: sortBy === "tags" ? sortOrder : undefined,
+        sort: apiSort,
+        order: apiSort ? sortOrder : undefined,
         limit: pageSize,
         cursor: pageParam ?? undefined,
       }, signal),
@@ -1842,8 +1859,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
           field: fieldFilter,
           fieldOp: fieldFilterOperator !== 'contains' ? fieldFilterOperator : undefined,
           fieldQ: appliedFieldFilterValue || undefined,
-          sort: sortBy === "tags" ? "tag" : undefined,
-          order: sortBy === "tags" ? sortOrder : undefined,
+          sort: apiSort,
+          order: apiSort ? sortOrder : undefined,
           limit: 100,
           cursor,
         });
@@ -2046,13 +2063,25 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     setFieldFilter("all");
     setFieldFilterOperator('contains');
     setFieldFilterValue("");
-    setSortBy("updatedAt");
-    setSortOrder("desc");
     setSelected(new Set());
     setSelectionAnchorIndex(null);
+    setFiltersOpen(false);
   };
 
   const hasFieldFilter = fieldOperatorNeedsValue ? Boolean(fieldFilterValue.trim()) : true;
+  const resetSelection = () => { setSelected(new Set()); setSelectionAnchorIndex(null) };
+  const tagName = (id: string) => tags.data?.items.find((tag) => tag.id === id)?.name ?? id;
+  const activeFilterChips: Array<{ key: string; label: string; clear: () => void }> = [];
+  if (!scopedMode && mode) activeFilterChips.push({ key: 'mode', label: `Категория: ${MODE_LABEL[mode as ContentMode] ?? mode}`, clear: () => { setMode(''); resetSelection() } });
+  if (publication !== 'all') activeFilterChips.push({ key: 'publication', label: publication === 'published' ? 'Опубликованы' : 'Скрытые', clear: () => { setPublication('all'); resetSelection() } });
+  if (source) activeFilterChips.push({ key: 'source', label: `Источник: ${sourceLabelMap[source] ?? source}`, clear: () => { setSource(''); resetSelection() } });
+  if (pipelineFilter) activeFilterChips.push({ key: 'pipeline', label: `Пайплайн: ${pipelineLabelMap[pipelineFilter] ?? pipelineFilter}`, clear: () => { setPipelineFilter(''); resetSelection() } });
+  if (hintFilter !== 'all') activeFilterChips.push({ key: 'hint', label: hintFilter === 'yes' ? 'С подсказкой' : 'Без подсказки', clear: () => { setHintFilter('all'); resetSelection() } });
+  if (reportsFilter !== 'all') activeFilterChips.push({ key: 'reports', label: reportsFilter === 'yes' ? 'Есть репорты' : 'Без репортов', clear: () => { setReportsFilter('all'); resetSelection() } });
+  if (issuesFilter !== 'all') activeFilterChips.push({ key: 'issues', label: issuesFilter === 'yes' ? 'Есть проблемы качества' : 'Без проблем качества', clear: () => { setIssuesFilter('all'); resetSelection() } });
+  if (includeTagIds.length) activeFilterChips.push({ key: 'includeTags', label: `Теги: ${includeTagIds.slice(0, 2).map(tagName).join(', ')}${includeTagIds.length > 2 ? ` +${includeTagIds.length - 2}` : ''}`, clear: () => { setIncludeTagIds([]); resetSelection() } });
+  if (excludeTagIds.length) activeFilterChips.push({ key: 'excludeTags', label: `Без тегов: ${excludeTagIds.slice(0, 2).map(tagName).join(', ')}${excludeTagIds.length > 2 ? ` +${excludeTagIds.length - 2}` : ''}`, clear: () => { setExcludeTagIds([]); resetSelection() } });
+  if (hasFieldFilter && (fieldFilter !== 'all' || fieldFilterOperator !== 'contains' || fieldFilterValue.trim())) activeFilterChips.push({ key: 'field', label: `Поле: ${CONTENT_FIELD_GROUPS.flatMap((group) => group.options).find((option) => option.value === fieldFilter)?.label.split(' — ')[0] ?? fieldFilter}`, clear: () => { setFieldFilter('all'); setFieldFilterOperator('contains'); setFieldFilterValue(''); resetSelection() } });
   const openItem = (itemId: string) => navigate('content', itemId, location.search);
   const closeItem = () => navigate('content', null, location.search);
   const openPreview = (itemId?: string) => {
@@ -2068,45 +2097,13 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
         description={scopedMode ? `Поиск, проверка и публикация карточек категории «${MODE_LABEL[scopedMode]}».` : "Поиск, проверка и публикация всех семи игровых библиотек."}
         actions={
           <>
-            <div className="admin-view-switch">
-              <button
-                className={view === "table" ? "is-active" : ""}
-                onClick={() => setView("table")}
-              >
-                <Menu />
-                Таблица
-              </button>
-              <button
-                className={view === "grid" ? "is-active" : ""}
-                onClick={() => setView("grid")}
-              >
-                <Boxes />
-                Карточки
-              </button>
-              <button
-                className={previewId ? "is-active" : ""}
-                onClick={() => openPreview()}
-                disabled={!sortedItems.length}
-              >
-                <Eye />
-                Проверка
-              </button>
-            </div>
-            <button
-              className="admin-btn admin-btn--secondary"
-              onClick={() => setExchange("import")}
-            >
-              <Upload />
-              Импорт JSON
-            </button>
-            <button
-              className="admin-btn admin-btn--secondary"
-              disabled={!selected.size}
-              onClick={() => setExchange("export")}
-            >
-              <Download />
-              Экспорт JSON{selected.size ? ` · ${selected.size}` : ""}
-            </button>
+            <details className="admin-page-menu">
+              <summary className="admin-btn admin-btn--secondary"><MoreHorizontal />Ещё</summary>
+              <div>
+                <button onClick={(event) => { setExchange("import"); event.currentTarget.closest('details')?.removeAttribute('open') }}><Upload /><span><strong>Импортировать JSON</strong><small>Добавить или обновить карточки</small></span></button>
+                <button disabled={!selected.size} onClick={(event) => { setExchange("export"); event.currentTarget.closest('details')?.removeAttribute('open') }}><Download /><span><strong>Экспортировать выбранное</strong><small>{selected.size ? `${selected.size} карточек` : 'Сначала выберите карточки'}</small></span></button>
+              </div>
+            </details>
             <button
               className="admin-btn admin-btn--primary"
               onClick={() => setAdding(true)}
@@ -2119,273 +2116,84 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       />
       <WorkspaceBar notify={notify} />
 
-      <div className="admin-toolbar admin-toolbar--content">
-        <label className="admin-search">
-          <Search />
-          <input
-            value={q}
-            onChange={(event) => setQ(event.target.value)}
-            placeholder="Название, альтернативное название или ID"
-          />
-          {q && (
-            <button onClick={() => setQ("")}>
-              <X />
-            </button>
-          )}
-        </label>
-        {!scopedMode && <label>
-          <Filter />
-          <select
-            value={mode}
-            onChange={(event) => setMode(event.target.value)}
-          >
-            <option value="">Все категории</option>
-            {MODES.map((entry) => (
-              <option key={entry.value} value={entry.value}>
-                {entry.label}
-              </option>
-            ))}
-          </select>
-        </label>}
-        <label>
-          <Archive />
-          <select
-            value={publication}
-            onChange={(event) => setPublication(event.target.value)}
-          >
-            <option value="all">Все статусы</option>
-            <option value="published">Опубликованы</option>
-            <option value="hidden">Скрыты</option>
-          </select>
-        </label>
-        <label>
-          <FileJson />
-          <select
-            value={source}
-            onChange={(event) => setSource(event.target.value)}
-          >
-            <option value="">Все источники</option>
-            <option value="manual">Ручное</option>
-            <option value="ai_pipeline">AI пайплайн</option>
-            <option value="bulk">Массовое</option>
-            <option value="import">Импорт</option>
-            <option value="rollback">Откат</option>
-            <option value="report_fix">Фикс по репорту</option>
-          </select>
-        </label>
-        <label>
-          <Bot />
-          <select
-            value={pipelineFilter}
-            onChange={(event) => setPipelineFilter(event.target.value)}
-          >
-            <option value="">Любой пайплайн</option>
-            <option value="music">Музыка</option>
-            <option value="movie">Кино</option>
-            <option value="anime">Аниме</option>
-          </select>
-        </label>
-        <label>
-          <Sparkles />
-          <select
-            value={hintFilter}
-            onChange={(event) =>
-              setHintFilter(event.target.value as "all" | "yes" | "no")
-            }
-          >
-            <option value="all">Подсказка: все</option>
-            <option value="yes">Подсказка: есть</option>
-            <option value="no">Подсказка: нет</option>
-          </select>
-        </label>
-        <label>
-          <Bug />
-          <select
-            value={reportsFilter}
-            onChange={(event) =>
-              setReportsFilter(event.target.value as "all" | "yes" | "no")
-            }
-          >
-            <option value="all">Репорты: все</option>
-            <option value="yes">Репорты: есть</option>
-            <option value="no">Репорты: нет</option>
-          </select>
-        </label>
-        <label>
-          <AlertTriangle />
-          <select
-            aria-label="Фильтр качества"
-            value={issuesFilter}
-            onChange={(event) =>
-              setIssuesFilter(event.target.value as "all" | "yes" | "no")
-            }
-          >
-            <option value="all">Качество: все</option>
-            <option value="yes">Качество: есть проблемы</option>
-            <option value="no">Качество: без проблем</option>
-          </select>
-        </label>
-        <label>
-          <ListChecks />
-          <select
-            aria-label="Размер страницы"
-            value={pageSize}
-            onChange={(event) => {
-              setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100);
-              setSelected(new Set());
-              setSelectionAnchorIndex(null);
-            }}
-          >
-            <option value={20}>20</option>
-            <option value={40}>40</option>
-            <option value={60}>60</option>
-            <option value={100}>100</option>
-          </select>
-        </label>
-        <button
-          className="admin-btn admin-btn--secondary"
-          onClick={() => void items.refetch()}
-        >
-          <RefreshCw />
-        </button>
-        <button
-          className="admin-btn admin-btn--secondary"
-          disabled={!totalItems || filtersPending || selectAllMatching.isPending}
-          title="Выбирает все карточки из базы, совпавшие с текущими фильтрами"
-          onClick={() => selectAllMatching.mutate()}
-        >
-          {selectAllMatching.isPending ? <LoaderCircle /> : <ListChecks />}
-          {selectAllMatching.isPending ? "Собираем выборку…" : `Выбрать все · ${totalItems}`}
-        </button>
-      </div>
-
-      <section className="admin-content-filter-panel" aria-label="Фильтры карточек">
-        <div className="admin-content-tag-filters">
-          <TagPicker
-            tags={tags.data?.items ?? []}
-            value={includeTagIds}
-            onChange={(ids) => {
-              setIncludeTagIds(ids);
-              setSelected(new Set());
-            }}
-            label="С тегами"
-          />
-          <label>
-            <Tags />
-            <select
-              value={tagMatch}
-              onChange={(event) =>
-                setTagMatch(event.target.value as "all" | "any")
-              }
-            >
-              <option value="all">Должны быть все</option>
-              <option value="any">Достаточно любого</option>
+      <section className="admin-content-controls" aria-label="Поиск и фильтры карточек">
+        <div className="admin-content-controls__main">
+          <label className="admin-content-search">
+            <Search />
+            <input
+              value={q}
+              onChange={(event) => { setQ(event.target.value); resetSelection() }}
+              placeholder="Найти по названию, альтернативному названию или ID"
+            />
+            {q && <button aria-label="Очистить поиск" onClick={() => { setQ(""); resetSelection() }}><X /></button>}
+          </label>
+          {!scopedMode && <label className="admin-content-quick-filter">
+            <span>Категория</span>
+            <select value={mode} onChange={(event) => { setMode(event.target.value); resetSelection() }}>
+              <option value="">Все категории</option>
+              {MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
+            </select>
+          </label>}
+          <label className="admin-content-quick-filter">
+            <span>Публикация</span>
+            <select value={publication} onChange={(event) => { setPublication(event.target.value); resetSelection() }}>
+              <option value="all">Все карточки</option>
+              <option value="published">Опубликованные</option>
+              <option value="hidden">Скрытые</option>
             </select>
           </label>
-          <TagPicker
-            tags={tags.data?.items ?? []}
-            value={excludeTagIds}
-            onChange={(ids) => {
-              setExcludeTagIds(ids);
-              setSelected(new Set());
-            }}
-            label="Исключить теги"
-          />
-        </div>
-        <div className="admin-content-local-filters">
-          <div className="admin-content-field-filter" title="Ищет совпадения по всей базе, а не только среди загруженных строк">
-            <label>
-              <Filter />
-              <select
-                aria-label="Поле для фильтрации"
-                value={fieldFilter}
-                onChange={(event) => {
-                  setFieldFilter(event.target.value as ContentFieldFilter);
-                  setSelected(new Set());
-                  setSelectionAnchorIndex(null);
-                }}
-              >
-                {CONTENT_FIELD_GROUPS.map((group) => (
-                  <optgroup key={group.label} label={group.label}>
-                    {group.options.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-            </label>
-            <label>
-              <Settings2 />
-              <select
-                aria-label="Условие фильтрации"
-                value={fieldFilterOperator}
-                onChange={(event) => {
-                  setFieldFilterOperator(event.target.value as ContentFieldOperator);
-                  setSelected(new Set());
-                  setSelectionAnchorIndex(null);
-                }}
-              >
-                {CONTENT_FIELD_OPERATORS.map((operator) => (
-                  <option key={operator.value} value={operator.value}>{contentFieldOperatorLabel(operator.value, fieldFilter)}</option>
-                ))}
-              </select>
-            </label>
-            <label className="admin-search admin-search--compact">
-              <Search />
-              <input
-                aria-label="Значение поля"
-                value={fieldFilterValue}
-                disabled={!fieldOperatorNeedsValue}
-                onChange={(event) => {
-                  setFieldFilterValue(event.target.value);
-                  setSelected(new Set());
-                  setSelectionAnchorIndex(null);
-                }}
-                inputMode={['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'decimal' : 'text'}
-                placeholder={!fieldOperatorNeedsValue ? 'Значение не требуется' : fieldComparisonUsesLength ? 'Количество символов…' : ['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'Введите число…' : fieldFilterOperator === 'equals' || fieldFilterOperator === 'not_equals' ? 'Введите точное значение…' : 'Введите значение…'}
-              />
-              {fieldOperatorNeedsValue && fieldFilterValue && (
-                <button aria-label="Очистить значение фильтра" onClick={() => setFieldFilterValue("")}>
-                  <X />
-                </button>
-              )}
-            </label>
-            <span className={filtersPending || (items.isFetching && !items.isFetchingNextPage) ? 'is-loading' : undefined}>
-              {filtersPending || (items.isFetching && !items.isFetchingNextPage) ? <LoaderCircle /> : <Database />}
-              {filtersPending ? 'Применяем…' : items.isFetching && !items.isFetchingNextPage ? 'Обновляем…' : 'Вся база'}
-            </span>
-          </div>
-          <label>
-            <Tags />
-            <select
-              value={sortBy}
-              onChange={(event) =>
-                setSortBy(event.target.value as ContentSortKey)
-              }
-            >
-              <option value="updatedAt">Сортировка: изменено</option>
-              <option value="titleRu">Сортировка: название</option>
-              <option value="tags">Сортировка: тег</option>
-            </select>
-          </label>
-          <label>
-            <ChevronDown />
-            <select
-              value={sortOrder}
-              onChange={(event) =>
-                setSortOrder(event.target.value as "asc" | "desc")
-              }
-            >
-              <option value="asc">По возрастанию</option>
-              <option value="desc">По убыванию</option>
-            </select>
-          </label>
-          <button
-            className="admin-btn admin-btn--secondary"
-            onClick={resetFilters}
-          >
-            Сбросить фильтры
+          <button className={`admin-content-filter-toggle${filtersOpen ? ' is-open' : ''}`} aria-expanded={filtersOpen} onClick={() => setFiltersOpen((value) => !value)}>
+            <Settings2 /><span>Фильтры</span>{activeFilterChips.length > 0 && <b>{activeFilterChips.length}</b>}<ChevronDown />
           </button>
+          {activeFilterChips.length > 0 && <button className="admin-content-reset" onClick={resetFilters}>Сбросить</button>}
+        </div>
+
+        {activeFilterChips.length > 0 && <div className="admin-content-active-filters" aria-label="Активные фильтры">
+          <span>Активные</span>
+          {activeFilterChips.map((filter) => <button key={filter.key} onClick={filter.clear}>{filter.label}<X /></button>)}
+        </div>}
+
+        {filtersOpen && <div className="admin-content-advanced">
+          <section>
+            <header><div><strong>Состояние и происхождение</strong><small>Сузьте выборку по рабочим признакам карточек.</small></div></header>
+            <div className="admin-content-facet-grid">
+              <label><span>Источник изменений</span><div><FileJson /><select value={source} onChange={(event) => { setSource(event.target.value); resetSelection() }}><option value="">Любой источник</option><option value="manual">Ручное</option><option value="ai_pipeline">AI пайплайн</option><option value="bulk">Массовое</option><option value="import">Импорт</option><option value="rollback">Откат</option><option value="report_fix">Фикс по репорту</option></select></div></label>
+              <label><span>Пайплайн</span><div><Bot /><select value={pipelineFilter} onChange={(event) => { setPipelineFilter(event.target.value); resetSelection() }}><option value="">Любой пайплайн</option><option value="music">Музыка</option><option value="movie">Кино</option><option value="anime">Аниме</option></select></div></label>
+              <label><span>Игровая подсказка</span><div><Sparkles /><select value={hintFilter} onChange={(event) => { setHintFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
+              <label><span>Баг-репорты</span><div><Bug /><select value={reportsFilter} onChange={(event) => { setReportsFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
+              <label><span>Качество</span><div><AlertTriangle /><select aria-label="Фильтр качества" value={issuesFilter} onChange={(event) => { setIssuesFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть проблемы</option><option value="no">Без проблем</option></select></div></label>
+            </div>
+          </section>
+
+          <section>
+            <header><div><strong>Теги</strong><small>Комбинируйте обязательные и исключающие теги.</small></div><label className="admin-content-tag-match"><span>Совпадение</span><select value={tagMatch} onChange={(event) => { setTagMatch(event.target.value as "all" | "any"); resetSelection() }}><option value="all">Все выбранные</option><option value="any">Хотя бы один</option></select></label></header>
+            <div className="admin-content-tag-filters">
+              <TagPicker tags={tags.data?.items ?? []} value={includeTagIds} onChange={(ids) => { setIncludeTagIds(ids); resetSelection() }} label="Карточка содержит" />
+              <TagPicker tags={tags.data?.items ?? []} value={excludeTagIds} onChange={(ids) => { setExcludeTagIds(ids); resetSelection() }} label="Карточка не содержит" />
+            </div>
+          </section>
+
+          <section>
+            <header><div><strong>Условие по полю</strong><small>Проверяется по всей базе, а не только среди загруженных строк.</small></div><span className={filtersPending || (items.isFetching && !items.isFetchingNextPage) ? 'is-loading' : undefined}>{filtersPending || (items.isFetching && !items.isFetchingNextPage) ? <LoaderCircle /> : <Database />}{filtersPending ? 'Применяем…' : items.isFetching && !items.isFetchingNextPage ? 'Обновляем…' : 'Вся база'}</span></header>
+            <div className="admin-content-field-filter">
+              <label><Filter /><select aria-label="Поле для фильтрации" value={fieldFilter} onChange={(event) => { setFieldFilter(event.target.value as ContentFieldFilter); resetSelection() }}>{CONTENT_FIELD_GROUPS.map((group) => <optgroup key={group.label} label={group.label}>{group.options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</optgroup>)}</select></label>
+              <label><Settings2 /><select aria-label="Условие фильтрации" value={fieldFilterOperator} onChange={(event) => { setFieldFilterOperator(event.target.value as ContentFieldOperator); resetSelection() }}>{CONTENT_FIELD_OPERATORS.map((operator) => <option key={operator.value} value={operator.value}>{contentFieldOperatorLabel(operator.value, fieldFilter)}</option>)}</select></label>
+              <label className="admin-search admin-search--compact"><Search /><input aria-label="Значение поля" value={fieldFilterValue} disabled={!fieldOperatorNeedsValue} onChange={(event) => { setFieldFilterValue(event.target.value); resetSelection() }} inputMode={['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'decimal' : 'text'} placeholder={!fieldOperatorNeedsValue ? 'Значение не требуется' : fieldComparisonUsesLength ? 'Количество символов…' : ['gt', 'gte', 'lt', 'lte'].includes(fieldFilterOperator) ? 'Введите число…' : fieldFilterOperator === 'equals' || fieldFilterOperator === 'not_equals' ? 'Введите точное значение…' : 'Введите значение…'} />{fieldOperatorNeedsValue && fieldFilterValue && <button aria-label="Очистить значение фильтра" onClick={() => setFieldFilterValue("")}><X /></button>}</label>
+            </div>
+          </section>
+        </div>}
+      </section>
+
+      <section className="admin-content-results-bar" aria-label="Настройки списка">
+        <div className="admin-content-results-bar__summary"><strong>{totalItems.toLocaleString("ru-RU")} карточек</strong><span>Загружено {sortedItems.length}</span>{(filtersPending || (items.isFetching && !items.isFetchingNextPage)) && <small><LoaderCircle />Обновляем</small>}</div>
+        <div className="admin-content-results-bar__actions">
+          <button className="admin-btn admin-btn--secondary" disabled={!totalItems || filtersPending || selectAllMatching.isPending} title="Выбирает все карточки из базы, совпавшие с текущими фильтрами" onClick={() => selectAllMatching.mutate()}>{selectAllMatching.isPending ? <LoaderCircle /> : <ListChecks />}{selectAllMatching.isPending ? "Выбираем…" : "Выбрать все"}</button>
+          <button className="admin-btn admin-btn--secondary" onClick={() => openPreview()} disabled={!sortedItems.length}><Eye />Проверить</button>
+          <label className="admin-content-sort"><span>Сортировка</span><select value={sortBy} onChange={(event) => setSortBy(event.target.value as ContentSortKey)}><optgroup label="Вся выборка"><option value="updatedAt">Дата изменения</option><option value="titleRu">Название</option><option value="id">Внутренний ID</option><option value="reportsCount">Количество репортов</option><option value="tags">Теги</option></optgroup><optgroup label="Среди загруженных"><option value="mode">Категория</option><option value="status">Статус</option><option value="source">Источник</option><option value="pipelineKey">Пайплайн</option><option value="fieldsFilled">Заполненные поля</option><option value="hasHint">Наличие подсказки</option><option value="completeness">Полнота</option><option value="issuesCount">Проблемы качества</option></optgroup></select></label>
+          <label className="admin-content-order" aria-label="Направление сортировки"><ChevronDown /><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as "asc" | "desc")}><option value="desc">По убыванию</option><option value="asc">По возрастанию</option></select></label>
+          <label className="admin-content-page-size" title="Количество карточек в одной загрузке"><ListChecks /><select aria-label="Количество карточек в одной загрузке" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100); resetSelection() }}><option value={20}>20</option><option value={40}>40</option><option value={60}>60</option><option value={100}>100</option></select></label>
+          <button className="admin-icon-btn" aria-label="Обновить список" title="Обновить" onClick={() => void items.refetch()}><RefreshCw /></button>
+          <div className="admin-view-switch" aria-label="Вид списка"><button className={view === "table" ? "is-active" : ""} onClick={() => setView("table")} aria-label="Таблица" title="Таблица"><Menu /><span>Таблица</span></button><button className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} aria-label="Карточки" title="Карточки"><Boxes /><span>Карточки</span></button></div>
         </div>
       </section>
 

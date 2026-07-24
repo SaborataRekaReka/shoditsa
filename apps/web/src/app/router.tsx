@@ -53,15 +53,13 @@ const playerRoutes = [
 
 const loginRoute = createRoute({ getParentRoute: () => rootRoute, path: 'login', component: () => <LoginRoute mode="login" /> })
 const registerRoute = createRoute({ getParentRoute: () => rootRoute, path: 'register', component: () => <LoginRoute mode="register" /> })
-const adminIndexRoute = createRoute({ getParentRoute: () => rootRoute, path: 'admin', component: AdminRoute })
-const adminCatchAllRoute = createRoute({ getParentRoute: () => rootRoute, path: 'admin/$', component: AdminRoute })
+const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: 'admin/$', component: AdminRoute })
 
 const routeTree = rootRoute.addChildren([
   playerLayoutRoute.addChildren(playerRoutes),
   loginRoute,
   registerRoute,
-  adminIndexRoute,
-  adminCatchAllRoute,
+  adminRoute,
 ])
 
 export const appRouter = createRouter({

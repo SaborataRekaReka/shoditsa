@@ -10,6 +10,7 @@ const installAdminMocks = async (page: Page, options: { denyGuard?: boolean; edi
   let savedPayload: Record<string, unknown> | null = null
   let previewApproved: boolean | null = null
   let lastContentQuery = new URLSearchParams()
+  await page.addInitScript(() => window.localStorage.setItem('shoditsa:analytics-consent:v1', 'rejected'))
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request(); const url = new URL(request.url()); const path = url.pathname
     if (path === '/api/v1/me') return json(route, me)
@@ -74,8 +75,8 @@ test('admin searches, opens and saves a card into the workspace', async ({ page 
   const state = await installAdminMocks(page, { edit: true })
   await page.goto('/admin/content/movie%3Atest-card')
   await expect(page.getByRole('heading', { name: 'Карточки', exact: true })).toBeVisible()
-  await expect(page.getByRole('complementary', { name: 'Карточка movie:test-card' })).toBeVisible()
-  const titleInput = page.locator('.admin-field').filter({ hasText: 'Title Ru' }).locator('input')
+  await expect(page.getByRole('dialog', { name: 'Карточка movie:test-card' })).toBeVisible()
+  const titleInput = page.locator('.admin-field').filter({ hasText: 'Название на русском' }).locator('input')
   await titleInput.fill('Исправленная карточка')
   await page.getByRole('button', { name: /Сохранить/ }).click()
   await expect(page.getByText('Карточка сохранена в рабочую версию')).toBeVisible()
@@ -83,10 +84,86 @@ test('admin searches, opens and saves a card into the workspace', async ({ page 
   await expect(page.getByText('1 изменений')).toBeVisible()
 })
 
+test('card editor keeps status in the content flow without horizontal overflow', async ({ page }) => {
+  await installAdminMocks(page)
+  await page.setViewportSize({ width: 1000, height: 800 })
+  await page.goto('/admin/content/movie%3Atest-card')
+
+  const dialog = page.getByRole('dialog', { name: 'Карточка movie:test-card' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByRole('button', { name: 'Как в игре', exact: true })).toHaveCount(0)
+  await expect(dialog.locator('.admin-card-editor__aside')).toHaveCount(0)
+  await expect(dialog.locator('.admin-card-editor__overview')).toBeVisible()
+
+  const layout = await dialog.evaluate((element) => {
+    const body = element.querySelector<HTMLElement>('.admin-drawer__body')
+    const overview = element.querySelector<HTMLElement>('.admin-card-editor__overview')
+    const main = element.querySelector<HTMLElement>('.admin-card-editor > main')
+    if (!body || !overview || !main) throw new Error('Editor layout is incomplete')
+    return {
+      bodyClientWidth: body.clientWidth,
+      bodyScrollWidth: body.scrollWidth,
+      bodyOverflowX: getComputedStyle(body).overflowX,
+      overviewPosition: getComputedStyle(overview).position,
+      overviewBottom: overview.getBoundingClientRect().bottom,
+      mainTop: main.getBoundingClientRect().top,
+    }
+  })
+
+  expect(layout.bodyOverflowX).toBe('hidden')
+  expect(layout.bodyScrollWidth).toBeLessThanOrEqual(layout.bodyClientWidth)
+  expect(layout.overviewPosition).toBe('static')
+  expect(layout.mainTop).toBeGreaterThanOrEqual(layout.overviewBottom)
+
+  await dialog.getByRole('button', { name: 'Баг-репорты', exact: true }).click()
+  await expect(dialog.getByRole('heading', { name: 'Репортов нет', exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'История', exact: true }).click()
+  await expect(dialog.getByRole('heading', { name: 'Истории пока нет', exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'Техническое', exact: true }).click()
+  await expect(dialog.locator('.admin-technical textarea')).toHaveAttribute('readonly', '')
+  await dialog.getByRole('button', { name: 'Данные', exact: true }).click()
+  await expect(dialog.locator('.admin-card-editor__overview')).toBeVisible()
+})
+
+test('content controls keep the page stable and switch views at narrow desktop width', async ({ page }) => {
+  await installAdminMocks(page)
+  await page.setViewportSize({ width: 1000, height: 800 })
+  await page.goto('/admin/content?mode=movie')
+
+  await expect(page.getByRole('button', { name: 'Добавить карточку', exact: true })).toBeVisible()
+  await expect(page.getByText('Ещё', { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Фильтры', exact: true })).toHaveAttribute('aria-expanded', 'false')
+
+  const listLayout = await page.evaluate(() => {
+    const root = document.querySelector<HTMLElement>('.admin-root')
+    const tableWrap = document.querySelector<HTMLElement>('.admin-table-wrap')
+    if (!root || !tableWrap) throw new Error('Content layout is incomplete')
+    window.scrollTo(1000, 0)
+    return {
+      rootOverflowX: getComputedStyle(root).overflowX,
+      pageScrollX: window.scrollX,
+      tableClientWidth: tableWrap.clientWidth,
+      tableScrollWidth: tableWrap.scrollWidth,
+      tableOverflowX: getComputedStyle(tableWrap).overflowX,
+    }
+  })
+
+  expect(listLayout.rootOverflowX).toBe('hidden')
+  expect(listLayout.pageScrollX).toBe(0)
+  expect(listLayout.tableOverflowX).toBe('auto')
+  expect(listLayout.tableScrollWidth).toBeGreaterThan(listLayout.tableClientWidth)
+
+  await page.getByRole('button', { name: 'Карточки', exact: true }).click()
+  await expect(page.locator('.admin-content-grid')).toBeVisible()
+  await page.getByRole('button', { name: 'Таблица', exact: true }).click()
+  await expect(page.locator('.admin-table-wrap')).toBeVisible()
+})
+
 test('paired content filter sends the selected field and partial value to the server', async ({ page }) => {
   const state = await installAdminMocks(page)
   await page.goto('/admin/content?mode=movie')
   await expect(page.getByRole('heading', { name: 'Карточки · Кино' })).toBeVisible()
+  await page.getByRole('button', { name: 'Фильтры', exact: true }).click()
   await page.getByLabel('Поле для фильтрации').selectOption('plotHint')
   await page.getByLabel('Условие фильтрации').selectOption('contains')
   await page.getByLabel('Значение поля').fill('небо')
@@ -100,6 +177,7 @@ test('paired content filter sends the selected field and partial value to the se
 test('advanced content filter supports empty fields, text length and numeric comparisons', async ({ page }) => {
   const state = await installAdminMocks(page)
   await page.goto('/admin/content?mode=movie')
+  await page.getByRole('button', { name: 'Фильтры', exact: true }).click()
   await page.getByLabel('Поле для фильтрации').selectOption('posterUrl')
   await page.getByLabel('Условие фильтрации').selectOption('empty')
   await expect.poll(() => state.lastContentQuery().get('field')).toBe('posterUrl')
@@ -135,6 +213,7 @@ test('preview issue mark is visible through the quality filter and table counter
   await page.getByRole('button', { name: 'Есть проблема', exact: true }).click()
   await expect.poll(() => state.previewApproved()).toBe(false)
   await page.getByRole('button', { name: 'Закрыть предпросмотр' }).click()
+  await page.getByRole('button', { name: 'Фильтры', exact: true }).click()
   await page.getByLabel('Фильтр качества').selectOption('yes')
   await expect.poll(() => state.lastContentQuery().get('hasIssues')).toBe('true')
   await expect(page.getByText('Тестовая карточка')).toBeVisible()
