@@ -28,3 +28,33 @@ test('normalizes a source fact that ends with a Unicode ellipsis', () => {
 
   assert.equal(result.facts[0], 'Натурные съёмки проходили зимой в нескольких областях, а декорации готовили больше трёх месяцев.')
 })
+
+test('removes short surnames in inflected forms from narrative hints', () => {
+  const result = sanitizeMovieRecord(movie({
+    cast: [{ nameRu: 'Микки Рурк', nameOriginal: 'Mickey Rourke' }],
+    plotHint: 'Драматический триллер с Рурком о тяжёлом возвращении в большой спорт.',
+  }))
+
+  assert.doesNotMatch(result.plotHint, /Рурк/iu)
+  assert.match(result.plotHint, /возвращении в большой спорт/iu)
+})
+
+test('removes a fully inflected person name without leaving a dangling preposition', () => {
+  const result = sanitizeMovieRecord(movie({
+    cast: [{ nameRu: 'Адам Сэндлер', nameOriginal: 'Adam Sandler' }],
+    plotHint: 'Романтическая комедия с Адамом Сэндлером.',
+  }))
+
+  assert.doesNotMatch(result.plotHint, /Адам|Сэндлер/iu)
+  assert.doesNotMatch(result.plotHint, /\bс\s*[.!?]?$/iu)
+  assert.equal(result.plotHint, 'Романтическая комедия.')
+})
+
+test('removes a trailing cast clause together with its descriptor', () => {
+  const result = sanitizeMovieRecord(movie({
+    cast: [{ nameRu: 'Хит Леджер', nameOriginal: 'Heath Ledger' }],
+    plotHint: 'Как добиться внимания в Америке 1990-х с поющим Хитом Леджером.',
+  }))
+
+  assert.equal(result.plotHint, 'Как добиться внимания в Америке 1990-х.')
+})

@@ -1,0 +1,34 @@
+import { describe, expect, it } from 'vitest'
+import type { Attempt } from '../types'
+import { attemptProgressStats } from './attempt-progress'
+
+describe('attempt progress', () => {
+  it('uses fields rather than raw overlap values for a stable score', () => {
+    const hints = [
+      { key: 'country', label: 'Страна', value: 'Россия, Азербайджан', status: 'partial', direction: null, matchedValues: ['Россия'] },
+      { key: 'genres', label: 'Жанры', value: 'rap, hip-hop', status: 'partial', direction: null, matchedValues: ['rap', 'hip-hop'] },
+      { key: 'similar_artists', label: 'Похожие артисты', value: 'A, B, C', status: 'match', direction: null, matchedValues: ['A', 'B', 'C'] },
+      { key: 'music_type', label: 'Тип', value: 'Группа', status: 'miss', direction: null },
+    ] as Attempt['hints']
+
+    expect(attemptProgressStats(hints)).toEqual({
+      matchedCount: 3,
+      matchedFields: 3,
+      totalFields: 4,
+    })
+  })
+
+  it('reports a self-comparison as a complete card including similar artists', () => {
+    const hints = [
+      { key: 'country', label: 'Страна', value: 'Россия', status: 'match', direction: null },
+      { key: 'genres', label: 'Жанры', value: 'rap', status: 'match', direction: null },
+      { key: 'similar_artists', label: 'Похожие артисты', value: 'A', status: 'match', direction: null },
+    ] as Attempt['hints']
+
+    expect(attemptProgressStats(hints)).toEqual({
+      matchedCount: 3,
+      matchedFields: 3,
+      totalFields: 3,
+    })
+  })
+})

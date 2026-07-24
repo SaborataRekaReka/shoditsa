@@ -118,6 +118,10 @@ export type TitleItem = {
   activityStartYear?: number | null
   endYear?: number | null
   releaseDate?: string | null
+  /** Whether the card represents a cross-platform title or one specific release/port. */
+  releaseScope?: 'title' | 'release'
+  /** Human-readable release identity, required for release-scoped cards. */
+  releaseLabel?: string | null
   countries?: string[]
   originalLanguage?: string
   genres?: string[]

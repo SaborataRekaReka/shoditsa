@@ -10,6 +10,7 @@ import {
   dailyTitle,
   isPlayableGamePlotHint,
   localizeMusicCountry,
+  musicActivityStartYear,
   musicDifficultyPool,
   musicOriginLabel,
   musicTypeLabel,
@@ -304,7 +305,8 @@ export const publicCard = (item: TitleItem) => ({
     ...publicItem
   }) => publicItem)(item),
   titleOriginal: item.titleOriginal ?? '',
-  year: item.mode === 'music' ? null : item.year ?? null,
+  year: item.year ?? null,
+  activityStartYear: item.mode === 'music' ? musicActivityStartYear(item) : item.activityStartYear ?? null,
   genres: item.genres ?? [],
   posterUrl: legacyMediaUrl(item.posterUrl, item.mode, item.id),
   developers: item.developers ?? [],

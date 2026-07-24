@@ -88765,16 +88765,20 @@
     "year": 1987,
     "releaseDate": "1987-07-15",
     "developers": [
-      "Binary Design, Ltd."
+      "Technōs Japan"
     ],
     "publishers": [
-      "Melbourne House"
+      "Technōs Japan",
+      "Taito"
     ],
     "platforms": [
+      "Arcade",
+      "Nintendo Entertainment System",
       "Commodore 64"
     ],
     "genres": [
-      "Fighting"
+      "Action",
+      "Beat 'em up"
     ],
     "steamCategories": [
       "2 игроков",
@@ -88820,14 +88824,17 @@
     "plotHint": "Кооперативный сайд-скроллер, в котором два брата-бойца пробиваются через уличную банду, собирая оружие, чтобы спасти похищенную возлюбленную.",
     "notes": [
       "seed_incremental",
-      "thegamesdb_enriched"
+      "thegamesdb_enriched",
+      "game_manual_identity_override",
+      "The generic title must describe the original 1987 Technōs arcade identity, not only one later port."
     ],
     "dataQuality": {
       "source": [
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images",
-        "legacy_ptg"
+        "legacy_ptg",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": []
@@ -88855,7 +88862,8 @@
       "play_that_game_seed_list",
       "thegamesdb_bygamename",
       "thegamesdb_images",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -88918,7 +88926,8 @@
     "scoreFormulaVersion": "games-recognition-v1",
     "recognitionLevel": "mainstream",
     "allowedInGame": true,
-    "contentStatus": "ready"
+    "contentStatus": "ready",
+    "releaseScope": "title"
   },
   {
     "id": "tgdb_8726",
@@ -261019,15 +261028,17 @@
     "year": 1987,
     "releaseDate": "1987-07-26",
     "developers": [
-      "Taito Corporation"
+      "Taito"
     ],
     "publishers": [
-      "Taito Corporation"
+      "Taito"
     ],
     "platforms": [
-      "Nintendo Entertainment System (NES)"
+      "Arcade",
+      "Nintendo Entertainment System"
     ],
     "genres": [
+      "Action",
       "Platform"
     ],
     "steamCategories": [
@@ -261072,7 +261083,9 @@
     "notes": [
       "seed_backfill",
       "thegamesdb_enriched",
-      "fallback_filled"
+      "fallback_filled",
+      "game_manual_identity_override",
+      "The title-level card represents Taito's 1987 arcade game and its home release family."
     ],
     "dataQuality": {
       "source": [
@@ -261080,7 +261093,8 @@
         "thegamesdb_bygamename",
         "thegamesdb_images",
         "wikipedia_fallback",
-        "legacy_ptg"
+        "legacy_ptg",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": []
@@ -261109,7 +261123,8 @@
       "thegamesdb_bygamename",
       "thegamesdb_images",
       "wikipedia_fallback",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -261172,7 +261187,8 @@
     "scoreFormulaVersion": "games-recognition-v1",
     "recognitionLevel": "mass",
     "allowedInGame": true,
-    "contentStatus": "ready"
+    "contentStatus": "ready",
+    "releaseScope": "title"
   },
   {
     "id": "steam_1119730",
@@ -347138,6 +347154,7 @@
       "Nintendo"
     ],
     "platforms": [
+      "Nintendo Switch",
       "Nintendo Wii U"
     ],
     "genres": [
@@ -347195,14 +347212,17 @@
     "plotHint": "Фэнтезийное приключение в открытом мире разрушенного королевства, построенное на лазании, планировании и импровизированных исследованиях.",
     "notes": [
       "seed_incremental",
-      "thegamesdb_enriched"
+      "thegamesdb_enriched",
+      "game_manual_identity_override",
+      "Nintendo documents the same 2017 title for both Switch and Wii U."
     ],
     "dataQuality": {
       "source": [
         "play_that_game_seed_list",
         "thegamesdb_bygamename",
         "thegamesdb_images",
-        "legacy_ptg"
+        "legacy_ptg",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": []
@@ -347230,7 +347250,8 @@
       "play_that_game_seed_list",
       "thegamesdb_bygamename",
       "thegamesdb_images",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -347296,7 +347317,8 @@
     "scoreFormulaVersion": "games-recognition-v1",
     "recognitionLevel": "cult_or_genre",
     "allowedInGame": true,
-    "contentStatus": "ready"
+    "contentStatus": "ready",
+    "releaseScope": "title"
   },
   {
     "id": "tgdb_117811",

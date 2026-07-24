@@ -1,8 +1,10 @@
 import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { applySeriesOverride, loadSeriesOverrides } from '../series/manual-overrides.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
+const seriesOverrides = await loadSeriesOverrides(root)
 const envFile = resolve(root, '.env.local')
 
 if (existsSync(envFile)) {
@@ -232,16 +234,15 @@ for (const kinopoiskId of targetIds) {
     }
     const directors = staff.filter((entry) => entry.professionKey === 'DIRECTOR').slice(0, 3).map(person)
     const writers = staff.filter((entry) => entry.professionKey === 'WRITER').slice(0, 3).map(person)
-    const producers = staff.filter((entry) => entry.professionKey === 'PRODUCER').slice(0, 3).map(person)
     const actors = staff.filter((entry) => entry.professionKey === 'ACTOR')
     const cast = actors.slice(0, 5).map(person)
     const supportingCast = actors.slice(5, 10).map(person)
-    const showrunners = mode === 'series'
-      ? [...new Map([...writers, ...producers].map((entry) => [entry.nameRu, entry])).values()].slice(0, 2)
-      : []
+    // Staff APIs expose writers and producers, not the semantic showrunner
+    // credit. Never infer that role; verified exceptions live in overrides.
+    const showrunners = []
 
     const yearNumber = Number(details.year)
-    const item = {
+    const item = applySeriesOverride({
       id: `kp_${kinopoiskId}`,
       mode,
       titleRu: details.nameRu || details.nameOriginal || details.nameEn || `Кинопоиск #${kinopoiskId}`,
@@ -281,11 +282,11 @@ for (const kinopoiskId of targetIds) {
       awards: null,
       topRank: processed,
       dataQuality: {
-        source: ['kinopoisk_navigator_ids', 'kinopoisk_api_unofficial', 'kinopoisk_api_staff'],
+        source: ['kinopoisk_navigator_ids', 'kinopoisk_api_unofficial', 'kinopoisk_api_staff', ...(mode === 'series' ? ['showrunner_not_inferred'] : [])],
         verified: true,
         missingFields: [],
       },
-    }
+    }, seriesOverrides)
 
     const miss = missingCore(item)
     if (miss.length) {
@@ -315,6 +316,7 @@ if (mergeOutput) {
 
 outputItems = outputItems
   .filter((entry) => entry && typeof entry === 'object')
+  .map((entry) => mode === 'series' ? applySeriesOverride(entry, seriesOverrides) : entry)
   .sort((a, b) => (b?.ratings?.kinopoisk ?? 0) - (a?.ratings?.kinopoisk ?? 0))
 
 outputItems.forEach((entry, index) => {

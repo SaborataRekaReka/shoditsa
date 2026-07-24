@@ -211,12 +211,28 @@ const buildContext = (movie) => {
 
   const titleWords = unique(titles.flatMap(titleTokens))
   const people = personNames(movie)
-  const peopleWords = unique(people.flatMap((name) => normalize(name).split(' ').filter((token) => token.length >= 5)))
+  const peopleWords = unique(people.flatMap((name) => normalize(name).split(' ').filter((token) => token.length >= 4)))
 
   return { titles, titleWords, people, peopleWords }
 }
 
 const boundedPattern = (value) => `(^|[^${WORD_CHAR_CLASS}])${escapeRegExp(value)}(?=$|[^${WORD_CHAR_CLASS}])`
+const boundedInflectedPattern = (value) => {
+  const suffix = /^[а-яё]+$/iu.test(value) ? '(?:а|я|у|ю|ом|ем|е|ы|и|ой|ей|ов|ев|ах|ях|ами|ями)?' : ''
+  return `(^|[^${WORD_CHAR_CLASS}])${escapeRegExp(value)}${suffix}(?=$|[^${WORD_CHAR_CLASS}])`
+}
+const inflectedWordPattern = (value) => {
+  const suffix = /^[а-яё]+$/iu.test(value) ? '(?:а|я|у|ю|ом|ем|е|ы|и|ой|ей|ов|ев|ах|ях|ами|ями)?' : ''
+  return `${escapeRegExp(value)}${suffix}`
+}
+const inflectedPhrasePattern = (value) => {
+  const words = normalize(value).split(' ').filter(Boolean)
+  return words.map(inflectedWordPattern).join('[\\s-]+') || null
+}
+const boundedInflectedPhrasePattern = (value) => {
+  const phrase = inflectedPhrasePattern(value)
+  return phrase ? `(^|[^${WORD_CHAR_CLASS}])${phrase}(?=$|[^${WORD_CHAR_CLASS}])` : null
+}
 
 const replacePhrases = (text, phrases, replacement = ' ') => {
   let result = text
@@ -236,6 +252,31 @@ const replaceTokens = (text, tokens, replacement = ' ') => {
   return result
 }
 
+const replacePersonTokens = (text, tokens, replacement = ' ') => {
+  let result = text
+  for (const token of tokens) {
+    if (!token) continue
+    result = result.replace(new RegExp(boundedInflectedPattern(token), 'giu'), `$1${replacement}`)
+  }
+  return result
+}
+
+const replacePersonPhrases = (text, phrases, replacement = ' ') => {
+  let result = text
+  for (const phrase of phrases) {
+    const corePattern = inflectedPhrasePattern(phrase)
+    const pattern = boundedInflectedPhrasePattern(phrase)
+    if (!pattern || !corePattern) continue
+    const descriptor = `[${WORD_CHAR_CLASS}-]+`
+    result = result.replace(
+      new RegExp(`(^|[^${WORD_CHAR_CLASS}])(?:с|со|от)\\s+(?:${descriptor}\\s+){0,2}${corePattern}(?=$|[^${WORD_CHAR_CLASS}])`, 'giu'),
+      `$1${replacement}`,
+    )
+    result = result.replace(new RegExp(pattern, 'giu'), `$1${replacement}`)
+  }
+  return result
+}
+
 const normalizePunctuation = (text) => text
   .replace(/\s+/g, ' ')
   .replace(/[«"]\s*[»"]/g, ' ')
@@ -243,6 +284,7 @@ const normalizePunctuation = (text) => text
   .replace(/известн(?:ый|ая|ое|ые|ом|ого|ому|ым|ой)\s+как\s*,/giu, ' ')
   .replace(/\s+([,.;:!?])/g, '$1')
   .replace(/([,.;:!?]){2,}/g, '$1')
+  .replace(/(^|\s)(?:(?:с|со|и|а|но|от|with|and)\s*)+(?=\s*[.!?]?$)/giu, '$1')
   .replace(/\s*…+$/g, '.')
   .replace(/^[\s,;:!?—-]+/, '')
   .replace(/[\s,;:!?—-]+$/, '')
@@ -259,7 +301,8 @@ const sanitizeText = (text, context) => {
   result = replacePhrases(result, context.titles)
   result = replaceTokens(result, context.titleWords)
   result = replacePhrases(result, context.people)
-  result = replaceTokens(result, context.peopleWords)
+  result = replacePersonPhrases(result, context.people)
+  result = replacePersonTokens(result, context.peopleWords)
   result = maskNarrativeNames(result)
   result = result
     .replace(/\(\s*\)/g, ' ')
@@ -314,7 +357,7 @@ const riskHits = (text, context) => {
   const normalized = normalize(text)
   if (!normalized) return { titleHits: [], peopleHits: [] }
   const titleHits = context.titleWords.filter((token) => token && normalized.includes(token))
-  const peopleHits = context.peopleWords.filter((token) => token && normalized.includes(token))
+  const peopleHits = context.peopleWords.filter((token) => token && new RegExp(boundedInflectedPattern(token), 'iu').test(normalized))
   return {
     titleHits: unique(titleHits),
     peopleHits: unique(peopleHits),

@@ -21,6 +21,7 @@ import {
   technicalReason,
   uniqueStrings,
 } from './enrichment-lib.mjs'
+import { applyGameManualOverride } from './manual-overrides.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const args = process.argv.slice(2)
@@ -623,6 +624,8 @@ const commonCanonicalFields = (item, sourceFlags, matchConfidence) => {
     acceptedAnswers: titles,
     normalizedAnswers: [...new Set(titles.map(normalizeTitle).filter(Boolean))],
     releaseYear: Number.isInteger(Number(item.year)) ? Number(item.year) : null,
+    releaseScope: item.releaseScope === 'release' ? 'release' : 'title',
+    releaseLabel: item.releaseScope === 'release' ? cleanText(item.releaseLabel) || null : null,
     franchiseKey: franchiseKeyFor(item.titleOriginal || item.titleRu),
     editionType: editionType(item.titleOriginal || item.titleRu),
     parentCanonicalGameId: item.parentCanonicalGameId ?? null,
@@ -724,6 +727,8 @@ const buildSteamGame = (candidate, details, russianReviews, dtfSteamIds, overrid
     aliases: uniqueStrings(override?.aliases),
     year: releaseYear,
     releaseDate: canonicalReleaseDate,
+    releaseScope: 'release',
+    releaseLabel: 'Steam',
     developers: uniqueStrings(details.developers?.length ? details.developers : [candidate.developer]),
     publishers: uniqueStrings(details.publishers?.length ? details.publishers : [candidate.publisher]),
     platforms: uniqueStrings(details.platforms),
@@ -945,6 +950,8 @@ const validate = ({ catalog, daily, pools, rejected, review, migration }) => {
     if (!Number.isFinite(item.recognitionScore) || item.recognitionScore < 0 || item.recognitionScore > 100) errors.push(`${item.id}: recognitionScore out of range`)
     if (!Number.isFinite(item.scoreConfidence) || item.scoreConfidence < 0 || item.scoreConfidence > 1) errors.push(`${item.id}: scoreConfidence out of range`)
     if (!item.sourceFlags?.length) errors.push(`${item.id}: sourceFlags missing`)
+    if (item.releaseScope !== 'title' && item.releaseScope !== 'release') errors.push(`${item.id}: releaseScope missing`)
+    if (item.releaseScope === 'release' && !cleanText(item.releaseLabel)) errors.push(`${item.id}: release-scoped card has no releaseLabel`)
     if (item.reviewStatus === 'review_required' && !review.some((entry) => entry.canonicalGameId === item.id)) errors.push(`${item.id}: absent from review queue`)
     if (item.steamAppId) {
       const existing = steamIds.get(item.steamAppId)
@@ -1020,6 +1027,7 @@ const main = async () => {
     ...reviewDtfCommentsByGameId.keys(),
   ])
   const overrideBySteamAppId = overrides.bySteamAppId ?? {}
+  const applyCanonicalOverride = (item) => applyGameManualOverride(item, overrides)
   const mustIncludeSteamIds = Object.entries(overrideBySteamAppId)
     .filter(([, override]) => override.mustIncludeDaily)
     .map(([appid]) => Number(appid))
@@ -1029,7 +1037,7 @@ const main = async () => {
   const steamSpy = await loadSteamSpy()
   const candidates = steamSpy.items ?? []
   const { detailTargets, byAppId, reviewsByAppId } = await loadExternalEnrichment(candidates, priorityAppIds)
-  const legacy = sourceItems.map((item) => canonicalizeLegacy(item, dtfSteamIds))
+  const legacy = sourceItems.map((item) => applyCanonicalOverride(canonicalizeLegacy(item, dtfSteamIds)))
   const detailedCandidates = detailTargets
     .map((candidate) => ({ candidate, details: byAppId[String(candidate.appid)] }))
     .filter(({ details }) => details?.status === 'ok')
@@ -1073,7 +1081,7 @@ const main = async () => {
         ].filter(Boolean),
       })
     }
-    additions.push(game)
+    additions.push(applyCanonicalOverride(game))
   }
 
   const unavailableCandidates = detailTargets
@@ -1087,7 +1095,7 @@ const main = async () => {
     }))
 
   const deduped = deduplicate(legacy, additions)
-  let scored = scoreCatalog(deduped.catalog)
+  let scored = scoreCatalog(deduped.catalog.map(applyCanonicalOverride))
   scored = scored.map((item) => ({
     ...item,
     dailyEligible: Boolean(

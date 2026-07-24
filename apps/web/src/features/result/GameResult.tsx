@@ -6,6 +6,8 @@ import { ContentReport, type ContentReportReason } from '../content-report/Conte
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import type { TitleMode } from '../../types'
 import { publicAssetUrl } from '../../app/public-asset'
+import { formatDays } from '../../game'
+import { MedicalSafetyNotice } from '../medical-safety/MedicalSafetyNotice'
 
 const diagnosisSystemRewardIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
 
@@ -62,6 +64,7 @@ export function GameResult(props: Props) {
       <h2>{props.title}</h2>
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
+      {props.mode === 'diagnosis' && <MedicalSafetyNotice compact />}
       <strong>{props.won ? `${props.attempts}/${props.maxAttempts ?? 10} — верный ответ` : 'Правильный ответ открыт'}</strong>
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
@@ -92,7 +95,7 @@ export function GameResult(props: Props) {
       </ul>}
     </details>}
     {(props.streak !== undefined || props.telegramUrl || props.onReport || props.onHome) && <div className="result-utility result-card__wide">
-      {props.streak !== undefined && <span className="result-streak">Серия: {props.streak} дней</span>}
+      {props.streak !== undefined && <span className="result-streak">Серия: {formatDays(props.streak)}</span>}
       {props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Telegram</a>}
       {props.onReport && <ContentReport onSubmit={props.onReport} />}
       {props.onHome && <button type="button" className="result-home" onClick={props.onHome}>На главную</button>}

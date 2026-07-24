@@ -88,6 +88,8 @@ This checklist is for deep exploratory testing of UI, logic, and mechanics, incl
 
 ## 12. Reporting Template
 
+Record confirmed findings in [OPEN_BUGS.md](./OPEN_BUGS.md) so later bug-bash runs can update their status and retest notes.
+
 Use the template below for each bug:
 
 - Title:

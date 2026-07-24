@@ -17,7 +17,8 @@
             "label": "Страна",
             "value": "СССР",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -112,7 +113,7 @@
             "direction": null
           }
         ],
-        "digest": "028f84ab91c914fe383ae834c95da9984d2e76be08611d8a33a5b1b43017ad62"
+        "digest": "f6b86ad3fb70181513ee8c6f0985e2ff6eab2d59d4ee39f3e1fbd2b55ad0eda4"
       },
       {
         "guessId": "kp_535341",
@@ -129,7 +130,10 @@
             "label": "Страна",
             "value": "Франция",
             "status": "partial",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "Франция"
+            ]
           },
           {
             "key": "genres",
@@ -231,7 +235,7 @@
             "direction": null
           }
         ],
-        "digest": "fb5261dc33573e11b81a7c293a9475202ed4cb07fe122f12ddd5467091127ce1"
+        "digest": "60235ebe7d503b1f9bc1860bdb1d70b9335e3494e85367760e6912d70ee4be65"
       },
       {
         "guessId": "kp_11130",
@@ -248,7 +252,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -337,7 +342,7 @@
             "direction": null
           }
         ],
-        "digest": "732e6283e2f3a56780aeeee93e7f9d9a5177568a30bf9e975d35bd3b3aa68904"
+        "digest": "d2dda72ec6f85612a6c0e4d9751959a7ab625c48939e7ae8e6abe4eca51d6a1f"
       },
       {
         "guessId": "kp_1978",
@@ -354,7 +359,8 @@
             "label": "Страна",
             "value": "США, Канада",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -449,7 +455,7 @@
             "direction": null
           }
         ],
-        "digest": "79baae7b654dd6a8ddcf50ddd7ea7a7806714bd728b510cf5f4c55d091692b23"
+        "digest": "282a52776e227a76fc8a5ddb9f57b1cab3ef20d4c9acb21b9e110178c780f1f2"
       },
       {
         "guessId": "kp_606646",
@@ -466,7 +472,8 @@
             "label": "Страна",
             "value": "США, Великобритания",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -536,22 +543,22 @@
             "key": "kp",
             "label": "Кинопоиск",
             "value": "8.0",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "imdb",
             "label": "IMDb",
             "value": "8.1",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "runtime",
             "label": "Хронометраж",
             "value": "133 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "up"
           },
           {
             "key": "age",
@@ -561,7 +568,7 @@
             "direction": null
           }
         ],
-        "digest": "c937d1869034e21d2fd6ed3c9769523e765414e1039ceb221ebb1bcab5da1ce6"
+        "digest": "bb410d26d6119a83ff9067e0d4c0a60dc26b764de61a5bd4d3f3bf0722087bc8"
       },
       {
         "guessId": "kp_502",
@@ -578,7 +585,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -671,7 +679,7 @@
             "direction": null
           }
         ],
-        "digest": "1cb5be0d53f16d9e0ba5a6bcd5e582bed5ae8873e3244053fb144732c6f820f1"
+        "digest": "f313982bedad571e562b4f644c77fdde29b20ebc8b143ed85956e49453972135"
       },
       {
         "guessId": "kp_346",
@@ -688,7 +696,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -783,7 +792,7 @@
             "direction": null
           }
         ],
-        "digest": "481a9356d4b29ff64b49187249896019dac4dccba7e8224193abdc788299c916"
+        "digest": "26a5783ed1c4f53fd42a24e06d209d5a85d64f7e8d16628b36b58a7a7d67ef79"
       },
       {
         "guessId": "kp_46789",
@@ -800,7 +809,8 @@
             "label": "Страна",
             "value": "СССР",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -877,8 +887,8 @@
             "key": "imdb",
             "label": "IMDb",
             "value": "8.1",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "runtime",
@@ -895,7 +905,7 @@
             "direction": null
           }
         ],
-        "digest": "64211b3a50bba4b978c73e71d9ee45f672404d1deec1c878561507ecb213c917"
+        "digest": "b870a61a41ec0b91a8a7e050793f48c9034a4d1f2632f2ad0c13d9544815eca0"
       },
       {
         "guessId": "kp_1171976",
@@ -912,7 +922,8 @@
             "label": "Страна",
             "value": "США, Великобритания, Индия, Испания, Канада",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1000,7 +1011,7 @@
             "direction": null
           }
         ],
-        "digest": "65fe9abfe36b103d52b964614c933c28a4b4cf40742273782215cac9f7bde910"
+        "digest": "367389962b2a92b62a99ae4ca64435d77a6cffa64a4ecef11e3719d4c52918be"
       },
       {
         "guessId": "kp_380",
@@ -1017,7 +1028,8 @@
             "label": "Страна",
             "value": "США, Великобритания",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1110,7 +1122,7 @@
             "direction": null
           }
         ],
-        "digest": "f9018e8b6e9b47c81b6aeccc5c1218ae7a2871942e52e78c885c507ca1b3a09a"
+        "digest": "a73eff8107192fef145e7bd1c398a4f9371cd295149b134b99cb8e31f9617fb2"
       },
       {
         "guessId": "kp_320",
@@ -1127,7 +1139,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1211,8 +1224,8 @@
             "key": "runtime",
             "label": "Хронометраж",
             "value": "135 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "up"
           },
           {
             "key": "age",
@@ -1222,7 +1235,7 @@
             "direction": null
           }
         ],
-        "digest": "d9b3b1a6f4452f50521d615fca093459f85250d82c8744c7664b18475ec0aad1"
+        "digest": "d64f0b1739170fc1d1d92ec2d46e9f09c4b1b4a0de21c09f99f1ec07d52f12ff"
       },
       {
         "guessId": "kp_576",
@@ -1239,7 +1252,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1335,7 +1349,7 @@
             "direction": null
           }
         ],
-        "digest": "d31ae24972ab136f45f02e40a7587ad6425cf760d2fcf2c8d776d4637b44ee77"
+        "digest": "46236555bbd36494acfaf757c1c54c189a81d17bc9ca9e35fb481929107c6241"
       },
       {
         "guessId": "kp_577",
@@ -1352,7 +1366,8 @@
             "label": "Страна",
             "value": "США, Великобритания",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1447,7 +1462,7 @@
             "direction": null
           }
         ],
-        "digest": "8943f9073ba545638a4669ef27978b1275bdcec56eb7688606f6bcd3a28e00e8"
+        "digest": "9728830bfdf3147b573e3f4dc39dfe34ee52bb4d94f234dd56f5340457659d13"
       },
       {
         "guessId": "kp_81924",
@@ -1464,7 +1479,8 @@
             "label": "Страна",
             "value": "США, Канада, Болгария",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1552,7 +1568,7 @@
             "direction": null
           }
         ],
-        "digest": "f36be8394a967aed1a20b11b87bee478c36c0c13ae67ba31c7af509e351ec41e"
+        "digest": "7b0e43a687ab7e298281c7d4409404a04c895a68f480bf586ad84cc98dffc568"
       },
       {
         "guessId": "kp_6642",
@@ -1569,7 +1585,8 @@
             "label": "Страна",
             "value": "Великобритания",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1664,7 +1681,7 @@
             "direction": null
           }
         ],
-        "digest": "a25c2bc5e68c1d64dfe487774911029dffd12ac97c63313d481a62af088dea68"
+        "digest": "bcdeb56742265bf812af7f4773ae5a959e94e46baee3aa58e5966f26be3f06da"
       },
       {
         "guessId": "kp_2707",
@@ -1681,7 +1698,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1776,7 +1794,7 @@
             "direction": null
           }
         ],
-        "digest": "cadf2fb307f8f75aa52d179e83e87ac7b43d8da1d96e55e5cf67e1aa67d64319"
+        "digest": "eb5c7f1cfbfd2cc71706da2e2ab5ac850f97299c0c82b5be209522f05f793133"
       },
       {
         "guessId": "kp_1794",
@@ -1793,7 +1811,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1889,7 +1908,7 @@
             "direction": null
           }
         ],
-        "digest": "ce2ae41b04b99253fd185f99cd6cab87dd623f88e1e23ce7e10f8ceec64784f0"
+        "digest": "5828b6751964db1fdf96a5aaee2ac072a7d9763ecc63518857012b489aa60676"
       },
       {
         "guessId": "kp_409372",
@@ -1906,7 +1925,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -1994,7 +2014,7 @@
             "direction": null
           }
         ],
-        "digest": "e48be1a44d264ded191fad74d89d2b644bdd078656e78820aec59b5e8cf0abdb"
+        "digest": "7500d019528d36375a3c4858c4eaed83965bc5c126bfef821f45bd4a3be87835"
       },
       {
         "guessId": "kp_2940",
@@ -2011,7 +2031,8 @@
             "label": "Страна",
             "value": "США, Германия",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -2104,7 +2125,7 @@
             "direction": null
           }
         ],
-        "digest": "f90eeac829f1fe086d57f027f5ac67b8978ad3d40b946c53862dda3bb8c8f8f9"
+        "digest": "02f8a5f78b274f6772e51e5d044efa8eca929f16a24a06a1ebfd7e6c6055ff18"
       },
       {
         "guessId": "kp_581",
@@ -2121,7 +2142,8 @@
             "label": "Страна",
             "value": "США",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -2216,7 +2238,7 @@
             "direction": null
           }
         ],
-        "digest": "4dc1d93c66935daf0190022338c95e1e699db07eaa5da861eb3a354065f0dcbf"
+        "digest": "ad6b9a35a4058bfa32bb1e4e5f523d0098262021579efa1bd07e807503dfc513"
       }
     ]
   },
@@ -2238,7 +2260,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -2347,7 +2372,7 @@
             "direction": null
           }
         ],
-        "digest": "12c1bff98fd5d17c2ae130703a479d254fa9ac95daecd1a8204875eda2d3828b"
+        "digest": "cc72161a53e555c46b7eba19f1494f9833d857896d7beb60958f10d26fa2714e"
       },
       {
         "guessId": "kp_77270",
@@ -2364,7 +2389,8 @@
             "label": "Страна",
             "value": "СССР",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "series_status",
@@ -2472,7 +2498,7 @@
             "direction": null
           }
         ],
-        "digest": "d615a7f08b05451a0081c54d3eebbd6733dc505e14fbeb21771b2648dd7d8606"
+        "digest": "d816a0bdcbf4f67d92272ca136245d96b1b58eb6c7dd0368d93dfc7a87ea4fe9"
       },
       {
         "guessId": "kp_582358",
@@ -2489,7 +2515,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -2580,8 +2609,8 @@
             "key": "kp",
             "label": "Кинопоиск",
             "value": "7.3",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "imdb",
@@ -2598,7 +2627,7 @@
             "direction": null
           }
         ],
-        "digest": "66a6a9718ad6a53e4ffa771e2752d3bdc15fbb7d9b041f0251cf3f4f3d4d6dfe"
+        "digest": "ae033448e4cc06287e677df8b08589a718e555ec1e50fdb4f66c6770365fe97e"
       },
       {
         "guessId": "kp_700587",
@@ -2615,7 +2644,8 @@
             "label": "Страна",
             "value": "Россия",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "series_status",
@@ -2721,7 +2751,7 @@
             "direction": null
           }
         ],
-        "digest": "efa232cf4874d2c317828a039cc219a3bfa4ac8db6228626edd0f713a076b34f"
+        "digest": "d5bdfa527b6b5745fba9cad59c9f739c2dad31f1b60b8b7a626c2b1632f4deae"
       },
       {
         "guessId": "kp_4397594",
@@ -2738,7 +2768,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -2846,7 +2879,7 @@
             "direction": null
           }
         ],
-        "digest": "36639c560ab9c442688c920581771839a8d254cd6fb3ab4138bb4a40c204822a"
+        "digest": "75f2938fd3bc320680a5f28fea65426e45db081995bcb585f1c4d415244b2629"
       },
       {
         "guessId": "kp_4308621",
@@ -2863,7 +2896,10 @@
             "label": "Страна",
             "value": "США, Германия",
             "status": "partial",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -2971,7 +3007,7 @@
             "direction": null
           }
         ],
-        "digest": "fcb6a55caafcbe540c6728e00cd317924c19583aa232fdc4e12666566d488284"
+        "digest": "a80adb3a5c5be1399b6685664e52de1cc8cfe67b37482f51ef5f06d281dea6ef"
       },
       {
         "guessId": "kp_4919015",
@@ -2988,7 +3024,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -3096,7 +3135,7 @@
             "direction": null
           }
         ],
-        "digest": "49d88d1c9beadcea3ca93050c6fc8134d95e5c494a0771313d96f269222543e6"
+        "digest": "3c07ff103aa771f0c0586ba0860010a85d0840064c3c74cccb69c8db293fde17"
       },
       {
         "guessId": "kp_79564",
@@ -3113,7 +3152,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -3222,7 +3264,7 @@
             "direction": null
           }
         ],
-        "digest": "f5b932e5481a03fba2d923e7da3e6f5d4c091ce736f48316964f7a9e59a832cb"
+        "digest": "197656fe5781e977f37ef20804204e6fc5728f08511da786d0b9700e3351e16e"
       },
       {
         "guessId": "kp_1101328",
@@ -3239,7 +3281,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -3347,7 +3392,7 @@
             "direction": null
           }
         ],
-        "digest": "b42d35dd707ac9928b922e1012b3d61605cd598804152e52713d2cdb089cc0ee"
+        "digest": "a5cf8b6c7cd0a82ed3e2d3e5539e2c7db429fe305cf76c8645b7d4ff8b4d8ddc"
       },
       {
         "guessId": "kp_1272633",
@@ -3364,7 +3409,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -3472,7 +3520,7 @@
             "direction": null
           }
         ],
-        "digest": "be029bafba50ccbed8e4e8eeb324728de31889cab270861bbdb5a89cd5b7774e"
+        "digest": "166ec6f1ea961543f02da9f4e3e57909ab79dd6ed75041968394c499bab3a7d8"
       },
       {
         "guessId": "kp_1044497",
@@ -3489,7 +3537,8 @@
             "label": "Страна",
             "value": "Россия",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "series_status",
@@ -3597,7 +3646,7 @@
             "direction": null
           }
         ],
-        "digest": "b984a9dda76dba44c4345d6ca482d0629f97d9821319fcd1c2a38d3c9240c693"
+        "digest": "dccfc90aaa08a1702000d99c9c83c5e19528caa98035f526d2202d460c93d125"
       },
       {
         "guessId": "kp_518192",
@@ -3614,7 +3663,8 @@
             "label": "Страна",
             "value": "Великобритания",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "series_status",
@@ -3722,7 +3772,7 @@
             "direction": null
           }
         ],
-        "digest": "7ce9a51f4691c286e76ff9e15a246225e1798c9412a6f9c2720893d31d2bb770"
+        "digest": "3cddb63a30df5f66a7426115b69319c06b037646727e82734498af906359e22e"
       },
       {
         "guessId": "kp_1199731",
@@ -3739,7 +3789,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -3847,7 +3900,7 @@
             "direction": null
           }
         ],
-        "digest": "32033cb39bcbb18deaafa483c5768c0b19dc32f25d03e34922a160b3c3e787ef"
+        "digest": "2ecbbb86863b27e5d30d38c09a64d0a3aeb25a45cfd8df4765bfd1f3a009e2cb"
       },
       {
         "guessId": "kp_820722",
@@ -3864,7 +3917,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -3956,15 +4012,15 @@
             "key": "kp",
             "label": "Кинопоиск",
             "value": "7.3",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "imdb",
             "label": "IMDb",
             "value": "7.8",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "age",
@@ -3974,7 +4030,7 @@
             "direction": null
           }
         ],
-        "digest": "647b5927a4aaf33b7d60b169172936769c3677a291184fa8b68314ece98adfec"
+        "digest": "1c2d8a04c0ae493c057c79a252b0db4fd2f6df63ba8f7c3a15f79adb81461b77"
       },
       {
         "guessId": "kp_701756",
@@ -3991,7 +4047,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -4099,7 +4158,7 @@
             "direction": null
           }
         ],
-        "digest": "1f436b2ed3a6e65f5b924def5a2530dc260491c0dfd597ec390d8951632f084b"
+        "digest": "d5ef340b64e06a4a430d42f4eaabed011d3d8ceb141a84453b616ff8bbbf8c43"
       },
       {
         "guessId": "kp_557760",
@@ -4116,7 +4175,8 @@
             "label": "Страна",
             "value": "Великобритания, Канада",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "series_status",
@@ -4224,7 +4284,7 @@
             "direction": null
           }
         ],
-        "digest": "e48a85a4df216f2f6d2ad9ca258a16f9e6e2926e50c47934b63a0b7ee5e7c6a1"
+        "digest": "39ddf838651bcb61b87acc31c2fc917d31ec3e97acab89dcab9c104b61a9d869"
       },
       {
         "guessId": "kp_77247",
@@ -4241,7 +4301,8 @@
             "label": "Страна",
             "value": "СССР",
             "status": "miss",
-            "direction": null
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "series_status",
@@ -4350,7 +4411,7 @@
             "direction": null
           }
         ],
-        "digest": "e092092f5485bba9a06e3d254c4d99ef880d8befd358ad2d33407cd415099d80"
+        "digest": "25e88c191afb4436db6cb25b635eb5d7ad936950275e63bc81c5b9afd6afad43"
       },
       {
         "guessId": "kp_463401",
@@ -4367,7 +4428,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -4464,8 +4528,8 @@
             "key": "imdb",
             "label": "IMDb",
             "value": "7.8",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "age",
@@ -4475,7 +4539,7 @@
             "direction": null
           }
         ],
-        "digest": "d44547eb4eacb26afd97aa1db81c3f8bb31b93efdd8a84a42c1af6bca8e2a9a5"
+        "digest": "6e29f9e49a31d19aca25f60056915a3ca049f3488c02dc5db457c7dfe5e919a6"
       },
       {
         "guessId": "kp_1100424",
@@ -4492,7 +4556,10 @@
             "label": "Страна",
             "value": "США",
             "status": "match",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -4601,7 +4668,7 @@
             "direction": null
           }
         ],
-        "digest": "b367d6f4e7caf3488634a595774094a2b1cfa2c927b1047ed35a65b40c318d39"
+        "digest": "3c8cdcd80fd3d5c6c41ec30c862b212ba8667619ea035daed2a677264a626c29"
       },
       {
         "guessId": "kp_1046704",
@@ -4618,7 +4685,10 @@
             "label": "Страна",
             "value": "США, Великобритания",
             "status": "partial",
-            "direction": null
+            "direction": null,
+            "matchedValues": [
+              "США"
+            ]
           },
           {
             "key": "series_status",
@@ -4726,7 +4796,7 @@
             "direction": null
           }
         ],
-        "digest": "988717d306b8d427cf27b855b8e2dfeb9bfc712ad7f2efa8b5850edfcbec4669"
+        "digest": "d87ceb789236ac7d1873dfba8bbee8353cab59f2db5cd1b384ac2d70402bc07c"
       }
     ]
   },
@@ -4768,8 +4838,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -4809,7 +4879,7 @@
             "direction": null
           }
         ],
-        "digest": "048d2fed918f264b5142cf4c1851e9ea141ceb74cc69e49d4200f25338fb015d"
+        "digest": "a3413ab1f66e9fade3365df14827b23ec484a75dd8e2f07f0a8c629590f801ad"
       },
       {
         "guessId": "shiki_1535",
@@ -4926,8 +4996,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -4969,7 +5039,7 @@
             "direction": null
           }
         ],
-        "digest": "47dbae5b69724e7de59c9048fba67ba1b1c8188940127e9e7ff8c35ac73356f3"
+        "digest": "8d4831fed9fb5d08be363a4909a095bb57abe25288e563208548020556846bfa"
       },
       {
         "guessId": "shiki_30276",
@@ -5006,8 +5076,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -5051,7 +5121,7 @@
             "direction": null
           }
         ],
-        "digest": "f876fb1efb1639180f2f1d2de1a74f32eab313fc2ebcee4a219000454152c63e"
+        "digest": "e36615262db7f523b9bb2003e590351970cf06f28908e50a02d717c1fa5a482f"
       },
       {
         "guessId": "shiki_38000",
@@ -5248,8 +5318,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -5289,7 +5359,7 @@
             "direction": null
           }
         ],
-        "digest": "d2d2f9952bb80f6951b4a5b9599cc7e1bf54537317cfda986bd0a4172e2536af"
+        "digest": "59b8ee4d96ca963ab6bbd90b4e29a54fb32c62306cf993ba49f879ad6f9f4f74"
       },
       {
         "guessId": "shiki_11061",
@@ -5433,8 +5503,8 @@
             "key": "shiki",
             "label": "Shikimori",
             "value": "8.02",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "up"
           },
           {
             "key": "rank",
@@ -5451,7 +5521,7 @@
             "direction": null
           }
         ],
-        "digest": "a4e9e8bdf5b4d157fb8d204e8412c8c9acbd38e4bf7bb290fa08455d081fdf52"
+        "digest": "57913f42b6b521ee3b54f7189f50d7d3de24681d74c61bf35fa60cd9a8063dd9"
       },
       {
         "guessId": "shiki_22319",
@@ -5488,8 +5558,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -5531,7 +5601,7 @@
             "direction": null
           }
         ],
-        "digest": "18b7cd386e7942971dab991a3f9ffb87c9df9da0daaea8c81d7e41d254f5791c"
+        "digest": "5d0909c36f2ecd817f5a0564842e4111a1b2057593e37de58de87c3244760037"
       },
       {
         "guessId": "shiki_32281",
@@ -5726,8 +5796,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -5767,7 +5837,7 @@
             "direction": null
           }
         ],
-        "digest": "b12619eb3ffbe1d3b21e7765bc972057dcca9598cc98efac940315ac23300ba8"
+        "digest": "ad8faac0d3c6c360329e45e9142eda91195fbb364712b384edf0c26b7257da75"
       },
       {
         "guessId": "shiki_9253",
@@ -5804,8 +5874,8 @@
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -5845,7 +5915,7 @@
             "direction": null
           }
         ],
-        "digest": "45e4ea1557e340d09c8e57b1e79cd0c68f5476757572eebdfe4b9b1591c8c57c"
+        "digest": "440dbb1d42f0f873aa8c2733cf2a71eab5e8ad4e96303366b3f5102dc5385dd4"
       },
       {
         "guessId": "shiki_1735",
@@ -5877,13 +5947,6 @@
             "value": "500",
             "status": "miss",
             "direction": "down"
-          },
-          {
-            "key": "episodes_aired",
-            "label": "Вышло серий",
-            "value": "58",
-            "status": "unknown",
-            "direction": null
           },
           {
             "key": "runtime",
@@ -5932,7 +5995,7 @@
             "direction": null
           }
         ],
-        "digest": "6ec1e86405dbc78cb6f08a8426221833f0a05ce74f5e7c5446c488727939bdd3"
+        "digest": "36a00f17023e2c84615a98c5ca12284954867a5f97ef221c97ea494b4120cbe0"
       },
       {
         "guessId": "shiki_33486",
@@ -5992,8 +6055,8 @@
             "key": "shiki",
             "label": "Shikimori",
             "value": "8.05",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "rank",
@@ -6010,7 +6073,7 @@
             "direction": null
           }
         ],
-        "digest": "9838497eb62ec26a262bc57ea87687e1abfa20a8e8683b1f1b7e69206e730a4c"
+        "digest": "375733d3e2b089faadc24f9da7717f01d7c2a3a3df5b5fdd5d380de51d2be0b7"
       },
       {
         "guessId": "shiki_21",
@@ -6044,18 +6107,11 @@
             "direction": null
           },
           {
-            "key": "episodes_aired",
-            "label": "Вышло серий",
-            "value": "1168",
-            "status": "unknown",
-            "direction": null
-          },
-          {
             "key": "runtime",
             "label": "Длительность",
             "value": "24 мин",
-            "status": "match",
-            "direction": null
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -6097,7 +6153,7 @@
             "direction": null
           }
         ],
-        "digest": "1203e420d6612f9aa87945d722c8d7cdda120d71a52fa34da54e38c1d2ef1a08"
+        "digest": "355b17efedb3be7c8a3dda77726bdbdb36f53830edfae7f61a6c19d91f3b046a"
       },
       {
         "guessId": "shiki_35760",
@@ -6336,7 +6392,7 @@
     ]
   },
   "game": {
-    "answerId": "tgdb_104767",
+    "answerId": "tgdb_2495",
     "cases": [
       {
         "guessId": "tgdb_237",
@@ -6392,21 +6448,17 @@
             "key": "developer",
             "label": "Разработчик",
             "value": "Nintendo EAD",
-            "status": "match",
+            "status": "miss",
             "direction": null,
-            "matchedValues": [
-              "Nintendo EAD"
-            ]
+            "matchedValues": []
           },
           {
             "key": "publisher",
             "label": "Издатель",
             "value": "Nintendo",
-            "status": "match",
+            "status": "miss",
             "direction": null,
-            "matchedValues": [
-              "Nintendo"
-            ]
+            "matchedValues": []
           },
           {
             "key": "price",
@@ -6419,11 +6471,258 @@
             "key": "age",
             "label": "Возраст",
             "value": "E - Everyone",
-            "status": "miss",
+            "status": "match",
             "direction": null
           }
         ],
-        "digest": "bcc236191286637985c1208cb443da723ef0fc8b92a04b106b56557d7f6890bb"
+        "digest": "57fbe36e38676414b8b046fd1df9372e1dc45489eb13f23c70041d1f258d2da3"
+      },
+      {
+        "guessId": "steam_1966900",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2022",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#894",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Adventure, Casual, Indie, Strategy",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Strategy"
+            ]
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "flanne",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "flanne, Erabit",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "49e6f0fb3aac34ba4aa65fae022c869844355739f19b7c10320f4927c0eb62c6"
+      },
+      {
+        "guessId": "steam_1012880",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#772",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Adventure, Casual, Indie, Simulation, Strategy",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Strategy"
+            ]
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Robot Gentleman",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Robot Gentleman",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "bd5eaf2e98510e3e3ccf2af56be9b1ce70ded9664c1157784528cecee7897518"
+      },
+      {
+        "guessId": "steam_251570",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2024",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#777",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "2 игрока",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Экшены, Приключенческие игры, Инди, Ролевые игры, Симуляторы, Стратегии",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Для одного игрока, Для нескольких игроков, Игрок против игрока, Игрок против игрока (по сети), Игрок против игрока (локальная сеть), Кооператив, Кооператив (по сети), Кооператив (локальная сеть), Кросс-платформенный мультиплеер, Достижения Steam, Полная поддержка контроллеров, Коллекционные карточки Steam, Поддержка контроллера DualShock, Поддержка контроллера DualSense, С редактором уровней, Remote Play на планшете, Remote Play на телевизоре, Семейный доступ",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "windows, mac, linux",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "The Fun Pimps",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "The Fun Pimps Entertainment LLC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "1 500 ₽",
+            "status": "match",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "1aee8a2d49a5fd8856da6f24f1bd3bae1b7d03e21f43c144f23e8955e87ac21e"
       },
       {
         "guessId": "tgdb_30049",
@@ -6432,7 +6731,7 @@
             "key": "year",
             "label": "Год",
             "value": "2014",
-            "status": "close",
+            "status": "miss",
             "direction": "down"
           },
           {
@@ -6504,7 +6803,1145 @@
             "direction": null
           }
         ],
-        "digest": "cbb8ae8d9d2e392ffc12ac4a2bfdf7ff0fefdfbcee9f679e724719d0d51f6276"
+        "digest": "cc9345b365ccfb8f6fd2a073f4e0ed727fb26c4adc71a90452fa6e00fadf782d"
+      },
+      {
+        "guessId": "steam_292030",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2015",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#258",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "2 игрока",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "RPG",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Single-player, Steam Achievements, Steam Trading Cards, Steam Workshop, Adjustable Text Size, Camera Comfort, Color Alternatives, Custom Volume Controls, Adjustable Difficulty, Playable without Timed Input, Save Anytime, Stereo Sound, Surround Sound, Partial Controller Support, Steam Cloud, Remote Play on Tablet, Remote Play on TV, HDR available, Family Sharing",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "windows, PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "CD PROJEKT RED",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "CD PROJEKT RED",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "40 ₽",
+            "status": "match",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "17+",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "3977c177d2ce66b8682fd0da43e0424800a29c2adf513d3a33817bd705247ae5"
+      },
+      {
+        "guessId": "steam_977950",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#608",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Indie",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "7th Beat Games",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "7th Beat Games, indienova",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "167ba4e79d198882db2bee11e5004c9377f6945d56fe7ffd907f45f1390dd56f"
+      },
+      {
+        "guessId": "steam_2415010",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2023",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#998",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Indie, Simulation, Free To Play",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Two and a Half Studios",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Two and a Half Studios",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "cc658ed539a2ecbe5f88c886aee7555b6afdfc76ad40abe472c7532d55251b7a"
+      },
+      {
+        "guessId": "steam_3244220",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2025",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#952",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Adventure, Indie",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "DoubleBee",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "rokaplay select, Drillhounds",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "5e5ddeae1c65c97a73715a7757fce1174b6d71e67fdc95a6e905e8f1622d2a8e"
+      },
+      {
+        "guessId": "steam_253230",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2014",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Adventure, Indie",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Gears for Breakfast",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Gears for Breakfast",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "c851c8f16c03daaacf221428c79d7f88b9b6ae8be7ecda800da54645a18f879f"
+      },
+      {
+        "guessId": "steam_752590",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#689",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Adventure",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Asobo Studio",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Focus Entertainment",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "154824c4ff488e43947cdcfeb87ccf550de662fe1a8fb36001b8a518ef5f8171"
+      },
+      {
+        "guessId": "steam_1182900",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2022",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#962",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Adventure",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Asobo Studio",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Focus Entertainment",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "d1de9dc48cc02ce1ba0cdacdc0ff5dbff92c6a8f4d36eee26e11b181dac60e41"
+      },
+      {
+        "guessId": "steam_278360",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2012",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#440",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Adventure, Casual, Indie",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Gone North Games",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Coffee Stain Publishing",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "e83ab6a39b4030283ebed5b1927a86cb0030c269e95a162005c52f82bb465052"
+      },
+      {
+        "guessId": "steam_712100",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2018",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Strategy",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Strategy"
+            ]
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "CREATIVE ASSEMBLY, Feral Interactive (Mac), Feral Interactive (Linux)",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "SEGA, Feral Interactive (Mac), Feral Interactive (Linux)",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "7786acc3768923b33e1774528556e84fc7d29b2a81352b2de03ecc08aaae1a03"
+      },
+      {
+        "guessId": "steam_1473480",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2022",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#988",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Massively Multiplayer, Free To Play",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Valiant",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Valiant",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "353b9152659a8be0406f4df224aeb124688cc56118311024a8cf8b4f772ea60e"
+      },
+      {
+        "guessId": "steam_427410",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2024",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#872",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Adventure, RPG, Simulation",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Deep Field Games",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Playstack",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "d2d19e97663a053a849390ef4c151e2ad39958016ead0a815dc547b7d4599880"
+      },
+      {
+        "guessId": "steam_806140",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2018",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Casual, Indie, Sports",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Easy game",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Game for people",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "424c8c928f3b9161ee1bb80c723c5e9cc3e3faaac29d3b13ca58c7b543de9727"
+      },
+      {
+        "guessId": "steam_1385380",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2021",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#769",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Adventure, Indie, RPG, Strategy",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Strategy"
+            ]
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "Dreamsite Games",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Paradox Interactive, Paradox Arc",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "06cc0bd117ad6d5f4938a0119318d63c96b990a1831b938e828da9914c45f3c7"
+      },
+      {
+        "guessId": "steam_1335200",
+        "output": [
+          {
+            "key": "year",
+            "label": "Год",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "rank",
+            "label": "Место в топе",
+            "value": "#733",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "players",
+            "label": "Игроки",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "genres",
+            "label": "Жанры",
+            "value": "Action, Adventure, RPG, Free To Play",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "steam_categories",
+            "label": "Категории",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "platforms",
+            "label": "Платформы",
+            "value": "PC",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "developer",
+            "label": "Разработчик",
+            "value": "LiLith",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "publisher",
+            "label": "Издатель",
+            "value": "Infini-Brain inc.",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "price",
+            "label": "Цена",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null
+          },
+          {
+            "key": "age",
+            "label": "Возраст",
+            "value": "—",
+            "status": "unknown",
+            "direction": null
+          }
+        ],
+        "digest": "0ee9c6335bea04f8d4a0286427fcda4f5b12c51d5a42aa842ebc87c210a0c7e5"
       },
       {
         "guessId": "tgdb_105602",
@@ -6581,1414 +8018,11 @@
             "key": "age",
             "label": "Возраст",
             "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "24a29c29e3374dd2af576567f426cdc4a2bd19cd0dabf19315c215fcac113049"
-      },
-      {
-        "guessId": "tgdb_2495",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2001",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#132",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "4 игрока",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Strategy",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "4 игроков, Мультиплеер",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "4 игроков",
-              "Мультиплеер"
-            ]
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Nintendo Game Boy Advance",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Intelligent Systems Co., Ltd.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Nintendo of America, Inc.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "2c2b31aa68b207f3d0e98c44625c9e2b96c4cfc662c8af7b1d629db8b99e46c9"
-      },
-      {
-        "guessId": "tgdb_3305",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2003",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "4 игрока",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Strategy",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "4 игроков, Мультиплеер",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "4 игроков",
-              "Мультиплеер"
-            ]
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Nintendo Game Boy Advance",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Intelligent Systems Co., Ltd.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Nintendo of America, Inc.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "07bac0ba41b7d38f6bbb443f96b50fbea54fc982304fdd4ba2eb2eb4147db20d"
-      },
-      {
-        "guessId": "tgdb_6570",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2005",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "4 игрока",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Strategy",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "4 игроков, Мультиплеер",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "4 игроков",
-              "Мультиплеер"
-            ]
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Nintendo DS",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Intelligent Systems Co., Ltd.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Nintendo of America, Inc.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "0794d05b1f679cb40f260786a735c6a50b447ced0a1fbaa246e739106344d18c"
-      },
-      {
-        "guessId": "tgdb_2570",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1980",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Adventure",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Atari 2600",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Atari",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Atari, Inc.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "1ae6413b70d105a1b57d73f83736a7f95f0d39e7e751c55a981d28eff0e12d9d"
-      },
-      {
-        "guessId": "tgdb_97524",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1987",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Shooter, Flight Simulator",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Sega Master System",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Sega",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Sega",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E10+ - Everyone 10+",
-            "status": "unknown",
-            "direction": null
-          }
-        ],
-        "digest": "2a37b860bb16b4e193be9402a035ed777e64ccd20c9201a44ac4f011edd7ec7f"
-      },
-      {
-        "guessId": "tgdb_748",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1997",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Strategy",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "PC",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Ensemble Studios",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Microsoft Studios",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "T - Teen",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "638a540032d3422aa3451a2e231e9f677bf8b383ebf1ff315828ee7f22597592"
-      },
-      {
-        "guessId": "tgdb_749",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1999",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#54",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Strategy",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "PC",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Ensemble Studios",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Microsoft Studios",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "T - Teen",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "8933cc35dbafc1504bfb355b5de859f02c618e6584735b8a398e9b2062d796bd"
-      },
-      {
-        "guessId": "tgdb_80893",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1995",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Platform",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Nintendo Entertainment System (NES)",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Hummer Team",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Нет данных",
-            "status": "unknown",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "Not Rated",
             "status": "match",
             "direction": null
           }
         ],
-        "digest": "e717e4957c92e18ee646bf2be24ea5d8d3b0a603638b761f4a7d9b07f271df1c"
-      },
-      {
-        "guessId": "tgdb_100324",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2010",
-            "status": "close",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#377",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Adventure",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Microsoft Xbox 360",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Remedy Entertainment",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Microsoft Studios",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "Not Rated",
-            "status": "match",
-            "direction": null
-          }
-        ],
-        "digest": "b4c08a97fa4087ca556dfea23d8408b04b3d7ae46bb107a9c5b888b364492636"
-      },
-      {
-        "guessId": "tgdb_2684",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1986",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Platform",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Sega Master System",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Sega R&D2",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Sega of America, Inc.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "5cea0b9f2a534245a50a80a45cd6853eef48c6b546acb6f8c1a82f1bfefa03cf"
-      },
-      {
-        "guessId": "tgdb_10683",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1994",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "2 игрока",
-            "status": "close",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "2 игроков, Мультиплеер",
-            "status": "partial",
-            "direction": null,
-            "matchedValues": [
-              "Мультиплеер"
-            ]
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Arcade",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Capcom",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Capcom",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "Not Rated",
-            "status": "match",
-            "direction": null
-          }
-        ],
-        "digest": "228dd41cd3b2ae52d976bec43ea837e68236578834cede3e604153fb42488220"
-      },
-      {
-        "guessId": "tgdb_21189",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2014",
-            "status": "close",
-            "direction": "down"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#335",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Horror",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Microsoft Xbox 360",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "The Creative Assembly",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Sega",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "M - Mature 17+",
-            "status": "unknown",
-            "direction": null
-          }
-        ],
-        "digest": "f1c89770ee3a39126ca662e258df4667acc86f57bbe1f3118079b4e983de8fd8"
-      },
-      {
-        "guessId": "tgdb_10080",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "1994",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Adventure, Horror",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "3DO",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Infogrames Europe SA",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Interplay Entertainment Corp.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "Not Rated",
-            "status": "match",
-            "direction": null
-          }
-        ],
-        "digest": "293596b00ceaa5061b06e6f143e9cf4ecf860f3cf28643ba9092ae12ce8d811f"
-      },
-      {
-        "guessId": "tgdb_2547",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2010",
-            "status": "close",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#382",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Action, Adventure, Horror",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "PC",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Frictional Games",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Frictional Games",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "M - Mature 17+",
-            "status": "unknown",
-            "direction": null
-          }
-        ],
-        "digest": "7fa36139aee1843bbe4af2c5db3e959aced261eed08f895f9ea3c8111bf5a666"
-      },
-      {
-        "guessId": "tgdb_2389",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2009",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#184",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "1 игрок",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Puzzle",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "PC",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Rovio Entertainment Ltd.",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Chillingo",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "12703f668cf65b9d4f4a573a01a4f52517b65e8f89c1ca76bfd8e0f2be096f2a"
-      },
-      {
-        "guessId": "tgdb_117142",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2002",
-            "status": "miss",
-            "direction": "up"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "#159",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "4 игрока",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Life Simulation, Family",
-            "status": "partial",
-            "direction": null,
-            "matchedValues": [
-              "Life Simulation"
-            ]
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "4 игроков, Мультиплеер",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "4 игроков",
-              "Мультиплеер"
-            ]
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Nintendo GameCube",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Nintendo EAD",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "Nintendo EAD"
-            ]
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Nintendo",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "Nintendo"
-            ]
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "735f62276984c5f91eee81b7480bf66b8193b86a860e3f247fcac3d9add75e5f"
-      },
-      {
-        "guessId": "tgdb_61029",
-        "output": [
-          {
-            "key": "year",
-            "label": "Год",
-            "value": "2020",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "rank",
-            "label": "Место в топе",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
-          },
-          {
-            "key": "players",
-            "label": "Игроки",
-            "value": "8 игроков",
-            "status": "miss",
-            "direction": "down"
-          },
-          {
-            "key": "genres",
-            "label": "Жанры",
-            "value": "Life Simulation",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "Life Simulation"
-            ]
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "8 игроков, Мультиплеер",
-            "status": "partial",
-            "direction": null,
-            "matchedValues": [
-              "Мультиплеер"
-            ]
-          },
-          {
-            "key": "platforms",
-            "label": "Платформы",
-            "value": "Nintendo Switch",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "developer",
-            "label": "Разработчик",
-            "value": "Nintendo",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "publisher",
-            "label": "Издатель",
-            "value": "Nintendo",
-            "status": "match",
-            "direction": null,
-            "matchedValues": [
-              "Nintendo"
-            ]
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Платно",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "age",
-            "label": "Возраст",
-            "value": "E - Everyone",
-            "status": "miss",
-            "direction": null
-          }
-        ],
-        "digest": "568b2a0b9c27a7054a8ecd16f5437f6c842dd7cac847c64c93573ff5eb4174eb"
+        "digest": "04a145130dee3e9263ecf89d43ebfecc49f45421d4cef0c696842316102d0205"
       }
     ]
   },
@@ -7998,6 +8032,20 @@
       {
         "guessId": "music:001_michael-jackson",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "1964",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "1960-е",
+            "status": "miss",
+            "direction": "up"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8009,7 +8057,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "dance, dance-pop, disco, funk, pop, r&b, soul",
+            "value": "dance, dance-pop, disco, funk, pop, R&B, soul",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8044,11 +8092,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "3dc0a481627f34301427dcb67303ef36792caaf8c2119f7007df335543d364d3"
+        "digest": "607fae27d11caeb27de75a90f82e79d5e8010d56226dc890a91c7ed65cb4e3cc"
       },
       {
         "guessId": "music:004_shadowraze",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8099,11 +8161,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "8d475ebeefc2334dd1a0522f9e09c47d69d3ac84f75a83ec02d7373da5ea4420"
+        "digest": "723a13f21bc30304f2b4ebafd1055c3b961d5f44c2a8036bb8ddbe9381aa1b82"
       },
       {
         "guessId": "music:006_artik",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2007",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2000-е",
+            "status": "miss",
+            "direction": "up"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8115,7 +8191,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop, r&b",
+            "value": "hip-hop, R&B",
             "status": "partial",
             "direction": null,
             "matchedValues": [
@@ -8152,11 +8228,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "cd433e564ddd291daf89bee04298d2b89434f212b1e20ccfad45f7de3509ae27"
+        "digest": "0eefb862580961ad1b23b0a77fe136f7173c7750febd46a8862942b7eef861bd"
       },
       {
         "guessId": "music:007_asti",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2010",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8205,11 +8295,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "7e450dbb79ee2cda0befd70a11215dfee2e91ac79b2ec1f3b98f9f95f7ba69d1"
+        "digest": "b48f44fbeaf6c597590d133c7031e79fda7fa41bd0c4465a108fbd83b260eb13"
       },
       {
         "guessId": "music:009_big-baby-tape",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2017",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8260,11 +8364,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "75b68fd7e7fc10d46e4a410bf1a06ee25231de7bbcdc52e9bb81eeda6fa9d7b6"
+        "digest": "97e41fc8cd6706ee72badd2a41e1dfbafdfd0b758894c5c333021f8a02e20ffb"
       },
       {
         "guessId": "music:010_adele",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2006",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2000-е",
+            "status": "miss",
+            "direction": "up"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8276,7 +8394,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "soul, neo soul, pop, r&b, rock",
+            "value": "soul, neo soul, pop, R&B, rock",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8311,11 +8429,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "38af51ccd0bd44a44f0858a11c898a92cf1b0a139fbc080c8e1cb447e56e99fb"
+        "digest": "18c864bd25692e36cfb019c5dc1e39f8a38c21daed8cb98fd884b8bd33217527"
       },
       {
         "guessId": "music:012_face",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2015",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8366,11 +8498,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "1384534ed7015bd33703da137728210f22fc47ba435ab71fa8c18c040cc2f71e"
+        "digest": "c2da1f6bce673210c1ab76c93af403985f20d0f8f89c411f36a2f929a86e2392"
       },
       {
         "guessId": "music:014_bts",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2013",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8417,11 +8563,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "9488bff2a997d94fac2cbfe9d4b6b6f2c34bcee82dced4ac6b07835e67f41649"
+        "digest": "9fc8dac823303f45450d1d735983766a6cfcdffb1f10e758effea419b9ac816e"
       },
       {
         "guessId": "music:015_andy-panda",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2014",
+            "status": "match",
+            "direction": null
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8472,11 +8632,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "3d3b844ebf5503e2326081c4d275772d511348e7cb7abaee35056fcca2baed87"
+        "digest": "55fcb0d07cda31d8feb2ca8ae1d1c792e2f000ade5b974c4b7aeda7883b9aa03"
       },
       {
         "guessId": "music:016_bearwolf",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2023",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2020-е",
+            "status": "miss",
+            "direction": "down"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8525,11 +8699,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "00d74a1691a535cb2aaea480477c3b24b0f2b4ad90b5db1a685bdac081f46efe"
+        "digest": "60dcae1ed71d4f4842f7a8a543941bc3046cf211b7a3dfaaaf9b73e3512b48ea"
       },
       {
         "guessId": "music:020_enzro",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2026",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2020-е",
+            "status": "miss",
+            "direction": "down"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8576,11 +8764,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "6468139e046f892e7e23204ac55f3953a802e26c68907047ae6f01ddb9783664"
+        "digest": "c37011f9c83e5b6f380e45e3385786f7929eec69290dab2c5458610fe9d96740"
       },
       {
         "guessId": "music:020_taemin",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2008",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2000-е",
+            "status": "miss",
+            "direction": "up"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8627,11 +8829,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "02583c127962ae21194f9f0417fd7c11f0760aa160ca58f84b0a3f3a74da8ab5"
+        "digest": "f02ca5a69afcff0403b21dfd1d68b673b2805dacbf120f54ed6d4c2d8dd5e9d8"
       },
       {
         "guessId": "music:021_xolidayboy",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2021",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2020-е",
+            "status": "miss",
+            "direction": "down"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8682,11 +8898,25 @@
             ]
           }
         ],
-        "digest": "14e228ba3bbe4110ee34aea401dbc95c3916bd65b4ec42d2766873cab923347d"
+        "digest": "986d84272511255a2f799fe442b749c5da93c55a94444f9998320c8aa8b724d6"
       },
       {
         "guessId": "music:022_anna-asti",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2021",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2020-е",
+            "status": "miss",
+            "direction": "down"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8735,15 +8965,29 @@
             "matchedValues": []
           }
         ],
-        "digest": "7c38f6ee719d63788dc7a8be2b26b1c223f9deaf8233b10fe641b3773e554ef2"
+        "digest": "6cc226ffda518fdbaba0121c8b2fee0f72f3d1e486404d31d30c85a7330e79be"
       },
       {
         "guessId": "music:024_by-индия",
         "output": [
           {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
+          {
             "key": "country",
             "label": "Страна",
-            "value": "🇧🇾 BY, 🇷🇺 Россия",
+            "value": "🇧🇾 Беларусь, 🇷🇺 Россия",
             "status": "partial",
             "direction": null,
             "matchedValues": [
@@ -8753,7 +8997,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "r&b, hip-hop, pop",
+            "value": "R&B, hip-hop, pop",
             "status": "partial",
             "direction": null,
             "matchedValues": [
@@ -8790,11 +9034,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "63ee09454941be32714c240c94b353c6b8d8cd67bc2f1b1391f74547692d5d4e"
+        "digest": "5946baab11684230e8e633a2917f4ee99771abdac9c6270245ab42825f8a65bc"
       },
       {
         "guessId": "music:025_hugel",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2015",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8841,15 +9099,29 @@
             "matchedValues": []
           }
         ],
-        "digest": "fbbc036bdf056777f48bbdc8cc6faf6a235087cea1f816be4dffe4d0d4bff356"
+        "digest": "8557d66ee383ebecac9b3455940dd88e3931228c31f9415152632dd157769517"
       },
       {
         "guessId": "music:025_sayan",
         "output": [
           {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2021",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2020-е",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
             "key": "country",
             "label": "Страна",
-            "value": "🇦🇲 AM, 🇷🇺 Россия",
+            "value": "🇦🇲 Армения, 🇷🇺 Россия",
             "status": "partial",
             "direction": null,
             "matchedValues": [
@@ -8894,11 +9166,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "e4d01cad28c2c294dec7524c977fabf0d3bedc858caa344418509a50462ca4bd"
+        "digest": "ae23b8c54f619b002427632550dbbb4e06f90a85b283162323ef42ba90001e94"
       },
       {
         "guessId": "music:026_женя-трофимов",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2017",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -8947,11 +9233,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "ec47592f01f2f356e0cb55e673188d49dfae61b96fd7e85f0aa588df2052e9cc"
+        "digest": "6bfbd3bb47435944e16601b2d5da512da6a55a439b33eeac18a6e107c9d8e953"
       },
       {
         "guessId": "music:027_macan",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2019",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2010-е",
+            "status": "match",
+            "direction": null
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -9002,11 +9302,25 @@
             "matchedValues": []
           }
         ],
-        "digest": "6c3c8022e43bbd267440aeb72ca4b9c6769be6a6cb856e9aac4806081252668c"
+        "digest": "131da96135ad51d9753619f0750abced6989e8f6abc1f9cf52cd8d73fea2ac35"
       },
       {
         "guessId": "music:028_полка",
         "output": [
+          {
+            "key": "activity_start_year",
+            "label": "Начало деятельности",
+            "value": "2022",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "decade",
+            "label": "Десятилетие",
+            "value": "2020-е",
+            "status": "miss",
+            "direction": "down"
+          },
           {
             "key": "country",
             "label": "Страна",
@@ -9057,7 +9371,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "45f04f764326c212866ceb3c765e329e162774580afdac48aa2f4a1b94d4d71a"
+        "digest": "1319a0f7fc09420eed450b28a2fd808c3d00e6adf9274560517cb565a4ae315b"
       }
     ]
   },
@@ -9589,8 +9903,8 @@
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "дискомфорт",
-              "зуд"
+              "зуд",
+              "дискомфорт"
             ]
           },
           {
@@ -9618,7 +9932,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "06ddd053377a5f67fc25433b88887917cc5d4f31a395edd7ae0cf21d14a55fb2"
+        "digest": "acf80ef979fbbe0bac53c93d4e0357fbd39302cc6081cc59468c12dac008ca91"
       },
       {
         "guessId": "dx_insomnia",
@@ -10028,8 +10342,8 @@
             "status": "match",
             "direction": null,
             "matchedValues": [
-              "пожилые",
-              "взрослые"
+              "взрослые",
+              "пожилые"
             ]
           },
           {
@@ -10073,7 +10387,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "c4169d9f00da684a2fe1a48dc9c7fefb8b70ac395413c5f51f7adf2ee3e9bf69"
+        "digest": "312b75800d8f084af1c153dd341df2b1479ea8b8b2846491dc90751da3ff4046"
       },
       {
         "guessId": "dx_bronchial_asthma",
@@ -10896,6 +11210,1577 @@
           }
         ],
         "digest": "d2b4086eb39b5d3361c87489d9159559eb56efe211bd30bda499d6b91797879a"
+      }
+    ]
+  },
+  "city": {
+    "answerId": "city:singapore",
+    "cases": [
+      {
+        "guessId": "city:new-york-city",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "8 804 190",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-05:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 1",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 4",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 90",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 168",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "f212146f6643c5d4a0e42d9296f3ee126da8d4d1346707addc3740598a012ef9"
+      },
+      {
+        "guessId": "city:london",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Великобритания",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "8 961 989",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+00:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 8",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 1",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 144",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 66",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 81",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "95e1dbd4b90eb04359341951e8c6e5e1900e29c93229cd316eeef3a24ec7e1f3"
+      },
+      {
+        "guessId": "city:paris",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Франция",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Французский",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "2 138 551",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+01:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 11",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 7",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 7",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 178",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 255",
+            "status": "miss",
+            "direction": "up"
+          }
+        ],
+        "digest": "fbe967be3c557ec2d7fe1172783e49ae31d9bec24401bccc2f2088537a2a4154"
+      },
+      {
+        "guessId": "city:san-jose",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "997 368",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-08:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 3",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 26",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 11",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 43",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "ec6688458f8c3fa421c1c8bdc752700d1756fa4aa8edd2866c9f58a061cd6980"
+      },
+      {
+        "guessId": "city:seattle",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "780 995",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-08:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 4",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 45",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 27",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 35",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "869a3954e96799f79219f6f755fd6542f3ed68bde7b5713226538f0b30b6773e"
+      },
+      {
+        "guessId": "city:melbourne",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Австралия",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Океания",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "5 435 590",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+10:00",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 16",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 12",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 54",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 67",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 15",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "bc33517f3bfaf47725593d9468b787c8c37ee78cc17f1f336934cd50bea3a75b"
+      },
+      {
+        "guessId": "city:sydney",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Австралия",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Океания",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "5 638 830",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+10:00",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 21",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 10",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 39",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 145",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 15",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "2707171566587180a1c931e0f5dd2120355a97eed8c6eb1ee16b92f0f699c82c"
+      },
+      {
+        "guessId": "city:boston",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "653 833",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-05:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 9",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 11",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 57",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 242",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "062dc4e8c7053928121fa5588102add6293d7aa91d9a03698945d8c603dd241f"
+      },
+      {
+        "guessId": "city:tokyo",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Япония",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Азия",
+            "status": "match",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Японский",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "9 733 276",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+09:00",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 22",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 8",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 26",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 399",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 38",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "3087bd1da1aa20f99e993041d6a86faf20236e49d81d3bc73f42da0b749df283"
+      },
+      {
+        "guessId": "city:san-francisco",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "827 526",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-08:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 5",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 37",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 99",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 41",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "41b10de82c62e1cf9276db5844b7d9bcd2be345f4be2ba33052aa198454a187b"
+      },
+      {
+        "guessId": "city:los-angeles",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "3 820 914",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-08:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 2",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 59",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 173",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 98",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "0cf56a5f4613cd7423f85f891dceec7010de08ae080753c90ce0a1c087f9a5e4"
+      },
+      {
+        "guessId": "city:washington",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "689 545",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-05:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 13",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 9",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 146",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 128",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "5c64adb26d57c7fd3e3ab498ed1bca365c2c9e07976e2e50f34ed511671fbc46"
+      },
+      {
+        "guessId": "city:dublin",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Ирландия",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Ирландский, Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "1 024 027",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+01:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 28",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 17",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 100",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 14",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 26",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "1333633039d2cf78b8b2b6480187a340e08f0eb075451b3788e85d000bef9d8c"
+      },
+      {
+        "guessId": "city:stockholm",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Швеция",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Шведский",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "1 515 017",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+02:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 36",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 14",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 71",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 45",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 22",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "295e2caf16e0c62304be732897479d66fc3c703d55b9f2340a83ae5d4e565b6c"
+      },
+      {
+        "guessId": "city:seoul",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Южная Корея",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Азия",
+            "status": "match",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Корейский",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "10 349 312",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+09:00",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 18",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 5",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 129",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 514",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 147",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "07947e0c1db530f0127c309a1752f15044d7924d38d58c900f1783d3b2b268a2"
+      },
+      {
+        "guessId": "city:zuerich",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Швейцария",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Немецкий, Французский, Итальянский",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "415 367",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+02:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 42",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 21",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 13",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 175",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 10",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "b5a6aa70ee2256203360b7ed9a1461edeec379490cef2f578dc193e14cf096e8"
+      },
+      {
+        "guessId": "city:oslo",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Норвегия",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Норвежский, Норвежский Букмол, Норвежский Нюнорск",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "1 082 575",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+02:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 37",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 53",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 9",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 91",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 6",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "5d9cbc195b96bf61b1cf902a0d86866dcb7bc016b1ee2cdb59251e6bfbbe72e3"
+      },
+      {
+        "guessId": "city:copenhagen",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Дания",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Европа",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Датский",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "1 153 615",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT+02:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 23",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 34",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 159",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 49",
+            "status": "close",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 4",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "7aefc9ce77b898b6c2148a8acbb3edc72e8b7c6cbc76985c2ed9bff437cfbcc7"
+      },
+      {
+        "guessId": "city:dallas",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "США",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "1 326 087",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-06:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 6",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 23",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 288",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 231",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 161",
+            "status": "close",
+            "direction": "up"
+          }
+        ],
+        "digest": "da5a49a20f640d51c3b29aeda52f397c6d2e06897b19460108f66ead05a73135"
+      },
+      {
+        "guessId": "city:toronto",
+        "output": [
+          {
+            "key": "country",
+            "label": "Страна",
+            "value": "Канада",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "continent",
+            "label": "Континент",
+            "value": "Северная Америка",
+            "status": "miss",
+            "direction": null
+          },
+          {
+            "key": "languages",
+            "label": "Языки",
+            "value": "Английский, Французский",
+            "status": "partial",
+            "direction": null,
+            "matchedValues": [
+              "Английский"
+            ]
+          },
+          {
+            "key": "population",
+            "label": "Население",
+            "value": "2 794 356",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "timezone",
+            "label": "Часовой пояс",
+            "value": "GMT-05:00",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "economy",
+            "label": "Экономика",
+            "value": "№ 19",
+            "status": "miss",
+            "direction": "down"
+          },
+          {
+            "key": "humanCapital",
+            "label": "Человеческий капитал",
+            "value": "№ 13",
+            "status": "close",
+            "direction": "down"
+          },
+          {
+            "key": "qualityOfLife",
+            "label": "Качество жизни",
+            "value": "№ 240",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "ecology",
+            "label": "Экология",
+            "value": "№ 224",
+            "status": "miss",
+            "direction": "up"
+          },
+          {
+            "key": "governance",
+            "label": "Работа властей",
+            "value": "№ 27",
+            "status": "miss",
+            "direction": "down"
+          }
+        ],
+        "digest": "5e3ada58579bb48afca0d2ee647daef26b1557995c9d1ae5d671d1b3c238b251"
       }
     ]
   }

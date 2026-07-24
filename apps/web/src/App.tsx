@@ -68,6 +68,7 @@ import { HorizontalScrollLane } from './components/horizontal-scroll-lane/Horizo
 import { GameArtifactSeoDetails, HomeSeoContent } from './components/seo-content/SeoContent'
 import {
   canUseAsArtistPortrait,
+  canonicalMusicGenreLabel,
   canonicalMusicId,
   compareTitles,
   calculateCompletionReward,
@@ -75,10 +76,12 @@ import {
   DIFFICULTIES,
   DIFFICULTY_ORDER,
   getMoscowDate,
+  formatDays,
   isPlayableGamePlotHint,
   localizeMusicCountry,
   MUSIC_ID_REDIRECTS,
   musicCareerStatusLabel,
+  musicActivityStartYear,
   musicDifficultyPool,
   musicOriginLabel,
   musicTierLabel,
@@ -94,6 +97,9 @@ import {
 import { createInitialGameSessionState, gameSessionReducer } from './game/session-reducer'
 import { freePlayAnswerSalt, freePlayGameKey, freePlayLaunchFromGameKey } from './game/free-play'
 import { collectMatchSummaryTags } from './game/match-summary'
+import { attemptProgressStats } from './game/attempt-progress'
+import { searchEmptyMessage, searchMediaAlt, searchResultMeta } from './game/search-presentation'
+import { resultCardMeta, resultCardTags } from './game/result-presentation'
 import { copyText, shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
@@ -119,6 +125,7 @@ import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEnt
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
 import { UserBadgeList } from './components/user-badges/UserBadgeList'
+import { MedicalSafetyNotice } from './features/medical-safety/MedicalSafetyNotice'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -449,36 +456,6 @@ const ratingBadge = (item: TitleItem) => {
   }
   return { label: 'КП', value: item.ratings?.kinopoisk?.toFixed(1) ?? '—' }
 }
-const progressOverlapHintKeys = new Set([
-  'body_systems',
-  'symptoms',
-  'diagnostics',
-  'risk_factors',
-  'genres',
-  'steam_categories',
-  'platforms',
-  'developer',
-  'publisher',
-])
-const nonScoringHintKeys = new Set(['similar_artists', 'top_track', 'top_album', 'listeners'])
-const hintProgressScore = (hint: Attempt['hints'][number]) => {
-  if (nonScoringHintKeys.has(hint.key)) return 0
-  if (progressOverlapHintKeys.has(hint.key)) {
-    const overlapCount = (hint.matchedValues ?? []).filter(Boolean).length
-    if (overlapCount > 0) return overlapCount
-  }
-  if ((hint.key === 'creator' || hint.key === 'cast') && hint.people?.some((person) => person.matched)) return 1
-  return hint.status === 'match' ? 1 : 0
-}
-const progressStats = (hints: Attempt['hints']) => {
-  const scores = hints.map(hintProgressScore)
-  return {
-    matchedCount: scores.reduce((sum, score) => sum + score, 0),
-    matchedFields: scores.filter((score) => score > 0).length,
-    totalFields: hints.length,
-  }
-}
-
 const SERVICE_REVIEW_REASONS = new Set(['theaudiodb_demo_key_used'])
 const HUMAN_REVIEW_REASON_LABELS: Record<string, string> = {
   conflict_country: 'Конфликт: страна',
@@ -1010,8 +987,8 @@ const Poster = ({ item, className = '' }: { item: TitleItem; className?: string 
   const initials = artistInitials(item.titleRu || item.titleOriginal || '')
 
   return portraitSource && !failed
-    ? <img className={className} src={portraitSource} alt={`Постер «${item.titleRu}»`} onError={() => setFailed(true)} />
-    : <div className={`${className} poster-fallback${item.mode === 'diagnosis' ? ' poster-fallback--diagnosis' : ''}`}>
+    ? <img className={className} src={portraitSource} alt={searchMediaAlt(item)} onError={() => setFailed(true)} />
+    : <div className={`${className} poster-fallback${item.mode === 'diagnosis' ? ' poster-fallback--diagnosis' : ''}`} role="img" aria-label={searchMediaAlt(item)}>
       {item.mode === 'music'
         ? <>
             <Music2 />
@@ -1041,6 +1018,7 @@ function GameSelector({ mode, onClick, compact = false }: { mode: TitleMode; onC
 function PeriodControl({
   mode,
   value,
+  freePlayArmed,
   onChange,
   periodUnlockCostValue,
   onStartFreePlay,
@@ -1055,6 +1033,7 @@ function PeriodControl({
 }: {
   mode: TitleMode
   value: PeriodKey
+  freePlayArmed: boolean
   onChange: (period: PeriodKey) => void
   periodUnlockCostValue: number
   onStartFreePlay: () => void
@@ -1076,7 +1055,7 @@ function PeriodControl({
   return <GameOptionSelect
     label="Период"
     labelIcon={<CalendarDays />}
-    value={PERIODS[value].label}
+    value={freePlayArmed ? 'Свободная игра' : PERIODS[value].label}
     valueIcon={selectedLocked ? selectedUnlockable ? <LockOpen /> : <Lock /> : undefined}
     endLabel={<><Ticket /> {wallet.tickets}</>}
     menuLabel="Выберите период"
@@ -1088,7 +1067,7 @@ function PeriodControl({
     {(close) => <>
       {PERIOD_UNLOCK_ORDER.map((periodKey) => {
         const isUnlocked = unlocked.has(periodKey)
-        const isActive = value === periodKey
+        const isActive = !freePlayArmed && value === periodKey
         const isMainSession = periodKey === 'all'
         const isCompleted = !isMainSession && completed.has(periodKey)
         const cost = periodUnlockCost(periodKey, periodUnlockCostValue)
@@ -1128,10 +1107,11 @@ function PeriodControl({
         />
       })}
       {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <GameOption
-        className={`period-option period-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? 'unlocked' : 'locked'}`}
+        className={`period-option period-option--free-play ${freePlayArmed ? 'active ' : ''}${hasActiveFreePlay || freePlayShortage === 0 ? 'unlocked' : 'locked'}`}
         title="Свободная игра"
         description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Sparkles />}
+        selected={freePlayArmed}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'positive' : 'muted'}
         onSelect={() => {
           trackMetrikaGoal('open_free_play', {
@@ -1150,6 +1130,7 @@ function PeriodControl({
 
 function DifficultyControl({
   value,
+  freePlayArmed,
   onChange,
   counts,
   onStartFreePlay,
@@ -1160,6 +1141,7 @@ function DifficultyControl({
   clubFreePlay,
 }: {
   value: DifficultyKey
+  freePlayArmed: boolean
   onChange: (difficulty: DifficultyKey) => void
   counts?: Record<DifficultyKey, number> | null
   onStartFreePlay: () => void
@@ -1174,7 +1156,7 @@ function DifficultyControl({
   return <GameOptionSelect
     label="Сложность"
     labelIcon={<BarChart3 />}
-    value={current.label}
+    value={freePlayArmed ? 'Свободная игра' : current.label}
     valueIcon={<span className={`difficulty-bars difficulty-bars--${value}`} aria-hidden="true"><i /><i /><i /></span>}
     menuLabel="Уровень сложности"
     className="difficulty-select-wrap"
@@ -1185,7 +1167,7 @@ function DifficultyControl({
     {(close) => <>
       {DIFFICULTY_ORDER.map((key) => {
         const meta = DIFFICULTIES[key]
-        const isActive = value === key
+        const isActive = !freePlayArmed && value === key
         return <GameOption
           key={key}
           className={`difficulty-option ${isActive ? 'active' : ''}`}
@@ -1202,10 +1184,11 @@ function DifficultyControl({
         />
       })}
       <GameOption
-        className={`difficulty-option difficulty-option--free-play ${hasActiveFreePlay || freePlayShortage === 0 ? '' : 'locked'}`}
+        className={`difficulty-option difficulty-option--free-play ${freePlayArmed ? 'active ' : ''}${hasActiveFreePlay || freePlayShortage === 0 ? '' : 'locked'}`}
         title="Свободная игра"
         description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Sparkles />}
+        selected={freePlayArmed}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'special' : 'muted'}
         onSelect={() => {
           trackMetrikaGoal('open_free_play', { mode: 'music', cost: hasActiveFreePlay ? 0 : freePlayCostValue, launchesToday: freePlayLaunchesToday, hasActiveSession: hasActiveFreePlay })
@@ -1463,11 +1446,11 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
   }
 
   const launchOption = mode === 'music'
-    ? <DifficultyControl value={difficulty} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} />
+    ? <DifficultyControl value={difficulty} freePlayArmed={freePlayArmed} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} />
     : hasModeVariants
       ? <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
       : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
-        ? <PeriodControl mode={mode} value={period} onChange={setPeriod} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
+        ? <PeriodControl mode={mode} value={period} freePlayArmed={freePlayArmed} onChange={setPeriod} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
         : undefined
   const launchControls = <GameLaunchControls
     mode={mode}
@@ -1533,6 +1516,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
                 <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
                 <h2 id="ticket-diagnosis">Ежедневная игра: диагнозы</h2>
                 <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
+                <MedicalSafetyNotice compact />
                 {hasAnamnesis && <button type="button" className="med-chart__anamnesis" onClick={onReadAnamnesis}>
                   <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
                   <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
@@ -2222,7 +2206,7 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
   const genresHint = byKey.get('genres')
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
-  const score = progressStats(attempt.hints)
+  const score = attemptProgressStats(attempt.hints)
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
   const yearText = item.year != null ? String(item.year) : null
@@ -2292,7 +2276,7 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const genresHint = byKey.get('genres')
   const rankHint = byKey.get('rank')
   const yearHint = byKey.get('year')
-  const score = progressStats(attempt.hints)
+  const score = attemptProgressStats(attempt.hints)
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const attrs = ['players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
@@ -2354,12 +2338,13 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
 
 function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const score = progressStats(attempt.hints)
+  const score = attemptProgressStats(attempt.hints)
   const genresHint = byKey.get('genres')
-  const genres = item.genres ?? []
+  const genres = (item.genres ?? []).map(canonicalMusicGenreLabel)
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const listenersValue = item.votes?.gamesPlayed ?? null
-  const requestedHints = ['country', 'year', 'decade', 'music_type', 'music_active', 'music_origin']
+  const activityStartYear = musicActivityStartYear(item)
+  const requestedHints = ['country', 'activity_start_year', 'decade', 'music_type', 'music_active', 'music_origin']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
@@ -2373,11 +2358,11 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
         <h2>{item.titleRu}</h2>
         <p className="gm-head__sub">
           <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
-          {item.year != null && <>
+          {activityStartYear != null && <>
             <i className="gm-head__dot" aria-hidden="true">·</i>
-            <span className={`gm-year ${byKey.get('year')?.status ?? ''}`}>
-              {item.year}
-              {byKey.get('year')?.direction === 'up' ? <ArrowUp /> : byKey.get('year')?.direction === 'down' ? <ArrowDown /> : byKey.get('year')?.status === 'match' ? <Check /> : null}
+            <span className={`gm-year ${byKey.get('activity_start_year')?.status ?? ''}`}>
+              {activityStartYear}
+              {byKey.get('activity_start_year')?.direction === 'up' ? <ArrowUp /> : byKey.get('activity_start_year')?.direction === 'down' ? <ArrowDown /> : byKey.get('activity_start_year')?.status === 'match' ? <Check /> : null}
             </span>
           </>}
         </p>
@@ -2435,7 +2420,7 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
   const attrs = ['disease_types', 'course', 'contagiousness', 'typical_age', 'localization']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
-  const score = progressStats(attempt.hints)
+  const score = attemptProgressStats(attempt.hints)
   const icdValue = item.icd10?.[0] ?? item.icdGroup ?? '—'
 
   return <article className="attempt-card attempt-card--dx">
@@ -2517,7 +2502,7 @@ function CityRankProfile({ item, hints }: { item: TitleItem; hints: Attempt['hin
 }
 
 function CityAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
-  const score = progressStats(attempt.hints)
+  const score = attemptProgressStats(attempt.hints)
   const primaryHints = attempt.hints.filter((hint) => !CITY_RANK_HINT_KEYS.has(hint.key))
   const rankHints = attempt.hints.filter((hint) => CITY_RANK_HINT_KEYS.has(hint.key))
   return <article className="attempt-card attempt-card--city">
@@ -2727,9 +2712,17 @@ function Game({
     }
     return next
   }, [pool, debouncedQuery, used, mode, searchIndex])
-  const latestMatchCount = attempts.at(-1)?.hints.filter((hint) => hint.status === 'match').length ?? 0
+  const latestMatchCount = attempts.length ? attemptProgressStats(attempts.at(-1)!.hints).matchedFields : 0
+  const searchPending = Boolean(query.trim()) && query.trim() !== debouncedQuery.trim()
 
   const isSuggestionsOpen = isSearchDropdownOpen && Boolean(query) && !selected
+  const selectSuggestion = (item: TitleItem) => {
+    dispatchSession({ type: 'set_selected', selected: item })
+    dispatchSession({ type: 'set_query', query: item.titleRu })
+    dispatchSession({ type: 'set_message', message: '' })
+    setIsSearchDropdownOpen(false)
+    inputRef.current?.focus()
+  }
 
   useEffect(() => {
     if (!isSuggestionsOpen || !suggestions.length) {
@@ -2878,8 +2871,8 @@ function Game({
   }
   const hintDialogRef = useDialogFocusTrap<HTMLElement>(Boolean(hintModalRound), dismissHintModal)
 
-  const submit = (forcedSelection?: TitleItem) => {
-    const nextSelection = forcedSelection ?? selected
+  const submit = () => {
+    const nextSelection = selected
     if (!nextSelection || !answer || status !== 'playing') {
       dispatchSession({ type: 'set_message', message: 'Выберите вариант из найденного списка' })
       return
@@ -2973,22 +2966,8 @@ function Game({
     localStorage.setItem(key, JSON.stringify([...reports.slice(-99), { mode, date, answerId: answer.id, reason, comment, at: new Date().toISOString() }]))
     trackMetrikaGoal('content_report_submitted', { mode, reason })
   }
-  const resultMeta = answer.mode === 'diagnosis'
-    ? [answer.titleOriginal, ...(answer.icd10 ?? []), answer.icdGroup].filter(Boolean).join(' · ')
-    : answer.mode === 'game'
-      ? [answer.year, ...(answer.genres ?? []).slice(0, 1)].filter(Boolean).join(' · ')
-      : answer.mode === 'city'
-        ? [answer.country, answer.continent, answer.population ? `${new Intl.NumberFormat('ru-RU').format(answer.population)} жителей` : null].filter(Boolean).join(' · ')
-      : answer.mode === 'music'
-        ? [answer.year ? `с ${answer.year}` : null, musicTypeLabel(answer.musicType), ...(answer.genres ?? []).slice(0, 1)].filter(Boolean).join(' · ')
-        : [answer.year, ...(answer.genres ?? []).slice(0, 1)].filter(Boolean).join(' · ')
-  const resultTags = answer.mode === 'diagnosis'
-    ? [...(answer.bodySystems ?? []).slice(0, 2), ...(answer.icd10 ?? []).slice(0, 1)]
-    : answer.mode === 'game'
-      ? [...(answer.genres ?? []).slice(0, 3), ...dedupeGameCategories(answer.steamCategories ?? [], true).slice(0, 1)]
-      : answer.mode === 'city'
-        ? [...(answer.languages ?? []).slice(0, 3), answer.timezone].filter((value): value is string => Boolean(value))
-      : (answer.genres ?? []).slice(0, 3)
+  const resultMeta = resultCardMeta(answer)
+  const resultTags = resultCardTags(answer)
 
   return <>
     <GamePageFrame controller={{ source: 'local', mode, puzzleDate: date, status, attemptsCount: attempts.length, variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={() => {
@@ -3009,6 +2988,7 @@ function Game({
         <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>
       </section>
 
+      {mode === 'diagnosis' && <MedicalSafetyNotice />}
       {(showTodayLink || (mode === 'diagnosis' && !!anamnesisText)) && <section className="game-toolbar" aria-label="Настройки игры">
         {mode === 'diagnosis' && !!anamnesisText && <ActionButton variant="secondary" className="anamnesis-link" onClick={() => {
           trackMetrikaGoal('open_anamnesis', { mode })
@@ -3020,14 +3000,14 @@ function Game({
         }}>Сегодня</ActionButton>}
       </section>}
 
-      <div className="progress-row">
+      {status === 'playing' && <div className="progress-row">
         <Progress attempts={attempts.length} />
         {canUseHint && !hintModalRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => {
           if (!preferredHintRound) return
           trackMetrikaGoal('open_hint_modal', { mode, period: effectivePeriod, round: preferredHintRound })
           setHintModalRound(preferredHintRound)
         }}><Sparkles /> {hintTriggerLabel}</ActionButton>}
-      </div>
+      </div>}
 
       {!!revealedAssistHints.length && <section className="assist-revealed" aria-label="Открытые подсказки">
         {revealedAssistHints.map((hint, index) => <article key={`${hint.key}-${index}`} className="assist-reveal-card">
@@ -3117,7 +3097,7 @@ function Game({
                 }
                 if (suggestions.length) {
                   const index = activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0
-                  submit(suggestions[index])
+                  selectSuggestion(suggestions[index])
                   return
                 }
                 submit()
@@ -3125,22 +3105,14 @@ function Game({
             }}
           />
           {selected && <Check className="selected-check" />}
-          <button onClick={() => submit()} aria-label="Проверить ответ"><ChevronRight /></button>
+          <button onClick={() => submit()} aria-label="Проверить ответ" disabled={!selected}><ChevronRight /></button>
         </div>
         {isSuggestionsOpen && <div className="suggestions">
-          {suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => submit(item)}>
+          {searchPending
+            ? <div className="search-loading" role="status">Ищем в текущем пуле…</div>
+            : suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => selectSuggestion(item)}>
             <Poster item={item} />
-            <span><strong>{item.titleRu}</strong><small>{item.mode === 'diagnosis'
-              ? [item.titleOriginal || 'Без оригинального названия', ...(item.icd10?.length ? [item.icd10.join(', ')] : []), ...(item.icdGroup ? [item.icdGroup] : [])].filter(Boolean).join(' · ')
-              : item.mode === 'game'
-                ? [item.titleOriginal || 'Без оригинального названия', item.year != null ? String(item.year) : '—', item.topRank != null ? `#${item.topRank}` : null].filter(Boolean).join(' · ')
-                : item.mode === 'music'
-                  ? [
-                      item.titleOriginal || 'Без оригинального названия',
-                      item.year != null ? `начало карьеры: ${item.year}` : '—',
-                      musicTypeLabel(item.musicType),
-                    ].filter(Boolean).join(' · ')
-                : `${item.titleOriginal || 'Без оригинального названия'} · ${item.year ?? '—'}`}</small></span>
+            <span><strong>{item.titleRu}</strong><small>{searchResultMeta(item)}</small></span>
             <em>{item.mode === 'diagnosis'
               ? (item.contagiousness ?? item.icd10?.[0] ?? '—')
               : item.mode === 'anime'
@@ -3160,7 +3132,7 @@ function Game({
               : item.mode === 'game'
                 ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
                 : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
-          </button>) : <div className="empty-search">Ничего не найдено</div>}
+          </button>) : <div className="empty-search">{searchEmptyMessage(mode)}</div>}
         </div>}
         </div>
         <GameMatchStrip attempts={attempts} mode={mode} open={gameMatchStripOpen} onToggle={() => {
@@ -3264,6 +3236,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 }) {
   const client = useQueryClient()
   const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState<PublicContentItem | null>(null)
   const debouncedQuery = useDebouncedValue(query.trim(), 120)
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
@@ -3290,9 +3263,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   })
   const dashboard = useQuery({ queryKey: queryKeys.dashboard, queryFn: api.dashboard })
   const searchParams = useMemo(() => {
-    if (!session || !debouncedQuery) return null
+    if (!session || !debouncedQuery || selected) return null
     return new URLSearchParams({ mode: session.mode, q: debouncedQuery, sessionId, limit: '10' })
-  }, [debouncedQuery, session, sessionId])
+  }, [debouncedQuery, selected, session, sessionId])
   const search = useQuery({ queryKey: queryKeys.search(sessionId, debouncedQuery), queryFn: () => api.search(searchParams!), enabled: Boolean(searchParams), staleTime: 15_000 })
   const attempt = useMutation({
     mutationFn: ({ itemId, key }: { itemId: string; key: string }) => api.attempt(sessionId, itemId, key),
@@ -3300,6 +3273,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     onSuccess: async (response) => {
       attemptKeyRef.current = null
       setQuery('')
+      setSelected(null)
       setMessage('')
       if (response.reward) {
         setLastAward(response.reward)
@@ -3364,6 +3338,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setRevealedHint(null)
     setDismissedHintRounds([])
     setLeaderboardOpen(false)
+    setQuery('')
+    setSelected(null)
   }, [sessionId])
 
   useEffect(() => {
@@ -3475,11 +3451,18 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
+  const searchPending = Boolean(query.trim()) && (query.trim() !== debouncedQuery.trim() || search.isFetching)
+  const isSuggestionsOpen = Boolean(query.trim() && !selected)
   const submit = (item: PublicContentItem) => {
     if (attempt.isPending || session.status !== 'playing') return
     const key = attemptKeyRef.current ?? crypto.randomUUID()
     attemptKeyRef.current = key
     attempt.mutate({ itemId: item.id, key })
+  }
+  const selectSuggestion = (item: PublicContentItem) => {
+    setSelected(item)
+    setQuery(item.titleRu)
+    setMessage('')
   }
   const revealHint = (hintKey: AssistHintKey) => {
     if (!hintModalRound || hint.isPending || revealedHint) return
@@ -3557,18 +3540,13 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     newDailyStreak: dashboard.data?.attendance?.currentDailyStreak ?? 0,
     alreadyClaimed: lastAward.alreadyClaimed,
   } : null
-  const answerMeta = answer
-    ? answer.mode === 'city'
-      ? [answer.country, answer.continent, answer.population ? `${new Intl.NumberFormat('ru-RU').format(answer.population)} жителей` : null].filter(Boolean).join(' · ')
-      : [answer.titleOriginal, answer.year].filter(Boolean).join(' · ')
-    : ''
-  const answerTags = answer?.mode === 'city'
-    ? [...(answer.languages ?? []).slice(0, 3), answer.timezone].filter((value): value is string => Boolean(value))
-    : []
+  const answerMeta = answer ? resultCardMeta(answer) : ''
+  const answerTags = answer ? resultCardTags(answer) : []
 
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
+      {session.mode === 'diagnosis' && <MedicalSafetyNotice />}
       {isPromptSession && (isDtfCommentSession
         ? <DtfCommentIntro subtitle={promoSubtitle} />
         : <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
@@ -3576,7 +3554,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         ? <DtfCommentFeed comments={promoHints} attemptsCount={session.attemptsCount} />
         : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
+      {session.status === 'playing' && <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>}
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isPackSession ? undefined : completedToday} nextRewardText={isPackSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession
         ? () => {
@@ -3594,8 +3572,20 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
         <div className="search-picker">
-          <div className="search-box"><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => { if (event.key === 'Enter' && suggestions[0]) { event.preventDefault(); submit(suggestions[0]) } }} disabled={attempt.isPending} /><button onClick={() => suggestions[0] && submit(suggestions[0])} aria-label="Проверить ответ"><ChevronRight /></button></div>
-          {query && <div className="suggestions">{suggestions.length ? suggestions.map((item) => <button key={item.id} onClick={() => submit(item)} disabled={attempt.isPending}><Poster item={publicItemToTitle(item)} /><span><strong>{item.titleRu}</strong><small>{item.titleOriginal} · {item.year ?? '—'}</small></span></button>) : !search.isFetching && <div className="empty-search">Ничего не найдено</div>}</div>}
+          <div className={`search-box ${selected ? 'selected' : ''}`}><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); setSelected(null); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => {
+            if (event.key !== 'Enter') return
+            event.preventDefault()
+            if (selected) submit(selected)
+            else if (suggestions[0]) selectSuggestion(suggestions[0])
+          }} disabled={attempt.isPending} />{selected && <Check className="selected-check" />}<button onClick={() => selected && submit(selected)} aria-label="Проверить ответ" disabled={!selected || attempt.isPending}><ChevronRight /></button></div>
+          {isSuggestionsOpen && <div className="suggestions">{searchPending
+            ? <div className="search-loading" role="status">Ищем в текущем пуле…</div>
+            : suggestions.length
+              ? suggestions.map((item) => {
+                  const title = publicItemToTitle(item)
+                  return <button key={item.id} onClick={() => selectSuggestion(item)} disabled={attempt.isPending}><Poster item={title} /><span><strong>{item.titleRu}</strong><small>{searchResultMeta(title)}</small></span></button>
+                })
+              : <div className="empty-search">{searchEmptyMessage(session.mode)}</div>}</div>}
         </div>
         <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => {
           trackMetrikaGoal('toggle_match_strip', { mode: session.mode, period: session.period })
@@ -4201,7 +4191,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
                 <div className="profile-section__head"><div><span>Серия</span><h2>Неделя в игре</h2></div></div>
                 <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? FULL_HOUSE_MODE_IDS.length : day.hasActivity ? '•' : ''}</i></div>)}</div>
               </div>
-              <aside className="profile-week__streak"><Trophy /><strong>{attendance.currentDailyStreak}</strong><span>дней подряд</span><p>{attendance.currentDailyStreak ? 'Серия продолжается' : 'Сыграйте сегодня, чтобы начать серию'}</p></aside>
+              <aside className="profile-week__streak"><Trophy /><strong>{attendance.currentDailyStreak}</strong><span>{formatDays(attendance.currentDailyStreak)} подряд</span><p>{attendance.currentDailyStreak ? 'Серия продолжается' : 'Сыграйте сегодня, чтобы начать серию'}</p></aside>
             </section>
 
             <section className="profile-section profile-rewards">
@@ -5354,6 +5344,10 @@ function GameApp() {
     setFreePlayArmed(false)
     setPeriod(nextPeriod)
   }
+  const setDifficultyFromTitle = (nextDifficulty: DifficultyKey) => {
+    setFreePlayArmed(false)
+    setDifficulty(nextDifficulty)
+  }
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
   const titleActionPending = startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending
   const completeTitleTransition = () => {
@@ -5375,7 +5369,7 @@ function GameApp() {
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onJoined={(session) => activateServerSession(session, 'hub')} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficulty} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && <TitleScreen mode={mode} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficultyFromTitle} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onClub={() => moveToScreen('club')} />}
 

@@ -22,7 +22,7 @@ describe('match summary', () => {
     ])
   })
 
-  it('keeps only compact fields from game cards and drops verbose category clouds', () => {
+  it('derives the summary from every exact field, including platforms and categories', () => {
     const attempts = [{
       titleId: 'game:guess',
       hints: [
@@ -33,6 +33,12 @@ describe('match summary', () => {
       ],
     }] as Attempt[]
 
-    expect(collectMatchSummaryTags(attempts, 'game').map(({ value }) => value)).toEqual(['15 ₽', 'Racing'])
+    expect(collectMatchSummaryTags(attempts, 'game').map(({ value }) => value)).toEqual([
+      '15 ₽',
+      'Racing',
+      'Stereo Sound',
+      'Steam Cloud',
+      'windows',
+    ])
   })
 })

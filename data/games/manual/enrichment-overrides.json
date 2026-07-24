@@ -36,5 +36,53 @@
       "mustIncludeDaily": true,
       "reason": "Expected modern co-op hit."
     }
+  },
+  "byCanonicalGameId": {
+    "tgdb_38455": {
+      "releaseScope": "title",
+      "platforms": [
+        "Nintendo Switch",
+        "Nintendo Wii U"
+      ],
+      "reason": "Nintendo documents the same 2017 title for both Switch and Wii U."
+    },
+    "tgdb_113840": {
+      "releaseScope": "title",
+      "developers": [
+        "Taito"
+      ],
+      "publishers": [
+        "Taito"
+      ],
+      "platforms": [
+        "Arcade",
+        "Nintendo Entertainment System"
+      ],
+      "genres": [
+        "Action",
+        "Platform"
+      ],
+      "reason": "The title-level card represents Taito's 1987 arcade game and its home release family."
+    },
+    "tgdb_6910": {
+      "releaseScope": "title",
+      "developers": [
+        "Technōs Japan"
+      ],
+      "publishers": [
+        "Technōs Japan",
+        "Taito"
+      ],
+      "platforms": [
+        "Arcade",
+        "Nintendo Entertainment System",
+        "Commodore 64"
+      ],
+      "genres": [
+        "Action",
+        "Beat 'em up"
+      ],
+      "reason": "The generic title must describe the original 1987 Technōs arcade identity, not only one later port."
+    }
   }
 }

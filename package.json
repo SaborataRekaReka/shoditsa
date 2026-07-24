@@ -120,7 +120,7 @@
     "data:music:hints:repair": "node scripts/music/repair-hints.mjs",
     "data:music:hints:validate": "node scripts/music/validate-hints-output.mjs",
     "data:audit:music": "node scripts/music/audit-database.mjs",
-    "data:validate": "node scripts/diagnostics/validate-generated-data.mjs",
+    "data:validate": "node scripts/diagnostics/validate-generated-data.mjs && tsx scripts/diagnostics/validate-gameplay-catalog.ts",
     "daily:salt": "node scripts/maintenance/set-daily-salt.mjs",
     "metrics:baseline": "node scripts/diagnostics/collect-baseline-metrics.mjs",
     "smoke:production": "node scripts/diagnostics/smoke-production-main.mjs",

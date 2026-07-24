@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { chooseArtistDisplayNames } from './artist-display-name.mjs'
 
 const ROOT = process.cwd()
 const DEFAULT_SOURCE_RELATIVE = 'data/music/normalized/music_artists_enriched_first500_merged_retry_batched.resolved.json'
@@ -397,14 +398,12 @@ const mapNormalizedArtistToTitleItem = (entry, index) => {
   const topRank = toInteger(entry?.input?.rank)
   const popularityScore = derivePopularityScore({ listeners, playcount, rank: topRank })
 
-  const titleRu = displayRu ?? canonicalName ?? inputName ?? artistKey
-  const titleOriginal = displayEn ?? canonicalName ?? inputName ?? titleRu
+  const displayNames = chooseArtistDisplayNames({ inputName, canonicalName, displayRu, displayEn, artistKey })
+  const { titleRu, titleOriginal } = displayNames
 
   const alternativeTitles = uniqueStrings([
     ...aliases,
-    ...(inputName ? [inputName] : []),
-    ...(displayEn && displayEn !== titleOriginal ? [displayEn] : []),
-    ...(canonicalName && canonicalName !== titleOriginal ? [canonicalName] : []),
+    ...displayNames.aliases,
   ]).filter((value) => normalize(value) !== normalize(titleRu) && normalize(value) !== normalize(titleOriginal))
 
   const topTrack = topTracks[0]?.title ?? null

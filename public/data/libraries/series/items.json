@@ -5404,12 +5404,17 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_manual_overrides"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1,
+    "notes": [
+      "manual_seasons_count_override"
+    ]
   },
   {
     "id": "kp_4539419",
@@ -117174,31 +117179,14 @@
     ],
     "showrunners": [
       {
-        "nameRu": "Jonas Lindt",
-        "nameOriginal": "Jonas Lindt",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Паулина Лоренц",
-        "nameOriginal": "Paulina Lorenz",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
+        "nameRu": "Сэм Левинсон",
+        "nameOriginal": "Sam Levinson"
       }
     ],
     "writers": [
       {
-        "nameRu": "Jonas Lindt",
-        "nameOriginal": "Jonas Lindt",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Паулина Лоренц",
-        "nameOriginal": "Paulina Lorenz",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
         "nameRu": "Сэм Левинсон",
-        "nameOriginal": "Sam Levinson",
-        "photoUrl": "./data/libraries/people/img/f2/f2eb1c80a0ee7d303512b7ba6fcd315535ccd98e76b5aa32871253d02a96b7ec.webp"
+        "nameOriginal": "Sam Levinson"
       }
     ],
     "cast": [
@@ -117281,13 +117269,17 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_meta_tvmaze_or_kinopoisk"
+        "series_meta_tvmaze_or_kinopoisk",
+        "series_manual_overrides"
       ],
       "verified": true,
       "missingFields": []
     },
     "seriesStatus": "Закончен",
-    "seasonsCount": 3
+    "seasonsCount": 3,
+    "notes": [
+      "manual_creator_identity_override"
+    ]
   },
   {
     "id": "kp_4824192",

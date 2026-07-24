@@ -105,6 +105,12 @@ describe('catalog search pool', () => {
         gameTier: 'core',
         contentStatus: 'ready',
         allowedInGame: true,
+        activityStartYear: 2000,
+        countries: ['US'],
+        genres: ['pop'],
+        musicType: 'Solo',
+        musicIsActive: true,
+        musicOrigin: 'intl',
       },
       {
         id: 'music:niche',
@@ -116,6 +122,12 @@ describe('catalog search pool', () => {
         gameTier: 'niche',
         contentStatus: 'ready',
         allowedInGame: true,
+        activityStartYear: 2010,
+        countries: ['RU'],
+        genres: ['rock'],
+        musicType: 'Group',
+        musicIsActive: true,
+        musicOrigin: 'ru',
       },
     ] as TitleItem[]
     const rows = items.map((payload, index) => ({ id: `version-${index}`, payload }))

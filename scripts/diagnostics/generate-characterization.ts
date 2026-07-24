@@ -8,8 +8,9 @@ import { LIBRARIES } from '../content/lib.js'
 const output = resolve('./packages/game-core/test/fixtures/compare-golden.json')
 const result: Record<string, unknown> = {}
 for (const library of LIBRARIES) {
+  if (library.mode === 'danetki') continue
   const items = JSON.parse(await readFile(resolve(`./public/data/libraries/${library.dir}/items.json`), 'utf8')) as TitleItem[]
-  const answer = items[20]
+  const answer = items[Math.min(20, items.length - 1)]
   result[library.mode] = {
     answerId: answer.id,
     cases: items.slice(0, 20).map((guess) => ({

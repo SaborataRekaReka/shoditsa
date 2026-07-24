@@ -113,9 +113,12 @@ for (const item of items) {
   if (!item.id) missing.push('id')
   if (!item.titleRu && !item.titleOriginal) missing.push('title')
   if (!item.plotHint) missing.push('plotHint')
-  if (!Number.isInteger(item.year)) missing.push('year')
+  if (!Number.isInteger(item.activityStartYear ?? item.year)) missing.push('activityStartYear')
   if (!Array.isArray(item.countries) || item.countries.length === 0) missing.push('countries')
   if (!Array.isArray(item.genres) || item.genres.length === 0) missing.push('genres')
+  if (!item.musicType || normalize(item.musicType) === 'unknown') missing.push('musicType')
+  if (typeof item.musicIsActive !== 'boolean') missing.push('musicIsActive')
+  if (!item.musicOrigin) missing.push('musicOrigin')
   if (!Array.isArray(item.musicLinks) || item.musicLinks.length === 0) missing.push('musicLinks')
   if (missing.length) missingFields.push({ id: item.id, status: item.contentStatus, missing })
 }

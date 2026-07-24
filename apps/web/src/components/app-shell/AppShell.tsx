@@ -9,6 +9,8 @@ import { canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/f
 import { toLegacyAttendance, toLegacyWallet } from '../../features/server-runtime/adapters'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { loadAttendanceStats, loadWallet } from '../../storage'
+import { formatDays } from '../../game'
+import { headerRuntimeState } from './header-runtime-state'
 
 export const PROFILE_OPEN_EVENT = 'seans:open-profile'
 export type ProfileMenuTab = 'overview' | 'stats' | 'achievements' | 'settings'
@@ -148,7 +150,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
   const [signingOut, setSigningOut] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const profileTriggerRef = useRef<HTMLButtonElement>(null)
-  const { session } = useAuthSession()
+  const { session, loading: authLoading } = useAuthSession()
   const serverRuntime = useServerRuntime()
   const createRoom = onCreateRoom ?? (() => {
     const returnUrl = '/games/together'
@@ -156,13 +158,22 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
       ? returnUrl
       : friendsRoomRegistrationHref(returnUrl))
   })
-  const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
-  const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
-  const profileLabel = session && !session.isAnonymous
-    ? session.name || session.email?.split('@')[0] || 'Профиль'
-    : 'Гость'
-  const signedIn = Boolean(session && !session.isAnonymous)
-  const hasClub = Boolean(serverRuntime.dashboard?.membership.active)
+  const runtimeState = headerRuntimeState({
+    serverRuntime: SERVER_RUNTIME,
+    authLoading,
+    runtimeLoading: serverRuntime.loading,
+    hasDashboard: Boolean(serverRuntime.dashboard),
+  })
+  const runtimeReady = runtimeState === 'ready'
+  const wallet = runtimeReady ? (SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()) : null
+  const attendance = runtimeReady ? (SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()) : null
+  const profileLabel = !runtimeReady
+    ? runtimeState === 'loading' ? 'Загрузка…' : 'Недоступно'
+    : session && !session.isAnonymous
+      ? session.name || session.email?.split('@')[0] || 'Профиль'
+      : 'Гость'
+  const signedIn = runtimeReady && Boolean(session && !session.isAnonymous)
+  const hasClub = runtimeReady && Boolean(serverRuntime.dashboard?.membership.active)
   const hashRoute = typeof window === 'undefined' ? null : window.location.hash.match(/^#(\/[^?]*)/)
   const currentPath = hashRoute?.[1] ?? (typeof window === 'undefined' ? '/' : window.location.pathname)
   const mobileSection = currentPath === '/archive'
@@ -214,11 +225,15 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         <button
           className="header-economy"
           type="button"
-          aria-label={`Билеты: ${wallet.tickets}. Стрик: ${attendance.currentDailyStreak} дней`}
+          aria-busy={runtimeState === 'loading'}
+          aria-label={runtimeReady && wallet && attendance
+            ? `Билеты: ${wallet.tickets}. Серия: ${formatDays(attendance.currentDailyStreak)}`
+            : runtimeState === 'loading' ? 'Загружаем билеты и серию' : 'Билеты и серия временно недоступны'}
+          disabled={!runtimeReady}
           onClick={() => { trackMetrikaGoal('open_economy_modal'); setEconomyOpen(true) }}
         >
-          <span><Ticket /> <strong>{wallet.tickets}</strong></span>
-          <span><Trophy /> <strong>{attendance.currentDailyStreak}</strong><i>дн.</i></span>
+          <span><Ticket /> <strong>{wallet?.tickets ?? '—'}</strong></span>
+          <span><Trophy /> <strong>{attendance?.currentDailyStreak ?? '—'}</strong>{attendance && <i>дн.</i>}</span>
         </button>
         <nav aria-label="Навигация">
           <a
@@ -232,14 +247,14 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
           </a>
           <button className="header-create-room" type="button" onClick={createRoom}><Plus /><span>Создать комнату</span></button>
           <div className="header-profile-menu" ref={profileMenuRef}>
-            <button ref={profileTriggerRef} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label="Открыть меню" title="Меню" aria-haspopup="menu" aria-expanded={profileMenuOpen}>
+            <button ref={profileTriggerRef} disabled={!runtimeReady} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label={runtimeReady ? 'Открыть меню' : profileLabel} title={runtimeReady ? 'Меню' : profileLabel} aria-busy={runtimeState === 'loading'} aria-haspopup="menu" aria-expanded={profileMenuOpen}>
               <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
             </button>
             {profileMenuOpen && <div className="header-profile-dropdown" role="menu">
               <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{signedIn ? session?.name || 'Игрок' : 'Гость кинозала'}</strong><small>{signedIn ? session?.email : 'Прогресс хранится в этом браузере'}</small></div></div>
-              <button className="header-profile-dropdown__economy" type="button" role="menuitem" aria-label={`Билеты: ${wallet.tickets}. Серия: ${attendance.currentDailyStreak} дней`} onClick={() => { trackMetrikaGoal('open_economy_modal'); profileTriggerRef.current?.focus(); setProfileMenuOpen(false); setEconomyOpen(true) }}>
-                <Ticket /><span>Билеты</span><strong>{wallet.tickets}</strong>
-                <Trophy /><span>Серия</span><strong>{attendance.currentDailyStreak} дн.</strong>
+              <button className="header-profile-dropdown__economy" type="button" role="menuitem" aria-label={`Билеты: ${wallet?.tickets ?? 0}. Серия: ${formatDays(attendance?.currentDailyStreak ?? 0)}`} onClick={() => { trackMetrikaGoal('open_economy_modal'); profileTriggerRef.current?.focus(); setProfileMenuOpen(false); setEconomyOpen(true) }}>
+                <Ticket /><span>Билеты</span><strong>{wallet?.tickets}</strong>
+                <Trophy /><span>Серия</span><strong>{attendance ? formatDays(attendance.currentDailyStreak) : ''}</strong>
               </button>
               <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>{signedIn ? 'Обзор профиля' : 'Гостевой кабинет'}</span></button>
               <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_archive'); setProfileMenuOpen(false); onArchive() }}><Archive /><span>Архив</span></button>
@@ -303,7 +318,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         <UserRound /><span>Профиль</span>
       </button>
     </nav>
-    {economyOpen && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
+    {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
   </>
 }
 

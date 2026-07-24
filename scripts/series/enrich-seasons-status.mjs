@@ -1,8 +1,10 @@
 import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { applySeriesOverride, loadSeriesOverrides } from './manual-overrides.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
+const seriesOverrides = await loadSeriesOverrides(root)
 const envFile = resolve(root, '.env.local')
 
 if (existsSync(envFile)) {
@@ -196,7 +198,7 @@ const fallbackStatus = (item, details) => {
   return 'Еще выходит'
 }
 
-const data = await readCollection(inputPath)
+const data = (await readCollection(inputPath)).map((item) => applySeriesOverride(item, seriesOverrides))
 const seriesItems = data.filter((item) => item?.mode === 'series')
 
 const queue = seriesItems.filter((item) => {
@@ -347,6 +349,10 @@ for (let index = 0; index < targets.length; index += 1) {
   if (processed % 25 === 0 || processed === targets.length) {
     console.log(`processed=${processed}/${targets.length} updated=${updated} skipped=${skipped}`)
   }
+}
+
+for (let index = 0; index < data.length; index += 1) {
+  data[index] = applySeriesOverride(data[index], seriesOverrides)
 }
 
 await mkdir(resolve(outputPath, '..'), { recursive: true })

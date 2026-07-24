@@ -6,9 +6,11 @@ import {
   calculateCompletionReward,
   compareTitles,
   dailyTitle,
+  formatDays,
   isAllowedInRegularGame,
   isPlayableGamePlotHint,
   isExactTitleSearchMatch,
+  localizeMusicCountry,
   musicDifficultyPool,
   normalize,
   poolFor,
@@ -32,6 +34,111 @@ describe('game-core characterization', () => {
 })
 
 describe('deterministic rules', () => {
+  it('formats Russian day counts for every declension branch', () => {
+    expect([0, 1, 2, 5, 11, 21, 22, 25].map(formatDays)).toEqual([
+      '0 дней',
+      '1 день',
+      '2 дня',
+      '5 дней',
+      '11 дней',
+      '21 день',
+      '22 дня',
+      '25 дней',
+    ])
+  })
+  it('keeps nearby numeric values directional instead of reporting an exact match', () => {
+    const base = {
+      mode: 'movie',
+      titleRu: 'Фильм',
+      titleOriginal: '',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2000,
+      countries: ['США'],
+      genres: ['драма'],
+    } as TitleItem
+    const guess = { ...base, id: 'guess', runtimeMinutes: 92, ratings: { kinopoisk: 8.5 } }
+    const answer = { ...base, id: 'answer', runtimeMinutes: 94, ratings: { kinopoisk: 8.4 } }
+    const hints = compareTitles(guess, answer)
+
+    expect(hints.find((hint) => hint.key === 'runtime')).toMatchObject({ status: 'close', direction: 'up' })
+    expect(hints.find((hint) => hint.key === 'kp')).toMatchObject({ status: 'close', direction: 'down' })
+  })
+
+  it('quarantines structurally incomplete series and music records', () => {
+    const series = {
+      id: 'series:missing-seasons',
+      mode: 'series',
+      titleRu: 'Сериал',
+      titleOriginal: '',
+      alternativeTitles: [],
+      popularityScore: 1,
+    } as TitleItem
+    const music = {
+      id: 'music:missing-type',
+      mode: 'music',
+      titleRu: 'Артист',
+      titleOriginal: '',
+      alternativeTitles: [],
+      popularityScore: 1,
+      allowedInGame: true,
+      activityStartYear: 2010,
+      countries: ['RU'],
+      genres: ['hip hop'],
+      musicIsActive: true,
+      musicOrigin: 'ru',
+    } as TitleItem
+
+    expect(isAllowedInRegularGame(series)).toBe(false)
+    expect(isAllowedInRegularGame({ ...series, seasonsCount: 1 })).toBe(true)
+    expect(isAllowedInRegularGame(music)).toBe(false)
+    expect(isAllowedInRegularGame({ ...music, musicType: 'Solo' })).toBe(true)
+  })
+
+  it('localizes ISO music countries beyond the original hard-coded map', () => {
+    expect(localizeMusicCountry('AZ')).toContain('Азербайджан')
+  })
+
+  it('keeps canonical music genre spelling in values and overlaps', () => {
+    const base = {
+      mode: 'music',
+      titleRu: 'Артист',
+      titleOriginal: '',
+      alternativeTitles: [],
+      popularityScore: 1,
+      activityStartYear: 2010,
+      countries: ['RU'],
+      musicType: 'Solo',
+      musicIsActive: true,
+      musicOrigin: 'ru',
+    } as TitleItem
+    const hints = compareTitles(
+      { ...base, id: 'guess', genres: ['Hip Hop'] },
+      { ...base, id: 'answer', genres: ['hip-hop'] },
+    )
+
+    expect(hints.find((hint) => hint.key === 'genres')).toMatchObject({
+      value: 'hip-hop',
+      status: 'match',
+      matchedValues: ['hip-hop'],
+    })
+  })
+
+  it('keeps verified title-level game platforms and series creators in the published catalog', () => {
+    const games = JSON.parse(readFileSync(new URL('../../../public/data/libraries/games/items.json', import.meta.url), 'utf8')) as TitleItem[]
+    const series = JSON.parse(readFileSync(new URL('../../../public/data/libraries/series/items.json', import.meta.url), 'utf8')) as TitleItem[]
+
+    expect(games.find((item) => item.id === 'tgdb_38455')).toMatchObject({
+      releaseScope: 'title',
+      platforms: ['Nintendo Switch', 'Nintendo Wii U'],
+    })
+    expect(games.find((item) => item.id === 'tgdb_113840')?.platforms).toContain('Arcade')
+    expect(games.find((item) => item.id === 'tgdb_6910')?.developers).toContain('Technōs Japan')
+    expect(series.find((item) => item.id === 'kp_1178445')?.showrunners).toEqual([
+      { nameRu: 'Сэм Левинсон', nameOriginal: 'Sam Levinson' },
+    ])
+    expect(series.find((item) => item.id === 'kp_5437615')?.seasonsCount).toBe(1)
+  })
   it('normalizes Cyrillic, accents and punctuation', () => expect(normalize('  Ёж — Café! ')).toBe('еж cafe'))
   it('selects the same daily item for the same seed', () => {
     const pool = [{ id: '1', mode: 'movie', titleRu: 'A', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }, { id: '2', mode: 'movie', titleRu: 'B', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }] as TitleItem[]

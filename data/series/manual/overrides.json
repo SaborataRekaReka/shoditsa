@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "byId": {
+    "kp_1178445": {
+      "showrunners": [
+        {
+          "nameRu": "Сэм Левинсон",
+          "nameOriginal": "Sam Levinson"
+        }
+      ],
+      "writers": [
+        {
+          "nameRu": "Сэм Левинсон",
+          "nameOriginal": "Sam Levinson"
+        }
+      ],
+      "notes": [
+        "manual_creator_identity_override"
+      ]
+    },
+    "kp_5437615": {
+      "seasonsCount": 1,
+      "notes": [
+        "manual_seasons_count_override"
+      ]
+    }
+  }
+}
