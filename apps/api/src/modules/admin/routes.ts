@@ -324,14 +324,27 @@ const itemSchema = (mode: string) => ({
   mode,
   groups: [
     { key: 'identity', title: 'Идентификация и названия', fields: ['id', 'mode', 'titleRu', 'titleOriginal', 'alternativeTitles'] },
-    { key: 'game', title: 'Игровые данные и подсказки', fields: [...(mode === 'music' ? ['activityStartYear'] : ['year']), 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame'] },
-    { key: 'media', title: 'Медиа', fields: ['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'] },
-    ...(mode === 'movie' ? [{ key: 'movie', title: 'Кино', fields: ['runtime', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'kinopoiskId', 'imdbId', 'ratings', 'awards'] }] : []),
-    ...(mode === 'series' ? [{ key: 'series', title: 'Сериал', fields: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'kinopoiskId', 'imdbId'] }] : []),
-    ...(mode === 'anime' ? [{ key: 'anime', title: 'Аниме', fields: ['kind', 'status', 'episodes', 'episodesAired', 'source', 'studios', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'] }] : []),
-    ...(mode === 'game' ? [{ key: 'gameMeta', title: 'Игра', fields: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic'] }] : []),
-    ...(mode === 'music' ? [{ key: 'music', title: 'Музыка', fields: ['canonicalId', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
-    ...(mode === 'diagnosis' ? [{ key: 'diagnosis', title: 'Диагноз', fields: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'] }] : []),
+    ...(mode === 'danetki' ? [] : [{
+      key: 'game',
+      title: 'Основные и игровые данные',
+      fields: [
+        ...(mode === 'music' ? ['activityStartYear'] : ['year']),
+        'endYear', 'releaseDate', 'countries', 'originalLanguage', 'genres', 'plotHint', 'description',
+        'shortDescription', 'slogan', 'facts', 'allowedInGame', 'popularityScore', 'topRank',
+      ],
+    }]),
+    ...(mode === 'movie' ? [{ key: 'movie', title: 'Профиль фильма', fields: ['runtimeMinutes', 'ageRating', 'budget', 'directors', 'writers', 'cast', 'supportingCast', 'studios', 'kinopoiskId', 'imdbId', 'ratings', 'votes', 'awards', 'dataQuality'] }] : []),
+    ...(mode === 'series' ? [{ key: 'series', title: 'Профиль сериала', fields: ['runtimeMinutes', 'ageRating', 'episodes', 'seasonsCount', 'seriesStatus', 'directors', 'showrunners', 'writers', 'cast', 'supportingCast', 'studios', 'kinopoiskId', 'imdbId', 'ratings', 'votes', 'awards', 'dataQuality'] }] : []),
+    ...(mode === 'anime' ? [{ key: 'anime', title: 'Профиль аниме', fields: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'runtimeMinutes', 'ageRating', 'directors', 'cast', 'studios', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl', 'ratings', 'votes', 'dataQuality'] }] : []),
+    ...(mode === 'game' ? [{ key: 'gameMeta', title: 'Профиль игры', fields: ['developers', 'publishers', 'platforms', 'supportedLanguages', 'ageRating', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'ratings', 'votes', 'dataQuality'] }] : []),
+    ...(mode === 'music' ? [{ key: 'music', title: 'Профиль исполнителя', fields: ['canonicalId', 'aliases', 'gameTier', 'gameDifficulty', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
+    ...(mode === 'diagnosis' ? [{ key: 'diagnosis', title: 'Медицинский профиль', fields: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'typicalAgeGroups', 'sex', 'localization', 'keySymptoms', 'diagnostics', 'riskFactors', 'severityTypical', 'urgencyTypical', 'safetyDisclaimer', 'sourceRefs', 'comparisonHints', 'dataQuality'] }] : []),
+    ...(mode === 'city' ? [{ key: 'city', title: 'Профиль города', fields: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'] }] : []),
+    ...(mode === 'danetki' ? [
+      { key: 'danetkiStory', title: 'Сценарий данетки', fields: ['condition', 'solution', 'difficulty', 'genres', 'tags', 'contentWarnings', 'contentStatus', 'allowedInGame', 'popularityScore'] },
+      { key: 'danetkiFlow', title: 'Факты, вопросы и подсказки', fields: ['keyFacts', 'hints', 'starterQuestions', 'answerRules'] },
+    ] : []),
+    ...(mode === 'danetki' ? [] : [{ key: 'media', title: 'Медиа', fields: ['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'] }]),
   ],
 })
 

@@ -2,10 +2,10 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
-  Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
+  Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
   Download, FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
   LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
-  Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
+  RotateCcw, Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
 import { CATALOG_HINT_COPY, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
@@ -35,7 +35,7 @@ function TagPicker({ tags, value, onChange, label, onCreate, compact = false, di
     if (found) { onChange([...value, found.id]); setQuery(''); return }
     if (!onCreate) return
     setCreating(true)
-    try { const created = await onCreate(name); onChange([...value, created.id]); setQuery('') } finally { setCreating(false) }
+    try { const created = await onCreate(name); onChange([...value, created.id]); setQuery('') } catch { /* caller shows the error */ } finally { setCreating(false) }
   }
   return <div className={`admin-tag-picker ${compact ? 'admin-tag-picker--compact' : ''}`}><span>{label}</span><div className="admin-tag-picker__control">{value.map((id) => { const tag = tags.find((entry) => entry.id === id); return tag ? <button key={id} type="button" style={{ borderColor: tag.color }} disabled={disabled} onClick={() => onChange(value.filter((entry) => entry !== id))}>{tag.name}<X /></button> : null })}<input list={listId} value={query} disabled={disabled || creating} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ',') { event.preventDefault(); void commit() } }} onBlur={() => { if (available.some((tag) => tag.name.toLocaleLowerCase('ru-RU') === query.trim().toLocaleLowerCase('ru-RU'))) void commit() }} placeholder={value.length ? 'Ещё тег…' : 'Введите тег…'} /><datalist id={listId}>{available.map((tag) => <option key={tag.id} value={tag.name}>{tag.itemsCount == null ? tag.name : `${tag.name} · ${tag.itemsCount}`}</option>)}</datalist></div></div>
 }
@@ -464,16 +464,144 @@ function WorkspaceBar({ notify }: { notify: (tone: Notice['tone'], text: string)
   </div></div>
 }
 
+const ADMIN_FIELD_LABELS: Record<string, string> = {
+  id: 'Внутренний ID',
+  mode: 'Категория',
+  titleRu: 'Название на русском',
+  titleOriginal: 'Оригинальное название',
+  alternativeTitles: 'Альтернативные названия',
+  year: 'Год',
+  activityStartYear: 'Начало активности',
+  endYear: 'Год окончания',
+  releaseDate: 'Дата выхода',
+  countries: 'Страны',
+  country: 'Страна',
+  continent: 'Континент',
+  originalLanguage: 'Язык оригинала',
+  languages: 'Языки',
+  genres: 'Жанры',
+  plotHint: 'Игровая подсказка',
+  description: 'Описание',
+  shortDescription: 'Краткое описание',
+  slogan: 'Слоган',
+  facts: 'Факты',
+  allowedInGame: 'Доступна в игре',
+  posterUrl: 'Постер',
+  headerUrl: 'Обложка',
+  backdropUrl: 'Фоновое изображение',
+  screenshots: 'Скриншоты',
+  runtimeMinutes: 'Хронометраж, мин.',
+  ageRating: 'Возрастной рейтинг',
+  budget: 'Бюджет',
+  directors: 'Режиссёры',
+  showrunners: 'Шоураннеры',
+  writers: 'Сценаристы',
+  cast: 'Основной состав',
+  supportingCast: 'Второстепенный состав',
+  studios: 'Студии',
+  kinopoiskId: 'ID Кинопоиска',
+  imdbId: 'ID IMDb',
+  ratings: 'Рейтинги',
+  votes: 'Голоса',
+  awards: 'Награды',
+  episodes: 'Эпизоды',
+  seasonsCount: 'Количество сезонов',
+  seriesStatus: 'Статус сериала',
+  animeKind: 'Формат аниме',
+  animeStatus: 'Статус аниме',
+  animeEpisodesAired: 'Вышедшие эпизоды',
+  animeSource: 'Первоисточник',
+  shikimoriId: 'ID Shikimori',
+  shikimoriScore: 'Оценка Shikimori',
+  shikimoriUrl: 'Страница на Shikimori',
+  developers: 'Разработчики',
+  publishers: 'Издатели',
+  platforms: 'Платформы',
+  steamCategories: 'Категории Steam',
+  steamTags: 'Теги Steam',
+  supportedLanguages: 'Поддерживаемые языки',
+  steamAppId: 'Steam App ID',
+  steamUrl: 'Страница в Steam',
+  price: 'Цена',
+  metacritic: 'Оценка Metacritic',
+  canonicalId: 'Канонический ID',
+  aliases: 'Псевдонимы',
+  gameTier: 'Игровой уровень',
+  gameDifficulty: 'Сложность в игре',
+  contentStatus: 'Статус контента',
+  musicIsActive: 'Активный исполнитель',
+  musicOrigin: 'Происхождение',
+  musicType: 'Тип исполнителя',
+  topTracks: 'Популярные треки',
+  topAlbums: 'Популярные альбомы',
+  similarArtists: 'Похожие исполнители',
+  members: 'Участники',
+  associatedActs: 'Связанные проекты',
+  musicLinks: 'Ссылки',
+  dataQuality: 'Качество данных',
+  popularityScore: 'Индекс популярности',
+  topRank: 'Место в рейтинге',
+  icd10: 'Коды МКБ-10',
+  icdGroup: 'Группа МКБ',
+  bodySystems: 'Системы организма',
+  diseaseTypes: 'Типы заболевания',
+  course: 'Течение',
+  contagiousness: 'Заразность',
+  typicalAgeGroups: 'Типичные возрастные группы',
+  sex: 'Пол',
+  localization: 'Локализация',
+  keySymptoms: 'Ключевые симптомы',
+  diagnostics: 'Диагностика',
+  riskFactors: 'Факторы риска',
+  severityTypical: 'Типичная тяжесть',
+  urgencyTypical: 'Типичная срочность',
+  safetyDisclaimer: 'Медицинское предупреждение',
+  sourceRefs: 'Источники',
+  comparisonHints: 'Сравнительные подсказки',
+  population: 'Население',
+  timezone: 'Часовой пояс',
+  capital: 'Столица',
+  popular: 'Популярный город',
+  countryFlagUrl: 'Флаг страны',
+  cityFlagUrl: 'Флаг города',
+  coatOfArmsUrl: 'Герб',
+  ranks: 'Городской профиль',
+  condition: 'Условие',
+  solution: 'Разгадка',
+  difficulty: 'Сложность',
+  tags: 'Тематические теги',
+  keyFacts: 'Ключевые факты',
+  hints: 'Подсказки',
+  starterQuestions: 'Стартовые вопросы',
+  answerRules: 'Правила ответа',
+  contentWarnings: 'Предупреждения',
+}
+
+const ADMIN_NUMERIC_FIELDS = new Set([
+  'year', 'activityStartYear', 'endYear', 'runtimeMinutes', 'episodes', 'seasonsCount', 'animeEpisodesAired',
+  'population', 'popularityScore', 'topRank', 'kinopoiskId', 'votes', 'shikimoriId', 'shikimoriScore',
+  'steamAppId', 'price', 'metacritic',
+])
+const ADMIN_BOOLEAN_FIELDS = new Set(['allowedInGame', 'musicIsActive', 'capital', 'popular'])
+const ADMIN_ARRAY_FIELDS = new Set([
+  'alternativeTitles', 'countries', 'languages', 'genres', 'facts', 'screenshots', 'directors', 'showrunners',
+  'writers', 'cast', 'supportingCast', 'studios', 'awards', 'developers', 'publishers', 'platforms',
+  'steamCategories', 'steamTags', 'supportedLanguages', 'aliases', 'topTracks', 'topAlbums', 'similarArtists',
+  'members', 'associatedActs', 'musicLinks', 'icd10', 'bodySystems', 'diseaseTypes', 'typicalAgeGroups',
+  'keySymptoms', 'diagnostics', 'riskFactors', 'sourceRefs', 'comparisonHints', 'ranks', 'tags', 'contentWarnings',
+  'keyFacts', 'hints', 'starterQuestions', 'answerRules',
+])
+
 function FieldEditor({ name, value, disabled, onChange }: { name: string; value: unknown; disabled?: boolean; onChange: (value: unknown) => void }) {
-  const label = name.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toLocaleUpperCase('ru-RU'))
-  if (typeof value === 'boolean' || name === 'allowedInGame') return <label className="admin-field admin-field--check"><input type="checkbox" checked={Boolean(value)} disabled={disabled} onChange={(event) => onChange(event.target.checked)} /><span><strong>{label}</strong><small>{value ? 'Включено' : 'Выключено'}</small></span></label>
-  if (typeof value === 'number' || ['year', 'endYear', 'runtime', 'episodes', 'seasonsCount', 'popularityScore', 'topRank'].includes(name)) return <label className="admin-field"><span>{label}</span><input type="number" value={value == null ? '' : String(value)} disabled={disabled} onChange={(event) => onChange(event.target.value === '' ? null : Number(event.target.value))} /></label>
-  if (Array.isArray(value)) return <label className="admin-field admin-field--wide"><span>{label}<small>{value.length} знач.</small></span><textarea value={value.map((entry) => typeof entry === 'string' ? entry : JSON.stringify(entry)).join('\n')} disabled={disabled} onChange={(event) => onChange(event.target.value.split('\n').map((entry) => entry.trim()).filter(Boolean).map((entry) => { try { return JSON.parse(entry) } catch { return entry } }))} /></label>
+  const label = ADMIN_FIELD_LABELS[name] ?? name.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toLocaleUpperCase('ru-RU'))
+  if (typeof value === 'boolean' || (value == null && ADMIN_BOOLEAN_FIELDS.has(name))) return <label className="admin-field admin-field--check"><input type="checkbox" checked={Boolean(value)} disabled={disabled} onChange={(event) => onChange(event.target.checked)} /><span><strong>{label}</strong><small>{value ? 'Включено' : 'Выключено'}</small></span></label>
+  if (typeof value === 'number' || (value == null && ADMIN_NUMERIC_FIELDS.has(name))) return <label className="admin-field"><span>{label}</span><input type="number" value={value == null ? '' : String(value)} disabled={disabled} onChange={(event) => onChange(event.target.value === '' ? null : Number(event.target.value))} /></label>
+  if (Array.isArray(value) || (value == null && ADMIN_ARRAY_FIELDS.has(name))) { const values = array(value); return <label className="admin-field admin-field--wide"><span>{label}<small>{values.length} знач.</small></span><textarea value={values.map((entry) => typeof entry === 'string' ? entry : JSON.stringify(entry)).join('\n')} disabled={disabled} onChange={(event) => onChange(event.target.value.split('\n').map((entry) => entry.trim()).filter(Boolean).map((entry) => { try { return JSON.parse(entry) } catch { return entry } }))} /></label> }
   if (value && typeof value === 'object') return <label className="admin-field admin-field--wide"><span>{label}<small>JSON</small></span><textarea className="admin-code-input" value={JSON.stringify(value, null, 2)} disabled={disabled} onChange={(event) => { try { onChange(JSON.parse(event.target.value)) } catch { /* keep last valid object */ } }} /></label>
   const multiline = ['description', 'plotHint', 'slogan', 'notes', 'facts', 'safetyDisclaimer', 'condition', 'solution'].some((part) => name.toLocaleLowerCase().includes(part.toLocaleLowerCase()))
   return <label className={`admin-field ${multiline ? 'admin-field--wide' : ''}`}><span>{label}{typeof value === 'string' && <small>{value.length}</small>}</span>{multiline
     ? <textarea value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />
-    : <input value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />}</label>
+    : <input type={name === 'releaseDate' ? 'date' : 'text'} value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />}</label>
 }
 
 function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode: ContentMode }) {
@@ -481,6 +609,84 @@ function PreviewCard({ payload, mode }: { payload: Record<string, unknown>; mode
   const hint = String(mode === 'danetki' ? payload.condition ?? 'Условие пока не заполнено' : payload.plotHint ?? payload.description ?? 'Подсказка пока не заполнена')
   const hasPlotHint = mode !== 'danetki' && String(payload.plotHint ?? '').trim().length > 0
   return <div className="admin-preview"><div className="admin-preview__toolbar"><button className="is-active">Desktop</button><button>Mobile</button><span>{MODE_LABEL[mode]}</span></div><div className="admin-preview__stage"><article><div className="admin-preview__media">{poster ? <img src={poster} alt="" /> : <ImageIcon />}</div><span>Попытка 1 из 10</span><h3>{hint}</h3><div className="admin-preview__hints">{mode === 'danetki' ? <button>Подсказка данетки</button> : <>{hasPlotHint && <button>{CATALOG_HINT_COPY[mode].plotOptionTitle}</button>}<button>{CATALOG_HINT_COPY[mode].optionTitle}</button></>}</div><div className="admin-preview__answer"><Search /><span>Введите вариант ответа</span></div></article></div><ContentCommentsPreview payload={payload} mode={mode} compact /><footer><strong>Допустимые ответы</strong><p>{[payload.titleRu, payload.titleOriginal, ...array(payload.alternativeTitles)].filter(Boolean).join(' · ') || 'Не заданы'}</p></footer></div>
+}
+
+const contentCommentsProblem = (payload: Record<string, unknown>, mode: ContentMode) => {
+  if (mode !== 'game' || payload.comments == null) return null
+  if (!Array.isArray(payload.comments)) return 'Комментарии должны быть списком'
+  const comments = payload.comments.map(record)
+  if (comments.some((comment) => !String(comment.key ?? '').trim())) return 'У каждого комментария должен быть технический ключ'
+  if (comments.some((comment) => !String(comment.text ?? '').trim())) return 'Заполните текст каждого комментария'
+  if (comments.some((comment) => !Number.isInteger(Number(comment.unlockAfterAttempts)) || Number(comment.unlockAfterAttempts) < 0 || Number(comment.unlockAfterAttempts) > 10)) return 'Момент показа должен быть от 0 до 10 попыток'
+  const keys = comments.map((comment) => String(comment.key).trim())
+  return new Set(keys).size === keys.length ? null : 'Технические ключи комментариев не должны повторяться'
+}
+
+function ContentCommentsEditor({ payload, onChange }: { payload: Record<string, unknown>; onChange: (comments: Record<string, unknown>[]) => void }) {
+  const comments = array(payload.comments).map(record)
+  const update = (index: number, patch: Record<string, unknown>) => onChange(comments.map((comment, current) => current === index ? { ...comment, ...patch } : comment))
+  const move = (index: number, offset: number) => {
+    const target = index + offset
+    if (target < 0 || target >= comments.length) return
+    const next = [...comments]
+    ;[next[index], next[target]] = [next[target], next[index]]
+    onChange(next)
+  }
+  const add = () => {
+    const keys = new Set(comments.map((comment) => String(comment.key ?? '').trim()))
+    let sequence = comments.length + 1
+    while (keys.has(`comment-${sequence}`)) sequence += 1
+    onChange([...comments, {
+      key: `comment-${sequence}`,
+      text: '',
+      unlockAfterAttempts: Math.min(comments.length, 10),
+      clueStrength: Math.min(comments.length + 1, 5),
+      topics: [],
+      wasRedacted: false,
+    }])
+  }
+  const problem = contentCommentsProblem(payload, 'game')
+  return <section className="admin-form-section admin-comments-editor">
+    <header>
+      <div><MessageSquareText /><span><h3>Комментарии-подсказки</h3><small>Игрок увидит их по очереди во время попыток.</small></span></div>
+      <button type="button" className="admin-btn admin-btn--secondary" onClick={add}><Plus />Добавить</button>
+    </header>
+    {problem && <div className="admin-comments-editor__warning"><AlertTriangle />{problem}</div>}
+    {comments.length ? <div className="admin-comments-editor__list">{comments.map((comment, index) => {
+      const preview = adminContentComments({ comments: [comment] }, 'game')[0]
+      const attempts = Number(comment.unlockAfterAttempts ?? 0)
+      const topics = array(comment.topics).map(String)
+      return <article key={`${String(comment.key ?? 'comment')}:${index}`} className={!String(comment.text ?? '').trim() ? 'has-error' : ''}>
+        <header>
+          <div><b>{index + 1}</b><span><strong>{preview ? adminCommentUnlockLabel(preview.unlockAfterAttempts) : `Комментарий ${index + 1}`}</strong><small>{String(comment.key ?? 'Ключ не задан')}</small></span></div>
+          <div className="admin-comments-editor__actions">
+            <button type="button" disabled={index === 0} onClick={() => move(index, -1)} aria-label={`Поднять комментарий ${index + 1}`} title="Поднять"><ChevronUp /></button>
+            <button type="button" disabled={index === comments.length - 1} onClick={() => move(index, 1)} aria-label={`Опустить комментарий ${index + 1}`} title="Опустить"><ChevronDown /></button>
+            <button type="button" className="is-danger" onClick={() => onChange(comments.filter((_, current) => current !== index))} aria-label={`Удалить комментарий ${index + 1}`} title="Удалить"><Trash2 /></button>
+          </div>
+        </header>
+        <div className="admin-comments-editor__fields">
+          <label className="admin-field admin-field--wide"><span>Текст комментария<small>{String(comment.text ?? '').length}</small></span><textarea value={String(comment.text ?? '')} onChange={(event) => update(index, { text: event.target.value })} placeholder="Текст, который увидит игрок" /></label>
+          <label className="admin-field"><span>Когда показать</span><select value={Number.isFinite(attempts) ? attempts : 0} onChange={(event) => update(index, { unlockAfterAttempts: Number(event.target.value) })}>{Array.from({ length: 11 }, (_, attempt) => <option key={attempt} value={attempt}>{attempt === 0 ? 'Сразу' : `После ${attempt} попыток`}</option>)}</select></label>
+          <label className="admin-field"><span>Сила подсказки<small>1–5</small></span><input type="number" min="1" max="5" value={comment.clueStrength == null ? '' : String(comment.clueStrength)} onChange={(event) => update(index, { clueStrength: event.target.value === '' ? null : Number(event.target.value) })} placeholder="Не задана" /></label>
+          <label className="admin-field admin-field--wide"><span>Темы<small>через запятую</small></span><input value={topics.join(', ')} onChange={(event) => update(index, { topics: event.target.value.split(',').map((entry) => entry.trim()).filter(Boolean) })} placeholder="atmosphere, player-experience" /></label>
+        </div>
+        <details>
+          <summary>Источник и технические поля <ChevronDown /></summary>
+          <div className="admin-comments-editor__fields">
+            <label className="admin-field"><span>Технический ключ</span><input value={String(comment.key ?? '')} onChange={(event) => update(index, { key: event.target.value })} /></label>
+            <label className="admin-field"><span>ID комментария</span><input value={String(comment.sourceId ?? '')} onChange={(event) => update(index, { sourceId: event.target.value })} /></label>
+            <label className="admin-field admin-field--wide"><span>Ссылка на комментарий</span><span className="admin-comments-editor__source"><input type="url" value={String(comment.sourceUrl ?? '')} onChange={(event) => update(index, { sourceUrl: event.target.value })} placeholder="https://…" />{preview?.sourceUrl && <a href={preview.sourceUrl} target="_blank" rel="noreferrer noopener" aria-label="Открыть источник"><ExternalLink /></a>}</span></label>
+            <label className="admin-field admin-field--wide"><span>Ссылка на публикацию</span><input type="url" value={String(comment.sourcePostUrl ?? '')} onChange={(event) => update(index, { sourcePostUrl: event.target.value })} placeholder="https://…" /></label>
+            <label className="admin-field"><span>ID набора</span><input value={String(comment.sourcePackId ?? '')} onChange={(event) => update(index, { sourcePackId: event.target.value })} /></label>
+            <label className="admin-field"><span>Дата проверки</span><input type="date" value={String(comment.sourceVerifiedAt ?? '')} onChange={(event) => update(index, { sourceVerifiedAt: event.target.value })} /></label>
+            <label className="admin-field admin-field--wide"><span>Исходный фрагмент</span><textarea value={String(comment.sourceExcerpt ?? '')} onChange={(event) => update(index, { sourceExcerpt: event.target.value })} /></label>
+            <label className="admin-field admin-field--check admin-field--wide"><input type="checkbox" checked={Boolean(comment.wasRedacted)} onChange={(event) => update(index, { wasRedacted: event.target.checked })} /><span><strong>Название скрыто</strong><small>В тексте удалён прямой ответ.</small></span></label>
+          </div>
+        </details>
+      </article>
+    })}</div> : <div className="admin-comments-editor__empty"><MessageSquareText /><span><strong>Комментариев пока нет</strong><small>Добавьте первый — он станет стартовой подсказкой для игрока.</small></span><button type="button" className="admin-btn admin-btn--secondary" onClick={add}><Plus />Добавить комментарий</button></div>}
+  </section>
 }
 
 function ContentCommentsPreview({ payload, mode, compact = false }: { payload: Record<string, unknown>; mode: ContentMode; compact?: boolean }) {
@@ -825,6 +1031,8 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
   }, [detail.data, storageKey])
   const dirty = Boolean(original) && JSON.stringify(payload) !== original
   useEffect(() => { if (dirty) localStorage.setItem(storageKey, JSON.stringify({ server: original, payload })); else localStorage.removeItem(storageKey) }, [dirty, original, payload, storageKey])
+  const editMode = detail.data?.active?.mode ?? detail.data?.draft?.mode
+  const commentsProblem = editMode ? contentCommentsProblem(payload, editMode) : null
   const save = useMutation({
     mutationFn: () => adminApi.saveItem(itemId, { mode: detail.data!.active?.mode ?? detail.data!.draft!.mode, payload, expectedVersion: detail.data!.draft?.version ?? 0, source: 'manual' }),
     onSuccess: () => { localStorage.removeItem(storageKey); notify('success', 'Карточка сохранена в рабочую версию'); void client.invalidateQueries({ queryKey: ['admin', 'item', itemId] }); void client.invalidateQueries({ queryKey: ['admin', 'content'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) },
@@ -832,31 +1040,69 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
   })
   const discard = useMutation({ mutationFn: () => adminApi.discardItem(itemId), onSuccess: () => { localStorage.removeItem(storageKey); notify('success', 'Правка отменена'); void client.invalidateQueries({ queryKey: ['admin', 'item', itemId] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }, onError: (error) => notify('error', errorText(error)) })
   useEffect(() => {
-    const onKey = (event: KeyboardEvent) => { if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 's') { event.preventDefault(); if (dirty && !save.isPending) save.mutate() } }
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 's') { event.preventDefault(); if (dirty && !commentsProblem && !save.isPending) save.mutate() }
+      if (event.key === 'Escape' && (!dirty || confirm('Закрыть карточку? Несохранённый текст останется в этом браузере.'))) onClose()
+    }
     addEventListener('keydown', onKey); return () => removeEventListener('keydown', onKey)
-  }, [dirty, save])
+  }, [commentsProblem, dirty, onClose, save])
   const close = () => { if (!dirty || confirm('Закрыть карточку? Несохранённый текст останется в этом браузере.')) onClose() }
+  const reset = () => {
+    if (dirty) {
+      if (!confirm('Сбросить несохранённые изменения в этой карточке?')) return
+      const server = detail.data?.draft?.afterPayload ?? detail.data?.active?.payload ?? {}
+      setPayload(server); setRestored(false); localStorage.removeItem(storageKey)
+      notify('info', 'Несохранённые изменения сброшены')
+      return
+    }
+    if (detail.data?.draft && confirm('Удалить сохранённый черновик и вернуть активную версию карточки?')) discard.mutate()
+  }
   if (detail.isLoading) return <aside className="admin-drawer"><Loading /></aside>
   if (detail.error || !detail.data) return <aside className="admin-drawer"><div className="admin-drawer__head"><button onClick={close}><X /></button></div><ErrorState error={detail.error} retry={() => void detail.refetch()} /></aside>
   const data = detail.data; const mode = data.active?.mode ?? data.draft!.mode
-  const fields = data.schema.groups.flatMap((group) => group.fields); const known = new Set(fields)
-  return <aside className="admin-drawer" aria-label={`Карточка ${itemId}`}>
-    <header className="admin-drawer__head"><div><span>{MODE_LABEL[mode]}</span><h2>{title(payload.titleRu || itemId)}</h2><small>{itemId} · {data.active?.revisionId ? `версия ${String(data.active.revisionId).slice(0, 8)}` : 'новая карточка'}</small></div><div>{dirty && <Status value="warning">Не сохранено</Status>}<button onClick={close} aria-label="Закрыть"><PanelRightClose /></button></div></header>
+  const fields = data.schema.groups.flatMap((group) => group.fields); const known = new Set([...fields, 'comments'])
+  const filledFields = fields.filter((field) => payload[field] != null && payload[field] !== '').length
+  const extraFields = Object.keys(payload).filter((field) => !known.has(field))
+  const renderGroup = (group: AdminItemDetail['schema']['groups'][number]) => <section className="admin-form-section" key={group.key}>
+    <header><div><h3>{group.title}</h3><small>{group.fields.filter((field) => payload[field] != null && payload[field] !== '').length} из {group.fields.length} заполнено</small></div><span>{Math.round(group.fields.filter((field) => payload[field] != null && payload[field] !== '').length / Math.max(group.fields.length, 1) * 100)}%</span></header>
+    <div className="admin-form-grid">{group.fields.map((field) => {
+      if (!['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'].includes(field)) return <FieldEditor key={field} name={field} value={payload[field]} disabled={field === 'id' || field === 'mode'} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />
+      return <div className="admin-media-field" key={field}><FieldEditor name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} /><MediaUpload itemId={itemId} field={field} notify={notify} onUploaded={(url) => setPayload((current) => field === 'screenshots' ? { ...current, screenshots: [...array(current.screenshots), url] } : { ...current, [field]: url })} /></div>
+    })}</div>
+  </section>
+  const tabs = [
+    ['data', 'Данные', SquarePen, null],
+    ['preview', 'Как в игре', Eye, null],
+    ['reports', 'Баг-репорты', Bug, data.reports.length],
+    ['history', 'История', History, null],
+    ['technical', 'Техническое', FileJson, null],
+  ] as const
+  return <aside className="admin-drawer" role="dialog" aria-label={`Карточка ${itemId}`}>
+    <header className="admin-drawer__head">
+      <div className="admin-drawer__identity"><span><LayoutTemplate />{MODE_LABEL[mode]}</span><h2>{title(payload.titleRu || itemId)}</h2><small><code>{itemId}</code><i>·</i>{data.active?.revisionId ? `Версия ${String(data.active.revisionId).slice(0, 8)}` : 'Новая карточка'}{data.draft && <><i>·</i>Черновик v{data.draft.version}</>}</small></div>
+      <div className="admin-drawer__head-actions">{dirty ? <span className="admin-drawer__unsaved"><i />Есть изменения</span> : <span className="admin-drawer__saved"><Check />Сохранено</span>}<button onClick={close} aria-label="Закрыть карточку" title="Закрыть (Esc)"><PanelRightClose /></button></div>
+    </header>
     {restored && <div className="admin-recovered"><FileClock />Восстановлен несохранённый текст из этого браузера.</div>}
-    <nav className="admin-tabs">{([['data', 'Данные'], ['preview', 'Как в игре'], ['reports', `Баг-репорты ${data.reports.length || ''}`], ['history', 'История'], ['technical', 'Техническое']] as const).map(([key, label]) => <button key={key} className={tab === key ? 'is-active' : ''} onClick={() => setTab(key)}>{label}</button>)}</nav>
-    <div className="admin-drawer__body">
-      <section className="admin-form-section admin-card-tags"><header><h3>Теги карточки</h3><span>{data.tags.length}</span></header><TagPicker tags={allTags.data?.items ?? []} value={data.tags.map((tag) => tag.id)} onChange={(ids) => { const before = new Set(data.tags.map((tag) => tag.id)); const added = ids.find((id) => !before.has(id)); const removed = data.tags.find((tag) => !ids.includes(tag.id))?.id; if (added) changeTag.mutate({ tagId: added, operation: 'add_tag' }); else if (removed) changeTag.mutate({ tagId: removed, operation: 'remove_tag' }) }} label="Операционные теги" /><button className="admin-btn admin-btn--secondary" onClick={async () => { const name = prompt('Название нового тега'); if (!name?.trim()) return; try { const tag = await adminApi.createTag(name.trim()); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); changeTag.mutate({ tagId: tag.id, operation: 'add_tag' }) } catch (error) { notify('error', errorText(error)) } }}><Plus />Создать и назначить</button></section>
-      {tab === 'data' && <><ContentCommentsPreview payload={payload} mode={mode} />{data.schema.groups.map((group) => <section className="admin-form-section" key={group.key}><header><h3>{group.title}</h3><span>{group.fields.filter((field) => payload[field] != null && payload[field] !== '').length}/{group.fields.length}</span></header><div className="admin-form-grid">{group.fields.map((field) => {
-        if (!['posterUrl', 'headerUrl', 'backdropUrl', 'screenshots'].includes(field)) return <FieldEditor key={field} name={field} value={payload[field]} disabled={field === 'id' || field === 'mode'} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />
-        return <div className="admin-media-field" key={field}><FieldEditor name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} /><MediaUpload itemId={itemId} field={field} notify={notify} onUploaded={(url) => setPayload((current) => field === 'screenshots' ? { ...current, screenshots: [...array(current.screenshots), url] } : { ...current, [field]: url })} /></div>
-      })}</div></section>)}
-        {[...Object.keys(payload).filter((field) => !known.has(field))].length > 0 && <details className="admin-extra-fields"><summary>Остальные поля payload <ChevronDown /></summary><div className="admin-form-grid">{Object.keys(payload).filter((field) => !known.has(field)).map((field) => <FieldEditor key={field} name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />)}</div></details>}</>}
+    <nav className="admin-tabs" aria-label="Разделы карточки">{tabs.map(([key, label, Icon, count]) => <button key={key} className={tab === key ? 'is-active' : ''} onClick={() => setTab(key)} aria-current={tab === key ? 'page' : undefined}><Icon /><span>{label}</span>{count ? <b>{count}</b> : null}</button>)}</nav>
+    <div className={`admin-drawer__body admin-drawer__body--${tab}`}>
+      {tab === 'data' && <div className="admin-card-editor">
+        <main>
+          {data.schema.groups.filter((group) => group.key !== 'media').map(renderGroup)}
+          {mode === 'game' && <ContentCommentsEditor payload={payload} onChange={(comments) => setPayload((current) => ({ ...current, comments }))} />}
+          {data.schema.groups.filter((group) => group.key === 'media').map(renderGroup)}
+          {extraFields.length > 0 && <details className="admin-extra-fields"><summary>Дополнительные поля <span>{extraFields.length}</span><ChevronDown /></summary><div className="admin-form-grid">{extraFields.map((field) => <FieldEditor key={field} name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />)}</div></details>}
+        </main>
+        <aside className="admin-card-editor__aside">
+          <section className="admin-form-section admin-card-summary"><header><div><h3>Состояние карточки</h3><small>Обновляется вместе с данными</small></div></header><div className="admin-card-summary__progress"><span><strong>Заполнено</strong><b>{filledFields}/{fields.length}</b></span><i><b style={{ width: `${Math.round(filledFields / Math.max(fields.length, 1) * 100)}%` }} /></i></div><dl><div><dt>Рабочая версия</dt><dd>{data.draft ? `Черновик v${data.draft.version}` : 'Активная'}</dd></div><div><dt>Проблемы качества</dt><dd className={data.issues.length ? 'is-warning' : 'is-ok'}>{data.issues.length || 'Нет'}</dd></div><div><dt>Баг-репорты</dt><dd>{data.reports.length || 'Нет'}</dd></div></dl></section>
+          <section className="admin-form-section admin-card-tags"><header><div><h3>Теги карточки</h3><small>Сохраняются сразу</small></div><span>{data.tags.length}</span></header><TagPicker tags={allTags.data?.items ?? []} value={data.tags.map((tag) => tag.id)} disabled={changeTag.isPending} onChange={(ids) => { const before = new Set(data.tags.map((tag) => tag.id)); const added = ids.find((id) => !before.has(id)); const removed = data.tags.find((tag) => !ids.includes(tag.id))?.id; if (added) changeTag.mutate({ tagId: added, operation: 'add_tag' }); else if (removed) changeTag.mutate({ tagId: removed, operation: 'remove_tag' }) }} onCreate={async (name) => { try { const tag = await adminApi.createTag(name.trim()); await client.invalidateQueries({ queryKey: ['admin', 'content-tags'] }); return tag } catch (error) { notify('error', errorText(error)); throw error } }} label="Операционные теги" /></section>
+        </aside>
+      </div>}
       {tab === 'preview' && <PreviewCard payload={payload} mode={mode} />}
       {tab === 'reports' && <div className="admin-related-list">{data.reports.length ? data.reports.map((raw) => { const report = record(raw); return <article key={String(report.id)}><header><Status value={report.status} /><time>{formatDate(report.createdAt)}</time></header><strong>{REPORT_REASON[String(report.reason)] ?? title(report.reason)}</strong><p>{title(report.comment || 'Комментарий не добавлен')}</p></article> }) : <Empty title="Репортов нет" text="По этой карточке игроки пока ничего не сообщали." icon={<BadgeCheck />} />}</div>}
       {tab === 'history' && (historyQuery.isLoading ? <Loading /> : <div className="admin-history">{historyQuery.data?.versions.map((raw) => { const version = record(raw); const versionPayload = record(version.payload); return <article key={String(version.id)}><span><History /></span><div><header><strong>{title(version.revisionVersion)}</strong><Status value={version.revisionStatus} /><time>{formatDate(version.createdAt)}</time></header><p>{title(versionPayload.titleRu)} · {Object.keys(versionPayload).length} полей</p><button className="admin-link" onClick={() => { setPayload(versionPayload); setTab('data') }}>Взять это значение в рабочую версию</button></div></article> })}</div>)}
       {tab === 'technical' && <div className="admin-technical"><div className="admin-technical__actions"><button className="admin-btn admin-btn--secondary" onClick={() => void navigator.clipboard.writeText(JSON.stringify(payload, null, 2))}><Copy />Копировать JSON</button><button className="admin-btn admin-btn--secondary" onClick={() => { if (!advanced && !confirm('Расширенное редактирование позволяет изменить технические поля. Продолжить?')) return; setAdvanced((value) => !value) }}><SquarePen />{advanced ? 'Закрыть редактирование' : 'Расширенное редактирование'}</button></div><textarea readOnly={!advanced} value={JSON.stringify(payload, null, 2)} onChange={(event) => { try { setPayload(JSON.parse(event.target.value)) } catch { /* keep valid JSON */ } }} /></div>}
     </div>
-    <footer className="admin-drawer__footer"><div>{data.issues.length ? <span className="admin-inline-warning"><AlertTriangle />Проблем качества: {data.issues.length}</span> : <span className="admin-inline-ok"><Check />Критических проблем нет</span>}</div><button className="admin-btn admin-btn--ghost" onClick={() => discard.mutate()} disabled={!data.draft || discard.isPending}><Trash2 />Отменить правку</button><button className="admin-btn admin-btn--primary" onClick={() => save.mutate()} disabled={!dirty || save.isPending}>{save.isPending ? <LoaderCircle /> : <Save />}Сохранить <kbd>Ctrl S</kbd></button></footer>
+    <footer className="admin-drawer__footer"><div>{commentsProblem ? <span className="admin-inline-warning"><AlertTriangle />{commentsProblem}</span> : dirty ? <span className="admin-inline-warning"><i />Изменения ещё не сохранены</span> : <span className="admin-inline-ok"><Check />Все изменения сохранены</span>}</div><button className="admin-btn admin-btn--ghost" onClick={reset} disabled={(!dirty && !data.draft) || discard.isPending}>{discard.isPending ? <LoaderCircle /> : <RotateCcw />}{dirty ? 'Сбросить' : 'Удалить черновик'}</button><button className="admin-btn admin-btn--primary" onClick={() => save.mutate()} disabled={!dirty || Boolean(commentsProblem) || save.isPending}>{save.isPending ? <LoaderCircle /> : <Save />}Сохранить изменения <kbd>Ctrl S</kbd></button></footer>
   </aside>
 }
 
