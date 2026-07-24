@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
 import {
   ArrowRight,
@@ -6,14 +6,16 @@ import {
   ChevronDown,
   Copy,
   Send,
-  Share2,
   SlidersHorizontal,
+  Swords,
   Ticket,
 } from 'lucide-react'
 import type { ChallengeOutcome } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import type { TitleMode } from '../../types'
+import { MODE_CONFIG } from '../../app/mode-config'
+import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { publicAssetUrl } from '../../app/public-asset'
 import { formatDays } from '../../game'
 
@@ -67,10 +69,20 @@ export function GameResult(props: Props) {
   const nextDestination = hasNextDestination
     ? props.nextLabel.slice(nextLabelSeparator + 1).trim()
     : props.nextLabel
+  const nextVisualMode = (Object.keys(MODE_CONFIG) as TitleMode[])
+    .find((mode) => MODE_CONFIG[mode].title === nextDestination) ?? props.mode
+  const nextPresentation = MODE_PRESENTATION[nextVisualMode]
+  const NextModeIcon = nextPresentation.icon
+  const nextTicketNumber = props.completedToday !== undefined && hasNextDestination
+    ? `${String(Math.min(props.completedToday + 1, FULL_HOUSE_MODE_IDS.length)).padStart(2, '0')}/${String(FULL_HOUSE_MODE_IDS.length).padStart(2, '0')}`
+    : 'СЕАНС'
   const rewardIcon = props.mode === 'diagnosis'
     ? <img className="result-dx-icon" src={diagnosisSystemRewardIcon} alt="" aria-hidden="true" loading="lazy" />
     : <Ticket />
-  return <section className={`result-card ${props.won ? 'won' : 'lost'}`}>
+  return <section
+    className={`result-card ${props.won ? 'won' : 'lost'}`}
+    style={{ '--result-next-color': nextPresentation.color } as CSSProperties}
+  >
     {props.poster}
     <div className="result-card__copy">
       <span>{props.won ? `Угадано с ${props.attempts}-й попытки` : 'Ответ открыт'}</span>
@@ -89,23 +101,32 @@ export function GameResult(props: Props) {
     </div>
     <div className="result-primary-actions">
       <button type="button" className="result-next" onClick={props.onNext} aria-label={props.nextLabel}>
-        <span>
+        <img className="result-next__art" src={nextPresentation.watermarkUrl} alt="" aria-hidden="true" />
+        <span className="result-next__copy">
           <small>{hasNextDestination ? 'Дальше по маршруту' : 'Продолжить игру'}</small>
           <strong>{nextDestination}</strong>
         </span>
-        <ArrowRight />
+        <span className="result-next__sticker" aria-hidden="true"><NextModeIcon /></span>
+        <span className="result-next__arrow" aria-hidden="true"><ArrowRight /></span>
       </button>
       <button type="button" className="result-config" onClick={props.onConfigure}>
-        <SlidersHorizontal />
-        <span>
+        <span className="result-config__icon" aria-hidden="true"><SlidersHorizontal /></span>
+        <span className="result-config__copy">
           <small>Режим</small>
           <strong>{props.configureLabel}</strong>
         </span>
+        <span className="result-config__serial" aria-hidden="true">{nextTicketNumber}</span>
       </button>
     </div>
     <div className="result-after-actions result-card__wide">
       <span className="result-after-actions__label">После сеанса</span>
-      {props.onChallenge && <button type="button" className="result-challenge" onClick={props.onChallenge}><Share2 /> {props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}</button>}
+      {props.onChallenge && <button type="button" className="result-challenge" onClick={props.onChallenge}>
+        <Swords />
+        <span>
+          <small>{props.opponentAttempts ? 'Матч-реванш' : 'Игра на двоих'}</small>
+          <strong>{props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}</strong>
+        </span>
+      </button>}
       <button type="button" className="result-copy" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
       {props.won && <TipCheckoutTrigger className="result-tip" label="Поддержать проект" hint="Чаевые · 99–699 ₽" />}
     </div>
