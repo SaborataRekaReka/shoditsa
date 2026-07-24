@@ -371,7 +371,7 @@ describe('server hint options', () => {
     expect(options.map((option) => option.key)).toEqual(['info'])
   })
 
-  it('ignores plot and fact copy even when both are present', () => {
+  it('offers valid plot copy but never a fact choice', () => {
     const answer = {
       id: 'anime_2',
       mode: 'anime',
@@ -383,16 +383,17 @@ describe('server hint options', () => {
       animeStatus: 'Вышло',
       episodes: 12,
       facts: ['Формат: TV сериал', 'Статус: Вышло', 'Эпизоды: 12'],
-      plotHint: 'Безопасная сюжетная подсказка.',
+      plotHint: 'Группа героев отправляется в опасное путешествие по незнакомому миру.',
     } as TitleItem
 
     const options = buildHintOptions(answer, [])
 
-    expect(options.map((option) => option.key)).toEqual(['info'])
-    expect(options[0]?.value).toBe('Формат: TV сериал')
+    expect(options.map((option) => option.key)).toEqual(['plot', 'info'])
+    expect(options[0]?.value).toBe(answer.plotHint)
+    expect(options[1]?.value).toBe('Формат: TV сериал')
   })
 
-  it('never offers plot or fact choices', () => {
+  it('keeps plot choice available until selected and never offers facts', () => {
     const answer = {
       id: 'movie_plot_choice', mode: 'movie', titleRu: 'Пример фильма', titleOriginal: 'Example Movie', alternativeTitles: [], popularityScore: 0,
       year: 2003,
@@ -400,9 +401,9 @@ describe('server hint options', () => {
       facts: ['Съёмки проходили сразу в нескольких странах.'],
     } as TitleItem
 
-    expect(buildHintOptions(answer, []).map((option) => option.key)).toEqual(['info'])
-    expect(buildHintOptions(answer, [{ hintKey: 'info' }]).map((option) => option.key)).toEqual([])
-    expect(buildHintOptions(answer, [{ hintKey: 'fact' }]).map((option) => option.key)).toEqual(['info'])
+    expect(buildHintOptions(answer, []).map((option) => option.key)).toEqual(['plot', 'info'])
+    expect(buildHintOptions(answer, [{ hintKey: 'info' }]).map((option) => option.key)).toEqual(['plot'])
+    expect(buildHintOptions(answer, [{ hintKey: 'fact' }]).map((option) => option.key)).toEqual(['plot', 'info'])
     expect(buildHintOptions(answer, [{ hintKey: 'plot' }]).map((option) => option.key)).toEqual(['info'])
   })
 
@@ -419,7 +420,7 @@ describe('server hint options', () => {
     }
   })
 
-  it('uses exhaustive mode-specific copy for the only supported hint kind', () => {
+  it('uses exhaustive mode-specific copy for unopened information', () => {
     const answers = {
       movie: { year: 2000 },
       series: { year: 2000 },
@@ -446,6 +447,24 @@ describe('server hint options', () => {
       expect(options[0]?.key).toBe('info')
       expect(options[0]?.title).toBe(CATALOG_HINT_COPY[mode].optionTitle)
       expect(options[0]?.subtitle).toBe(CATALOG_HINT_COPY[mode].optionSubtitle)
+    }
+  })
+
+  it('uses exhaustive mode-specific copy for valid plot hints in every playable mode', () => {
+    for (const mode of PLAYABLE_MODE_IDS) {
+      const answer = {
+        id: `${mode}:plot-copy`,
+        mode,
+        titleRu: 'Ответ',
+        titleOriginal: 'Answer',
+        alternativeTitles: [],
+        popularityScore: 0,
+        plotHint: 'Краткое безопасное описание без названия правильного варианта и служебных маркеров.',
+      } as TitleItem
+      const plotOption = buildHintOptions(answer, []).find((option) => option.key === 'plot')
+
+      expect(plotOption?.title).toBe(CATALOG_HINT_COPY[mode].plotOptionTitle)
+      expect(plotOption?.subtitle).toBe(CATALOG_HINT_COPY[mode].plotOptionSubtitle)
     }
   })
 })

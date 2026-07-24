@@ -8,6 +8,7 @@ import {
 import {
   compareTitles,
   dailyTitle,
+  isPlayableGamePlotHint,
   localizeMusicCountry,
   musicDifficultyPool,
   musicOriginLabel,
@@ -60,6 +61,7 @@ const normalizeHintPeople = (hints: Hint[]) => hints.map((hint) => (
 ))
 
 const cleanHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
+const cropHintText = (value: string, max = 190) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const normalizeHintMatch = (value: unknown) => cleanHintText(value).toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')
 
 type RevealedFieldEvidence = { fullyRevealed: boolean; values: Set<string>; excludedValues: Set<string> }
@@ -257,6 +259,19 @@ export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[
   const evidence = revealedAttemptEvidence(attempts)
   const copy = CATALOG_HINT_COPY[answer.mode]
 
+  const plotAlreadyOpened = choices.some((choice) => choice.hintKey === 'plot')
+  const plotValue = plotAlreadyOpened || !isPlayableGamePlotHint(answer)
+    ? ''
+    : cropHintText(cleanHintText(answer.plotHint))
+  if (plotValue) {
+    options.push({
+      key: 'plot',
+      title: copy.plotOptionTitle,
+      subtitle: copy.plotOptionSubtitle,
+      value: plotValue,
+    })
+  }
+
   const openedInfoSourceKeys = new Set(choices
     .filter((choice) => choice.hintKey === 'info')
     .map(hintChoiceSourceKey)
@@ -440,7 +455,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
           ? 'available'
           : 'locked',
     })),
-    hintChoices: isPromptSession ? [] : choices.filter((choice) => choice.hintKey === 'info'),
+    hintChoices: isPromptSession ? [] : choices.filter((choice) => choice.hintKey === 'plot' || choice.hintKey === 'info'),
     hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
     progressiveHints: promptRuntime?.progressiveHints ?? [],
     promoPrompt: promptRuntime?.promoPrompt ?? null,

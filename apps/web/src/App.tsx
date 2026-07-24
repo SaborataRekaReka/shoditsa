@@ -74,6 +74,7 @@ import {
   DIFFICULTIES,
   DIFFICULTY_ORDER,
   getMoscowDate,
+  isPlayableGamePlotHint,
   localizeMusicCountry,
   MUSIC_ID_REDIRECTS,
   musicCareerStatusLabel,
@@ -114,6 +115,7 @@ import { canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistration
 import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
 import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
+import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -302,7 +304,9 @@ const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
   awards: 'info',
 }
 const assistHintTitle = (key: AssistHintKey, mode?: TitleMode) => key === 'plot'
-  ? 'Подсказка о сюжете'
+  ? mode
+    ? CATALOG_HINT_COPY[mode].plotOptionTitle
+    : 'Сюжетная подсказка'
   : key === 'fact'
     ? 'Интересный факт'
     : mode
@@ -390,6 +394,7 @@ const cleanHintText = (value: string) => {
     .replace(/\s+/g, ' ')
     .trim()
 }
+const cropHintText = (value: string, max = 190) => value.length > max ? `${value.slice(0, max).trimEnd()}…` : value
 const REDACTED_TOKEN_RE = /(\[+\s*REDACTED\s*\]+)/gi
 const isRedactedToken = (value: string) => /^\[+\s*REDACTED\s*\]+$/i.test(value)
 const renderHintBody = (value: string): ReactNode => {
@@ -729,7 +734,7 @@ function GameMatchStrip({ attempts, open, onToggle }: { attempts: Attempt[]; ope
     <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!open}>
       <HorizontalScrollLane className="game-match-strip__tags">
         {tags.length
-          ? tags.map((tag) => <span key={tag.id} className="game-match-strip__tag"><small>{tag.label}</small><strong>{tag.value}</strong></span>)
+          ? tags.map((tag) => <span key={tag.id} className="game-match-strip__tag">{tag.value}</span>)
           : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
       </HorizontalScrollLane>
     </div>
@@ -825,29 +830,58 @@ const renderUnopenedLocalInfo = (item: TitleItem, candidate: string, attempts: A
 }
 
 const buildAssistHints = (item: TitleItem, choices: HintChoice[], attempts: Attempt[] = []): AssistHintView[] => {
+  const out: AssistHintView[] = []
+  if (!choices.some((choice) => choice.key === 'plot') && isPlayableGamePlotHint(item)) {
+    const plotBody = cropHintText(cleanHintText(String(item.plotHint ?? '')))
+    if (plotBody) {
+      out.push({
+        key: 'plot',
+        title: CATALOG_HINT_COPY[item.mode].plotOptionTitle,
+        subtitle: CATALOG_HINT_COPY[item.mode].plotOptionSubtitle,
+        body: plotBody,
+        available: true,
+      })
+    }
+  }
+
   const infoCandidates = buildInfoHintCandidates(item)
     .map((candidate) => renderUnopenedLocalInfo(item, candidate, attempts))
     .filter(Boolean)
   const infoIndex = choices.filter((choice) => choice.key === 'info').length
   const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
-  return infoBody
-    ? [{
+  if (infoBody) {
+    out.push({
       key: 'info',
       title: CATALOG_HINT_COPY[item.mode].optionTitle,
       subtitle: CATALOG_HINT_COPY[item.mode].optionSubtitle,
       body: infoBody,
       available: true,
-    }]
-    : []
+    })
+  }
+
+  return out
 }
 
 const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): AssistHintView[] => {
   const out: AssistHintView[] = []
+  const plotBody = isPlayableGamePlotHint(item)
+    ? cropHintText(cleanHintText(String(item.plotHint ?? '')))
+    : ''
   const infoCandidates = buildInfoHintCandidates(item)
   let infoIndex = 0
+  let plotOpened = false
 
   for (const choice of [...choices].sort((a, b) => a.round - b.round)) {
-    if (choice.key === 'info') {
+    if (choice.key === 'plot' && plotBody && !plotOpened) {
+      plotOpened = true
+      out.push({
+        key: 'plot',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: CATALOG_HINT_COPY[item.mode].plotOptionTitle,
+        body: plotBody,
+        available: true,
+      })
+    } else if (choice.key === 'info') {
       const infoBody = cleanHintText(infoCandidates[infoIndex] ?? '')
       infoIndex += 1
       if (!infoBody) continue
@@ -3371,6 +3405,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   }
 
   const isPromptSession = Boolean(session.promoPrompt)
+  const isDtfCommentSession = session.promoPrompt?.packId === DTF_COMMENTS_PACK_ID
   const maxAttempts = session.maxAttempts ?? 10
   const promoHints = isPromptSession
     ? session.progressiveHints
@@ -3382,7 +3417,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         const authorArchetype = typeof value?.authorArchetype === 'string' ? value.authorArchetype.trim() : ''
         return { key: entry.key, text, unlockAfterAttempts, authorArchetype }
       })
-      .filter((entry): entry is { key: string; text: string; unlockAfterAttempts: number | null; authorArchetype: string } => Boolean(entry))
+      .filter((entry): entry is DtfCommentCardData => Boolean(entry))
     : []
   const promoHeading = isPromptSession ? session.promoPrompt?.title?.trim() || 'Игра по комментариям' : null
   const promoSubtitle = isPromptSession ? session.promoPrompt?.subtitle?.trim() || '' : ''
@@ -3466,8 +3501,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
-      {isPromptSession && <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>}
-      {!!promoHints.length && <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>}
+      {isPromptSession && (isDtfCommentSession
+        ? <DtfCommentIntro subtitle={promoSubtitle} disclaimer={promoDisclaimer} />
+        : <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
+      {!!promoHints.length && (isDtfCommentSession
+        ? <DtfCommentFeed comments={promoHints} attemptsCount={session.attemptsCount} />
+        : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
