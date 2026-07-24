@@ -7,6 +7,7 @@ import type { Database } from '@shoditsa/database'
 import * as schema from '@shoditsa/database'
 import { mergeAnonymousAccount } from './merge.js'
 import { createAuthEmailSender } from './email.js'
+import { awardRegistrationBadge, registrationReferralFromContext } from '../users/badges.js'
 
 export const createAuth = (config: AppConfig, db: Database) => {
   const smtpConfigured = Boolean(config.smtp.host && config.smtp.from)
@@ -45,6 +46,17 @@ export const createAuth = (config: AppConfig, db: Database) => {
     },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
     user: { deleteUser: { enabled: true } },
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (createdUser, context) => {
+            if (createdUser.isAnonymous) return
+            const referral = registrationReferralFromContext(context)
+            if (referral) await awardRegistrationBadge(db, createdUser.id, referral)
+          },
+        },
+      },
+    },
     emailAndPassword: {
       enabled: config.authEmailEnabled,
       requireEmailVerification: emailVerificationEnabled,

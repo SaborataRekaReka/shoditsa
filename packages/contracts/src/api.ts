@@ -24,6 +24,15 @@ export type PlayerProfile = {
   legacyImportedAt: string | null
 }
 
+export type UserBadge = {
+  key: string
+  name: string
+  shortLabel: string
+  description: string
+  styleKey: string
+  awardedAt: string
+}
+
 export type PublicContentItem = {
   id: string
   mode: PlayableMode
@@ -65,6 +74,7 @@ export type MetaResponse = {
 export type MeResponse = {
   user: ApiUser
   profile: PlayerProfile
+  badges: UserBadge[]
   auth: { hasPassword: boolean; providers: string[] }
 }
 

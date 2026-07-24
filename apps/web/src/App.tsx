@@ -117,6 +117,8 @@ import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
 import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
+import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
+import { UserBadgeList } from './components/user-badges/UserBadgeList'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -143,7 +145,7 @@ const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS)
 const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS)
 const DTF_COMMENTS_PACK_ID = 'dtf-game-comments-25-v1'
-const DTF_COMMENTS_POOL_COUNT = 20
+const DTF_COMMENTS_POOL_COUNT = 25
 
 type EconomyAward = {
   total: number
@@ -1229,7 +1231,7 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, isAdmin, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectDtfSpecial: () => void
   onSelectFriends: () => void
@@ -1242,7 +1244,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
   onReview: () => void
   onResume: () => void
   onOpenSaved: (game: SavedGame) => void
-  isAdmin: boolean
+  canAccessDtfSpecial: boolean
   canAccessFriendsRoom: boolean
   activeSessionsCount: number
   games: SavedGame[]
@@ -1336,7 +1338,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
       <section className="category-section category-section--specials" aria-labelledby="special-shows-heading">
         <div className="category-heading"><span id="special-shows-heading">СПЕЦПОКАЗЫ</span></div>
         <div className="category-grid category-grid--active">
-          {isAdmin && <CategoryTicket
+          {canAccessDtfSpecial && <CategoryTicket
             mode="game"
             title="Что за игра?"
             description="Специальная подборка для DTF: угадайте 20 игр по комментариям игроков."
@@ -3279,6 +3281,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     queryFn: () => api.pack(session!.packId!),
     enabled: Boolean(session?.kind === 'pack' && session.packId),
   })
+  const packLeaderboard = useQuery({
+    queryKey: queryKeys.packLeaderboard(session?.packId ?? ''),
+    queryFn: () => api.packLeaderboard(session!.packId!),
+    enabled: session?.kind === 'pack' && session.packId === DTF_COMMENTS_PACK_ID,
+    staleTime: 30_000,
+  })
   const dashboard = useQuery({ queryKey: queryKeys.dashboard, queryFn: api.dashboard })
   const searchParams = useMemo(() => {
     if (!session || !debouncedQuery) return null
@@ -3315,6 +3323,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         client.invalidateQueries({ queryKey: queryKeys.dashboard }),
         client.invalidateQueries({ queryKey: queryKeys.ledger }),
         client.invalidateQueries({ queryKey: ['archive'] }),
+        ...(session?.packId ? [
+          client.invalidateQueries({ queryKey: queryKeys.pack(session.packId) }),
+          client.invalidateQueries({ queryKey: queryKeys.packLeaderboard(session.packId) }),
+        ] : []),
       ])
     },
     onError: async (error) => {
@@ -3573,6 +3585,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status !== 'playing' && isDtfCommentSession && !nextPackPosition && <DtfLeaderboard
+        data={packLeaderboard.data}
+        loading={packLeaderboard.isLoading}
+        error={packLeaderboard.isError}
+      />}
       {session.status !== 'playing' && message && <p className="specials-error" role="alert">{message}</p>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
@@ -4117,6 +4134,7 @@ function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelect
           <div className="profile-hero__copy">
             <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
             <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
+            <UserBadgeList badges={serverRuntime.me?.badges ?? []} />
             <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span>{(() => { const rank = ['gold', 'silver', 'paper'].find((level) => commerceProfile.data?.entitlements.some((entry) => entry.key === 'supporter' && entry.scope === level)); return rank ? <i>Жетон: {rank === 'gold' ? 'золотой' : rank === 'silver' ? 'серебряный' : 'бумажный'}</i> : null })()}</div>
           </div>
         </div>
@@ -4365,6 +4383,7 @@ function GameApp() {
   const initialPlayerRoute = playerRouteFromPathname(routeLocation.pathname)
   const serverRuntime = useServerRuntime()
   const isAdmin = Boolean(SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin')
+  const canAccessDtfSpecial = isAdmin || Boolean(serverRuntime.me?.badges.some((badge) => badge.key === 'dtf'))
   const canAccessFriendsRoom = canUseFriendsRoom(serverRuntime.me?.user)
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ app: true }),
@@ -5026,7 +5045,7 @@ function GameApp() {
   }
 
   const selectDtfSpecial = () => {
-    if (!isAdmin) return
+    if (!canAccessDtfSpecial) return
     setServerActionError('')
     setModal(null)
     void navigateToPlayerRoute({ screen: 'special', packId: DTF_COMMENTS_PACK_ID })
@@ -5340,7 +5359,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} isAdmin={isAdmin} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} />}
     {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}

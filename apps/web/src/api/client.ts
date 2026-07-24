@@ -6,7 +6,7 @@ import type {
   MeResponse, MetaResponse, PeriodUnlockResponse, PromoRedeemResponse, WalletResponse, AuthActionResponse,
   PlayerProfile, ProfilePatch,
   ArchiveCalendarQuery, ArchiveCalendarResponse, CheckoutBody, CheckoutResponse, CommerceCatalogResponse, MeCommerceResponse, OrderResponse,
-  PackDetailResponse, PackListResponse, PackProgressResponse,
+  PackDetailResponse, PackLeaderboardResponse, PackListResponse, PackProgressResponse,
   PrivateGameOrderBody, PrivateGameOrderResponse,
   DanetkiMessage,
   FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomPreview, FriendsRoomResponse,
@@ -194,6 +194,7 @@ export const api = {
   packs: () => request<PackListResponse>(`${API_BASE}/packs`, { retries: 1 }),
   pack: (id: string) => request<PackDetailResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}`, { retries: 1 }),
   packProgress: (id: string) => request<PackProgressResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/progress`, { retries: 1 }),
+  packLeaderboard: (id: string) => request<PackLeaderboardResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/leaderboard`, { retries: 1 }),
   startPack: (id: string, position: number) => request<GameStartResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/sessions`, { method: 'POST', body: JSON.stringify({ position }), retries: 1 }),
   createPrivateGameOrder: (body: PrivateGameOrderBody) => request<PrivateGameOrderResponse>(`${API_BASE}/private-game-orders`, { method: 'POST', body: JSON.stringify(body) }),
   wallet: () => request<WalletResponse>(`${API_BASE}/me/wallet`, { retries: 1 }),
@@ -215,11 +216,16 @@ export const api = {
   reviewQueue: (params = new URLSearchParams({ mode: 'music', pendingOnly: 'true', limit: '30' })) => request<AdminReviewQueueResponse>(`${API_BASE}/admin/content-review?${params}`),
   reviewDecision: (itemId: string, field: string, decision: AdminContentReviewDecision, key: string) => request<AdminReviewDecisionResponse>(`${API_BASE}/admin/content-review/${encodeURIComponent(itemId)}/${encodeURIComponent(field)}`, { method: 'PUT', headers: { 'Idempotency-Key': key }, body: JSON.stringify(decision) }),
   signIn: (email: string, password: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-in/email`, { method: 'POST', body: JSON.stringify({ email, password }) }),
-  signInYandex: (callbackURL: string) => request<{ url?: string }>(`${AUTH_BASE}/sign-in/oauth2`, {
+  signInYandex: (callbackURL: string, registrationReferral?: string) => request<{ url?: string }>(`${AUTH_BASE}/sign-in/oauth2`, {
     method: 'POST',
+    headers: registrationReferral ? { 'X-Registration-Referral': registrationReferral } : undefined,
     body: JSON.stringify({ providerId: 'yandex', callbackURL, disableRedirect: true }),
   }),
-  signUp: (name: string, email: string, password: string, callbackURL: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-up/email`, { method: 'POST', body: JSON.stringify({ name, email, password, callbackURL }) }),
+  signUp: (name: string, email: string, password: string, callbackURL: string, registrationReferral?: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-up/email`, {
+    method: 'POST',
+    headers: registrationReferral ? { 'X-Registration-Referral': registrationReferral } : undefined,
+    body: JSON.stringify({ name, email, password, callbackURL }),
+  }),
   requestPasswordReset: (email: string, redirectTo: string) => request<unknown>(`${AUTH_BASE}/request-password-reset`, {
     method: 'POST',
     body: JSON.stringify({ email, redirectTo }),
@@ -252,4 +258,5 @@ export const queryKeys = {
   archiveCalendar: (filters: unknown) => ['archive', 'calendar', filters] as const,
   packs: ['packs'] as const,
   pack: (id: string) => ['packs', id] as const,
+  packLeaderboard: (id: string) => ['packs', id, 'leaderboard'] as const,
 }

@@ -176,6 +176,13 @@
       "when": 1784743251681,
       "tag": "0024_opposite_red_wolf",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784893162339,
+      "tag": "0025_fantastic_talisman",
+      "breakpoints": true
     }
   ]
 }

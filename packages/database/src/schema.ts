@@ -89,6 +89,26 @@ export const playerProfiles = pgTable('player_profiles', {
   index('player_profiles_status_until_idx').on(table.accountStatus, table.blockedUntil),
 ])
 
+export const badges = pgTable('badges', {
+  key: text().primaryKey(),
+  name: text().notNull(),
+  shortLabel: text('short_label').notNull(),
+  description: text().notNull(),
+  styleKey: text('style_key').notNull(),
+  createdAt: now(),
+})
+
+export const userBadges = pgTable('user_badges', {
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  badgeKey: text('badge_key').notNull().references(() => badges.key, { onDelete: 'cascade' }),
+  source: text().notNull(),
+  sourceRef: text('source_ref'),
+  awardedAt: now(),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.badgeKey] }),
+  index('user_badges_badge_awarded_idx').on(table.badgeKey, table.awardedAt),
+])
+
 export const appSettings = pgTable('app_settings', {
   key: text().primaryKey(),
   value: jsonb().notNull(),

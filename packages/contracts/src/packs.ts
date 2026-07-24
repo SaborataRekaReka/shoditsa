@@ -20,7 +20,7 @@ export const ContentPackSchema = Type.Object({
   productId: Type.Union([Type.String(), Type.Null()]),
   priceMinor: Type.Union([Type.Integer(), Type.Null()]),
   currency: Type.Union([Type.String(), Type.Null()]),
-  access: Type.Union([Type.Literal('admin'), Type.Literal('free'), Type.Literal('preview'), Type.Literal('club'), Type.Literal('purchase'), Type.Literal('locked')]),
+  access: Type.Union([Type.Literal('admin'), Type.Literal('community'), Type.Literal('free'), Type.Literal('preview'), Type.Literal('club'), Type.Literal('purchase'), Type.Literal('locked')]),
   owned: Type.Boolean(),
   completedItems: Type.Integer(),
 }, { additionalProperties: false })
@@ -44,3 +44,24 @@ export type ContentPackDetail = Static<typeof ContentPackDetailSchema>
 export type PackListResponse = { items: ContentPack[] }
 export type PackDetailResponse = { pack: ContentPackDetail }
 export type PackProgressResponse = { packId: string; completedPositions: number[]; lastPosition: number | null; completedAt: string | null }
+
+export type PackLeaderboardEntry = {
+  rank: number
+  displayName: string
+  avatarUrl: string | null
+  completedItems: number
+  totalItems: number
+  wins: number
+  totalAttempts: number
+  completedAt: string | null
+  isCurrentUser: boolean
+}
+
+export type PackLeaderboardResponse = {
+  packId: string
+  participantCount: number
+  totalItems: number
+  updatedAt: string
+  entries: PackLeaderboardEntry[]
+  viewerEntry: PackLeaderboardEntry | null
+}

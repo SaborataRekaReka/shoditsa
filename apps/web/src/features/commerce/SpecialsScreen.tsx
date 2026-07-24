@@ -9,6 +9,7 @@ import { api, queryKeys } from '../../api/client'
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
+import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
 import './CommercialShell.css'
 
 type ShellProps = {
@@ -140,9 +141,18 @@ export function SpecialDetailScreen({
     enabled: SERVER_RUNTIME && Boolean(packId),
   })
   const pack = packQuery.data?.pack
-  const nextEntry = pack?.entries.find((entry) => entry.accessible && !entry.completed)
-    ?? pack?.entries.find((entry) => entry.accessible)
-    ?? null
+  const isDtfPack = packId === 'dtf-game-comments-25-v1'
+  const leaderboardQuery = useQuery({
+    queryKey: queryKeys.packLeaderboard(packId),
+    queryFn: () => api.packLeaderboard(packId),
+    enabled: SERVER_RUNTIME && Boolean(pack) && isDtfPack,
+    staleTime: 30_000,
+  })
+  const nextEntry = pack && pack.completedItems < pack.totalItems
+    ? pack.entries.find((entry) => entry.accessible && !entry.completed)
+      ?? pack.entries.find((entry) => entry.accessible)
+      ?? null
+    : null
 
   useEffect(() => {
     mountedRef.current = true
@@ -240,6 +250,11 @@ export function SpecialDetailScreen({
               {error && <p className="specials-error" role="alert">{error}</p>}
             </div>
           </section>
+          {isDtfPack && <DtfLeaderboard
+            data={leaderboardQuery.data}
+            loading={leaderboardQuery.isLoading}
+            error={leaderboardQuery.isError}
+          />}
         </section>
       </GameScreenShell>}
     </>

@@ -35,6 +35,13 @@ import { getMoscowDate } from './lib/time.js'
 import { chooseHint, getOwnedSession, publicCard, searchCatalog, startGame, submitAttempt } from './modules/games/service.js'
 import { dashboard, ledgerPage, normalizePromoCode, promoHash, redeemPromo, startFreePlay, unlockPeriod } from './modules/economy/service.js'
 import { importLegacy } from './modules/users/legacy-import.js'
+import {
+  REGISTRATION_REFERRAL_HEADER,
+  clearRegistrationReferralCookie,
+  listUserBadges,
+  normalizeRegistrationReferral,
+  registrationReferralCookie,
+} from './modules/users/badges.js'
 import { registerAdminRoutes, registerClientEventRoutes } from './modules/admin/routes.js'
 import { activateContentRevision } from './modules/admin/content-service.js'
 import { registerCommerceRoutes } from './modules/commerce/routes.js'
@@ -230,6 +237,13 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       method: request.method, headers: fromNodeHeaders(request.headers),
       body: request.method === 'GET' || request.method === 'HEAD' ? undefined : JSON.stringify(request.body ?? {}),
     }))
+    const registrationReferral = normalizeRegistrationReferral(request.headers[REGISTRATION_REFERRAL_HEADER])
+    if (registrationReferral && /\/sign-in\/oauth2\/?$/i.test(authPath) && response.ok) {
+      response.headers.append('set-cookie', registrationReferralCookie(registrationReferral, config.cookieSecure))
+    }
+    if (/\/oauth2\/callback\//i.test(authPath)) {
+      response.headers.append('set-cookie', clearRegistrationReferralCookie(config.cookieSecure))
+    }
     if (eventName) {
       const payload = await response.clone().json().catch(() => null) as { user?: { id?: string } } | null
       const responseUserId = payload?.user?.id ?? null
@@ -252,13 +266,15 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
 
   app.get('/api/v1/me', async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    const [profile, linkedAccounts] = await Promise.all([
+    const [profile, linkedAccounts, userBadgeList] = await Promise.all([
       db.select().from(playerProfiles).where(eq(playerProfiles.userId, user!.id)).limit(1),
       db.select({ providerId: account.providerId, password: account.password }).from(account).where(eq(account.userId, user!.id)),
+      listUserBadges(db, user!.id),
     ])
     return {
       user,
       profile: profile[0],
+      badges: userBadgeList,
       auth: {
         hasPassword: linkedAccounts.some((entry) => entry.providerId === 'credential' && Boolean(entry.password)),
         providers: [...new Set(linkedAccounts.map((entry) => entry.providerId))],

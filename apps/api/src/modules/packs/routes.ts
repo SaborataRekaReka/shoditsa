@@ -5,6 +5,7 @@ import type { Database } from '@shoditsa/database'
 import type { FastifyInstance } from 'fastify'
 import type { Auth } from '../auth/auth.js'
 import { getRequestUser } from '../auth/session.js'
+import { getPackLeaderboard } from './leaderboard.js'
 import { getPack, getPackProgress, listPacks, startPackSession } from './service.js'
 
 const packParams = Type.Object({ packId: Type.String({ minLength: 1, maxLength: 120 }) }, { additionalProperties: false })
@@ -22,6 +23,13 @@ export const registerPackRoutes = (app: FastifyInstance, db: Database, auth: Aut
   app.get('/api/v1/packs/:packId/progress', { schema: { params: packParams } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
     return getPackProgress(db, user!.id, (request.params as { packId: string }).packId, user!.role)
+  })
+  app.get('/api/v1/packs/:packId/leaderboard', {
+    schema: { params: packParams },
+    config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
+  }, async (request) => {
+    const user = await getRequestUser(request, auth, db, true, config)
+    return getPackLeaderboard(db, user!.id, (request.params as { packId: string }).packId, user!.role)
   })
   app.post('/api/v1/packs/:packId/sessions', {
     schema: { params: packParams, body: PackSessionBodySchema },

@@ -7,6 +7,7 @@ import { ActionButton, BrandLogo } from '../../components/app-shell/AppShell'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { notifyAuthSessionChanged } from './use-auth-session'
 import { localizeYandexOAuthUrl } from './yandex-oauth'
+import { REGISTRATION_REFERRALS, registrationReferralFromSearch } from './registration-referral'
 
 type AuthPageMode = 'login' | 'register'
 
@@ -94,6 +95,13 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const [pending, setPending] = useState(false)
 
   const returnUrl = useMemo(() => currentReturnUrl(), [])
+  const registrationReferral = useMemo(
+    () => mode === 'register' && typeof window !== 'undefined'
+      ? registrationReferralFromSearch(window.location.search)
+      : null,
+    [mode],
+  )
+  const registrationInvite = registrationReferral ? REGISTRATION_REFERRALS[registrationReferral] : null
   const resetMode = Boolean(resetToken) && !register
   const authCapabilities = serverRuntime.meta?.auth
   const emailAuthEnabled = authCapabilities?.emailPassword ?? SERVER_RUNTIME
@@ -211,7 +219,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       const registrationCallback = new URL(window.location.pathname, window.location.origin)
       if (returnUrl !== '/') registrationCallback.searchParams.set('returnUrl', returnUrl)
       const authResult = register
-        ? await api.signUp(name.trim(), email.trim(), password, registrationCallback.toString())
+        ? await api.signUp(name.trim(), email.trim(), password, registrationCallback.toString(), registrationReferral ?? undefined)
         : await api.signIn(email.trim(), password)
 
       if (register && !authResult.token) {
@@ -239,7 +247,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setPending(true)
     let redirected = false
     try {
-      const payload = await api.signInYandex(window.location.href)
+      const payload = await api.signInYandex(window.location.href, register ? registrationReferral ?? undefined : undefined)
       const oauthUrl = typeof payload?.url === 'string' ? payload.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
@@ -296,6 +304,13 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
             <span className="login-eyebrow">{eyebrow}</span>
             <h1 id="login-title">{title}</h1>
             <p className="login-description">{description}</p>
+            {register && registrationInvite && <aside className="login-referral-invite" aria-label={registrationInvite.title}>
+              <span className="login-referral-invite__badge" aria-hidden="true">{registrationInvite.label}</span>
+              <span>
+                <strong>{registrationInvite.title}</strong>
+                <small>{registrationInvite.description}</small>
+              </span>
+            </aside>}
 
             {serverRuntime.loading
               ? <div className="login-session-loading" role="status" aria-live="polite"><LoaderCircle className="login-spinner" /> Проверяем сессию…</div>
