@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Clapperboard, Gamepad2, Play, Sparkles } from 'lucide-react'
+import { Clapperboard, Gamepad2, Play, Sparkles, Trophy } from 'lucide-react'
 import type { GameSessionSnapshot } from '@shoditsa/contracts'
-import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
+import { ActionButton, AppHeader, Modal, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { api, queryKeys } from '../../api/client'
@@ -134,6 +134,7 @@ export function SpecialDetailScreen({
 }: ShellProps & { packId: string; onSession: (session: GameSessionSnapshot) => void }) {
   const [starting, setStarting] = useState(false)
   const [error, setError] = useState('')
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false)
   const mountedRef = useRef(true)
   const packQuery = useQuery({
     queryKey: queryKeys.pack(packId),
@@ -194,6 +195,7 @@ export function SpecialDetailScreen({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return
+      if (leaderboardOpen) return
       if (event.key === 'Escape') {
         event.preventDefault()
         onHome()
@@ -205,7 +207,7 @@ export function SpecialDetailScreen({
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [nextEntry, onHome, starting])
+  }, [leaderboardOpen, nextEntry, onHome, starting])
 
   return (
     <>
@@ -246,17 +248,24 @@ export function SpecialDetailScreen({
                   <Play /> {starting ? 'Запускаем…' : pack.completedItems > 0 ? `Продолжить · игра ${nextEntry?.position ?? pack.totalItems} из ${pack.totalItems}` : 'Начать игру'}
                   {nextEntry && !starting && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
                 </ActionButton>}
+                option={isDtfPack
+                  ? <ActionButton variant="secondary" className="special-title-leaderboard-button" onClick={() => setLeaderboardOpen(true)}>
+                    <Trophy /> Рейтинг
+                  </ActionButton>
+                  : undefined}
               />
               {error && <p className="specials-error" role="alert">{error}</p>}
             </div>
           </section>
-          {isDtfPack && <DtfLeaderboard
-            data={leaderboardQuery.data}
-            loading={leaderboardQuery.isLoading}
-            error={leaderboardQuery.isError}
-          />}
         </section>
       </GameScreenShell>}
+      {leaderboardOpen && <Modal className="dtf-leaderboard-modal" title="Рейтинг DTF" onClose={() => setLeaderboardOpen(false)}>
+        <DtfLeaderboard
+          data={leaderboardQuery.data}
+          loading={leaderboardQuery.isLoading}
+          error={leaderboardQuery.isError}
+        />
+      </Modal>}
     </>
   )
 }

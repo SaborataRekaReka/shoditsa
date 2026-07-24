@@ -3268,6 +3268,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
   const [gameMatchStripOpen, setGameMatchStripOpen] = useState(false)
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false)
   const [hintModalRound, setHintModalRound] = useState<5 | 8 | null>(null)
   const [revealedHint, setRevealedHint] = useState<HintResponse | null>(null)
   const [dismissedHintRounds, setDismissedHintRounds] = useState<Array<5 | 8>>([])
@@ -3362,6 +3363,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setHintModalRound(null)
     setRevealedHint(null)
     setDismissedHintRounds([])
+    setLeaderboardOpen(false)
   }, [sessionId])
 
   useEffect(() => {
@@ -3412,12 +3414,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       if (event.key !== 'Escape') return
       if (isEditableTarget(event.target)) return
       event.preventDefault()
-      if (hintModalRound) return
+      if (hintModalRound || leaderboardOpen) return
       onBack()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [hintModalRound, onBack])
+  }, [hintModalRound, leaderboardOpen, onBack])
 
   useEffect(() => {
     if (session) onSessionLoaded(session)
@@ -3585,11 +3587,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
-      {session.status !== 'playing' && isDtfCommentSession && !nextPackPosition && <DtfLeaderboard
-        data={packLeaderboard.data}
-        loading={packLeaderboard.isLoading}
-        error={packLeaderboard.isError}
-      />}
+      {session.status !== 'playing' && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
+        <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
+      </div>}
       {session.status !== 'playing' && message && <p className="specials-error" role="alert">{message}</p>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
@@ -3611,6 +3611,13 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         return <ModeAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
       })}</section>}
     </GamePageFrame>
+    {leaderboardOpen && <Modal className="dtf-leaderboard-modal" title="Рейтинг DTF" onClose={() => setLeaderboardOpen(false)}>
+      <DtfLeaderboard
+        data={packLeaderboard.data}
+        loading={packLeaderboard.isLoading}
+        error={packLeaderboard.isError}
+      />
+    </Modal>}
     {hintModalRound && (hintOptions.length > 0 || revealedHint) && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
       <section className="hint-modal" ref={hintDialogRef} role="dialog" aria-modal="true" aria-label="Подсказка" tabIndex={-1}>
         <div className="hint-modal__head">

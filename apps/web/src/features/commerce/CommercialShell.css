@@ -23,6 +23,19 @@
   border-radius: inherit;
   background: var(--mode-game-brand, var(--color-primary));
 }
+.special-title-leaderboard-button {
+  width: 100%;
+  min-height: 56px;
+  margin: 0;
+  border-color: rgba(255, 107, 53, .52);
+  color: #7d361f;
+  background: rgba(255, 107, 53, .1);
+}
+.special-title-leaderboard-button:hover {
+  border-color: #d75426;
+  color: #642713;
+  background: rgba(255, 107, 53, .18);
+}
 .special-title-ticket .specials-error { margin: 10px 0 0; color: #8f332e; font-size: 11px; }
 
 .specials-screen,

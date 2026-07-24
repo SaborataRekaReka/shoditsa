@@ -19,11 +19,17 @@ type LeaderboardCandidate = {
   displayName: string
   avatarUrl: string | null
   completedItems: number
+  score: number
   wins: number
   totalAttempts: number
   completedAt: Date | null
   startedAt: Date | null
 }
+
+const DTF_MAX_ATTEMPTS = 6
+const SCORE_PER_COMPLETED_GAME = 100
+const SCORE_PER_WIN = 50
+const SCORE_PER_UNUSED_ATTEMPT = 10
 
 const timestamp = (value: Date | null) => value?.getTime() ?? Number.MAX_SAFE_INTEGER
 
@@ -33,7 +39,8 @@ export const rankPackLeaderboard = (
   viewerId: string,
 ): Array<PackLeaderboardEntry & { userId: string }> => [...candidates]
   .sort((left, right) => (
-    right.completedItems - left.completedItems
+    right.score - left.score
+    || right.completedItems - left.completedItems
     || right.wins - left.wins
     || left.totalAttempts - right.totalAttempts
     || timestamp(left.completedAt) - timestamp(right.completedAt)
@@ -48,6 +55,7 @@ export const rankPackLeaderboard = (
     avatarUrl: entry.avatarUrl,
     completedItems: entry.completedItems,
     totalItems,
+    score: entry.score,
     wins: entry.wins,
     totalAttempts: entry.totalAttempts,
     completedAt: entry.completedAt?.toISOString() ?? null,
@@ -103,22 +111,29 @@ export const getPackLeaderboard = async (
       .where(eq(gameSessions.packId, packId)),
   ])
 
-  const statsByUser = new Map<string, { wins: number; totalAttempts: number }>()
+  const statsByUser = new Map<string, { score: number; wins: number; totalAttempts: number }>()
   for (const session of sessionRows) {
-    const stats = statsByUser.get(session.userId) ?? { wins: 0, totalAttempts: 0 }
-    if (session.status === 'won') stats.wins += 1
+    if (session.status === 'playing') continue
+    const stats = statsByUser.get(session.userId) ?? { score: 0, wins: 0, totalAttempts: 0 }
+    stats.score += SCORE_PER_COMPLETED_GAME
+    if (session.status === 'won') {
+      stats.wins += 1
+      stats.score += SCORE_PER_WIN
+      stats.score += Math.max(0, DTF_MAX_ATTEMPTS - session.attemptsCount) * SCORE_PER_UNUSED_ATTEMPT
+    }
     stats.totalAttempts += session.attemptsCount
     statsByUser.set(session.userId, stats)
   }
 
   const totalItems = countRows[0]?.count ?? 0
   const ranked = rankPackLeaderboard(participantRows.map((participant) => {
-    const stats = statsByUser.get(participant.userId) ?? { wins: 0, totalAttempts: 0 }
+    const stats = statsByUser.get(participant.userId) ?? { score: 0, wins: 0, totalAttempts: 0 }
     return {
       userId: participant.userId,
       displayName: (participant.displayName?.trim() || participant.accountName.trim() || 'Игрок DTF').slice(0, 60),
       avatarUrl: participant.avatarUrl?.trim() || null,
       completedItems: participant.completedPositions?.length ?? 0,
+      score: stats.score,
       wins: stats.wins,
       totalAttempts: stats.totalAttempts,
       completedAt: participant.completedAt,

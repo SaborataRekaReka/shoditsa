@@ -51,6 +51,7 @@ export type PackLeaderboardEntry = {
   avatarUrl: string | null
   completedItems: number
   totalItems: number
+  score: number
   wins: number
   totalAttempts: number
   completedAt: string | null

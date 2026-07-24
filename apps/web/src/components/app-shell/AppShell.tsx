@@ -122,10 +122,10 @@ export function ScreenBack({ onBack, href, label = 'Назад', keyboardShortcu
   </div>
 }
 
-export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+export function Modal({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
   const dialogRef = useDialogFocusTrap<HTMLDivElement>(true, onClose)
   return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <div className="modal" ref={dialogRef} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1}>
+    <div className={`modal ${className}`.trim()} ref={dialogRef} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1}>
       <div className="modal-head"><h2>{title}</h2><button onClick={onClose} aria-label="Закрыть"><X /></button></div>
       {children}
     </div>
