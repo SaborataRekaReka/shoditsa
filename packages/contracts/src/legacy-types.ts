@@ -246,7 +246,6 @@ export type TitleItem = {
   riskFactors?: string[]
   severityTypical?: string | null
   urgencyTypical?: string | null
-  safetyDisclaimer?: string | null
 
   country?: string
   countryFlagUrl?: string | null

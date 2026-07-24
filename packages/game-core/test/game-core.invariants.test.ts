@@ -96,13 +96,12 @@ describe('game-core invariants', () => {
       const lostLines = lost.split('\n')
       const wonLines = won.split('\n')
 
-      const safetyLines = mode === 'diagnosis' ? 1 : 0
-      expect(lostLines.length).toBe(3 + attempts.length + safetyLines)
-      expect(wonLines.length).toBe(3 + attempts.length + safetyLines)
+      expect(lostLines.length).toBe(3 + attempts.length)
+      expect(wonLines.length).toBe(3 + attempts.length)
       expect(lostLines[2]).toContain('X/10')
       expect(wonLines[2]).toContain(`${attempts.length}/10`)
       expect(special.split('\n')[2]).toContain(`${attempts.length}/6`)
-      if (mode === 'diagnosis') expect(won).toContain('не заменяет консультацию врача')
+      if (mode === 'diagnosis') expect(won).not.toMatch(/врач|самодиагност|медицинск/i)
     })
 
     it(`${mode}: searchTitles never returns excluded ids`, () => {

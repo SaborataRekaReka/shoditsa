@@ -12,7 +12,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   anime: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'studios', 'countries', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'],
   game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
-  diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
+  diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
 }

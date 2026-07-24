@@ -197,7 +197,6 @@ const CONTENT_FIELD_GROUPS: ContentFieldGroup[] = [
       { value: 'risks', label: 'risks — риски' },
       { value: 'severity', label: 'severity — тяжесть' },
       { value: 'urgency', label: 'urgency — срочность' },
-      { value: 'safetyDisclaimer', label: 'safetyDisclaimer — предупреждение' },
       { value: 'caseVignettes', label: 'caseVignettes — клинические случаи' },
     ],
   },
@@ -555,7 +554,6 @@ const ADMIN_FIELD_LABELS: Record<string, string> = {
   riskFactors: 'Факторы риска',
   severityTypical: 'Типичная тяжесть',
   urgencyTypical: 'Типичная срочность',
-  safetyDisclaimer: 'Медицинское предупреждение',
   sourceRefs: 'Источники',
   comparisonHints: 'Сравнительные подсказки',
   population: 'Население',
@@ -598,7 +596,7 @@ function FieldEditor({ name, value, disabled, onChange }: { name: string; value:
   if (typeof value === 'number' || (value == null && ADMIN_NUMERIC_FIELDS.has(name))) return <label className="admin-field"><span>{label}</span><input type="number" value={value == null ? '' : String(value)} disabled={disabled} onChange={(event) => onChange(event.target.value === '' ? null : Number(event.target.value))} /></label>
   if (Array.isArray(value) || (value == null && ADMIN_ARRAY_FIELDS.has(name))) { const values = array(value); return <label className="admin-field admin-field--wide"><span>{label}<small>{values.length} знач.</small></span><textarea value={values.map((entry) => typeof entry === 'string' ? entry : JSON.stringify(entry)).join('\n')} disabled={disabled} onChange={(event) => onChange(event.target.value.split('\n').map((entry) => entry.trim()).filter(Boolean).map((entry) => { try { return JSON.parse(entry) } catch { return entry } }))} /></label> }
   if (value && typeof value === 'object') return <label className="admin-field admin-field--wide"><span>{label}<small>JSON</small></span><textarea className="admin-code-input" value={JSON.stringify(value, null, 2)} disabled={disabled} onChange={(event) => { try { onChange(JSON.parse(event.target.value)) } catch { /* keep last valid object */ } }} /></label>
-  const multiline = ['description', 'plotHint', 'slogan', 'notes', 'facts', 'safetyDisclaimer', 'condition', 'solution'].some((part) => name.toLocaleLowerCase().includes(part.toLocaleLowerCase()))
+  const multiline = ['description', 'plotHint', 'slogan', 'notes', 'facts', 'condition', 'solution'].some((part) => name.toLocaleLowerCase().includes(part.toLocaleLowerCase()))
   return <label className={`admin-field ${multiline ? 'admin-field--wide' : ''}`}><span>{label}{typeof value === 'string' && <small>{value.length}</small>}</span>{multiline
     ? <textarea value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />
     : <input type={name === 'releaseDate' ? 'date' : 'text'} value={String(value ?? '')} disabled={disabled} onChange={(event) => onChange(event.target.value)} />}</label>
@@ -2722,7 +2720,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   anime: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'studios', 'countries', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'],
   game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
-  diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'safetyDisclaimer', 'caseVignettes'],
+  diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
 }

@@ -1,13 +1,21 @@
 import type { ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
-import { Check, ChevronDown, Copy, Send, Share2, Ticket } from 'lucide-react'
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Copy,
+  Send,
+  Share2,
+  SlidersHorizontal,
+  Ticket,
+} from 'lucide-react'
 import type { ChallengeOutcome } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import type { TitleMode } from '../../types'
 import { publicAssetUrl } from '../../app/public-asset'
 import { formatDays } from '../../game'
-import { MedicalSafetyNotice } from '../medical-safety/MedicalSafetyNotice'
 
 const diagnosisSystemRewardIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
 
@@ -54,6 +62,11 @@ type Props = {
 
 export function GameResult(props: Props) {
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
+  const nextLabelSeparator = props.nextLabel.indexOf(':')
+  const hasNextDestination = nextLabelSeparator >= 0
+  const nextDestination = hasNextDestination
+    ? props.nextLabel.slice(nextLabelSeparator + 1).trim()
+    : props.nextLabel
   const rewardIcon = props.mode === 'diagnosis'
     ? <img className="result-dx-icon" src={diagnosisSystemRewardIcon} alt="" aria-hidden="true" loading="lazy" />
     : <Ticket />
@@ -64,7 +77,6 @@ export function GameResult(props: Props) {
       <h2>{props.title}</h2>
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
-      {props.mode === 'diagnosis' && <MedicalSafetyNotice compact />}
       <strong>{props.won ? `${props.attempts}/${props.maxAttempts ?? 10} — верный ответ` : 'Правильный ответ открыт'}</strong>
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
@@ -75,12 +87,27 @@ export function GameResult(props: Props) {
         <strong>{outcomeText}</strong>
       </div>}
     </div>
-    <div className="result-actions">
-      <button type="button" className="result-next" onClick={props.onNext}>{props.nextLabel}</button>
-      <button type="button" className="result-config" onClick={props.onConfigure}>{props.configureLabel}</button>
-      {props.onChallenge && <button type="button" onClick={props.onChallenge}>{props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'} <Share2 /></button>}
+    <div className="result-primary-actions">
+      <button type="button" className="result-next" onClick={props.onNext} aria-label={props.nextLabel}>
+        <span>
+          <small>{hasNextDestination ? 'Дальше по маршруту' : 'Продолжить игру'}</small>
+          <strong>{nextDestination}</strong>
+        </span>
+        <ArrowRight />
+      </button>
+      <button type="button" className="result-config" onClick={props.onConfigure}>
+        <SlidersHorizontal />
+        <span>
+          <small>Режим</small>
+          <strong>{props.configureLabel}</strong>
+        </span>
+      </button>
+    </div>
+    <div className="result-after-actions result-card__wide">
+      <span className="result-after-actions__label">После сеанса</span>
+      {props.onChallenge && <button type="button" className="result-challenge" onClick={props.onChallenge}><Share2 /> {props.opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}</button>}
       <button type="button" className="result-copy" onClick={props.onCopy}>{props.copied ? <Check /> : <Copy />}{props.copied ? 'Скопировано' : 'Скопировать результат'}</button>
-      {props.won && <TipCheckoutTrigger className="result-tip" />}
+      {props.won && <TipCheckoutTrigger className="result-tip" label="Поддержать проект" hint="Чаевые · 99–699 ₽" />}
     </div>
     {props.award && <details className="reward-breakdown result-card__wide">
       <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билетов`}</span><ChevronDown /></summary>

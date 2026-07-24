@@ -1250,6 +1250,5 @@ export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hin
   const modeDefinition = GAME_MODE_MANIFEST[mode]
   const dailyLabel = `${modeDefinition.dailyLabel} дня`
   const icon = modeDefinition.shareIcon
-  const safetyNotice = mode === 'diagnosis' ? '\nИгра не заменяет консультацию врача.' : ''
-  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/${maxAttempts}\n${rows}${safetyNotice}`
+  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/${maxAttempts}\n${rows}`
 }

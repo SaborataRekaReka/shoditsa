@@ -100,6 +100,7 @@ import { collectMatchSummaryTags } from './game/match-summary'
 import { attemptProgressStats } from './game/attempt-progress'
 import { searchEmptyMessage, searchMediaAlt, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
+import { commitSuggestionAttempt } from './game/suggestion-attempt'
 import { copyText, shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
@@ -125,7 +126,6 @@ import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEnt
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
 import { UserBadgeList } from './components/user-badges/UserBadgeList'
-import { MedicalSafetyNotice } from './features/medical-safety/MedicalSafetyNotice'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -1516,7 +1516,6 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
                 <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
                 <h2 id="ticket-diagnosis">Ежедневная игра: диагнозы</h2>
                 <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
-                <MedicalSafetyNotice compact />
                 {hasAnamnesis && <button type="button" className="med-chart__anamnesis" onClick={onReadAnamnesis}>
                   <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
                   <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
@@ -2871,8 +2870,8 @@ function Game({
   }
   const hintDialogRef = useDialogFocusTrap<HTMLElement>(Boolean(hintModalRound), dismissHintModal)
 
-  const submit = () => {
-    const nextSelection = selected
+  const submit = (selection: TitleItem | null = selected) => {
+    const nextSelection = selection
     if (!nextSelection || !answer || status !== 'playing') {
       dispatchSession({ type: 'set_message', message: 'Выберите вариант из найденного списка' })
       return
@@ -2988,7 +2987,6 @@ function Game({
         <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>
       </section>
 
-      {mode === 'diagnosis' && <MedicalSafetyNotice />}
       {(showTodayLink || (mode === 'diagnosis' && !!anamnesisText)) && <section className="game-toolbar" aria-label="Настройки игры">
         {mode === 'diagnosis' && !!anamnesisText && <ActionButton variant="secondary" className="anamnesis-link" onClick={() => {
           trackMetrikaGoal('open_anamnesis', { mode })
@@ -3110,7 +3108,7 @@ function Game({
         {isSuggestionsOpen && <div className="suggestions">
           {searchPending
             ? <div className="search-loading" role="status">Ищем в текущем пуле…</div>
-            : suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => selectSuggestion(item)}>
+            : suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => commitSuggestionAttempt(item, selectSuggestion, submit)}>
             <Poster item={item} />
             <span><strong>{item.titleRu}</strong><small>{searchResultMeta(item)}</small></span>
             <em>{item.mode === 'diagnosis'
@@ -3546,7 +3544,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
       <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
-      {session.mode === 'diagnosis' && <MedicalSafetyNotice />}
       {isPromptSession && (isDtfCommentSession
         ? <DtfCommentIntro subtitle={promoSubtitle} />
         : <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
@@ -3583,7 +3580,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             : suggestions.length
               ? suggestions.map((item) => {
                   const title = publicItemToTitle(item)
-                  return <button key={item.id} onClick={() => selectSuggestion(item)} disabled={attempt.isPending}><Poster item={title} /><span><strong>{item.titleRu}</strong><small>{searchResultMeta(title)}</small></span></button>
+                  return <button key={item.id} onClick={() => commitSuggestionAttempt(item, selectSuggestion, submit)} disabled={attempt.isPending}><Poster item={title} /><span><strong>{item.titleRu}</strong><small>{searchResultMeta(title)}</small></span></button>
                 })
               : <div className="empty-search">{searchEmptyMessage(session.mode)}</div>}</div>}
         </div>

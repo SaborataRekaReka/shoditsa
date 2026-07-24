@@ -26,10 +26,6 @@ for (const library of libraries) {
       }
     }
 
-    if (item.mode === 'diagnosis' && !item.safetyDisclaimer?.trim()) {
-      errors.push(`${item.id}: diagnosis has no safetyDisclaimer`)
-    }
-
     if (item.mode === 'game') {
       if (item.releaseScope === 'release' && !item.releaseLabel?.trim()) {
         errors.push(`${item.id}: release-scoped game has no releaseLabel`)
