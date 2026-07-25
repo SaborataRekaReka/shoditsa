@@ -54,7 +54,7 @@ describe('game final choice API', () => {
     await app?.close()
   })
 
-  const createFinalSession = async () => {
+  const createFinalSession = async (openedAt = new Date()) => {
     const answer = versions[0]
     const candidates = versions.map((version) => {
       const item = version.payload
@@ -96,7 +96,8 @@ describe('game final choice API', () => {
       displayKeys: snapshot.displayKeys,
       candidateSnapshot: snapshot,
       generationSource: 'runtime',
-      algorithmVersion: 1,
+      algorithmVersion: 2,
+      openedAt,
     })
     return { session, snapshot, answer }
   }
@@ -168,5 +169,26 @@ describe('game final choice API', () => {
       correct: false,
     })
     expect(revealed.json().reward.components).toMatchObject({ completion: 0, win: 0, finalChoiceWin: 0 })
+  })
+
+  it('turns a late choice into an automatic reveal after ten seconds', async () => {
+    const fixture = await createFinalSession(new Date(Date.now() - 10_100))
+    const response = await app.inject({
+      method: 'POST',
+      url: `/api/v1/games/${fixture.session.id}/final-choice`,
+      headers: { cookie, 'idempotency-key': crypto.randomUUID() },
+      payload: { action: 'choose', itemId: fixture.answer.itemId },
+    })
+
+    expect(response.statusCode).toBe(200)
+    expect(response.json()).toMatchObject({
+      session: { status: 'lost', completionType: 'answer_revealed' },
+      selectedItemId: null,
+      correct: false,
+      timedOut: true,
+    })
+    const stored = (await database.db.select().from(gameFinalChoices)
+      .where(eq(gameFinalChoices.sessionId, fixture.session.id)).limit(1))[0]
+    expect(stored).toMatchObject({ selectedItemVersionId: null, outcome: 'revealed' })
   })
 })

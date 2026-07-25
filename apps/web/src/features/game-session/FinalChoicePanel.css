@@ -47,6 +47,13 @@
   line-height: 1.55;
 }
 
+.final-choice-panel__timer {
+  min-width: 4.5ch;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .08em;
+  text-align: center;
+}
+
 .final-choice-grid {
   min-width: 0;
   display: grid;

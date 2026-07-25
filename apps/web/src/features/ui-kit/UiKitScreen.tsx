@@ -328,6 +328,7 @@ export default function UiKitScreen() {
               mode="movie"
               snapshot={finalChoiceFixture}
               selectedItemId={finalChoiceSelection}
+              secondsRemaining={10}
               autoFocus={false}
               onSelect={(itemId) => setFinalChoiceSelection(itemId)}
               onSubmit={() => undefined}

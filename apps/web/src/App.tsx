@@ -54,6 +54,7 @@ import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, next
 import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyView'
 import { GameResult } from './features/result/GameResult'
 import { FinalChoicePanel } from './features/game-session/FinalChoicePanel'
+import { FINAL_CHOICE_DURATION_SECONDS, finalChoiceSecondsRemaining } from './features/game-session/final-choice-countdown'
 import { activeSessionToSavedGame, archiveItemToSavedGame, publicItemToTitle, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
 import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
 import type { ContentReportReason } from './features/content-report/ContentReport'
@@ -2956,10 +2957,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const [dismissedHintRounds, setDismissedHintRounds] = useState<Array<5 | 8>>([])
   const [lastAward, setLastAward] = useState<AttemptResponse['reward'] | null>(null)
   const [selectedFinalCandidateId, setSelectedFinalCandidateId] = useState<string | null>(null)
+  const [finalChoiceSeconds, setFinalChoiceSeconds] = useState(FINAL_CHOICE_DURATION_SECONDS)
   const attemptKeyRef = useRef<string | null>(null)
   const finalChoiceKeyRef = useRef<string | null>(null)
   const finalChoiceShownRef = useRef<string | null>(null)
   const finalChoiceStartedAtRef = useRef<number | null>(null)
+  const finalChoiceTimeoutSubmittedRef = useRef(false)
   const hintKeyRef = useRef<string | null>(null)
   const game = useQuery({ queryKey: queryKeys.game(sessionId), queryFn: () => api.game(sessionId), refetchOnWindowFocus: true })
   const session = game.data?.session
@@ -3059,7 +3062,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           rulesVersion: response.reward.rulesVersion,
         }, { gameSessionId: sessionId })
       }
-      trackClientEvent(variables.body.action === 'reveal' ? 'final_choice_revealed' : 'final_choice_submitted', {
+      trackClientEvent(response.timedOut ? 'final_choice_timed_out' : variables.body.action === 'reveal' ? 'final_choice_revealed' : 'final_choice_submitted', {
         sessionId,
         mode: session?.mode,
         kind: session?.kind,
@@ -3080,6 +3083,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       ])
     },
     onError: async (error) => {
+      finalChoiceTimeoutSubmittedRef.current = false
       setMessage(apiErrorMessage(error))
       if (error instanceof ApiClientError && (error.status === 409 || error.code === 'NETWORK_TIMEOUT')) {
         await client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
@@ -3106,6 +3110,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     finalChoiceKeyRef.current = null
     finalChoiceShownRef.current = null
     finalChoiceStartedAtRef.current = null
+    finalChoiceTimeoutSubmittedRef.current = false
+    setFinalChoiceSeconds(FINAL_CHOICE_DURATION_SECONDS)
   }, [sessionId])
 
   useEffect(() => {
@@ -3120,6 +3126,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     if (finalChoiceShownRef.current === session.id) return
     finalChoiceShownRef.current = session.id
     finalChoiceStartedAtRef.current = Date.now()
+    finalChoiceTimeoutSubmittedRef.current = false
     trackClientEvent('final_choice_shown', {
       sessionId: session.id,
       mode: session.mode,
@@ -3129,6 +3136,29 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       algorithmVersion: session.rulesVersion,
     }, { gameSessionId: session.id })
   }, [session])
+
+  useEffect(() => {
+    if (session?.status !== 'final_choice' || !session.finalChoice) {
+      setFinalChoiceSeconds(FINAL_CHOICE_DURATION_SECONDS)
+      finalChoiceTimeoutSubmittedRef.current = false
+      return
+    }
+    const fallbackStartedAt = finalChoiceStartedAtRef.current ?? Date.now()
+    const expiresAt = session.finalChoice.expiresAt
+      ?? new Date(fallbackStartedAt + FINAL_CHOICE_DURATION_SECONDS * 1_000).toISOString()
+    const tick = () => {
+      const seconds = finalChoiceSecondsRemaining(expiresAt)
+      setFinalChoiceSeconds(seconds)
+      if (seconds > 0 || finalChoiceMutation.isPending || finalChoiceTimeoutSubmittedRef.current) return
+      finalChoiceTimeoutSubmittedRef.current = true
+      const key = finalChoiceKeyRef.current ?? crypto.randomUUID()
+      finalChoiceKeyRef.current = key
+      finalChoiceMutation.mutate({ body: { action: 'reveal' }, key })
+    }
+    tick()
+    const interval = window.setInterval(tick, 200)
+    return () => window.clearInterval(interval)
+  }, [finalChoiceMutation.isPending, session?.finalChoice, session?.status])
 
   const hintOptions = session?.hintOptions ?? []
   const usedHintRounds = useMemo(() => new Set((session?.hintChoices ?? []).map((choice) => choice.checkpoint)), [session?.hintChoices])
@@ -3371,6 +3401,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         mode={session.mode}
         snapshot={session.finalChoice}
         selectedItemId={selectedFinalCandidateId}
+        secondsRemaining={finalChoiceSeconds}
         pending={finalChoiceMutation.isPending}
         error={message}
         onSelect={selectFinalCandidate}

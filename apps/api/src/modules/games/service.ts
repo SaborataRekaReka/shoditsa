@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, FINAL_CHOICE_DURATION_MS, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameFinalChoices, gameHintChoices, gameSessions, type Database,
@@ -31,6 +31,8 @@ import { DTF_COMMENTS_PACK_ID } from '../packs/policy.js'
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
 type SessionRow = typeof gameSessions.$inferSelect
+
+const finalChoiceExpiresAt = (openedAt: Date) => new Date(openedAt.getTime() + FINAL_CHOICE_DURATION_MS).toISOString()
 
 type AnswerPoolResult = {
   items: TitleItem[]
@@ -433,6 +435,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   const finalChoice = finalChoiceRow
     ? {
         ...(finalChoiceRow.candidateSnapshot as FinalChoiceSnapshot),
+        expiresAt: finalChoiceExpiresAt(finalChoiceRow.openedAt),
         ...(finalChoiceRow.selectedItemVersionId
           ? {
               selectedItemId: (finalChoiceRow.candidateSnapshot as FinalChoiceSnapshot).candidates[
@@ -545,6 +548,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
     && position >= maxAttempts
     && session.packId !== DTF_COMMENTS_PACK_ID
   let builtFinalChoice: ReturnType<typeof buildFinalChoice> = null
+  let builtFinalChoiceExpiresAt: string | null = null
   if (finalChoiceEligible) {
     const priorAttempts = await tx.select({
       item: contentItemVersions.payload,
@@ -569,6 +573,7 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
       }
       const candidateItemVersionIds = builtFinalChoice.candidates.map((candidate) => pool.byItemId.get(candidate.item.id))
       if (candidateItemVersionIds.every((candidateId): candidateId is string => Boolean(candidateId))) {
+        const openedAt = new Date()
         await tx.insert(gameFinalChoices).values({
           sessionId,
           candidateItemVersionIds,
@@ -576,7 +581,9 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
           candidateSnapshot: builtFinalChoice.snapshot,
           generationSource: builtFinalChoice.generationSource,
           algorithmVersion: builtFinalChoice.algorithmVersion,
+          openedAt,
         })
+        builtFinalChoiceExpiresAt = finalChoiceExpiresAt(openedAt)
       } else {
         builtFinalChoice = null
       }
@@ -609,7 +616,9 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
       attemptsRemaining: Math.max(0, maxAttempts - position),
       maxAttempts,
       completionType,
-      finalChoice: builtFinalChoice?.snapshot ?? null,
+      finalChoice: builtFinalChoice && builtFinalChoiceExpiresAt
+        ? { ...builtFinalChoice.snapshot, expiresAt: builtFinalChoiceExpiresAt }
+        : null,
     },
     progressiveHints: promptRuntime?.progressiveHints ?? [],
     promoPrompt: promptRuntime?.promoPrompt ?? null,
@@ -649,16 +658,18 @@ export const resolveFinalChoice = async (
   }
   if (!finalChoice) throw new ApiError(409, 'GAME_FINAL_CHOICE_UNAVAILABLE', 'Набор финальной сверки недоступен')
 
+  const timedOut = Date.now() >= finalChoice.openedAt.getTime() + FINAL_CHOICE_DURATION_MS
+  const resolvedAction: FinalChoiceBody = timedOut ? { action: 'reveal' } : action
   const snapshot = finalChoice.candidateSnapshot as FinalChoiceSnapshot
-  const selectedIndex = action.action === 'choose'
-    ? snapshot.candidates.findIndex((candidate) => candidate.item.id === action.itemId)
+  const selectedIndex = resolvedAction.action === 'choose'
+    ? snapshot.candidates.findIndex((candidate) => candidate.item.id === resolvedAction.itemId)
     : -1
-  if (action.action === 'choose' && selectedIndex < 0) {
+  if (resolvedAction.action === 'choose' && selectedIndex < 0) {
     throw new ApiError(422, 'GAME_FINAL_CHOICE_INVALID_CANDIDATE', 'Выбранный вариант отсутствует в финальной сверке')
   }
   const selectedItemVersionId = selectedIndex >= 0 ? finalChoice.candidateItemVersionIds[selectedIndex] : null
   const correct = selectedItemVersionId === session.answerItemVersionId
-  const completionType: GameCompletionType = action.action === 'reveal'
+  const completionType: GameCompletionType = resolvedAction.action === 'reveal'
     ? 'answer_revealed'
     : correct
       ? 'final_choice_win'
@@ -688,8 +699,9 @@ export const resolveFinalChoice = async (
       completionType,
     },
     answer: publicCard(answer),
-    selectedItemId: action.action === 'choose' ? action.itemId : null,
+    selectedItemId: resolvedAction.action === 'choose' ? resolvedAction.itemId : null,
     correct,
+    timedOut,
     reward: reward ?? undefined,
   }
   const now = new Date()
@@ -702,7 +714,7 @@ export const resolveFinalChoice = async (
   }).where(eq(gameSessions.id, sessionId))
   await tx.update(gameFinalChoices).set({
     selectedItemVersionId,
-    outcome: action.action === 'reveal' ? 'revealed' : correct ? 'correct' : 'incorrect',
+    outcome: resolvedAction.action === 'reveal' ? 'revealed' : correct ? 'correct' : 'incorrect',
     resolutionIdempotencyKey: idempotencyKey,
     resolutionResponse: response,
     resolvedAt: now,

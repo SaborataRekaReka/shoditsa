@@ -10,6 +10,7 @@ export type FinalChoicePanelProps = {
   mode: TitleMode
   snapshot: FinalChoiceSnapshot
   selectedItemId: string | null
+  secondsRemaining?: number
   pending?: boolean
   error?: string
   autoFocus?: boolean
@@ -24,6 +25,7 @@ export function FinalChoicePanel({
   mode,
   snapshot,
   selectedItemId,
+  secondsRemaining,
   pending = false,
   error,
   autoFocus = true,
@@ -127,7 +129,17 @@ export function FinalChoicePanel({
           <h2 id="final-choice-title" ref={headingRef} tabIndex={-1}>Последний выбор</h2>
           <p>Все сравнительные подсказки уже на экране. Сопоставьте их с вариантами и выберите один.</p>
         </div>
-        <StatusBadge tone="warning">1 выбор</StatusBadge>
+        <StatusBadge tone={secondsRemaining != null && secondsRemaining <= 3 ? 'danger' : 'warning'}>
+          {secondsRemaining == null
+            ? '1 выбор'
+            : <span
+                className="final-choice-panel__timer"
+                role="timer"
+                aria-label={`Осталось ${secondsRemaining} секунд`}
+              >
+                00:{String(secondsRemaining).padStart(2, '0')}
+              </span>}
+        </StatusBadge>
       </div>
 
       <div

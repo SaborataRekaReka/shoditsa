@@ -168,6 +168,7 @@ test('final choice keeps a compact draggable mobile carousel', async ({ page }) 
   expect(contract.overflowX).toBe('auto')
   expect(contract.snap).toContain('mandatory')
   await expect(section.locator('.final-choice-card__check')).toHaveCount(0)
+  await expect(section.locator('.final-choice-panel__timer')).toHaveText('00:10')
 
   const firstCard = cards.first()
   await firstCard.hover()

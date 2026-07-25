@@ -171,6 +171,8 @@ export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; re
 export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: string }
 export type PromoPromptSnapshot = { packId: string; title: string; subtitle: string; disclaimer: string }
 
+export const FINAL_CHOICE_DURATION_MS = 10_000
+
 export type FinalChoiceFactSnapshot = {
   key: string
   value: string
@@ -204,6 +206,7 @@ export type FinalChoiceSnapshot = {
   displayKeys: [string, string, string]
   choicesRemaining: 1
   selectedItemId?: string
+  expiresAt?: string
 }
 
 export type GameSessionSnapshot = {
@@ -273,6 +276,7 @@ export type FinalChoiceResponse = {
   answer: PublicContentItem
   selectedItemId: string | null
   correct: boolean
+  timedOut: boolean
   reward: AttemptResponse['reward']
 }
 export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string }
