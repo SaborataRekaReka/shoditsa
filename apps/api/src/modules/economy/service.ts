@@ -78,6 +78,15 @@ export const startFreePlay = async (db: Database, userId: string, mode: Playable
   if (!FREE_PLAY.includes(mode)) throw new ApiError(422, 'FREE_PLAY_MODE_NOT_ALLOWED', 'Свободная игра недоступна для этого режима')
   const replay = await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, idempotencyKey))).limit(1)
   if (replay[0]) return replayFreePlay(tx, userId, replay[0], idempotencyKey)
+  const unresolvedFinalChoice = await tx.select({ id: gameSessions.id }).from(gameSessions).where(and(
+    eq(gameSessions.userId, userId),
+    eq(gameSessions.kind, 'free_play'),
+    eq(gameSessions.mode, mode),
+    eq(gameSessions.status, 'final_choice'),
+  )).limit(1)
+  if (unresolvedFinalChoice[0]) {
+    throw new ApiError(409, 'GAME_ACTIVE_FINAL_CHOICE', 'Сначала завершите финальную сверку', { sessionId: unresolvedFinalChoice[0].id })
+  }
   const date = getMoscowDate()
   await tx.insert(freePlayUsage).values({ userId, activityDate: date, launches: 0 }).onConflictDoNothing()
   const usage = (await tx.select().from(freePlayUsage).where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, date))).for('update').limit(1))[0]
@@ -172,7 +181,7 @@ export const dashboard = async (db: Database, userId: string) => {
     })
       .from(gameSessions)
       .leftJoin(dailyChallenges, eq(dailyChallenges.id, gameSessions.challengeId))
-      .where(and(eq(gameSessions.userId, userId), eq(gameSessions.status, 'playing')))
+      .where(and(eq(gameSessions.userId, userId), sql`${gameSessions.status} in ('playing','final_choice')`))
       .orderBy(desc(gameSessions.updatedAt)),
     db.select({ launches: freePlayUsage.launches }).from(freePlayUsage)
       .where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, activityDate))).limit(1),

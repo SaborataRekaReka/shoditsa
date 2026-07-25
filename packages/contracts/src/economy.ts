@@ -1,10 +1,11 @@
-export const ECONOMY_RULES_VERSION = 2 as const
+export const ECONOMY_RULES_VERSION = 3 as const
 
 export const ECONOMY_RULE_SET = {
   version: ECONOMY_RULES_VERSION,
   rewards: {
     completion: 5,
     win: 5,
+    finalChoiceWin: 5,
     efficiency: {
       upTo3Attempts: 3,
       upTo6Attempts: 2,

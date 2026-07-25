@@ -1,7 +1,7 @@
 import type {
   AdminContentReviewDecision, AdminReviewDecisionResponse, AdminReviewQueueResponse, ApiDifficultyKey,
   ApiPeriodKey, ArchiveResponse, AssistHintKey, AttemptResponse, CatalogSearchResponse, ContentMode, ContentReportBody,
-  ContentReportResponse, DashboardResponse, FreePlayResponse, GameResponse, GameStartBody,
+  ContentReportResponse, DashboardResponse, FinalChoiceBody, FinalChoiceResponse, FreePlayResponse, GameResponse, GameStartBody,
   GameStartResponse, GuestResponse, HintResponse, LedgerResponse, LegacyImportBody, LegacyImportResponse,
   MeResponse, MetaResponse, PeriodUnlockResponse, PromoRedeemResponse, WalletResponse, AuthActionResponse,
   PlayerProfile, ProfilePatch,
@@ -183,6 +183,7 @@ export const api = {
   friendsRoomLeave: (id: string, idempotencyKey: string) => request<{ left: true }>(`${API_BASE}/friends/rooms/${encodeURIComponent(id)}/leave`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),
   search: (params: URLSearchParams) => request<CatalogSearchResponse>(`${API_BASE}/catalog/search?${params}`, { retries: 1 }),
   attempt: (id: string, itemId: string, idempotencyKey: string) => request<AttemptResponse>(`${API_BASE}/games/${id}/attempts`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ itemId }), timeoutMs: 15_000, retries: 1, maxRateLimitRetryMs: 10_000 }),
+  finalChoice: (id: string, body: FinalChoiceBody, idempotencyKey: string) => request<FinalChoiceResponse>(`${API_BASE}/games/${id}/final-choice`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify(body), timeoutMs: 15_000, retries: 1, maxRateLimitRetryMs: 10_000 }),
   hint: (id: string, checkpoint: 5 | 8, hintKey: AssistHintKey, idempotencyKey: string) => request<HintResponse>(`${API_BASE}/games/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ checkpoint, hintKey }), retries: 1, maxRateLimitRetryMs: 10_000 }),
   unlock: (mode: ContentMode, period: ApiPeriodKey, key: string) => request<PeriodUnlockResponse>(`${API_BASE}/economy/period-unlocks`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ mode, period }), retries: 1, maxRateLimitRetryMs: 10_000 }),
   freePlay: (mode: ContentMode, difficulty: ApiDifficultyKey | null, key: string) => request<FreePlayResponse>(`${API_BASE}/economy/free-play/start`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ mode, difficulty }), retries: 1, maxRateLimitRetryMs: 10_000 }),

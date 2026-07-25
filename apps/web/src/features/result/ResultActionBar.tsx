@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Copy, SlidersHorizontal, Swords } from 'lucide-react'
 import { ControlButton } from '../../components/ui'
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
+import type { ChallengeResult } from '../challenge/challenge'
 import './ResultActionBar.css'
 
 export function ResultActionBar({
@@ -23,7 +24,7 @@ export function ResultActionBar({
   nextTicketNumber: string
   configureLabel: string
   copied: boolean
-  opponentAttempts?: number
+  opponentAttempts?: ChallengeResult
   onNext: () => void
   onConfigure: () => void
   onChallenge?: () => void

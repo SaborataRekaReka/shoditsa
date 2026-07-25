@@ -5,7 +5,14 @@ import type { GameEngine } from './game-modes.js'
 import type { EconomyRuleSet } from './economy.js'
 
 export type ApiRole = 'player' | 'admin'
-export type ApiGameStatus = 'playing' | 'won' | 'lost' | 'expired'
+export type ApiGameStatus = 'playing' | 'final_choice' | 'won' | 'lost' | 'expired'
+export type GameCompletionType =
+  | 'direct_win'
+  | 'final_choice_win'
+  | 'final_choice_loss'
+  | 'answer_revealed'
+  | 'attempts_exhausted'
+  | 'expired'
 
 export type ApiUser = {
   id: string
@@ -68,6 +75,7 @@ export type MetaResponse = {
   features: {
     danetkiEnabled: boolean
     danetkiMultiplayerEnabled: boolean
+    finalChoiceEnabled: boolean
   }
 }
 
@@ -115,6 +123,7 @@ export type ModeStats = {
   currentStreak: number
   bestStreak: number
   distribution: number[]
+  finalChoiceWins: number
 }
 
 export type PeriodEntitlement = { mode: PlayableMode; period: ApiPeriodKey; source: string; unlockedAt?: string }
@@ -162,6 +171,41 @@ export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; re
 export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: string }
 export type PromoPromptSnapshot = { packId: string; title: string; subtitle: string; disclaimer: string }
 
+export type FinalChoiceFactSnapshot = {
+  key: string
+  value: string
+  ariaLabel: string
+}
+
+export type FinalChoiceCandidateIdentity = {
+  id: string
+  titleRu: string
+  titleOriginal?: string
+  posterUrl?: string
+}
+
+export type FinalChoiceCandidateSnapshot = {
+  item: FinalChoiceCandidateIdentity
+  primaryMeta: string
+  facts: [
+    FinalChoiceFactSnapshot,
+    FinalChoiceFactSnapshot,
+    FinalChoiceFactSnapshot,
+  ]
+}
+
+export type FinalChoiceSnapshot = {
+  candidates: [
+    FinalChoiceCandidateSnapshot,
+    FinalChoiceCandidateSnapshot,
+    FinalChoiceCandidateSnapshot,
+    FinalChoiceCandidateSnapshot,
+  ]
+  displayKeys: [string, string, string]
+  choicesRemaining: 1
+  selectedItemId?: string
+}
+
 export type GameSessionSnapshot = {
   engine: GameEngine
   rulesVersion: number
@@ -175,6 +219,8 @@ export type GameSessionSnapshot = {
   difficulty: ApiDifficultyKey | null
   puzzleDate: string
   status: ApiGameStatus
+  completionType: GameCompletionType | null
+  finalChoice: FinalChoiceSnapshot | null
   attemptsCount: number
   attemptsRemaining: number
   maxAttempts?: number
@@ -202,7 +248,7 @@ export type DanetkiStartBody = {
 export type CatalogSearchResponse = { items: PublicContentItem[] }
 export type AttemptResponse = {
   attempt: GameAttemptSnapshot
-  session: Pick<GameSessionSnapshot, 'status' | 'attemptsCount' | 'attemptsRemaining' | 'maxAttempts'>
+  session: Pick<GameSessionSnapshot, 'status' | 'attemptsCount' | 'attemptsRemaining' | 'maxAttempts' | 'completionType' | 'finalChoice'>
   progressiveHints: Array<{ key: string; value: unknown }>
   answer?: PublicContentItem
   reward?: {
@@ -214,12 +260,20 @@ export type AttemptResponse = {
       completion: number
       win: number
       efficiency: number
+      finalChoiceWin: number
       firstGame: number
       route3: number
       fullRoute: number
       streakMilestone: number
     }
   }
+}
+export type FinalChoiceResponse = {
+  session: Pick<GameSessionSnapshot, 'status' | 'attemptsCount' | 'attemptsRemaining' | 'maxAttempts' | 'completionType'>
+  answer: PublicContentItem
+  selectedItemId: string | null
+  correct: boolean
+  reward: AttemptResponse['reward']
 }
 export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string }
 export type GuestResponse = { user?: ApiUser; session?: unknown }

@@ -84,6 +84,16 @@ export const AttemptBodySchema = Type.Object({
   itemId: Type.String({ minLength: 1, maxLength: 255 }),
 }, { additionalProperties: false })
 
+export const FinalChoiceBodySchema = Type.Union([
+  Type.Object({
+    action: Type.Literal('choose'),
+    itemId: Type.String({ minLength: 1, maxLength: 255 }),
+  }, { additionalProperties: false }),
+  Type.Object({
+    action: Type.Literal('reveal'),
+  }, { additionalProperties: false }),
+])
+
 export const HintChoiceBodySchema = Type.Object({
   checkpoint: Type.Union([Type.Literal(5), Type.Literal(8)]),
   hintKey: Type.Union([Type.Literal('plot'), Type.Literal('info')]),
@@ -196,6 +206,7 @@ export type ApiDifficultyKey = Static<typeof DifficultyKeySchema>
 export type CatalogSearchQuery = Static<typeof CatalogSearchQuerySchema>
 export type GameStartBody = Static<typeof GameStartBodySchema>
 export type AttemptBody = Static<typeof AttemptBodySchema>
+export type FinalChoiceBody = Static<typeof FinalChoiceBodySchema>
 export type HintChoiceBody = Static<typeof HintChoiceBodySchema>
 export type ProfilePatch = Static<typeof ProfilePatchSchema>
 export type PeriodUnlockBody = Static<typeof PeriodUnlockBodySchema>

@@ -1,11 +1,12 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
-  diagnosisVignettes, gameAttempts, gameHintChoices, gameSessions, type Database,
+  diagnosisVignettes, gameAttempts, gameFinalChoices, gameHintChoices, gameSessions, type Database,
   periodEntitlements,
 } from '@shoditsa/database'
 import {
+  buildFinalChoice,
   compareTitles,
   dailyTitle,
   isPlayableGamePlotHint,
@@ -25,6 +26,7 @@ import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
 import { recordPackCompletion } from '../packs/progress.js'
 import { loadPackSessionPrompt } from '../packs/prompt-runtime.js'
+import { DTF_COMMENTS_PACK_ID } from '../packs/policy.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
@@ -424,6 +426,22 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   }
   const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
+  const finalChoiceRows = session.status === 'final_choice' || session.completionType?.startsWith('final_choice') || session.completionType === 'answer_revealed'
+    ? await tx.select().from(gameFinalChoices).where(eq(gameFinalChoices.sessionId, session.id)).limit(1)
+    : []
+  const finalChoiceRow = finalChoiceRows[0]
+  const finalChoice = finalChoiceRow
+    ? {
+        ...(finalChoiceRow.candidateSnapshot as FinalChoiceSnapshot),
+        ...(finalChoiceRow.selectedItemVersionId
+          ? {
+              selectedItemId: (finalChoiceRow.candidateSnapshot as FinalChoiceSnapshot).candidates[
+                finalChoiceRow.candidateItemVersionIds.indexOf(finalChoiceRow.selectedItemVersionId)
+              ]?.item.id,
+            }
+          : {}),
+      }
+    : null
   const sessionMode = session.mode as TitleMode
   const packPrompt = session.kind === 'pack'
     ? await loadPackSessionPrompt(tx, {
@@ -444,7 +462,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   const result: Record<string, unknown> = {
     engine: 'catalog_guess', rulesVersion: session.rulesVersion,
     id: session.id, kind: session.kind, mode: sessionMode, variantKey: challengeVariant, packId: session.packId, packPosition: session.packPosition, period: session.period, difficulty: session.difficulty,
-    puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount,
+    puzzleDate: session.puzzleDate, status: session.status, completionType: session.completionType, finalChoice, attemptsCount: session.attemptsCount,
     attemptsRemaining: Math.max(0, maxAttempts - session.attemptsCount),
     maxAttempts,
     attempts: attempts.map((entry) => ({
@@ -467,7 +485,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     diagnosisVignette,
     serverTime: new Date().toISOString(),
   }
-  if ((session.mode === 'music' || session.status !== 'playing') && answer) result.answer = publicCard(answer)
+  if (!['playing', 'final_choice'].includes(session.status) && answer) result.answer = publicCard(answer)
   return result
 }
 
@@ -513,7 +531,6 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
   const answer = answers[0].payload as TitleItem
   const isCorrect = guess.id === answer.id
   const position = session.attemptsCount + 1
-  const status = isCorrect ? 'won' : position >= maxAttempts ? 'lost' : 'playing'
   const hints = normalizeHintPeople(compareTitles(guess, answer) as Hint[])
   const promptAfterAttempt = packPrompt
     ? await loadPackSessionPrompt(tx, {
@@ -524,28 +541,175 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
       })
     : null
   const promptRuntime = promptAfterAttempt
+  const finalChoiceEligible = !isCorrect
+    && position >= maxAttempts
+    && session.packId !== DTF_COMMENTS_PACK_ID
+  let builtFinalChoice: ReturnType<typeof buildFinalChoice> = null
+  if (finalChoiceEligible) {
+    const priorAttempts = await tx.select({
+      item: contentItemVersions.payload,
+      hints: gameAttempts.hintsSnapshot,
+    }).from(gameAttempts)
+      .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameAttempts.guessedItemVersionId))
+      .where(eq(gameAttempts.sessionId, sessionId))
+      .orderBy(asc(gameAttempts.position))
+    builtFinalChoice = buildFinalChoice({
+      answer,
+      pool: pool.items,
+      excludedItemIds: [...priorAttempts.map((attempt) => (attempt.item as TitleItem).id), guess.id],
+      revealedHintKeys: [...priorAttempts.flatMap((attempt) => (attempt.hints as Hint[]).map((hint) => hint.key)), ...hints.map((hint) => hint.key)],
+      seed: `${session.id}|${session.rulesVersion}|1`,
+    })
+    if (builtFinalChoice) {
+      for (const candidate of builtFinalChoice.snapshot.candidates) {
+        const source = builtFinalChoice.candidates.find((entry) => entry.item.id === candidate.item.id)
+        const publicItem = source ? publicCard(source.item) : null
+        if (publicItem?.posterUrl) candidate.item.posterUrl = publicItem.posterUrl
+        else delete candidate.item.posterUrl
+      }
+      const candidateItemVersionIds = builtFinalChoice.candidates.map((candidate) => pool.byItemId.get(candidate.item.id))
+      if (candidateItemVersionIds.every((candidateId): candidateId is string => Boolean(candidateId))) {
+        await tx.insert(gameFinalChoices).values({
+          sessionId,
+          candidateItemVersionIds,
+          displayKeys: builtFinalChoice.snapshot.displayKeys,
+          candidateSnapshot: builtFinalChoice.snapshot,
+          generationSource: builtFinalChoice.generationSource,
+          algorithmVersion: builtFinalChoice.algorithmVersion,
+        })
+      } else {
+        builtFinalChoice = null
+      }
+    }
+  }
+  const status = isCorrect ? 'won' : position < maxAttempts ? 'playing' : builtFinalChoice ? 'final_choice' : 'lost'
+  const completionType: GameCompletionType | null = status === 'won'
+    ? 'direct_win'
+    : status === 'lost'
+      ? 'attempts_exhausted'
+      : null
   let reward: Awaited<ReturnType<typeof completeGame>> = null
-  if (status !== 'playing') reward = await completeGame(tx, {
+  if (status === 'won' || status === 'lost') reward = await completeGame(tx, {
     sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
     puzzleDate: session.puzzleDate, won: status === 'won', attemptsCount: position, rulesVersion: session.rulesVersion,
+    completionType,
   })
   await tx.update(gameSessions).set({
-    attemptsCount: position, status, updatedAt: new Date(), completedAt: status === 'playing' ? null : new Date(),
+    attemptsCount: position, status, completionType, updatedAt: new Date(), completedAt: status === 'won' || status === 'lost' ? new Date() : null,
     rewardLedgerId: reward?.ledgerId ?? null,
   }).where(eq(gameSessions.id, sessionId))
-  if (status !== 'playing' && session.kind === 'pack' && session.packId && session.packPosition) {
+  if ((status === 'won' || status === 'lost') && session.kind === 'pack' && session.packId && session.packPosition) {
     await recordPackCompletion(tx, userId, session.packId, session.packPosition)
   }
   const response: Record<string, unknown> = {
     attempt: { position, item: publicCard(guess), hints },
-    session: { status, attemptsCount: position, attemptsRemaining: Math.max(0, maxAttempts - position), maxAttempts },
+    session: {
+      status,
+      attemptsCount: position,
+      attemptsRemaining: Math.max(0, maxAttempts - position),
+      maxAttempts,
+      completionType,
+      finalChoice: builtFinalChoice?.snapshot ?? null,
+    },
     progressiveHints: promptRuntime?.progressiveHints ?? [],
     promoPrompt: promptRuntime?.promoPrompt ?? null,
   }
-  if (status !== 'playing') { response.answer = publicCard(answer); response.reward = reward }
+  if (status === 'won' || status === 'lost') { response.answer = publicCard(answer); response.reward = reward }
   await tx.insert(gameAttempts).values({
     sessionId, position, guessedItemVersionId: guessedVersionId, isCorrect, hintsSnapshot: hints, responseSnapshot: response, idempotencyKey,
   })
+  return response
+})
+
+export const resolveFinalChoice = async (
+  db: Database,
+  userId: string,
+  sessionId: string,
+  action: FinalChoiceBody,
+  idempotencyKey: string,
+) => db.transaction(async (tx) => {
+  const session = (await tx.select().from(gameSessions).where(and(
+    eq(gameSessions.id, sessionId),
+    eq(gameSessions.userId, userId),
+  )).for('update').limit(1))[0]
+  if (!session) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
+  if (!isCatalogGuessModeId(session.mode)) throw new ApiError(422, 'GAME_ACTION_ENGINE_MISMATCH', 'Для этой игры действие недоступно')
+  if (session.packId === DTF_COMMENTS_PACK_ID) throw new ApiError(422, 'GAME_FINAL_CHOICE_EXCLUDED', 'Финальная сверка недоступна в этом спецпоказе')
+
+  const finalChoice = (await tx.select().from(gameFinalChoices)
+    .where(eq(gameFinalChoices.sessionId, sessionId)).for('update').limit(1))[0]
+  if (finalChoice?.resolutionIdempotencyKey === idempotencyKey && finalChoice.resolutionResponse) {
+    return finalChoice.resolutionResponse
+  }
+  if (finalChoice?.resolvedAt || (session.status !== 'final_choice' && finalChoice)) {
+    throw new ApiError(409, 'GAME_FINAL_CHOICE_ALREADY_RESOLVED', 'Финальная сверка уже завершена')
+  }
+  if (session.status !== 'final_choice') {
+    throw new ApiError(409, 'GAME_FINAL_CHOICE_NOT_AVAILABLE', 'Сеанс не находится в финальной сверке')
+  }
+  if (!finalChoice) throw new ApiError(409, 'GAME_FINAL_CHOICE_UNAVAILABLE', 'Набор финальной сверки недоступен')
+
+  const snapshot = finalChoice.candidateSnapshot as FinalChoiceSnapshot
+  const selectedIndex = action.action === 'choose'
+    ? snapshot.candidates.findIndex((candidate) => candidate.item.id === action.itemId)
+    : -1
+  if (action.action === 'choose' && selectedIndex < 0) {
+    throw new ApiError(422, 'GAME_FINAL_CHOICE_INVALID_CANDIDATE', 'Выбранный вариант отсутствует в финальной сверке')
+  }
+  const selectedItemVersionId = selectedIndex >= 0 ? finalChoice.candidateItemVersionIds[selectedIndex] : null
+  const correct = selectedItemVersionId === session.answerItemVersionId
+  const completionType: GameCompletionType = action.action === 'reveal'
+    ? 'answer_revealed'
+    : correct
+      ? 'final_choice_win'
+      : 'final_choice_loss'
+  const status = correct ? 'won' : 'lost'
+  const reward = await completeGame(tx, {
+    sessionId,
+    userId,
+    kind: session.kind,
+    mode: session.mode as TitleMode,
+    difficulty: session.difficulty,
+    puzzleDate: session.puzzleDate,
+    won: correct,
+    attemptsCount: session.attemptsCount,
+    rulesVersion: session.rulesVersion,
+    completionType,
+  })
+  const answer = (await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions)
+    .where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1))[0]?.payload as TitleItem | undefined
+  if (!answer) throw new ApiError(503, 'CONTENT_VERSION_NOT_FOUND', 'Не удалось загрузить правильный ответ')
+  const response = {
+    session: {
+      status,
+      attemptsCount: session.attemptsCount,
+      attemptsRemaining: 0,
+      maxAttempts: session.attemptsCount,
+      completionType,
+    },
+    answer: publicCard(answer),
+    selectedItemId: action.action === 'choose' ? action.itemId : null,
+    correct,
+    reward: reward ?? undefined,
+  }
+  const now = new Date()
+  await tx.update(gameSessions).set({
+    status,
+    completionType,
+    completedAt: now,
+    updatedAt: now,
+    rewardLedgerId: reward?.ledgerId ?? null,
+  }).where(eq(gameSessions.id, sessionId))
+  await tx.update(gameFinalChoices).set({
+    selectedItemVersionId,
+    outcome: action.action === 'reveal' ? 'revealed' : correct ? 'correct' : 'incorrect',
+    resolutionIdempotencyKey: idempotencyKey,
+    resolutionResponse: response,
+    resolvedAt: now,
+  }).where(eq(gameFinalChoices.sessionId, sessionId))
+  if (session.kind === 'pack' && session.packId && session.packPosition) {
+    await recordPackCompletion(tx, userId, session.packId, session.packPosition)
+  }
   return response
 })
 

@@ -1,0 +1,361 @@
+import type {
+  FinalChoiceCandidateSnapshot,
+  FinalChoiceFactSnapshot,
+  FinalChoiceSnapshot,
+  Hint,
+  TitleItem,
+  TitleMode,
+} from '@shoditsa/contracts'
+import { compareTitles } from './index.js'
+
+export const FINAL_CHOICE_ALGORITHM_VERSION = 1
+
+export type FinalChoiceCandidateRole = 'answer' | 'categorical' | 'numeric' | 'balanced'
+export type FinalChoiceGenerationSource = 'bank' | 'runtime'
+
+type FactKind = 'categorical' | 'numeric' | 'additional'
+type FactDefinition = {
+  key: string
+  sourceKeys: readonly string[]
+  kind: FactKind
+  format: (item: TitleItem) => string | null
+  ariaLabel: string
+}
+type ModeConfig = {
+  primaryMeta: (item: TitleItem) => string
+  facts: readonly FactDefinition[]
+  weights: Readonly<Record<string, number>>
+}
+
+const compact = (values: Array<string | null | undefined>, limit = 2) => values
+  .map((value) => String(value ?? '').replace(/\s+/g, ' ').trim())
+  .filter(Boolean)
+  .slice(0, limit)
+  .join(' · ')
+
+const compactNumber = (value: number) => new Intl.NumberFormat('ru-RU', {
+  notation: value >= 1_000_000 ? 'compact' : 'standard',
+  maximumFractionDigits: 1,
+}).format(value)
+
+const firstRating = (item: TitleItem) => {
+  if (item.ratings?.kinopoisk != null) return `КП ${item.ratings.kinopoisk.toFixed(1).replace('.', ',')}`
+  if (item.ratings?.imdb != null) return `IMDb ${item.ratings.imdb.toFixed(1).replace('.', ',')}`
+  return null
+}
+
+const fact = (
+  key: string,
+  sourceKeys: readonly string[],
+  kind: FactKind,
+  ariaLabel: string,
+  format: FactDefinition['format'],
+): FactDefinition => ({ key, sourceKeys, kind, ariaLabel, format })
+
+export const FINAL_CHOICE_MODE_CONFIG: Record<TitleMode, ModeConfig> = {
+  movie: {
+    primaryMeta: (item) => item.year ? String(item.year) : 'Год не указан',
+    facts: [
+      fact('countries', ['country'], 'categorical', 'Страны', (item) => compact(item.countries ?? []) || null),
+      fact('genres', ['genres'], 'categorical', 'Жанры', (item) => compact(item.genres ?? []) || null),
+      fact('runtime_rating', ['runtime', 'kp', 'imdb'], 'numeric', 'Хронометраж и рейтинг', (item) => compact([
+        item.runtimeMinutes ? `${item.runtimeMinutes} мин` : null,
+        firstRating(item),
+      ]) || null),
+      fact('age', ['age'], 'additional', 'Возрастной рейтинг', (item) => item.ageRating || null),
+    ],
+    weights: { countries: 1.15, genres: 1.25, runtime_rating: 1, age: 0.7 },
+  },
+  series: {
+    primaryMeta: (item) => item.year
+      ? item.endYear && item.endYear !== item.year ? `${item.year}–${item.endYear}` : String(item.year)
+      : 'Период не указан',
+    facts: [
+      fact('countries', ['country'], 'categorical', 'Страны', (item) => compact(item.countries ?? []) || null),
+      fact('genres', ['genres'], 'categorical', 'Жанры', (item) => compact(item.genres ?? []) || null),
+      fact('seasons_status', ['seasons', 'series_status'], 'numeric', 'Сезоны и статус', (item) => compact([
+        item.seasonsCount != null ? `${item.seasonsCount} сез.` : null,
+        item.seriesStatus,
+      ]) || null),
+      fact('ratings', ['kp', 'imdb'], 'numeric', 'Рейтинг', firstRating),
+    ],
+    weights: { countries: 1.1, genres: 1.25, seasons_status: 1.1, ratings: 0.8 },
+  },
+  anime: {
+    primaryMeta: (item) => item.year ? String(item.year) : 'Год не указан',
+    facts: [
+      fact('format_status', ['anime_kind', 'anime_status'], 'categorical', 'Формат и статус', (item) => compact([item.animeKind, item.animeStatus]) || null),
+      fact('genres', ['genres'], 'categorical', 'Жанры', (item) => compact(item.genres ?? []) || null),
+      fact('episodes', ['episodes', 'episodes_aired'], 'numeric', 'Эпизоды', (item) => {
+        const episodes = item.episodes ?? item.animeEpisodesAired
+        return episodes != null ? `${episodes} эп.` : null
+      }),
+      fact('studio', ['studio'], 'categorical', 'Студия', (item) => compact(item.studios ?? []) || null),
+      fact('shikimori', ['shiki', 'rank'], 'numeric', 'Рейтинг Shikimori', (item) => item.shikimoriScore != null ? `Shikimori ${item.shikimoriScore.toFixed(2).replace('.', ',')}` : null),
+    ],
+    weights: { format_status: 1.1, genres: 1.25, episodes: 1, studio: 0.9, shikimori: 0.7 },
+  },
+  game: {
+    primaryMeta: (item) => item.year ? String(item.year) : 'Год не указан',
+    facts: [
+      fact('genres', ['genres', 'steam_categories'], 'categorical', 'Жанры', (item) => compact(item.genres ?? item.steamCategories ?? []) || null),
+      fact('platforms', ['platforms'], 'categorical', 'Платформы', (item) => compact(item.platforms ?? [], 3) || null),
+      fact('developer', ['developer'], 'categorical', 'Разработчик', (item) => compact(item.developers ?? []) || null),
+      fact('steam_metacritic', ['steam_positive', 'metacritic'], 'numeric', 'Рейтинги Steam и Metacritic', (item) => compact([
+        item.ratings?.steamPositivePercent != null ? `Steam ${Math.round(item.ratings.steamPositivePercent)}%` : null,
+        (item.ratings?.metacritic ?? item.metacritic) != null ? `MC ${Math.round(item.ratings?.metacritic ?? item.metacritic ?? 0)}` : null,
+      ]) || null),
+      fact('players', ['players', 'rank'], 'numeric', 'Число игроков', (item) => item.votes?.gamesPlayed != null ? `${compactNumber(item.votes.gamesPlayed)} игроков` : item.topRank != null ? `Топ №${item.topRank}` : null),
+    ],
+    weights: { genres: 1.25, platforms: 1.05, developer: 0.9, steam_metacritic: 1, players: 0.75 },
+  },
+  music: {
+    primaryMeta: (item) => item.activityStartYear ?? item.year
+      ? String(item.activityStartYear ?? item.year)
+      : 'Период не указан',
+    facts: [
+      fact('countries', ['country'], 'categorical', 'Страна', (item) => compact(item.countries ?? []) || null),
+      fact('genres', ['genres'], 'categorical', 'Жанры', (item) => compact(item.genres ?? []) || null),
+      fact('type_scene', ['music_type', 'music_origin'], 'categorical', 'Тип и сцена', (item) => compact([
+        item.musicType,
+        item.musicOrigin === 'ru' ? 'русскоязычная сцена' : item.musicOrigin === 'intl' ? 'международная сцена' : null,
+      ]) || null),
+      fact('activity', ['activity_start_year', 'decade', 'music_active'], 'numeric', 'Активность', (item) => compact([
+        item.activityStartYear != null ? `с ${item.activityStartYear}` : null,
+        item.musicIsActive === true ? 'активен' : item.musicIsActive === false ? 'карьера завершена' : null,
+      ]) || null),
+    ],
+    weights: { countries: 1.15, genres: 1.25, type_scene: 1, activity: 0.9 },
+  },
+  city: {
+    primaryMeta: (item) => item.country || 'Страна не указана',
+    facts: [
+      fact('continent_languages', ['continent', 'languages'], 'categorical', 'Континент и языки', (item) => compact([
+        item.continent,
+        compact(item.languages ?? []),
+      ]) || null),
+      fact('population_timezone', ['population', 'timezone'], 'numeric', 'Население и часовой пояс', (item) => compact([
+        item.population != null ? compactNumber(item.population) : null,
+        item.timezone,
+      ]) || null),
+      fact('oxford', ['economy', 'humanCapital', 'qualityOfLife', 'ecology', 'governance'], 'numeric', 'Показатели Oxford', (item) => {
+        const ranks = item.ranks
+        return compact([
+          ranks?.economy != null ? `Экономика №${ranks.economy}` : null,
+          ranks?.qualityOfLife != null ? `Жизнь №${ranks.qualityOfLife}` : null,
+        ]) || null
+      }),
+    ],
+    weights: { continent_languages: 1.2, population_timezone: 1.1, oxford: 0.9 },
+  },
+  diagnosis: {
+    primaryMeta: (item) => item.icdGroup || compact(item.icd10 ?? []) || 'Группа МКБ-10 не указана',
+    facts: [
+      fact('body_systems', ['body_systems'], 'categorical', 'Системы организма', (item) => compact(item.bodySystems ?? []) || null),
+      fact('symptoms', ['symptoms'], 'categorical', 'Ключевые симптомы', (item) => compact(item.keySymptoms ?? [], 3) || null),
+      fact('course_age', ['course', 'typical_age'], 'additional', 'Течение и возраст', (item) => compact([
+        compact(item.course ?? []),
+        compact(item.typicalAgeGroups ?? []),
+      ]) || null),
+      fact('diagnostics', ['diagnostics'], 'categorical', 'Диагностика', (item) => compact(item.diagnostics ?? [], 3) || null),
+    ],
+    weights: { body_systems: 1.2, symptoms: 1.3, course_age: 0.9, diagnostics: 0.9 },
+  },
+}
+
+const hashValue = (input: string) => {
+  let hash = 2166136261
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index)
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+const normalizedSet = (item: TitleItem) => new Set([
+  ...(item.normalizedAnswers ?? []),
+  ...(item.acceptedAnswers ?? []),
+  item.titleRu,
+  item.titleOriginal,
+].map((value) => value.trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е')).filter(Boolean))
+
+const overlapsAnswers = (left: TitleItem, right: TitleItem) => {
+  const leftValues = normalizedSet(left)
+  return [...normalizedSet(right)].some((value) => leftValues.has(value))
+}
+
+const canonicalKey = (item: TitleItem) => item.canonicalGameId || item.canonicalId || item.parentCanonicalGameId || item.id
+const familyKey = (item: TitleItem) => item.franchiseKey || item.developers?.[0] || item.directors?.[0]?.nameOriginal || item.directors?.[0]?.nameRu || null
+
+const recognitionDistance = (left: TitleItem, right: TitleItem) => {
+  const order = ['mass', 'mainstream', 'cult_or_genre', 'special_only', 'reject']
+  const leftIndex = order.indexOf(left.recognitionLevel ?? '')
+  const rightIndex = order.indexOf(right.recognitionLevel ?? '')
+  return leftIndex < 0 || rightIndex < 0 ? 0 : Math.abs(leftIndex - rightIndex)
+}
+
+const hintScore = (hint: Hint | undefined): number | null => {
+  if (!hint || hint.status === 'unknown') return null
+  if (hint.status === 'match') return 1
+  if (hint.status === 'close') return 0.7
+  if (hint.status === 'partial') return 0.6
+  return 0
+}
+
+const combinations = <T>(values: readonly T[], size: number): T[][] => {
+  if (size === 0) return [[]]
+  const result: T[][] = []
+  values.forEach((value, index) => {
+    for (const tail of combinations(values.slice(index + 1), size - 1)) result.push([value, ...tail])
+  })
+  return result
+}
+
+type ScoredCandidate = {
+  item: TitleItem
+  scores: number[]
+  total: number
+  signature: string
+}
+
+const scoreCandidate = (candidate: TitleItem, answer: TitleItem, facts: FactDefinition[], config: ModeConfig): ScoredCandidate => {
+  const hints = compareTitles(candidate, answer)
+  const byKey = new Map(hints.map((hint) => [hint.key, hint]))
+  const scores = facts.map((definition) => {
+    const available = definition.sourceKeys
+      .map((key) => hintScore(byKey.get(key)))
+      .filter((value): value is number => value !== null)
+    if (!available.length) {
+      const candidateValue = definition.format(candidate)
+      const answerValue = definition.format(answer)
+      return candidateValue && answerValue && candidateValue === answerValue ? 1 : 0
+    }
+    return available.reduce((sum, value) => sum + value, 0) / available.length
+  })
+  const totalWeight = facts.reduce((sum, definition) => sum + (config.weights[definition.key] ?? 1), 0)
+  const total = scores.reduce((sum, value, index) => sum + value * (config.weights[facts[index].key] ?? 1), 0) / totalWeight
+  return {
+    item: candidate,
+    scores,
+    total,
+    signature: scores.map((score) => score >= 0.6 ? '1' : '0').join(''),
+  }
+}
+
+const candidateSnapshot = (item: TitleItem, config: ModeConfig, facts: FactDefinition[]): FinalChoiceCandidateSnapshot => ({
+  item: {
+    id: item.id,
+    titleRu: item.titleRu,
+    ...(item.titleOriginal ? { titleOriginal: item.titleOriginal } : {}),
+    ...(item.posterUrl ? { posterUrl: item.posterUrl } : {}),
+  },
+  primaryMeta: config.primaryMeta(item),
+  facts: facts.map((definition) => {
+    const value = definition.format(item) ?? 'Нет данных'
+    return {
+      key: definition.key,
+      value,
+      ariaLabel: `${definition.ariaLabel}: ${value}`,
+    } satisfies FinalChoiceFactSnapshot
+  }) as FinalChoiceCandidateSnapshot['facts'],
+})
+
+export type BuiltFinalChoice = {
+  snapshot: FinalChoiceSnapshot
+  candidates: Array<{
+    item: TitleItem
+    role: FinalChoiceCandidateRole
+    score: number
+    matchKeys: string[]
+    mismatchKeys: string[]
+  }>
+  generationSource: FinalChoiceGenerationSource
+  algorithmVersion: number
+}
+
+export const buildFinalChoice = (input: {
+  answer: TitleItem
+  pool: TitleItem[]
+  excludedItemIds?: Iterable<string>
+  revealedHintKeys?: Iterable<string>
+  seed: string
+}): BuiltFinalChoice | null => {
+  const config = FINAL_CHOICE_MODE_CONFIG[input.answer.mode]
+  const excluded = new Set(input.excludedItemIds ?? [])
+  const revealed = new Set(input.revealedHintKeys ?? [])
+  const availableFacts = config.facts.filter((definition) => (
+    (!revealed.size || definition.sourceKeys.some((key) => revealed.has(key)))
+    && definition.format(input.answer) !== null
+  ))
+
+  const basePool = input.pool.filter((candidate) => (
+    candidate.id !== input.answer.id
+    && !excluded.has(candidate.id)
+    && candidate.allowedInGame !== false
+    && canonicalKey(candidate) !== canonicalKey(input.answer)
+    && !overlapsAnswers(candidate, input.answer)
+    && recognitionDistance(candidate, input.answer) <= 1
+  ))
+
+  for (const selectedFacts of combinations(availableFacts, 3)) {
+    if (!selectedFacts.some((definition) => definition.kind === 'categorical')) continue
+    if (!selectedFacts.some((definition) => definition.kind === 'numeric' || definition.kind === 'additional')) continue
+
+    const scored = basePool
+      .filter((candidate) => selectedFacts.every((definition) => definition.format(candidate) !== null))
+      .map((candidate) => scoreCandidate(candidate, input.answer, selectedFacts, config))
+      .filter((candidate) => {
+        const matches = candidate.scores.filter((score) => score >= 0.6).length
+        const misses = candidate.scores.filter((score) => score < 0.6).length
+        return matches >= 2 && misses >= 1
+      })
+      .sort((left, right) => right.total - left.total || hashValue(`${input.seed}|${left.item.id}`) - hashValue(`${input.seed}|${right.item.id}`))
+
+    const selected: ScoredCandidate[] = []
+    const signatures = new Set<string>()
+    const familyCounts = new Map<string, number>()
+    const answerFamily = familyKey(input.answer)
+    if (answerFamily) familyCounts.set(answerFamily, 1)
+    for (const candidate of scored) {
+      if (signatures.has(candidate.signature)) continue
+      const family = familyKey(candidate.item)
+      if (family && (familyCounts.get(family) ?? 0) >= 2) continue
+      selected.push(candidate)
+      signatures.add(candidate.signature)
+      if (family) familyCounts.set(family, (familyCounts.get(family) ?? 0) + 1)
+      if (selected.length === 3) break
+    }
+    if (selected.length !== 3) continue
+
+    const roles: FinalChoiceCandidateRole[] = ['categorical', 'numeric', 'balanced']
+    const falseCandidates = selected.map((candidate, index) => ({
+      item: candidate.item,
+      role: roles[index],
+      score: candidate.total,
+      matchKeys: selectedFacts.filter((_, factIndex) => candidate.scores[factIndex] >= 0.6).map((definition) => definition.key),
+      mismatchKeys: selectedFacts.filter((_, factIndex) => candidate.scores[factIndex] < 0.6).map((definition) => definition.key),
+    }))
+    const candidates = [
+      {
+        item: input.answer,
+        role: 'answer' as const,
+        score: 1,
+        matchKeys: selectedFacts.map((definition) => definition.key),
+        mismatchKeys: [],
+      },
+      ...falseCandidates,
+    ].sort((left, right) => hashValue(`${input.seed}|order|${left.item.id}`) - hashValue(`${input.seed}|order|${right.item.id}`))
+    const snapshots = candidates.map((candidate) => candidateSnapshot(candidate.item, config, selectedFacts))
+    return {
+      snapshot: {
+        candidates: snapshots as FinalChoiceSnapshot['candidates'],
+        displayKeys: selectedFacts.map((definition) => definition.key) as FinalChoiceSnapshot['displayKeys'],
+        choicesRemaining: 1,
+      },
+      candidates,
+      generationSource: 'runtime',
+      algorithmVersion: FINAL_CHOICE_ALGORITHM_VERSION,
+    }
+  }
+  return null
+}

@@ -5,6 +5,7 @@ import {
   FULL_HOUSE_MODE_IDS,
   economyStreakMilestoneReward,
   type ContentMode,
+  type GameCompletionType,
 } from '@shoditsa/contracts'
 import {
   attendanceStats, dailyAttendance, type Database, userModeStats, walletAccounts, walletLedger,
@@ -17,8 +18,9 @@ const ALL_MODES: ContentMode[] = [...FULL_HOUSE_MODE_IDS]
 
 export const completeGame = async (tx: Transaction, input: {
   sessionId: string; userId: string; kind: string; mode: ContentMode; difficulty: string | null;
-  puzzleDate: string; won: boolean; attemptsCount: number; rulesVersion?: number;
+  puzzleDate: string; won: boolean; attemptsCount: number; rulesVersion?: number; completionType?: GameCompletionType | null;
 }) => {
+  const completionType = input.completionType ?? (input.won ? 'direct_win' : 'attempts_exhausted')
   const statsEligible = input.kind === 'daily' || input.kind === 'archive'
   if (statsEligible) {
     const difficulty = input.mode === 'music' ? input.difficulty ?? '-' : '-'
@@ -28,11 +30,12 @@ export const completeGame = async (tx: Transaction, input: {
     )).for('update').limit(1)
     const row = current[0]
     const distribution = [...row.distribution]
-    if (input.won) distribution[Math.max(0, Math.min(9, input.attemptsCount - 1))] += 1
+    if (completionType === 'direct_win') distribution[Math.max(0, Math.min(9, input.attemptsCount - 1))] += 1
     await tx.update(userModeStats).set({
       played: row.played + 1, won: row.won + (input.won ? 1 : 0),
       currentStreak: input.won ? row.currentStreak + 1 : 0,
       bestStreak: Math.max(row.bestStreak, input.won ? row.currentStreak + 1 : row.bestStreak),
+      finalChoiceWins: row.finalChoiceWins + (completionType === 'final_choice_win' ? 1 : 0),
       distribution, updatedAt: new Date(),
     }).where(and(eq(userModeStats.userId, input.userId), eq(userModeStats.mode, input.mode), eq(userModeStats.difficultyKey, difficulty)))
   }
@@ -86,6 +89,7 @@ export const completeGame = async (tx: Transaction, input: {
   const { components, total, rulesVersion } = calculateCompletionReward({
     won: input.won,
     attemptsCount: input.attemptsCount,
+    completionType,
     firstCompletion,
     firstRoute3,
     firstFullHouse,

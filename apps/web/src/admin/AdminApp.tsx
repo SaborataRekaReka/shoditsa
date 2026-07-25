@@ -5007,7 +5007,7 @@ function EconomyPage({ notify }: { notify: (tone: Notice['tone'], text: string) 
   const exitsOk = Boolean(summary && summary.shortageExitRate <= .15)
   const balancesOk = Boolean(summary && summary.balanceP50 >= 60 && summary.balanceP50 <= 180 && summary.balanceP90 < 700)
   return <>
-    <PageHead eyebrow="Билеты и промокоды" title="Экономика" description="Метрики economy v2, append-only ledger и безопасное управление промокодами." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => void metrics.refetch()}><RefreshCw />Обновить</button><button className="admin-btn admin-btn--primary" onClick={() => setCreating(true)}><Plus />Создать промокод</button></>} />
+    <PageHead eyebrow="Билеты и промокоды" title="Экономика" description="Метрики economy v3, append-only ledger и безопасное управление промокодами." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => void metrics.refetch()}><RefreshCw />Обновить</button><button className="admin-btn admin-btn--primary" onClick={() => setCreating(true)}><Plus />Создать промокод</button></>} />
     <div className="admin-toolbar"><div className="admin-periods">{([7, 14, 30] as const).map((value) => <button key={value} className={days === value ? 'is-active' : ''} onClick={() => setDays(value)}>{value} дней</button>)}</div></div>
     {metrics.isLoading ? <Loading /> : metrics.error ? <ErrorState error={metrics.error} /> : summary && overview && <>
       <div className="admin-economy-metrics">

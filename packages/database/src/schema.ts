@@ -199,6 +199,24 @@ export const contentItemVersions = pgTable('content_item_versions', {
   index('content_revision_mode_order_idx').on(table.revisionId, table.mode, table.sortOrder),
 ])
 
+export const contentFinalChoiceCandidates = pgTable('content_final_choice_candidates', {
+  revisionId: uuid('revision_id').notNull().references(() => contentRevisions.id, { onDelete: 'cascade' }),
+  answerItemVersionId: uuid('answer_item_version_id').notNull().references(() => contentItemVersions.id, { onDelete: 'cascade' }),
+  candidateItemVersionId: uuid('candidate_item_version_id').notNull().references(() => contentItemVersions.id, { onDelete: 'cascade' }),
+  role: text().notNull(),
+  score: real().notNull(),
+  matchKeys: text('match_keys').array().notNull().default(sql`ARRAY[]::text[]`),
+  mismatchKeys: text('mismatch_keys').array().notNull().default(sql`ARRAY[]::text[]`),
+  rank: smallint().notNull(),
+  algorithmVersion: integer('algorithm_version').notNull(),
+  createdAt: now(),
+}, (table) => [
+  unique('content_final_choice_candidate_unique').on(table.answerItemVersionId, table.candidateItemVersionId, table.algorithmVersion),
+  check('content_final_choice_distinct_items_check', sql`${table.answerItemVersionId} <> ${table.candidateItemVersionId}`),
+  check('content_final_choice_role_check', sql`${table.role} in ('categorical','numeric','balanced')`),
+  index('content_final_choice_answer_role_rank_idx').on(table.answerItemVersionId, table.role, table.rank),
+])
+
 export const contentAliases = pgTable('content_aliases', {
   itemVersionId: uuid('item_version_id').notNull().references(() => contentItemVersions.id, { onDelete: 'cascade' }),
   alias: text().notNull(),
@@ -426,6 +444,7 @@ export const gameSessions = pgTable('game_sessions', {
   revisionId: uuid('revision_id').notNull().references(() => contentRevisions.id),
   answerItemVersionId: uuid('answer_item_version_id').notNull().references(() => contentItemVersions.id),
   status: text().notNull().default('playing'),
+  completionType: text('completion_type'),
   attemptsCount: smallint('attempts_count').notNull().default(0),
   rulesVersion: integer('rules_version').notNull(),
   startIdempotencyKey: uuid('start_idempotency_key'),
@@ -441,8 +460,30 @@ export const gameSessions = pgTable('game_sessions', {
   index('game_session_auth_session_idx').on(table.authSessionId),
   check('game_session_kind_check', sql`${table.kind} in ('daily','archive','free_play','pack')`),
   check('game_session_pack_fields_check', sql`(${table.kind} = 'pack' and ${table.packId} is not null and ${table.packPosition} is not null) or (${table.kind} <> 'pack' and ${table.packId} is null and ${table.packPosition} is null)`),
-  check('game_session_status_check', sql`${table.status} in ('playing','won','lost','expired')`),
+  check('game_session_status_check', sql`${table.status} in ('playing','final_choice','won','lost','expired')`),
+  check('game_session_completion_check', sql`(${table.status} in ('playing','final_choice') and ${table.completionType} is null and ${table.completedAt} is null) or (${table.status} in ('won','lost','expired') and ${table.completionType} is not null and ${table.completedAt} is not null)`),
+  check('game_session_completion_type_check', sql`${table.completionType} is null or ${table.completionType} in ('direct_win','final_choice_win','final_choice_loss','answer_revealed','attempts_exhausted','expired')`),
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
+])
+
+export const gameFinalChoices = pgTable('game_final_choices', {
+  sessionId: uuid('session_id').primaryKey().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  candidateItemVersionIds: uuid('candidate_item_version_ids').array().notNull(),
+  displayKeys: text('display_keys').array().notNull(),
+  candidateSnapshot: jsonb('candidate_snapshot').notNull(),
+  selectedItemVersionId: uuid('selected_item_version_id').references(() => contentItemVersions.id),
+  outcome: text(),
+  generationSource: text('generation_source').notNull(),
+  algorithmVersion: integer('algorithm_version').notNull(),
+  resolutionIdempotencyKey: uuid('resolution_idempotency_key'),
+  resolutionResponse: jsonb('resolution_response'),
+  openedAt: timestamp('opened_at', { withTimezone: true }).notNull().defaultNow(),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+}, (table) => [
+  check('game_final_choice_candidates_count_check', sql`cardinality(${table.candidateItemVersionIds}) = 4`),
+  check('game_final_choice_display_keys_count_check', sql`cardinality(${table.displayKeys}) = 3`),
+  check('game_final_choice_outcome_check', sql`${table.outcome} is null or ${table.outcome} in ('correct','incorrect','revealed')`),
+  check('game_final_choice_generation_source_check', sql`${table.generationSource} in ('bank','runtime')`),
 ])
 
 export const danetkiSessionState = pgTable('danetki_session_state', {
@@ -753,6 +794,7 @@ export const userModeStats = pgTable('user_mode_stats', {
   played: integer().notNull().default(0), won: integer().notNull().default(0),
   currentStreak: integer('current_streak').notNull().default(0), bestStreak: integer('best_streak').notNull().default(0),
   distribution: integer().array().notNull().default(sql`array_fill(0, ARRAY[10])`),
+  finalChoiceWins: integer('final_choice_wins').notNull().default(0),
   updatedAt: now(),
 }, (table) => [primaryKey({ columns: [table.userId, table.mode, table.difficultyKey] })])
 

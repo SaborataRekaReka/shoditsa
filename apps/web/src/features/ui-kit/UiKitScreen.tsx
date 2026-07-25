@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from 'react'
-import type { PackLeaderboardResponse } from '@shoditsa/contracts'
+import type { FinalChoiceCandidateSnapshot, FinalChoiceSnapshot, PackLeaderboardResponse } from '@shoditsa/contracts'
 import {
   ArrowUpRight,
   Check,
@@ -41,6 +41,7 @@ import {
 import { publicAssetUrl } from '../../app/public-asset'
 import { ResultActionBar } from '../result/ResultActionBar'
 import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
+import { FinalChoicePanel } from '../game-session/FinalChoicePanel'
 import './UiKitScreen.css'
 
 const foundations = [
@@ -72,6 +73,7 @@ const sections = [
   ['controls', 'Контролы'],
   ['forms', 'Поля'],
   ['tickets', 'Билеты'],
+  ['final-choice', 'Последний выбор'],
   ['result-actions', 'После игры'],
   ['leaderboard', 'Рейтинг'],
   ['feedback', 'Состояния'],
@@ -99,6 +101,27 @@ const leaderboardFixture: PackLeaderboardResponse = {
   viewerEntry: null,
 }
 
+const finalCandidate = (id: string, titleRu: string, titleOriginal: string, year: string, countries: string, runtime: string): FinalChoiceCandidateSnapshot => ({
+  item: { id, titleRu, titleOriginal, posterUrl: publicAssetUrl('images/title-posters/movie-ticket-poster.webp') },
+  primaryMeta: year,
+  facts: [
+    { key: 'countries', value: countries, ariaLabel: `Страны: ${countries}` },
+    { key: 'genres', value: 'фантастика · драма', ariaLabel: 'Жанры: фантастика, драма' },
+    { key: 'runtime_rating', value: runtime, ariaLabel: `Хронометраж и рейтинг: ${runtime}` },
+  ],
+})
+
+const finalChoiceFixture: FinalChoiceSnapshot = {
+  candidates: [
+    finalCandidate('arrival', 'Прибытие', 'Arrival', '2016', 'США · Канада', '116 мин · КП 7,6'),
+    finalCandidate('interstellar', 'Интерстеллар', 'Interstellar', '2014', 'США · Великобритания', '169 мин · КП 8,7'),
+    finalCandidate('contact', 'Контакт', 'Contact', '1997', 'США', '150 мин · КП 7,9'),
+    finalCandidate('moon', 'Луна 2112', 'Moon', '2009', 'Великобритания', '97 мин · КП 7,6'),
+  ],
+  displayKeys: ['countries', 'genres', 'runtime_rating'],
+  choicesRemaining: 1,
+}
+
 function SectionTitle({ index, title, description, component }: {
   index: string
   title: string
@@ -122,6 +145,7 @@ export default function UiKitScreen() {
   const [modalOpen, setModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState<'daily' | 'archive'>('daily')
+  const [finalChoiceSelection, setFinalChoiceSelection] = useState<string | null>('interstellar')
   const filteredExamples = searchExamples.filter((item) => item.title.toLocaleLowerCase('ru-RU').includes(searchQuery.toLocaleLowerCase('ru-RU')))
 
   return <div className="ui-kit-screen">
@@ -298,8 +322,21 @@ export default function UiKitScreen() {
             </div>
           </section>
 
+          <section className="ui-kit-section" id="final-choice">
+            <SectionTitle index="07" title="Последний выбор" description="Финальная сверка использует общий паттерн выбора одной карточки, клавиатурную радиогруппу и отдельное подтверждение открытия ответа." component="FinalChoicePanel" />
+            <FinalChoicePanel
+              mode="movie"
+              snapshot={finalChoiceFixture}
+              selectedItemId={finalChoiceSelection}
+              autoFocus={false}
+              onSelect={(itemId) => setFinalChoiceSelection(itemId)}
+              onSubmit={() => undefined}
+              onReveal={() => undefined}
+            />
+          </section>
+
           <section className="ui-kit-section" id="result-actions">
-            <SectionTitle index="07" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
+            <SectionTitle index="08" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
             <div className="ui-kit-result-action">
               <ResultActionBar
                 nextLabel="Играть дальше: кино"
@@ -318,12 +355,12 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="leaderboard">
-            <SectionTitle index="08" title="Таблица рейтинга" description="Рейтинг использует бумажную поверхность, режимный акцент и читаемую служебную типографику не меньше 10 px." component="DtfLeaderboard" />
+            <SectionTitle index="09" title="Таблица рейтинга" description="Рейтинг использует бумажную поверхность, режимный акцент и читаемую служебную типографику не меньше 10 px." component="DtfLeaderboard" />
             <div className="ui-kit-leaderboard"><DtfLeaderboard data={leaderboardFixture} /></div>
           </section>
 
           <section className="ui-kit-section" id="feedback">
-            <SectionTitle index="09" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
+            <SectionTitle index="10" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
             <div className="ui-kit-feedback-grid">
               <InlineAlert tone="success"><strong>Подсказка открыта.</strong> Режиссёр также работал над известной научно-фантастической картиной.</InlineAlert>
               <div className="ui-kit-status-list">

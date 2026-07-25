@@ -299,7 +299,7 @@ export type Direction = 'up' | 'down' | null
 export type HintPerson = Person & { matched?: boolean }
 export type Hint = { key: string; label: string; value: string; status: MatchStatus; direction: Direction; people?: HintPerson[]; matchedValues?: string[] }
 export type Attempt = { titleId: string; hints: Hint[] }
-export type GameStatus = 'playing' | 'won' | 'lost' | 'expired'
+export type GameStatus = 'playing' | 'final_choice' | 'won' | 'lost' | 'expired'
 export type SavedGame = {
   key: string
   mode: TitleMode
@@ -310,6 +310,12 @@ export type SavedGame = {
   attempts: Attempt[]
   attemptTitleIds?: string[]
   status: GameStatus
+  finalChoice?: {
+    candidates: import('./api.js').FinalChoiceCandidateSnapshot[]
+    displayKeys: [string, string, string]
+    selectedItemId?: string
+  }
+  completionType?: import('./api.js').GameCompletionType
   usedHints?: AssistHintKey[]
   hintChoices?: HintChoice[]
   dismissedHintRounds?: HintCheckpoint[]
@@ -317,7 +323,7 @@ export type SavedGame = {
   schemaVersion?: number
   difficulty?: DifficultyKey
 }
-export type Stats = { played: number; won: number; currentStreak: number; bestStreak: number; distribution: number[] }
+export type Stats = { played: number; won: number; currentStreak: number; bestStreak: number; distribution: number[]; finalChoiceWins?: number }
 export type Wallet = { tickets: number; lifetimeTickets: number }
 export type TicketLedgerEntry = {
   id: string

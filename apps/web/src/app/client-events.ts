@@ -5,6 +5,9 @@ export type EventName = 'page_view' | 'mode_opened' | 'client_error' | 'api_erro
   | 'ticket_earned' | 'ticket_spent' | 'insufficient_tickets_view' | 'ticket_offer_view' | 'ticket_offer_clicked'
   | 'ticket_bundle_purchased' | 'period_unlocked' | 'free_play_started' | 'danetki_room_started'
   | 'danetki_room_completed' | 'danetki_limit_reached' | 'club_paywall_view'
+  | 'final_choice_shown' | 'final_choice_candidate_selected' | 'final_choice_submitted'
+  | 'final_choice_reveal_opened' | 'final_choice_reveal_cancelled' | 'final_choice_revealed'
+  | 'final_choice_unavailable'
 type QueuedEvent = {
   eventId: string
   eventName: EventName

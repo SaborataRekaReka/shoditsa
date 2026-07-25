@@ -113,7 +113,7 @@ export const getPackLeaderboard = async (
 
   const statsByUser = new Map<string, { score: number; wins: number; totalAttempts: number }>()
   for (const session of sessionRows) {
-    if (session.status === 'playing') continue
+    if (session.status === 'playing' || session.status === 'final_choice') continue
     const stats = statsByUser.get(session.userId) ?? { score: 0, wins: 0, totalAttempts: 0 }
     stats.score += SCORE_PER_COMPLETED_GAME
     if (session.status === 'won') {

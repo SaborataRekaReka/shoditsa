@@ -7,6 +7,7 @@ import {
   type Direction,
   type DifficultyKey,
   type Hint,
+  type GameCompletionType,
   type LibrarySearchIndex,
   type MatchStatus,
   type PeriodKey,
@@ -1327,15 +1328,22 @@ export const emptyStats = (): Stats => ({ played: 0, won: 0, currentStreak: 0, b
 export const calculateCompletionReward = (input: {
   won: boolean
   attemptsCount: number
+  completionType?: GameCompletionType
   firstCompletion: boolean
   firstRoute3?: boolean
   firstFullHouse: boolean
   dailyStreak: number
 }) => {
+  const completionType = input.completionType ?? (input.won ? 'direct_win' : 'attempts_exhausted')
+  const isFinalChoice = completionType === 'final_choice_win'
+    || completionType === 'final_choice_loss'
+    || completionType === 'answer_revealed'
+  const directWin = input.won && completionType === 'direct_win'
   const components = {
-    completion: ECONOMY_RULE_SET.rewards.completion,
-    win: input.won ? ECONOMY_RULE_SET.rewards.win : 0,
-    efficiency: economyEfficiencyReward(input.won, input.attemptsCount),
+    completion: isFinalChoice ? 0 : ECONOMY_RULE_SET.rewards.completion,
+    win: directWin ? ECONOMY_RULE_SET.rewards.win : 0,
+    efficiency: economyEfficiencyReward(directWin, input.attemptsCount),
+    finalChoiceWin: completionType === 'final_choice_win' ? ECONOMY_RULE_SET.rewards.finalChoiceWin : 0,
     firstGame: input.firstCompletion ? ECONOMY_RULE_SET.rewards.firstGame : 0,
     route3: input.firstRoute3 ? ECONOMY_RULE_SET.rewards.route3 : 0,
     fullRoute: input.firstFullHouse ? ECONOMY_RULE_SET.rewards.fullRoute : 0,
@@ -1347,10 +1355,13 @@ export const calculateCompletionReward = (input: {
     total: Object.values(components).reduce((sum, value) => sum + value, 0),
   }
 }
-export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean, maxAttempts = 10) => {
+export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hints: Hint[][], won: boolean, maxAttempts = 10, completionType?: GameCompletionType) => {
   const rows = hints.map((row) => row.map((hint) => hint.status === 'match' ? '🟩' : hint.status === 'close' || hint.status === 'partial' ? '🟨' : hint.status === 'unknown' ? '⬜' : '⬛').join('')).join('\n')
   const modeDefinition = GAME_MODE_MANIFEST[mode]
   const dailyLabel = `${modeDefinition.dailyLabel} дня`
   const icon = modeDefinition.shareIcon
-  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${won ? hints.length : 'X'}/${maxAttempts}\n${rows}`
+  const result = completionType === 'final_choice_win' ? 'Ф' : won ? hints.length : 'X'
+  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${result}/${maxAttempts}\n${rows}`
 }
+
+export * from './final-choice.js'

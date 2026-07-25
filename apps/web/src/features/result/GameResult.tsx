@@ -1,11 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
+import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
   ChevronDown,
   Send,
   Ticket,
 } from 'lucide-react'
-import type { ChallengeOutcome } from '../challenge/challenge'
+import { challengeResultLabel, type ChallengeOutcome, type ChallengeResult } from '../challenge/challenge'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 import type { TitleMode } from '../../types'
 import { MODE_CONFIG } from '../../app/mode-config'
@@ -24,6 +24,7 @@ export type ResultAward = {
   completed: number
   win: number
   speed: number
+  finalChoiceWin?: number
   firstDaily: number
   milestoneBonus: number
   fullHouse: number
@@ -35,6 +36,7 @@ export type ResultAward = {
 type Props = {
   mode: TitleMode
   won: boolean
+  completionType?: GameCompletionType | null
   attempts: number
   maxAttempts?: number
   poster: ReactNode
@@ -49,7 +51,7 @@ type Props = {
   copied: boolean
   telegramUrl?: string
   challengeOutcome?: ChallengeOutcome
-  opponentAttempts?: number
+  opponentAttempts?: ChallengeResult
   onNext: () => void
   configureLabel: string
   onConfigure: () => void
@@ -75,23 +77,37 @@ export function GameResult(props: Props) {
   const rewardIcon = props.mode === 'diagnosis'
     ? <img className="result-dx-icon" src={diagnosisSystemRewardIcon} alt="" aria-hidden="true" loading="lazy" />
     : <Ticket />
+  const resultKicker = props.completionType === 'final_choice_win'
+    ? 'Сошлось в последний момент'
+    : props.completionType === 'final_choice_loss'
+      ? 'Финальная сверка не сошлась'
+      : props.completionType === 'answer_revealed'
+        ? 'Ответ открыт'
+        : props.won
+          ? `Угадано с ${props.attempts}-й попытки`
+          : 'Ответ открыт'
+  const resultLine = props.completionType === 'final_choice_win'
+    ? `${props.maxAttempts ?? 10} попыток + финальная сверка`
+    : props.won
+      ? `${props.attempts}/${props.maxAttempts ?? 10} — верный ответ`
+      : 'Правильный ответ открыт'
   return <section
     className={`result-card ${props.won ? 'won' : 'lost'}`}
     style={{ '--result-next-color': nextPresentation.color } as CSSProperties}
   >
     {props.poster}
     <div className="result-card__copy">
-      <span>{props.won ? `Угадано с ${props.attempts}-й попытки` : 'Ответ открыт'}</span>
+      <span>{resultKicker}</span>
       <h2>{props.title}</h2>
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
-      <strong>{props.won ? `${props.attempts}/${props.maxAttempts ?? 10} — верный ответ` : 'Правильный ответ открыт'}</strong>
+      <strong>{resultLine}</strong>
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
         <span>{props.nextRewardText}</span>
       </div>}
       {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
-        <span>Вы — {props.attempts} · Друг — {props.opponentAttempts}</span>
+        <span>Вы — {props.completionType === 'final_choice_win' ? 'Ф/10' : `${props.attempts}/10`} · Друг — {challengeResultLabel(props.opponentAttempts)}</span>
         <strong>{outcomeText}</strong>
       </div>}
     </div>
@@ -112,9 +128,10 @@ export function GameResult(props: Props) {
     {props.award && <details className="reward-breakdown result-card__wide">
       <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билетов`}</span><ChevronDown /></summary>
       {!props.award.alreadyClaimed && <ul>
-        <li><span>За завершение</span><strong>+{props.award.completed}</strong></li>
+        {!!props.award.completed && <li><span>За завершение</span><strong>+{props.award.completed}</strong></li>}
         {!!props.award.win && <li><span>За победу</span><strong>+{props.award.win}</strong></li>}
         {!!props.award.speed && <li><span>За эффективность</span><strong>+{props.award.speed}</strong></li>}
+        {!!props.award.finalChoiceWin && <li><span>За финальную сверку</span><strong>+{props.award.finalChoiceWin}</strong></li>}
         {!!props.award.firstDaily && <li><span>Первая игра дня</span><strong>+{props.award.firstDaily}</strong></li>}
         {!!props.award.milestoneBonus && <li><span>Маршрут дня</span><strong>+{props.award.milestoneBonus}</strong></li>}
         {!!props.award.fullHouse && <li><span>Полный маршрут</span><strong>+{props.award.fullHouse}</strong></li>}

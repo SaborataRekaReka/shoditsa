@@ -140,6 +140,56 @@ test('result actions and leaderboard retain their mobile composition', async ({ 
   })
 })
 
+test('final choice keeps a compact draggable mobile carousel', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const section = page.locator('#final-choice')
+  const grid = section.locator('.final-choice-grid')
+  const cards = grid.locator('.final-choice-card')
+  await section.scrollIntoViewIfNeeded()
+
+  const contract = await grid.evaluate((element) => {
+    const card = element.querySelector<HTMLElement>('.final-choice-card')!
+    const poster = element.querySelector<HTMLElement>('.final-choice-card__poster')!
+    const style = getComputedStyle(element)
+    return {
+      cardCount: element.querySelectorAll('.final-choice-card').length,
+      cardWidth: card.getBoundingClientRect().width,
+      posterHeight: poster.getBoundingClientRect().height,
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      overflowX: style.overflowX,
+      snap: style.scrollSnapType,
+    }
+  })
+  expect(contract.cardCount).toBe(4)
+  expect(contract.cardWidth).toBeLessThan(contract.clientWidth)
+  expect(contract.posterHeight).toBeLessThanOrEqual(70)
+  expect(contract.scrollWidth).toBeGreaterThan(contract.clientWidth)
+  expect(contract.overflowX).toBe('auto')
+  expect(contract.snap).toContain('mandatory')
+
+  const firstCard = cards.first()
+  await firstCard.hover()
+  expect(await firstCard.evaluate((element) => getComputedStyle(element).transform)).toBe('none')
+
+  const secondCard = cards.nth(1)
+  await secondCard.click()
+  await expect(secondCard).toHaveAttribute('aria-checked', 'true')
+  await firstCard.click()
+  await expect(firstCard).toHaveAttribute('aria-checked', 'true')
+  await expect.poll(() => grid.evaluate((element) => element.scrollLeft)).toBe(0)
+
+  const selectedBefore = await grid.locator('[role="radio"][aria-checked="true"]').getAttribute('aria-label')
+  const box = await grid.boundingBox()
+  expect(box).not.toBeNull()
+  await page.mouse.move(box!.x + box!.width * .78, box!.y + box!.height * .5)
+  await page.mouse.down()
+  await page.mouse.move(box!.x + box!.width * .2, box!.y + box!.height * .5, { steps: 6 })
+  await page.mouse.up()
+  await expect.poll(() => grid.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0)
+  expect(await grid.locator('[role="radio"][aria-checked="true"]').getAttribute('aria-label')).toBe(selectedBefore)
+})
+
 test('anchored option menu stays below the section heading on a short desktop', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   const controls = page.locator('#controls')

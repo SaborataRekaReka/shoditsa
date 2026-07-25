@@ -411,6 +411,7 @@ const handleGuess = async (db: Database, config: AppConfig, job: Job) => {
         ...(isCorrect ? [
           tx.update(gameSessions).set({
             status: 'won',
+            completionType: 'direct_win',
             completedAt: now,
             updatedAt: now,
             rewardLedgerId: reward?.ledgerId ?? null,
@@ -450,7 +451,7 @@ export const handleDanetkiJob = async (db: Database, config: AppConfig, job: Job
       if (Number(active[0]?.value ?? 0) > 0) return { skipped: 'room-is-active' }
       const now = new Date()
       await Promise.all([
-        tx.update(gameSessions).set({ status: 'expired', completedAt: now, updatedAt: now }).where(eq(gameSessions.id, sessionId)),
+        tx.update(gameSessions).set({ status: 'expired', completionType: 'expired', completedAt: now, updatedAt: now }).where(eq(gameSessions.id, sessionId)),
         tx.update(danetkiSessionState).set({ aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, sessionId)),
         tx.update(danetkiInvites).set({ revokedAt: now }).where(and(
           eq(danetkiInvites.sessionId, sessionId),

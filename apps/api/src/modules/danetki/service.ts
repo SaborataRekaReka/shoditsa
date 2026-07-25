@@ -787,7 +787,7 @@ const finishLost = async (tx: Transaction, context: MemberContext) => {
     rulesVersion: context.session.rulesVersion,
   }) : null
   await Promise.all([
-    tx.update(gameSessions).set({ status: 'lost', completedAt: now, updatedAt: now, rewardLedgerId: reward?.ledgerId ?? null }).where(eq(gameSessions.id, context.session.id)),
+    tx.update(gameSessions).set({ status: 'lost', completionType: 'attempts_exhausted', completedAt: now, updatedAt: now, rewardLedgerId: reward?.ledgerId ?? null }).where(eq(gameSessions.id, context.session.id)),
     tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`, aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, context.session.id)),
     tx.update(danetkiInvites).set({ revokedAt: now }).where(and(eq(danetkiInvites.sessionId, context.session.id), isNull(danetkiInvites.revokedAt))),
     finishLinkedDanetkiFriendsRoom(tx, context.session.id, now),

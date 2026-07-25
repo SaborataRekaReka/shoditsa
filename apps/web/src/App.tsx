@@ -53,6 +53,7 @@ import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion
 import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, nextStreakMilestoneReward } from './features/economy/economy-rules'
 import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyView'
 import { GameResult } from './features/result/GameResult'
+import { FinalChoicePanel } from './features/game-session/FinalChoicePanel'
 import { activeSessionToSavedGame, archiveItemToSavedGame, publicItemToTitle, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
 import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
 import type { ContentReportReason } from './features/content-report/ContentReport'
@@ -1293,8 +1294,8 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
             status="new"
             attempts={null}
             href={canAccessFriendsRoom
-              ? pathnameForPlayerRoute({ screen: 'friends-room' })
-              : friendsRoomRegistrationHref(pathnameForPlayerRoute({ screen: 'friends-room' }))}
+              ? '/games/together?new=1'
+              : friendsRoomRegistrationHref('/games/together?new=1')}
             onClick={() => {
               trackMetrikaGoal('friends_room_opened', { placement: 'hub_specials' })
               onSelectFriends()
@@ -2954,7 +2955,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const [revealedHint, setRevealedHint] = useState<HintResponse | null>(null)
   const [dismissedHintRounds, setDismissedHintRounds] = useState<Array<5 | 8>>([])
   const [lastAward, setLastAward] = useState<AttemptResponse['reward'] | null>(null)
+  const [selectedFinalCandidateId, setSelectedFinalCandidateId] = useState<string | null>(null)
   const attemptKeyRef = useRef<string | null>(null)
+  const finalChoiceKeyRef = useRef<string | null>(null)
+  const finalChoiceShownRef = useRef<string | null>(null)
+  const finalChoiceStartedAtRef = useRef<number | null>(null)
   const hintKeyRef = useRef<string | null>(null)
   const game = useQuery({ queryKey: queryKeys.game(sessionId), queryFn: () => api.game(sessionId), refetchOnWindowFocus: true })
   const session = game.data?.session
@@ -3032,6 +3037,55 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       if (error instanceof ApiClientError && (error.status === 409 || error.code === 'NETWORK_TIMEOUT')) await client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
     },
   })
+  const finalChoiceMutation = useMutation({
+    mutationFn: ({ body, key }: {
+      body: { action: 'choose'; itemId: string } | { action: 'reveal' }
+      key: string
+    }) => api.finalChoice(sessionId, body, key),
+    retry: (count, error) => count < 1 && error instanceof ApiClientError && error.code === 'NETWORK_TIMEOUT',
+    onSuccess: async (response, variables) => {
+      finalChoiceKeyRef.current = null
+      setSelectedFinalCandidateId(response.selectedItemId)
+      setMessage('')
+      if (response.reward) {
+        setLastAward(response.reward)
+        trackClientEvent('ticket_earned', {
+          balanceBefore: response.reward.balanceAfter - response.reward.total,
+          balanceAfter: response.reward.balanceAfter,
+          amount: response.reward.total,
+          source: 'daily-game',
+          mode: session?.mode ?? null,
+          sessionKind: session?.kind ?? null,
+          rulesVersion: response.reward.rulesVersion,
+        }, { gameSessionId: sessionId })
+      }
+      trackClientEvent(variables.body.action === 'reveal' ? 'final_choice_revealed' : 'final_choice_submitted', {
+        sessionId,
+        mode: session?.mode,
+        kind: session?.kind,
+        packId: session?.packId,
+        attemptsCount: session?.attemptsCount,
+        correct: response.correct,
+        timeToDecisionMs: finalChoiceStartedAtRef.current ? Math.max(0, Date.now() - finalChoiceStartedAtRef.current) : null,
+      }, { gameSessionId: sessionId })
+      await Promise.all([
+        client.invalidateQueries({ queryKey: queryKeys.game(sessionId) }),
+        client.invalidateQueries({ queryKey: queryKeys.dashboard }),
+        client.invalidateQueries({ queryKey: queryKeys.ledger }),
+        client.invalidateQueries({ queryKey: ['archive'] }),
+        ...(session?.packId ? [
+          client.invalidateQueries({ queryKey: queryKeys.pack(session.packId) }),
+          client.invalidateQueries({ queryKey: queryKeys.packLeaderboard(session.packId) }),
+        ] : []),
+      ])
+    },
+    onError: async (error) => {
+      setMessage(apiErrorMessage(error))
+      if (error instanceof ApiClientError && (error.status === 409 || error.code === 'NETWORK_TIMEOUT')) {
+        await client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
+      }
+    },
+  })
   const nextPackSession = useMutation({
     mutationFn: ({ packId, position }: { packId: string; position: number }) => api.startPack(packId, position),
     onSuccess: (response) => {
@@ -3048,12 +3102,33 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setLeaderboardOpen(false)
     setQuery('')
     setSelected(null)
+    setSelectedFinalCandidateId(null)
+    finalChoiceKeyRef.current = null
+    finalChoiceShownRef.current = null
+    finalChoiceStartedAtRef.current = null
   }, [sessionId])
 
   useEffect(() => {
     if (!session) return
     setGameMatchStripOpen(true)
   }, [session?.id, session?.mode])
+
+  useEffect(() => {
+    if (session?.status !== 'final_choice' || !session.finalChoice) return
+    setHintModalRound(null)
+    setGameMatchStripOpen(true)
+    if (finalChoiceShownRef.current === session.id) return
+    finalChoiceShownRef.current = session.id
+    finalChoiceStartedAtRef.current = Date.now()
+    trackClientEvent('final_choice_shown', {
+      sessionId: session.id,
+      mode: session.mode,
+      kind: session.kind,
+      packId: session.packId,
+      attemptsCount: session.attemptsCount,
+      algorithmVersion: session.rulesVersion,
+    }, { gameSessionId: session.id })
+  }, [session])
 
   const hintOptions = session?.hintOptions ?? []
   const usedHintRounds = useMemo(() => new Set((session?.hintChoices ?? []).map((choice) => choice.checkpoint)), [session?.hintChoices])
@@ -3176,6 +3251,32 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     hintKeyRef.current = key
     hint.mutate({ checkpoint: hintModalRound, hintKey, key })
   }
+  const selectFinalCandidate = (itemId: string, position: number) => {
+    if (finalChoiceMutation.isPending) return
+    setSelectedFinalCandidateId(itemId)
+    finalChoiceKeyRef.current = null
+    setMessage('')
+    trackClientEvent('final_choice_candidate_selected', {
+      sessionId,
+      mode: session.mode,
+      kind: session.kind,
+      packId: session.packId,
+      attemptsCount: session.attemptsCount,
+      candidatePosition: position + 1,
+    }, { gameSessionId: sessionId })
+  }
+  const submitFinalCandidate = () => {
+    if (!selectedFinalCandidateId || finalChoiceMutation.isPending) return
+    const key = finalChoiceKeyRef.current ?? crypto.randomUUID()
+    finalChoiceKeyRef.current = key
+    finalChoiceMutation.mutate({ body: { action: 'choose', itemId: selectedFinalCandidateId }, key })
+  }
+  const revealFinalAnswer = () => {
+    if (finalChoiceMutation.isPending) return
+    const key = finalChoiceKeyRef.current ?? crypto.randomUUID()
+    finalChoiceKeyRef.current = key
+    finalChoiceMutation.mutate({ body: { action: 'reveal' }, key })
+  }
   const pendingHintOption = hintOptions.find((option) => option.key === hint.variables?.hintKey) ?? null
   const completedModes = (dashboard.data?.today?.completedModes ?? []).filter(isPlayableModeId)
   const completedToday = new Set(completedModes).size
@@ -3212,14 +3313,18 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         ? 'Главная премьера'
         : PERIODS[session.period].label.replace(' года', '')
       : null
-  const shareText = resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts)
+  const shareText = resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts, session.completionType ?? undefined)
   const challengeLink = buildChallengeUrl(location.href, {
     mode: session.mode,
     date: session.puzzleDate,
     period: session.period,
     ...(session.difficulty ? { difficulty: session.difficulty } : {}),
     ...(session.variantKey ? { variantKey: session.variantKey } : {}),
-    opponentAttempts: Math.max(1, attempts.length),
+    opponentAttempts: session.completionType === 'final_choice_win'
+      ? 'f'
+      : session.status === 'lost' || session.status === 'expired'
+        ? 'x'
+        : Math.max(1, attempts.length),
     from: getInstallationId(),
   })
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
@@ -3239,6 +3344,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     completed: lastAward.components.completion,
     win: lastAward.components.win,
     speed: lastAward.components.efficiency,
+    finalChoiceWin: lastAward.components.finalChoiceWin,
     firstDaily: lastAward.components.firstGame,
     milestoneBonus: lastAward.components.route3,
     fullHouse: lastAward.components.fullRoute,
@@ -3259,9 +3365,22 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         ? <DtfCommentFeed comments={promoHints} attemptsCount={session.attemptsCount} />
         : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      {session.status === 'playing' && <div className="progress-row"><SegmentedProgress value={session.attemptsCount} max={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>}
+      {(session.status === 'playing' || session.status === 'final_choice') && <div className="progress-row"><SegmentedProgress value={session.status === 'final_choice' ? maxAttempts : session.attemptsCount} max={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>}
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
-      {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isPackSession ? undefined : completedToday} nextRewardText={isPackSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession
+      {session.status === 'final_choice' && session.finalChoice && <FinalChoicePanel
+        mode={session.mode}
+        snapshot={session.finalChoice}
+        selectedItemId={selectedFinalCandidateId}
+        pending={finalChoiceMutation.isPending}
+        error={message}
+        onSelect={selectFinalCandidate}
+        onSubmit={submitFinalCandidate}
+        onReveal={revealFinalAnswer}
+        onRevealDialogOpen={() => trackClientEvent('final_choice_reveal_opened', { sessionId, mode: session.mode, kind: session.kind, packId: session.packId, attemptsCount: session.attemptsCount }, { gameSessionId: sessionId })}
+        onRevealDialogCancel={() => trackClientEvent('final_choice_reveal_cancelled', { sessionId, mode: session.mode, kind: session.kind, packId: session.packId, attemptsCount: session.attemptsCount }, { gameSessionId: sessionId })}
+      />}
+      {session.status === 'final_choice' && <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => setGameMatchStripOpen((current) => !current)} />}
+      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isPackSession ? undefined : completedToday} nextRewardText={isPackSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession
         ? () => {
             if (!session.packId || !nextPackPosition || nextPackSession.isPending) {
               onBack()
@@ -3270,10 +3389,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
-      {session.status !== 'playing' && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
+      {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
-      {session.status !== 'playing' && message && <InlineAlert tone="danger" className="specials-error">{message}</InlineAlert>}
+      {['won', 'lost', 'expired'].includes(session.status) && message && <InlineAlert tone="danger" className="specials-error">{message}</InlineAlert>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
         <SearchCombobox
@@ -3882,16 +4001,16 @@ function GameApp() {
     }
     return PERIOD_UNLOCK_ORDER.filter((periodKey) => completed.has(periodKey))
   }, [games, mode])
-  const activeGames = useMemo(() => games.filter((game) => game.status === 'playing').sort((a, b) => b.updatedAt - a.updatedAt), [games])
+  const activeGames = useMemo(() => games.filter((game) => game.status === 'playing' || game.status === 'final_choice').sort((a, b) => b.updatedAt - a.updatedAt), [games])
   const hasActiveFreePlay = useMemo(() => {
     if (!FREE_PLAY_MODES.has(mode)) return false
     if (SERVER_RUNTIME) {
       return (serverRuntime.dashboard?.activeSessions ?? []).some((session) => (
-        session.kind === 'free_play' && session.status === 'playing' && session.mode === mode
+        session.kind === 'free_play' && (session.status === 'playing' || session.status === 'final_choice') && session.mode === mode
       ))
     }
     return activeGames.some((savedGame) => (
-      savedGame.mode === mode && savedGame.status === 'playing' && freePlayLaunchFromGameKey(savedGame.key) !== null
+      savedGame.mode === mode && (savedGame.status === 'playing' || savedGame.status === 'final_choice') && freePlayLaunchFromGameKey(savedGame.key) !== null
     ))
   }, [activeGames, mode, serverRuntime.dashboard])
   const diagnosisAnamnesis = useMemo(() => {
@@ -4028,13 +4147,14 @@ function GameApp() {
   }
 
   const selectFriendsRoom = (initialMode?: 'danetki') => {
+    const destination = initialMode ? '/games/together?mode=danetki' : '/games/together?new=1'
     if (!canAccessFriendsRoom) {
-      window.location.assign(friendsRoomRegistrationHref(initialMode ? '/games/together?mode=danetki' : '/games/together'))
+      window.location.assign(friendsRoomRegistrationHref(destination))
       return
     }
     setServerActionError('')
     setModal(null)
-    void navigate({ to: '/games/together', search: initialMode ? { mode: initialMode } : {} })
+    window.location.assign(destination)
   }
 
   const acceptChallenge = () => {
@@ -4161,7 +4281,7 @@ function GameApp() {
     if (SERVER_RUNTIME) {
       setServerActionError('')
       const activeServerFreePlay = (serverRuntime.dashboard?.activeSessions ?? []).find((session) => (
-        session.kind === 'free_play' && session.status === 'playing' && session.mode === mode
+        session.kind === 'free_play' && (session.status === 'playing' || session.status === 'final_choice') && session.mode === mode
       ))
       if (activeServerFreePlay) {
         setServerSessionId(activeServerFreePlay.id)
@@ -4185,7 +4305,7 @@ function GameApp() {
     }
 
     const activeLocalFreePlay = activeGames.find((savedGame) => (
-      savedGame.mode === mode && savedGame.status === 'playing' && freePlayLaunchFromGameKey(savedGame.key) !== null
+      savedGame.mode === mode && (savedGame.status === 'playing' || savedGame.status === 'final_choice') && freePlayLaunchFromGameKey(savedGame.key) !== null
     ))
     if (activeLocalFreePlay) {
       setFreePlayArmed(false)

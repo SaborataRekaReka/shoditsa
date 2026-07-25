@@ -12,13 +12,15 @@ export type ChallengePayload = {
   period: PeriodKey
   difficulty?: DifficultyKey
   variantKey?: string
-  opponentAttempts: number
+  opponentAttempts: ChallengeResult
   from: string
 }
 
 export type ChallengeOutcome = 'won' | 'lost' | 'tie'
+export type ChallengeResult = number | 'f' | 'x'
 
-const safeAttempts = (value: string | null) => {
+const safeAttempts = (value: string | null): ChallengeResult | null => {
+  if (value === 'f' || value === 'x') return value
   const attempts = Number(value)
   return Number.isInteger(attempts) && attempts >= 1 && attempts <= 10 ? attempts : null
 }
@@ -67,6 +69,12 @@ export const getInstallationId = (storage: Pick<Storage, 'getItem' | 'setItem'> 
   return generated
 }
 
-export const challengeOutcome = (playerAttempts: number, opponentAttempts: number): ChallengeOutcome => (
-  playerAttempts < opponentAttempts ? 'won' : playerAttempts > opponentAttempts ? 'lost' : 'tie'
-)
+const challengeRank = (value: ChallengeResult) => value === 'f' ? 11 : value === 'x' ? 12 : value
+
+export const challengeOutcome = (playerAttempts: ChallengeResult, opponentAttempts: ChallengeResult): ChallengeOutcome => {
+  const playerRank = challengeRank(playerAttempts)
+  const opponentRank = challengeRank(opponentAttempts)
+  return playerRank < opponentRank ? 'won' : playerRank > opponentRank ? 'lost' : 'tie'
+}
+
+export const challengeResultLabel = (value: ChallengeResult) => value === 'f' ? 'Ф/10' : value === 'x' ? 'X/10' : `${value}/10`

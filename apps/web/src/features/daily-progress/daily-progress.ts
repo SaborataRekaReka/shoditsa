@@ -44,7 +44,7 @@ export const dailyRewardState = (completedCount: number): DailyRewardState => {
 export const buildDailyHubState = (attendance: DailyAttendance, games: SavedGame[], preferredMode: TitleMode, globalDailySalt = 0): DailyHubState => {
   const completedSet = new Set(attendance.completedModes)
   const completedModes = DAILY_MODE_ORDER.filter((mode) => completedSet.has(mode))
-  const activeGames = games.filter((game) => game.status === 'playing' && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)
+  const activeGames = games.filter((game) => (game.status === 'playing' || game.status === 'final_choice') && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)
   const finishedGames = games
     .filter((game) => isDailySession(game, attendance.date, globalDailySalt) && (game.status === 'won' || game.status === 'lost'))
     .sort(newestFirst)

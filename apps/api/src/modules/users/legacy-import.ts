@@ -67,7 +67,13 @@ export const importLegacy = async (db: Database, config: AppConfig, userId: stri
         })
         if (correct) break
       }
-      await tx.update(gameSessions).set({ attemptsCount: position, status, completedAt: status === 'playing' ? null : new Date(), updatedAt: new Date() }).where(eq(gameSessions.id, session.id))
+      await tx.update(gameSessions).set({
+        attemptsCount: position,
+        status,
+        completionType: status === 'won' ? 'direct_win' : status === 'lost' ? 'attempts_exhausted' : null,
+        completedAt: status === 'playing' ? null : new Date(),
+        updatedAt: new Date(),
+      }).where(eq(gameSessions.id, session.id))
       importedGames += 1
     }
 

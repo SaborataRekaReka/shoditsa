@@ -137,7 +137,7 @@ export const registerDanetkiAdminRoutes = (app: FastifyInstance, deps: Deps) => 
         const now = new Date()
         await tx.insert(danetkiMessages).values({ sessionId, seq: rows[0].state.nextMessageSeq, senderKind: 'system', messageType: 'event', text: 'Комната закрыта администратором.' })
         await Promise.all([
-          tx.update(gameSessions).set({ status: 'lost', completedAt: now, updatedAt: now }).where(eq(gameSessions.id, sessionId)),
+          tx.update(gameSessions).set({ status: 'lost', completionType: 'attempts_exhausted', completedAt: now, updatedAt: now }).where(eq(gameSessions.id, sessionId)),
           tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`, aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, sessionId)),
           tx.update(danetkiInvites).set({ revokedAt: now }).where(and(eq(danetkiInvites.sessionId, sessionId), isNull(danetkiInvites.revokedAt))),
         ])

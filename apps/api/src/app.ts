@@ -12,13 +12,13 @@ import {
   AdminContentReviewDecisionSchema, AdminContentReviewParamsSchema, AdminContentReviewQuerySchema,
   AdminPromoCreateBodySchema, AdminPromoPatchBodySchema, AdminWalletAdjustmentBodySchema,
   ArchiveCalendarQuerySchema, ArchiveDateParamsSchema, ArchiveQuerySchema, AttemptBodySchema, CatalogSearchQuerySchema,
-  ContentReportBodySchema, FreePlayBodySchema, GameStartBodySchema, HintChoiceBodySchema,
+  ContentReportBodySchema, FinalChoiceBodySchema, FreePlayBodySchema, GameStartBodySchema, HintChoiceBodySchema,
   LedgerQuerySchema, LegacyImportBodySchema, PeriodUnlockBodySchema, ProfilePatchSchema,
   PromoRedeemBodySchema, UuidSchema,
   ECONOMY_RULES_VERSION,
   type AdminContentReviewDecision, type AdminContentReviewQuery, type AdminPromoCreateBody,
   type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveCalendarQuery, type ArchiveQuery, type AttemptBody,
-  type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
+  type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FinalChoiceBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
   isCatalogGuessModeId,
 } from '@shoditsa/contracts'
@@ -32,7 +32,7 @@ import { getRequestUser, requireAdmin } from './modules/auth/session.js'
 import { ApiError, requireIdempotencyKey, sendError } from './lib/errors.js'
 import { rateLimitError, rateLimitKey, rateLimitMax } from './lib/rate-limit.js'
 import { getMoscowDate } from './lib/time.js'
-import { chooseHint, getOwnedSession, publicCard, searchCatalog, startGame, submitAttempt } from './modules/games/service.js'
+import { chooseHint, getOwnedSession, publicCard, resolveFinalChoice, searchCatalog, startGame, submitAttempt } from './modules/games/service.js'
 import { dashboard, ledgerPage, normalizePromoCode, promoHash, redeemPromo, startFreePlay, unlockPeriod } from './modules/economy/service.js'
 import { importLegacy } from './modules/users/legacy-import.js'
 import {
@@ -182,6 +182,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       features: {
         danetkiEnabled: danetkiFeatures.enabled,
         danetkiMultiplayerEnabled: danetkiFeatures.enabled && danetkiFeatures.multiplayerEnabled,
+        finalChoiceEnabled: true,
       },
     }
   })
@@ -189,7 +190,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const authorization = request.headers.authorization
     if (!config.metricsToken || authorization !== `Bearer ${config.metricsToken}`) throw new ApiError(403, 'METRICS_FORBIDDEN', 'Метрики недоступны')
     const [active, completed, revision, danetkiRooms, danetkiQuestions, danetkiAi, danetkiJoins, danetkiFinished] = await Promise.all([
-      db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(eq(gameSessions.status, 'playing')),
+      db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(sql`${gameSessions.status} in ('playing','final_choice')`),
       db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(sql`${gameSessions.status} in ('won','lost')`),
       db.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1),
       db.select({ count: sql<number>`count(*)::int` }).from(gameSessions).where(and(eq(gameSessions.mode, 'danetki'), eq(gameSessions.status, 'playing'))),
@@ -357,6 +358,16 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const user = await getRequestUser(request, auth, db, true, config)
     return submitAttempt(db, user!.id, (request.params as { sessionId: string }).sessionId, (request.body as AttemptBody).itemId, requireIdempotencyKey(request))
   })
+  app.post('/api/v1/games/:sessionId/final-choice', { schema: { params: paramsId, headers: idempotencyHeaders, body: FinalChoiceBodySchema }, config: { rateLimit: { max: 10, timeWindow: '1 minute' } } }, async (request) => {
+    const user = await getRequestUser(request, auth, db, true, config)
+    return resolveFinalChoice(
+      db,
+      user!.id,
+      (request.params as { sessionId: string }).sessionId,
+      request.body as FinalChoiceBody,
+      requireIdempotencyKey(request),
+    )
+  })
   app.post('/api/v1/games/:sessionId/hints', { schema: { params: paramsId, headers: idempotencyHeaders, body: HintChoiceBodySchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
     const body = request.body as HintChoiceBody
@@ -423,7 +434,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const filters = [
       eq(gameSessions.userId, user!.id),
       ne(gameSessions.kind, 'pack'),
-      sql`${gameSessions.status} <> 'playing'`,
+      sql`${gameSessions.status} in ('won','lost','expired')`,
     ]
     if (query.mode) filters.push(eq(gameSessions.mode, query.mode))
     if (query.cursor) filters.push(lt(gameSessions.completedAt, new Date(query.cursor)))

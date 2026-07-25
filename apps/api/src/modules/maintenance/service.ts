@@ -22,7 +22,7 @@ export const runGameLifecycleCleanup = async (db: Database, now = new Date(), dr
   const sessionCandidates = Array.from(await db.execute(sql`
     select sessions.id, sessions.mode::text, sessions.kind
     from game_sessions sessions
-    where sessions.status = 'playing'
+    where sessions.status in ('playing', 'final_choice')
       and (
         (
           sessions.mode <> 'danetki'
@@ -63,9 +63,9 @@ export const runGameLifecycleCleanup = async (db: Database, now = new Date(), dr
     const sessionIds = sessionCandidates.map((entry) => entry.id)
     if (sessionIds.length) {
       await db.transaction(async (tx) => {
-        await tx.update(gameSessions).set({ status: 'expired', completedAt: now, updatedAt: now }).where(and(
+        await tx.update(gameSessions).set({ status: 'expired', completionType: 'expired', completedAt: now, updatedAt: now }).where(and(
           inArray(gameSessions.id, sessionIds),
-          eq(gameSessions.status, 'playing'),
+          sql`${gameSessions.status} in ('playing','final_choice')`,
         ))
         await Promise.all([
           tx.update(danetkiSessionState).set({ aiStatus: 'idle', updatedAt: now })

@@ -79,7 +79,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
     for (const query of sessionPreviewQueries) {
       const session = query.data?.session
       if (!session) continue
-      const previewItem = session.status === 'playing'
+      const previewItem = session.status === 'playing' || session.status === 'final_choice'
         ? session.attempts.at(-1)?.item ?? null
         : session.answer ?? session.attempts.at(-1)?.item ?? null
       if (previewItem) map.set(session.id, publicItemToTitle(previewItem))
@@ -114,7 +114,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
           }
           onOpen(itemDate, played)
         }} disabled={archive.isLoading}>
-          <div className="rewatch-poster">{posterItem ? <><Poster item={posterItem} className="rewatch-poster__media" /><small className="rewatch-poster__day">#{dayNumber(itemDate)}</small></> : <span className="rewatch-poster__fallback-day">{access === 'locked' ? <Lock /> : `#${dayNumber(itemDate)}`}</span>}<i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' ? `${played.attempts.length}/10` : ''}</i></div>
+          <div className="rewatch-poster">{posterItem ? <><Poster item={posterItem} className="rewatch-poster__media" /><small className="rewatch-poster__day">#{dayNumber(itemDate)}</small></> : <span className="rewatch-poster__fallback-day">{access === 'locked' ? <Lock /> : `#${dayNumber(itemDate)}`}</span>}<i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' || played?.status === 'final_choice' ? `${played.attempts.length}/10` : ''}</i></div>
           <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
           <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : access === 'locked' ? 'Полный архив клуба' : 'Не сыгран'}</small>
         </ControlButton>

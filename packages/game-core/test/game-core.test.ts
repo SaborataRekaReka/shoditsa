@@ -328,13 +328,29 @@ describe('deterministic rules', () => {
 })
 
 describe('economy', () => {
-  it('uses the v2 reward formula without streak multipliers', () => expect(calculateCompletionReward({ won: true, attemptsCount: 3, firstCompletion: true, firstRoute3: false, firstFullHouse: false, dailyStreak: 7 })).toEqual({
-    rulesVersion: 2,
-    components: { completion: 5, win: 5, efficiency: 3, firstGame: 5, route3: 0, fullRoute: 0, streakMilestone: 7 },
+  it('uses the v3 reward formula without streak multipliers', () => expect(calculateCompletionReward({ won: true, attemptsCount: 3, firstCompletion: true, firstRoute3: false, firstFullHouse: false, dailyStreak: 7 })).toEqual({
+    rulesVersion: 3,
+    components: { completion: 5, win: 5, efficiency: 3, finalChoiceWin: 0, firstGame: 5, route3: 0, fullRoute: 0, streakMilestone: 7 },
     total: 25,
   }))
   it('awards completion on a loss', () => expect(calculateCompletionReward({ won: false, attemptsCount: 10, firstCompletion: false, firstFullHouse: false, dailyStreak: 1 }).total).toBe(5))
-  it('lands on the v2 17 / 51 / 119 daily targets', () => {
+  it('awards only the result component for a final-choice win', () => expect(calculateCompletionReward({
+    won: true,
+    attemptsCount: 10,
+    completionType: 'final_choice_win',
+    firstCompletion: false,
+    firstFullHouse: false,
+    dailyStreak: 1,
+  }).components).toMatchObject({ completion: 0, win: 0, efficiency: 0, finalChoiceWin: 5 }))
+  it('does not award a result component for a failed final choice', () => expect(calculateCompletionReward({
+    won: false,
+    attemptsCount: 10,
+    completionType: 'final_choice_loss',
+    firstCompletion: false,
+    firstFullHouse: false,
+    dailyStreak: 1,
+  }).total).toBe(0))
+  it('lands on the v3 17 / 51 / 119 daily targets', () => {
     const reward = (position: number) => calculateCompletionReward({
       won: true,
       attemptsCount: 5,
