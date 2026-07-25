@@ -2,6 +2,7 @@ import { SlidersHorizontal } from 'lucide-react'
 import { GAME_MODE_MANIFEST } from '@shoditsa/contracts'
 import type { TitleMode } from '../../types'
 import { GameOption, GameOptionSelect } from '../game-launch-controls/GameLaunchControls'
+import './ModeVariantControl.css'
 
 export function ModeVariantControl({ mode, value, disabled = false, onChange }: {
   mode: TitleMode

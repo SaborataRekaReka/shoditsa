@@ -1,16 +1,18 @@
 import { createHash, randomBytes } from 'node:crypto'
-import { and, asc, desc, eq, isNull, notInArray, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import type {
   FriendsRoomConfigBody,
   FriendsRoomCreateBody,
+  FriendsRoomGameType,
   FriendsRoomPackSelection,
   FriendsRoomSnapshot,
+  FriendsRoomSummary,
   DifficultyKey,
   PlayableMode,
   TitleItem,
 } from '@shoditsa/contracts'
-import { FRIENDS_ROOM_CAPACITY, friendsRoomMinimumRounds } from '@shoditsa/contracts'
+import { FRIENDS_ROOM_CAPACITY, FRIENDS_ROOM_DANETKI_CAPACITY, friendsRoomMinimumRounds } from '@shoditsa/contracts'
 import { isExactTitleSearchMatch, musicDifficultyPool, normalize } from '@shoditsa/game-core'
 import {
   contentItemVersions,
@@ -24,16 +26,28 @@ import {
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { publicCard } from '../games/service.js'
+import {
+  getNextDanetkiRoomCost,
+  leaveDanetkiSession,
+  startDanetkiRoom,
+  startDanetkiSession,
+  syncDanetkiRoomMembers,
+} from '../danetki/service.js'
 import { buildFriendsRoomPackSchedule, defaultFriendsRoomPack, friendsRoomItemMatchesPack, normalizeFriendsRoomPacks } from './packs.js'
 import { scoreFriendsRoomGuess } from './scoring.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
-type ReadDatabase = Pick<Database, 'select' | 'update'>
 type RoomRow = typeof friendsRooms.$inferSelect
-type RequestUser = { id: string; name: string; role: 'player' | 'admin' }
+type RequestUser = {
+  id: string
+  name: string
+  role: 'player' | 'admin'
+  authSessionId: string | null
+}
 
 const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const COUNTDOWN_MS = 3_000
+const roomCapacity = (gameType: FriendsRoomGameType) => gameType === 'danetki' ? FRIENDS_ROOM_DANETKI_CAPACITY : FRIENDS_ROOM_CAPACITY
 
 const modePrompt: Record<PlayableMode, string> = {
   movie: 'Какой фильм соответствует этим подсказкам?',
@@ -96,6 +110,26 @@ const activeMember = async (db: Pick<Database, 'select'>, roomId: string, userId
   )).limit(1)
   if (!rows[0]) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
   return rows[0]
+}
+
+const lockUserRoomMembership = async (tx: Transaction, userId: string) => {
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${userId}))`)
+}
+
+const openRoomMembership = async (db: Pick<Database, 'select'>, userId: string) => {
+  const rows = await db.select({
+    roomId: friendsRoomMembers.roomId,
+    code: friendsRooms.code,
+  }).from(friendsRoomMembers)
+    .innerJoin(friendsRooms, eq(friendsRooms.id, friendsRoomMembers.roomId))
+    .where(and(
+      eq(friendsRoomMembers.userId, userId),
+      isNull(friendsRoomMembers.leftAt),
+      isNull(friendsRooms.closedAt),
+    ))
+    .orderBy(desc(friendsRooms.updatedAt))
+    .limit(1)
+  return rows[0] ?? null
 }
 
 const hostRoom = async (tx: Transaction, roomId: string, userId: string) => {
@@ -177,7 +211,7 @@ const advanceRoomClock = async (db: Database, roomId: string) => db.transaction(
   }
 })
 
-const buildSnapshot = async (db: ReadDatabase, roomId: string, currentUserId: string): Promise<FriendsRoomSnapshot> => {
+const buildSnapshot = async (db: Database, roomId: string, currentUserId: string): Promise<FriendsRoomSnapshot> => {
   const room = (await db.select().from(friendsRooms).where(eq(friendsRooms.id, roomId)).limit(1))[0]
   if (!room) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
   const membership = await activeMember(db, roomId, currentUserId)
@@ -188,11 +222,12 @@ const buildSnapshot = async (db: ReadDatabase, roomId: string, currentUserId: st
   const round = room.currentRound > 0
     ? (await db.select().from(friendsRoomRounds).where(and(eq(friendsRoomRounds.roomId, roomId), eq(friendsRoomRounds.position, room.currentRound))).limit(1))[0] ?? null
     : null
-  const [members, answerRows, messageRows, content] = await Promise.all([
+  const [members, answerRows, messageRows, content, danetkiLaunchCost] = await Promise.all([
     db.select().from(friendsRoomMembers).where(eq(friendsRoomMembers.roomId, roomId)).orderBy(asc(friendsRoomMembers.joinedAt)),
     round ? db.select().from(friendsRoomAnswers).where(eq(friendsRoomAnswers.roundId, round.id)).orderBy(asc(friendsRoomAnswers.submittedAt)) : Promise.resolve([]),
     db.select().from(friendsRoomMessages).where(eq(friendsRoomMessages.roomId, roomId)).orderBy(desc(friendsRoomMessages.seq)).limit(100),
     round ? db.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, round.contentItemVersionId)).limit(1) : Promise.resolve([]),
+    room.gameType === 'danetki' ? getNextDanetkiRoomCost(db, room.ownerUserId, 'group') : Promise.resolve(0),
   ])
   const memberById = new Map(members.map((entry) => [entry.userId, entry]))
   const answered = new Set(answerRows.map((entry) => entry.userId))
@@ -202,9 +237,12 @@ const buildSnapshot = async (db: ReadDatabase, roomId: string, currentUserId: st
   return {
     id: room.id,
     code: room.code,
+    gameType: room.gameType as FriendsRoomGameType,
+    danetkiSessionId: room.danetkiSessionId,
+    danetkiLaunchCost,
     mode: room.mode as PlayableMode,
     packs,
-    capacity: FRIENDS_ROOM_CAPACITY,
+    capacity: roomCapacity(room.gameType as FriendsRoomGameType),
     roundsTotal: room.roundsTotal,
     shufflePacks: room.shufflePacks,
     answerTimeSeconds: room.answerTimeSeconds as 15 | 20 | 30 | 45,
@@ -295,39 +333,97 @@ export const previewFriendsRoom = async (db: Database, code: string) => {
   return {
     code: room.code,
     hostName: owner?.displayNameSnapshot ?? 'Ведущий',
+    gameType: room.gameType as FriendsRoomGameType,
+    danetkiLaunchCost: room.gameType === 'danetki'
+      ? await getNextDanetkiRoomCost(db, room.ownerUserId, 'group')
+      : 0,
     mode: room.mode as PlayableMode,
     packs: roomPacks(room),
     players: members.length,
-    capacity: FRIENDS_ROOM_CAPACITY,
+    capacity: roomCapacity(room.gameType as FriendsRoomGameType),
     phase: room.phase,
   }
 }
 
+export const listFriendsRooms = async (db: Database, userId: string): Promise<FriendsRoomSummary[]> => {
+  const entries = await db.select({
+    room: friendsRooms,
+    role: friendsRoomMembers.role,
+    joinedAt: friendsRoomMembers.joinedAt,
+  }).from(friendsRoomMembers)
+    .innerJoin(friendsRooms, eq(friendsRooms.id, friendsRoomMembers.roomId))
+    .where(and(
+      eq(friendsRoomMembers.userId, userId),
+      isNull(friendsRoomMembers.leftAt),
+      isNull(friendsRooms.closedAt),
+    ))
+    .orderBy(desc(friendsRooms.updatedAt))
+    .limit(1)
+
+  if (!entries.length) return []
+  const counts = await db.select({ roomId: friendsRoomMembers.roomId })
+    .from(friendsRoomMembers)
+    .where(and(
+      inArray(friendsRoomMembers.roomId, entries.map((entry) => entry.room.id)),
+      isNull(friendsRoomMembers.leftAt),
+    ))
+  const playerCounts = new Map<string, number>()
+  for (const entry of counts) playerCounts.set(entry.roomId, (playerCounts.get(entry.roomId) ?? 0) + 1)
+
+  return entries.map(({ room, role, joinedAt }) => ({
+    id: room.id,
+    code: room.code,
+    gameType: room.gameType as FriendsRoomGameType,
+    mode: room.mode as PlayableMode,
+    packs: roomPacks(room),
+    players: playerCounts.get(room.id) ?? 0,
+    capacity: roomCapacity(room.gameType as FriendsRoomGameType),
+    phase: room.phase,
+    currentRound: room.currentRound,
+    roundsTotal: room.roundsTotal,
+    isHost: role === 'owner',
+    joinedAt: joinedAt.toISOString(),
+    updatedAt: room.updatedAt.toISOString(),
+  }))
+}
+
 export const createFriendsRoom = async (db: Database, user: RequestUser, input: FriendsRoomCreateBody = {}) => {
   const revisionId = await activeRevisionId(db)
+  const gameType = input.gameType ?? 'quiz'
   const packs = normalizeFriendsRoomPacks(input.packs, input.mode ?? 'series')
   const mode = packs[0].mode
   const roundsTotal = input.roundsTotal ?? Math.max(6, friendsRoomMinimumRounds(packs.length))
   if (roundsTotal < packs.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const code = roomCode()
-    const room = await db.transaction(async (tx) => {
+    const roomId = await db.transaction(async (tx) => {
+      await lockUserRoomMembership(tx, user.id)
+      const existing = await openRoomMembership(tx, user.id)
+      if (existing) return existing.roomId
       const inserted = await tx.insert(friendsRooms).values({
-        code, ownerUserId: user.id, revisionId, mode, packs, roundsTotal, shufflePacks: input.shufflePacks ?? false, answerTimeSeconds: input.answerTimeSeconds ?? 30,
+        code, ownerUserId: user.id, revisionId, mode, gameType, packs, roundsTotal, shufflePacks: input.shufflePacks ?? false, answerTimeSeconds: input.answerTimeSeconds ?? 30,
       }).onConflictDoNothing().returning()
       if (!inserted[0]) return null
       await tx.insert(friendsRoomMembers).values({ roomId: inserted[0].id, userId: user.id, role: 'owner', displayNameSnapshot: safeName(user.name), colorKey: colorFor(user.id) })
-      return inserted[0]
+      return inserted[0].id
     })
-    if (room) return buildSnapshot(db, room.id, user.id)
+    if (roomId) return buildSnapshot(db, roomId, user.id)
   }
   throw new ApiError(503, 'FRIENDS_ROOM_CODE_UNAVAILABLE', 'Не удалось подобрать код комнаты')
 }
 
 export const joinFriendsRoom = async (db: Database, user: RequestUser, code: string, displayName?: string) => {
   const roomId = await db.transaction(async (tx) => {
+    await lockUserRoomMembership(tx, user.id)
     const room = (await tx.select().from(friendsRooms).where(eq(friendsRooms.code, code.trim().toUpperCase())).for('update').limit(1))[0]
     if (!room || room.closedAt) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
+    const currentRoom = await openRoomMembership(tx, user.id)
+    if (currentRoom && currentRoom.roomId !== room.id) {
+      throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_OPEN', 'Сначала покиньте текущую комнату', {
+        roomId: currentRoom.roomId,
+        roomCode: currentRoom.code,
+      })
+    }
     const existing = await tx.select().from(friendsRoomMembers).where(and(eq(friendsRoomMembers.roomId, room.id), eq(friendsRoomMembers.userId, user.id))).limit(1)
     if (room.phase !== 'lobby') {
       if (existing[0] && !existing[0].leftAt) {
@@ -337,7 +433,7 @@ export const joinFriendsRoom = async (db: Database, user: RequestUser, code: str
       throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра в этой комнате уже началась')
     }
     const members = await tx.select().from(friendsRoomMembers).where(and(eq(friendsRoomMembers.roomId, room.id), isNull(friendsRoomMembers.leftAt)))
-    if (!existing[0] && members.length >= FRIENDS_ROOM_CAPACITY) throw new ApiError(409, 'FRIENDS_ROOM_FULL', 'В комнате уже восемь игроков')
+    if (!existing[0] && members.length >= roomCapacity(room.gameType as FriendsRoomGameType)) throw new ApiError(409, 'FRIENDS_ROOM_FULL', room.gameType === 'danetki' ? 'В комнате уже четыре игрока' : 'В комнате уже восемь игроков')
     await tx.insert(friendsRoomMembers).values({
       roomId: room.id, userId: user.id, role: user.id === room.ownerUserId ? 'owner' : 'player', displayNameSnapshot: safeName(displayName ?? user.name), colorKey: colorFor(user.id),
     }).onConflictDoUpdate({ target: [friendsRoomMembers.roomId, friendsRoomMembers.userId], set: { displayNameSnapshot: safeName(displayName ?? user.name), leftAt: null, lastSeenAt: new Date() } })
@@ -351,7 +447,17 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
   await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, userId)
     if (room.phase !== 'lobby') throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Настройки нельзя менять после запуска')
-    const { packs: requestedPacks, mode: requestedMode, ...rules } = input
+    const { gameType: requestedGameType, packs: requestedPacks, mode: requestedMode, ...rules } = input
+    const gameType = requestedGameType ?? room.gameType as FriendsRoomGameType
+    if (gameType === 'danetki') {
+      const members = await tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
+        eq(friendsRoomMembers.roomId, roomId),
+        isNull(friendsRoomMembers.leftAt),
+      ))
+      if (members.length > FRIENDS_ROOM_DANETKI_CAPACITY) {
+        throw new ApiError(409, 'FRIENDS_ROOM_DANETKI_TOO_MANY_PLAYERS', 'Для Данетки в комнате должно быть не больше четырёх игроков')
+      }
+    }
     const packs = requestedPacks
       ? normalizeFriendsRoomPacks(requestedPacks, room.mode as PlayableMode)
       : requestedMode
@@ -362,6 +468,7 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
     if (nextRoundsTotal < nextPacks.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
     await tx.update(friendsRooms).set({
       ...rules,
+      ...(requestedGameType ? { gameType: requestedGameType, danetkiSessionId: null } : {}),
       ...(packs ? { packs, mode: packs[0].mode } : {}),
       version: sql`${friendsRooms.version} + 1`,
       updatedAt: new Date(),
@@ -370,16 +477,74 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
   return buildSnapshot(db, roomId, userId)
 }
 
-export const startFriendsRoom = async (db: Database, userId: string, roomId: string) => {
+export const startFriendsRoom = async (
+  db: Database,
+  user: RequestUser,
+  roomId: string,
+  idempotencyKey: string,
+  config: AppConfig,
+) => {
+  const roomBeforeStart = await db.transaction((tx) => hostRoom(tx, roomId, user.id))
+  if (roomBeforeStart.phase !== 'lobby') {
+    if (roomBeforeStart.gameType === 'danetki' && roomBeforeStart.danetkiSessionId) {
+      return buildSnapshot(db, roomId, user.id)
+    }
+    throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра уже запущена')
+  }
+
+  if (roomBeforeStart.gameType === 'danetki') {
+    const members = await db.select().from(friendsRoomMembers).where(and(
+      eq(friendsRoomMembers.roomId, roomId),
+      isNull(friendsRoomMembers.leftAt),
+    )).orderBy(asc(friendsRoomMembers.joinedAt), asc(friendsRoomMembers.userId))
+    if (!members.length) throw new ApiError(409, 'FRIENDS_ROOM_EMPTY', 'В комнате нет игроков')
+    if (members.length > FRIENDS_ROOM_DANETKI_CAPACITY) {
+      throw new ApiError(409, 'FRIENDS_ROOM_DANETKI_TOO_MANY_PLAYERS', 'Для Данетки в комнате должно быть не больше четырёх игроков')
+    }
+
+    const session = await startDanetkiSession(db, user, {
+      kind: 'free_play',
+      roomMode: 'group',
+      idempotencyKey,
+    }, config)
+    await syncDanetkiRoomMembers(db, session.id, members.map((member) => ({
+      userId: member.userId,
+      role: member.userId === roomBeforeStart.ownerUserId ? 'owner' as const : 'player' as const,
+      displayName: member.displayNameSnapshot,
+      colorKey: member.colorKey,
+    })))
+    await startDanetkiRoom(db, user.id, session.id)
+
+    await db.transaction(async (tx) => {
+      const room = await hostRoom(tx, roomId, user.id)
+      if (room.phase !== 'lobby' && room.danetkiSessionId !== session.id) {
+        throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра уже запущена')
+      }
+      if (room.gameType !== 'danetki') {
+        throw new ApiError(409, 'FRIENDS_ROOM_MODE_CHANGED', 'Режим комнаты изменился во время запуска')
+      }
+      const now = new Date()
+      await tx.update(friendsRooms).set({
+        danetkiSessionId: session.id,
+        phase: 'active',
+        phaseStartedAt: now,
+        phaseEndsAt: null,
+        version: sql`${friendsRooms.version} + 1`,
+        updatedAt: now,
+      }).where(eq(friendsRooms.id, roomId))
+    })
+    return buildSnapshot(db, roomId, user.id)
+  }
+
   await db.transaction(async (tx) => {
-    const room = await hostRoom(tx, roomId, userId)
+    const room = await hostRoom(tx, roomId, user.id)
     if (room.phase !== 'lobby') throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра уже запущена')
     await createRound(tx, room, 1)
     const now = new Date()
     await tx.update(friendsRoomMembers).set({ score: 0 }).where(eq(friendsRoomMembers.roomId, roomId))
     await tx.update(friendsRooms).set({ phase: 'countdown', currentRound: 1, phaseStartedAt: now, phaseEndsAt: new Date(now.getTime() + COUNTDOWN_MS), version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
   })
-  return buildSnapshot(db, roomId, userId)
+  return buildSnapshot(db, roomId, user.id)
 }
 
 export const submitFriendsRoomAnswer = async (
@@ -502,13 +667,53 @@ export const sendFriendsRoomMessage = async (db: Database, userId: string, roomI
 }
 
 export const leaveFriendsRoom = async (db: Database, userId: string, roomId: string) => {
+  const roomBeforeLeave = (await db.select({
+    gameType: friendsRooms.gameType,
+    danetkiSessionId: friendsRooms.danetkiSessionId,
+  }).from(friendsRooms).where(eq(friendsRooms.id, roomId)).limit(1))[0]
+  const danetkiLeave = roomBeforeLeave?.gameType === 'danetki' && roomBeforeLeave.danetkiSessionId
+    ? await leaveDanetkiSession(db, userId, roomBeforeLeave.danetkiSessionId)
+    : null
+
   await db.transaction(async (tx) => {
     const room = (await tx.select().from(friendsRooms).where(eq(friendsRooms.id, roomId)).for('update').limit(1))[0]
     if (!room) return
-    const member = await activeMember(tx, roomId, userId)
+    const member = (await tx.select().from(friendsRoomMembers).where(and(
+      eq(friendsRoomMembers.roomId, roomId),
+      eq(friendsRoomMembers.userId, userId),
+    )).for('update').limit(1))[0]
+    if (!member || member.leftAt) return
     const now = new Date()
     await tx.update(friendsRoomMembers).set({ leftAt: now, lastSeenAt: now }).where(and(eq(friendsRoomMembers.roomId, roomId), eq(friendsRoomMembers.userId, userId)))
-    await tx.update(friendsRooms).set(member.role === 'owner'
+    const remaining = await tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
+      eq(friendsRoomMembers.roomId, roomId),
+      isNull(friendsRoomMembers.leftAt),
+    )).orderBy(asc(friendsRoomMembers.joinedAt), asc(friendsRoomMembers.userId))
+    const roomIsFinished = room.phase === 'finished'
+    const transferredOwnerUserId = danetkiLeave?.newOwnerUserId
+      ?? (member.role === 'owner' && room.gameType === 'danetki' ? remaining[0]?.userId ?? null : null)
+
+    if (member.role === 'owner' && transferredOwnerUserId && (room.gameType === 'danetki' || roomIsFinished)) {
+      await tx.update(friendsRoomMembers).set({ role: 'owner' }).where(and(
+        eq(friendsRoomMembers.roomId, roomId),
+        eq(friendsRoomMembers.userId, transferredOwnerUserId),
+      ))
+      await tx.update(friendsRooms).set({
+        ownerUserId: transferredOwnerUserId,
+        version: sql`${friendsRooms.version} + 1`,
+        updatedAt: now,
+      }).where(eq(friendsRooms.id, roomId))
+      return
+    }
+
+    const shouldClose = remaining.length === 0 || (member.role === 'owner' && !roomIsFinished)
+    if (shouldClose && remaining.length > 0) {
+      await tx.update(friendsRoomMembers).set({ leftAt: now, lastSeenAt: now }).where(and(
+        eq(friendsRoomMembers.roomId, roomId),
+        isNull(friendsRoomMembers.leftAt),
+      ))
+    }
+    await tx.update(friendsRooms).set(shouldClose
       ? { phase: 'finished', closedAt: now, phaseEndsAt: null, version: sql`${friendsRooms.version} + 1`, updatedAt: now }
       : { version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
   })

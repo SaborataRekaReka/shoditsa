@@ -13,7 +13,7 @@
 .game-launch-controls__option { min-width: min(178px, 100%); flex: 1 1 178px; }
 .game-launch-controls .play-button { width: 100%; min-width: 0; min-height: 56px; margin: 0; }
 
-.game-option-select { position: relative; z-index: 20; min-width: 0; display: grid; gap: 6px; }
+.game-option-select { display: grid; gap: 6px; }
 .game-option-trigger {
   width: 100%;
   min-width: 0;
@@ -53,18 +53,9 @@
 .game-option-action:hover .game-option-trigger__value > svg:last-child { transform: translateX(2px); }
 
 .game-option-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  bottom: auto;
-  left: 0;
-  right: 0;
-  z-index: 120;
   width: min(320px, 86vw);
   min-width: 100%;
-  max-height: var(--game-option-menu-max-height, 280px);
   padding: 7px;
-  overflow-x: hidden;
-  overflow-y: auto;
   border: 1px solid var(--color-paper-line);
   border-radius: var(--radius-md);
   color: var(--color-ink);
@@ -73,13 +64,8 @@
   display: grid;
   gap: 4px;
   transform: none;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
   animation: gameOptionMenuIn .18s var(--ease) both;
 }
-.game-option-select.opens-up .game-option-menu { top: auto; bottom: calc(100% + 8px); }
 @keyframes gameOptionMenuIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .game-option-menu__head { padding: 4px 8px 3px; color: var(--color-paper-muted); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 
@@ -155,10 +141,12 @@
   .game-option-trigger__value { gap: 4px; }
   .game-option-trigger__value > strong { font-size: 12px; }
   .game-launch-controls__option .game-option-menu {
-    right: 0;
-    left: auto;
     width: min(280px, 100%);
   }
+}
+
+@media (max-width: 560px) {
+  .game-launch-controls__option .game-option-menu { width: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

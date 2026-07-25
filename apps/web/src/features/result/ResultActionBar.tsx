@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Copy, SlidersHorizontal, Swords } from 'lucide-react'
 import { ControlButton } from '../../components/ui'
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
+import './ResultActionBar.css'
 
 export function ResultActionBar({
   nextLabel,

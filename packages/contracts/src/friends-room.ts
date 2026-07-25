@@ -3,8 +3,10 @@ import { PlayableModeSchema } from './schemas.js'
 import type { PublicContentItem } from './api.js'
 
 export type FriendsRoomPhase = 'lobby' | 'countdown' | 'active' | 'results' | 'finished'
+export type FriendsRoomGameType = 'quiz' | 'danetki'
 
 export const FRIENDS_ROOM_CAPACITY = 8
+export const FRIENDS_ROOM_DANETKI_CAPACITY = 4
 
 export type FriendsRoomPackVariant = {
   id: string
@@ -83,6 +85,7 @@ export const FriendsRoomRoundsTotalSchema = Type.Integer({ minimum: 3, maximum: 
 export const friendsRoomMinimumRounds = (packCount: number) => Math.max(3, Math.ceil(packCount / 3) * 3)
 
 export const FriendsRoomCreateBodySchema = Type.Object({
+  gameType: Type.Optional(Type.Union([Type.Literal('quiz'), Type.Literal('danetki')])),
   mode: Type.Optional(PlayableModeSchema),
   packs: Type.Optional(Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 })),
   roundsTotal: Type.Optional(FriendsRoomRoundsTotalSchema),
@@ -95,6 +98,7 @@ export const FriendsRoomJoinBodySchema = Type.Object({
 }, { additionalProperties: false })
 
 export const FriendsRoomConfigBodySchema = Type.Partial(Type.Object({
+  gameType: Type.Union([Type.Literal('quiz'), Type.Literal('danetki')]),
   mode: PlayableModeSchema,
   packs: Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 }),
   roundsTotal: FriendsRoomRoundsTotalSchema,
@@ -179,6 +183,9 @@ export type FriendsRoomRound = {
 export type FriendsRoomSnapshot = {
   id: string
   code: string
+  gameType: FriendsRoomGameType
+  danetkiSessionId: string | null
+  danetkiLaunchCost: number
   mode: Static<typeof PlayableModeSchema>
   packs: FriendsRoomPackSelection[]
   capacity: number
@@ -198,9 +205,27 @@ export type FriendsRoomSnapshot = {
 }
 
 export type FriendsRoomResponse = { room: FriendsRoomSnapshot }
+export type FriendsRoomSummary = {
+  id: string
+  code: string
+  gameType: FriendsRoomGameType
+  mode: Static<typeof PlayableModeSchema>
+  packs: FriendsRoomPackSelection[]
+  players: number
+  capacity: number
+  phase: FriendsRoomPhase
+  currentRound: number
+  roundsTotal: number
+  isHost: boolean
+  joinedAt: string
+  updatedAt: string
+}
+export type FriendsRoomListResponse = { rooms: FriendsRoomSummary[] }
 export type FriendsRoomPreview = {
   code: string
   hostName: string
+  gameType: FriendsRoomGameType
+  danetkiLaunchCost: number
   mode: Static<typeof PlayableModeSchema>
   packs: FriendsRoomPackSelection[]
   players: number

@@ -1,0 +1,48 @@
+.mode-variant-select { z-index: 40; }
+.mode-variant-trigger {
+  height: 100%;
+  min-width: 190px;
+  min-height: 58px;
+  padding: 8px 18px;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: transparent;
+}
+.mode-variant-trigger:hover { border-color: var(--color-text); background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+.mode-variant-select.is-open .mode-variant-trigger { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 12%, transparent); }
+.mode-variant-trigger:disabled { opacity: .5; cursor: default; }
+.mode-variant-trigger .game-option-trigger__label { color: var(--color-muted); font-size: 12px; }
+.mode-variant-trigger .game-option-trigger__label svg { color: var(--color-primary); }
+.mode-variant-trigger .game-option-trigger__value > strong { color: var(--color-text); font-size: 14px; }
+.mode-variant-trigger .game-option-trigger__value > svg:last-child { color: var(--color-muted); }
+.mode-variant-bars { display: inline-flex; align-items: flex-end; justify-content: center; flex: 0 0 auto; gap: 2px; width: 22px; height: 14px; }
+.mode-variant-bars i { width: 4px; border-radius: 1px; background: var(--color-paper-line); }
+.mode-variant-bars i:nth-child(1) { height: 45%; }
+.mode-variant-bars i:nth-child(2) { height: 72%; }
+.mode-variant-bars i:nth-child(3) { height: 100%; }
+.mode-variant-bars--capitals i:nth-child(1),
+.mode-variant-bars--capitals-popular i:nth-child(1),
+.mode-variant-bars--capitals-popular i:nth-child(2),
+.mode-variant-bars--all i { background: var(--color-primary); }
+.mode-variant-menu {
+  width: min(320px, 86vw);
+  padding: 8px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  box-shadow: 0 18px 40px -20px var(--color-shadow), var(--shadow-paper);
+}
+.mode-variant-option { min-height: 48px; }
+.mode-variant-option .game-option__copy { flex: 1; }
+
+@media (max-width: 579px) {
+  .title-play-row .mode-variant-select,
+  .title-play-row .mode-variant-trigger { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-variant-trigger,
+  .mode-variant-menu { animation: none; transition: none; }
+}

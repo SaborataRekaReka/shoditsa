@@ -71,6 +71,7 @@
 .app-header nav { display: flex; align-items: center; gap: 7px; }
 
 .header-profile-menu { position: relative; }
+.header-room-menu { position: relative; }
 
 .app-header nav button,
 .modal-head button {
@@ -124,6 +125,105 @@
 }
 
 .app-header nav .header-create-room:hover { border-color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 88%, white); }
+
+.header-room-active { display: flex; align-items: stretch; }
+.app-header nav .header-return-room {
+  width: auto;
+  min-width: 44px;
+  padding: 0 13px;
+  border-color: color-mix(in srgb, var(--color-primary) 48%, var(--color-line));
+  border-radius: 13px 0 0 13px;
+  color: #102017;
+  background: var(--color-primary);
+  display: inline-flex;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.app-header nav .header-return-room:hover { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 88%, white); transform: none; }
+.app-header nav .header-return-room__menu {
+  width: 31px;
+  min-width: 31px;
+  padding: 0;
+  border-left: 0;
+  border-radius: 0 13px 13px 0;
+  color: #102017;
+  background: var(--color-primary);
+}
+.app-header nav .header-return-room__menu:hover { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 88%, white); transform: none; }
+.header-return-room__menu svg { width: 13px !important; transition: transform .18s ease; }
+.header-return-room__menu[aria-expanded='true'] svg { transform: rotate(180deg); }
+
+.header-room-dropdown {
+  position: absolute;
+  z-index: 240;
+  top: calc(100% + 9px);
+  right: 0;
+  width: min(330px, calc(100vw - 24px));
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-line) 86%, white);
+  border-radius: 15px;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface) 96%, black);
+  box-shadow: 0 24px 70px rgba(0,0,0,.36);
+}
+.header-room-dropdown > header {
+  min-height: 42px;
+  padding: 2px 5px 8px;
+  border-bottom: 1px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-room-dropdown > header span {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.header-room-dropdown > header strong { color: var(--color-muted); font-size: 11px; }
+.header-room-dropdown__mark {
+  width: 34px;
+  height: 42px;
+  border-radius: 8px;
+  color: #172018;
+  background: var(--color-primary);
+  display: grid;
+  place-items: center;
+  font: 500 18px Oswald, sans-serif;
+}
+.header-room-dropdown__mark.is-danetki { color: #f4ecde; background: #6d4c31; }
+.header-room-summary { min-width: 0; margin: 8px 0; padding: 8px 5px; display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 9px; align-items: center; }
+.header-room-summary > span:last-child { min-width: 0; display: grid; gap: 2px; }
+.header-room-summary strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.header-room-summary small { overflow: hidden; color: var(--color-muted); display: flex; align-items: center; gap: 4px; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.header-room-summary small svg { width: 11px; height: 11px; }
+.header-room-dropdown__error { margin: 0 0 7px; padding: 8px 9px; border-radius: 7px; color: #f1c0bc; background: color-mix(in srgb, var(--color-danger) 12%, transparent); font-size: 10px; line-height: 1.4; }
+.app-header nav .header-room-dropdown__leave-current {
+  width: 100%;
+  min-height: 51px;
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 38%, var(--color-line));
+  border-radius: 10px;
+  color: #eadbd7;
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  cursor: pointer;
+}
+.header-room-dropdown__leave-current > svg { width: 17px; }
+.header-room-dropdown__leave-current > span { display: grid; gap: 1px; text-align: left; }
+.header-room-dropdown__leave-current strong { font-size: 12px; }
+.header-room-dropdown__leave-current small { color: var(--color-muted); font-size: 10px; }
+.app-header nav button.header-room-dropdown__leave-current:hover {
+  border-color: color-mix(in srgb, var(--color-danger) 62%, white);
+  color: #f3e5e1;
+  background: color-mix(in srgb, var(--color-danger) 17%, var(--color-surface));
+  transform: none;
+}
 
 .app-header nav .header-profile {
   width: auto;
@@ -487,8 +587,8 @@
 }
 
 @media (max-width: 719px) {
-  .app-header nav > .header-create-room,
-.app-header nav > .header-club { display: none; }
+  .app-header nav > .header-room-menu,
+  .app-header nav > .header-club { display: none; }
 }
 
 @media (max-width: 719px) {
@@ -612,6 +712,7 @@
 
 @media (max-width: 719px) {
   .mobile-app-nav__create > i {
+    position: relative;
     width: 46px;
     height: 46px;
     border: 3px solid #101410;

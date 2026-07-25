@@ -1,4 +1,48 @@
 .ui-tabs {
+  min-height: 52px;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: stretch;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.ui-tabs > button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ui-tabs--dark {
+  color: var(--color-muted);
+  border-color: var(--color-line);
+  background: color-mix(in srgb, var(--color-surface-2) 42%, transparent);
+}
+.ui-tabs--dark > button:hover { color: var(--color-text); }
+.ui-tabs--dark > button[aria-selected="true"] {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+.ui-tabs--paper {
+  color: var(--color-paper-muted);
+  border-color: var(--color-paper-line);
+  background: var(--color-paper);
+}
+.ui-tabs--paper > button:hover { color: var(--color-ink); background: var(--color-paper-hover); }
+.ui-tabs--paper > button[aria-selected="true"] {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-primary) 22%, var(--color-paper));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 42%, transparent);
 }

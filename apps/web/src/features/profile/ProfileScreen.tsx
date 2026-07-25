@@ -183,7 +183,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
       </aside>}
 
       <nav aria-label="Разделы личного кабинета">
-        <Tabs className="profile-tabs" label="Разделы личного кабинета" items={PROFILE_TABS} value={activeTab} onChange={selectTab} />
+        <Tabs surface="dark" className="profile-tabs" label="Разделы личного кабинета" items={PROFILE_TABS} value={activeTab} onChange={selectTab} />
       </nav>
 
       {activeTab === 'overview' && <>
@@ -257,7 +257,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
       {activeTab === 'settings' && <section className="profile-settings-grid">
         <section className="profile-section">
           <div className="profile-section__head"><div><span>Профиль</span><h2>Основные данные</h2></div><UserRound /></div>
-          {session && !session.isAnonymous && SERVER_RUNTIME ? <form className="profile-settings-form" onSubmit={saveProfileName}><label>Имя игрока<TextInput value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={80} /></label><label>Email<TextInput value={session.email ?? ''} readOnly /></label><ActionButton type="submit">Сохранить имя</ActionButton>{profileNotice && <InlineAlert tone="success" className="account-access__notice">{profileNotice}</InlineAlert>}{profileError && <InlineAlert tone="danger" className="server-error">{profileError}</InlineAlert>}</form> : <p className="modal-lead">Настройки профиля станут доступны после создания аккаунта.</p>}
+          {session && !session.isAnonymous && SERVER_RUNTIME ? <form className="profile-settings-form" onSubmit={saveProfileName}><label>Имя игрока<TextInput surface="dark" value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={80} /></label><label>Email<TextInput surface="dark" value={session.email ?? ''} readOnly /></label><ActionButton type="submit">Сохранить имя</ActionButton>{profileNotice && <InlineAlert tone="success" className="account-access__notice">{profileNotice}</InlineAlert>}{profileError && <InlineAlert tone="danger" className="server-error">{profileError}</InlineAlert>}</form> : <p className="modal-lead">Настройки профиля станут доступны после создания аккаунта.</p>}
         </section>
         <section className="profile-section profile-auth" id="profile-account-access">
           <div className="profile-section__head"><div><span>Безопасность</span><h2>Вход и пароль</h2></div><Lock /></div>

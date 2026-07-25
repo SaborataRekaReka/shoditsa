@@ -19,7 +19,12 @@ import { ApiError } from '../../lib/errors.js'
 import { loadIntegrationEnvironment } from '../admin/integration-secrets.js'
 import { completeDanetkiDaily } from '../stats/rewards.js'
 import { requestDanetkiAnswer, requestDanetkiGuessEvaluation } from './ai.js'
-import { completeDanetkiParticipantStats, normalizeDanetkiQuestion, toPublicDanetka } from './service.js'
+import {
+  completeDanetkiParticipantStats,
+  finishLinkedDanetkiFriendsRoom,
+  normalizeDanetkiQuestion,
+  toPublicDanetka,
+} from './service.js'
 
 type Job = typeof backgroundJobs.$inferSelect
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
@@ -414,6 +419,7 @@ const handleGuess = async (db: Database, config: AppConfig, job: Job) => {
             eq(danetkiInvites.sessionId, sessionId),
             isNull(danetkiInvites.revokedAt),
           )),
+          finishLinkedDanetkiFriendsRoom(tx, sessionId, now),
         ] : []),
       ])
       return { messageId: feedback.id, status: isCorrect ? 'correct' : 'incorrect', coverage: evaluation.coverage }
@@ -450,6 +456,7 @@ export const handleDanetkiJob = async (db: Database, config: AppConfig, job: Job
           eq(danetkiInvites.sessionId, sessionId),
           isNull(danetkiInvites.revokedAt),
         )),
+        finishLinkedDanetkiFriendsRoom(tx, sessionId, now, true),
       ])
       return { expired: true, sessionId }
     })

@@ -19,6 +19,16 @@ async function collectTsx(directory) {
   return files
 }
 
+async function collectScripts(directory) {
+  const files = []
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = resolve(directory, entry.name)
+    if (entry.isDirectory()) files.push(...await collectScripts(path))
+    else if ((entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) && !entry.name.includes('.test.')) files.push(path)
+  }
+  return files
+}
+
 async function collectCss(directory) {
   const files = []
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -72,8 +82,10 @@ if (!/\.period-option\s*\{[^}]*grid-template-columns:\s*24px\s+minmax\(0,\s*1fr\
 }
 
 const styleOwners = [
+  ['apps/web/src/components/ui/AnchoredMenu.css', 'apps/web/src/components/ui/AnchoredMenu.tsx'],
   ['apps/web/src/components/app-shell/AppShell.css', 'apps/web/src/components/app-shell/AppShell.tsx'],
   ['apps/web/src/components/game-shell/GameScreenShell.css', 'apps/web/src/components/game-shell/GameScreenShell.tsx'],
+  ['apps/web/src/components/mode-variant/ModeVariantControl.css', 'apps/web/src/components/mode-variant/ModeVariantControl.tsx'],
   ['apps/web/src/components/search-combobox/SearchCombobox.css', 'apps/web/src/components/search-combobox/SearchCombobox.tsx'],
   ['apps/web/src/components/title-ticket/TitleArtifacts.css', 'apps/web/src/components/title-ticket/TitleTicket.tsx'],
   ['apps/web/src/features/challenge/ChallengeInvite.css', 'apps/web/src/features/challenge/ChallengeInvite.tsx'],
@@ -82,6 +94,7 @@ const styleOwners = [
   ['apps/web/src/features/player-modals/PlayerModalViews.css', 'apps/web/src/features/player-modals/PlayerModalViews.tsx'],
   ['apps/web/src/features/profile/ProfileScreen.css', 'apps/web/src/features/profile/ProfileScreen.tsx'],
   ['apps/web/src/features/result/GameResult.css', 'apps/web/src/features/result/GameResult.tsx'],
+  ['apps/web/src/features/result/ResultActionBar.css', 'apps/web/src/features/result/ResultActionBar.tsx'],
 ]
 for (const [stylesheet, owner] of styleOwners) {
   const ownerPath = resolve(root, owner)
@@ -109,6 +122,47 @@ for (const path of userCssFiles) {
       failures.push(`${relative(root, path)}: canonical palette literal ${literal} must use a semantic token`)
     }
   }
+}
+
+const modePaletteLiterals = [
+  '#57b777', '#69b779', '#d6a546', '#d6a33f', '#cf7a5d', '#d97b63',
+  '#5270ab', '#6684c7', '#5cb5cc', '#cf6e63', '#8a4c7d', '#8177bf',
+  '#ad5e49', '#477558', '#4d8a48',
+]
+const userScriptFiles = [
+  ...await collectScripts(resolve(root, 'apps/web/src/features')),
+  ...await collectScripts(resolve(root, 'apps/web/src/components')),
+  resolve(root, 'apps/web/src/App.tsx'),
+  resolve(root, 'apps/web/src/app/mode-presentation.ts'),
+].filter((path) => !path.includes(`${sep}admin${sep}`) && !path.includes(`${sep}ui-kit${sep}`))
+for (const path of userScriptFiles) {
+  const source = await readFile(path, 'utf8')
+  for (const literal of modePaletteLiterals) {
+    if (new RegExp(`${literal}(?![0-9a-f])`, 'i').test(source)) {
+      failures.push(`${relative(root, path)}: mode palette literal ${literal} must use a --mode-*-brand token`)
+    }
+  }
+}
+
+const sizeContracts = [
+  [controlStylesPath, /\.ui-icon-button--sm\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px/s, 'small icon buttons must keep a 44px target'],
+  [resolve(root, 'apps/web/src/components/ui/Tabs.css'), /\.ui-tabs\s*>\s*button\s*\{[^}]*min-height:\s*44px/s, 'tabs must keep a 44px target'],
+  [resolve(root, 'apps/web/src/features/friends-room/FriendsRoomScreen.css'), /\.room-pack-options button\s*\{[^}]*min-height:\s*44px/s, 'room pack options must keep a 44px target'],
+  [resolve(root, 'apps/web/src/features/friends-room/FriendsRoomScreen.css'), /\.room-rule-grid button\s*\{[^}]*min-height:\s*44px/s, 'room time options must keep a 44px target'],
+  [resolve(root, 'apps/web/src/features/friends-room/FriendsRoomScreen.css'), /\.room-rounds input\s*\{[^}]*height:\s*44px/s, 'room range input must keep a 44px target'],
+  [resolve(root, 'apps/web/src/features/friends-room/FriendsRoomScreen.css'), /\.room-chat button\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px/s, 'room chat action must keep a 44px target'],
+  [resolve(root, 'apps/web/src/features/profile/ProfileScreen.css'), /\.profile-route__cta\s*\{[^}]*min-height:\s*44px/s, 'profile route action must keep a 44px target'],
+  [resolve(root, 'apps/web/src/features/result/ResultActionBar.css'), /\.result-after-actions\s*\{[^}]*grid-template-columns:\s*1fr/s, 'mobile result actions must use one full-width column'],
+]
+for (const [path, pattern, message] of sizeContracts) {
+  const source = path === controlStylesPath ? controlStyles : await readFile(path, 'utf8')
+  if (!pattern.test(source)) failures.push(`${relative(root, path)}: ${message}`)
+}
+
+const leaderboardStylesPath = resolve(root, 'apps/web/src/features/dtf-comments/DtfLeaderboard.css')
+const leaderboardStyles = await readFile(leaderboardStylesPath, 'utf8')
+if (/font-size:\s*[0-9](?:\.[0-9]+)?px|font:\s*[^;{}]*\s[0-9](?:\.[0-9]+)?px\//.test(leaderboardStyles)) {
+  failures.push(`${relative(root, leaderboardStylesPath)}: leaderboard text must not be smaller than 10px`)
 }
 
 if (failures.length) {

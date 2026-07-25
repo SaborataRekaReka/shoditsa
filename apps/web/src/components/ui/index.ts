@@ -1,3 +1,4 @@
+export * from './AnchoredMenu'
 export * from './DialogSurface'
 export * from './Feedback'
 export * from './Progress'

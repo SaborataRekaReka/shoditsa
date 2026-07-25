@@ -9,6 +9,7 @@ import {
 import './UiControls.css'
 
 const classes = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ')
+export type UiSurface = 'paper' | 'dark'
 
 export const ControlButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(function ControlButton({
   className = '',
@@ -19,14 +20,16 @@ export const ControlButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<
 })
 
 export const ActionButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'hint'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'hint' | 'danger'
+  surface?: UiSurface
 }>(function ActionButton({
   variant = 'primary',
+  surface,
   className = '',
   type = 'button',
   ...props
 }, ref) {
-  return <ControlButton ref={ref} type={type} className={classes('ui-button', `ui-button--${variant}`, className)} {...props} />
+  return <ControlButton ref={ref} type={type} className={classes('ui-button', `ui-button--${variant}`, surface && `ui-button--${surface}`, className)} {...props} />
 })
 
 export const IconButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -55,25 +58,28 @@ export const TextButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTM
   return <ControlButton ref={ref} className={classes('ui-text-button', className)} {...props} />
 })
 
-export const TextInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function TextInput({
+export const TextInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { surface?: UiSurface }>(function TextInput({
   className = '',
+  surface,
   ...props
 }, ref) {
-  return <input ref={ref} className={classes('ui-input', className)} {...props} />
+  return <input ref={ref} className={classes('ui-input', surface && `ui-input--${surface}`, className)} {...props} />
 })
 
-export const TextArea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(function TextArea({
+export const TextArea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement> & { surface?: UiSurface }>(function TextArea({
   className = '',
+  surface,
   ...props
 }, ref) {
-  return <textarea ref={ref} className={classes('ui-textarea', className)} {...props} />
+  return <textarea ref={ref} className={classes('ui-textarea', surface && `ui-textarea--${surface}`, className)} {...props} />
 })
 
-export const SelectControl = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement>>(function SelectControl({
+export const SelectControl = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement> & { surface?: UiSurface }>(function SelectControl({
   className = '',
+  surface,
   ...props
 }, ref) {
-  return <select ref={ref} className={classes('ui-select', className)} {...props} />
+  return <select ref={ref} className={classes('ui-select', surface && `ui-select--${surface}`, className)} {...props} />
 })
 
 export function FormField({ label, htmlFor, hint, error, required = false, className = '', children }: {

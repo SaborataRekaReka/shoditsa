@@ -238,19 +238,6 @@
   gap: 16px;
 }
 .ui-kit-form-grid__wide { grid-column: 1 / -1; }
-.ui-kit-form-grid .ui-input,
-.ui-kit-form-grid .ui-select,
-.ui-kit-form-grid .ui-textarea {
-  width: 100%;
-  min-height: 46px;
-  padding: 11px 13px;
-  color: var(--color-ink);
-  border: 1px solid var(--color-paper-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-paper);
-}
-.ui-kit-form-grid .ui-textarea { min-height: 86px; resize: vertical; }
-
 .ui-kit-ticket-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 .ui-kit-ticket-grid .category-ticket { width: 100%; }
 .ui-kit-title-ticket { margin-top: 12px; }
@@ -265,20 +252,19 @@
 .ui-kit-status-list .is-success { color: var(--color-success-text); border-color: rgba(87, 183, 119, .4); background: rgba(87, 183, 119, .08); }
 .ui-kit-status-list .is-warning { color: var(--color-warning-text); border-color: rgba(214, 165, 70, .4); background: rgba(214, 165, 70, .08); }
 .ui-kit-feedback-stack { margin-top: 10px; display: grid; gap: 12px; }
-.ui-kit-feedback-stack > .ui-tabs { gap: 6px; }
-.ui-kit-feedback-stack > .ui-tabs .ui-control {
-  min-height: 40px;
-  padding: 0 16px;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  color: var(--color-muted);
-  background: var(--color-surface);
-}
-.ui-kit-feedback-stack > .ui-tabs .ui-control.is-active {
+.ui-kit-result-action {
+  padding: 14px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-lg);
   color: var(--color-ink);
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-paper);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .62fr);
+  gap: 12px;
 }
+.ui-kit-result-action .result-card__wide { grid-column: 1 / -1; }
+.ui-kit-leaderboard .dtf-leaderboard { margin-top: 0; }
 .ui-kit-feedback-stack > .progress-block,
 .ui-kit-feedback-stack > .ui-linear-progress {
   padding: 16px;
@@ -347,6 +333,7 @@
   .ui-kit-button-row .ui-button { width: 100%; }
   .ui-kit-modal-demo { align-items: stretch; flex-direction: column; }
   .ui-kit-modal-demo .ui-button { width: 100%; }
+  .ui-kit-result-action { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

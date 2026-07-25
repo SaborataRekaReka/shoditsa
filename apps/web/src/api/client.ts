@@ -9,7 +9,7 @@ import type {
   PackDetailResponse, PackLeaderboardResponse, PackListResponse, PackProgressResponse,
   PrivateGameOrderBody, PrivateGameOrderResponse,
   DanetkiMessage,
-  FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomPreview, FriendsRoomResponse,
+  FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomListResponse, FriendsRoomPreview, FriendsRoomResponse,
 } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
@@ -168,6 +168,7 @@ export const api = {
   danetkiInvitePreview: (token: string) => request<{ title: string; ownerName: string; participants: number; capacity: number; expiresAt: string }>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}`),
   danetkiJoin: (token: string, displayName: string, idempotencyKey: string) => request<GameResponse>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}/join`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ displayName, idempotencyKey }), retries: 1 }),
   danetkiLeave: (id: string, idempotencyKey: string) => request<{ left: boolean; newOwnerUserId: string | null }>(`${API_BASE}/danetki/sessions/${id}/leave`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }) }),
+  friendsRoomList: () => request<FriendsRoomListResponse>(`${API_BASE}/friends/rooms`, { retries: 1 }),
   friendsRoomCreate: (body: FriendsRoomCreateBody = {}) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms`, { method: 'POST', body: JSON.stringify(body) }),
   friendsRoomPreview: (code: string) => request<FriendsRoomPreview>(`${API_BASE}/friends/rooms/code/${encodeURIComponent(code)}`),
   friendsRoomJoin: (code: string, displayName?: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/code/${encodeURIComponent(code)}/join`, { method: 'POST', body: JSON.stringify({ ...(displayName ? { displayName } : {}) }) }),
@@ -249,6 +250,7 @@ export const queryKeys = {
   me: ['me'] as const, dashboard: ['dashboard'] as const,
   game: (id: string) => ['game', id] as const,
   friendsRoom: (id: string) => ['friends-room', id] as const,
+  friendsRooms: ['friends-rooms'] as const,
   search: (id: string, query: string) => ['search', id, query] as const,
   archive: (filters: unknown) => ['archive', filters] as const,
   ledger: ['ledger'] as const,

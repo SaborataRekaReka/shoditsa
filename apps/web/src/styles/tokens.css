@@ -17,13 +17,16 @@
   --palette-brand-coral: #cf7a5d;
   --palette-brand-cyan: #5cb5cc;
   --palette-brand-blue-deep: #5270ab;
+  --palette-brand-terracotta: #ad5e49;
+  --palette-brand-green-deep: #477558;
   --mode-movie-brand: var(--palette-brand-green);
   --mode-series-brand: var(--palette-brand-amber);
   --mode-anime-brand: var(--palette-brand-coral);
   --mode-game-brand: var(--palette-brand-blue-deep);
   --mode-diagnosis-brand: var(--palette-brand-cyan);
-  --mode-city-brand: var(--palette-brand-green);
+  --mode-city-brand: var(--palette-brand-terracotta);
   --mode-music-brand: var(--palette-brand-plum);
+  --mode-danetki-brand: var(--palette-brand-green-deep);
   --color-paper: var(--palette-brand-paper);
   --color-paper-2: #ddd3bd;
   --color-ink: #171a17;

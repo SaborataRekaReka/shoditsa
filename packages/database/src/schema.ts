@@ -588,6 +588,8 @@ export const friendsRooms = pgTable('friends_rooms', {
   ownerUserId: uuid('owner_user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   revisionId: uuid('revision_id').notNull().references(() => contentRevisions.id),
   mode: contentMode().notNull(),
+  gameType: text('game_type').notNull().default('quiz'),
+  danetkiSessionId: uuid('danetki_session_id').references(() => gameSessions.id, { onDelete: 'set null' }),
   packs: jsonb().$type<FriendsRoomPackSelection[]>().notNull().default(sql`'[{"mode":"series","variant":"all"}]'::jsonb`),
   roundsTotal: smallint('rounds_total').notNull().default(6),
   shufflePacks: boolean('shuffle_packs').notNull().default(false),
@@ -606,6 +608,7 @@ export const friendsRooms = pgTable('friends_rooms', {
   check('friends_room_code_check', sql`char_length(${table.code}) = 5`),
   check('friends_room_rounds_check', sql`${table.roundsTotal} between 3 and 30`),
   check('friends_room_answer_time_check', sql`${table.answerTimeSeconds} in (15, 20, 30, 45)`),
+  check('friends_room_game_type_check', sql`${table.gameType} in ('quiz', 'danetki')`),
   check('friends_room_current_round_check', sql`${table.currentRound} between 0 and ${table.roundsTotal}`),
 ])
 
@@ -622,6 +625,7 @@ export const friendsRoomMembers = pgTable('friends_room_members', {
 }, (table) => [
   primaryKey({ columns: [table.roomId, table.userId] }),
   index('friends_room_members_active_idx').on(table.roomId, table.leftAt, table.joinedAt),
+  uniqueIndex('friends_room_members_one_active_user_idx').on(table.userId).where(sql`${table.leftAt} is null`),
   check('friends_room_member_name_check', sql`char_length(${table.displayNameSnapshot}) between 1 and 40`),
   check('friends_room_member_score_check', sql`${table.score} >= 0`),
 ])

@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, Play, RefreshCw, Send, Sparkles, Timer, Users } from 'lucide-react'
+import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
@@ -15,7 +15,6 @@ import './DanetkiSession.css'
 import './DanetkiCaseHeader.css'
 import './DanetkiInvestigation.css'
 import './DanetkiOutcome.css'
-import '../friends-room/FriendsRoomScreen.css'
 
 type Props = {
   sessionId: string
@@ -30,13 +29,6 @@ type Props = {
 
 const errorText = (error: unknown) => error instanceof ApiClientError ? error.message : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 const localTime = (value: string) => new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
-const roomAvatarColors: Record<string, string> = {
-  'player-1': '#57b777', 'player-2': '#d6a546', 'player-3': '#cf7a5d', 'player-4': '#5270ab',
-  'player-5': '#9a6c96', 'player-6': '#4f9fa6', 'player-7': '#c58d55', 'player-8': '#6f9d72',
-  'player-9': '#b87575', 'player-10': '#7188b8', 'player-11': '#a982b3', 'player-12': '#7d9d9d',
-}
-const memberInitials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU') || 'И'
-
 export const SESSION_RENDERER_BY_ENGINE = { danetki_chat: DanetkiGamePage }
 
 export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive, onStats, onRules, onReview }: Props) {
@@ -189,11 +181,6 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     },
     onError: (failure) => setError(errorText(failure)),
   })
-  const startRoom = useMutation({
-    mutationFn: () => api.danetkiStart(sessionId, crypto.randomUUID()),
-    onSuccess: async () => { setError(''); await refresh() },
-    onError: (failure) => setError(errorText(failure)),
-  })
   const retryAi = useMutation({ mutationFn: () => api.danetkiRetryAi(sessionId, crypto.randomUUID()), onSuccess: async () => { setError(''); await refresh() }, onError: (failure) => setError(errorText(failure)) })
   const leave = useMutation({ mutationFn: () => api.danetkiLeave(sessionId, crypto.randomUUID()), onSuccess: onHome, onError: (failure) => setError(errorText(failure)) })
 
@@ -207,7 +194,6 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   }
   const activeMembers = useMemo(() => state.members.filter((member) => !member.leftAt), [state.members])
   const currentTurn = activeMembers.find((member) => member.userId === state.currentTurnUserId)
-  const isStarted = state.roomMode === 'solo' || Boolean(state.startedAt)
   const isMyTurn = state.roomMode === 'solo' || state.currentTurnUserId === state.currentUserId
   const hostReady = state.aiStatus !== 'queued' && state.aiStatus !== 'processing'
   const participantWord = activeMembers.length % 10 === 1 && activeMembers.length % 100 !== 11
@@ -237,67 +223,6 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     ? session.puzzleDate
     : `${String(puzzleDate.getDate()).padStart(2, '0')}/${String(puzzleDate.getMonth() + 1).padStart(2, '0')}`
   const caseNumber = (state.puzzle.id.match(/\d+/g)?.join('') ?? dateBadge.replace(/\D/g, '')).slice(-3).padStart(3, '0')
-
-  const copyLobbyInvite = () => {
-    invite.mutate(undefined, {
-      onSuccess: async ({ token }) => {
-        const link = inviteHref(token)
-        setInviteLink(link)
-        await navigator.clipboard?.writeText(link)
-        setCopied(true)
-        window.setTimeout(() => setCopied(false), 1_600)
-      },
-    })
-  }
-
-  if (state.roomMode === 'group' && !isStarted) {
-    return <div className="friends-room-page danetki-room-page" style={{ '--room-accent': '#75b56e' } as CSSProperties}>
-      <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-      <GameScreenShell
-        variant="session"
-        wide
-        className="game-shell friends-room danetki-room-shell"
-        onBack={() => leave.mutate()}
-        backLabel="Выйти из комнаты"
-        status={<span className={`room-connection room-connection--${connection}`}><Users />{connection === 'connected' ? 'Комната Данетки · на связи' : connection === 'offline' ? 'Комната Данетки · нет сети' : 'Комната Данетки · подключаемся'}</span>}
-      >
-        {error && <InlineAlert tone="danger" className="room-alert" onDismiss={() => setError('')}>{error}</InlineAlert>}
-        <section className="room-lobby danetki-room-lobby">
-          <div className="room-lobby__intro">
-            <span className="room-kicker">Игра с друзьями · Данетки</span>
-            <h1>Комната готова</h1>
-            <p>Пригласите до трёх друзей. После запуска участники будут задавать вопросы ведущему по очереди — так расследование остаётся общим и никто не перебивает ход другого.</p>
-            <div className={`room-code-card${copied ? ' is-copied' : ''}`}>
-              <span>Приглашение в комнату</span>
-              <strong>ДАНЕТКА</strong>
-              <ControlButton type="button" onClick={copyLobbyInvite} disabled={invite.isPending} title="Скопировать ссылку-приглашение">
-                {copied ? <Check /> : <Copy />}{invite.isPending ? 'Готовим ссылку…' : copied ? 'Скопировано' : 'Копировать'}
-              </ControlButton>
-            </div>
-            <div className="room-lobby__people">
-              {activeMembers.map((member) => <span key={member.userId} style={{ '--avatar': roomAvatarColors[member.colorKey] ?? '#57b777' } as CSSProperties}>{memberInitials(member.displayName)}</span>)}
-              <small>{activeMembers.length} из {state.capacity} игроков в комнате</small>
-            </div>
-          </div>
-          <div className="room-lobby__settings danetki-room-lobby__settings">
-            <header className="room-settings-heading"><span>Режим комнаты</span><strong>Данетки</strong></header>
-            <section className="danetki-room-brief">
-              <img src={publicAssetUrl('images/title-posters/danetki-ticket-poster.webp')} alt="" />
-              <div><span>Дело №{caseNumber}</span><h2>Общее расследование</h2><p>ИИ-ведущий отвечает «да», «нет» или уточняет вопрос. Условие откроется всем одновременно после старта.</p></div>
-            </section>
-            <div className="danetki-room-rules">
-              <article><Users /><span><strong>До 4 игроков</strong><small>Все участники видят одну историю</small></span></article>
-              <article><Timer /><span><strong>Вопросы по очереди</strong><small>Следующий ход передаётся автоматически</small></span></article>
-              <article><Sparkles /><span><strong>Стартует ведущий</strong><small>До запуска все остаются в лобби</small></span></article>
-            </div>
-            {state.canStart
-              ? <ControlButton className="room-start" type="button" onClick={() => startRoom.mutate()} disabled={startRoom.isPending}><Play />{startRoom.isPending ? 'Запускаем…' : 'Начать игру'}<span>{activeMembers.length} из {state.capacity} · по очереди</span></ControlButton>
-              : <div className="room-waiting-host"><Timer /><span><strong>Ждём ведущего</strong><small>Игру запустит создатель комнаты, когда все соберутся</small></span></div>}
-          </div>
-        </section>
-      </GameScreenShell>
-    </div>
-  }
 
   return <div className="danetki-page danetki-page--session">
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
@@ -366,7 +291,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         {newMessages > 0 && <ControlButton type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения · {newMessages}</ControlButton>}
 
         {session.status === 'playing' && <>
-          <form className="danetki-composer" onSubmit={submit}><TextArea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining <= 0 ? 'Лимит вопросов исчерпан' : !isMyTurn ? `Сейчас спрашивает ${currentTurn?.displayName ?? 'другой игрок'}` : !hostReady ? 'Дождитесь ответа ведущего…' : 'Напишите вопрос…'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0 || !isMyTurn || !hostReady} /><ActionButton type="submit" className="danetki-composer__send" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0 || !isMyTurn || !hostReady} aria-label="Отправить вопрос" title={isMyTurn ? 'Отправить вопрос' : 'Дождитесь своего хода'}>{send.isPending ? <LoaderCircle className="danetki-spinner" /> : <Send />}</ActionButton></form>
+          <form className="danetki-composer" onSubmit={submit}><TextArea surface="paper" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining <= 0 ? 'Лимит вопросов исчерпан' : !isMyTurn ? `Сейчас спрашивает ${currentTurn?.displayName ?? 'другой игрок'}` : !hostReady ? 'Дождитесь ответа ведущего…' : 'Напишите вопрос…'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0 || !isMyTurn || !hostReady} /><ActionButton type="submit" className="danetki-composer__send" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0 || !isMyTurn || !hostReady} aria-label="Отправить вопрос" title={isMyTurn ? 'Отправить вопрос' : 'Дождитесь своего хода'}>{send.isPending ? <LoaderCircle className="danetki-spinner" /> : <Send />}</ActionButton></form>
         </>}
       </section>
 
@@ -391,10 +316,10 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     </GameScreenShell>
 
     {dialog && <DialogSurface backdropClassName="danetki-dialog-backdrop" className="danetki-dialog" onClose={() => setDialog(null)} ariaLabelledBy="danetki-dialog-title">
-      {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><TextArea rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><ControlButton onClick={() => setDialog(null)}>Отмена</ControlButton><ControlButton className="is-primary" disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</ControlButton></div></>}
-      {dialog === 'hint' && <><h2 id="danetki-dialog-title">Открыть подсказку?</h2><p>Подсказку увидят все участники комнаты. Она снизит итоговый результат.</p><div><ControlButton onClick={() => setDialog(null)}>Отмена</ControlButton><ControlButton className="is-primary" disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</ControlButton></div></>}
-      {dialog === 'surrender' && <><h2 id="danetki-dialog-title">Завершить расследование?</h2><p>{state.roomMode === 'group' ? 'Ваш голос будет учтён. Для сдачи нужны голоса всех активных участников.' : 'После сдачи откроется полная авторская разгадка.'}</p><div><ControlButton onClick={() => setDialog(null)}>Продолжить игру</ControlButton><ControlButton className="is-danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</ControlButton></div></>}
-      {dialog === 'invite' && <><h2 id="danetki-dialog-title">Пригласить в расследование</h2><p>Ссылка действует 24 часа.</p><TextInput aria-label="Ссылка-приглашение" readOnly value={inviteLink} /><div><ControlButton onClick={() => setDialog(null)}>Готово</ControlButton><ControlButton className="is-primary" onClick={async () => { await navigator.clipboard.writeText(inviteLink); setCopied(true) }}><Copy /> {copied ? 'Скопировано' : 'Копировать'}</ControlButton></div></>}
+      {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><TextArea surface="paper" rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</ActionButton><ActionButton disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</ActionButton></div></>}
+      {dialog === 'hint' && <><h2 id="danetki-dialog-title">Открыть подсказку?</h2><p>Подсказку увидят все участники комнаты. Она снизит итоговый результат.</p><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</ActionButton><ActionButton disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</ActionButton></div></>}
+      {dialog === 'surrender' && <><h2 id="danetki-dialog-title">Завершить расследование?</h2><p>{state.roomMode === 'group' ? 'Ваш голос будет учтён. Для сдачи нужны голоса всех активных участников.' : 'После сдачи откроется полная авторская разгадка.'}</p><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Продолжить игру</ActionButton><ActionButton variant="danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</ActionButton></div></>}
+      {dialog === 'invite' && <><h2 id="danetki-dialog-title">Пригласить в расследование</h2><p>Ссылка действует 24 часа.</p><TextInput surface="paper" aria-label="Ссылка-приглашение" readOnly value={inviteLink} /><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Готово</ActionButton><ActionButton onClick={async () => { await navigator.clipboard.writeText(inviteLink); setCopied(true) }}><Copy /> {copied ? 'Скопировано' : 'Копировать'}</ActionButton></div></>}
     </DialogSurface>}
   </div>
 }

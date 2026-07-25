@@ -7,12 +7,17 @@ import type { FriendsRoomSnapshot, TitleItem } from '@shoditsa/contracts'
 import {
   contentItemVersions,
   createDatabase,
+  danetkiSessionMembers,
+  danetkiSessionState,
   friendsRoomRounds,
   friendsRooms,
+  gameSessions,
   playerProfiles,
   user,
+  walletAccounts,
 } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
+import { finishLinkedDanetkiFriendsRoom } from '../src/modules/danetki/service.js'
 
 const responseCookie = (headers: Record<string, unknown>) => {
   const raw = headers['set-cookie']
@@ -26,6 +31,8 @@ describe('friends room multiplayer API', () => {
   let playerCookie = ''
   let roomId = ''
   let roomCode = ''
+  let danetkiRoomId = ''
+  let danetkiSessionId = ''
   let productionRoomId = ''
   let answerMediaPath = ''
 
@@ -61,6 +68,8 @@ describe('friends room multiplayer API', () => {
 
   afterAll(async () => {
     if (roomId) await database.db.delete(friendsRooms).where(eq(friendsRooms.id, roomId))
+    if (danetkiRoomId) await database.db.delete(friendsRooms).where(eq(friendsRooms.id, danetkiRoomId))
+    if (danetkiSessionId) await database.db.delete(gameSessions).where(eq(gameSessions.id, danetkiSessionId))
     if (productionRoomId) await database.db.delete(friendsRooms).where(eq(friendsRooms.id, productionRoomId))
     await app?.close()
     await database?.client.end()
@@ -81,6 +90,15 @@ describe('friends room multiplayer API', () => {
     expect(ownerRoom.isHost).toBe(true)
     expect(ownerRoom.phase).toBe('lobby')
 
+    const duplicateCreate = await app.inject({
+      method: 'POST',
+      url: '/api/v1/friends/rooms',
+      headers: { cookie: ownerCookie },
+      payload: { gameType: 'danetki' },
+    })
+    expect(duplicateCreate.statusCode).toBe(201)
+    expect(duplicateCreate.json().room).toMatchObject({ id: roomId, code: roomCode, gameType: 'quiz' })
+
     const preview = await app.inject({ method: 'GET', url: `/api/v1/friends/rooms/code/${roomCode}`, headers: { cookie: playerCookie } })
     expect(preview.statusCode).toBe(200)
     expect(preview.json()).toMatchObject({ code: roomCode, players: 1, capacity: 8, phase: 'lobby' })
@@ -94,6 +112,17 @@ describe('friends room multiplayer API', () => {
     expect(joined.statusCode).toBe(200)
     expect(joined.json().room.members).toHaveLength(2)
     expect(joined.json().room.isHost).toBe(false)
+
+    const ownerRooms = await app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: ownerCookie } })
+    expect(ownerRooms.statusCode).toBe(200)
+    expect(ownerRooms.json().rooms).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: roomId, code: roomCode, isHost: true, players: 2, capacity: 8, phase: 'lobby' }),
+    ]))
+    const playerRooms = await app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: playerCookie } })
+    expect(playerRooms.statusCode).toBe(200)
+    expect(playerRooms.json().rooms).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: roomId, code: roomCode, isHost: false, players: 2 }),
+    ]))
 
     const forbiddenConfig = await app.inject({
       method: 'PATCH',
@@ -203,6 +232,161 @@ describe('friends room multiplayer API', () => {
     })
     expect(replayedPlayerAnswer.statusCode).toBe(200)
     expect(replayedPlayerAnswer.json().room.answers.find((entry: { userId: string; text: string }) => entry.userId === results.currentUserId)?.text).toBe('заведомо неверный ответ')
+
+    const left = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/${roomId}/leave`,
+      headers: { cookie: ownerCookie },
+      payload: { idempotencyKey: crypto.randomUUID() },
+    })
+    expect(left.statusCode).toBe(200)
+    const ownerRoomsAfterLeave = await app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: ownerCookie } })
+    const playerRoomsAfterHostLeave = await app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: playerCookie } })
+    expect(ownerRoomsAfterLeave.json().rooms).toEqual([])
+    expect(playerRoomsAfterHostLeave.json().rooms).toEqual([])
+  })
+
+  it('starts a shared Danetki session inside the universal room', async () => {
+    const ownerMe = await app.inject({ method: 'GET', url: '/api/v1/me', headers: { cookie: ownerCookie } })
+    const ownerUserId = ownerMe.json().user.id as string
+    const playerMe = await app.inject({ method: 'GET', url: '/api/v1/me', headers: { cookie: playerCookie } })
+    const playerUserId = playerMe.json().user.id as string
+    await database.db.insert(walletAccounts).values({ userId: ownerUserId, balance: 10_000 }).onConflictDoUpdate({
+      target: walletAccounts.userId,
+      set: { balance: 10_000 },
+    })
+
+    const created = await app.inject({
+      method: 'POST',
+      url: '/api/v1/friends/rooms',
+      headers: { cookie: ownerCookie },
+      payload: { gameType: 'danetki' },
+    })
+    expect(created.statusCode).toBe(201)
+    const room = created.json().room as FriendsRoomSnapshot
+    danetkiRoomId = room.id
+    expect(room).toMatchObject({ gameType: 'danetki', capacity: 4, phase: 'lobby', danetkiSessionId: null })
+    expect(room.danetkiLaunchCost).toEqual(expect.any(Number))
+
+    const preview = await app.inject({
+      method: 'GET',
+      url: `/api/v1/friends/rooms/code/${room.code}`,
+      headers: { cookie: playerCookie },
+    })
+    expect(preview.statusCode).toBe(200)
+    expect(preview.json()).toMatchObject({
+      gameType: 'danetki',
+      danetkiLaunchCost: room.danetkiLaunchCost,
+      players: 1,
+      capacity: 4,
+    })
+
+    const joined = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/code/${room.code}/join`,
+      headers: { cookie: playerCookie },
+      payload: { displayName: 'Сыщик' },
+    })
+    expect(joined.statusCode).toBe(200)
+    expect(joined.json().room.members).toHaveLength(2)
+    expect(joined.json().room.danetkiLaunchCost).toBe(room.danetkiLaunchCost)
+
+    const startKey = crypto.randomUUID()
+    const started = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/${room.id}/start`,
+      headers: { cookie: ownerCookie },
+      payload: { idempotencyKey: startKey },
+    })
+    expect(started.statusCode).toBe(200)
+    expect(started.json().room).toMatchObject({ gameType: 'danetki', phase: 'active' })
+    danetkiSessionId = started.json().room.danetkiSessionId
+    expect(danetkiSessionId).toEqual(expect.any(String))
+
+    const playerSession = await app.inject({
+      method: 'GET',
+      url: `/api/v1/games/${danetkiSessionId}`,
+      headers: { cookie: playerCookie },
+    })
+    expect(playerSession.statusCode).toBe(200)
+    expect(playerSession.json().session).toMatchObject({
+      id: danetkiSessionId,
+      engine: 'danetki_chat',
+      danetki: {
+        roomMode: 'group',
+        capacity: 4,
+        startedAt: expect.any(String),
+        currentTurnUserId: expect.any(String),
+      },
+    })
+    expect(playerSession.json().session.danetki.members.filter((member: { leftAt: string | null }) => !member.leftAt)).toHaveLength(2)
+
+    const [state, members] = await Promise.all([
+      database.db.select().from(danetkiSessionState).where(eq(danetkiSessionState.sessionId, danetkiSessionId)),
+      database.db.select().from(danetkiSessionMembers).where(eq(danetkiSessionMembers.sessionId, danetkiSessionId)),
+    ])
+    expect(state[0]?.startedAt).toBeInstanceOf(Date)
+    expect(members).toHaveLength(2)
+
+    const replayed = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/${room.id}/start`,
+      headers: { cookie: ownerCookie },
+      payload: { idempotencyKey: startKey },
+    })
+    expect(replayed.statusCode).toBe(200)
+    expect(replayed.json().room.danetkiSessionId).toBe(danetkiSessionId)
+
+    await finishLinkedDanetkiFriendsRoom(database.db, danetkiSessionId)
+    const finishedForOwner = await app.inject({
+      method: 'GET',
+      url: `/api/v1/friends/rooms/${room.id}/snapshot`,
+      headers: { cookie: ownerCookie },
+    })
+    const finishedForPlayer = await app.inject({
+      method: 'GET',
+      url: `/api/v1/friends/rooms/${room.id}/snapshot`,
+      headers: { cookie: playerCookie },
+    })
+    expect(finishedForOwner.json().room.phase).toBe('finished')
+    expect(finishedForPlayer.json().room.phase).toBe('finished')
+
+    const playerLeft = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/${room.id}/leave`,
+      headers: { cookie: playerCookie },
+      payload: { idempotencyKey: crypto.randomUUID() },
+    })
+    expect(playerLeft.statusCode).toBe(200)
+    const playerMembership = await database.db.select().from(danetkiSessionMembers).where(and(
+      eq(danetkiSessionMembers.sessionId, danetkiSessionId),
+      eq(danetkiSessionMembers.userId, playerUserId),
+    ))
+    expect(playerMembership[0]?.leftAt).toBeInstanceOf(Date)
+    const ownerAfterPlayerLeave = await app.inject({
+      method: 'GET',
+      url: `/api/v1/friends/rooms/${room.id}/snapshot`,
+      headers: { cookie: ownerCookie },
+    })
+    expect(ownerAfterPlayerLeave.json().room.members.filter((member: { leftAt: string | null }) => !member.leftAt)).toHaveLength(1)
+
+    const ownerLeft = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/${room.id}/leave`,
+      headers: { cookie: ownerCookie },
+      payload: { idempotencyKey: crypto.randomUUID() },
+    })
+    expect(ownerLeft.statusCode).toBe(200)
+    const closedRoom = await database.db.select().from(friendsRooms).where(eq(friendsRooms.id, room.id))
+    expect(closedRoom[0]?.closedAt).toBeInstanceOf(Date)
+    const [ownerRooms, playerRooms, stalePreview] = await Promise.all([
+      app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: ownerCookie } }),
+      app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: playerCookie } }),
+      app.inject({ method: 'GET', url: `/api/v1/friends/rooms/code/${room.code}`, headers: { cookie: playerCookie } }),
+    ])
+    expect(ownerRooms.json().rooms).toEqual([])
+    expect(playerRooms.json().rooms).toEqual([])
+    expect(stalePreview.statusCode).toBe(404)
   })
 
   it('requires registration but allows regular players on the production API route', async () => {

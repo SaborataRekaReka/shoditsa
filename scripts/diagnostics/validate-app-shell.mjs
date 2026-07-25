@@ -108,8 +108,14 @@ const sourceChecks = [
     path: 'apps/web/src/components/game-launch-controls/GameLaunchControls.tsx',
     required: [
       ['shared upper launch controls', /function GameLaunchControls[^]*game-launch-controls__action[^]*game-launch-controls__option/],
-      ['shared accessible option selector', /function GameOptionSelect[^]*role="listbox"/],
+      ['shared accessible option selector', /function GameOptionSelect[^]*<AnchoredMenu/],
       ['shared accessible option item', /function GameOption[^]*role="option"/],
+    ],
+  },
+  {
+    path: 'apps/web/src/components/ui/AnchoredMenu.tsx',
+    required: [
+      ['shared anchored listbox semantics', /function AnchoredMenu[^]*role="listbox"[^]*aria-label=\{label\}/],
     ],
   },
   {

@@ -18,7 +18,7 @@ const messageFor = (error: unknown) => error instanceof ApiClientError
   ? error.message
   : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 
-export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartFreePlay, busy, error }: {
+export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartFreePlay, onCreateRoom, busy, error }: {
   date: string
   access?: DashboardResponse['danetkiAccess']
   ticketBalance?: number
@@ -31,22 +31,33 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
   onStart: (roomMode: DanetkiRoomMode) => void
   onContinue?: () => void
   onStartFreePlay?: (roomMode: DanetkiRoomMode) => void
+  onCreateRoom: () => void
   busy: boolean
   error?: string
 }) {
   const [roomMode, setRoomMode] = useState<DanetkiRoomMode>('solo')
   const dailyAvailable = (access?.dailyRoomsStarted ?? 0) === 0
-  const launchCost = dailyAvailable ? 0 : roomMode === 'solo' ? access?.nextSoloCost ?? 0 : access?.nextGroupCost ?? 0
+  const groupStartCost = access?.nextGroupCost ?? 0
+  const launchCost = roomMode === 'group' || dailyAvailable ? 0 : access?.nextSoloCost ?? 0
   const launchShortage = Math.max(0, launchCost - ticketBalance)
-  const canLaunch = !busy && launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay))
-  const launch = () => dailyAvailable ? onStart(roomMode) : onStartFreePlay?.(roomMode)
+  const canLaunch = !busy && (roomMode === 'group' || (launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay))))
+  const launch = () => {
+    if (roomMode === 'group') {
+      onCreateRoom()
+      return
+    }
+    if (dailyAvailable) onStart('solo')
+    else onStartFreePlay?.('solo')
+  }
   const launchLabel = busy
     ? 'Запускаем…'
+    : roomMode === 'group'
+      ? groupStartCost > 0 ? `Создать комнату · ${groupStartCost} при старте` : 'Создать комнату · запуск бесплатный'
     : launchShortage > 0
       ? `Не хватает ${launchShortage} билетов`
       : launchCost > 0
-        ? `${roomMode === 'group' ? 'Создать комнату' : 'Начать игру'} · ${launchCost} билетов`
-        : roomMode === 'group' ? 'Создать комнату' : 'Начать игру'
+        ? `Начать игру · ${launchCost} билетов`
+        : 'Начать игру'
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -57,7 +68,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [canLaunch, dailyAvailable, onBack, onStart, onStartFreePlay, roomMode])
+  }, [canLaunch, dailyAvailable, onBack, onCreateRoom, onStart, onStartFreePlay, roomMode])
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <GameScreenShell variant="title" onBack={onBack} wide className="title-screen danetki-title-screen">
@@ -101,7 +112,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
               resetKey={roomMode}
             >{(close) => <>
               <GameOption title="Одному" description="С ИИ-ведущим" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
-              <GameOption title="Вместе" description="Комната до 4 игроков · вопросы по очереди" icon={<Users />} selected={roomMode === 'group'} onSelect={() => { setRoomMode('group'); close() }} />
+              <GameOption title="Вместе" description={`До 4 игроков · запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}`} icon={<Users />} selected={roomMode === 'group'} onSelect={() => { setRoomMode('group'); close() }} />
             </>}</GameOptionSelect>}
           />
           {busy && <p className="danetki-entry__status">Готовим расследование…</p>}
@@ -146,7 +157,7 @@ export function DanetkiJoinPage({ token, onHome, onArchive, onStats, onRules, on
       {preview.data && !join.isSuccess && <section className="danetki-join-card">
         <Sparkles /><span>Приглашение в расследование</span><h1>{preview.data.title}</h1>
         <p>Вас приглашает <strong>{preview.data.ownerName}</strong>. В комнате {preview.data.participants} из {preview.data.capacity} участников.</p>
-        <form onSubmit={submit}><label>Как вас показывать другим игрокам<TextInput value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><ActionButton type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</ActionButton></form>
+        <form onSubmit={submit}><label>Как вас показывать другим игрокам<TextInput surface="paper" value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><ActionButton type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</ActionButton></form>
       </section>}
     </main>
   </>

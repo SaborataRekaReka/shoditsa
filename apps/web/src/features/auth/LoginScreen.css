@@ -229,24 +229,13 @@
 .login-input-wrap { position: relative; display: flex; align-items: center; }
 
 .login-field input {
-  width: 100%;
   height: 48px;
-  padding: 0 14px;
-  border: 1px solid rgba(23, 28, 24, .2);
-  border-radius: 10px;
   outline: 0;
-  color: var(--login-ink);
-  background: rgba(255, 255, 255, .46);
-  box-shadow: inset 0 1px rgba(255, 255, 255, .55);
   font-size: 16px;
-  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
 .login-input-wrap input:has(+ .login-password-toggle) { padding-right: 52px; }
 .login-field input::placeholder { color: rgba(23, 28, 24, .35); }
-.login-field input:hover { border-color: rgba(23, 28, 24, .31); }
-.login-field input:focus { border-color: #599d66; background: rgba(255, 255, 255, .67); box-shadow: 0 0 0 3px rgba(89, 157, 102, .13); }
-.login-field input[aria-invalid='true'] { border-color: #b65f49; }
 
 .login-field input:-webkit-autofill,
 .login-field input:-webkit-autofill:hover,

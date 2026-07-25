@@ -1,11 +1,7 @@
-import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
+import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { Check, ChevronRight } from 'lucide-react'
+import { AnchoredMenu } from '../ui'
 import './GameLaunchControls.css'
-
-const MENU_HEIGHT_LIMIT = 280
-const MENU_GAP = 8
-const VIEWPORT_GUTTER = 12
-const STICKY_HEADER_HEIGHT = 64
 
 export function GameLaunchControls({ mode, action, option }: {
   mode: string
@@ -45,67 +41,22 @@ export function GameOptionSelect({
   menuClassName?: string
   resetKey?: string
 }) {
-  const [open, setOpen] = useState(false)
-  const [opensUp, setOpensUp] = useState(false)
-  const [menuMaxHeight, setMenuMaxHeight] = useState(MENU_HEIGHT_LIMIT)
-  const wrapRef = useRef<HTMLDivElement | null>(null)
-  const close = useCallback(() => setOpen(false), [])
-  const positionMenu = useCallback(() => {
-    const rect = wrapRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const viewport = window.visualViewport
-    const viewportTop = viewport?.offsetTop ?? 0
-    const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight)
-    const safeTop = viewportTop + STICKY_HEADER_HEIGHT + VIEWPORT_GUTTER
-    const safeBottom = viewportBottom - VIEWPORT_GUTTER
-    const spaceBelow = Math.max(0, safeBottom - rect.bottom - MENU_GAP)
-    const spaceAbove = Math.max(0, rect.top - safeTop - MENU_GAP)
-    const nextOpensUp = spaceBelow < MENU_HEIGHT_LIMIT && spaceAbove > spaceBelow
-    const available = nextOpensUp ? spaceAbove : spaceBelow
-    setOpensUp(nextOpensUp)
-    setMenuMaxHeight(Math.max(96, Math.min(MENU_HEIGHT_LIMIT, Math.floor(available))))
-  }, [])
-
-  useEffect(() => setOpen(false), [resetKey])
-
-  useEffect(() => {
-    if (!open) return
-    const onPointerDown = (event: PointerEvent) => {
-      if (!wrapRef.current?.contains(event.target as Node)) close()
-    }
-    const onViewportChange = () => positionMenu()
-    window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('resize', onViewportChange)
-    window.visualViewport?.addEventListener('resize', onViewportChange)
-    return () => {
-      window.removeEventListener('pointerdown', onPointerDown)
-      window.removeEventListener('resize', onViewportChange)
-      window.visualViewport?.removeEventListener('resize', onViewportChange)
-    }
-  }, [close, open, positionMenu])
-
-  return <div
-    ref={wrapRef}
-    className={`game-option-select ${className} ${open ? 'is-open' : ''} ${opensUp ? 'opens-up' : ''}`.trim()}
-    style={{
-      '--game-option-menu-max-height': `${menuMaxHeight}px`,
-      '--period-menu-max-height': `${menuMaxHeight}px`,
-    } as CSSProperties}
-  >
-    <button
+  return <AnchoredMenu
+    label={menuLabel}
+    className={`game-option-select ${className}`.trim()}
+    menuClassName={`game-option-menu ${menuClassName}`.trim()}
+    disabled={disabled}
+    resetKey={resetKey}
+    trigger={({ expanded, toggle, triggerRef }) => <button
+      ref={triggerRef}
       type="button"
       className={`game-option-trigger ${triggerClassName}`.trim()}
       disabled={disabled}
-      aria-expanded={open}
+      aria-expanded={expanded}
       aria-haspopup="listbox"
       onClick={(event) => {
         event.stopPropagation()
-        if (open) {
-          close()
-          return
-        }
-        positionMenu()
-        setOpen(true)
+        toggle()
       }}
     >
       <span className="game-option-trigger__meta">
@@ -117,12 +68,13 @@ export function GameOptionSelect({
         <strong>{value}</strong>
         <ChevronRight aria-hidden="true" />
       </span>
-    </button>
-    {open && <div className={`game-option-menu ${menuClassName}`.trim()} role="listbox" aria-label={menuLabel}>
+    </button>}
+  >
+    {(close) => <>
       <span className="game-option-menu__head">{menuLabel}</span>
       {children(close)}
-    </div>}
-  </div>
+    </>}
+  </AnchoredMenu>
 }
 
 export function GameOptionAction({

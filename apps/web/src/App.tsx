@@ -1243,7 +1243,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
             mode="danetki"
             title="Данетки"
             description="Раскройте необычную историю вопросами — самостоятельно или вместе с друзьями."
-            color="#4D8A48"
+            color="var(--mode-danetki-brand)"
             icon={Sparkles}
             watermarkUrl={publicAssetUrl('images/category-stubs/danetki-stub.webp')}
             poolCount={danetkiPoolCount}
@@ -1283,7 +1283,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
             mode="series"
             title="Игра с друзьями"
             description="Соберите комнату, выберите любую категорию и угадывайте одновременно. Открытый предпросмотр нового режима."
-            color="#57B777"
+            color="var(--mode-movie-brand)"
             icon={Users}
             watermarkUrl={publicAssetUrl('images/title-posters/series-ticket-poster.webp')}
             poolCount={7}
@@ -4027,14 +4027,14 @@ function GameApp() {
     void navigateToPlayerRoute({ screen: 'special', packId: DTF_COMMENTS_PACK_ID })
   }
 
-  const selectFriendsRoom = () => {
+  const selectFriendsRoom = (initialMode?: 'danetki') => {
     if (!canAccessFriendsRoom) {
-      window.location.assign(friendsRoomRegistrationHref('/games/together'))
+      window.location.assign(friendsRoomRegistrationHref(initialMode ? '/games/together?mode=danetki' : '/games/together'))
       return
     }
     setServerActionError('')
     setModal(null)
-    void navigateToPlayerRoute({ screen: 'friends-room' })
+    void navigate({ to: '/games/together', search: initialMode ? { mode: initialMode } : {} })
   }
 
   const acceptChallenge = () => {
@@ -4341,10 +4341,10 @@ function GameApp() {
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
-    {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} />}
+    {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} />}
     {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}
 
-    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+    {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onCreateRoom={() => selectFriendsRoom('danetki')} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onJoined={(session) => activateServerSession(session, 'hub')} />}
 

@@ -21,6 +21,7 @@ import {
   danetkiSessionMembers,
   danetkiSessionState,
   danetkiSurrenderVotes,
+  friendsRooms,
   gameSessions,
   userModeStats,
   walletAccounts,
@@ -109,6 +110,40 @@ export const nextDanetkiTurnUserId = (memberIds: string[], currentUserId: string
   if (currentIndex < 0) return memberIds[0]
   return memberIds[(currentIndex + 1) % memberIds.length]
 }
+
+export const getNextDanetkiRoomCost = async (
+  db: Database | Transaction,
+  userId: string,
+  roomMode: 'solo' | 'group',
+) => {
+  const today = getMoscowDate()
+  const usage = (await db.select().from(danetkiDailyUsage).where(and(
+    eq(danetkiDailyUsage.userId, userId),
+    eq(danetkiDailyUsage.activityDate, today),
+  )).limit(1))[0] ?? { clubRooms: 0, paidRooms: 0 }
+  const clubActive = await hasEntitlement(db, userId, 'club', undefined, new Date())
+  const clubRoomsRemaining = clubActive
+    ? Math.max(0, ECONOMY_RULE_SET.danetki.clubExtraRooms - usage.clubRooms)
+    : 0
+  return clubRoomsRemaining > 0 ? 0 : economyDanetkiCost(roomMode, usage.paidRooms)
+}
+
+export const finishLinkedDanetkiFriendsRoom = async (
+  db: Pick<Database, 'update'>,
+  sessionId: string,
+  now = new Date(),
+  close = false,
+) => db.update(friendsRooms).set({
+  phase: 'finished',
+  phaseStartedAt: now,
+  phaseEndsAt: null,
+  ...(close ? { closedAt: now } : {}),
+  version: sql`${friendsRooms.version} + 1`,
+  updatedAt: now,
+}).where(and(
+  eq(friendsRooms.danetkiSessionId, sessionId),
+  isNull(friendsRooms.closedAt),
+))
 
 export const hashDanetkiInviteToken = (token: string) => createHash('sha256').update(token).digest('hex')
 
@@ -433,6 +468,44 @@ export const getDanetkiSession = async (db: Database, userId: string, sessionId:
   return buildDanetkiSessionSnapshot(db, rows[0], userId)
 }
 
+export const syncDanetkiRoomMembers = async (db: Database, sessionId: string, members: Array<{
+  userId: string
+  role: 'owner' | 'player'
+  displayName: string
+  colorKey: string
+}>) => db.transaction(async (tx) => {
+  const session = (await tx.select().from(gameSessions).where(and(
+    eq(gameSessions.id, sessionId),
+    eq(gameSessions.mode, 'danetki'),
+  )).for('update').limit(1))[0]
+  const state = (await tx.select().from(danetkiSessionState).where(eq(danetkiSessionState.sessionId, sessionId)).for('update').limit(1))[0]
+  if (!session || !state) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
+  if (state.roomMode !== 'group') throw new ApiError(422, 'DANETKI_ROOM_REQUIRED', 'Участников можно синхронизировать только с совместной игрой')
+  if (state.startedAt) throw new ApiError(409, 'DANETKI_ROOM_ALREADY_STARTED', 'Игра уже запущена')
+  if (!members.length || members.length > DANETKI_GROUP_CAPACITY) {
+    throw new ApiError(409, 'DANETKI_ROOM_CAPACITY', 'В совместной Данетке может быть от одного до четырёх игроков')
+  }
+
+  for (const member of members) {
+    await tx.insert(danetkiSessionMembers).values({
+      sessionId,
+      userId: member.userId,
+      role: member.role,
+      displayNameSnapshot: member.displayName.trim().slice(0, 40) || 'Игрок',
+      colorKey: member.colorKey,
+    }).onConflictDoUpdate({
+      target: [danetkiSessionMembers.sessionId, danetkiSessionMembers.userId],
+      set: {
+        role: member.role,
+        displayNameSnapshot: member.displayName.trim().slice(0, 40) || 'Игрок',
+        colorKey: member.colorKey,
+        leftAt: null,
+        lastSeenAt: new Date(),
+      },
+    })
+  }
+})
+
 type MemberContext = {
   session: SessionRow
   state: typeof danetkiSessionState.$inferSelect
@@ -717,6 +790,7 @@ const finishLost = async (tx: Transaction, context: MemberContext) => {
     tx.update(gameSessions).set({ status: 'lost', completedAt: now, updatedAt: now, rewardLedgerId: reward?.ledgerId ?? null }).where(eq(gameSessions.id, context.session.id)),
     tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`, aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, context.session.id)),
     tx.update(danetkiInvites).set({ revokedAt: now }).where(and(eq(danetkiInvites.sessionId, context.session.id), isNull(danetkiInvites.revokedAt))),
+    finishLinkedDanetkiFriendsRoom(tx, context.session.id, now),
   ])
   return message
 }

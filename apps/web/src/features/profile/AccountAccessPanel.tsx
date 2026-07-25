@@ -317,8 +317,8 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
             ? <>
               <p className="account-access__separator">Смена пароля</p>
               <div className="account-access__form">
-                <label className="account-access__label">Текущий пароль<TextInput type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" /></label>
-                <label className="account-access__label">Новый пароль<TextInput type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} autoComplete="new-password" /></label>
+                <label className="account-access__label">Текущий пароль<TextInput surface="dark" type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" /></label>
+                <label className="account-access__label">Новый пароль<TextInput surface="dark" type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} autoComplete="new-password" /></label>
                 <label className="account-access__checkbox"><TextInput type="checkbox" checked={revokeOtherSessions} onChange={(event) => setRevokeOtherSessions(event.target.checked)} /><span>Выйти на других устройствах</span></label>
                 <ActionButton onClick={submitChangePassword} disabled={pending}>{pending ? 'Сохраняем...' : 'Сменить пароль'}</ActionButton>
               </div>
@@ -329,7 +329,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
           ? <>
             <p className="modal-lead">Введите новый пароль, чтобы восстановить доступ к аккаунту.</p>
             <div className="account-access__form">
-              <label className="account-access__label">Новый пароль<TextInput type="password" value={resetPasswordValue} onChange={(event) => setResetPasswordValue(event.target.value)} autoComplete="new-password" /></label>
+              <label className="account-access__label">Новый пароль<TextInput surface="dark" type="password" value={resetPasswordValue} onChange={(event) => setResetPasswordValue(event.target.value)} autoComplete="new-password" /></label>
               <ActionButton onClick={submitResetPassword} disabled={pending}>{pending ? 'Сохраняем...' : 'Сбросить пароль'}</ActionButton>
               <ControlButton className="account-access__toggle" type="button" onClick={() => {
                 clearResetTokenFromAddress()
@@ -342,7 +342,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
             ? <>
               <p className="modal-lead">Отправим на email ссылку для восстановления пароля.</p>
               <div className="account-access__form">
-                <label className="account-access__label">Email<TextInput type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
+                <label className="account-access__label">Email<TextInput surface="dark" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
                 <ActionButton onClick={requestPasswordReset} disabled={pending}>{pending ? 'Отправляем...' : 'Отправить ссылку'}</ActionButton>
                 <ControlButton className="account-access__toggle" type="button" onClick={() => {
                   setForgotMode(false)
@@ -356,9 +356,9 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
           {yandexAuthEnabled && emailAuthEnabled && <p className="account-access__separator">или по email</p>}
           {emailAuthEnabled
             ? <div className="account-access__form">
-              {register && <label className="account-access__label">Имя<TextInput value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" /></label>}
-              <label className="account-access__label">Email<TextInput type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
-              <label className="account-access__label">Пароль<TextInput type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={register ? 'new-password' : 'current-password'} /></label>
+              {register && <label className="account-access__label">Имя<TextInput surface="dark" value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" /></label>}
+              <label className="account-access__label">Email<TextInput surface="dark" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
+              <label className="account-access__label">Пароль<TextInput surface="dark" type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={register ? 'new-password' : 'current-password'} /></label>
               {register && authCapabilities?.emailVerification && <p className="modal-lead">После регистрации нужно открыть письмо на этом устройстве и подтвердить email. До подтверждения вы останетесь гостем, а затем текущие билеты и игры автоматически перейдут в аккаунт.</p>}
               <ActionButton onClick={submitEmail} disabled={pending}>{pending ? 'Отправляем...' : register ? 'Создать аккаунт' : 'Войти'}</ActionButton>
               <ControlButton className="account-access__toggle" type="button" onClick={() => {

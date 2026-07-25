@@ -20,7 +20,7 @@
   place-items: center;
 }
 
-.ui-icon-button--sm { width: 36px; height: 36px; }
+.ui-icon-button--sm { width: 44px; height: 44px; }
 .ui-icon-button--md { width: 44px; height: 44px; }
 .ui-icon-button svg { width: 17px; height: 17px; }
 
@@ -45,6 +45,46 @@
 .ui-textarea,
 .ui-select {
   font-family: inherit;
+}
+
+.ui-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.ui-textarea,
+.ui-select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: inherit;
+  transition: border-color .16s var(--ease), background .16s var(--ease), box-shadow .16s var(--ease);
+}
+
+.ui-textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.ui-input--dark,
+.ui-textarea--dark,
+.ui-select--dark {
+  color: var(--color-text);
+  border-color: var(--color-line-strong);
+  background: var(--color-surface-2);
+}
+
+.ui-input--paper,
+.ui-textarea--paper,
+.ui-select--paper {
+  color: var(--color-ink);
+  border-color: var(--color-paper-line);
+  background: var(--color-paper);
+}
+
+.ui-input[aria-invalid="true"],
+.ui-textarea[aria-invalid="true"],
+.ui-select[aria-invalid="true"] {
+  border-color: var(--color-danger);
 }
 
 .ui-field {
@@ -101,8 +141,32 @@
 .ui-button--secondary:hover,
 .ui-button--ghost:hover { background: var(--color-surface-2); border-color: var(--color-line-strong); }
 .ui-button--ghost { color: var(--color-muted); background: transparent; border-color: var(--color-line); }
+.ui-button--paper.ui-button--secondary {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper) 78%, white);
+  border-color: var(--color-paper-line);
+}
+.ui-button--paper.ui-button--secondary:hover {
+  background: var(--color-paper-hover);
+  border-color: var(--color-paper-line-strong);
+}
+.ui-button--paper.ui-button--ghost {
+  color: var(--color-paper-muted);
+  border-color: var(--color-paper-line);
+}
+.ui-button--paper.ui-button--ghost:hover {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-paper-2) 52%, transparent);
+  border-color: var(--color-paper-line-strong);
+}
 .ui-button--hint { color: var(--color-ink); background: var(--color-accent); border-color: var(--color-accent-border); }
 .ui-button--hint:hover { background: var(--color-accent-hover); transform: translateY(-2px); }
+.ui-button--danger {
+  color: var(--color-danger-text);
+  background: color-mix(in srgb, var(--color-danger) 16%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 64%, var(--color-line));
+}
+.ui-button--danger:hover { background: color-mix(in srgb, var(--color-danger) 26%, transparent); }
 .ui-button:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--color-primary) 72%, white);
   outline-offset: 3px;

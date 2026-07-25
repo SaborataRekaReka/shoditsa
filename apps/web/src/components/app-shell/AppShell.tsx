@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, DoorOpen, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
-import { api } from '../../api/client'
+import { api, queryKeys } from '../../api/client'
 import { EconomyView } from '../../features/economy/EconomyView'
 import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
 import { canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/friends-room/friends-room-access'
@@ -13,6 +14,7 @@ import { formatDays } from '../../game'
 import { headerRuntimeState } from './header-runtime-state'
 import { DialogSurface } from '../ui/DialogSurface'
 import { ActionButton } from '../ui/UiControls'
+import { HeaderRoomMenu } from './HeaderRoomMenu'
 import './AppShell.css'
 
 export { useDialogFocusTrap } from '../ui/DialogSurface'
@@ -86,10 +88,23 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
   const { session, loading: authLoading } = useAuthSession()
   const serverRuntime = useServerRuntime()
   const createRoom = onCreateRoom ?? (() => {
+    const returnUrl = '/games/together?new=1'
+    window.location.assign(canUseFriendsRoom(session)
+      ? returnUrl
+      : friendsRoomRegistrationHref(returnUrl))
+  })
+  const openRoomHub = () => {
     const returnUrl = '/games/together'
     window.location.assign(canUseFriendsRoom(session)
       ? returnUrl
       : friendsRoomRegistrationHref(returnUrl))
+  }
+  const openRooms = useQuery({
+    queryKey: queryKeys.friendsRooms,
+    queryFn: api.friendsRoomList,
+    enabled: !authLoading && canUseFriendsRoom(session),
+    staleTime: 15_000,
+    refetchInterval: 30_000,
   })
   const runtimeState = headerRuntimeState({
     serverRuntime: SERVER_RUNTIME,
@@ -178,7 +193,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
           >
             <Crown /><span>Клуб</span>
           </a>
-          <button className="header-create-room" type="button" onClick={createRoom}><Plus /><span>Создать комнату</span></button>
+          <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} />
           <div className="header-profile-menu" ref={profileMenuRef}>
             <button ref={profileTriggerRef} disabled={!runtimeReady} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label={runtimeReady ? 'Открыть меню' : profileLabel} title={runtimeReady ? 'Меню' : profileLabel} aria-busy={runtimeState === 'loading'} aria-haspopup="menu" aria-expanded={profileMenuOpen}>
               <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
@@ -230,9 +245,9 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         className={`mobile-app-nav__item mobile-app-nav__create ${mobileSection === 'room' ? 'is-active' : ''}`}
         type="button"
         aria-current={mobileSection === 'room' ? 'page' : undefined}
-        onClick={() => { trackMetrikaGoal('friends_room_opened', { placement: 'mobile_nav' }); createRoom() }}
+        onClick={() => { trackMetrikaGoal('friends_room_opened', { placement: 'mobile_nav' }); openRoomHub() }}
       >
-        <i aria-hidden="true"><Plus /></i><span>Комната</span>
+        <i aria-hidden="true">{openRooms.data?.rooms.length ? <DoorOpen /> : <Plus />}</i><span>Комната</span>
       </button>
       <a
         className={`mobile-app-nav__item mobile-app-nav__club ${mobileSection === 'club' ? 'is-active' : ''}`}

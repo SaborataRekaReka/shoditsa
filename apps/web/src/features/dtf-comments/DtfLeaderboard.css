@@ -37,7 +37,7 @@
 .dtf-leaderboard__header > div:nth-child(2) { min-width: 0; }
 .dtf-leaderboard__header span {
   color: var(--dtf-accent);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .14em;
 }
@@ -52,7 +52,7 @@
   max-width: 620px;
   margin: 0;
   color: var(--color-paper-muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 .dtf-leaderboard__header > strong {
@@ -73,7 +73,7 @@
 .dtf-leaderboard__header > strong small {
   grid-column: 1 / -1;
   color: var(--color-paper-muted);
-  font: 700 8px/1 Manrope, sans-serif;
+  font: 700 10px/1 Manrope, sans-serif;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -122,14 +122,14 @@
 .dtf-podium-card > div strong {
   overflow: hidden;
   color: var(--color-ink);
-  font-size: 10px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .dtf-podium-card__identity { display: flex; align-items: center; gap: 5px; }
 .dtf-podium-card__identity small {
   color: var(--color-paper-muted);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -142,7 +142,7 @@
 }
 .dtf-podium-card > b small {
   color: var(--color-paper-muted);
-  font: 700 8px/1 Manrope, sans-serif;
+  font: 700 10px/1 Manrope, sans-serif;
   text-transform: uppercase;
 }
 .dtf-podium-card > span:last-child {
@@ -150,7 +150,7 @@
   padding-top: 8px;
   border-top: 1px solid color-mix(in srgb, var(--color-paper-line) 72%, transparent);
   color: var(--color-paper-muted);
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: .03em;
 }
 
@@ -165,7 +165,7 @@
   background: color-mix(in srgb, var(--dtf-accent) 16%, var(--color-paper));
   display: grid;
   place-items: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: -.03em;
 }
@@ -192,7 +192,7 @@
   padding: 10px 12px;
   color: var(--color-paper-muted);
   background: var(--color-paper-2);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: .11em;
   text-align: left;
@@ -239,13 +239,13 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-sm);
-  font-size: 9px;
+  font-size: 10px;
 }
 .dtf-leaderboard__player > span { min-width: 0; display: grid; gap: 2px; }
 .dtf-leaderboard__player strong {
   overflow: hidden;
   color: var(--color-ink);
-  font-size: 10px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -254,7 +254,7 @@
   align-items: center;
   gap: 5px;
   color: var(--color-paper-muted);
-  font-size: 8px;
+  font-size: 10px;
 }
 .dtf-leaderboard__player small em {
   color: #315f3f;
@@ -269,7 +269,7 @@
   border-radius: 999px;
   color: var(--color-ink) !important;
   background: var(--color-paper);
-  font-size: 7px !important;
+  font-size: 10px !important;
   font-weight: 900;
   letter-spacing: .08em !important;
   line-height: 1;
@@ -286,7 +286,7 @@
   color: var(--color-paper-muted);
   background: var(--color-paper-2);
   text-align: center;
-  font-size: 10px;
+  font-size: 11px;
 }
 .dtf-leaderboard__state--error {
   border-color: color-mix(in srgb, var(--color-danger) 60%, var(--color-paper-line));

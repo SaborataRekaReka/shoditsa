@@ -1,4 +1,5 @@
 import { useState, type CSSProperties } from 'react'
+import type { PackLeaderboardResponse } from '@shoditsa/contracts'
 import {
   ArrowUpRight,
   Check,
@@ -38,6 +39,8 @@ import {
   TextInput,
 } from '../../components/ui'
 import { publicAssetUrl } from '../../app/public-asset'
+import { ResultActionBar } from '../result/ResultActionBar'
+import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
 import './UiKitScreen.css'
 
 const foundations = [
@@ -56,8 +59,10 @@ const modeColors = [
   { token: '--mode-series-brand', label: 'Сериалы' },
   { token: '--mode-anime-brand', label: 'Аниме' },
   { token: '--mode-game-brand', label: 'Игры' },
+  { token: '--mode-city-brand', label: 'Города' },
   { token: '--mode-music-brand', label: 'Музыка' },
   { token: '--mode-diagnosis-brand', label: 'Диагноз' },
+  { token: '--mode-danetki-brand', label: 'Данетки' },
 ]
 
 const sections = [
@@ -67,6 +72,8 @@ const sections = [
   ['controls', 'Контролы'],
   ['forms', 'Поля'],
   ['tickets', 'Билеты'],
+  ['result-actions', 'После игры'],
+  ['leaderboard', 'Рейтинг'],
   ['feedback', 'Состояния'],
 ] as const
 
@@ -77,6 +84,20 @@ const searchExamples = [
   { id: '2', title: 'Унесённые призраками', meta: '2001 · фэнтези' },
   { id: '3', title: 'Ходячий замок', meta: '2004 · приключения' },
 ]
+
+const leaderboardFixture: PackLeaderboardResponse = {
+  packId: 'ui-kit',
+  participantCount: 247,
+  totalItems: 20,
+  updatedAt: '2026-07-25T00:00:00.000Z',
+  entries: [
+    { rank: 1, displayName: 'Люмен', avatarUrl: null, completedItems: 20, totalItems: 20, score: 2450, wins: 18, totalAttempts: 34, completedAt: null, isCurrentUser: false },
+    { rank: 2, displayName: 'Тихий зритель', avatarUrl: null, completedItems: 20, totalItems: 20, score: 2310, wins: 17, totalAttempts: 39, completedAt: null, isCurrentUser: true },
+    { rank: 3, displayName: 'Ракурс', avatarUrl: null, completedItems: 19, totalItems: 20, score: 2190, wins: 16, totalAttempts: 41, completedAt: null, isCurrentUser: false },
+    { rank: 4, displayName: 'Полночный сеанс', avatarUrl: null, completedItems: 18, totalItems: 20, score: 2030, wins: 15, totalAttempts: 43, completedAt: null, isCurrentUser: false },
+  ],
+  viewerEntry: null,
+}
 
 function SectionTitle({ index, title, description, component }: {
   index: string
@@ -179,6 +200,7 @@ export default function UiKitScreen() {
                 <ActionButton variant="secondary"><Copy /> Скопировать</ActionButton>
                 <ActionButton variant="ghost"><DoorOpen /> Выйти</ActionButton>
                 <ActionButton variant="hint"><Sparkles /> Открыть подсказку</ActionButton>
+                <ActionButton variant="danger">Удалить</ActionButton>
               </div>
               <div className="ui-kit-button-row">
                 <ActionButton disabled><Play /> Недоступно</ActionButton>
@@ -241,13 +263,13 @@ export default function UiKitScreen() {
               </div>
               <div className="ui-kit-form-grid">
                 <FormField label="Название команды" htmlFor="ui-kit-name" hint="До 40 символов">
-                  <TextInput id="ui-kit-name" defaultValue="Полуночный сеанс" />
+                  <TextInput surface="paper" id="ui-kit-name" defaultValue="Полуночный сеанс" />
                 </FormField>
                 <FormField label="Режим" htmlFor="ui-kit-mode">
-                  <SelectControl id="ui-kit-mode" defaultValue="daily"><option value="daily">Ежедневная игра</option><option value="free">Свободная игра</option></SelectControl>
+                  <SelectControl surface="paper" id="ui-kit-mode" defaultValue="daily"><option value="daily">Ежедневная игра</option><option value="free">Свободная игра</option></SelectControl>
                 </FormField>
                 <FormField className="ui-kit-form-grid__wide" label="Сообщение" htmlFor="ui-kit-message" error="Добавьте хотя бы одно предложение">
-                  <TextArea id="ui-kit-message" rows={3} placeholder="Напишите сообщение…" />
+                  <TextArea surface="paper" id="ui-kit-message" rows={3} placeholder="Напишите сообщение…" />
                 </FormField>
               </div>
             </div>
@@ -276,8 +298,32 @@ export default function UiKitScreen() {
             </div>
           </section>
 
+          <section className="ui-kit-section" id="result-actions">
+            <SectionTitle index="07" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
+            <div className="ui-kit-result-action">
+              <ResultActionBar
+                nextLabel="Играть дальше: кино"
+                nextDestination="Кино"
+                nextArtworkUrl={publicAssetUrl('images/category-stubs/movie-stub.webp')}
+                nextTicketNumber="07/07"
+                configureLabel="Период / свободная игра"
+                copied={false}
+                onNext={() => undefined}
+                onConfigure={() => undefined}
+                onChallenge={() => undefined}
+                onCopy={() => undefined}
+                showTip
+              />
+            </div>
+          </section>
+
+          <section className="ui-kit-section" id="leaderboard">
+            <SectionTitle index="08" title="Таблица рейтинга" description="Рейтинг использует бумажную поверхность, режимный акцент и читаемую служебную типографику не меньше 10 px." component="DtfLeaderboard" />
+            <div className="ui-kit-leaderboard"><DtfLeaderboard data={leaderboardFixture} /></div>
+          </section>
+
           <section className="ui-kit-section" id="feedback">
-            <SectionTitle index="07" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
+            <SectionTitle index="09" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
             <div className="ui-kit-feedback-grid">
               <InlineAlert tone="success"><strong>Подсказка открыта.</strong> Режиссёр также работал над известной научно-фантастической картиной.</InlineAlert>
               <div className="ui-kit-status-list">
@@ -287,7 +333,7 @@ export default function UiKitScreen() {
               </div>
             </div>
             <div className="ui-kit-feedback-stack">
-              <Tabs label="Пример навигации" value={activeTab} onChange={setActiveTab} items={[{ id: 'daily', label: 'Сегодня' }, { id: 'archive', label: 'Архив' }]} />
+              <Tabs surface="dark" label="Пример навигации" value={activeTab} onChange={setActiveTab} items={[{ id: 'daily', label: 'Сегодня' }, { id: 'archive', label: 'Архив' }]} />
               <SegmentedProgress value={4} max={10} />
               <LinearProgress value={6} max={20} label="пройдено" />
               <EmptyState icon={<PackageOpen />} title="Здесь пока пусто" description="Когда появятся результаты, они будут собраны этим же компонентом." action={<ActionButton variant="secondary">Открыть игры</ActionButton>} />

@@ -318,14 +318,14 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
               : <form className="login-form" onSubmit={submitEmail} noValidate>
                 {register && !resetMode && <div className="login-field">
                   <label htmlFor="login-name">Имя</label>
-                  <TextInput className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
+                  <TextInput surface="paper" className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
                   {fieldErrors.name && <small id="login-name-error" className="login-field-error">{fieldErrors.name}</small>}
                 </div>}
 
                 {!resetMode && <div className="login-field">
                   <label htmlFor="login-email">Email</label>
                   <div className="login-input-wrap">
-                    <TextInput className="ym-disable-keys" id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
+                    <TextInput surface="paper" className="ym-disable-keys" id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
                   </div>
                   {fieldErrors.email && <small id="login-email-error" className="login-field-error">{fieldErrors.email}</small>}
                 </div>}
@@ -333,7 +333,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!resetMode && !forgotMode && <div className="login-field">
                   <label htmlFor="login-password">Пароль</label>
                   <div className="login-input-wrap">
-                    <TextInput className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
                     <ControlButton className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </ControlButton>
@@ -344,7 +344,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {resetMode && <div className="login-field">
                   <label htmlFor="login-password">Новый пароль</label>
                   <div className="login-input-wrap">
-                    <TextInput className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
                     <ControlButton className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </ControlButton>
