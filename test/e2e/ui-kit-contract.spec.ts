@@ -140,6 +140,29 @@ test('result actions and leaderboard retain their mobile composition', async ({ 
   })
 })
 
+test('next game remains a compact card on tablet', async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 1024 })
+  const section = page.locator('#result-actions')
+  const specimen = section.locator('.ui-kit-result-action')
+  const card = specimen.locator('.result-primary-actions')
+  await section.scrollIntoViewIfNeeded()
+
+  const contract = await card.evaluate((element) => {
+    const specimenElement = element.closest<HTMLElement>('.ui-kit-result-action')!
+    const nextButton = element.querySelector<HTMLElement>('.result-next')!
+    return {
+      cardWidth: element.getBoundingClientRect().width,
+      specimenWidth: specimenElement.getBoundingClientRect().width,
+      nextHeight: nextButton.getBoundingClientRect().height,
+      gridColumn: getComputedStyle(element).gridColumn,
+    }
+  })
+
+  expect(contract.cardWidth).toBeLessThan(contract.specimenWidth * 0.8)
+  expect(contract.nextHeight).toBeLessThanOrEqual(112)
+  expect(contract.gridColumn).not.toContain('-1')
+})
+
 test('final choice keeps a compact draggable mobile carousel', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   const section = page.locator('#final-choice')
