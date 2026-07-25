@@ -448,6 +448,8 @@ export const gameSessions = pgTable('game_sessions', {
 export const danetkiSessionState = pgTable('danetki_session_state', {
   sessionId: uuid('session_id').primaryKey().references(() => gameSessions.id, { onDelete: 'cascade' }),
   roomMode: danetkiRoomMode('room_mode').notNull(),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  currentTurnUserId: uuid('current_turn_user_id').references(() => user.id, { onDelete: 'set null' }),
   questionCount: integer('question_count').notNull().default(0),
   hintLevel: integer('hint_level').notNull().default(0),
   revealedFactIds: text('revealed_fact_ids').array().notNull().default(sql`ARRAY[]::text[]`),

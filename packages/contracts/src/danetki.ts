@@ -64,6 +64,9 @@ export type DanetkiMessage = {
 export type DanetkiGameState = {
   puzzle: PublicDanetka
   roomMode: DanetkiRoomMode
+  startedAt: string | null
+  currentTurnUserId: string | null
+  capacity: number
   questionCount: number
   questionWarningAt: number
   questionLimit: number
@@ -73,6 +76,7 @@ export type DanetkiGameState = {
   members: DanetkiMember[]
   messages: DanetkiMessage[]
   currentUserId: string
+  canStart: boolean
   canInvite: boolean
   lastSeq: number
   outcome: 'playing' | 'won' | 'lost' | 'expired'

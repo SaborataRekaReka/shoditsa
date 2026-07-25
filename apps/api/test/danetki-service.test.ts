@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { DanetkiPayload } from '@shoditsa/contracts'
 import { ApiError } from '../src/lib/errors.js'
-import { hashDanetkiInviteToken, normalizeDanetkiQuestion, toPublicDanetka } from '../src/modules/danetki/service.js'
+import { hashDanetkiInviteToken, nextDanetkiTurnUserId, normalizeDanetkiQuestion, toPublicDanetka } from '../src/modules/danetki/service.js'
 import { requestDanetkiAnswer } from '../src/modules/danetki/ai.js'
 import { beginDanetkiAiAttempt } from '../src/modules/danetki/worker.js'
 import { danetkiAiCallAttempts, danetkiAiCalls } from '@shoditsa/database'
@@ -73,6 +73,14 @@ describe('danetki public payload', () => {
     expect(digest).toHaveLength(64)
     expect(digest).toBe(hashDanetkiInviteToken(token))
     expect(digest).not.toContain(token)
+  })
+
+  it('passes the question turn around the room in join order', () => {
+    const members = ['owner', 'second', 'third', 'fourth']
+    expect(nextDanetkiTurnUserId(members, 'owner')).toBe('second')
+    expect(nextDanetkiTurnUserId(members, 'third')).toBe('fourth')
+    expect(nextDanetkiTurnUserId(members, 'fourth')).toBe('owner')
+    expect(nextDanetkiTurnUserId([], 'owner')).toBeNull()
   })
 
   it('blocks prompt injection before any provider request', async () => {

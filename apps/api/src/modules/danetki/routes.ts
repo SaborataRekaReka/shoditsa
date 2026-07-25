@@ -21,6 +21,7 @@ import {
   previewDanetkiInvite,
   revealDanetkiHint,
   retryDanetkiAi,
+  startDanetkiRoom,
   submitDanetkiGuess,
   voteDanetkiSurrender,
 } from './service.js'
@@ -145,6 +146,13 @@ export const registerDanetkiRoutes = (app: FastifyInstance, deps: Deps) => {
     const user = await getRequestUser(request, deps.auth, deps.db, true, deps.config)
     const body = request.body as { idempotencyKey?: string }
     return createDanetkiInvite(deps.db, user!.id, (request.params as { sessionId: string }).sessionId, mutationKey(request, body), deps.config)
+  })
+
+  app.post('/api/v1/danetki/sessions/:sessionId/start', { schema: { params: sessionParams, body: DanetkiMutationBodySchema } }, async (request) => {
+    const user = await getRequestUser(request, deps.auth, deps.db, true, deps.config)
+    const body = request.body as { idempotencyKey?: string }
+    mutationKey(request, body)
+    return { session: await startDanetkiRoom(deps.db, user!.id, (request.params as { sessionId: string }).sessionId) }
   })
 
   app.get('/api/v1/danetki/invites/:token', { schema: { params: inviteParams } }, async (request) => (

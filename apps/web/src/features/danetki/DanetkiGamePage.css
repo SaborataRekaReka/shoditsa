@@ -51,3 +51,115 @@
 /* Match the platform home hero: roomier composition, grid and vector backdrop. */
 
 /* Ticket notches stay open: the card outline must not cross their mouths. */
+
+.danetki-room-page .room-lobby__intro::before {
+  right: -12%;
+  bottom: -5%;
+  width: min(150%, 920px);
+  opacity: .78;
+  filter: sepia(.18) saturate(.78) hue-rotate(78deg);
+  background-image: linear-gradient(180deg, transparent 38%, rgba(239, 231, 215, .15)), url('/images/danetki/danetka-detective-hero.webp');
+}
+.danetki-room-page .room-code-card > strong {
+  font-size: 30px;
+  letter-spacing: .08em;
+}
+.danetki-room-lobby__settings { gap: 0; }
+.danetki-room-brief {
+  min-height: 178px;
+  margin-top: 28px;
+  padding: 13px;
+  border: 1px solid rgba(239, 231, 215, .15);
+  border-radius: 13px;
+  background: rgba(239, 231, 215, .045);
+  display: grid;
+  grid-template-columns: 126px minmax(0, 1fr);
+  gap: 18px;
+}
+.danetki-room-brief img {
+  width: 126px;
+  height: 152px;
+  border-radius: 8px;
+  object-fit: cover;
+  filter: saturate(.8) brightness(.78);
+}
+.danetki-room-brief > div {
+  min-width: 0;
+  align-self: center;
+}
+.danetki-room-brief span {
+  color: var(--room-accent);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.danetki-room-brief h2 {
+  margin: 7px 0 9px;
+  color: #f1e8d8;
+  font: 500 29px/1 Oswald, sans-serif;
+  text-transform: uppercase;
+}
+.danetki-room-brief p {
+  margin: 0;
+  color: #aaa296;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.danetki-room-rules {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+}
+.danetki-room-rules article {
+  min-height: 58px;
+  padding: 0 15px;
+  border: 1px solid rgba(239, 231, 215, .11);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.danetki-room-rules article > svg {
+  width: 19px;
+  color: var(--room-accent);
+}
+.danetki-room-rules article > span {
+  display: grid;
+  gap: 2px;
+}
+.danetki-room-rules strong {
+  color: #ddd4c4;
+  font-size: 12px;
+}
+.danetki-room-rules small {
+  color: #918a80;
+  font-size: 11px;
+}
+.danetki-room-lobby__settings .room-start,
+.danetki-room-lobby__settings .room-waiting-host { margin-top: auto; }
+.danetki-turn {
+  min-height: 27px;
+  padding: 0 9px;
+  border: 1px solid rgba(195, 169, 107, .28);
+  border-radius: 99px;
+  color: #aca389;
+  font: 600 9px Oswald, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.danetki-turn.is-current {
+  border-color: rgba(117, 181, 110, .55);
+  color: #a8d4a2;
+  background: rgba(117, 181, 110, .09);
+}
+
+@media (max-width: 560px) {
+  .danetki-room-brief { grid-template-columns: 88px minmax(0, 1fr); }
+  .danetki-room-brief img { width: 88px; height: 118px; }
+  .danetki-room-brief h2 { font-size: 23px; }
+  .danetki-turn { display: none; }
+}

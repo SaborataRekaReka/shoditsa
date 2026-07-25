@@ -45,8 +45,8 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
     : launchShortage > 0
       ? `Не хватает ${launchShortage} билетов`
       : launchCost > 0
-        ? `Начать игру · ${launchCost} билетов`
-        : 'Начать игру'
+        ? `${roomMode === 'group' ? 'Создать комнату' : 'Начать игру'} · ${launchCost} билетов`
+        : roomMode === 'group' ? 'Создать комнату' : 'Начать игру'
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -101,7 +101,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
               resetKey={roomMode}
             >{(close) => <>
               <GameOption title="Одному" description="С ИИ-ведущим" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
-              <GameOption title="Вместе" description="Общая комната до 6 игроков" icon={<Users />} selected={roomMode === 'group'} onSelect={() => { setRoomMode('group'); close() }} />
+              <GameOption title="Вместе" description="Комната до 4 игроков · вопросы по очереди" icon={<Users />} selected={roomMode === 'group'} onSelect={() => { setRoomMode('group'); close() }} />
             </>}</GameOptionSelect>}
           />
           {busy && <p className="danetki-entry__status">Готовим расследование…</p>}

@@ -35,6 +35,7 @@ import { completeDanetkiDaily } from '../stats/rewards.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
+const DANETKI_GROUP_CAPACITY = 4
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
@@ -101,6 +102,13 @@ export const normalizeDanetkiQuestion = (value: string) => value
   .replace(/ё/g, 'е')
   .replace(/[^a-zа-я0-9]+/gi, ' ')
   .trim()
+
+export const nextDanetkiTurnUserId = (memberIds: string[], currentUserId: string) => {
+  if (!memberIds.length) return null
+  const currentIndex = memberIds.indexOf(currentUserId)
+  if (currentIndex < 0) return memberIds[0]
+  return memberIds[(currentIndex + 1) % memberIds.length]
+}
 
 export const hashDanetkiInviteToken = (token: string) => createHash('sha256').update(token).digest('hex')
 
@@ -226,6 +234,9 @@ export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, se
     danetki: {
       puzzle,
       roomMode: state.roomMode,
+      startedAt: state.roomMode === 'solo' ? iso(session.startedAt) : state.startedAt ? iso(state.startedAt) : null,
+      currentTurnUserId: state.roomMode === 'solo' ? currentUserId : state.currentTurnUserId,
+      capacity: state.roomMode === 'group' ? DANETKI_GROUP_CAPACITY : 1,
       questionCount: state.questionCount,
       questionWarningAt: ECONOMY_RULE_SET.danetki.questionWarningAt,
       questionLimit: ECONOMY_RULE_SET.danetki.questionLimit,
@@ -259,7 +270,8 @@ export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, se
         }
       }),
       currentUserId,
-      canInvite: state.roomMode === 'group' && session.status === 'playing',
+      canStart: state.roomMode === 'group' && !state.startedAt && members.some((entry) => entry.userId === currentUserId && entry.role === 'owner' && !entry.leftAt),
+      canInvite: state.roomMode === 'group' && !state.startedAt && session.status === 'playing',
       lastSeq: Math.max(0, state.nextMessageSeq - 1),
       outcome: session.status as 'playing' | 'won' | 'lost' | 'expired',
       ...(session.status === 'playing' ? {} : { solution: secret.solution }),
@@ -398,7 +410,12 @@ export const startDanetkiSession = async (db: Database, user: {
       }).where(and(eq(danetkiDailyUsage.userId, user.id), eq(danetkiDailyUsage.activityDate, today)))
     }
 
-    await tx.insert(danetkiSessionState).values({ sessionId: session.id, roomMode: input.roomMode }).onConflictDoNothing()
+    await tx.insert(danetkiSessionState).values({
+      sessionId: session.id,
+      roomMode: input.roomMode,
+      startedAt: input.roomMode === 'solo' ? session.startedAt : null,
+      currentTurnUserId: input.roomMode === 'solo' ? user.id : null,
+    }).onConflictDoNothing()
     await tx.insert(danetkiSessionMembers).values({
       sessionId: session.id,
       userId: user.id,
@@ -437,6 +454,44 @@ const lockMemberContext = async (tx: Transaction, sessionId: string, userId: str
   return { session, state: states[0], member: members[0] }
 }
 
+const assertDanetkiStarted = (state: typeof danetkiSessionState.$inferSelect) => {
+  if (state.roomMode === 'group' && !state.startedAt) {
+    throw new ApiError(409, 'DANETKI_ROOM_NOT_STARTED', 'Сначала ведущий должен запустить игру')
+  }
+}
+
+export const startDanetkiRoom = async (db: Database, userId: string, sessionId: string) => db.transaction(async (tx) => {
+  const context = await lockMemberContext(tx, sessionId, userId)
+  if (context.session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
+  if (context.state.roomMode !== 'group') throw new ApiError(422, 'DANETKI_START_SOLO_FORBIDDEN', 'Одиночная игра запускается сразу')
+  if (context.member.role !== 'owner') throw new ApiError(403, 'DANETKI_HOST_REQUIRED', 'Запустить игру может только создатель комнаты')
+  if (context.state.startedAt) return buildDanetkiSessionSnapshot(tx, context.session, userId)
+
+  const members = await tx.select().from(danetkiSessionMembers).where(and(
+    eq(danetkiSessionMembers.sessionId, sessionId),
+    isNull(danetkiSessionMembers.leftAt),
+  )).orderBy(asc(danetkiSessionMembers.joinedAt), asc(danetkiSessionMembers.userId))
+  if (!members.length) throw new ApiError(409, 'DANETKI_ROOM_EMPTY', 'В комнате нет игроков')
+
+  const now = new Date()
+  const first = members[0]
+  await addSystemMessage(tx, context.state, {
+    sessionId,
+    text: `Расследование началось. Первым спрашивает ${first.displayNameSnapshot}.`,
+  })
+  await tx.update(danetkiSessionState).set({
+    startedAt: now,
+    currentTurnUserId: first.userId,
+    nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`,
+    updatedAt: now,
+  }).where(eq(danetkiSessionState.sessionId, sessionId))
+  await tx.update(danetkiInvites).set({ revokedAt: now }).where(and(
+    eq(danetkiInvites.sessionId, sessionId),
+    isNull(danetkiInvites.revokedAt),
+  ))
+  return buildDanetkiSessionSnapshot(tx, context.session, userId)
+})
+
 const nextSeq = (state: typeof danetkiSessionState.$inferSelect) => state.nextMessageSeq
 
 const messageDto = (entry: typeof danetkiMessages.$inferSelect, sender?: typeof danetkiSessionMembers.$inferSelect | null) => ({
@@ -466,6 +521,13 @@ export const createDanetkiMessage = async (db: Database, userId: string, session
   if (replay[0]) return { message: messageDto(replay[0]), aiStatus: 'queued' as const }
 
   const { session, state, member } = await lockMemberContext(tx, sessionId, userId)
+  assertDanetkiStarted(state)
+  if (state.roomMode === 'group' && state.currentTurnUserId !== userId) {
+    throw new ApiError(409, 'DANETKI_NOT_YOUR_TURN', 'Сейчас вопрос задаёт другой игрок')
+  }
+  if (state.aiStatus === 'queued' || state.aiStatus === 'processing') {
+    throw new ApiError(409, 'DANETKI_HOST_BUSY', 'Дождитесь ответа ведущего')
+  }
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   if (state.questionCount >= ECONOMY_RULE_SET.danetki.questionLimit) throw new ApiError(409, 'DANETKI_QUESTION_LIMIT_REACHED', 'Лимит вопросов в этой комнате исчерпан', {
     required: ECONOMY_RULE_SET.danetki.questionLimit,
@@ -508,10 +570,18 @@ export const createDanetkiMessage = async (db: Database, userId: string, session
     idempotencyKey: input.idempotencyKey,
   }).returning()
   const message = inserted[0]
+  const activeMembers = state.roomMode === 'group'
+    ? await tx.select({ userId: danetkiSessionMembers.userId }).from(danetkiSessionMembers).where(and(
+      eq(danetkiSessionMembers.sessionId, sessionId),
+      isNull(danetkiSessionMembers.leftAt),
+    )).orderBy(asc(danetkiSessionMembers.joinedAt), asc(danetkiSessionMembers.userId))
+    : []
+  const nextTurnUserId = nextDanetkiTurnUserId(activeMembers.map((entry) => entry.userId), userId) ?? state.currentTurnUserId
   await tx.update(danetkiSessionState).set({
     nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`,
     questionCount: sql`${danetkiSessionState.questionCount} + 1`,
     aiStatus: 'queued',
+    currentTurnUserId: nextTurnUserId,
     updatedAt: new Date(),
   }).where(eq(danetkiSessionState.sessionId, sessionId))
   await tx.insert(backgroundJobs).values({
@@ -556,6 +626,7 @@ export const revealDanetkiHint = async (db: Database, userId: string, sessionId:
   )).limit(1)
   if (replay[0]) return { message: messageDto(replay[0]), hintLevel: replay[0].text.match(/^Подсказка (\d)/)?.[1] ? Number(replay[0].text.match(/^Подсказка (\d)/)![1]) : null }
   const { session, state } = await lockMemberContext(tx, sessionId, userId)
+  assertDanetkiStarted(state)
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   if (state.hintLevel >= 3) throw new ApiError(409, 'DANETKI_HINTS_EXHAUSTED', 'Все подсказки уже открыты')
   const puzzle = await loadSecretPuzzle(tx, session)
@@ -579,6 +650,7 @@ export const submitDanetkiGuess = async (db: Database, userId: string, sessionId
   )).limit(1)
   if (replay[0]) return { guess: replay[0] }
   const { session, state } = await lockMemberContext(tx, sessionId, userId)
+  assertDanetkiStarted(state)
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   const message = (await tx.insert(danetkiMessages).values({
     sessionId, seq: nextSeq(state), senderKind: 'user', senderUserId: userId, messageType: 'guess', text: input.text.trim(), idempotencyKey: input.idempotencyKey,
@@ -651,6 +723,7 @@ const finishLost = async (tx: Transaction, context: MemberContext) => {
 
 export const voteDanetkiSurrender = async (db: Database, userId: string, sessionId: string) => db.transaction(async (tx) => {
   const context = await lockMemberContext(tx, sessionId, userId)
+  assertDanetkiStarted(context.state)
   if (context.session.status !== 'playing') return { completed: true, votes: 0, required: 0 }
   await tx.insert(danetkiSurrenderVotes).values({ sessionId, userId }).onConflictDoNothing()
   const [votes, active] = await Promise.all([
@@ -668,13 +741,14 @@ export const createDanetkiInvite = async (db: Database, userId: string, sessionI
   const context = await lockMemberContext(tx, sessionId, userId)
   if (context.session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
   if (context.state.roomMode !== 'group') throw new ApiError(422, 'DANETKI_INVITE_SOLO_FORBIDDEN', 'В одиночную комнату нельзя приглашать игроков')
+  if (context.state.startedAt) throw new ApiError(409, 'DANETKI_ROOM_ALREADY_STARTED', 'Игра уже началась')
   const rawToken = createHmac('sha256', config.pipelineSecretsKey).update(`danetki-invite:v1:${sessionId}:${userId}:${idempotencyKey}`).digest('base64url')
   const tokenHash = hashDanetkiInviteToken(rawToken)
   const existing = await tx.select().from(danetkiInvites).where(eq(danetkiInvites.tokenHash, tokenHash)).limit(1)
   if (existing[0]) return { token: rawToken, expiresAt: iso(existing[0].expiresAt) }
   const invite = (await tx.insert(danetkiInvites).values({
     sessionId, tokenHash, createdBy: userId,
-    expiresAt: new Date(Date.now() + 24 * 60 * 60_000), maxUses: 5,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60_000), maxUses: DANETKI_GROUP_CAPACITY - 1,
   }).returning())[0]
   return { token: rawToken, expiresAt: iso(invite.expiresAt) }
 })
@@ -700,22 +774,25 @@ const activeInvite = async (tx: Database | Transaction, token: string, lock = fa
 
 export const previewDanetkiInvite = async (db: Database, token: string) => {
   const row = await activeInvite(db, token)
-  const [owner, active] = await Promise.all([
+  const [owner, active, state] = await Promise.all([
     db.select({ name: danetkiSessionMembers.displayNameSnapshot }).from(danetkiSessionMembers).where(and(eq(danetkiSessionMembers.sessionId, row.session.id), eq(danetkiSessionMembers.role, 'owner'), isNull(danetkiSessionMembers.leftAt))).limit(1),
     db.select({ value: count() }).from(danetkiSessionMembers).where(and(eq(danetkiSessionMembers.sessionId, row.session.id), isNull(danetkiSessionMembers.leftAt))),
+    db.select({ startedAt: danetkiSessionState.startedAt }).from(danetkiSessionState).where(eq(danetkiSessionState.sessionId, row.session.id)).limit(1),
   ])
+  if (state[0]?.startedAt) throw new ApiError(409, 'DANETKI_ROOM_ALREADY_STARTED', 'Игра уже началась')
   const participants = Number(active[0]?.value ?? 0)
-  if (participants >= 6) throw new ApiError(409, 'DANETKI_ROOM_FULL', 'В комнате уже шесть участников')
-  return { title: row.titleRu, ownerName: owner[0]?.name ?? 'Игрок', participants, capacity: 6, expiresAt: iso(row.invite.expiresAt) }
+  if (participants >= DANETKI_GROUP_CAPACITY) throw new ApiError(409, 'DANETKI_ROOM_FULL', 'В комнате уже четыре участника')
+  return { title: row.titleRu, ownerName: owner[0]?.name ?? 'Игрок', participants, capacity: DANETKI_GROUP_CAPACITY, expiresAt: iso(row.invite.expiresAt) }
 }
 
 export const joinDanetkiInvite = async (db: Database, user: { id: string; name: string }, token: string, displayName?: string) => db.transaction(async (tx) => {
   const row = await activeInvite(tx, token, true)
   const state = (await tx.select().from(danetkiSessionState).where(eq(danetkiSessionState.sessionId, row.session.id)).for('update').limit(1))[0]
   if (!state || state.roomMode !== 'group') throw new ApiError(422, 'DANETKI_INVITE_INVALID_ROOM', 'Приглашение ведёт в недоступную комнату')
+  if (state.startedAt) throw new ApiError(409, 'DANETKI_ROOM_ALREADY_STARTED', 'Игра уже началась')
   const active = await tx.select({ value: count() }).from(danetkiSessionMembers).where(and(eq(danetkiSessionMembers.sessionId, row.session.id), isNull(danetkiSessionMembers.leftAt)))
   const existing = await tx.select().from(danetkiSessionMembers).where(and(eq(danetkiSessionMembers.sessionId, row.session.id), eq(danetkiSessionMembers.userId, user.id))).limit(1)
-  if (!existing[0] && Number(active[0]?.value ?? 0) >= 6) throw new ApiError(409, 'DANETKI_ROOM_FULL', 'В комнате уже шесть участников')
+  if (!existing[0] && Number(active[0]?.value ?? 0) >= DANETKI_GROUP_CAPACITY) throw new ApiError(409, 'DANETKI_ROOM_FULL', 'В комнате уже четыре участника')
   const name = (displayName?.trim() || user.name.trim() || 'Игрок').slice(0, 40)
   await tx.insert(danetkiSessionMembers).values({
     sessionId: row.session.id, userId: user.id, role: 'player', displayNameSnapshot: name, colorKey: colorKeyFor(user.id),
@@ -746,8 +823,19 @@ export const leaveDanetkiSession = async (db: Database, userId: string, sessionI
       await tx.update(danetkiSessionMembers).set({ role: 'owner' }).where(and(eq(danetkiSessionMembers.sessionId, sessionId), eq(danetkiSessionMembers.userId, next[0].userId)))
     }
   }
+  const remainingMembers = await tx.select({ userId: danetkiSessionMembers.userId }).from(danetkiSessionMembers).where(and(
+    eq(danetkiSessionMembers.sessionId, sessionId),
+    isNull(danetkiSessionMembers.leftAt),
+  )).orderBy(asc(danetkiSessionMembers.joinedAt), asc(danetkiSessionMembers.userId))
+  const nextTurnUserId = context.state.currentTurnUserId === userId
+    ? remainingMembers[0]?.userId ?? null
+    : context.state.currentTurnUserId
   const event = (await addSystemMessage(tx, context.state, { sessionId, text: `${context.member.displayNameSnapshot} покидает расследование` }))[0]
-  await tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`, updatedAt: now }).where(eq(danetkiSessionState.sessionId, sessionId))
+  await tx.update(danetkiSessionState).set({
+    currentTurnUserId: nextTurnUserId,
+    nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`,
+    updatedAt: now,
+  }).where(eq(danetkiSessionState.sessionId, sessionId))
   const active = await tx.select({ value: count() }).from(danetkiSessionMembers).where(and(eq(danetkiSessionMembers.sessionId, sessionId), isNull(danetkiSessionMembers.leftAt)))
   if (context.session.status === 'playing' && Number(active[0]?.value ?? 0) === 0) {
     const ttl = await tx.select({ value: appSettings.value }).from(appSettings).where(eq(appSettings.key, 'danetki.emptyRoomTtlMinutes')).limit(1)
