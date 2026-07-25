@@ -5,7 +5,15 @@ import {
   appSettings, auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   contentWorkspaceChanges, contentWorkspaces, diagnosisVignettes, type Database,
 } from '@shoditsa/database'
-import { isAllowedInRegularGame, normalize } from '@shoditsa/game-core'
+import {
+  contentDuplicateGroups,
+  isAllowedInRegularGame,
+  isPlayableGamePlotHint,
+  plotHintLeaksAnswer,
+  isPromoGameItem,
+  normalize,
+  playablePlotHints,
+} from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 
 type Actor = { id: string }
@@ -20,6 +28,7 @@ type WorkspaceInput = {
 }
 
 export type ValidationIssue = { level: 'error' | 'warning'; field: string; code: string; message: string }
+export type CatalogValidationIssue = ValidationIssue & { itemId: string; relatedItemIds?: string[] }
 
 const asRecord = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : ''
@@ -108,17 +117,72 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
     if (duplicatedFacts.length) error('facts', 'duplicate_model_fact', 'Интересные факты не должны повторять формат, статус или количество эпизодов')
   }
   const hint = mode === 'danetki' ? '' : text(payload.plotHint)
-  if (mode !== 'danetki' && !hint) warning('plotHint', 'missing_hint', 'Описание не заполнено')
-  if (hint && mode === 'game' && hint.length < 30) error('plotHint', 'short_hint', 'Игровая подсказка должна содержать не меньше 30 символов')
-  else if (hint && hint.length < 20) warning('plotHint', 'short_hint', 'Подсказка слишком короткая')
+  const enabled = payload.allowedInGame !== false
+  const item = payload as TitleItem
+  if (mode !== 'danetki' && !hint) (enabled ? error : warning)('plotHint', 'missing_hint', 'Описание не заполнено')
+  if (hint && hint.length < 30) error('plotHint', 'short_hint', 'Подсказка должна содержать не меньше 30 символов')
   if (hint && /(?:\.\.\.|…)\s*$/.test(hint)) error('plotHint', 'truncated_hint', 'Подсказка не должна заканчиваться многоточием')
   if (hint && /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(hint)) error('plotHint', 'placeholder_hint', 'Подсказка содержит служебную заглушку вместо готового текста')
-  const normalizedHint = normalize(hint)
-  const hintLeaksAnswer = [text(payload.titleRu), text(payload.titleOriginal)]
-    .map(normalize)
-    .some((title) => title.length >= 4 && normalizedHint.includes(title))
+  const hintLeaksAnswer = plotHintLeaksAnswer({ ...item, plotHint: hint })
   if (hint && hintLeaksAnswer) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')
   if (hint && /(?:json|undefined|null|nan|stack trace|exception|http(?:s)?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) error('plotHint', 'technical_leak', 'Подсказка содержит технический текст')
+  if (mode !== 'danetki' && enabled && playablePlotHints(item).length === 0 && hint) {
+    error('plotHint', 'unplayable_hint', 'У включённой карточки должна быть хотя бы одна безопасная полноценная подсказка')
+  }
+  if (payload.plotHintVariants != null) {
+    if (!Array.isArray(payload.plotHintVariants)) {
+      error('plotHintVariants', 'invalid_type', 'Варианты подсказки должны быть массивом строк')
+    } else {
+      const variants = payload.plotHintVariants.map(text)
+      if (variants.some((variant) => !variant || !isPlayableGamePlotHint({ ...item, plotHint: variant }))) {
+        error('plotHintVariants', 'invalid_hint_variant', 'Каждый вариант подсказки должен быть полноценным, безопасным и не раскрывать ответ')
+      }
+      if (new Set(variants.map(normalize)).size !== variants.length) error('plotHintVariants', 'duplicate_hint_variant', 'Варианты подсказки не должны повторяться')
+    }
+  }
+  if (enabled && ['review', 'duplicate', 'blocked', 'promo_pack'].includes(text(payload.contentStatus))) {
+    error('contentStatus', 'not_publishable', 'Карточку с этим статусом нельзя включать в общий игровой пул')
+  }
+  if (enabled && isPromoGameItem(item)) {
+    error('allowedInGame', 'promo_regular_pool', 'Промо-карточка доступна только внутри своего спецпоказа и не должна входить в общий пул')
+  }
+  return issues
+}
+
+export const validateCatalogInvariants = (items: TitleItem[]): CatalogValidationIssue[] => {
+  const issues: CatalogValidationIssue[] = []
+  for (const item of items) {
+    if (String(item.mode) === 'danetki') continue
+    if (item.allowedInGame === false) continue
+    const publishabilityCodes = new Set([
+      'missing_hint', 'short_hint', 'truncated_hint', 'placeholder_hint', 'answer_leak',
+      'technical_leak', 'unplayable_hint', 'invalid_hint_variant', 'duplicate_hint_variant',
+      'not_publishable', 'promo_regular_pool',
+    ])
+    issues.push(...validateContentPayload(item as unknown as Record<string, unknown>, item.mode)
+      .filter((issue) => issue.level === 'error' && publishabilityCodes.has(issue.code))
+      .map((issue) => ({ ...issue, itemId: item.id })))
+    if (item.mode === 'series' && (!Number.isInteger(item.seasonsCount) || Number(item.seasonsCount) <= 0)) {
+      issues.push({ level: 'error', field: 'seasonsCount', code: 'series_without_seasons', message: 'В общем пуле сериалов нужны проверенные сезоны', itemId: item.id })
+    }
+    if (!isAllowedInRegularGame(item) && !issues.some((issue) => issue.itemId === item.id)) {
+      issues.push({ level: 'error', field: 'allowedInGame', code: 'regular_pool_ineligible', message: 'Карточка помечена как включённая, но не проходит единые правила игрового пула', itemId: item.id })
+    }
+  }
+  const eligible = items.filter(isAllowedInRegularGame)
+  for (const group of contentDuplicateGroups(eligible)) {
+    const ids = group.map((item) => item.id).sort()
+    for (const itemId of ids) {
+      issues.push({
+        level: 'error',
+        field: 'canonicalId',
+        code: 'duplicate_playable_identity',
+        message: `В общем пуле опубликовано несколько карточек одного объекта: ${ids.join(', ')}`,
+        itemId,
+        relatedItemIds: ids.filter((id) => id !== itemId),
+      })
+    }
+  }
   return issues
 }
 
@@ -293,6 +357,13 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
       const baseByItem = new Map(baseRows.map((row) => [row.itemId, row]))
       const merged = baseRows.map((row) => ({ base: row, change: changesByItem.get(row.itemId), payload: asRecord(changesByItem.get(row.itemId)?.afterPayload ?? row.payload) }))
       for (const change of changes) if (!baseByItem.has(change.itemId)) merged.push({ base: null as never, change, payload: asRecord(change.afterPayload) })
+      const catalogIssues = validateCatalogInvariants(merged.map((entry) => entry.payload as TitleItem))
+      if (catalogIssues.length) {
+        throw new ApiError(422, 'CATALOG_INVARIANTS_FAILED', 'Сборка остановлена: общий игровой пул содержит непригодные или дублирующиеся карточки', {
+          fieldErrors: catalogIssues.slice(0, 200),
+          total: catalogIssues.length,
+        })
+      }
       // The active revision can contain legacy records created before a newer validation rule.
       // A workspace build must block regressions in changed cards, not unrelated unchanged records.
       const changedEntries = merged.filter((entry) => entry.change)
@@ -334,7 +405,9 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
             itemId: text(payload.id), revisionId: revision.id, mode,
             titleRu: text(payload.titleRu), titleOriginal: text(payload.titleOriginal), normalizedTitle: normalize(text(payload.titleRu)),
             year: number(payload.year), endYear: number(payload.endYear), popularityScore: number(payload.popularityScore) ?? 0,
-            topRank: number(payload.topRank), sortOrder, allowedInGame: mode === 'city' ? payload.allowedInGame !== false : isAllowedInRegularGame(payload as TitleItem),
+            topRank: number(payload.topRank), sortOrder, allowedInGame: mode === 'danetki'
+              ? payload.allowedInGame === true && ['test', 'ready'].includes(text(payload.contentStatus))
+              : mode === 'city' ? payload.allowedInGame !== false && isAllowedInRegularGame(payload as TitleItem) : isAllowedInRegularGame(payload as TitleItem),
             contentStatus: text(payload.contentStatus) || null, payload,
           }
         })

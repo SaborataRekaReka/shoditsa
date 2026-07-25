@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-07-25T04:13:04.949Z",
+  "total": 20,
+  "serial": 0,
+  "nonSerial": 20,
+  "results": [
+    {
+      "itemId": "kp_79204",
+      "requestedTitle": "Белый плен",
+      "kinopoiskId": 79204,
+      "nameRu": "Белый плен",
+      "year": 2005,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_10179",
+      "requestedTitle": "Блеф",
+      "kinopoiskId": 10179,
+      "nameRu": "Блеф",
+      "year": 1976,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_25108",
+      "requestedTitle": "В бой идут одни «старики»",
+      "kinopoiskId": 25108,
+      "nameRu": "В бой идут одни «старики»",
+      "year": 1973,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_3452",
+      "requestedTitle": "Генерал",
+      "kinopoiskId": 3452,
+      "nameRu": "Генерал",
+      "year": 1998,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_416116",
+      "requestedTitle": "Грозовой перевал",
+      "kinopoiskId": 416116,
+      "nameRu": "Грозовой перевал",
+      "year": 2011,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_4510025",
+      "requestedTitle": "День разоблачения",
+      "kinopoiskId": 4510025,
+      "nameRu": "День разоблачения",
+      "year": 2026,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_158786",
+      "requestedTitle": "Жизнь Пи",
+      "kinopoiskId": 158786,
+      "nameRu": "Жизнь Пи",
+      "year": 2012,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_5452841",
+      "requestedTitle": "Закулисье реальности",
+      "kinopoiskId": 5452841,
+      "nameRu": "Закулисье реальности",
+      "year": 2026,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_105813",
+      "requestedTitle": "Запределье",
+      "kinopoiskId": 105813,
+      "nameRu": "Запределье",
+      "year": 2006,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_42664",
+      "requestedTitle": "Иван Васильевич меняет профессию",
+      "kinopoiskId": 42664,
+      "nameRu": "Иван Васильевич меняет профессию",
+      "year": 1973,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_66341",
+      "requestedTitle": "Короткий фильм о любви",
+      "kinopoiskId": 66341,
+      "nameRu": "Короткий фильм о любви",
+      "year": 1988,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_9617",
+      "requestedTitle": "Крупная рыба",
+      "kinopoiskId": 9617,
+      "nameRu": "Крупная рыба",
+      "year": 2003,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_22907",
+      "requestedTitle": "Медведь",
+      "kinopoiskId": 22907,
+      "nameRu": "Медведь",
+      "year": 1988,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_455",
+      "requestedTitle": "Молодой Франкенштейн",
+      "kinopoiskId": 455,
+      "nameRu": "Молодой Франкенштейн",
+      "year": 1974,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_46745",
+      "requestedTitle": "Мужики!..",
+      "kinopoiskId": 46745,
+      "nameRu": "Мужики!..",
+      "year": 1981,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_19334",
+      "requestedTitle": "Мужчина и женщина",
+      "kinopoiskId": 19334,
+      "nameRu": "Мужчина и женщина",
+      "year": 1966,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_8190",
+      "requestedTitle": "На несколько долларов больше",
+      "kinopoiskId": 8190,
+      "nameRu": "На несколько долларов больше",
+      "year": 1965,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_18511",
+      "requestedTitle": "На последнем дыхании",
+      "kinopoiskId": 18511,
+      "nameRu": "На последнем дыхании",
+      "year": 1960,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_10355286",
+      "requestedTitle": "Обсессия",
+      "kinopoiskId": 10355286,
+      "nameRu": "Обсессия",
+      "year": 2025,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    },
+    {
+      "itemId": "kp_15204",
+      "requestedTitle": "Ромео и Джульетта",
+      "kinopoiskId": 15204,
+      "nameRu": "Ромео и Джульетта",
+      "year": 1968,
+      "type": "FILM",
+      "serial": false,
+      "completed": false
+    }
+  ]
+}

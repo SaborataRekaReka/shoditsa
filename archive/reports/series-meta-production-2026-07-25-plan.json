@@ -1,0 +1,857 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-25T04:09:13.277Z",
+  "activeRevision": {
+    "id": "1cd13117-010a-4b98-ba6e-5826507e21f7",
+    "version": "admin-20260724T195948005Z-17e5d958",
+    "checksum": "17e5d958804faf7e56bc1ade593e4c84e9a56f7dbbce379190ecb2edc7620fe6"
+  },
+  "totalSeries": 791,
+  "missingBefore": 136,
+  "updates": [
+    {
+      "itemId": "kp_77270",
+      "versionId": "0b5d47d8-d935-4f0f-9145-176e29280152",
+      "kinopoiskId": 77270,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_79564",
+      "versionId": "8a262136-ba77-42ed-854a-ecb6be47821f",
+      "kinopoiskId": 79564,
+      "seasonsCount": 9
+    },
+    {
+      "itemId": "kp_1044497",
+      "versionId": "87e3a01b-4522-492c-9dea-f0af5113dcb1",
+      "kinopoiskId": 1044497,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_77247",
+      "versionId": "0983ff36-e817-46f0-84f5-3b59ccae85cc",
+      "kinopoiskId": 77247,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1046704",
+      "versionId": "6925506e-b86a-4e3a-84f5-ce2cc9dcd667",
+      "kinopoiskId": 1046704,
+      "seasonsCount": 3
+    },
+    {
+      "itemId": "kp_600835",
+      "versionId": "1c8d2fef-9c93-4a71-8e99-d0649c834570",
+      "kinopoiskId": 600835,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_94103",
+      "versionId": "096cf373-cc0b-4de1-bb88-c4bed6b299f9",
+      "kinopoiskId": 94103,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5333424",
+      "versionId": "ebc4f3cf-286e-4555-afdf-20bf7848e6c1",
+      "kinopoiskId": 5333424,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_768062",
+      "versionId": "4d2ea019-a2d3-45d4-891b-ea70b7743cd1",
+      "kinopoiskId": 768062,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_85020",
+      "versionId": "6cd2b156-3120-4aad-9126-8303d36c08ac",
+      "kinopoiskId": 85020,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1399228",
+      "versionId": "9b1d4471-4eb6-40fb-a2c7-93cfa2d80d97",
+      "kinopoiskId": 1399228,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_322063",
+      "versionId": "3ca3d6c1-2393-49f1-a21c-b7c28d4ec664",
+      "kinopoiskId": 322063,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_250777",
+      "versionId": "28162ae5-9acc-477a-b9ee-daeaa9f421a3",
+      "kinopoiskId": 250777,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_79845",
+      "versionId": "f2d09d09-a57e-4acf-8679-218edf9f2f6d",
+      "kinopoiskId": 79845,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_992490",
+      "versionId": "1b943aac-3028-49b3-8ab1-69190c3ccb1d",
+      "kinopoiskId": 992490,
+      "seasonsCount": 3
+    },
+    {
+      "itemId": "kp_252044",
+      "versionId": "f243f321-74ef-4b21-ade9-68053723e003",
+      "kinopoiskId": 252044,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_81038",
+      "versionId": "98b58983-f65e-487d-a46d-896aa3e6e7b2",
+      "kinopoiskId": 81038,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1253157",
+      "versionId": "998bca04-2eac-45f3-8aec-d716f88e9b68",
+      "kinopoiskId": 1253157,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_503264",
+      "versionId": "2a673e2f-4426-481b-b080-e00c7419c8ce",
+      "kinopoiskId": 503264,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1115149",
+      "versionId": "8030f522-ccc0-4849-9a6e-ddc475f55236",
+      "kinopoiskId": 1115149,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_487573",
+      "versionId": "1df6c3aa-7d46-422c-a266-12d3bc6c9d2e",
+      "kinopoiskId": 487573,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_823594",
+      "versionId": "1b6f9148-d524-4cde-a5ba-850253a09cd9",
+      "kinopoiskId": 823594,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_38898",
+      "versionId": "b81ba341-2bb3-4c93-8807-a55b7d389096",
+      "kinopoiskId": 38898,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1334847",
+      "versionId": "a2f5567c-0b04-4d27-ae6e-fb4bfbff3d14",
+      "kinopoiskId": 1334847,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1008398",
+      "versionId": "0d11c720-469c-4f0e-9d07-38c75a87cee4",
+      "kinopoiskId": 1008398,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1231016",
+      "versionId": "acc4be9e-5657-4a6e-a368-14f6cf0229e0",
+      "kinopoiskId": 1231016,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_702759",
+      "versionId": "37436b1b-8180-410e-a98d-bac568f455d5",
+      "kinopoiskId": 702759,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_85175",
+      "versionId": "3a5d2091-ebe5-418d-a751-7bad3739c2a5",
+      "kinopoiskId": 85175,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_44457",
+      "versionId": "8275913c-8f0c-4daf-9e0e-02f83a49cccc",
+      "kinopoiskId": 44457,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_77261",
+      "versionId": "a004aa3d-c76d-4e24-a268-f3cb0e8b7cb1",
+      "kinopoiskId": 77261,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_271748",
+      "versionId": "1d5dd053-fc8c-4727-a735-0607ebc7a671",
+      "kinopoiskId": 271748,
+      "seasonsCount": 4
+    },
+    {
+      "itemId": "kp_1118176",
+      "versionId": "fbcd000a-6d0a-4118-a7ce-8aa0081ee137",
+      "kinopoiskId": 1118176,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_772832",
+      "versionId": "6ee97cd8-6619-493d-99c8-9837b15453e4",
+      "kinopoiskId": 772832,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_77185",
+      "versionId": "f9f8877a-e067-4d77-a149-ee6704452bcb",
+      "kinopoiskId": 77185,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1171652",
+      "versionId": "bf933b76-6d18-4f77-b3de-b6d0104ee9bc",
+      "kinopoiskId": 1171652,
+      "seasonsCount": 5
+    },
+    {
+      "itemId": "kp_768068",
+      "versionId": "f7251205-bbdb-4a67-b14c-2d359bfae405",
+      "kinopoiskId": 768068,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_251734",
+      "versionId": "d8ceeb75-da48-4a52-9f0b-5c7b01454a63",
+      "kinopoiskId": 251734,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_44076",
+      "versionId": "a268ecb9-d17b-44e2-b170-4dfb0ca7890f",
+      "kinopoiskId": 44076,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_81483",
+      "versionId": "ce7a1a2a-4da6-424b-ae36-e04286023331",
+      "kinopoiskId": 81483,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_77217",
+      "versionId": "95539236-3335-4734-9821-c441a55f6aa4",
+      "kinopoiskId": 77217,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_260901",
+      "versionId": "b358fe08-a05d-40ed-bb41-198f29ae9cbc",
+      "kinopoiskId": 260901,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_771612",
+      "versionId": "2f8dffc9-6a28-4edd-ac8c-0c530b96867e",
+      "kinopoiskId": 771612,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_89676",
+      "versionId": "9bd7356d-db5f-4144-a9ab-6a88822ae699",
+      "kinopoiskId": 89676,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_95191",
+      "versionId": "4fd0ab8d-6103-46e5-b5d2-204132fb10d2",
+      "kinopoiskId": 95191,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5271229",
+      "versionId": "b8aff417-5172-4dcd-80be-7f5ad33caa4e",
+      "kinopoiskId": 5271229,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1263575",
+      "versionId": "c365e17b-3f8d-467f-9189-e124d61bb669",
+      "kinopoiskId": 1263575,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_1309178",
+      "versionId": "d0256bce-5b36-4118-b19d-98fdd64a39b1",
+      "kinopoiskId": 1309178,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_229162",
+      "versionId": "e12bd0a2-9d1d-4fff-aaf0-d98541d6b45d",
+      "kinopoiskId": 229162,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1093784",
+      "versionId": "2bdd5224-2fc7-4378-a41a-32f97f9a13f9",
+      "kinopoiskId": 1093784,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_780307",
+      "versionId": "dd103f04-99e7-474e-997d-9ae70c4066e1",
+      "kinopoiskId": 780307,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_586685",
+      "versionId": "8cd28a7c-f71d-42e1-b4d6-66e595a96e7d",
+      "kinopoiskId": 586685,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_77277",
+      "versionId": "01c3d181-5e1a-49b4-b714-c50c720e5a67",
+      "kinopoiskId": 77277,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_913049",
+      "versionId": "060dddbd-aa81-41b3-b9d1-b3df0a179af4",
+      "kinopoiskId": 913049,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1144174",
+      "versionId": "4c2ce887-c618-4dfa-912d-7140951cb39c",
+      "kinopoiskId": 1144174,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_4909330",
+      "versionId": "e41db20e-438f-4202-80ee-a943898e7312",
+      "kinopoiskId": 4909330,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_6056265",
+      "versionId": "6795be73-9b52-40a5-94e4-69ac8ac1d104",
+      "kinopoiskId": 6056265,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_278143",
+      "versionId": "29cee1d7-c8d7-465c-9473-156ba0d57a77",
+      "kinopoiskId": 278143,
+      "seasonsCount": 13
+    },
+    {
+      "itemId": "kp_5088599",
+      "versionId": "bc87fee5-ccd6-4773-8fbb-40cd740597e3",
+      "kinopoiskId": 5088599,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_79844",
+      "versionId": "7f9d6699-debf-4ccf-adee-24cba98b71e0",
+      "kinopoiskId": 79844,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_674019",
+      "versionId": "847595f3-532f-4165-91c8-e85473446a15",
+      "kinopoiskId": 674019,
+      "seasonsCount": 3
+    },
+    {
+      "itemId": "kp_77319",
+      "versionId": "0daae6da-ab98-4022-8870-4c3b4a43d4d2",
+      "kinopoiskId": 77319,
+      "seasonsCount": 4
+    },
+    {
+      "itemId": "kp_803233",
+      "versionId": "76660443-e1f2-4758-88e5-51dca37d4ea6",
+      "kinopoiskId": 803233,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1271262",
+      "versionId": "f3fec8f6-98f8-4188-8150-b287338b6fd2",
+      "kinopoiskId": 1271262,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_692912",
+      "versionId": "1446d102-ed0a-401e-92a2-4af8b0bc9a5a",
+      "kinopoiskId": 692912,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_674032",
+      "versionId": "483bc5be-6720-40f0-be99-3c827b2ae573",
+      "kinopoiskId": 674032,
+      "seasonsCount": 4
+    },
+    {
+      "itemId": "kp_466466",
+      "versionId": "4c760e65-2671-4977-b4cc-ac74f4476088",
+      "kinopoiskId": 466466,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_842114",
+      "versionId": "2a1b96ff-5e41-42c0-99cd-000ad51e460c",
+      "kinopoiskId": 842114,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_1306638",
+      "versionId": "748246c7-b2d5-4c9a-8a2e-641995a14c63",
+      "kinopoiskId": 1306638,
+      "seasonsCount": 3
+    },
+    {
+      "itemId": "kp_46628",
+      "versionId": "261f6107-579c-45f1-8264-cdfb4b5f512c",
+      "kinopoiskId": 46628,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_677565",
+      "versionId": "4e996b37-de79-427a-9baa-5fcaf51ebd49",
+      "kinopoiskId": 677565,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_687929",
+      "versionId": "35cd7b23-7837-4873-863c-c2ffc7cf3dfb",
+      "kinopoiskId": 687929,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_277368",
+      "versionId": "6ac10002-8615-4246-b88a-b700c1c57411",
+      "kinopoiskId": 277368,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_4489825",
+      "versionId": "938248ed-e5cd-41bc-a181-c61ce8fca26d",
+      "kinopoiskId": 4489825,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1388641",
+      "versionId": "5aad63af-2e89-4923-9d85-97632d138ca8",
+      "kinopoiskId": 1388641,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_1263496",
+      "versionId": "fb23fe95-d7af-46c2-8a03-851435428458",
+      "kinopoiskId": 1263496,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_838913",
+      "versionId": "126f8f8a-700e-44b0-852d-af2439090fb4",
+      "kinopoiskId": 838913,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5303365",
+      "versionId": "1299d453-4f0f-4103-9856-129c26889a45",
+      "kinopoiskId": 5303365,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_6356862",
+      "versionId": "d67ce0ee-df95-4fbe-b2be-b7549708fefd",
+      "kinopoiskId": 6356862,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_95172",
+      "versionId": "0ce9d0c1-6111-4199-995c-75f9a2b9b6e3",
+      "kinopoiskId": 95172,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_988784",
+      "versionId": "04017a89-1d54-43b8-85a9-b333cc22157f",
+      "kinopoiskId": 988784,
+      "seasonsCount": 3
+    },
+    {
+      "itemId": "kp_838262",
+      "versionId": "216b3aef-e5c1-48f9-9a40-31733872c880",
+      "kinopoiskId": 838262,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_861662",
+      "versionId": "fa975319-ce4d-4554-8b43-226f824df4fa",
+      "kinopoiskId": 861662,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_840941",
+      "versionId": "c61e3ad6-5e84-44bb-b8ec-980f8d6e88fa",
+      "kinopoiskId": 840941,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_844067",
+      "versionId": "84a496f7-85c6-4145-9d22-66e4897b7149",
+      "kinopoiskId": 844067,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_681879",
+      "versionId": "55b55cab-5a6d-4c71-83a6-0d44e2cd3937",
+      "kinopoiskId": 681879,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1153445",
+      "versionId": "d637c052-5fd9-4d62-b673-120090d42b68",
+      "kinopoiskId": 1153445,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_43046",
+      "versionId": "c058cfce-0fcc-402f-983f-e7a37daf8c7a",
+      "kinopoiskId": 43046,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5394545",
+      "versionId": "69a75560-df73-47e9-ae95-c0232cd08434",
+      "kinopoiskId": 5394545,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_913033",
+      "versionId": "2efb2bca-41ca-4cae-8662-9e7df88449ba",
+      "kinopoiskId": 913033,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1048335",
+      "versionId": "37104966-2f13-426d-ac0b-d82bcba7a612",
+      "kinopoiskId": 1048335,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_95891",
+      "versionId": "487acca4-3877-4892-ae0a-f0c0ac5fd229",
+      "kinopoiskId": 95891,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_4760889",
+      "versionId": "6c036781-863f-464d-9bed-4da1fb774b49",
+      "kinopoiskId": 4760889,
+      "seasonsCount": 3
+    },
+    {
+      "itemId": "kp_43231",
+      "versionId": "2a1ac86c-e9ce-42e8-b719-9696a9ee10b3",
+      "kinopoiskId": 43231,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_929776",
+      "versionId": "6d246f26-13d9-4034-92b2-feca12db291d",
+      "kinopoiskId": 929776,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_79906",
+      "versionId": "4019050d-0175-439e-a6f9-af989944d70f",
+      "kinopoiskId": 79906,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_77284",
+      "versionId": "56a84cfa-1ab5-4050-b5fa-4796dd411171",
+      "kinopoiskId": 77284,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_764487",
+      "versionId": "d9dab8e7-1b8f-4bee-89f3-ebbaa7625096",
+      "kinopoiskId": 764487,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_6584388",
+      "versionId": "d4ff081e-3f85-4963-8d96-85e61b2faa30",
+      "kinopoiskId": 6584388,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_788277",
+      "versionId": "32d130f9-166d-4e77-8c43-0ca573326c3a",
+      "kinopoiskId": 788277,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_501717",
+      "versionId": "186805a6-b8d7-49e4-a225-57d21ab9ea97",
+      "kinopoiskId": 501717,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_4361620",
+      "versionId": "e4b9fbfc-4228-4523-bc9d-fd93948a3c45",
+      "kinopoiskId": 4361620,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_574688",
+      "versionId": "423fd24f-672f-4517-9c1b-adf03c91b4ae",
+      "kinopoiskId": 574688,
+      "seasonsCount": 8
+    },
+    {
+      "itemId": "kp_743975",
+      "versionId": "3e604850-9873-4e19-9fff-69591deb62aa",
+      "kinopoiskId": 743975,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_42147",
+      "versionId": "bb3bd6c8-1134-4b02-a7ec-5a5d7fdb5b8c",
+      "kinopoiskId": 42147,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_4742511",
+      "versionId": "d08500e8-8cf5-40d0-b081-a2b39f00eece",
+      "kinopoiskId": 4742511,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_43783",
+      "versionId": "581ae75c-4341-4fab-bfb0-ec911bca7d0b",
+      "kinopoiskId": 43783,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5304403",
+      "versionId": "2e4aafb8-ceed-498f-afec-46e1d55adc64",
+      "kinopoiskId": 5304403,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_723290",
+      "versionId": "cec77ef5-d571-47fd-94fe-90aecd601aea",
+      "kinopoiskId": 723290,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_977734",
+      "versionId": "f1099ce2-b0a0-45c7-9f36-9628711e11c3",
+      "kinopoiskId": 977734,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_573245",
+      "versionId": "444f81a4-714d-49e8-9fb9-d84d6f1040a8",
+      "kinopoiskId": 573245,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1007909",
+      "versionId": "4b90f14a-59f7-4933-9bdc-f24e80f1b537",
+      "kinopoiskId": 1007909,
+      "seasonsCount": 5
+    },
+    {
+      "itemId": "kp_44025",
+      "versionId": "d518f00f-8cbd-4a31-9212-3ebc8a524836",
+      "kinopoiskId": 44025,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_674243",
+      "versionId": "4c1fe098-1ae6-4fa4-b28f-adfd2a1a43ec",
+      "kinopoiskId": 674243,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_932068",
+      "versionId": "59487937-5380-43f8-ba8f-96dda3fb451e",
+      "kinopoiskId": 932068,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_1171922",
+      "versionId": "203ad077-6db5-4836-9526-6fa79070c02c",
+      "kinopoiskId": 1171922,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_843207",
+      "versionId": "d3872f72-ead6-4952-ba9a-fd09add466b6",
+      "kinopoiskId": 843207,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_709798",
+      "versionId": "68b232b6-1408-4513-90c8-da23f427cf56",
+      "kinopoiskId": 709798,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5582628",
+      "versionId": "b1a41ad7-31dc-4763-9a6c-d9f7fcaec670",
+      "kinopoiskId": 5582628,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_840744",
+      "versionId": "a4d2fe2c-f3b5-4eb9-ac60-ceb553155bff",
+      "kinopoiskId": 840744,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_601938",
+      "versionId": "75baa69e-eba7-4ea8-8364-393dcb7eb85b",
+      "kinopoiskId": 601938,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1392470",
+      "versionId": "98dc702d-9233-455c-8d61-99b3e74fa500",
+      "kinopoiskId": 1392470,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_81436",
+      "versionId": "9349c4a6-a2f5-4e3a-9b8c-806c3bb75d86",
+      "kinopoiskId": 81436,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1049751",
+      "versionId": "937070f6-9544-43b7-9fd7-3f79601fd1c9",
+      "kinopoiskId": 1049751,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_731962",
+      "versionId": "5d4c61dd-34c5-4b4b-819d-2b3d11a408ef",
+      "kinopoiskId": 731962,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_1048143",
+      "versionId": "1ec7631a-13b4-4c7c-a635-87ee48bae7b5",
+      "kinopoiskId": 1048143,
+      "seasonsCount": 4
+    },
+    {
+      "itemId": "kp_738513",
+      "versionId": "a8f574f9-2c76-4cf9-a8ea-c3ee7347391d",
+      "kinopoiskId": 738513,
+      "seasonsCount": 4
+    },
+    {
+      "itemId": "kp_656730",
+      "versionId": "4067009a-068f-49d8-9cb8-4beb69e09b4f",
+      "kinopoiskId": 656730,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1006637",
+      "versionId": "fb3c024a-daff-44f6-944e-34695d5ea35d",
+      "kinopoiskId": 1006637,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_533136",
+      "versionId": "f58035bc-90cd-45aa-aa73-d9c92eb75803",
+      "kinopoiskId": 533136,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_686841",
+      "versionId": "da656a50-f5da-474d-886a-b19a41368c1d",
+      "kinopoiskId": 686841,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_5080554",
+      "versionId": "c90dfaf5-fa9b-43c0-8298-24d9cd68e2f9",
+      "kinopoiskId": 5080554,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_43732",
+      "versionId": "2363cbfe-14b4-4892-98aa-4b19edba9e1b",
+      "kinopoiskId": 43732,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_1108682",
+      "versionId": "15a5df17-e26a-478c-b59e-1b0cf3a11599",
+      "kinopoiskId": 1108682,
+      "seasonsCount": 2
+    },
+    {
+      "itemId": "kp_652585",
+      "versionId": "802e3adc-2fab-439b-9389-6a00feef8f2a",
+      "kinopoiskId": 652585,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_749388",
+      "versionId": "e093bc62-ee93-4596-bd04-b76a27a7d81c",
+      "kinopoiskId": 749388,
+      "seasonsCount": 1
+    },
+    {
+      "itemId": "kp_972889",
+      "versionId": "28d9ce4e-036c-4b9a-a0d2-1b03a9697f73",
+      "kinopoiskId": 972889,
+      "seasonsCount": 2
+    }
+  ],
+  "unresolved": [],
+  "keyUsage": [
+    {
+      "slot": 1,
+      "used": 28,
+      "exhausted": false
+    },
+    {
+      "slot": 2,
+      "used": 27,
+      "exhausted": false
+    },
+    {
+      "slot": 3,
+      "used": 27,
+      "exhausted": false
+    },
+    {
+      "slot": 4,
+      "used": 27,
+      "exhausted": false
+    },
+    {
+      "slot": 5,
+      "used": 27,
+      "exhausted": false
+    }
+  ]
+}

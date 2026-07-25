@@ -1,0 +1,70 @@
+.ui-alert {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  color: var(--color-text);
+  background: var(--color-surface);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.ui-alert__icon { width: 17px; height: 17px; }
+.ui-alert__content { min-width: 0; }
+.ui-alert__dismiss { border: 0; }
+.ui-alert--success { border-color: rgba(87, 183, 119, .46); background: rgba(87, 183, 119, .1); }
+.ui-alert--success .ui-alert__icon { color: var(--color-primary); }
+.ui-alert--warning { border-color: rgba(214, 165, 70, .48); background: rgba(214, 165, 70, .1); }
+.ui-alert--warning .ui-alert__icon { color: var(--color-accent); }
+.ui-alert--danger { border-color: rgba(184, 92, 86, .55); background: rgba(184, 92, 86, .12); }
+.ui-alert--danger .ui-alert__icon { color: var(--color-danger-text); }
+
+.ui-status {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ui-status--success { color: var(--color-success-text); border-color: rgba(87, 183, 119, .4); background: rgba(87, 183, 119, .08); }
+.ui-status--warning { color: var(--color-warning-text); border-color: rgba(214, 165, 70, .4); background: rgba(214, 165, 70, .08); }
+.ui-status--danger { color: var(--color-danger-text); border-color: rgba(184, 92, 86, .45); background: rgba(184, 92, 86, .1); }
+
+.ui-empty-state {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 13px;
+  align-items: center;
+}
+.ui-empty-state__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  color: var(--color-ink);
+  background: var(--color-primary);
+  display: grid;
+  place-items: center;
+}
+.ui-empty-state__icon svg { width: 21px; height: 21px; }
+.ui-empty-state h2 { margin: 0; font: 500 21px/1.1 Oswald, sans-serif; text-transform: uppercase; }
+.ui-empty-state p { margin: 5px 0 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; }
+
+@media (max-width: 620px) {
+  .ui-empty-state { grid-template-columns: 42px minmax(0, 1fr); }
+  .ui-empty-state > :last-child:not(div) { grid-column: 1 / -1; width: 100%; }
+}

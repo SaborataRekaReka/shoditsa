@@ -23,19 +23,6 @@
   border-radius: inherit;
   background: var(--mode-game-brand, var(--color-primary));
 }
-.special-title-leaderboard-button {
-  width: 100%;
-  min-height: 56px;
-  margin: 0;
-  border-color: rgba(255, 107, 53, .52);
-  color: #7d361f;
-  background: rgba(255, 107, 53, .1);
-}
-.special-title-leaderboard-button:hover {
-  border-color: #d75426;
-  color: #642713;
-  background: rgba(255, 107, 53, .18);
-}
 .special-title-ticket .specials-error { margin: 10px 0 0; color: #8f332e; font-size: 11px; }
 
 .specials-screen,
@@ -258,7 +245,7 @@
   transition: transform .16s var(--ease), border-color .16s var(--ease), background .16s var(--ease);
 }
 .tip-modal__option--silver { --tip-accent: #9aa7ae; }
-.tip-modal__option--gold { --tip-accent: #d6a546; }
+.tip-modal__option--gold { --tip-accent: var(--color-accent); }
 .tip-modal__option:hover:not(:disabled) { transform: translateX(4px); border-color: var(--tip-accent); background: color-mix(in srgb, var(--tip-accent) 15%, var(--color-surface-2)); }
 .tip-modal__option:disabled { cursor: wait; }
 .tip-modal__option:disabled:not(:has(.tip-modal__spinner)) { opacity: .48; }

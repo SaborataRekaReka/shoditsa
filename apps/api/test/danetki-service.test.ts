@@ -3,6 +3,8 @@ import type { DanetkiPayload } from '@shoditsa/contracts'
 import { ApiError } from '../src/lib/errors.js'
 import { hashDanetkiInviteToken, normalizeDanetkiQuestion, toPublicDanetka } from '../src/modules/danetki/service.js'
 import { requestDanetkiAnswer } from '../src/modules/danetki/ai.js'
+import { beginDanetkiAiAttempt } from '../src/modules/danetki/worker.js'
+import { danetkiAiCallAttempts, danetkiAiCalls } from '@shoditsa/database'
 
 const payload: DanetkiPayload = {
   id: 'danetka:test',
@@ -80,5 +82,62 @@ describe('danetki public payload', () => {
     })
     expect(result.value).toEqual({ classification: 'invalid', answer: 'Задайте вопрос о ситуации.', importance: 'neutral', revealedFactIds: [], shouldUpdateSummary: false })
     expect(result.usage).toEqual({ inputTokens: 0, outputTokens: 0 })
+  })
+
+  it('reuses one logical AI call while appending retry attempts', async () => {
+    const calls: Array<Record<string, unknown>> = []
+    const attempts: Array<Record<string, unknown>> = []
+    const tx = {
+      select: () => ({
+        from: (table: unknown) => ({
+          where: () => table === danetkiAiCalls
+            ? { for: () => ({ limit: async () => calls.slice(0, 1) }) }
+            : Promise.resolve([{ value: attempts.length }]),
+        }),
+      }),
+      insert: (table: unknown) => ({
+        values: (value: Record<string, unknown>) => {
+          if (table === danetkiAiCalls) {
+            return {
+              onConflictDoNothing: () => ({
+                returning: async () => {
+                  if (calls.length) return []
+                  const call = { id: 'logical-call-1', ...value }
+                  calls.push(call)
+                  return [call]
+                },
+              }),
+            }
+          }
+          return {
+            returning: async () => {
+              const attempt = { id: `attempt-${attempts.length + 1}`, ...value }
+              attempts.push(attempt)
+              return [attempt]
+            },
+          }
+        },
+      }),
+      update: () => ({ set: () => ({ where: async () => [] }) }),
+    }
+    const job = { id: 'job-1' } as never
+    const input = {
+      sessionId: 'session-1',
+      triggerMessageId: 'message-1',
+      purpose: 'answer' as const,
+      model: 'gpt-test',
+      promptVersion: 'test-v1',
+    }
+
+    const first = await beginDanetkiAiAttempt(tx as never, job, input)
+    const second = await beginDanetkiAiAttempt(tx as never, { id: 'job-2' } as never, input)
+
+    expect(first.callId).toBe('logical-call-1')
+    expect(second.callId).toBe('logical-call-1')
+    expect(calls).toHaveLength(1)
+    expect(attempts.map((attempt) => [attempt.jobId, attempt.attemptNumber])).toEqual([
+      ['job-1', 1],
+      ['job-2', 2],
+    ])
   })
 })

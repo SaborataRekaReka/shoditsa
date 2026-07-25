@@ -21,7 +21,10 @@ import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie
 import { assertNormalizationField, isNormalizationRateLimitError, mergeNormalizationUsage, normalizationPendingItemIds, normalizeProposedValue, requestNormalization, runNormalizationPool } from './modules/admin/normalization-pipeline.js'
 import { apiBackfillFields, buildMissingFieldsProposal } from './modules/admin/pipeline-backfill.js'
 import { ApiError } from './lib/errors.js'
+import { reconcileCommerceOrders } from './modules/commerce/service.js'
 import { handleDanetkiJob } from './modules/danetki/worker.js'
+import { runContentRetention, runGameLifecycleCleanup } from './modules/maintenance/service.js'
+import { contentDuplicateGroups, isAllowedInRegularGame } from '@shoditsa/game-core'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -30,6 +33,7 @@ const db = database.db
 const root = process.cwd()
 let stopping = false
 let musicHealthCache: { signature: string; expiresAt: number; result: Awaited<ReturnType<typeof probeMusicSourceHealth>> } | null = null
+let lastMaintenanceScheduleAt = 0
 
 const record = (value: unknown): Json => value && typeof value === 'object' && !Array.isArray(value) ? value as Json : {}
 const primary = (value: unknown) => record(value).primaryValue
@@ -68,6 +72,40 @@ const claim = async () => {
   `)
   const id = Array.from(claimed as Iterable<{ id: string }>)[0]?.id
   return id ? (await db.select().from(backgroundJobs).where(eq(backgroundJobs.id, id)).limit(1))[0] : null
+}
+
+const ensureScheduledMaintenanceJobs = async (now = new Date()) => {
+  if (now.getTime() - lastMaintenanceScheduleAt < 60_000) return
+  lastMaintenanceScheduleAt = now.getTime()
+  const tenMinuteBucket = Math.floor(now.getTime() / (10 * 60_000))
+  const hourBucket = now.toISOString().slice(0, 13)
+  const dayBucket = now.toISOString().slice(0, 10)
+  await db.insert(backgroundJobs).values([
+    {
+      type: 'commerce_reconcile',
+      idempotencyKey: `scheduled:commerce-reconcile:${tenMinuteBucket}`,
+      payload: { scheduledAt: now.toISOString() },
+      maxAttempts: 5,
+    },
+    {
+      type: 'game_lifecycle_cleanup',
+      idempotencyKey: `scheduled:game-lifecycle:${hourBucket}`,
+      payload: { scheduledAt: now.toISOString() },
+      maxAttempts: 3,
+    },
+    {
+      type: 'content_retention',
+      idempotencyKey: `scheduled:content-retention:${dayBucket}`,
+      payload: { scheduledAt: now.toISOString() },
+      maxAttempts: 3,
+    },
+    {
+      type: 'content_quality_check',
+      idempotencyKey: `scheduled:content-quality:${dayBucket}`,
+      payload: { scheduledAt: now.toISOString() },
+      maxAttempts: 3,
+    },
+  ]).onConflictDoNothing()
 }
 
 const runCommand = async (args: string[], runId: string, jobId: string, integrationEnv: Record<string, string>) => {
@@ -638,11 +676,24 @@ const handleQuality = async () => {
       created += 1
     }
   }
-  const duplicates = await db.execute(sql`select mode::text, normalized_title, array_agg(item_id) ids from content_item_versions where revision_id = ${active.id} group by mode, normalized_title having count(*) > 1`)
-  for (const duplicate of Array.from(duplicates as Iterable<{ mode: typeof items[number]['mode']; normalized_title: string; ids: string[] }>)) {
-    for (const itemId of duplicate.ids) {
-      const fingerprint = hash(`duplicate:${duplicate.mode}:${duplicate.normalized_title}:${itemId}`)
-      await db.insert(contentQualityIssues).values({ ruleKey: 'duplicate_title', severity: 'warning', mode: duplicate.mode, itemId, field: 'titleRu', message: `Возможный дубликат названия: ${duplicate.ids.join(', ')}`, fingerprint }).onConflictDoNothing()
+  const rowsByItemId = new Map(items.map((item) => [item.itemId, item]))
+  const duplicateGroups = contentDuplicateGroups(items
+    .map((item) => item.payload as import('@shoditsa/contracts').TitleItem)
+    .filter(isAllowedInRegularGame))
+  for (const duplicate of duplicateGroups) {
+    const ids = duplicate.map((item) => item.id).sort()
+    for (const itemId of ids) {
+      const version = rowsByItemId.get(itemId)
+      if (!version) continue
+      const fingerprint = hash(`duplicate-identity:${version.id}:${ids.join('|')}`)
+      const message = `В общем игровом пуле несколько карточек одного объекта: ${ids.join(', ')}`
+      await db.insert(contentQualityIssues).values({
+        ruleKey: 'duplicate_playable_identity', severity: 'critical', mode: version.mode,
+        itemId, itemVersionId: version.id, field: 'canonicalId', message, fingerprint,
+      }).onConflictDoUpdate({ target: contentQualityIssues.fingerprint, set: {
+        status: sql`case when ${contentQualityIssues.status} = 'accepted' and (${contentQualityIssues.acceptedUntil} is null or ${contentQualityIssues.acceptedUntil} > now()) then 'accepted' else 'open' end`,
+        resolvedAt: null, message, severity: 'critical',
+      } })
       created += 1
     }
   }
@@ -811,6 +862,9 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
     const removed = await db.delete(clientEvents).where(lt(clientEvents.occurredAt, new Date(Date.now() - 30 * 86_400_000))).returning({ id: clientEvents.id })
     return { removed: removed.length }
   }
+  if (job.type === 'commerce_reconcile') return reconcileCommerceOrders(db, config)
+  if (job.type === 'game_lifecycle_cleanup') return runGameLifecycleCleanup(db)
+  if (job.type === 'content_retention') return runContentRetention(db)
   throw new Error(`Unsupported job type: ${job.type}`)
 }
 
@@ -848,6 +902,11 @@ const recoverStaleJobs = async () => {
 
 const work = async () => {
   while (!stopping) {
+    try {
+      await ensureScheduledMaintenanceJobs()
+    } catch (error) {
+      console.error(`[worker] maintenance scheduling failed: ${safeError(error)}`)
+    }
     try {
       await recoverStaleJobs()
     } catch (error) {

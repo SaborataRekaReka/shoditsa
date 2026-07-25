@@ -291,12 +291,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_582358",
@@ -1135,12 +1137,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 9
   },
   {
     "id": "kp_1101328",
@@ -1586,12 +1590,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_518192",
@@ -2506,12 +2512,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_463401",
@@ -2972,12 +2980,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 3
   },
   {
     "id": "kp_968829",
@@ -4811,12 +4821,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 1
   },
   {
     "id": "kp_992641",
@@ -5863,12 +5875,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_77381",
@@ -6455,12 +6469,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_972587",
@@ -7508,12 +7524,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_445186",
@@ -7804,150 +7822,6 @@
     },
     "seriesStatus": "Еще выходит",
     "seasonsCount": 4
-  },
-  {
-    "id": "kp_79204",
-    "mode": "series",
-    "titleRu": "Белый плен",
-    "titleOriginal": "Eight Below",
-    "alternativeTitles": [
-      "Eight Below"
-    ],
-    "year": 2005,
-    "endYear": null,
-    "countries": [
-      "США"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "приключения",
-      "семейный"
-    ],
-    "ageRating": "12+",
-    "runtimeMinutes": 120,
-    "directors": [
-      {
-        "nameRu": "Фрэнк Маршалл",
-        "nameOriginal": "Frank Marshall",
-        "photoUrl": "./data/libraries/people/img/94/942f88204f8cae2581f297d780ed90e3c991d622e9714af1776afb866fb66025.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Дэвид ДиДжилио",
-        "nameOriginal": "David DiGilio",
-        "photoUrl": "./data/libraries/people/img/01/01c3f905bddb02c528c5323da1c75c30b70171522ce5d947760564ca87beb196.webp"
-      },
-      {
-        "nameRu": "Тосиро Исидо",
-        "nameOriginal": "Toshirô Ishido",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Дэвид ДиДжилио",
-        "nameOriginal": "David DiGilio",
-        "photoUrl": "./data/libraries/people/img/01/01c3f905bddb02c528c5323da1c75c30b70171522ce5d947760564ca87beb196.webp"
-      },
-      {
-        "nameRu": "Тосиро Исидо",
-        "nameOriginal": "Toshirô Ishido",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Корэёси Курахара",
-        "nameOriginal": "Koreyoshi Kurahara",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Пол Уокер",
-        "nameOriginal": "Paul Walker",
-        "photoUrl": "./data/libraries/people/img/99/99e9b7e29eca20d54ecf48995c754cf5cbe753aa3d5b38e9b203d9796ebca379.webp"
-      },
-      {
-        "nameRu": "Брюс Гринвуд",
-        "nameOriginal": "Bruce Greenwood",
-        "photoUrl": "./data/libraries/people/img/1e/1e74b5c1dbbaa3633632d81b151ace5d45c5a10de271bd4170b916e4472fcaa4.webp"
-      },
-      {
-        "nameRu": "Мун Бладгуд",
-        "nameOriginal": "Moon Bloodgood",
-        "photoUrl": "./data/libraries/people/img/06/06184705f49f35641aca6ea4d9ccfc8ac3673e654d7ee167067db0f236af4e69.webp"
-      },
-      {
-        "nameRu": "Венди Крюсон",
-        "nameOriginal": "Wendy Crewson",
-        "photoUrl": "./data/libraries/people/img/bc/bc5c8dc2f164f206194efe6928b16218d1b11f40a3e7db45ed3ae01fd7f78b1d.webp"
-      },
-      {
-        "nameRu": "Джерард Планкет",
-        "nameOriginal": "Gerard Plunkett",
-        "photoUrl": "./data/libraries/people/img/fb/fb641a9ba4adf2b808118e1bb09a22dd54ac49de60e7777b27de566f3e3936ac.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Аугуст Шелленберг",
-        "nameOriginal": "August Schellenberg",
-        "photoUrl": "./data/libraries/people/img/61/61943230785590f626a936871b4f07ec0d109d78927a3f9785f8cc9effd63d6b.webp"
-      },
-      {
-        "nameRu": "Джейсон Биггз",
-        "nameOriginal": "Jason Biggs",
-        "photoUrl": "./data/libraries/people/img/0a/0a44bec665e4c5d462251819b07128094e10062f4f3f6058def47c0782c2c866.webp"
-      },
-      {
-        "nameRu": "Д.Дж.",
-        "nameOriginal": "D.J.",
-        "photoUrl": "./data/libraries/people/img/8b/8bdacccac5f82c52a7ebeb9178f8aec0be69e72d42803ddca44173ab4426f4c1.webp"
-      },
-      {
-        "nameRu": "Тимба",
-        "nameOriginal": "Timba",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Кода",
-        "nameOriginal": "Koda",
-        "photoUrl": "./data/libraries/people/img/85/85ea9619b4217ff7f0eba056cfd7eae4f89b386796c0bf2eba68d0ded9431824.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 79204,
-    "imdbId": null,
-    "ratings": {
-      "kinopoisk": 8.1,
-      "imdb": 7.3
-    },
-    "votes": {
-      "kinopoisk": 171948,
-      "imdb": 72000
-    },
-    "popularityScore": 85,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_79204/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_79204/backdrop.webp",
-    "description": "Действие фильма разворачивается на бескрайних просторах Антарктики. Научная экспедиция, в состав которой входят Джерри Шепард, его лучший друг Купер и геолог, отправляется на поиски метеорита. Однако неожиданное происшествие и тяжелые погодные условия вынуждают их оставить свои собачьи упряжки и вернуться назад.",
-    "plotHint": "Собаки из упряжки борются за жизнь в снежной пустыне. Антарктические приключения на основе реальных событий",
-    "slogan": "Трогательная история о дружбе, основанная на реальных событиях",
-    "facts": [],
-    "awards": null,
-    "topRank": 209,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_571335",
@@ -8828,149 +8702,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 3
-  },
-  {
-    "id": "kp_10179",
-    "mode": "series",
-    "titleRu": "Блеф",
-    "titleOriginal": "Bluff storia di truffe e di imbroglioni",
-    "alternativeTitles": [
-      "Bluff storia di truffe e di imbroglioni"
-    ],
-    "year": 1976,
-    "endYear": null,
-    "countries": [
-      "Италия"
-    ],
-    "originalLanguage": "it",
-    "genres": [
-      "криминал",
-      "комедия"
-    ],
-    "ageRating": "18+",
-    "runtimeMinutes": 110,
-    "directors": [
-      {
-        "nameRu": "Серджио Корбуччи",
-        "nameOriginal": "Sergio Corbucci",
-        "photoUrl": "./data/libraries/people/img/84/8467f2619bda1aaf7e85d06666c2c6e0b21cea366a0343daf7ba6703d8f1b713.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Ардуино Майури",
-        "nameOriginal": "Dino Maiuri",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Массимо Де Рита",
-        "nameOriginal": "Massimo De Rita",
-        "photoUrl": "./data/libraries/people/img/6c/6c2262b9a788a07c2f801364216a78fb8f0633d0afe3a2fe7ec89e29eff1cc66.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Ардуино Майури",
-        "nameOriginal": "Dino Maiuri",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Массимо Де Рита",
-        "nameOriginal": "Massimo De Rita",
-        "photoUrl": "./data/libraries/people/img/6c/6c2262b9a788a07c2f801364216a78fb8f0633d0afe3a2fe7ec89e29eff1cc66.webp"
-      },
-      {
-        "nameRu": "Серджио Корбуччи",
-        "nameOriginal": "Sergio Corbucci",
-        "photoUrl": "./data/libraries/people/img/84/8467f2619bda1aaf7e85d06666c2c6e0b21cea366a0343daf7ba6703d8f1b713.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Адриано Челентано",
-        "nameOriginal": "Adriano Celentano",
-        "photoUrl": "./data/libraries/people/img/0e/0e45a8f421629c97a616e5c62b09d00edb51aba6eaa3161dfd32179ca55cacf7.webp"
-      },
-      {
-        "nameRu": "Энтони Куинн",
-        "nameOriginal": "Anthony Quinn",
-        "photoUrl": "./data/libraries/people/img/3a/3a52711d3ffd1a115a72296e96e6ef93a0041cd26ebf53c840e1b520cf4986ff.webp"
-      },
-      {
-        "nameRu": "Корин Клери",
-        "nameOriginal": "Corinne Clery",
-        "photoUrl": "./data/libraries/people/img/71/7150121538070c2fbf526aa4c72ece1100ead4c98f6bf56f8347c3cdc2f31bd7.webp"
-      },
-      {
-        "nameRu": "Капюсин",
-        "nameOriginal": "Capucine",
-        "photoUrl": "./data/libraries/people/img/dc/dc75c728d379f4c12e3a6f8ef6c0acb97ced1cfac67cda8b515ed31b86b2b4b3.webp"
-      },
-      {
-        "nameRu": "Уго Болонья",
-        "nameOriginal": "Ugo Bologna",
-        "photoUrl": "./data/libraries/people/img/bf/bfd3ed106f4636a344a9c414f5c473e57378321873e9384e73d3bf0f119663a5.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Сальваторе Боргезе",
-        "nameOriginal": "Sal Borgese",
-        "photoUrl": "./data/libraries/people/img/96/96d5192f6a1d4fa5b5fdf8e68a24c203ecd4dc83417c78e2dd4a5940ad2ed033.webp"
-      },
-      {
-        "nameRu": "Лео Гаверо",
-        "nameOriginal": "Leo Gavero",
-        "photoUrl": "./data/libraries/people/img/f2/f271502a830459a9ae24735d0bb7f7c534afab4fc6ac3a40b722b1f25a6ecf22.webp"
-      },
-      {
-        "nameRu": "Мирча Карвен",
-        "nameOriginal": "Mircha Carven",
-        "photoUrl": "./data/libraries/people/img/7e/7e1ed90e5b6d3269e30b4c9c7429e7f78ee61e8e212d03a1ade28f667dcc3123.webp"
-      },
-      {
-        "nameRu": "Микки Нокс",
-        "nameOriginal": "Mickey Knox",
-        "photoUrl": "./data/libraries/people/img/71/71fcb613c5ce05801b72e3ef488a6d1cf7ae159bc7a1a6b6000acca78d1cc7cd.webp"
-      },
-      {
-        "nameRu": "Хелен Стёрлинг",
-        "nameOriginal": "Helen Stirling",
-        "photoUrl": "./data/libraries/people/img/50/50dbe050775f2166d73967e68b24942594b6d1865d2eb2608c8b52ab6924cae8.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 10179,
-    "imdbId": "tt0076101",
-    "ratings": {
-      "kinopoisk": 8.2,
-      "imdb": 7.3
-    },
-    "votes": {
-      "kinopoisk": 204095,
-      "imdb": 5100
-    },
-    "popularityScore": 93,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_10179/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_10179/backdrop.webp",
-    "description": "Белль Дюк имеет старые счеты с Филиппом Бэнгом, который отбывает свой срок за решёткой. Для того чтобы поквитаться с Филиппом, Белль Дюк вступает в сговор с другим аферистом по имени Феликс, чтобы тот организовал побег Филиппа Бэнга из тюрьмы. Побег удаётся, но парочка заодно обманывает и Белль Дюк, исчезнув прямо из-под её носа.",
-    "plotHint": "Один жулик вытаскивает другого из тюрьмы по заказу мафии. Комедийный дуэт и Куинна",
-    "slogan": "История обмана и мошенничества",
-    "facts": [],
-    "awards": null,
-    "topRank": 145,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_262973",
@@ -9998,12 +9729,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1399228",
@@ -10139,12 +9872,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1171940",
@@ -11035,12 +10770,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_94249",
@@ -11323,12 +11060,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_77039",
@@ -11746,12 +11485,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_714102",
@@ -12787,154 +12528,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
-  },
-  {
-    "id": "kp_25108",
-    "mode": "series",
-    "titleRu": "В бой идут одни «старики»",
-    "titleOriginal": "",
-    "alternativeTitles": [],
-    "year": 1973,
-    "endYear": null,
-    "countries": [
-      "СССР"
-    ],
-    "originalLanguage": "ru",
-    "genres": [
-      "драма",
-      "комедия",
-      "военный"
-    ],
-    "ageRating": "12+",
-    "runtimeMinutes": 87,
-    "directors": [
-      {
-        "nameRu": "Леонид Быков",
-        "nameOriginal": "Леонид Быков",
-        "photoUrl": "./data/libraries/people/img/db/dbdd093725c6c9ab73c1c20277c0861670d545e4b915e2ae7238c0e46ae6f989.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Леонид Быков",
-        "nameOriginal": "Леонид Быков",
-        "photoUrl": "./data/libraries/people/img/db/dbdd093725c6c9ab73c1c20277c0861670d545e4b915e2ae7238c0e46ae6f989.webp"
-      },
-      {
-        "nameRu": "Евгений Оноприенко",
-        "nameOriginal": "Евгений Оноприенко",
-        "photoUrl": "./data/libraries/people/img/5b/5beb71abf15b0ee41d02afeb01b62b051c8b79d338603eb9f9580e825bf94b34.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Леонид Быков",
-        "nameOriginal": "Леонид Быков",
-        "photoUrl": "./data/libraries/people/img/db/dbdd093725c6c9ab73c1c20277c0861670d545e4b915e2ae7238c0e46ae6f989.webp"
-      },
-      {
-        "nameRu": "Евгений Оноприенко",
-        "nameOriginal": "Евгений Оноприенко",
-        "photoUrl": "./data/libraries/people/img/5b/5beb71abf15b0ee41d02afeb01b62b051c8b79d338603eb9f9580e825bf94b34.webp"
-      },
-      {
-        "nameRu": "Александр Сацкий",
-        "nameOriginal": "Александр Сацкий",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Леонид Быков",
-        "nameOriginal": "Леонид Быков",
-        "photoUrl": "./data/libraries/people/img/db/dbdd093725c6c9ab73c1c20277c0861670d545e4b915e2ae7238c0e46ae6f989.webp"
-      },
-      {
-        "nameRu": "Сергей Подгорный",
-        "nameOriginal": "Сергей Подгорный",
-        "photoUrl": "./data/libraries/people/img/73/731cb251d6f04d210a49eef6b310c06b4b9eade37f63ef7ce48d8a48cce9f42d.webp"
-      },
-      {
-        "nameRu": "Сергей Иванов",
-        "nameOriginal": "Сергей Иванов",
-        "photoUrl": "./data/libraries/people/img/ab/abfa3b76d49c7be1af1298514aa49909c1d79e538705f5dff8bdb5b1fe848051.webp"
-      },
-      {
-        "nameRu": "Рустам Сагдуллаев",
-        "nameOriginal": "Рустам Сагдуллаев",
-        "photoUrl": "./data/libraries/people/img/c9/c993ca0671a92dd7ea968d4d85db5c22968ea7bb7ad95ae7da1e01499b6d7cab.webp"
-      },
-      {
-        "nameRu": "Евгения Симонова",
-        "nameOriginal": "Евгения Симонова",
-        "photoUrl": "./data/libraries/people/img/12/12a5f3f863740cd68d2989e60160c8b062b8ad92460008ecbcf70cbe25713071.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Ольга Матешко",
-        "nameOriginal": "Ольга Матешко",
-        "photoUrl": "./data/libraries/people/img/99/996a43a90b116c81d7922d6ac1d23922971fd000f92f7a2ffa77f1a63e00fe72.webp"
-      },
-      {
-        "nameRu": "Владимир Талашко",
-        "nameOriginal": "Владимир Талашко",
-        "photoUrl": "./data/libraries/people/img/5b/5b22ac04afc6a5aaeba251f3df3f21d5eb0be8ec4c48cbfe9df42074150747a0.webp"
-      },
-      {
-        "nameRu": "Алексей Смирнов",
-        "nameOriginal": "Алексей Смирнов",
-        "photoUrl": "./data/libraries/people/img/22/22038f4c0d64cd9badbdfb00e59a1fb5e9e6ef79c7abd3ba2872516cdccf7468.webp"
-      },
-      {
-        "nameRu": "Виктор Мирошниченко",
-        "nameOriginal": "Виктор Мирошниченко",
-        "photoUrl": "./data/libraries/people/img/b6/b681d1d4ad30422646f2d18cc6bba5c8dd943739b14334bf473e6c62c7cf8f39.webp"
-      },
-      {
-        "nameRu": "Григорий Гладий",
-        "nameOriginal": "Gregory Hlady",
-        "photoUrl": "./data/libraries/people/img/cb/cb0ad2e15bd73c17627ef414137e2887c99ce791bc1d2d4399bf6448f82ab36e.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 25108,
-    "imdbId": null,
-    "ratings": {
-      "kinopoisk": 8.7,
-      "imdb": 8.2
-    },
-    "votes": {
-      "kinopoisk": 600179,
-      "imdb": 6300
-    },
-    "popularityScore": 92,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_25108/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_25108/backdrop.webp",
-    "description": "Эта эскадрилья стала «поющей» — так капитан Титаренко подбирал себе новичков. Его «старикам» было не больше двадцати, но «желторотиков», пополнение из летных училищ ускоренного выпуска, в бой все равно, по возможности, не пускали. Им еще многое предстояло испытать — и жар боев, и радость первой победы над врагом, и величие братства, скрепленного кровью, и первую любовь, и горечь утраты.",
-    "plotHint": "Вчерашние курсанты сражаются в рядах «поющей» боевой эскадрильи. Легендарная военная драма Леонида Быкова",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 28,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 3
   },
   {
     "id": "kp_1291310",
@@ -13206,12 +12807,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_977493",
@@ -13653,12 +13256,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_582359",
@@ -14868,12 +14473,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_4421010",
@@ -15563,12 +15170,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1115149",
@@ -15720,12 +15329,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_487573",
@@ -15851,12 +15462,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_846894",
@@ -16443,12 +16056,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_93933",
@@ -18666,12 +18281,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_893150",
@@ -19257,12 +18874,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_875215",
@@ -19548,12 +19167,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1231016",
@@ -19702,12 +19323,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_818707",
@@ -20605,12 +20228,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_450186",
@@ -21031,12 +20656,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_44457",
@@ -21171,12 +20798,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5512084",
@@ -21622,12 +21251,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_4472200",
@@ -21788,147 +21419,6 @@
     "seasonsCount": 5
   },
   {
-    "id": "kp_3452",
-    "mode": "series",
-    "titleRu": "Генерал",
-    "titleOriginal": "The General",
-    "alternativeTitles": [
-      "The General"
-    ],
-    "year": 1998,
-    "endYear": null,
-    "countries": [
-      "Великобритания",
-      "Ирландия"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "триллер",
-      "драма",
-      "криминал",
-      "биография"
-    ],
-    "ageRating": "12+",
-    "runtimeMinutes": 124,
-    "directors": [
-      {
-        "nameRu": "Джон Бурмен",
-        "nameOriginal": "John Boorman",
-        "photoUrl": "./data/libraries/people/img/54/54db23e7c0b57d498092b0c5483d14d68c75f6858d1b9c1be3b66d0b6f47ddab.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Джон Бурмен",
-        "nameOriginal": "John Boorman",
-        "photoUrl": "./data/libraries/people/img/54/54db23e7c0b57d498092b0c5483d14d68c75f6858d1b9c1be3b66d0b6f47ddab.webp"
-      },
-      {
-        "nameRu": "Пол Уильямс",
-        "nameOriginal": "Paul Williams",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Джон Бурмен",
-        "nameOriginal": "John Boorman",
-        "photoUrl": "./data/libraries/people/img/54/54db23e7c0b57d498092b0c5483d14d68c75f6858d1b9c1be3b66d0b6f47ddab.webp"
-      },
-      {
-        "nameRu": "Пол Уильямс",
-        "nameOriginal": "Paul Williams",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Брендан Глисон",
-        "nameOriginal": "Brendan Gleeson",
-        "photoUrl": "./data/libraries/people/img/ba/ba1573a5fc00c7903e31f0506541af8f75bf83fea0f405cc67bc9c89fa2c93af.webp"
-      },
-      {
-        "nameRu": "Джон Войт",
-        "nameOriginal": "Jon Voight",
-        "photoUrl": "./data/libraries/people/img/fe/fedb15b97e57ed784b3b288191845a938f8d0af3efbd0eb3f82548f6187d2659.webp"
-      },
-      {
-        "nameRu": "Эдриан Данбар",
-        "nameOriginal": "Adrian Dunbar",
-        "photoUrl": "./data/libraries/people/img/df/df701d181cff390c0ff0c449ef3ef3c91de113f328930a0819921a7d538d61fb.webp"
-      },
-      {
-        "nameRu": "Шон МакГинли",
-        "nameOriginal": "Sean McGinley",
-        "photoUrl": "./data/libraries/people/img/32/32a602eec1071338d2f70c489fa271a9520b534f89cfdc229c9a907d6faf7c01.webp"
-      },
-      {
-        "nameRu": "Мария Дойл Кеннеди",
-        "nameOriginal": "Maria Doyle Kennedy",
-        "photoUrl": "./data/libraries/people/img/52/5281fe9676a1157b0834368c8eee4977e607cab9ad40a2c234186b1edfe5330e.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Анджелин Болл",
-        "nameOriginal": "Angeline Ball",
-        "photoUrl": "./data/libraries/people/img/16/163db706fdc524b1138e866a79d72ffb6bbd5f064c8d4ca0a38308d35f5f503b.webp"
-      },
-      {
-        "nameRu": "Инна Маклиам",
-        "nameOriginal": "Eanna MacLiam",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Том Мерфи",
-        "nameOriginal": "Tom Murphy",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Пол Хикки",
-        "nameOriginal": "Paul Hickey",
-        "photoUrl": "./data/libraries/people/img/22/2222282ce27f4bd77c4e8333b52eff805ddd8558493239e2577bcacc7dfaac38.webp"
-      },
-      {
-        "nameRu": "Томми О’Нил",
-        "nameOriginal": "Tommy O'Neill",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 3452,
-    "imdbId": "tt0120706",
-    "ratings": {
-      "kinopoisk": 7.1,
-      "imdb": 7.2
-    },
-    "votes": {
-      "kinopoisk": 2353,
-      "imdb": 9800
-    },
-    "popularityScore": 95,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_3452/poster.webp",
-    "backdropUrl": null,
-    "description": "Мартин Кэхилл был одним из самых известных людей в Ирландии. Под его окнами дежурили полицейские машины, за ним охотились фоторепортеры, фанаты носили его на руках. Мартин был профессиональным вором.",
-    "plotHint": "Мартин Кэхилл был одним из самых известных людей в Ирландии. Под его окнами дежурили полицейские машины, за ним охотились фоторепортеры, фанаты носили его на руках.",
-    "slogan": "The extraordinary true story of the rise and fall of the gangster, персонаж.",
-    "facts": [],
-    "awards": null,
-    "topRank": 782,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_271748",
     "mode": "series",
     "titleRu": "Герои",
@@ -22077,12 +21567,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 4
   },
   {
     "id": "kp_161032",
@@ -22649,12 +22141,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1208544",
@@ -23377,12 +22871,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1046640",
@@ -23662,12 +23158,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_804748",
@@ -24256,12 +23754,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 5
   },
   {
     "id": "kp_84793",
@@ -25141,12 +24641,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_582314",
@@ -25303,150 +24805,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 6
-  },
-  {
-    "id": "kp_416116",
-    "mode": "series",
-    "titleRu": "Грозовой перевал",
-    "titleOriginal": "Wuthering Heights",
-    "alternativeTitles": [
-      "Wuthering Heights"
-    ],
-    "year": 2011,
-    "endYear": null,
-    "countries": [
-      "Великобритания",
-      "Бельгия"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "мелодрама"
-    ],
-    "ageRating": "16+",
-    "runtimeMinutes": 129,
-    "directors": [
-      {
-        "nameRu": "Андреа Арнольд",
-        "nameOriginal": "Andrea Arnold",
-        "photoUrl": "./data/libraries/people/img/7c/7c1ce1b99372285a58845e1fe8a580b7972cea54799dd20f978f37f0b56e6419.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Андреа Арнольд",
-        "nameOriginal": "Andrea Arnold",
-        "photoUrl": "./data/libraries/people/img/7c/7c1ce1b99372285a58845e1fe8a580b7972cea54799dd20f978f37f0b56e6419.webp"
-      },
-      {
-        "nameRu": "Оливия Хитрид",
-        "nameOriginal": "Olivia Hetreed",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Андреа Арнольд",
-        "nameOriginal": "Andrea Arnold",
-        "photoUrl": "./data/libraries/people/img/7c/7c1ce1b99372285a58845e1fe8a580b7972cea54799dd20f978f37f0b56e6419.webp"
-      },
-      {
-        "nameRu": "Оливия Хитрид",
-        "nameOriginal": "Olivia Hetreed",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Эмили Бронте",
-        "nameOriginal": "Emily Brontë",
-        "photoUrl": "./data/libraries/people/img/56/567e04a64e0032a38155f09c83631db8c5af48cb98bf1ca95bd06cc7f6b82f63.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Кая Скоделарио",
-        "nameOriginal": "Kaya Scodelario",
-        "photoUrl": "./data/libraries/people/img/c3/c33f2d166924ba232b7d6bf6d138fdd52a4ee01f89d81d0bc773417aba79a045.webp"
-      },
-      {
-        "nameRu": "Джеймс Хаусон",
-        "nameOriginal": "James Howson",
-        "photoUrl": "./data/libraries/people/img/77/7703176358a5b649dd883ef5a96991f5b3ca929fba3d2979ca3c7bd6207d1c4c.webp"
-      },
-      {
-        "nameRu": "Соломон Глэйв",
-        "nameOriginal": "Solomon Glave",
-        "photoUrl": "./data/libraries/people/img/fe/fe83e878abdb5c77c131690163fdb62564882cc41b4b7122ef5c2a20ab7b67f4.webp"
-      },
-      {
-        "nameRu": "Шеннон Бир",
-        "nameOriginal": "Shannon Beer",
-        "photoUrl": "./data/libraries/people/img/51/51d157cb301603a25a51b91935da55a385949f031705f7e3711a43455d2b16bf.webp"
-      },
-      {
-        "nameRu": "Стив Эветс",
-        "nameOriginal": "Steve Evets",
-        "photoUrl": "./data/libraries/people/img/a1/a147a2d9d931168a51c5ee89e650a0ec607b40034b9a11c5839b3bf81c42a88f.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Оливер Милберн",
-        "nameOriginal": "Oliver Milburn",
-        "photoUrl": "./data/libraries/people/img/e7/e7b08ba4b6cc1ccea50917e5837e6705d7784a8d39266edd761dc11806801308.webp"
-      },
-      {
-        "nameRu": "Пол Хилтон",
-        "nameOriginal": "Paul Hilton",
-        "photoUrl": "./data/libraries/people/img/9f/9f2e90db7a94e49e6df3a89f07e18e2d7a9e5c46a75f1c1dc167c38c57084dc7.webp"
-      },
-      {
-        "nameRu": "Симона Джексон",
-        "nameOriginal": "Simone Jackson",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Ли Шоу",
-        "nameOriginal": "Lee Shaw",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Адам Лок",
-        "nameOriginal": "Adam Lock",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 416116,
-    "imdbId": "tt1181614",
-    "ratings": {
-      "kinopoisk": 6,
-      "imdb": 6
-    },
-    "votes": {
-      "kinopoisk": 8391,
-      "imdb": 12000
-    },
-    "popularityScore": 63,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_416116/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_416116/backdrop.webp",
-    "description": "В этом фильме рассказывается история двух поколений семейных кланов Эрншо и Линтон, — история о сложном переплетении их жизней и судеб и о роковом проклятии двух возлюбленных — Хитклиффа и Кэти.",
-    "plotHint": "Усыновленный сирота влюбляется в сводную сестру. Оригинальное прочтение романа, лауреат Венеции",
-    "slogan": "Любовь — это силы природы",
-    "facts": [],
-    "awards": null,
-    "topRank": 811,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_252003",
@@ -25718,12 +25076,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_4477341",
@@ -26149,12 +25509,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_957807",
@@ -26441,12 +25803,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_232247",
@@ -28427,155 +27791,6 @@
     "seasonsCount": 3
   },
   {
-    "id": "kp_4510025",
-    "mode": "series",
-    "titleRu": "День разоблачения",
-    "titleOriginal": "Disclosure Day",
-    "alternativeTitles": [
-      "Disclosure Day"
-    ],
-    "year": 2026,
-    "endYear": null,
-    "countries": [
-      "США",
-      "Канада",
-      "Япония",
-      "Новая Зеландия"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "триллер",
-      "драма",
-      "детектив",
-      "фантастика",
-      "боевик"
-    ],
-    "ageRating": null,
-    "runtimeMinutes": 120,
-    "directors": [
-      {
-        "nameRu": "Стивен Спилберг",
-        "nameOriginal": "Steven Spielberg",
-        "photoUrl": "./data/libraries/people/img/27/27b4f591f084c817eac3dcb4e0737b91cd76f66868011b233f3b9fe9c3ad5a99.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Тони Кушнер",
-        "nameOriginal": "Tony Kushner",
-        "photoUrl": "./data/libraries/people/img/cd/cdd1d7574dd7850eed5d5cd5d220e4e6ac5be911f913bbd7fe03e4f9e8fd3417.webp"
-      },
-      {
-        "nameRu": "Дэвид Кепп",
-        "nameOriginal": "David Koepp",
-        "photoUrl": "./data/libraries/people/img/fb/fb371b7977f2526c666a8b3dca40040de9b99ffdc67c7439b7002339665a0038.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Тони Кушнер",
-        "nameOriginal": "Tony Kushner",
-        "photoUrl": "./data/libraries/people/img/cd/cdd1d7574dd7850eed5d5cd5d220e4e6ac5be911f913bbd7fe03e4f9e8fd3417.webp"
-      },
-      {
-        "nameRu": "Дэвид Кепп",
-        "nameOriginal": "David Koepp",
-        "photoUrl": "./data/libraries/people/img/fb/fb371b7977f2526c666a8b3dca40040de9b99ffdc67c7439b7002339665a0038.webp"
-      },
-      {
-        "nameRu": "Стивен Спилберг",
-        "nameOriginal": "Steven Spielberg",
-        "photoUrl": "./data/libraries/people/img/27/27b4f591f084c817eac3dcb4e0737b91cd76f66868011b233f3b9fe9c3ad5a99.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Эмили Блант",
-        "nameOriginal": "Emily Blunt",
-        "photoUrl": "./data/libraries/people/img/e1/e1a5c13a4406823eb945866811f37ea042bf02aad6b36d0c088b47e59f10bfc3.webp"
-      },
-      {
-        "nameRu": "Мишель Уильямс",
-        "nameOriginal": "Michelle Williams",
-        "photoUrl": "./data/libraries/people/img/e2/e24dc75cbcd51bc57af43ca81186b973eb4fa08b94e0328edad72b42557942dd.webp"
-      },
-      {
-        "nameRu": "Джош О’Коннор",
-        "nameOriginal": "Josh O'Connor",
-        "photoUrl": "./data/libraries/people/img/90/909a548f2284da23c3aa00023449f3c28105306c821177ce0148fb5f89d88097.webp"
-      },
-      {
-        "nameRu": "Сет Роген",
-        "nameOriginal": "Seth Rogen",
-        "photoUrl": "./data/libraries/people/img/21/21e48a446a121c6b69e88eb9eb67288569269c2043cca511116d537323eaa0a2.webp"
-      },
-      {
-        "nameRu": "Пол Дано",
-        "nameOriginal": "Paul Dano",
-        "photoUrl": "./data/libraries/people/img/59/59d0278ca20b99102d1f24446eba8ff4a5ed1f538d4382ba719afd3adef23b70.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Колин Фёрт",
-        "nameOriginal": "Colin Firth",
-        "photoUrl": "./data/libraries/people/img/82/82acca8145c2f31dacda3f9a3189faecf3822cb4b68982c2f7eeda647d0f9342.webp"
-      },
-      {
-        "nameRu": "Ив Хьюсон",
-        "nameOriginal": "Eve Hewson",
-        "photoUrl": "./data/libraries/people/img/45/456a30862b055f424b5daceb23beb9629c7cb1daedb7704598b9574c34648f3f.webp"
-      },
-      {
-        "nameRu": "Джулия Баттерз",
-        "nameOriginal": "Julia Butters",
-        "photoUrl": "./data/libraries/people/img/42/42ff354880797b49d378e07bdff55915e53503ab2e38bff88a1530353964499f.webp"
-      },
-      {
-        "nameRu": "Маккенна Бриджер",
-        "nameOriginal": "Mckenna Bridger",
-        "photoUrl": "./data/libraries/people/img/51/51658388bac05d1a93980f808dcc215940c040a1eb442a07658098e5473de1bd.webp"
-      },
-      {
-        "nameRu": "Колман Доминго",
-        "nameOriginal": "Colman Domingo",
-        "photoUrl": "./data/libraries/people/img/86/869dfbc15e987130773eb2874f19377dd796ec22b14655272d630b868de097ce.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 4510025,
-    "imdbId": "tt15047880",
-    "ratings": {
-      "kinopoisk": 6.3,
-      "imdb": 6.7
-    },
-    "votes": {
-      "kinopoisk": 8394,
-      "imdb": 58362
-    },
-    "popularityScore": 20,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_4510025/poster.webp",
-    "backdropUrl": null,
-    "description": "Человечество узнаёт о прибытии на Землю инопланетян, чьё существование долгое время тщательно скрывалось.",
-    "plotHint": "Как человечество отреагирует на правду о внеземных цивилизациях в блокбастере Стивена Спилберга",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 810,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_5461927",
     "mode": "series",
     "titleRu": "День Шакала",
@@ -28868,12 +28083,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_77291",
@@ -31565,12 +30782,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_771612",
@@ -31665,12 +30884,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1263485",
@@ -32558,12 +31779,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_252089",
@@ -33318,12 +32541,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5461946",
@@ -34471,12 +33696,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_77044",
@@ -36388,150 +35615,6 @@
     "seasonsCount": 1
   },
   {
-    "id": "kp_158786",
-    "mode": "series",
-    "titleRu": "Жизнь Пи",
-    "titleOriginal": "Life of Pi",
-    "alternativeTitles": [
-      "Life of Pi"
-    ],
-    "year": 2012,
-    "endYear": null,
-    "countries": [
-      "США",
-      "Франция",
-      "Великобритания",
-      "Индия",
-      "Канада",
-      "Тайвань"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "приключения",
-      "фэнтези"
-    ],
-    "ageRating": "6+",
-    "runtimeMinutes": 127,
-    "directors": [
-      {
-        "nameRu": "Энг Ли",
-        "nameOriginal": "Ang Lee",
-        "photoUrl": "./data/libraries/people/img/a9/a9d19f51a937dae65f8a725f91e084f9ca2d70976798aaaca8d0116bbf436868.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Янн Мартел",
-        "nameOriginal": "Yann Martel",
-        "photoUrl": "./data/libraries/people/img/2b/2bb6efa21e83331d80950473167b8e94dc7d0decbded0e180555371b12bae529.webp"
-      },
-      {
-        "nameRu": "Дэвид Маги",
-        "nameOriginal": "David Magee",
-        "photoUrl": "./data/libraries/people/img/0d/0d1f0b17abc58b516263836d222ec710b4bb87544923495bfcef80fb6993fc77.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Янн Мартел",
-        "nameOriginal": "Yann Martel",
-        "photoUrl": "./data/libraries/people/img/2b/2bb6efa21e83331d80950473167b8e94dc7d0decbded0e180555371b12bae529.webp"
-      },
-      {
-        "nameRu": "Дэвид Маги",
-        "nameOriginal": "David Magee",
-        "photoUrl": "./data/libraries/people/img/0d/0d1f0b17abc58b516263836d222ec710b4bb87544923495bfcef80fb6993fc77.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Сурадж Шарма",
-        "nameOriginal": "Suraj Sharma",
-        "photoUrl": "./data/libraries/people/img/b6/b63a0755165e4cb4c6c3e5552b2e9e5011bad5da3825ba066d91b8eba0a4d3c9.webp"
-      },
-      {
-        "nameRu": "Ирфан Кхан",
-        "nameOriginal": "Irfan Khan",
-        "photoUrl": "./data/libraries/people/img/31/31e63cc6996bfbb7ee14d43a569fa7583c21177ff66f3fcfc1afaaeed1f5d663.webp"
-      },
-      {
-        "nameRu": "Гаутам Белур",
-        "nameOriginal": "Gautam Belur",
-        "photoUrl": "./data/libraries/people/img/a6/a63d327913a752cc5daa5ce79d9dadb16b666e2b33834fe495ea05b042f66a5a.webp"
-      },
-      {
-        "nameRu": "Аюш Тандон",
-        "nameOriginal": "Ayush Tandon",
-        "photoUrl": "./data/libraries/people/img/fb/fb5c5e8ec5287a60710bd59d0c89092b84b1a65b6e4a5190b7a70b75b458505f.webp"
-      },
-      {
-        "nameRu": "Табу",
-        "nameOriginal": "Tabu",
-        "photoUrl": "./data/libraries/people/img/5c/5cd8ebc1b0de5c8c7352611732157c3cafa86878430b0322e5b24eb9ed9e3d1f.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Рейф Сполл",
-        "nameOriginal": "Rafe Spall",
-        "photoUrl": "./data/libraries/people/img/1f/1f58851ec5a6a769172d2122510358d5abcc6c699b9a87bd6a766a6127497693.webp"
-      },
-      {
-        "nameRu": "Жерар Депардье",
-        "nameOriginal": "Gérard Depardieu",
-        "photoUrl": "./data/libraries/people/img/71/71a4fd73fdf9815776cab6d817de3087509aa753261678471a9cd6e14589dc17.webp"
-      },
-      {
-        "nameRu": "Адиль Хуссэйн",
-        "nameOriginal": "Adil Hussain",
-        "photoUrl": "./data/libraries/people/img/21/21b19544476687189767b385d441745f771343fec3eb023fdc15bc19e03f0990.webp"
-      },
-      {
-        "nameRu": "Аяан Кхан",
-        "nameOriginal": "Ayaan Khan",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Мохд Аббас Халили",
-        "nameOriginal": "Mohd. Abbas Khaleeli",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 158786,
-    "imdbId": "tt0454876",
-    "ratings": {
-      "kinopoisk": 7.8,
-      "imdb": 7.9
-    },
-    "votes": {
-      "kinopoisk": 333016,
-      "imdb": 698000
-    },
-    "popularityScore": 76,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_158786/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_158786/backdrop.webp",
-    "description": "Это история сына владельца одного индийского зоопарка, мальчика по имени Пи. Он познаёт мир, учится отстаивать свои принципы, ищет собственную дорогу к Богу, живя по канонам трёх конфессий, влюбляется… Но волей судьбы его семья вынуждена эмигрировать. На полпути между Индией и Канадой корабль терпит крушение, и Пи остаётся в шлюпке вместе с бенгальским тигром, гиеной, зеброй и орангутаном.",
-    "plotHint": "Индийский юноша оказался посреди океана в шлюпке с тигром. Живописная экранизация, четыре премии «Оскар»",
-    "slogan": "Поверь в невозможное",
-    "facts": [],
-    "awards": null,
-    "topRank": 418,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_1231407",
     "mode": "series",
     "titleRu": "Жуки",
@@ -36829,12 +35912,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_1309178",
@@ -36959,12 +36044,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_891439",
@@ -37591,149 +36678,6 @@
     "seasonsCount": 2
   },
   {
-    "id": "kp_5452841",
-    "mode": "series",
-    "titleRu": "Закулисье реальности",
-    "titleOriginal": "Backrooms",
-    "alternativeTitles": [
-      "Backrooms"
-    ],
-    "year": 2026,
-    "endYear": null,
-    "countries": [
-      "США",
-      "Канада"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "ужасы"
-    ],
-    "ageRating": "18+",
-    "runtimeMinutes": 105,
-    "directors": [
-      {
-        "nameRu": "Кейн Парсонс",
-        "nameOriginal": "Kane Parsons",
-        "photoUrl": "./data/libraries/people/img/04/047e12827fb746f1cf23cb95d3bf73de232813b3a8c5f1e17acd7db1eb27bca8.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Роберто Патино",
-        "nameOriginal": "Roberto Patino",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Уилл Судик",
-        "nameOriginal": "Will Soodik",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Роберто Патино",
-        "nameOriginal": "Roberto Patino",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Уилл Судик",
-        "nameOriginal": "Will Soodik",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Кейн Парсонс",
-        "nameOriginal": "Kane Parsons",
-        "photoUrl": "./data/libraries/people/img/04/047e12827fb746f1cf23cb95d3bf73de232813b3a8c5f1e17acd7db1eb27bca8.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Чиветель Эджиофор",
-        "nameOriginal": "Chiwetel Ejiofor",
-        "photoUrl": "./data/libraries/people/img/98/982d82cdd0ef0556b231bed2e91170ba84a028ce07df8ace28125a6594d77432.webp"
-      },
-      {
-        "nameRu": "Ренате Реинсве",
-        "nameOriginal": "Renate Reinsve",
-        "photoUrl": "./data/libraries/people/img/47/474af72e3c7ed9a83bd1eb45022752aaa2e8f7d1670b6785983d35676a880340.webp"
-      },
-      {
-        "nameRu": "Марк Дюпласс",
-        "nameOriginal": "Mark Duplass",
-        "photoUrl": "./data/libraries/people/img/ff/ffbd669a8265aa36a0c557c2120f6da79091a88049581d4b03bd313c41b0024b.webp"
-      },
-      {
-        "nameRu": "Финн Беннетт",
-        "nameOriginal": "Finn Bennett",
-        "photoUrl": "./data/libraries/people/img/ac/acd7f827028d7ef6a3c0095ddaad7c9affda66294ce61892af4d84e08fd24e87.webp"
-      },
-      {
-        "nameRu": "Лукита Максвелл",
-        "nameOriginal": "Lukita Maxwell",
-        "photoUrl": "./data/libraries/people/img/99/99459a6639e654ac7abdf0b0c667f647225b0bec2e8db576add94fbfae8e3fd8.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Эван Джогиа",
-        "nameOriginal": "Avan Jogia",
-        "photoUrl": "./data/libraries/people/img/3a/3a074d82f4b406a5c476517f27f252a02742d1134a34338cb5956acf297edc74.webp"
-      },
-      {
-        "nameRu": "Роберт Боброцкий",
-        "nameOriginal": "Robert Bobroczkyi",
-        "photoUrl": "./data/libraries/people/img/77/77b876c769fecfdba76eec243ed418a0315028208d5de84b491b9da0955c4a6e.webp"
-      },
-      {
-        "nameRu": "Чела Хорсдаль",
-        "nameOriginal": "Chelah Horsdal",
-        "photoUrl": "./data/libraries/people/img/04/045b3ec2f1ba8e70a1ed4af67c8fbe95d79ad6842dbf1436f1c6f1dbb1ea1d42.webp"
-      },
-      {
-        "nameRu": "Криста Косонен",
-        "nameOriginal": "Krista Kosonen",
-        "photoUrl": "./data/libraries/people/img/8e/8e3e202d47370830b428386f25f651138770cd4e4b951b2ec1ed886e96734641.webp"
-      },
-      {
-        "nameRu": "Филип Грэйнджер",
-        "nameOriginal": "Philip Granger",
-        "photoUrl": "./data/libraries/people/img/a0/a0ca860cba45a98394d92394d42fbda9696bdc1ab6f814bde05816e587223737.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 5452841,
-    "imdbId": "tt26657236",
-    "ratings": {
-      "kinopoisk": 6.7,
-      "imdb": 7.1
-    },
-    "votes": {
-      "kinopoisk": 81187,
-      "imdb": 56858
-    },
-    "popularityScore": 20,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_5452841/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_5452841/backdrop.webp",
-    "description": "Когда неудачливый продавец мебели Кларк обнаруживает скрытый портал в другое измерение в подвале своего магазина, он оказывается в бесконечном лабиринте извилистых жёлтых коридоров. В этом мире время и пространство не подчиняются логике, а нечто жуткое может скрываться за каждым углом.",
-    "plotHint": "Новый хоррор-хит A24 по мотивам крипипасты о бесконечном лабиринте пустых комнат. Билеты — на Кинопоиске",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 809,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_687812",
     "mode": "series",
     "titleRu": "Записки юного врача",
@@ -37881,152 +36825,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 2
-  },
-  {
-    "id": "kp_105813",
-    "mode": "series",
-    "titleRu": "Запределье",
-    "titleOriginal": "The Fall",
-    "alternativeTitles": [
-      "The Fall"
-    ],
-    "year": 2006,
-    "endYear": null,
-    "countries": [
-      "США",
-      "Индия",
-      "ЮАР"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "приключения",
-      "фэнтези"
-    ],
-    "ageRating": "18+",
-    "runtimeMinutes": 117,
-    "directors": [
-      {
-        "nameRu": "Тарсем Сингх",
-        "nameOriginal": "Tarsem Singh",
-        "photoUrl": "./data/libraries/people/img/20/20c3577544e3810216a11d6d7bc39491bea9bde4b055a20420ffa7428ee1252c.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Дэн Гилрой",
-        "nameOriginal": "Dan Gilroy",
-        "photoUrl": "./data/libraries/people/img/65/65491c1b722bb68d958e43749939132c36e151e19796ffd77b5f691685ee7919.webp"
-      },
-      {
-        "nameRu": "Нико Султанакис",
-        "nameOriginal": "Nico Soultanakis",
-        "photoUrl": "./data/libraries/people/img/5b/5bdb12c73a3c93c0df5be21ae554678ba762f42d5d758e76ad7d3ea2edda9cdc.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Дэн Гилрой",
-        "nameOriginal": "Dan Gilroy",
-        "photoUrl": "./data/libraries/people/img/65/65491c1b722bb68d958e43749939132c36e151e19796ffd77b5f691685ee7919.webp"
-      },
-      {
-        "nameRu": "Нико Султанакис",
-        "nameOriginal": "Nico Soultanakis",
-        "photoUrl": "./data/libraries/people/img/5b/5bdb12c73a3c93c0df5be21ae554678ba762f42d5d758e76ad7d3ea2edda9cdc.webp"
-      },
-      {
-        "nameRu": "Тарсем Сингх",
-        "nameOriginal": "Tarsem Singh",
-        "photoUrl": "./data/libraries/people/img/20/20c3577544e3810216a11d6d7bc39491bea9bde4b055a20420ffa7428ee1252c.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Ли Пейс",
-        "nameOriginal": "Lee Pace",
-        "photoUrl": "./data/libraries/people/img/2d/2d83a5e542005f6dcfc22275e0356b540c972b2a65cbdf16c4299c8dd3a90393.webp"
-      },
-      {
-        "nameRu": "Катинка Унтару",
-        "nameOriginal": "Catinca Untaru",
-        "photoUrl": "./data/libraries/people/img/71/71a71c314d226a22423fa9799d0dfab92ed013c5f4ef7e5cd371980e7333ad85.webp"
-      },
-      {
-        "nameRu": "Джастин Уоддэлл",
-        "nameOriginal": "Justine Waddell",
-        "photoUrl": "./data/libraries/people/img/47/4794da36cf4538abec73b73cdaf496e3272411bfbeabfde40f88d2d98b3c53a0.webp"
-      },
-      {
-        "nameRu": "Даниэль Кальтаджироне",
-        "nameOriginal": "Daniel Caltagirone",
-        "photoUrl": "./data/libraries/people/img/d2/d21e9224cf4e62bb170ecd2ef23ff92fd86f899d75265a559346d69b15bef849.webp"
-      },
-      {
-        "nameRu": "Робин Смит",
-        "nameOriginal": "Robin Smith",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Джиту Верма",
-        "nameOriginal": "Jeetu Verma",
-        "photoUrl": "./data/libraries/people/img/ec/ec4b174882bf38462eb8a4ef1fdea6a2d71fa733bc8df0551ebd30cec83d3850.webp"
-      },
-      {
-        "nameRu": "Лео Билл",
-        "nameOriginal": "Leo Bill",
-        "photoUrl": "./data/libraries/people/img/0a/0aea0c646aba3b7d863cdd4dbd60678797c2b63a16cfde870a797ef0fa33acea.webp"
-      },
-      {
-        "nameRu": "Маркус Уэсли",
-        "nameOriginal": "Marcus Wesley",
-        "photoUrl": "./data/libraries/people/img/a4/a412804ea2e50adce4d42cef04add9ab565808acb6722a5bd948eac2c3a5c6c5.webp"
-      },
-      {
-        "nameRu": "Джулиан Блич",
-        "nameOriginal": "Julian Bleach",
-        "photoUrl": "./data/libraries/people/img/62/624e10f4a5b5964a89129f0e925d270b65e142244393d02657c902b5d10c1bfc.webp"
-      },
-      {
-        "nameRu": "Шон Джилдер",
-        "nameOriginal": "Sean Gilder",
-        "photoUrl": "./data/libraries/people/img/83/839bd873e84f8b81c56ef51a125ce97ddd5da5775d6c146cf2dd09432dd92591.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 105813,
-    "imdbId": "tt0460791",
-    "ratings": {
-      "kinopoisk": 7.6,
-      "imdb": 7.8
-    },
-    "votes": {
-      "kinopoisk": 46245,
-      "imdb": 128000
-    },
-    "popularityScore": 76,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_105813/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_105813/backdrop.webp",
-    "description": "Головорез Черный бандит, сбежавший африканский раб Отта Бенга, индийский мудрец, итальянский революционер Луиджи и натуралист Чарльз Дарвин — герои сказки голливудского каскадера Роя, получившего травму после неудачного трюка на мосту. В лос-анджелесской больнице его фантазии слушает пятилетняя девочка Александрия. Но однажды Рой узнает, что возлюбленная предала его.",
-    "plotHint": "Каскадер рассказывает сказки девочке в обмен на морфин. Визионерское фэнтези, получившее приз Берлинале",
-    "slogan": "И ты окажешься за пределами реальности",
-    "facts": [],
-    "awards": null,
-    "topRank": 547,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_1200189",
@@ -39691,12 +38489,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1379545",
@@ -40140,12 +38940,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_780307",
@@ -40272,12 +39074,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1295920",
@@ -40864,148 +39668,6 @@
     "seasonsCount": 1
   },
   {
-    "id": "kp_42664",
-    "mode": "series",
-    "titleRu": "Иван Васильевич меняет профессию",
-    "titleOriginal": "",
-    "alternativeTitles": [],
-    "year": 1973,
-    "endYear": null,
-    "countries": [
-      "СССР"
-    ],
-    "originalLanguage": "ru",
-    "genres": [
-      "фантастика",
-      "приключения",
-      "комедия"
-    ],
-    "ageRating": "6+",
-    "runtimeMinutes": 88,
-    "directors": [
-      {
-        "nameRu": "Леонид Гайдай",
-        "nameOriginal": "Леонид Гайдай",
-        "photoUrl": "./data/libraries/people/img/27/27efac34c38181931f65a28ad76178908278c6373bb453641c13430ff6e637fd.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Владлен Бахнов",
-        "nameOriginal": "Владлен Бахнов",
-        "photoUrl": "./data/libraries/people/img/aa/aa2609654ae5c90f0aee4bba70eb6b88aa7e0dbdd0a70b6955a61c868e4a25a1.webp"
-      },
-      {
-        "nameRu": "Михаил Булгаков",
-        "nameOriginal": "Mikhail A. Bulgakov",
-        "photoUrl": "./data/libraries/people/img/d4/d4cb47d030d4789b4c349ded59dfa602f9d48fb958ffe7fce25b1a3abda4db48.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Владлен Бахнов",
-        "nameOriginal": "Владлен Бахнов",
-        "photoUrl": "./data/libraries/people/img/aa/aa2609654ae5c90f0aee4bba70eb6b88aa7e0dbdd0a70b6955a61c868e4a25a1.webp"
-      },
-      {
-        "nameRu": "Михаил Булгаков",
-        "nameOriginal": "Mikhail A. Bulgakov",
-        "photoUrl": "./data/libraries/people/img/d4/d4cb47d030d4789b4c349ded59dfa602f9d48fb958ffe7fce25b1a3abda4db48.webp"
-      },
-      {
-        "nameRu": "Леонид Гайдай",
-        "nameOriginal": "Леонид Гайдай",
-        "photoUrl": "./data/libraries/people/img/27/27efac34c38181931f65a28ad76178908278c6373bb453641c13430ff6e637fd.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Александр Демьяненко",
-        "nameOriginal": "Александр Демьяненко",
-        "photoUrl": "./data/libraries/people/img/bd/bdb75d365dcdecca12e0d3da7658161948624cb97747077af24534e0a3599bbb.webp"
-      },
-      {
-        "nameRu": "Юрий Яковлев",
-        "nameOriginal": "Юрий Яковлев",
-        "photoUrl": "./data/libraries/people/img/86/860b3efc90d346225af4dd326278466e549cdccad5083ad9c8f7e12b4082b7f8.webp"
-      },
-      {
-        "nameRu": "Леонид Куравлёв",
-        "nameOriginal": "Леонид Куравлёв",
-        "photoUrl": "./data/libraries/people/img/33/33b9ee07e36706af3d909d9b122b837e07aba93c204534da7fd38f5b40cc4068.webp"
-      },
-      {
-        "nameRu": "Наталья Крачковская",
-        "nameOriginal": "Наталья Крачковская",
-        "photoUrl": "./data/libraries/people/img/7a/7a583196aa8fd67fa37e8c29aa2bbeca1a6530a3e85ce28ff9e3c371ae1688bc.webp"
-      },
-      {
-        "nameRu": "Савелий Крамаров",
-        "nameOriginal": "Савелий Крамаров",
-        "photoUrl": "./data/libraries/people/img/9d/9d0c2fa744856245b24959a8fb4bd5f5552b90a3dfb6cbb86c73e715cf15f153.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Наталья Селезнёва",
-        "nameOriginal": "Наталья Селезнёва",
-        "photoUrl": "./data/libraries/people/img/d0/d030d98d6ed6e6780865d42d969651fb1ba0371b747bb1613c18da6956dc8880.webp"
-      },
-      {
-        "nameRu": "Владимир Этуш",
-        "nameOriginal": "Владимир Этуш",
-        "photoUrl": "./data/libraries/people/img/2e/2e8bfd07730dabaa702db814766619db82ed89b878ea77c41ad42a26c8a4c1f5.webp"
-      },
-      {
-        "nameRu": "Михаил Пуговкин",
-        "nameOriginal": "Михаил Пуговкин",
-        "photoUrl": "./data/libraries/people/img/5d/5dcaaab0782d7f9ba3210a1e39cd190ad20939d6df4c904ec776b312ce2f89ed.webp"
-      },
-      {
-        "nameRu": "Сергей Филиппов",
-        "nameOriginal": "Сергей Филиппов",
-        "photoUrl": "./data/libraries/people/img/7e/7edd664369744d104ed89d8f15f610e6a5c7171aa8febd6c6046a61309fd27bd.webp"
-      },
-      {
-        "nameRu": "Наталья Кустинская",
-        "nameOriginal": "Наталья Кустинская",
-        "photoUrl": "./data/libraries/people/img/70/707dfc803df3d6f535e79416ceddc15cf0cbbf9773facea6da3889ba016e08ef.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 42664,
-    "imdbId": "tt0070233",
-    "ratings": {
-      "kinopoisk": 8.8,
-      "imdb": 8.2
-    },
-    "votes": {
-      "kinopoisk": 1274910,
-      "imdb": 20000
-    },
-    "popularityScore": 91,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_42664/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_42664/backdrop.webp",
-    "description": "Инженер-изобретатель Тимофеев сконструировал машину времени, которая соединила его квартиру с XVI веком — точнее, с палатами государя Ивана Грозного. Туда-то и попадают тёзка царя пенсионер-общественник Бунша и квартирный вор Жорж Милославский, а сам великий государь оказывается в квартире Тимофеева.",
-    "plotHint": "Грозный отвечает на телефон, пока его тезка-пенсионер сидит на троне. Советский хит о липовом государе",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 21,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_586685",
     "mode": "series",
     "titleRu": "Игра",
@@ -41144,12 +39806,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1395366",
@@ -42922,12 +41586,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1045172",
@@ -43786,12 +42452,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1144174",
@@ -43918,12 +42586,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1178548",
@@ -44668,12 +43338,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_978853",
@@ -46917,7 +45589,8 @@
       "source": [
         "kinopoisk_top_collection",
         "kinopoisk_api_unofficial",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
@@ -46925,7 +45598,8 @@
     "plotHint": "Он стал самым влиятельным человеком на Руси — и нажил могущественных врагов. Эпичная историческая сага",
     "slogan": null,
     "facts": [],
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1047617",
@@ -47676,12 +46350,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 13
   },
   {
     "id": "kp_5088599",
@@ -47769,7 +46445,8 @@
       "source": [
         "kinopoisk_top_collection",
         "kinopoisk_api_unofficial",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
@@ -47777,7 +46454,8 @@
     "plotHint": "30 лет истории страны — глазами трех сотрудников КГБ. Новый сериал от создателей «Невского»",
     "slogan": null,
     "facts": [],
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_386715",
@@ -48680,144 +47358,6 @@
     "seasonsCount": 6
   },
   {
-    "id": "kp_66341",
-    "mode": "series",
-    "titleRu": "Короткий фильм о любви",
-    "titleOriginal": "Krótki film o milosci",
-    "alternativeTitles": [
-      "Krótki film o milosci"
-    ],
-    "year": 1988,
-    "endYear": null,
-    "countries": [
-      "Польша"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "мелодрама"
-    ],
-    "ageRating": "16+",
-    "runtimeMinutes": 87,
-    "directors": [
-      {
-        "nameRu": "Кшиштоф Кесьлёвский",
-        "nameOriginal": "Krzysztof Kieślowski",
-        "photoUrl": "./data/libraries/people/img/da/da6e9f92be30f5825403bc8570967f0f29b38e38b841e580734a2db1c2a7ebc5.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Кшиштоф Кесьлёвский",
-        "nameOriginal": "Krzysztof Kieślowski",
-        "photoUrl": "./data/libraries/people/img/da/da6e9f92be30f5825403bc8570967f0f29b38e38b841e580734a2db1c2a7ebc5.webp"
-      },
-      {
-        "nameRu": "Кшиштоф Песевич",
-        "nameOriginal": "Krzysztof Piesiewicz",
-        "photoUrl": "./data/libraries/people/img/26/26484f7c9c1bc98409fdef05cdf2b39a32086d276d0e033954f1e2b6ab8115e4.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Кшиштоф Кесьлёвский",
-        "nameOriginal": "Krzysztof Kieślowski",
-        "photoUrl": "./data/libraries/people/img/da/da6e9f92be30f5825403bc8570967f0f29b38e38b841e580734a2db1c2a7ebc5.webp"
-      },
-      {
-        "nameRu": "Кшиштоф Песевич",
-        "nameOriginal": "Krzysztof Piesiewicz",
-        "photoUrl": "./data/libraries/people/img/26/26484f7c9c1bc98409fdef05cdf2b39a32086d276d0e033954f1e2b6ab8115e4.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Гражина Шаполовская",
-        "nameOriginal": "Grazyna Szapolowska",
-        "photoUrl": "./data/libraries/people/img/7f/7f1e717a4a38de90137dd3df1e084dea75b61032d81f1bf34570f80390042f74.webp"
-      },
-      {
-        "nameRu": "Олаф Любашенко",
-        "nameOriginal": "Olaf Lubaszenko",
-        "photoUrl": "./data/libraries/people/img/84/84d19007426014d646388a059a81436dbd8731770ab27be494bc22391f8ba1c0.webp"
-      },
-      {
-        "nameRu": "Стефания Ивиньска",
-        "nameOriginal": "Stefania Iwinska",
-        "photoUrl": "./data/libraries/people/img/89/89de04d997fd8fdf32695caee74f0adf1b5a3d23e8d992c8ebb8e690431ff2c2.webp"
-      },
-      {
-        "nameRu": "Пётр Махалица",
-        "nameOriginal": "Piotr Machalica",
-        "photoUrl": "./data/libraries/people/img/0b/0b95443da746abf0c153e98d24b588c66c66488e8ae99ab87fbb6a3a21cd3daa.webp"
-      },
-      {
-        "nameRu": "Артур Барчиш",
-        "nameOriginal": "Artur Barciś",
-        "photoUrl": "./data/libraries/people/img/6d/6d0730dd154913a2859d6878891980568c0f9946307ea97cef05649cd0f24081.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Ханна Хойнацка",
-        "nameOriginal": "Hanna Chojnacka",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Станислав Гавлик",
-        "nameOriginal": "Stanislaw Gawlik",
-        "photoUrl": "./data/libraries/people/img/09/0994160ee76dbc9433c539c47f2ac1448b3a3baaa97c1b9a9dc9b9571beaa56d.webp"
-      },
-      {
-        "nameRu": "Томаш Градовский",
-        "nameOriginal": "Tomasz Gradowski",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Рафаль Имбро",
-        "nameOriginal": "Rafal Imbro",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Ян Пехоцински",
-        "nameOriginal": "Jan Piechocinski",
-        "photoUrl": "./data/libraries/people/img/62/626fda39717c4fb1debdb37c19759b66dbf4617df523265780ec4992ac4f5e6a.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 66341,
-    "imdbId": "tt0095467",
-    "ratings": {
-      "kinopoisk": 8,
-      "imdb": 8.1
-    },
-    "votes": {
-      "kinopoisk": 7293,
-      "imdb": 28000
-    },
-    "popularityScore": 89,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_66341/poster.webp",
-    "backdropUrl": null,
-    "description": "19-летний Томек — вуайерист. В свободное от работы на почте время он подглядывает за красоткой напротив Магдой — сперва через бинокль, который завещал ему уехавший друг (тоже вуайерист), а теперь более основательно — через подзорную трубу. Поставленный еще приятелем диагноз: «КПЧД» (красивая попа, часто дает) — в результате наблюдений остается без изменений.",
-    "plotHint": "19-летний Томек — вуайерист. В свободное от работы на почте время он подглядывает за красоткой напротив Магдой — сперва через бинокль, который завещал ему уехавший друг (тоже вуайерист), а т...",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 278,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_79844",
     "mode": "series",
     "titleRu": "Кортик",
@@ -48936,12 +47476,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_762381",
@@ -49976,12 +48518,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 3
   },
   {
     "id": "kp_1048576",
@@ -50537,146 +49081,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 2
-  },
-  {
-    "id": "kp_9617",
-    "mode": "series",
-    "titleRu": "Крупная рыба",
-    "titleOriginal": "Big Fish",
-    "alternativeTitles": [
-      "Big Fish"
-    ],
-    "year": 2003,
-    "endYear": null,
-    "countries": [
-      "США"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "мелодрама",
-      "приключения",
-      "фэнтези"
-    ],
-    "ageRating": "12+",
-    "runtimeMinutes": 125,
-    "directors": [
-      {
-        "nameRu": "Тим Бёртон",
-        "nameOriginal": "Tim Burton",
-        "photoUrl": "./data/libraries/people/img/41/41cc499774bb88e97a980ae0a50e7096920f6f47a76d658974c854ccedfa24b4.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Дэниэл Уоллес",
-        "nameOriginal": "Daniel Wallace",
-        "photoUrl": "./data/libraries/people/img/e3/e30f0173cf35266e7e4a6b94ea9e23eea163f163c9531a7b7858ae3ab3a5ef1e.webp"
-      },
-      {
-        "nameRu": "Джон Огаст",
-        "nameOriginal": "John August",
-        "photoUrl": "./data/libraries/people/img/4c/4c6416e09d0801e99a48370a7cdbfb0f89ae46e6c1076d2b31b3f57e82842035.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Дэниэл Уоллес",
-        "nameOriginal": "Daniel Wallace",
-        "photoUrl": "./data/libraries/people/img/e3/e30f0173cf35266e7e4a6b94ea9e23eea163f163c9531a7b7858ae3ab3a5ef1e.webp"
-      },
-      {
-        "nameRu": "Джон Огаст",
-        "nameOriginal": "John August",
-        "photoUrl": "./data/libraries/people/img/4c/4c6416e09d0801e99a48370a7cdbfb0f89ae46e6c1076d2b31b3f57e82842035.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Юэн Макгрегор",
-        "nameOriginal": "Ewan McGregor",
-        "photoUrl": "./data/libraries/people/img/23/2375096e1ad9e48f5c672177970d0ebe31b64b89bdbc236413fa0e8a65ff32fe.webp"
-      },
-      {
-        "nameRu": "Альберт Финни",
-        "nameOriginal": "Albert Finney",
-        "photoUrl": "./data/libraries/people/img/4e/4efe5aa6bc6b240d3da883be559535fba7677c28828963d2e4e4d5d3c5a9cbb2.webp"
-      },
-      {
-        "nameRu": "Перри Воллстон",
-        "nameOriginal": "Perry Walston",
-        "photoUrl": "./data/libraries/people/img/5a/5a841d526df1c715169f16a7c2e09968b8d78e7a1344b8d8c1b524c5612123e7.webp"
-      },
-      {
-        "nameRu": "Билли Крудап",
-        "nameOriginal": "Billy Crudup",
-        "photoUrl": "./data/libraries/people/img/f3/f3f378f6654a2ee5f77b9993029536d4f5e06ad4ff8e2018357787e1ca0e5419.webp"
-      },
-      {
-        "nameRu": "Грэйсон Стоун",
-        "nameOriginal": "Grayson Stone",
-        "photoUrl": "./data/libraries/people/img/72/7283354453a4382b57d54524ee88a751459f19e015cd6629df736414648c1e05.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Джессика Лэнг",
-        "nameOriginal": "Jessica Lange",
-        "photoUrl": "./data/libraries/people/img/09/095343b6ae4d0c1853d905896826079e4d1badc2d6a2c00942b34e408f900870.webp"
-      },
-      {
-        "nameRu": "Элисон Ломан",
-        "nameOriginal": "Alison Lohman",
-        "photoUrl": "./data/libraries/people/img/4c/4c8ee320d75614c6552e3a17dc1cc2b2f8e1d89f63f342be13ce2b0d7934cbc1.webp"
-      },
-      {
-        "nameRu": "Хелена Бонем Картер",
-        "nameOriginal": "Helena Bonham Carter",
-        "photoUrl": "./data/libraries/people/img/9a/9ab88a1a0666d91a3b0380386d2b4e591668cb22f13ebf56c3fc9b40c8569d5a.webp"
-      },
-      {
-        "nameRu": "Хейли Энн Нельсон",
-        "nameOriginal": "Hailey Anne Nelson",
-        "photoUrl": "./data/libraries/people/img/91/91df19b5f198298243b867ca22c9677c03b6ec436c75de8591019b779e899ce3.webp"
-      },
-      {
-        "nameRu": "Роберт Гийом",
-        "nameOriginal": "Robert Guillaume",
-        "photoUrl": "./data/libraries/people/img/b9/b941f5b244cf6580ab0798504e8412f1150ff7a076deae0cd4615b42585a2aa8.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 9617,
-    "imdbId": "tt0319061",
-    "ratings": {
-      "kinopoisk": 8,
-      "imdb": 7.9
-    },
-    "votes": {
-      "kinopoisk": 228113,
-      "imdb": 477000
-    },
-    "popularityScore": 93,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_9617/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_9617/backdrop.webp",
-    "description": "На протяжении всей жизни Уилла Блума его отец Эд рассказывал ему невероятные и абсурдные истории, которые якобы произошли с ним. Когда Уилл узнает, что отец болен раком и скоро умрёт, он вместе с женой возвращается к Эду спустя три года разлуки. Чувствуя, что он вовсе не знает отца, сын пытается разгадать тайну Эдварда Блума.",
-    "plotHint": "Сын погружается в прошлое своего умирающего отца-фантазера. Самый светлый фильм Тима Бёртона",
-    "slogan": "Приключения длиною в жизнь",
-    "facts": [],
-    "awards": null,
-    "topRank": 276,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_1101983",
@@ -51757,12 +50161,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 4
   },
   {
     "id": "kp_930544",
@@ -52055,12 +50461,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1328359",
@@ -52796,12 +51204,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 2
   },
   {
     "id": "kp_692912",
@@ -52937,12 +51347,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 1
   },
   {
     "id": "kp_774797",
@@ -54157,12 +52569,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 4
   },
   {
     "id": "kp_4468044",
@@ -55829,12 +54243,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_79429",
@@ -56128,115 +54544,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 4
-  },
-  {
-    "id": "kp_22907",
-    "mode": "series",
-    "titleRu": "Медведь",
-    "titleOriginal": "L'ours",
-    "alternativeTitles": [
-      "L'ours"
-    ],
-    "year": 1988,
-    "endYear": null,
-    "countries": [
-      "США",
-      "Франция"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "приключения",
-      "семейный"
-    ],
-    "ageRating": "12+",
-    "runtimeMinutes": 94,
-    "directors": [
-      {
-        "nameRu": "Жан-Жак Анно",
-        "nameOriginal": "Jean-Jacques Annaud",
-        "photoUrl": "./data/libraries/people/img/f1/f1432b02d02edf2c71f60fef9cf88c7c12e03ab96a88262afdf49900285df307.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Джеймс Оливер Кёрвуд",
-        "nameOriginal": "James Oliver Curwood",
-        "photoUrl": "./data/libraries/people/img/c4/c42fba4db38a15563065be13562c5087a46a715e09603ee376f2177b8ed4d4c4.webp"
-      },
-      {
-        "nameRu": "Жерар Браш",
-        "nameOriginal": "Gérard Brach",
-        "photoUrl": "./data/libraries/people/img/25/25d74b1d53b7f0302674cf1922ce5cb24252c3aa4f2fc0ae8c90262761404365.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Джеймс Оливер Кёрвуд",
-        "nameOriginal": "James Oliver Curwood",
-        "photoUrl": "./data/libraries/people/img/c4/c42fba4db38a15563065be13562c5087a46a715e09603ee376f2177b8ed4d4c4.webp"
-      },
-      {
-        "nameRu": "Жерар Браш",
-        "nameOriginal": "Gérard Brach",
-        "photoUrl": "./data/libraries/people/img/25/25d74b1d53b7f0302674cf1922ce5cb24252c3aa4f2fc0ae8c90262761404365.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "медведь Барт",
-        "nameOriginal": "Bart the Bear",
-        "photoUrl": "./data/libraries/people/img/d1/d1a49571ac4c481122e910ff7fde8727cdccbe7611b73ad09b677b1ac6e77742.webp"
-      },
-      {
-        "nameRu": "Чеки Карио",
-        "nameOriginal": "Tchéky Karyo",
-        "photoUrl": "./data/libraries/people/img/38/38838e76c3e87c9a82cec6f37b701b9550b9c2cff96460a9c025507552cbb3fd.webp"
-      },
-      {
-        "nameRu": "Джек Уоллес",
-        "nameOriginal": "Jack Wallace",
-        "photoUrl": "./data/libraries/people/img/e3/e3ca4fd81f230d20a46399de8021e732740ec257d1b59afafaff053dba831623.webp"
-      },
-      {
-        "nameRu": "Андре Лакомб",
-        "nameOriginal": "André Lacombe",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "supportingCast": [],
-    "studios": [],
-    "kinopoiskId": 22907,
-    "imdbId": "tt0095800",
-    "ratings": {
-      "kinopoisk": 8,
-      "imdb": 7.7
-    },
-    "votes": {
-      "kinopoisk": 22625,
-      "imdb": 20000
-    },
-    "popularityScore": 92,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_22907/poster.webp",
-    "backdropUrl": null,
-    "description": "Среди прекрасных и величественных пейзажей Британской Колумбии случилась трогательная история о медвежонке, потерявшем свою мать и предоставленным самому себе, в то время как двое охотников продолжают рыскать по лесу в поисках добычи. Судьба сводит вместе осиротевшего малыша и огромного раненого медведя. Непросто складываются их взаимоотношения, но охотники с ружьями и злыми собаками оказываются куда страшнее.",
-    "plotHint": "Среди прекрасных и величественных пейзажей Британской Колумбии случилась трогательная история о медвежонке, потерявшем свою мать и предоставленным самому себе, в то время как двое охотников.",
-    "slogan": "He's an orphan. at the start of a journey. A journey to survive.",
-    "facts": [],
-    "awards": null,
-    "topRank": 277,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_4481731",
@@ -58327,12 +56634,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_508365",
@@ -59240,12 +57549,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 3
   },
   {
     "id": "kp_77281",
@@ -60594,12 +58905,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_732519",
@@ -60890,12 +59203,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_747494",
@@ -61347,149 +59662,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 3
-  },
-  {
-    "id": "kp_455",
-    "mode": "series",
-    "titleRu": "Молодой Франкенштейн",
-    "titleOriginal": "Young Frankenstein",
-    "alternativeTitles": [
-      "Young Frankenstein"
-    ],
-    "year": 1974,
-    "endYear": null,
-    "countries": [
-      "США"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "комедия",
-      "ужасы"
-    ],
-    "ageRating": "16+",
-    "runtimeMinutes": 108,
-    "directors": [
-      {
-        "nameRu": "Мэл Брукс",
-        "nameOriginal": "Mel Brooks",
-        "photoUrl": "./data/libraries/people/img/6d/6d6c96b3169b0be99e1ab560859fe9bf14312649d88db696ebbdfec318e287d6.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Джин Уайлдер",
-        "nameOriginal": "Gene Wilder",
-        "photoUrl": "./data/libraries/people/img/19/19516ab75ff9ee7761c140bcd2820f0d17ffe270e0e5db6ee8c40fd6f6216cfa.webp"
-      },
-      {
-        "nameRu": "Мэл Брукс",
-        "nameOriginal": "Mel Brooks",
-        "photoUrl": "./data/libraries/people/img/6d/6d6c96b3169b0be99e1ab560859fe9bf14312649d88db696ebbdfec318e287d6.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Джин Уайлдер",
-        "nameOriginal": "Gene Wilder",
-        "photoUrl": "./data/libraries/people/img/19/19516ab75ff9ee7761c140bcd2820f0d17ffe270e0e5db6ee8c40fd6f6216cfa.webp"
-      },
-      {
-        "nameRu": "Мэл Брукс",
-        "nameOriginal": "Mel Brooks",
-        "photoUrl": "./data/libraries/people/img/6d/6d6c96b3169b0be99e1ab560859fe9bf14312649d88db696ebbdfec318e287d6.webp"
-      },
-      {
-        "nameRu": "Мэри Шелли",
-        "nameOriginal": "Mary Shelley",
-        "photoUrl": "./data/libraries/people/img/da/da6c7807db712f2897f98d11d12ca74e5935d29b25f4d707c4c7166263c03945.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Джин Уайлдер",
-        "nameOriginal": "Gene Wilder",
-        "photoUrl": "./data/libraries/people/img/19/19516ab75ff9ee7761c140bcd2820f0d17ffe270e0e5db6ee8c40fd6f6216cfa.webp"
-      },
-      {
-        "nameRu": "Питер Бойл",
-        "nameOriginal": "Peter Boyle",
-        "photoUrl": "./data/libraries/people/img/06/06680d6271b431379e9b5ba04b4f78c76c6223a38efc6bf839d85cb96f8e97df.webp"
-      },
-      {
-        "nameRu": "Марти Фельдман",
-        "nameOriginal": "Marty Feldman",
-        "photoUrl": "./data/libraries/people/img/5f/5fe19d98c2f245333f7fda98a4794c97cdc6aeaf42aad3f21b407c0d3d04ca7f.webp"
-      },
-      {
-        "nameRu": "Клорис Личмен",
-        "nameOriginal": "Cloris Leachman",
-        "photoUrl": "./data/libraries/people/img/9b/9b30ddf94582ae8cba4ec4e6ca738b254b65c690bf07f8eb4a8309d94a35d39f.webp"
-      },
-      {
-        "nameRu": "Тери Гарр",
-        "nameOriginal": "Teri Garr",
-        "photoUrl": "./data/libraries/people/img/24/24c8360df71b65203e88c3d0d1f893a08d73512f36b65119fa4d89082666bab3.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Кеннет Марс",
-        "nameOriginal": "Kenneth Mars",
-        "photoUrl": "./data/libraries/people/img/db/dbd06555efc45f13b08b1c3c6e8182817d4ed9328f683c60af97eeda1881f1ba.webp"
-      },
-      {
-        "nameRu": "Мэдлин Кан",
-        "nameOriginal": "Madeline Kahn",
-        "photoUrl": "./data/libraries/people/img/ee/eed630d71de37ab417e263c3b798607b0301ba17335007d419379cd7869566e0.webp"
-      },
-      {
-        "nameRu": "Ричард Хейдн",
-        "nameOriginal": "Richard Haydn",
-        "photoUrl": "./data/libraries/people/img/95/95baeeb97366af7d60d61faa6e7cf48ef0d214ae4f122396eeca4289ba15b7a5.webp"
-      },
-      {
-        "nameRu": "Ричард А. Рот",
-        "nameOriginal": "Richard A. Roth",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Монте Лэндис",
-        "nameOriginal": "Monte Landis",
-        "photoUrl": "./data/libraries/people/img/ca/ca97c1e1ce413228a5d48c342e73e6d105948124a9aba65200b23b67c58fb92f.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 455,
-    "imdbId": "tt0072431",
-    "ratings": {
-      "kinopoisk": 7.3,
-      "imdb": 8
-    },
-    "votes": {
-      "kinopoisk": 5611,
-      "imdb": 181000
-    },
-    "popularityScore": 99,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_455/poster.webp",
-    "backdropUrl": null,
-    "description": "доктор Фредерик Франкентшейн, внук Виктора Франкенштейна, невероятно стыдящийся близкого родства со знаменитым бароном, отправляется в Трансильванию, чтобы вступить во владение замком, оставленным дедом ему в наследство. Фредерик долгие годы был уверен, что работа его дедушки — полнейшая ерунда, но найдя в замке книгу с описанием его экспериментов и внимательно изучив её, человек резко меняет мнение.",
-    "plotHint": "доктор Фредерик Франкентшейн, внук Виктора Франкенштейна, невероятно стыдящийся близкого родства со знаменитым бароном, отправляется в Трансильванию, чтобы вступить во владение замком, остав...",
-    "slogan": "The scariest comedy of all time",
-    "facts": [],
-    "awards": null,
-    "topRank": 703,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_5591410",
@@ -62079,12 +60251,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_672861",
@@ -62397,279 +60571,6 @@
     "seasonsCount": 4
   },
   {
-    "id": "kp_46745",
-    "mode": "series",
-    "titleRu": "Мужики!..",
-    "titleOriginal": "",
-    "alternativeTitles": [],
-    "year": 1981,
-    "endYear": null,
-    "countries": [
-      "СССР"
-    ],
-    "originalLanguage": "ru",
-    "genres": [
-      "драма"
-    ],
-    "ageRating": "0+",
-    "runtimeMinutes": 97,
-    "directors": [
-      {
-        "nameRu": "Искра Бабич",
-        "nameOriginal": "Искра Бабич",
-        "photoUrl": "./data/libraries/people/img/81/81212b3981c728bd16555d23e1e58543bdce23db1d3e2989e96d7caa2881bee4.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Искра Бабич",
-        "nameOriginal": "Искра Бабич",
-        "photoUrl": "./data/libraries/people/img/81/81212b3981c728bd16555d23e1e58543bdce23db1d3e2989e96d7caa2881bee4.webp"
-      },
-      {
-        "nameRu": "Валентин Михайлов",
-        "nameOriginal": "Валентин Михайлов",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Искра Бабич",
-        "nameOriginal": "Искра Бабич",
-        "photoUrl": "./data/libraries/people/img/81/81212b3981c728bd16555d23e1e58543bdce23db1d3e2989e96d7caa2881bee4.webp"
-      },
-      {
-        "nameRu": "Валентин Михайлов",
-        "nameOriginal": "Валентин Михайлов",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Александр Михайлов",
-        "nameOriginal": "Александр Михайлов",
-        "photoUrl": "./data/libraries/people/img/03/038692e2fcea9b4222c9b7f35730ecd5aeb301845d9e1cd7f797ad5a2389224d.webp"
-      },
-      {
-        "nameRu": "Ирина Иванова",
-        "nameOriginal": "Ирина Иванова",
-        "photoUrl": "./data/libraries/people/img/3d/3d17fbc435b775ea3ab7f7b43d11f53008f22d82dc3ffea67dafbbe9037d932e.webp"
-      },
-      {
-        "nameRu": "Петр Глебов",
-        "nameOriginal": "Петр Глебов",
-        "photoUrl": "./data/libraries/people/img/25/253e9086a3966124e00362d2a5e20a53cc09f6a787150a46075fd172492d52f3.webp"
-      },
-      {
-        "nameRu": "Вера Альховская",
-        "nameOriginal": "Вера Альховская",
-        "photoUrl": "./data/libraries/people/img/f8/f89e885bc66d04de7616a7b13614b9e28508de642663d5e5c743e5dcd2fd6d74.webp"
-      },
-      {
-        "nameRu": "Михаил Бузылёв-Крэцо",
-        "nameOriginal": "Михаил Бузылёв-Крэцо",
-        "photoUrl": "./data/libraries/people/img/ee/ee86b0b93872ecf3e904342408c238f3267b82746b4e127342fab6aa5283303f.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Александр Павлов",
-        "nameOriginal": "Александр Павлов",
-        "photoUrl": "./data/libraries/people/img/50/506e28454fd7848807166779085be536a156f6b8ab6b81d868bf6d21c9cf1dc7.webp"
-      },
-      {
-        "nameRu": "Анатолий Солоницын",
-        "nameOriginal": "Анатолий Солоницын",
-        "photoUrl": "./data/libraries/people/img/b1/b16628ef665efcd895fa9f7a1c381efc66856f0a93369399194521c1e893ad4f.webp"
-      },
-      {
-        "nameRu": "Мария Андрианова",
-        "nameOriginal": "Мария Андрианова",
-        "photoUrl": "./data/libraries/people/img/b5/b5db70f5e6abc9f8ef419f21cf992df7b2a3f61a10b6c8c63dd9d631658ce189.webp"
-      },
-      {
-        "nameRu": "Светлана Тормахова",
-        "nameOriginal": "Светлана Тормахова",
-        "photoUrl": "./data/libraries/people/img/c2/c28fb5df5116cf7c0f3c59e576aaf9d8f964232f78f75385b9c845e423856704.webp"
-      },
-      {
-        "nameRu": "Леонард Варфоломеев",
-        "nameOriginal": "Леонард Варфоломеев",
-        "photoUrl": "./data/libraries/people/img/a3/a352dc789588f9735e5095c570a4b88d4602aec5dc0fb8e4139b95578f9f2754.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 46745,
-    "imdbId": "tt0133108",
-    "ratings": {
-      "kinopoisk": 8.4,
-      "imdb": 7.6
-    },
-    "votes": {
-      "kinopoisk": 160739,
-      "imdb": 960
-    },
-    "popularityScore": 89,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_46745/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_46745/backdrop.webp",
-    "description": "Узнав о болезни отца, шахтер Павел Зубов приезжает в родное село. Там выясняется, что умерла его бывшая невеста, и трое её детей остались сиротами. Старшая дочь — его, Павла.",
-    "plotHint": "Шахтер решает вырастить троих детей женщины, которую любил. Пронзительная советская драма о настоящих мужчинах",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 79,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
-    "id": "kp_19334",
-    "mode": "series",
-    "titleRu": "Мужчина и женщина",
-    "titleOriginal": "Un homme et une femme",
-    "alternativeTitles": [
-      "Un homme et une femme"
-    ],
-    "year": 1966,
-    "endYear": null,
-    "countries": [
-      "Франция"
-    ],
-    "originalLanguage": "fr",
-    "genres": [
-      "драма",
-      "мелодрама"
-    ],
-    "ageRating": "16+",
-    "runtimeMinutes": 102,
-    "directors": [
-      {
-        "nameRu": "Клод Лелуш",
-        "nameOriginal": "Claude Lelouch",
-        "photoUrl": "./data/libraries/people/img/e7/e7cf995bf0f51f07832fd2586c14213d59f2fecc45dfb9f4b463a2bedf515282.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Клод Лелуш",
-        "nameOriginal": "Claude Lelouch",
-        "photoUrl": "./data/libraries/people/img/e7/e7cf995bf0f51f07832fd2586c14213d59f2fecc45dfb9f4b463a2bedf515282.webp"
-      },
-      {
-        "nameRu": "Пьер Уйттерховен",
-        "nameOriginal": "Pierre Uytterhoeven",
-        "photoUrl": "./data/libraries/people/img/86/869582306dec2ff8194bfe435af3cdeb5b36dc25b168b72ec778f2da80701638.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Клод Лелуш",
-        "nameOriginal": "Claude Lelouch",
-        "photoUrl": "./data/libraries/people/img/e7/e7cf995bf0f51f07832fd2586c14213d59f2fecc45dfb9f4b463a2bedf515282.webp"
-      },
-      {
-        "nameRu": "Пьер Уйттерховен",
-        "nameOriginal": "Pierre Uytterhoeven",
-        "photoUrl": "./data/libraries/people/img/86/869582306dec2ff8194bfe435af3cdeb5b36dc25b168b72ec778f2da80701638.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Анук Эме",
-        "nameOriginal": "Anouk Aimée",
-        "photoUrl": "./data/libraries/people/img/1d/1dcb9798192c8106245665372d55bfee33204aa2b1e959d5b6b889510c14f385.webp"
-      },
-      {
-        "nameRu": "Жан-Луи Трентиньян",
-        "nameOriginal": "Jean-Louis Trintignant",
-        "photoUrl": "./data/libraries/people/img/be/bee3cc7f935502bf3c792ce86bdcf70d2e9b3430b364c02b88f9f190eaa373ea.webp"
-      },
-      {
-        "nameRu": "Пьер Бару",
-        "nameOriginal": "Pierre Barouh",
-        "photoUrl": "./data/libraries/people/img/74/74e90842fd5e151eac85a4d6ccf490b718d3d9179e95a0458f90d8db2ac54c13.webp"
-      },
-      {
-        "nameRu": "Валери Лагранж",
-        "nameOriginal": "Valérie Lagrange",
-        "photoUrl": "./data/libraries/people/img/3e/3e34709c0b6bec94196070273fe28515b309b3ca093add8b0bee1ee9fa4136b8.webp"
-      },
-      {
-        "nameRu": "Антуан Сир",
-        "nameOriginal": "Antoine Sire",
-        "photoUrl": "./data/libraries/people/img/78/78a728db48ae5adaed1ebb0e79da26908d0894b6cf3dd3107ac073773f8522e6.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Суад Амиду",
-        "nameOriginal": "Souad Amidou",
-        "photoUrl": "./data/libraries/people/img/f1/f168c2457324e30e4ce7039065adfd918b7ebc114a2aba18573cd5626316722b.webp"
-      },
-      {
-        "nameRu": "Анри Шмен",
-        "nameOriginal": "Henri Chemin",
-        "photoUrl": "./data/libraries/people/img/cc/cca33dfb2facacc5f2ca65aab14ec462f575077982e227e447c765f81e8425c4.webp"
-      },
-      {
-        "nameRu": "Яна Барри",
-        "nameOriginal": "Yane Barry",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Поль Ле Персон",
-        "nameOriginal": "Paul Le Person",
-        "photoUrl": "./data/libraries/people/img/80/803555932137594d988874a0c87748dc87912cceab2df4913a5a7dc0008036b2.webp"
-      },
-      {
-        "nameRu": "Симона Пари",
-        "nameOriginal": "Simone Paris",
-        "photoUrl": "./data/libraries/people/img/36/36421052e4d77a527cfb2d7981f524a1c5469afabef6f615e3e1bfe60224b34c.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 19334,
-    "imdbId": "tt0061138",
-    "ratings": {
-      "kinopoisk": 7.9,
-      "imdb": 7.5
-    },
-    "votes": {
-      "kinopoisk": 22732,
-      "imdb": 13000
-    },
-    "popularityScore": 92,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_19334/poster.webp",
-    "backdropUrl": null,
-    "description": "На фоне дождливого нормандского побережья встречаются двое — помощница режиссёра Анн и гонщик. Оба воспитывают детей в одиночку, оба всё ещё живут в тени ушедших возлюбленных. Их случайное знакомство перерастает в нежную связь, возвращая чувства, которые они давно считали потерянными.",
-    "plotHint": "На фоне дождливого нормандского побережья встречаются двое — помощница режиссёра Анн и гонщик. Оба воспитывают детей в одиночку, оба всё ещё живут в тени ушедших возлюбленных.",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 342,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
     "id": "kp_277368",
     "mode": "series",
     "titleRu": "Мы, нижеподписавшиеся",
@@ -62787,12 +60688,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_355828",
@@ -63411,295 +61314,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 1
-  },
-  {
-    "id": "kp_8190",
-    "mode": "series",
-    "titleRu": "На несколько долларов больше",
-    "titleOriginal": "Per qualche dollaro in più",
-    "alternativeTitles": [
-      "Per qualche dollaro in più"
-    ],
-    "year": 1965,
-    "endYear": null,
-    "countries": [
-      "Испания",
-      "Италия",
-      "Германия (ФРГ)"
-    ],
-    "originalLanguage": "es",
-    "genres": [
-      "драма",
-      "вестерн",
-      "боевик"
-    ],
-    "ageRating": "16+",
-    "runtimeMinutes": 130,
-    "directors": [
-      {
-        "nameRu": "Серджио Леоне",
-        "nameOriginal": "Sergio Leone",
-        "photoUrl": "./data/libraries/people/img/c7/c7fc99e7e9eef9049ef61f6ec080f71121387a49ea01d060dcc03534321845f3.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Серджио Леоне",
-        "nameOriginal": "Sergio Leone",
-        "photoUrl": "./data/libraries/people/img/c7/c7fc99e7e9eef9049ef61f6ec080f71121387a49ea01d060dcc03534321845f3.webp"
-      },
-      {
-        "nameRu": "Энцо Делль’Аквила",
-        "nameOriginal": "Enzo Dell'Aquila",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Серджио Леоне",
-        "nameOriginal": "Sergio Leone",
-        "photoUrl": "./data/libraries/people/img/c7/c7fc99e7e9eef9049ef61f6ec080f71121387a49ea01d060dcc03534321845f3.webp"
-      },
-      {
-        "nameRu": "Энцо Делль’Аквила",
-        "nameOriginal": "Enzo Dell'Aquila",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Фульвио Морселла",
-        "nameOriginal": "Fulvio Morsella",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Клинт Иствуд",
-        "nameOriginal": "Clint Eastwood",
-        "photoUrl": "./data/libraries/people/img/12/1275f2947a6b1030c756a3ec067a3d0b1c116833bc8ca1ef42623360688bbc19.webp"
-      },
-      {
-        "nameRu": "Ли Ван Клиф",
-        "nameOriginal": "Lee Van Cleef",
-        "photoUrl": "./data/libraries/people/img/58/583ca68069d1d61b9d6c0bd9d07b8799da3c504bcededc568c456b240b1ccb92.webp"
-      },
-      {
-        "nameRu": "Джан Мария Волонте",
-        "nameOriginal": "Gian Maria Volontè",
-        "photoUrl": "./data/libraries/people/img/19/19cb081a601207eedabd27019d53a111e7faac8cf0b121d8e99790d99d85a6f5.webp"
-      },
-      {
-        "nameRu": "Мара Крупп",
-        "nameOriginal": "Mara Krupp",
-        "photoUrl": "./data/libraries/people/img/57/57ebcd2ca6fb0876a6b83fc0107f626e4927696b0dc695c63f5600cff4722df1.webp"
-      },
-      {
-        "nameRu": "Луиджи Пистилли",
-        "nameOriginal": "Luigi Pistilli",
-        "photoUrl": "./data/libraries/people/img/4f/4f86eae4a36f5463ac0c6cc3f61c0b10a6645bb05362aeb5973903e0d6489122.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Клаус Кински",
-        "nameOriginal": "Klaus Kinski",
-        "photoUrl": "./data/libraries/people/img/ee/ee09d462e12fee60dfe74802a02823435d17ac1f791d5a4274340adaa1a283f3.webp"
-      },
-      {
-        "nameRu": "Луис Родригес Палильо",
-        "nameOriginal": "Luis Rodríguez",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Luis Rodríguez",
-        "nameOriginal": "Luis Rodríguez",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Бенито Стефанелли",
-        "nameOriginal": "Benito Stefanelli",
-        "photoUrl": "./data/libraries/people/img/b3/b386f188e6488b9aa349def03c556f9f83ad9cb93e2c477a0c374c8d45aeab48.webp"
-      },
-      {
-        "nameRu": "Панос Пападопулос",
-        "nameOriginal": "Panos Papadopulos",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 8190,
-    "imdbId": "tt0059578",
-    "ratings": {
-      "kinopoisk": 8.1,
-      "imdb": 8.2
-    },
-    "votes": {
-      "kinopoisk": 64485,
-      "imdb": 299000
-    },
-    "popularityScore": 93,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_8190/poster.webp",
-    "backdropUrl": null,
-    "description": "Заработать лишних честным путем на диком Западе не проблема, если у тебя есть проверенный кольт и разрешение властей на отстрел бандитов. Этим путем и идут бок о бок профессиональные охотники за головами негодяев «Человек без имени» и полковник Мортимер, общая цель которых — преступная банда мексиканца Индио.",
-    "plotHint": "Заработать лишних честным путем на диком Западе не проблема, если у тебя есть проверенный кольт и разрешение властей на отстрел бандитов. Этим путем и идут бок о бок профессиональные охотник...",
-    "slogan": "It's the second motion picture of its kind! It won't be the last",
-    "facts": [],
-    "awards": null,
-    "topRank": 204,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
-  },
-  {
-    "id": "kp_18511",
-    "mode": "series",
-    "titleRu": "На последнем дыхании",
-    "titleOriginal": "À bout de souffle",
-    "alternativeTitles": [
-      "À bout de souffle"
-    ],
-    "year": 1960,
-    "endYear": null,
-    "countries": [
-      "Франция"
-    ],
-    "originalLanguage": "fr",
-    "genres": [
-      "драма",
-      "криминал"
-    ],
-    "ageRating": "16+",
-    "runtimeMinutes": 90,
-    "directors": [
-      {
-        "nameRu": "Жан-Люк Годар",
-        "nameOriginal": "Jean-Luc Godard",
-        "photoUrl": "./data/libraries/people/img/e7/e7731d6bfd8fa36ef95f59e3266b77900e8d527129cfffd88281c7013ea06594.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Франсуа Трюффо",
-        "nameOriginal": "François Truffaut",
-        "photoUrl": "./data/libraries/people/img/b7/b7c5a77ef408f3de1b2a0afc90802cc5f20073806dce98e30b8aab7b934ae472.webp"
-      },
-      {
-        "nameRu": "Жан-Люк Годар",
-        "nameOriginal": "Jean-Luc Godard",
-        "photoUrl": "./data/libraries/people/img/e7/e7731d6bfd8fa36ef95f59e3266b77900e8d527129cfffd88281c7013ea06594.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Франсуа Трюффо",
-        "nameOriginal": "François Truffaut",
-        "photoUrl": "./data/libraries/people/img/b7/b7c5a77ef408f3de1b2a0afc90802cc5f20073806dce98e30b8aab7b934ae472.webp"
-      },
-      {
-        "nameRu": "Жан-Люк Годар",
-        "nameOriginal": "Jean-Luc Godard",
-        "photoUrl": "./data/libraries/people/img/e7/e7731d6bfd8fa36ef95f59e3266b77900e8d527129cfffd88281c7013ea06594.webp"
-      },
-      {
-        "nameRu": "Клод Шаброль",
-        "nameOriginal": "Claude Chabrol",
-        "photoUrl": "./data/libraries/people/img/40/40fe55fffe07deaff6bd6cd3d6d104fec6936f46bc267f3cda0d9a4e2442a2a3.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Джин Сиберг",
-        "nameOriginal": "Jean Seberg",
-        "photoUrl": "./data/libraries/people/img/e5/e59b2554adb0119bd4ad7aa2146c0666616d639f696ca64a03c08ae347a398fc.webp"
-      },
-      {
-        "nameRu": "Жан-Поль Бельмондо",
-        "nameOriginal": "Jean-Paul Belmondo",
-        "photoUrl": "./data/libraries/people/img/75/75faa99c90d7f42f1191472688ef97b0ad705259d35442653b9f505f7c9c8efe.webp"
-      },
-      {
-        "nameRu": "Ван Доуде",
-        "nameOriginal": "Van Doude",
-        "photoUrl": "./data/libraries/people/img/65/65f3dd4fbc841129b6105ebd297f0d710711ab8d04faf433894a81dc2348c1fd.webp"
-      },
-      {
-        "nameRu": "Жан-Люк Годар",
-        "nameOriginal": "Jean-Luc Godard",
-        "photoUrl": "./data/libraries/people/img/e7/e7731d6bfd8fa36ef95f59e3266b77900e8d527129cfffd88281c7013ea06594.webp"
-      },
-      {
-        "nameRu": "Ришар Бальдуччи",
-        "nameOriginal": "Richard Balducci",
-        "photoUrl": "./data/libraries/people/img/d8/d846d711cf977d10da16106a87c602e0c3be6de64f1bdeea8250e5c7a52782f0.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Даниэль Буланже",
-        "nameOriginal": "Daniel Boulanger",
-        "photoUrl": "./data/libraries/people/img/f7/f75a548fe3a22fcdc7ae85b98614749d6c2c36371f7f028e9666af9d6f40c529.webp"
-      },
-      {
-        "nameRu": "Жерар Браш",
-        "nameOriginal": "Gérard Brach",
-        "photoUrl": "./data/libraries/people/img/25/25d74b1d53b7f0302674cf1922ce5cb24252c3aa4f2fc0ae8c90262761404365.webp"
-      },
-      {
-        "nameRu": "Филипп де Брока",
-        "nameOriginal": "Philippe de Broca",
-        "photoUrl": "./data/libraries/people/img/ae/ae3a5b0454375f6cd6288a786bc63fb6bd9254bac9d243844ca4623883976476.webp"
-      },
-      {
-        "nameRu": "Хосе Беназераф",
-        "nameOriginal": "José Bénazéraf",
-        "photoUrl": "./data/libraries/people/img/2a/2a06cca67b4f56914374a701338e1ab18e4cb65686c36a33d7d93d15d7e187e5.webp"
-      },
-      {
-        "nameRu": "Жан Домарши",
-        "nameOriginal": "Jean Domarchi",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 18511,
-    "imdbId": "tt0053472",
-    "ratings": {
-      "kinopoisk": 7.7,
-      "imdb": 7.6
-    },
-    "votes": {
-      "kinopoisk": 31753,
-      "imdb": 95000
-    },
-    "popularityScore": 92,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_18511/poster.webp",
-    "backdropUrl": null,
-    "description": "Мишель Пуакар – настоящий прожигатель жизни, зарабатывающий на жизнь кражами дорогих машин. Он никогда не задумывается о последствиях своих криминальных выходок – просто живет, как хочет, ни на кого не рассчитывая, ни с кем не считаясь. Видимо, потому что молод и самонадеян.",
-    "plotHint": "Мишель Пуакар – настоящий прожигатель жизни, зарабатывающий на жизнь кражами дорогих машин. Он никогда не задумывается о последствиях своих криминальных выходок – просто живет, как хочет, ни...",
-    "slogan": "The film that was banned for 4 years. Why? (original Finnish poster tagline)",
-    "facts": [],
-    "awards": null,
-    "topRank": 481,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_495591",
@@ -65211,12 +62825,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1432532",
@@ -66089,12 +63705,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_933284",
@@ -66374,12 +63992,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_838913",
@@ -66515,12 +64135,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5609998",
@@ -67859,12 +65481,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_181153",
@@ -68781,138 +66405,6 @@
     },
     "seriesStatus": "Закончен",
     "seasonsCount": 2
-  },
-  {
-    "id": "kp_10355286",
-    "mode": "series",
-    "titleRu": "Обсессия",
-    "titleOriginal": "Obsession",
-    "alternativeTitles": [
-      "Obsession"
-    ],
-    "year": 2025,
-    "endYear": null,
-    "countries": [
-      "США"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "ужасы"
-    ],
-    "ageRating": "18+",
-    "runtimeMinutes": 100,
-    "directors": [
-      {
-        "nameRu": "Карри Баркер",
-        "nameOriginal": "Curry Barker",
-        "photoUrl": "./data/libraries/people/img/e4/e4e6c58a09c046c27531dc61003932eb7bc6edc9943b59741999dddcb29c69e5.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Карри Баркер",
-        "nameOriginal": "Curry Barker",
-        "photoUrl": "./data/libraries/people/img/e4/e4e6c58a09c046c27531dc61003932eb7bc6edc9943b59741999dddcb29c69e5.webp"
-      },
-      {
-        "nameRu": "Джеймс Харрис",
-        "nameOriginal": "James Harris",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Карри Баркер",
-        "nameOriginal": "Curry Barker",
-        "photoUrl": "./data/libraries/people/img/e4/e4e6c58a09c046c27531dc61003932eb7bc6edc9943b59741999dddcb29c69e5.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Майкл Джонстон",
-        "nameOriginal": "Michael Johnston",
-        "photoUrl": "./data/libraries/people/img/97/971684de643e6a776269d8d3a2cf341f5fdadb81cc83dea4ecb564ccdbb348b6.webp"
-      },
-      {
-        "nameRu": "Инди Наварретти",
-        "nameOriginal": "Inde Navarrette",
-        "photoUrl": "./data/libraries/people/img/65/65aa4918dfcf645f85fc62bde41cff66fc68ed1ea1b90b7cc97b4603681bad29.webp"
-      },
-      {
-        "nameRu": "Купер Томлинсон",
-        "nameOriginal": "Cooper Tomlinson",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Меган Лоулесс",
-        "nameOriginal": "Megan Lawless",
-        "photoUrl": "./data/libraries/people/img/b7/b754d9597a92378981bb363e44dd620c7c53e50747e2a517a5b049fb22450f71.webp"
-      },
-      {
-        "nameRu": "Энди Рихтер",
-        "nameOriginal": "Andy Richter",
-        "photoUrl": "./data/libraries/people/img/ed/edd93245a560ce3afbb35896fc6eef7fee9e88d74987421ed55c031f824c9317.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Хейли Фицджеральд",
-        "nameOriginal": "Haley Fitzgerald",
-        "photoUrl": "./data/libraries/people/img/f9/f9f31da102bd54738eec53a8e0edf1f07860438b15d417a9be62aa602af7e870.webp"
-      },
-      {
-        "nameRu": "Дэрин Тондер",
-        "nameOriginal": "Darin Toonder",
-        "photoUrl": "./data/libraries/people/img/f7/f767d0dc7927d2c36de09db2c4718e373f1b8f9d897083febeab6a03e15e0044.webp"
-      },
-      {
-        "nameRu": "Энтони Павоне",
-        "nameOriginal": "Anthony Pavone",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Джастис",
-        "nameOriginal": "Justice",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      },
-      {
-        "nameRu": "Энтони Касабьянка",
-        "nameOriginal": "Anthony Casabianca",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 10355286,
-    "imdbId": "tt37287335",
-    "ratings": {
-      "kinopoisk": 7.3,
-      "imdb": 8.1
-    },
-    "votes": {
-      "kinopoisk": 56613,
-      "imdb": 110619
-    },
-    "popularityScore": 20,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_10355286/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_10355286/backdrop.webp",
-    "description": "Безнадежный романтик Беар давно и безответно влюблён в красавицу Никки. Однажды в магазине эзотерики он находит странную безделушку — волшебную палочку, которая может исполнить заветное желание. Беар загадывает, чтобы Никки любила его больше всех на свете.",
-    "plotHint": "Волшебная палочка исполнит одно ваше желание. Хоррор о любви и одержимости, покоривший критиков и зрителей",
-    "slogan": null,
-    "facts": [],
-    "awards": null,
-    "topRank": 743,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
   },
   {
     "id": "kp_1108686",
@@ -70416,12 +67908,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_469563",
@@ -71476,12 +68970,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_455381",
@@ -72534,12 +70030,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 3
   },
   {
     "id": "kp_665236",
@@ -74142,12 +71640,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_89587",
@@ -74731,12 +72231,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5698586",
@@ -75619,12 +73121,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5461804",
@@ -76946,12 +74450,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_681879",
@@ -77078,12 +74584,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 1
   },
   {
     "id": "kp_4635062",
@@ -77673,12 +75181,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1309543",
@@ -78571,12 +76081,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_474779",
@@ -78867,12 +76379,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1140676",
@@ -79913,12 +77427,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1048335",
@@ -80045,12 +77561,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_762194",
@@ -81069,12 +78587,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_276268",
@@ -81510,12 +79030,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 3
   },
   {
     "id": "kp_733636",
@@ -82392,12 +79914,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_566058",
@@ -82845,12 +80369,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_260310",
@@ -83715,12 +81241,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_77284",
@@ -83844,12 +81372,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_487211",
@@ -85323,12 +82853,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1311065",
@@ -86527,12 +84059,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 2
   },
   {
     "id": "kp_788277",
@@ -86668,12 +84202,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_501717",
@@ -86804,12 +84340,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_4361620",
@@ -86959,12 +84497,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1177920",
@@ -88327,12 +85867,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 8
   },
   {
     "id": "kp_1253333",
@@ -89077,156 +86619,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
-  },
-  {
-    "id": "kp_15204",
-    "mode": "series",
-    "titleRu": "Ромео и Джульетта",
-    "titleOriginal": "Romeo and Juliet",
-    "alternativeTitles": [
-      "Romeo and Juliet"
-    ],
-    "year": 1968,
-    "endYear": null,
-    "countries": [
-      "Великобритания",
-      "Италия"
-    ],
-    "originalLanguage": "en",
-    "genres": [
-      "драма",
-      "мелодрама"
-    ],
-    "ageRating": "12+",
-    "runtimeMinutes": 138,
-    "directors": [
-      {
-        "nameRu": "Франко Дзеффирелли",
-        "nameOriginal": "Franco Zeffirelli",
-        "photoUrl": "./data/libraries/people/img/4c/4cf74cdfc29f8deda03719233656049d78238361152eaba0c7247ee07b5a2bb8.webp"
-      }
-    ],
-    "showrunners": [
-      {
-        "nameRu": "Уильям Шекспир",
-        "nameOriginal": "William Shakespeare",
-        "photoUrl": "./data/libraries/people/img/67/679a7c3bd8a47432de48fe90f9c3364821894fb9bd386169d8368e4596d0632a.webp"
-      },
-      {
-        "nameRu": "Франко Брузати",
-        "nameOriginal": "Franco Brusati",
-        "photoUrl": "./data/libraries/people/img/8f/8f231ceed69b3360306de2beb7820736a379a101a8fdf722041c52b629d1c517.webp"
-      }
-    ],
-    "writers": [
-      {
-        "nameRu": "Уильям Шекспир",
-        "nameOriginal": "William Shakespeare",
-        "photoUrl": "./data/libraries/people/img/67/679a7c3bd8a47432de48fe90f9c3364821894fb9bd386169d8368e4596d0632a.webp"
-      },
-      {
-        "nameRu": "Франко Брузати",
-        "nameOriginal": "Franco Brusati",
-        "photoUrl": "./data/libraries/people/img/8f/8f231ceed69b3360306de2beb7820736a379a101a8fdf722041c52b629d1c517.webp"
-      },
-      {
-        "nameRu": "Мазолино Д’амико",
-        "nameOriginal": "Masolino D'Amico",
-        "photoUrl": "./data/libraries/people/img/36/36d3a91b632aa0a76438dc48955b3f3526e41083b65386ac3e80064ee2c31108.webp"
-      }
-    ],
-    "cast": [
-      {
-        "nameRu": "Леонард Уайтинг",
-        "nameOriginal": "Leonard Whiting",
-        "photoUrl": "./data/libraries/people/img/fc/fc0b4c666ef582aa8157b260c876b8d166e186df5a3260b3826a15b86126f58e.webp"
-      },
-      {
-        "nameRu": "Оливия Хасси",
-        "nameOriginal": "Olivia Hussey",
-        "photoUrl": "./data/libraries/people/img/cc/ccc3a97a70b180269c234ccaafa62f013e00db6ea9a8301e6a14126ac222fea6.webp"
-      },
-      {
-        "nameRu": "Джон МакИнери",
-        "nameOriginal": "John McEnery",
-        "photoUrl": "./data/libraries/people/img/d6/d6a24a16058ad96d3d629f366dbe31f423b3f2ea1d49332b6612c718e3cf2424.webp"
-      },
-      {
-        "nameRu": "Майло О’Ши",
-        "nameOriginal": "Milo O'Shea",
-        "photoUrl": "./data/libraries/people/img/77/777b6d6760129b161278666f3b50da4666c9071ba834d69c6fa536ade0a2379b.webp"
-      },
-      {
-        "nameRu": "Пэт Хейвуд",
-        "nameOriginal": "Pat Heywood",
-        "photoUrl": "./data/libraries/people/img/b9/b9674eb750a71bed12eff3582cdc590470e360ede7f947e9cd60b1a306ca127f.webp"
-      }
-    ],
-    "supportingCast": [
-      {
-        "nameRu": "Роберт Стивенс",
-        "nameOriginal": "Robert Stephens",
-        "photoUrl": "./data/libraries/people/img/3e/3e6d06994c8dcafa0baaf24edb817ffcbaa69d2309bf6d2a70601e1e73790d0e.webp"
-      },
-      {
-        "nameRu": "Майкл Йорк",
-        "nameOriginal": "Michael York",
-        "photoUrl": "./data/libraries/people/img/7a/7ac58668e137844c0bd36d547d9f347f8b326cda2c2556d4bbc8e05099b3ce0b.webp"
-      },
-      {
-        "nameRu": "Брюс Робинсон",
-        "nameOriginal": "Bruce Robinson",
-        "photoUrl": "./data/libraries/people/img/22/22cfde2e554e130765dc673cea581ea7c33d566d035d4d620ff86a207a2e3311.webp"
-      },
-      {
-        "nameRu": "Пол Хардвик",
-        "nameOriginal": "Paul Hardwick",
-        "photoUrl": "./data/libraries/people/img/c7/c7ffc99f6bc29727d279077d9ef509397fbebe87413a74e6533ea027efc97623.webp"
-      },
-      {
-        "nameRu": "Наташа Парри",
-        "nameOriginal": "Natasha Parry",
-        "photoUrl": "./data/libraries/people/img/97/97abb721ce885e7dd6bc8616821f2c42b0cdc55ee34f7a9d95346fbc93e77ff6.webp"
-      }
-    ],
-    "studios": [],
-    "kinopoiskId": 15204,
-    "imdbId": "tt0063518",
-    "ratings": {
-      "kinopoisk": 8.2,
-      "imdb": 7.6
-    },
-    "votes": {
-      "kinopoisk": 51505,
-      "imdb": 37000
-    },
-    "popularityScore": 92,
-    "budget": null,
-    "posterUrl": "./data/libraries/series/img/kp_15204/poster.webp",
-    "backdropUrl": "./data/libraries/series/img/kp_15204/backdrop.webp",
-    "description": "На балу во дворце Капулетти зарождается любовь Монтекки и Джульетты Капулетти, несмотря на то что их семьи ведут смертельную вражду уже много лет.",
-    "plotHint": "Любовь юных Монтекки и Капулетти обречена из-за вражды семей. Классическая экранизация с музыкой Нино Роты",
-    "slogan": "No ordinary love story.",
-    "facts": [],
-    "awards": null,
-    "topRank": 146,
-    "dataQuality": {
-      "source": [
-        "kinopoisk_navigator_ids",
-        "kinopoisk_api_unofficial",
-        "kinopoisk_api_staff",
-        "series_status_fallback"
-      ],
-      "verified": true,
-      "missingFields": []
-    },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_81433",
@@ -89483,12 +86883,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_4742511",
@@ -89561,12 +86963,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_417842",
@@ -92964,12 +90368,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_723959",
@@ -94467,12 +91873,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_584777",
@@ -94918,12 +92326,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_909854",
@@ -96300,12 +93710,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_573245",
@@ -96456,12 +93868,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_469619",
@@ -97987,12 +95401,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 5
   },
   {
     "id": "kp_782994",
@@ -98593,12 +96009,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1316617",
@@ -98970,12 +96388,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_972775",
@@ -99583,12 +97003,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_1171922",
@@ -99733,12 +97155,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1317950",
@@ -100777,12 +98201,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_84358",
@@ -102591,12 +100017,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5582628",
@@ -102675,12 +100103,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 2
   },
   {
     "id": "kp_840744",
@@ -102815,12 +100245,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_426030",
@@ -103560,12 +100992,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1100777",
@@ -103833,12 +101267,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1008339",
@@ -105938,12 +103374,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_994468",
@@ -106686,12 +104124,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_677725",
@@ -107307,12 +104747,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 2
   },
   {
     "id": "kp_1048143",
@@ -107459,12 +104901,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 4
   },
   {
     "id": "kp_1167154",
@@ -110984,12 +108428,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 4
   },
   {
     "id": "kp_392161",
@@ -114294,12 +111740,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 1
   },
   {
     "id": "kp_9167314",
@@ -115046,12 +112494,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_5424970",
@@ -115507,12 +112957,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_502838",
@@ -116261,12 +113713,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_869554",
@@ -116839,12 +114293,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 2
   },
   {
     "id": "kp_1161788",
@@ -117132,12 +114588,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1178445",
@@ -118000,12 +115458,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 2
   },
   {
     "id": "kp_565746",
@@ -118284,12 +115744,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_749388",
@@ -118423,12 +115885,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Закончен"
+    "seriesStatus": "Закончен",
+    "seasonsCount": 1
   },
   {
     "id": "kp_1311396",
@@ -119567,12 +117031,14 @@
         "kinopoisk_navigator_ids",
         "kinopoisk_api_unofficial",
         "kinopoisk_api_staff",
-        "series_status_fallback"
+        "series_status_fallback",
+        "series_meta_kinopoisk"
       ],
       "verified": true,
       "missingFields": []
     },
-    "seriesStatus": "Еще выходит"
+    "seriesStatus": "Еще выходит",
+    "seasonsCount": 2
   },
   {
     "id": "kp_178569",

@@ -2402,9 +2402,9 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
+            "value": "1 сезон",
+            "status": "close",
+            "direction": "up"
           },
           {
             "key": "genres",
@@ -2498,7 +2498,7 @@
             "direction": null
           }
         ],
-        "digest": "d816a0bdcbf4f67d92272ca136245d96b1b58eb6c7dd0368d93dfc7a87ea4fe9"
+        "digest": "123661885facb065fa66e0608dfc3d9b748e58205e0590b6d5b3e3332e9d24d7"
       },
       {
         "guessId": "kp_582358",
@@ -3167,9 +3167,9 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
+            "value": "9 сезонов",
+            "status": "miss",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -3264,7 +3264,7 @@
             "direction": null
           }
         ],
-        "digest": "197656fe5781e977f37ef20804204e6fc5728f08511da786d0b9700e3351e16e"
+        "digest": "63d5911405f9f46f067ce537608b4423c308457f2ccdd3933a4f3a763b1c71aa"
       },
       {
         "guessId": "kp_1101328",
@@ -3550,9 +3550,9 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
+            "value": "1 сезон",
+            "status": "close",
+            "direction": "up"
           },
           {
             "key": "genres",
@@ -3646,7 +3646,7 @@
             "direction": null
           }
         ],
-        "digest": "dccfc90aaa08a1702000d99c9c83c5e19528caa98035f526d2202d460c93d125"
+        "digest": "c226981d9745e6464d47b3938ecbf2b91956c2e4691477e5a1c01fee3d069a5c"
       },
       {
         "guessId": "kp_518192",
@@ -4314,9 +4314,9 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
+            "value": "1 сезон",
+            "status": "close",
+            "direction": "up"
           },
           {
             "key": "genres",
@@ -4411,7 +4411,7 @@
             "direction": null
           }
         ],
-        "digest": "25e88c191afb4436db6cb25b635eb5d7ad936950275e63bc81c5b9afd6afad43"
+        "digest": "0f4fceedd337d1f6cfd1ed01aa1cb220e3e06e71a1a2a1a80560918cb423c674"
       },
       {
         "guessId": "kp_463401",
@@ -4700,9 +4700,9 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "—",
-            "status": "unknown",
-            "direction": null
+            "value": "3 сезона",
+            "status": "close",
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -4796,7 +4796,7 @@
             "direction": null
           }
         ],
-        "digest": "d87ceb789236ac7d1873dfba8bbee8353cab59f2db5cd1b384ac2d70402bc07c"
+        "digest": "df6395a794420dd87109b3ed5175480d5c4445f544b2c6c2fa23710862da0175"
       }
     ]
   },

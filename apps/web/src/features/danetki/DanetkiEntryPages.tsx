@@ -9,7 +9,10 @@ import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { publicAssetUrl } from '../../app/public-asset'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
+import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
+import { InlineAlert, TextInput } from '../../components/ui'
 import './DanetkiGamePage.css'
+import './DanetkiEntryPages.css'
 
 const messageFor = (error: unknown) => error instanceof ApiClientError
   ? error.message
@@ -66,13 +69,19 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
         </div>
         <time dateTime={date}>{displayDate}</time>
         <p>Раскройте необычную историю вопросами, на которые ведущий может ответить «да» или «нет».</p>
-      <section className="admit-ticket admit-ticket--dossier danetki-title-ticket" aria-labelledby="ticket-danetki">
-        <div className="admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--danetki" aria-hidden="true">
-          <img className="admit-ticket__stub-art" src={publicAssetUrl('images/title-posters/danetki-ticket-poster.webp')} alt="" decoding="async" fetchPriority="high" />
-          <span>ДЕЛО</span><strong>ОТКРЫТО</strong><small>№ {date.slice(8, 10)}</small><em>{date.slice(8, 10)}.{date.slice(5, 7)}</em><i />
-        </div>
-        <div className="admit-ticket__body">
-          <div className="ticket-kicker"><span>Данетка дня</span><i /><small>ИИ-ведущий на связи</small></div>
+      <AdmissionTitleTicket
+        id="ticket-danetki"
+        mode="danetki"
+        posterUrl={publicAssetUrl('images/title-posters/danetki-ticket-poster.webp')}
+        stubLabel="ДЕЛО"
+        stubTitle="ОТКРЫТО"
+        stubMeta={`№ ${date.slice(8, 10)}`}
+        stubEnd={`${date.slice(8, 10)}.${date.slice(5, 7)}`}
+        className="danetki-title-ticket"
+        eager
+        details={<GameArtifactSeoDetails mode="danetki" />}
+      >
+          <TicketKicker title="Данетка дня" detail="ИИ-ведущий на связи" />
           <h2 id="ticket-danetki">Ваше расследование</h2>
           <p>Одна новая Данетка в день бесплатна. Создатель получает +10 билетов после завершения.</p>
           {onContinue && <ActionButton type="button" variant="secondary" className="danetki-title-continue" onClick={onContinue}><Clock3 /> Продолжить расследование</ActionButton>}
@@ -96,10 +105,8 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
             </>}</GameOptionSelect>}
           />
           {busy && <p className="danetki-entry__status">Готовим расследование…</p>}
-          {error && <p className="danetki-entry__inline-error" role="alert">{error}</p>}
-        </div>
-        <GameArtifactSeoDetails mode="danetki" />
-      </section>
+          {error && <InlineAlert tone="danger" className="danetki-entry__inline-error">{error}</InlineAlert>}
+      </AdmissionTitleTicket>
       </section>
     </GameScreenShell>
   </>
@@ -139,7 +146,7 @@ export function DanetkiJoinPage({ token, onHome, onArchive, onStats, onRules, on
       {preview.data && !join.isSuccess && <section className="danetki-join-card">
         <Sparkles /><span>Приглашение в расследование</span><h1>{preview.data.title}</h1>
         <p>Вас приглашает <strong>{preview.data.ownerName}</strong>. В комнате {preview.data.participants} из {preview.data.capacity} участников.</p>
-        <form onSubmit={submit}><label>Как вас показывать другим игрокам<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><ActionButton type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</ActionButton></form>
+        <form onSubmit={submit}><label>Как вас показывать другим игрокам<TextInput value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><ActionButton type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</ActionButton></form>
       </section>}
     </main>
   </>

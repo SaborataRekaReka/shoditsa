@@ -7,6 +7,7 @@ export type DifficultyKey = 'easy' | 'medium' | 'hard' | 'expert' | 'experimenta
 export type MusicOrigin = 'ru' | 'intl'
 export type MusicGameTier = 'core' | 'popular' | 'niche' | 'discovery' | 'experimental'
 export type MusicContentStatus = 'ready' | 'limited' | 'blocked'
+export type ContentStatus = MusicContentStatus | 'test' | 'review' | 'duplicate' | 'promo_pack'
 
 export type Person = { nameRu: string; nameOriginal: string; photoUrl?: string | null }
 export type FilmAwards = { wins: number; nominations: number; notable: string[] }
@@ -174,6 +175,8 @@ export type TitleItem = {
   description?: string | null
   shortDescription?: string | null
   plotHint?: string | null
+  /** Editorially valid alternatives for one canonical card; the session seed chooses one deterministically. */
+  plotHintVariants?: string[]
   slogan?: string | null
   supportingCast?: Person[]
   facts?: string[]
@@ -217,7 +220,7 @@ export type TitleItem = {
   priceSnapshotAt?: string | null
   aliases?: string[]
   gameTier?: MusicGameTier | null
-  contentStatus?: MusicContentStatus | null
+  contentStatus?: ContentStatus | null
   allowedInGame?: boolean
   musicType?: string | null
   musicIsActive?: boolean | null
@@ -296,7 +299,7 @@ export type Direction = 'up' | 'down' | null
 export type HintPerson = Person & { matched?: boolean }
 export type Hint = { key: string; label: string; value: string; status: MatchStatus; direction: Direction; people?: HintPerson[]; matchedValues?: string[] }
 export type Attempt = { titleId: string; hints: Hint[] }
-export type GameStatus = 'playing' | 'won' | 'lost'
+export type GameStatus = 'playing' | 'won' | 'lost' | 'expired'
 export type SavedGame = {
   key: string
   mode: TitleMode

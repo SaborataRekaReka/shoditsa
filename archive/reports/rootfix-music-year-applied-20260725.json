@@ -1,0 +1,12 @@
+{
+  "previousRevisionId": "12938b2d-161c-461b-9681-97d2ee1fe91a",
+  "newRevisionId": "b374c5d3-0d4f-4f30-9841-3f283ce6232d",
+  "activated": true,
+  "items": 5994,
+  "repairs": 572,
+  "publicationImpact": {
+    "removedFromRegularPool": [],
+    "addedToRegularPool": [],
+    "retainedAnswersViaCanonical": []
+  }
+}

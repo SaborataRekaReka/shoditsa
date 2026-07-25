@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, isNotNull, isNull, lt, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import { commerceProducts, paymentEvents, paymentOrders, userEntitlements, type Database } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
@@ -8,10 +8,11 @@ import { publicProduct } from './products.js'
 import { createStubProvider } from './providers/stub.js'
 import { createYooKassaProvider } from './providers/yookassa.js'
 import { loadIntegrationEnvironment } from '../admin/integration-secrets.js'
-import type { CommerceProvider, VerifiedPaymentEvent } from './providers/types.js'
+import type { CommerceProvider, VerifiedPaymentEvent, VerifiedPaymentState } from './providers/types.js'
 
 type Order = typeof paymentOrders.$inferSelect
 type Product = typeof commerceProducts.$inferSelect
+type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 
 const providerFor = async (db: Database, config: AppConfig, requested = config.commerce.provider): Promise<CommerceProvider> => {
   if (requested === 'stub' && !config.production) return createStubProvider(config.commerce.webhookSecret)
@@ -22,6 +23,49 @@ const providerFor = async (db: Database, config: AppConfig, requested = config.c
     if (shopId && secretKey) return createYooKassaProvider({ shopId, secretKey })
   }
   throw new ApiError(503, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Оплата временно недоступна. Попробуйте позже')
+}
+
+const applyPaymentState = async (
+  tx: Transaction,
+  order: Order,
+  product: Product,
+  state: Pick<VerifiedPaymentState, 'status' | 'occurredAt'>,
+) => {
+  if (['refunded', 'chargeback'].includes(order.status)) return order.status
+  if (state.status === 'paid') {
+    const updated = order.status === 'paid' ? order : (await tx.update(paymentOrders).set({
+      status: 'paid',
+      providerStatus: state.status,
+      paidAt: order.paidAt ?? state.occurredAt,
+      closedAt: state.occurredAt,
+      updatedAt: state.occurredAt,
+    }).where(eq(paymentOrders.id, order.id)).returning())[0]
+    await grantProductEntitlement(tx, {
+      userId: order.userId,
+      order: updated,
+      product,
+      occurredAt: updated.paidAt ?? state.occurredAt,
+    })
+    return updated.status
+  }
+  if (state.status === 'refunded' || state.status === 'chargeback') {
+    await tx.update(paymentOrders).set({
+      status: state.status,
+      providerStatus: state.status,
+      closedAt: state.occurredAt,
+      updatedAt: state.occurredAt,
+    }).where(eq(paymentOrders.id, order.id))
+    await revokeOrderEntitlements(tx, order.id, state.occurredAt)
+    return state.status
+  }
+  if (order.status === 'paid') return order.status
+  await tx.update(paymentOrders).set({
+    status: state.status,
+    providerStatus: state.status,
+    updatedAt: state.occurredAt,
+    ...(['failed', 'canceled', 'expired'].includes(state.status) ? { closedAt: state.occurredAt } : {}),
+  }).where(eq(paymentOrders.id, order.id))
+  return state.status
 }
 
 export const publicOrder = (order: Order) => ({
@@ -133,18 +177,7 @@ const processEvent = async (db: Database, providerName: string, event: VerifiedP
     return { ignored: true }
   }
   const { order, product } = joined[0]
-  const terminal = ['refunded', 'chargeback'].includes(order.status)
-  if (!terminal) {
-    if (event.status === 'paid') {
-      await tx.update(paymentOrders).set({ status: 'paid', providerStatus: event.status, paidAt: order.paidAt ?? event.occurredAt, closedAt: event.occurredAt, updatedAt: event.occurredAt }).where(eq(paymentOrders.id, order.id))
-      await grantProductEntitlement(tx, { userId: order.userId, order, product, occurredAt: order.paidAt ?? event.occurredAt })
-    } else if (event.status === 'refunded' || event.status === 'chargeback') {
-      await tx.update(paymentOrders).set({ status: event.status, providerStatus: event.status, closedAt: event.occurredAt, updatedAt: event.occurredAt }).where(eq(paymentOrders.id, order.id))
-      await revokeOrderEntitlements(tx, order.id, event.occurredAt)
-    } else if (order.status !== 'paid') {
-      await tx.update(paymentOrders).set({ status: event.status, providerStatus: event.status, updatedAt: event.occurredAt, ...(['failed', 'canceled', 'expired'].includes(event.status) ? { closedAt: event.occurredAt } : {}) }).where(eq(paymentOrders.id, order.id))
-    }
-  }
+  await applyPaymentState(tx, order, product, event)
   await tx.update(paymentEvents).set({ status: 'processed', processedAt: new Date() }).where(eq(paymentEvents.id, insertedEvent[0].id))
   return { processed: true }
 })
@@ -170,6 +203,104 @@ export const confirmStubOrder = async (db: Database, config: AppConfig, orderId:
     await grantProductEntitlement(tx, { userId: order.userId, order: updated, product, occurredAt })
     return { order: publicOrder(updated) }
   })
+}
+
+/**
+ * Polling is the safety net for a missed or delayed provider webhook. Created
+ * orders without a provider payment are expired separately and never grant an
+ * entitlement.
+ */
+export const reconcileCommerceOrders = async (db: Database, config: AppConfig, now = new Date()) => {
+  const createdCutoff = new Date(now.getTime() - 72 * 60 * 60_000)
+  const pendingCutoff = new Date(now.getTime() - 15 * 60_000)
+  const expiredCreated = await db.update(paymentOrders).set({
+    status: 'expired',
+    providerStatus: 'local_expired',
+    closedAt: now,
+    updatedAt: now,
+    metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({ expirationReason: 'provider_payment_not_created' })}::jsonb`,
+  }).where(and(
+    eq(paymentOrders.status, 'created'),
+    isNull(paymentOrders.providerPaymentId),
+    lt(paymentOrders.updatedAt, createdCutoff),
+  )).returning({ id: paymentOrders.id })
+
+  const candidates = await db.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
+    .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
+    .where(and(
+      eq(paymentOrders.status, 'pending'),
+      isNotNull(paymentOrders.providerPaymentId),
+      lt(paymentOrders.updatedAt, pendingCutoff),
+    )).limit(100)
+  const providers = new Map<string, CommerceProvider>()
+  const reconciled: Array<{ orderId: string; status: string }> = []
+  const failures: Array<{ orderId: string; message: string }> = []
+  for (const candidate of candidates) {
+    try {
+      let provider = providers.get(candidate.order.provider)
+      if (!provider) {
+        provider = await providerFor(db, config, candidate.order.provider)
+        providers.set(candidate.order.provider, provider)
+      }
+      const state = await provider.getPayment(candidate.order.providerPaymentId!)
+      const status = await db.transaction(async (tx) => {
+        const joined = await tx.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
+          .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
+          .where(eq(paymentOrders.id, candidate.order.id)).for('update').limit(1)
+        if (!joined[0] || joined[0].order.status !== 'pending') return joined[0]?.order.status ?? 'missing'
+        const appliedStatus = await applyPaymentState(tx, joined[0].order, joined[0].product, state)
+        await tx.update(paymentOrders).set({
+          metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({ lastReconciledAt: now.toISOString() })}::jsonb`,
+          ...(appliedStatus === 'pending' ? { updatedAt: now } : {}),
+        }).where(eq(paymentOrders.id, candidate.order.id))
+        return appliedStatus
+      })
+      reconciled.push({ orderId: candidate.order.id, status })
+    } catch (error) {
+      if (
+        error instanceof ApiError
+        && error.code === 'ORDER_NOT_FOUND'
+        && candidate.order.updatedAt < createdCutoff
+      ) {
+        await db.update(paymentOrders).set({
+          status: 'expired',
+          providerStatus: 'not_found',
+          closedAt: now,
+          updatedAt: now,
+          metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({
+            expirationReason: 'provider_payment_not_found',
+            lastReconciledAt: now.toISOString(),
+          })}::jsonb`,
+        }).where(and(eq(paymentOrders.id, candidate.order.id), eq(paymentOrders.status, 'pending')))
+        reconciled.push({ orderId: candidate.order.id, status: 'expired' })
+        continue
+      }
+      const safeMessage = error instanceof ApiError
+        ? `${error.code}${typeof error.details.providerStatus === 'number' ? ` (${error.details.providerStatus})` : ''}: ${error.message}`
+        : (error instanceof Error ? error.message : String(error))
+      failures.push({
+        orderId: candidate.order.id,
+        message: safeMessage.slice(0, 300),
+      })
+      await db.update(paymentOrders).set({
+        metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({
+          lastReconciliationFailedAt: now.toISOString(),
+          lastReconciliationError: safeMessage.slice(0, 300),
+        })}::jsonb`,
+      }).where(eq(paymentOrders.id, candidate.order.id))
+    }
+  }
+  if (failures.length) {
+    throw new ApiError(503, 'COMMERCE_RECONCILIATION_FAILED', `Не удалось сверить ${failures.length} платёжных заказов`, {
+      reconciled: reconciled.length,
+      failures,
+    })
+  }
+  return {
+    checked: candidates.length,
+    reconciled,
+    expiredCreatedOrderIds: expiredCreated.map((entry) => entry.id),
+  }
 }
 
 export const revokeEntitlementById = async (db: Database, id: string, occurredAt = new Date()) => {

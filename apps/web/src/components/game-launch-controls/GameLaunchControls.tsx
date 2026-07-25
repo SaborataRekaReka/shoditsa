@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
 import { Check, ChevronRight } from 'lucide-react'
 import './GameLaunchControls.css'
 
@@ -125,10 +125,44 @@ export function GameOptionSelect({
   </div>
 }
 
+export function GameOptionAction({
+  label,
+  labelIcon,
+  value,
+  valueIcon,
+  endLabel,
+  className = '',
+  type = 'button',
+  ...props
+}: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
+  label: string
+  labelIcon: ReactNode
+  value: ReactNode
+  valueIcon?: ReactNode
+  endLabel?: ReactNode
+}) {
+  return <button
+    type={type}
+    className={`game-option-trigger game-option-action ${className}`.trim()}
+    {...props}
+  >
+    <span className="game-option-trigger__meta">
+      <span className="game-option-trigger__label">{labelIcon}{label}</span>
+      {endLabel && <span className="game-option-trigger__end">{endLabel}</span>}
+    </span>
+    <span className="game-option-trigger__value">
+      {valueIcon}
+      <strong>{value}</strong>
+      <ChevronRight aria-hidden="true" />
+    </span>
+  </button>
+}
+
 export function GameOption({
   title,
   description,
   icon,
+  status,
   selected = false,
   disabled = false,
   tone = 'default',
@@ -138,12 +172,21 @@ export function GameOption({
   title: ReactNode
   description?: ReactNode
   icon?: ReactNode
+  status?: {
+    label: ReactNode
+    tone: 'completed' | 'available' | 'unlockable' | 'locked' | 'neutral'
+    icon?: ReactNode
+  }
   selected?: boolean
   disabled?: boolean
   tone?: 'default' | 'muted' | 'positive' | 'special'
   className?: string
   onSelect: () => void
 }) {
+  const trailingStatus = status ?? (selected
+    ? { label: 'Выбрано', tone: 'available' as const, icon: <Check /> }
+    : null)
+
   return <button
     type="button"
     role="option"
@@ -157,6 +200,9 @@ export function GameOption({
   >
     <span className="game-option__icon" aria-hidden="true">{icon}</span>
     <span className="game-option__copy"><strong>{title}</strong>{description && <small>{description}</small>}</span>
-    {selected && <Check className="game-option__check" aria-hidden="true" />}
+    {trailingStatus && <span className={`game-option__status game-option__status--${trailingStatus.tone}`}>
+      {trailingStatus.icon && <span aria-hidden="true">{trailingStatus.icon}</span>}
+      <span>{trailingStatus.label}</span>
+    </span>}
   </button>
 }

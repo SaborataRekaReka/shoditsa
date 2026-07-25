@@ -23,6 +23,7 @@ describe('public game card', () => {
       alternativeTitles: [],
       popularityScore: 0,
       plotHint: 'Сюжетный текст не должен попадать в игровой API.',
+      plotHintVariants: ['Другой сюжетный текст тоже не должен попадать в игровой API.'],
       facts: ['Факт не должен становиться отдельной подсказкой.'],
       description: 'Внутреннее описание карточки.',
       shortDescription: 'Короткое внутреннее описание.',
@@ -33,6 +34,7 @@ describe('public game card', () => {
       facts: expect.anything(),
       description: expect.anything(),
       shortDescription: expect.anything(),
+      plotHintVariants: expect.anything(),
     })
   })
 
@@ -111,6 +113,7 @@ describe('catalog search pool', () => {
         musicType: 'Solo',
         musicIsActive: true,
         musicOrigin: 'intl',
+        plotHint: 'Артист начинает творческий путь, находит собственное звучание и собирает большую аудиторию.',
       },
       {
         id: 'music:niche',
@@ -128,6 +131,7 @@ describe('catalog search pool', () => {
         musicType: 'Group',
         musicIsActive: true,
         musicOrigin: 'ru',
+        plotHint: 'Музыканты начинают совместный путь, развивают узнаваемый стиль и находят преданных слушателей.',
       },
     ] as TitleItem[]
     const rows = items.map((payload, index) => ({ id: `version-${index}`, payload }))

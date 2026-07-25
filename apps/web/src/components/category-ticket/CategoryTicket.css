@@ -7,7 +7,7 @@
   overflow: visible;
   display: grid;
   grid-template-columns: 86px minmax(0, 1fr);
-  color: #171a17;
+  color: var(--color-ink);
   background: transparent;
   border: 0;
   border-radius: 14px;
@@ -46,7 +46,7 @@
   min-width: 0;
   height: 100%;
   overflow: hidden;
-  color: #171a17;
+  color: var(--color-ink);
   background: transparent;
   border-right: 0;
   clip-path: path('M 14 0 H 31 A 12 12 0 0 0 55 0 H 86 V 154 H 55 A 12 12 0 0 0 31 154 H 14 A 14 14 0 0 1 0 140 V 14 A 14 14 0 0 1 14 0 Z');
@@ -150,7 +150,7 @@
 .category-grid--active .category-ticket .category-ticket__meta strong {
   margin: 0;
   display: block;
-  color: #171a17;
+  color: var(--color-ink);
   font-family: Oswald, sans-serif;
   font-size: 13px;
   font-weight: 500;
@@ -163,7 +163,7 @@
   margin: 6px 0 0;
   display: block;
   overflow: hidden;
-  color: #171a17;
+  color: var(--color-ink);
   font-family: Oswald, sans-serif;
   font-size: 30px;
   font-weight: 500;
@@ -198,7 +198,7 @@
 
 .category-ticket__state,
 .category-ticket__action {
-  color: #171a17;
+  color: var(--color-ink);
   font-family: Oswald, sans-serif;
   font-size: 12px;
   font-weight: 600;

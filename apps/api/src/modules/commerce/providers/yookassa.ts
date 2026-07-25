@@ -39,10 +39,28 @@ export const createYooKassaProvider = (credentials: { shopId: string; secretKey:
     } catch {
       throw new ApiError(503, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Платёжный сервис временно недоступен. Попробуйте позже')
     }
-    if (!response.ok) throw new ApiError(502, 'PAYMENT_CREATION_FAILED', 'ЮKassa не приняла запрос. Проверьте настройки магазина или попробуйте позже')
-    try { return await response.json() as T } catch { throw new ApiError(502, 'PAYMENT_CREATION_FAILED', 'Платёжный сервис вернул некорректный ответ') }
+    if (!response.ok) {
+      throw new ApiError(
+        502,
+        'COMMERCE_PROVIDER_REQUEST_FAILED',
+        'ЮKassa не приняла запрос. Проверьте настройки магазина или попробуйте позже',
+        { providerStatus: response.status },
+      )
+    }
+    try { return await response.json() as T } catch {
+      throw new ApiError(502, 'COMMERCE_PROVIDER_RESPONSE_INVALID', 'Платёжный сервис вернул некорректный ответ')
+    }
   }
-  const currentPayment = async (providerPaymentId: string) => call<YooPayment>(`/payments/${encodeURIComponent(providerPaymentId)}`)
+  const currentPayment = async (providerPaymentId: string) => {
+    try {
+      return await call<YooPayment>(`/payments/${encodeURIComponent(providerPaymentId)}`)
+    } catch (error) {
+      if (error instanceof ApiError && error.details.providerStatus === 404) {
+        throw new ApiError(404, 'ORDER_NOT_FOUND', 'Платёж не найден у провайдера')
+      }
+      throw error
+    }
+  }
 
   return {
     category: 'web',

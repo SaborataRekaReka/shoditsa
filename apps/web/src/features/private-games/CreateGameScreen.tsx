@@ -19,6 +19,7 @@ import {
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
 import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
+import { TextArea, TextInput } from '../../components/ui'
 import './CorporatePage.css'
 
 type Props = {
@@ -315,27 +316,27 @@ export function CreateGameScreen({
             <form className="corporate-order__form" onSubmit={(event) => void submit(event)}>
               <label>
                 <span>Как к вам обращаться</span>
-                <input name="contactName" minLength={2} maxLength={120} placeholder="Имя" autoComplete="name" required />
+                <TextInput name="contactName" minLength={2} maxLength={120} placeholder="Имя" autoComplete="name" required />
               </label>
               <label>
                 <span>Рабочая почта</span>
-                <input name="email" type="email" maxLength={254} placeholder="name@company.ru" autoComplete="email" required />
+                <TextInput name="email" type="email" maxLength={254} placeholder="name@company.ru" autoComplete="email" required />
               </label>
               <label>
                 <span>Компания или проект</span>
-                <input name="company" maxLength={160} placeholder="Название компании" autoComplete="organization" />
+                <TextInput name="company" maxLength={160} placeholder="Название компании" autoComplete="organization" />
               </label>
               <label>
                 <span>Участников</span>
-                <input name="participants" type="number" min={2} max={10000} defaultValue={20} required />
+                <TextInput name="participants" type="number" min={2} max={10000} defaultValue={20} required />
               </label>
               <label>
                 <span>Желаемая дата</span>
-                <input name="eventDate" type="date" />
+                <TextInput name="eventDate" type="date" />
               </label>
               <label className="corporate-order__wide">
                 <span>Что хотите устроить</span>
-                <textarea
+                <TextArea
                   name="description"
                   minLength={20}
                   maxLength={4000}
@@ -346,10 +347,10 @@ export function CreateGameScreen({
               </label>
               <label className="corporate-order__honeypot" aria-hidden="true">
                 <span>Сайт</span>
-                <input name="website" tabIndex={-1} autoComplete="off" />
+                <TextInput name="website" tabIndex={-1} autoComplete="off" />
               </label>
               <label className="corporate-order__consent corporate-order__wide">
-                <input type="checkbox" required />
+                <TextInput type="checkbox" required />
                 <span>Согласен на обработку контактных данных для ответа на заявку.</span>
               </label>
               <ActionButton className="corporate-order__wide" type="submit" disabled={pending}>

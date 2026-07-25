@@ -5,6 +5,7 @@ import { loadConfig, type AppConfig } from '@shoditsa/config'
 import { commerceProducts, createDatabase, paymentOrders, playerProfiles, user, userEntitlements, walletAccounts, walletLedger } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
 import type { Auth } from '../src/modules/auth/auth.js'
+import { reconcileCommerceOrders } from '../src/modules/commerce/service.js'
 
 type RequestUser = { id: string; email: string; name: string; isAnonymous: boolean }
 
@@ -118,6 +119,26 @@ describe('commerce API', () => {
     expect(response.json()).toMatchObject({ cost: 60, accessSource: 'tickets', balanceAfter: 440 })
     expect(response.json().ledgerId).toEqual(expect.any(String))
     currentUser = { id: userId, email: `commerce-${userId}@example.test`, name: 'Commerce User', isAnonymous: false }
+  })
+
+  it('expires abandoned local orders and safely polls stale provider payments', async () => {
+    const old = new Date(Date.now() - 4 * 86_400_000)
+    const [created, pending] = await database.db.insert(paymentOrders).values([
+      {
+        userId, productId: 'club_30d', provider: 'stub', amountMinor: 19_900, currency: 'RUB',
+        idempotencyKey: crypto.randomUUID(), status: 'created', updatedAt: old,
+      },
+      {
+        userId, productId: 'club_30d', provider: 'stub', amountMinor: 19_900, currency: 'RUB',
+        idempotencyKey: crypto.randomUUID(), status: 'pending', providerPaymentId: `stub_reconcile_${crypto.randomUUID()}`, updatedAt: old,
+      },
+    ]).returning()
+
+    const result = await reconcileCommerceOrders(database.db, config)
+    expect(result.expiredCreatedOrderIds).toContain(created.id)
+    expect(result.reconciled).toContainEqual({ orderId: pending.id, status: 'pending' })
+    expect((await database.db.select().from(paymentOrders).where(eq(paymentOrders.id, created.id)).limit(1))[0].status).toBe('expired')
+    expect((await database.db.select().from(paymentOrders).where(eq(paymentOrders.id, pending.id)).limit(1))[0].updatedAt.getTime()).toBeGreaterThan(old.getTime())
   })
 
   it('verifies refund webhooks and revokes only the matching grant', async () => {

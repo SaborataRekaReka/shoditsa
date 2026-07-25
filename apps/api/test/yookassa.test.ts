@@ -34,4 +34,14 @@ describe('YooKassa provider adapter', () => {
     expect(event).toMatchObject({ providerPaymentId: 'payment-1', status: 'paid', eventType: 'payment.succeeded' })
     expect(event.payload).toEqual({ event: 'payment.succeeded', objectId: 'payment-1', status: 'succeeded' })
   })
+
+  it('classifies a missing provider payment without treating it as a transient outage', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 404 })))
+    const provider = createYooKassaProvider({ shopId: 'shop', secretKey: 'secret' })
+
+    await expect(provider.getPayment('missing-payment')).rejects.toMatchObject({
+      statusCode: 404,
+      code: 'ORDER_NOT_FOUND',
+    })
+  })
 })

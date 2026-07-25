@@ -1,0 +1,12 @@
+
+
+/* Feature-owned rules migrated from the legacy screen sheet. */
+.challenge-invite-backdrop { position: fixed; inset: 0; z-index: 200; padding: 18px; background: rgba(10, 12, 10, .76); display: grid; place-items: center; }
+.challenge-invite { width: min(100%, 420px); padding: 28px; border: 1px solid var(--color-paper-line); border-radius: var(--radius-lg); background: var(--color-paper); color: var(--color-ink); box-shadow: var(--shadow-paper); text-align: center; }
+.challenge-invite > svg { width: 34px; height: 34px; margin-bottom: 12px; color: #30734a; }
+.challenge-invite > span { display: block; color: #30734a; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+.challenge-invite h2 { margin: 10px 0 5px; font: 500 25px/1.15 Oswald, sans-serif; text-transform: uppercase; }
+.challenge-invite p { margin: 0 0 18px; color: var(--color-paper-muted); }
+.challenge-invite button { width: 100%; min-height: 48px; border-radius: 13px; font-weight: 800; }
+.challenge-invite__accept { border: 1px solid var(--color-primary-border); background: var(--color-primary); color: var(--color-ink); }
+.challenge-invite__dismiss { margin-top: 6px; border: 0; background: transparent; color: var(--color-paper-muted); }

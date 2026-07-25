@@ -4,7 +4,6 @@
 @import './styles/screens.css';
 @import './features/daily-progress/daily-progress.css';
 @import './features/auth/LoginScreen.css';
-@import './features/profile/ProfileScreen.css';
 @import './styles/utilities.css';
 
 .server-brand { font-family: var(--font-display, sans-serif); font-size: 1.4rem; font-weight: 900; color: var(--ink, #171717); }
@@ -72,6 +71,7 @@
 .mode-variant-option { width: 100%; padding: 10px; border: 1px solid transparent; border-radius: 11px; color: var(--color-ink); background: transparent; display: flex; align-items: center; gap: 11px; text-align: left; cursor: pointer; transition: background .15s var(--ease), border-color .15s var(--ease); }
 .mode-variant-option:hover { background: var(--color-paper-2); }
 .mode-variant-option.active { border-color: color-mix(in srgb, var(--color-primary) 40%, transparent); background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
+.mode-variant-option .game-option__copy { flex: 1; }
 .mode-variant-option__copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .mode-variant-option__copy strong { font-size: 13px; font-weight: 700; }
 .mode-variant-option__copy small { color: var(--color-paper-muted-2); font-size: 12px; line-height: 1.35; }

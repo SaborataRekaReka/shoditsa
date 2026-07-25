@@ -4,10 +4,28 @@ import type {
   AttendanceSummary,
   DashboardResponse,
   MetaResponse,
+  PublicContentItem,
   TodayAttendance,
 } from '@shoditsa/contracts'
 import { PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
-import type { AttendanceStats, DailyAttendance, SavedGame, TitleMode, Wallet } from '../../types'
+import type { AttendanceStats, DailyAttendance, SavedGame, TitleItem, TitleMode, Wallet } from '../../types'
+
+export const publicItemToTitle = (item: PublicContentItem): TitleItem => {
+  const extended = item as Partial<TitleItem>
+  return {
+    ...extended,
+    id: item.id,
+    mode: item.mode,
+    titleRu: item.titleRu,
+    titleOriginal: item.titleOriginal,
+    alternativeTitles: extended.alternativeTitles ?? [],
+    year: item.mode === 'music' ? undefined : item.year ?? undefined,
+    activityStartYear: extended.activityStartYear ?? null,
+    genres: item.genres ?? [],
+    popularityScore: extended.popularityScore ?? 0,
+    posterUrl: item.posterUrl,
+  }
+}
 
 export const toLegacyWallet = (dashboard: DashboardResponse | null): Wallet => ({
   tickets: dashboard?.wallet.balance ?? 0,

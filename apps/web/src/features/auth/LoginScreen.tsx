@@ -8,6 +8,7 @@ import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime
 import { notifyAuthSessionChanged } from './use-auth-session'
 import { localizeYandexOAuthUrl } from './yandex-oauth'
 import { REGISTRATION_REFERRALS, registrationReferralFromSearch } from './registration-referral'
+import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
 
 type AuthPageMode = 'login' | 'register'
 
@@ -317,14 +318,14 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
               : <form className="login-form" onSubmit={submitEmail} noValidate>
                 {register && !resetMode && <div className="login-field">
                   <label htmlFor="login-name">Имя</label>
-                  <input className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
+                  <TextInput className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
                   {fieldErrors.name && <small id="login-name-error" className="login-field-error">{fieldErrors.name}</small>}
                 </div>}
 
                 {!resetMode && <div className="login-field">
                   <label htmlFor="login-email">Email</label>
                   <div className="login-input-wrap">
-                    <input className="ym-disable-keys" id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
+                    <TextInput className="ym-disable-keys" id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
                   </div>
                   {fieldErrors.email && <small id="login-email-error" className="login-field-error">{fieldErrors.email}</small>}
                 </div>}
@@ -332,10 +333,10 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {!resetMode && !forgotMode && <div className="login-field">
                   <label htmlFor="login-password">Пароль</label>
                   <div className="login-input-wrap">
-                    <input className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
-                    <button className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
+                    <TextInput className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <ControlButton className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
-                    </button>
+                    </ControlButton>
                   </div>
                   {fieldErrors.password && <small id="login-password-error" className="login-field-error">{fieldErrors.password}</small>}
                 </div>}
@@ -343,34 +344,34 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 {resetMode && <div className="login-field">
                   <label htmlFor="login-password">Новый пароль</label>
                   <div className="login-input-wrap">
-                    <input className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
-                    <button className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
+                    <TextInput className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
+                    <ControlButton className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
-                    </button>
+                    </ControlButton>
                   </div>
                   {fieldErrors.password && <small id="login-password-error" className="login-field-error">{fieldErrors.password}</small>}
                 </div>}
 
-                {!register && !resetMode && !forgotMode && <button className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</button>}
-                {error && <div className="login-error" role="alert" aria-live="polite">{error}</div>}
+                {!register && !resetMode && !forgotMode && <ControlButton className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</ControlButton>}
+                {error && <InlineAlert tone="danger" className="login-error">{error}</InlineAlert>}
 
                 <ActionButton className="login-submit" type="submit" disabled={pending || (!emailAuthEnabled && !resetMode && !forgotMode)}>
                   {pending && <LoaderCircle className="login-spinner" aria-hidden="true" />}
                   <span>{pending ? resetMode ? 'Сохраняем…' : forgotMode ? 'Отправляем…' : register ? 'Создаём…' : 'Входим…' : forgotMode ? 'Отправить ссылку' : submitLabel}</span>
                 </ActionButton>
 
-                {notice && <div className="login-notice" role="status" aria-live="polite">{notice}</div>}
+                {notice && <InlineAlert tone="success" className="login-notice">{notice}</InlineAlert>}
 
                 {!resetMode && !forgotMode && <>
                   <div className="login-divider" aria-hidden="true"><span />ИЛИ<span /></div>
-                  <button className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending || !yandexAuthEnabled}>
+                  <ControlButton className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending || !yandexAuthEnabled}>
                     <span className="login-yandex-mark" aria-hidden="true">Я</span>
                     <span>{pending ? 'Переходим…' : 'Войти через Яндекс'}</span>
-                  </button>
+                  </ControlButton>
                 </>}
 
-                {(forgotMode || resetMode) && <button className="login-secondary-link" type="button" onClick={() => switchMode(false)}>Вернуться ко входу</button>}
-                {register && !resetMode && <p className="login-register-line">Уже есть аккаунт? <button type="button" onClick={() => switchMode(false)}>Войти</button></p>}
+                {(forgotMode || resetMode) && <ControlButton className="login-secondary-link" type="button" onClick={() => switchMode(false)}>Вернуться ко входу</ControlButton>}
+                {register && !resetMode && <p className="login-register-line">Уже есть аккаунт? <ControlButton type="button" onClick={() => switchMode(false)}>Войти</ControlButton></p>}
                 {!register && !resetMode && !forgotMode && <p className="login-register-line">Нет аккаунта? <a href={authHref('/register', returnUrl)}>Зарегистрироваться</a></p>}
               </form>}
             {!serverRuntime.loading && !emailAuthEnabled && !resetMode && !forgotMode && <p className="login-form-hint login-form-hint--warning">Вход по email временно недоступен на этом окружении.</p>}
@@ -383,7 +384,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       <a href="/legal/tariffs">Тарифы</a>
       <a href="/legal/privacy">Конфиденциальность</a>
       <a href="/legal/contacts">Контакты и реквизиты</a>
-      <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Настройки cookie</button>
+      <ControlButton type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Настройки cookie</ControlButton>
     </footer>
   </div>
 }

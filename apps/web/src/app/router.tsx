@@ -15,6 +15,7 @@ import { applyRuntimeSeo } from './seo'
 import { CookieConsentBanner } from '../features/legal/CookieConsentBanner'
 
 const AdminApp = import.meta.env.MODE === 'yandex' ? null : lazy(() => import('../admin/AdminApp'))
+const UiKitScreen = lazy(() => import('../features/ui-kit/UiKitScreen'))
 
 const RootView = () => {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
@@ -28,6 +29,7 @@ const AdminRoute = () => {
   if (!AdminApp) return <main className="loading loading--error" role="alert"><AlertTriangle /><h1>Раздел недоступен</h1><p>Административная панель не включается в сборку Яндекс Игр.</p><a href="#/">Вернуться в игру</a></main>
   return <Suspense fallback={<main className="loading"><Sparkles /> Загружаем административную панель…</main>}><AdminApp /></Suspense>
 }
+const UiKitRoute = () => <Suspense fallback={<main className="loading"><Sparkles /> Загружаем UI-кит…</main>}><UiKitScreen /></Suspense>
 
 const rootRoute = createRootRoute({ component: RootView })
 const playerLayoutRoute = createRoute({ getParentRoute: () => rootRoute, id: 'player', component: PlayerLayout })
@@ -54,12 +56,14 @@ const playerRoutes = [
 const loginRoute = createRoute({ getParentRoute: () => rootRoute, path: 'login', component: () => <LoginRoute mode="login" /> })
 const registerRoute = createRoute({ getParentRoute: () => rootRoute, path: 'register', component: () => <LoginRoute mode="register" /> })
 const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: 'admin/$', component: AdminRoute })
+const uiKitRoute = createRoute({ getParentRoute: () => rootRoute, path: 'ui-kit', component: UiKitRoute })
 
 const routeTree = rootRoute.addChildren([
   playerLayoutRoute.addChildren(playerRoutes),
   loginRoute,
   registerRoute,
   adminRoute,
+  uiKitRoute,
 ])
 
 export const appRouter = createRouter({

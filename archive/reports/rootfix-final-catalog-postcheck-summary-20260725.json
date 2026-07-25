@@ -1,0 +1,35 @@
+{
+  "reportPath": "/reports/rootfix-final-catalog-postcheck-20260725.json",
+  "activeRevision": {
+    "id": "b374c5d3-0d4f-4f30-9841-3f283ce6232d",
+    "version": "20260725T061015425Z-catalog-root-repair-04d8c006",
+    "checksum": "04d8c0061303d6c795bd7c5ce1c129541aa4ce6e9b0ead242e04d06a0720e74d"
+  },
+  "repairs": 0,
+  "duplicateGroups": [],
+  "countsBefore": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "countsAfter": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "publicationImpact": {
+    "removedFromRegularPool": [],
+    "addedToRegularPool": [],
+    "retainedAnswersViaCanonical": []
+  }
+}

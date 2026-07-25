@@ -195,9 +195,14 @@ const sourceChecks = [
     ],
   },
   {
-    path: 'apps/web/src/styles/screens.css',
+    path: 'apps/web/src/components/game-shell/GameScreenShell.css',
     required: [
       ['wide shell navigation follows canvas edge', /game-screen-shell--wide > \.game-screen-shell__nav\s*\{\s*width:\s*100%/],
+    ],
+  },
+  {
+    path: 'apps/web/src/features/game-session/GameSession.css',
+    required: [
       ['city rank tracks remain visible', /\.city-rank-meter__track\s*\{[^}]*height:\s*7px[^}]*\}[^]*\.city-rank-meter__track > b\s*\{[^}]*background:\s*var\(--color-primary\)/],
     ],
   },

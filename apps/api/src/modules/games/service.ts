@@ -16,6 +16,7 @@ import {
   musicTypeLabel,
   pickDailyVignette,
   poolFor,
+  selectPlotHintVariant,
 } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 import type { AppConfig } from '@shoditsa/config'
@@ -255,15 +256,16 @@ const hintChoiceSourceKey = (choice: ExistingHintChoice) => {
   return typeof sourceKey === 'string' && sourceKey ? sourceKey : null
 }
 
-export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = []): BuiltHintOption[] => {
+export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = [], seed = ''): BuiltHintOption[] => {
   const options: BuiltHintOption[] = []
   const evidence = revealedAttemptEvidence(attempts)
   const copy = CATALOG_HINT_COPY[answer.mode]
 
   const plotAlreadyOpened = choices.some((choice) => choice.hintKey === 'plot')
-  const plotValue = plotAlreadyOpened || !isPlayableGamePlotHint(answer)
+  const selectedPlotHint = selectPlotHintVariant(answer, seed)
+  const plotValue = plotAlreadyOpened || !selectedPlotHint || !isPlayableGamePlotHint({ ...answer, plotHint: selectedPlotHint })
     ? ''
-    : cropHintText(cleanHintText(answer.plotHint))
+    : cropHintText(cleanHintText(selectedPlotHint))
   if (plotValue) {
     options.push({
       key: 'plot',
@@ -299,6 +301,7 @@ export const publicCard = (item: TitleItem) => ({
   ...(({
     comments: _privateComments,
     plotHint: _privatePlotHint,
+    plotHintVariants: _privatePlotHintVariants,
     facts: _privateFacts,
     description: _privateDescription,
     shortDescription: _privateShortDescription,
@@ -436,7 +439,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   const hintOptions = isPromptSession
     ? []
     : answer
-      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
+      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })), session.id)
       : []
   const result: Record<string, unknown> = {
     engine: 'catalog_guess', rulesVersion: session.rulesVersion,
@@ -574,7 +577,7 @@ export const chooseHint = async (db: Database, userId: string, sessionId: string
   if (existingChoices.some((choice) => choice.checkpoint === checkpoint)) throw new ApiError(409, 'HINT_ALREADY_CHOSEN', 'Подсказка на этом этапе уже выбрана')
   const answers = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const priorAttempts = await tx.select({ hints: gameAttempts.hintsSnapshot }).from(gameAttempts).where(eq(gameAttempts.sessionId, session.id)).orderBy(asc(gameAttempts.position))
-  const options = buildHintOptions(answers[0].payload as TitleItem, existingChoices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), priorAttempts.map((attempt) => ({ hints: attempt.hints as Hint[] })))
+  const options = buildHintOptions(answers[0].payload as TitleItem, existingChoices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), priorAttempts.map((attempt) => ({ hints: attempt.hints as Hint[] })), session.id)
   const selectedOption = options.find((option) => option.key === hintKey)
   if (!selectedOption) throw new ApiError(422, 'HINT_NOT_AVAILABLE', 'Для этого этапа нет доступных вариантов подсказки')
   const response = {

@@ -14,6 +14,8 @@ import {
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
 import { ServerEconomyView } from './ServerEconomyView'
+import { ControlButton, TextInput } from '../../components/ui'
+import './EconomyView.css'
 
 const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
 const TICKET_PROMO_AWARD = 50
@@ -91,7 +93,7 @@ function LocalEconomyView() {
     <p className="modal-lead">Билеты хранятся только в этом браузере на этом устройстве. В другом браузере или на другом устройстве они не переносятся. Если очистить данные сайта, билеты и их история могут исчезнуть.</p>
     <form className="ticket-promo" onSubmit={submitPromoCode}>
       <div className="ticket-promo__copy"><span><Ticket /> Шепнуть кассиру</span><small>Неизвестно, сколько раз это сработает</small></div>
-      <div className="ticket-promo__row"><input value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Секретная фраза" autoComplete="off" /><button type="submit">Сказать</button></div>
+      <div className="ticket-promo__row"><TextInput value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Секретная фраза" autoComplete="off" /><ControlButton type="submit">Сказать</ControlButton></div>
       {promoMessage && <p>{promoMessage}</p>}
     </form>
     <h3 className="subheading">Как начисляется</h3>

@@ -224,7 +224,7 @@
 }
 
 .ticket-dossier {
-  --ticket-dossier-accent: #31794b;
+  --ticket-dossier-accent: var(--color-success-ink);
   --ticket-dossier-accent-rgb: 49, 121, 75;
   --ticket-body-x: clamp(16px, 4vw, 24px);
   grid-column: 1 / -1;

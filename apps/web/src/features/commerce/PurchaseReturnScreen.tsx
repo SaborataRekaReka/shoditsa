@@ -7,6 +7,7 @@ import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
+import { ControlButton } from '../../components/ui'
 import './CommercialShell.css'
 
 type Props = { onHome: () => void; onClub: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }
@@ -76,7 +77,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
             : ['failed', 'canceled', 'expired'].includes(status ?? '') ? <><XCircle /><h1>Оплата не завершена</h1><p>Доступ не выдан. Можно безопасно попробовать ещё раз.</p></>
               : pendingTimedOut ? <><Clock3 /><h1>Платёж ещё обрабатывается</h1><p>Мы продолжим ждать подтверждение платёжного сервиса. Проверьте статус позже.</p></>
                 : <><Clock3 className="purchase-return__spin" /><h1>Проверяем оплату</h1><p>Не закрывайте страницу — подтверждение обычно занимает несколько секунд.</p></>}
-      <button type="button" onClick={onClub}>Перейти в клуб</button>
+      <ControlButton type="button" onClick={onClub}>Перейти в клуб</ControlButton>
     </main>
   </>
 }

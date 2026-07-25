@@ -225,11 +225,26 @@ export const isPromoGameItem = (item: Pick<TitleItem, 'id' | 'mode' | 'contentSt
 
 const normalizePlotHintText = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
 const normalizePlotHintMatch = (value: unknown) => normalizePlotHintText(value)
-  .normalize('NFKD')
   .toLocaleLowerCase('ru-RU')
+  .replace(/й/g, '\uE000')
+  .normalize('NFKD')
   .replace(/\p{M}+/gu, '')
+  .replace(/\uE000/g, 'й')
   .replace(/[^\p{L}\p{N}]+/gu, ' ')
   .trim()
+
+export const plotHintLeaksAnswer = (
+  item: Pick<TitleItem, 'plotHint' | 'titleRu' | 'titleOriginal'>,
+) => {
+  const normalizedHint = normalizePlotHintMatch(item.plotHint)
+  return [item.titleRu, item.titleOriginal]
+    .map(normalizePlotHintMatch)
+    .some((title) => {
+      if (title.length < 4) return false
+      if (title.length >= 6) return normalizedHint.includes(title)
+      return ` ${normalizedHint} `.includes(` ${title} `)
+    })
+}
 
 export const isPlayableGamePlotHint = (
   item: Pick<TitleItem, 'plotHint' | 'titleRu' | 'titleOriginal'>,
@@ -240,17 +255,40 @@ export const isPlayableGamePlotHint = (
   if (/\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(hint)) return false
   if (/(?:json|undefined|null|nan|stack trace|exception|https?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) return false
 
-  const normalizedHint = normalizePlotHintMatch(hint)
-  return [item.titleRu, item.titleOriginal]
-    .map(normalizePlotHintMatch)
-    .every((title) => title.length < 4 || !normalizedHint.includes(title))
+  return !plotHintLeaksAnswer({ ...item, plotHint: hint })
 }
 
-export const isAllowedInRegularGame = (
-  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame' | 'seasonsCount' | 'activityStartYear' | 'year' | 'countries' | 'genres' | 'musicType' | 'musicIsActive' | 'musicOrigin'>,
+export const playablePlotHints = (
+  item: Pick<TitleItem, 'plotHint' | 'plotHintVariants' | 'titleRu' | 'titleOriginal'>,
 ) => {
-  const explicitlyAllowed = item.allowedInGame !== false && (item.allowedInGame === true || !isPromoGameItem(item))
-  if (!explicitlyAllowed) return false
+  const result: string[] = []
+  const seen = new Set<string>()
+  for (const value of [item.plotHint, ...(item.plotHintVariants ?? [])]) {
+    const hint = normalizePlotHintText(value)
+    const key = normalizePlotHintMatch(hint)
+    if (!hint || seen.has(key) || !isPlayableGamePlotHint({ ...item, plotHint: hint })) continue
+    seen.add(key)
+    result.push(hint)
+  }
+  return result
+}
+
+export const selectPlotHintVariant = (
+  item: Pick<TitleItem, 'id' | 'plotHint' | 'plotHintVariants' | 'titleRu' | 'titleOriginal'>,
+  seed: string,
+) => {
+  const variants = playablePlotHints(item)
+  return variants.length ? variants[hashIndex(`plot-hint|${item.id}|${seed}`, variants.length)] : null
+}
+
+const isPublishableContentStatus = (status: TitleItem['contentStatus']) =>
+  !['blocked', 'review', 'duplicate', 'promo_pack'].includes(String(status ?? ''))
+
+export const isAllowedInRegularGame = (
+  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame' | 'seasonsCount' | 'activityStartYear' | 'year' | 'countries' | 'genres' | 'musicType' | 'musicIsActive' | 'musicOrigin' | 'plotHint' | 'plotHintVariants' | 'titleRu' | 'titleOriginal'>,
+) => {
+  if (item.allowedInGame === false || isPromoGameItem(item) || !isPublishableContentStatus(item.contentStatus)) return false
+  if (playablePlotHints(item).length === 0) return false
   if (item.mode === 'series') return Number.isInteger(item.seasonsCount) && Number(item.seasonsCount) > 0
   if (item.mode === 'music') return musicEligibilityIssues(item as TitleItem).length === 0
   return true
@@ -332,13 +370,77 @@ export const pickDailyVignette = <T,>(vignettes: T[], diagnosisId: string, date:
   vignettes.length ? vignettes[hashIndex(`vignette|${diagnosisId}|${date}`, vignettes.length)] : null
 
 export const normalizeArtistName = (value: string) => value
-  .normalize('NFKD')
   .toLocaleLowerCase('ru-RU')
+  .replace(/й/g, '\uE000')
+  .normalize('NFKD')
   .replace(/\p{M}+/gu, '')
+  .replace(/\uE000/g, 'й')
   .replace(/[^\p{L}\p{N}]+/gu, ' ')
   .trim()
 
 export const normalize = (value: string) => normalizeArtistName(value)
+
+/**
+ * Stable identity keys shared by validation, duplicate reporting and repair.
+ * External catalog IDs win; title keys include the fields needed to distinguish
+ * same-name works such as cities in different countries or release-scoped games.
+ */
+export const contentIdentityKeys = (item: TitleItem) => {
+  const keys = new Set<string>()
+  const add = (kind: string, value: unknown) => {
+    const normalized = normalize(String(value ?? ''))
+    if (normalized) keys.add(`${item.mode}:${kind}:${normalized}`)
+  }
+  add('canonical', item.canonicalId)
+  add('canonical-game', item.canonicalGameId)
+  add('kinopoisk', item.kinopoiskId)
+  add('imdb', item.imdbId)
+  add('shikimori', item.shikimoriId)
+  add('steam', item.steamAppId)
+  add('igdb', item.igdbId)
+  add('thegamesdb', item.externalRanks?.thegamesdb)
+
+  const titles = [item.titleRu, item.titleOriginal].map(normalize).filter(Boolean)
+  const primaryTitle = normalize(item.titleRu || item.titleOriginal)
+  const sequelToken = primaryTitle.split(' ').at(-1)
+  const sequelDiscriminator = sequelToken && /^(?:[2-9]|ii|iii|iv|v|vi|vii|viii|ix)$/.test(sequelToken)
+    ? `:part-${sequelToken}`
+    : ''
+  if (item.mode === 'city') {
+    const country = normalize(item.country ?? '')
+    if (country) for (const title of titles) keys.add(`${item.mode}:title-country:${title}:${country}`)
+  } else if (item.mode === 'music') {
+    const origin = normalize(item.musicOrigin ?? '')
+    if (origin) for (const title of titles) keys.add(`${item.mode}:title-origin:${title}:${origin}`)
+  } else if (item.mode !== 'diagnosis' && Number.isInteger(item.year)) {
+    const release = item.mode === 'game' && item.releaseScope === 'release'
+      ? `:${normalize(item.releaseLabel ?? '') || 'release'}`
+      : ''
+    for (const title of titles) keys.add(`${item.mode}:title-year:${title}:${item.year}${release}${sequelDiscriminator}`)
+  }
+  return [...keys]
+}
+
+export const contentDuplicateGroups = (items: TitleItem[]) => {
+  const parents = items.map((_, index) => index)
+  const find = (index: number): number => parents[index] === index ? index : (parents[index] = find(parents[index]))
+  const unite = (left: number, right: number) => {
+    const leftRoot = find(left)
+    const rightRoot = find(right)
+    if (leftRoot !== rightRoot) parents[rightRoot] = leftRoot
+  }
+  const byKey = new Map<string, number>()
+  items.forEach((item, index) => {
+    for (const key of contentIdentityKeys(item)) {
+      const existing = byKey.get(key)
+      if (existing == null) byKey.set(key, index)
+      else unite(existing, index)
+    }
+  })
+  const groups = new Map<number, TitleItem[]>()
+  items.forEach((item, index) => groups.set(find(index), [...(groups.get(find(index)) ?? []), item]))
+  return [...groups.values()].filter((group) => group.length > 1)
+}
 
 /**
  * The single source of truth for names accepted by every catalog game.

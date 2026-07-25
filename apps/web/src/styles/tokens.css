@@ -44,6 +44,14 @@
   --color-danger: #b85c56;
   --color-paper-muted: #6d665a;
   --color-paper-muted-2: #675f53;
+  --color-paper-hover: #e6ddc9;
+  --color-paper-line-strong: #817660;
+  --color-success-ink: #31794b;
+  --color-accent-ink: #725719;
+  --color-success-text: #81d39c;
+  --color-warning-text: #e6c478;
+  --color-danger-text: #efaaa5;
+  --color-white: #fff;
   --color-shadow: #090b09;
   --radius-sm: 10px;
   --radius-md: 15px;
@@ -52,4 +60,21 @@
   --ease: cubic-bezier(.22, 1, .36, 1);
   --shadow-tile: 4px 4px 0 var(--color-shadow);
   --shadow-paper: 4px 4px 0 var(--color-primary-soft);
+
+  /* Feature palettes are centralized here so their visual language remains
+     intentional without leaking literal colors into component styles. */
+  --danetki-canvas: #f4f0e7;
+  --danetki-ink: #17251d;
+  --danetki-night: #11271d;
+  --danetki-green-deep: #173d2b;
+  --danetki-green-action: #1d6841;
+  --danetki-paper-soft: #fbfaf6;
+  --danetki-gold: #d7b36b;
+  --danetki-line: #ddd8cb;
+  --danetki-line-soft: #ebe6da;
+  --danetki-danger: #7c2d20;
+  --friends-night: #111411;
+  --friends-paper: #eee7d8;
+  --friends-paper-muted: #746c5e;
+  --friends-green: #477558;
 }

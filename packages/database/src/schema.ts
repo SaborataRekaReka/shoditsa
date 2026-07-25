@@ -366,7 +366,7 @@ export const backgroundJobs = pgTable('background_jobs', {
   workerId: text('worker_id'),
   pipelineRunId: uuid('pipeline_run_id').references(() => pipelineRuns.id, { onDelete: 'set null' }),
 }, (table) => [
-  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention','danetki_ai_reply','danetki_guess_evaluate','danetki_room_expire')`),
+  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention','danetki_ai_reply','danetki_guess_evaluate','danetki_room_expire','commerce_reconcile','game_lifecycle_cleanup','content_retention')`),
   check('background_job_status_check', sql`${table.status} in ('queued','running','completed','failed','cancelled')`),
   index('background_job_claim_idx').on(table.status, table.nextRetryAt, table.createdAt),
   index('background_job_pipeline_idx').on(table.pipelineRunId),
@@ -441,7 +441,7 @@ export const gameSessions = pgTable('game_sessions', {
   index('game_session_auth_session_idx').on(table.authSessionId),
   check('game_session_kind_check', sql`${table.kind} in ('daily','archive','free_play','pack')`),
   check('game_session_pack_fields_check', sql`(${table.kind} = 'pack' and ${table.packId} is not null and ${table.packPosition} is not null) or (${table.kind} <> 'pack' and ${table.packId} is null and ${table.packPosition} is null)`),
-  check('game_session_status_check', sql`${table.status} in ('playing','won','lost')`),
+  check('game_session_status_check', sql`${table.status} in ('playing','won','lost','expired')`),
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
 ])
 
@@ -545,10 +545,33 @@ export const danetkiAiCalls = pgTable('danetki_ai_calls', {
   errorCode: text('error_code'),
   responseJson: jsonb('response_json'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   index('danetki_ai_call_session_created_idx').on(table.sessionId, table.createdAt),
   uniqueIndex('danetki_ai_call_trigger_purpose_unique').on(table.triggerMessageId, table.purpose)
     .where(sql`${table.triggerMessageId} is not null`),
+])
+
+export const danetkiAiCallAttempts = pgTable('danetki_ai_call_attempts', {
+  id: uuid().primaryKey().defaultRandom(),
+  callId: uuid('call_id').notNull().references(() => danetkiAiCalls.id, { onDelete: 'cascade' }),
+  jobId: uuid('job_id').references(() => backgroundJobs.id, { onDelete: 'set null' }),
+  attemptNumber: integer('attempt_number').notNull(),
+  model: text().notNull(),
+  promptVersion: text('prompt_version').notNull(),
+  providerResponseId: text('provider_response_id'),
+  inputTokens: integer('input_tokens'),
+  outputTokens: integer('output_tokens'),
+  latencyMs: integer('latency_ms'),
+  status: danetkiAiCallStatus().notNull().default('pending'),
+  errorCode: text('error_code'),
+  responseJson: jsonb('response_json'),
+  startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+  finishedAt: timestamp('finished_at', { withTimezone: true }),
+}, (table) => [
+  unique('danetki_ai_attempt_call_number_unique').on(table.callId, table.attemptNumber),
+  index('danetki_ai_attempt_call_started_idx').on(table.callId, table.startedAt),
+  check('danetki_ai_attempt_number_check', sql`${table.attemptNumber} > 0`),
 ])
 
 export const danetkiSurrenderVotes = pgTable('danetki_surrender_votes', {

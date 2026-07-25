@@ -15,7 +15,7 @@ import {
 import { ApiClientError, api, queryKeys } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
-import { useDialogFocusTrap } from '../../components/app-shell/AppShell'
+import { ControlButton, DialogSurface, TextInput } from '../../components/ui'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import './CommercialShell.css'
 
@@ -90,8 +90,6 @@ export function TipCheckoutTrigger({
     setError('')
     setAccepted(false)
   }
-  const dialogRef = useDialogFocusTrap<HTMLElement>(open, close)
-
   const chooseTip = async (product: CommerceProduct) => {
     if (pendingProductId || !accepted) return
     if (!authenticated) {
@@ -134,33 +132,22 @@ export function TipCheckoutTrigger({
 
   const modal = open && typeof document !== 'undefined'
     ? createPortal(
-        <div
-          className="tip-modal-backdrop"
-          onMouseDown={(event) => event.target === event.currentTarget && close()}
-        >
-          <section
-            className="tip-modal"
-            ref={dialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="tip-modal-title"
-            tabIndex={-1}
-          >
+        <DialogSurface backdropClassName="tip-modal-backdrop" className="tip-modal" onClose={close} ariaLabelledBy="tip-modal-title">
             <header className="tip-modal__header">
               <span className="tip-modal__mark" aria-hidden="true"><Heart /></span>
               <div>
                 <span>Поддержать проект</span>
                 <h2 id="tip-modal-title">Оставить чаевые кассиру</h2>
               </div>
-              <button type="button" onClick={close} disabled={Boolean(pendingProductId)} aria-label="Закрыть">
+              <ControlButton onClick={close} disabled={Boolean(pendingProductId)} aria-label="Закрыть">
                 <X />
-              </button>
+              </ControlButton>
             </header>
             <p className="tip-modal__lead">
               Выберите сумму — сразу после нажатия откроется безопасная страница оплаты ЮKassa.
             </p>
             <label className="tip-modal__acceptance">
-              <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} disabled={Boolean(pendingProductId)} />
+              <TextInput type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} disabled={Boolean(pendingProductId)} />
               <span>Принимаю <a href="/legal/terms" target="_blank" rel="noreferrer">оферту</a>, <a href="/legal/tariffs" target="_blank" rel="noreferrer">тариф</a> и <a href="/legal/refunds" target="_blank" rel="noreferrer">условия возврата</a></span>
             </label>
             {catalog.isPending ? (
@@ -174,8 +161,7 @@ export function TipCheckoutTrigger({
                   const Icon = tierIcon(tier)
                   const pending = pendingProductId === product.id
                   return (
-                    <button
-                      type="button"
+                    <ControlButton
                       className={`tip-modal__option tip-modal__option--${tier}`}
                       key={product.id}
                       disabled={Boolean(pendingProductId) || !accepted}
@@ -187,7 +173,7 @@ export function TipCheckoutTrigger({
                         <strong>{priceLabel(product)}</strong>
                       </span>
                       {pending ? <LoaderCircle className="tip-modal__spinner" /> : <ArrowUpRight />}
-                    </button>
+                    </ControlButton>
                   )
                 })}
               </div>
@@ -200,15 +186,13 @@ export function TipCheckoutTrigger({
             <p className="tip-modal__note">
               Оплата добровольная и не даёт игровых преимуществ. Услуга состоит в выдаче памятного цифрового жетона выбранного уровня в профиле.
             </p>
-          </section>
-        </div>,
+        </DialogSurface>,
         document.body,
       )
     : null
 
   return <>
-    <button
-      type="button"
+    <ControlButton
       className={`tip-checkout-trigger ${className}`.trim()}
       onClick={() => {
         setError('')
@@ -218,7 +202,7 @@ export function TipCheckoutTrigger({
       <Heart className="tip-checkout-trigger__heart" />
       <span><strong>{label}</strong><small>{hint}</small></span>
       <ChevronRight />
-    </button>
+    </ControlButton>
     {modal}
   </>
 }

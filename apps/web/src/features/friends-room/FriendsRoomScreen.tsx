@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react'
-import { AlertTriangle, X } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
 import {
   FRIENDS_ROOM_DEFAULT_PACK_VARIANTS,
   FRIENDS_ROOM_PACK_VARIANTS,
@@ -16,6 +16,7 @@ import { api, friendsRoomEventsUrl } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { friendsRoomTimeLeft } from './friends-room-time'
+import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
 import './FriendsRoomScreen.css'
 
 type IconName = 'apps' | 'back' | 'chat' | 'check' | 'copy' | 'exit' | 'play' | 'remove' | 'replay' | 'send' | 'share' | 'shuffle' | 'timer' | 'trophy' | 'users'
@@ -288,7 +289,7 @@ export function FriendsRoomScreen({ navigation, onExit }: { navigation: AppHeade
       backLabel="Выйти из комнаты"
       status={<span className={`room-connection room-connection--${connection}`}><RoomIcon name="trophy" />{connection === 'connected' ? 'Онлайн-комната · на связи' : connection === 'offline' ? 'Онлайн-комната · нет сети' : 'Онлайн-комната · подключаемся'}</span>}
     >
-      {error && <div className="room-alert" role="alert"><span>{error}</span><ActionButton variant="ghost" className="room-alert__dismiss" type="button" onClick={() => setError('')} aria-label="Закрыть"><X /> <span>Закрыть</span></ActionButton></div>}
+      {error && <InlineAlert tone="danger" className="room-alert" onDismiss={() => setError('')}>{error}</InlineAlert>}
       {loading && <RoomLoading />}
       {!loading && !room && <RoomError onRetry={() => window.location.reload()} onExit={onExit} />}
       {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} configSaving={configSaving} onPacks={(packs) => updateConfig({ packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(() => api.friendsRoomStart(room.id, idempotencyKey()))} />}
@@ -338,7 +339,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRou
       <span className="room-kicker">Игра с друзьями · онлайн-комната</span>
       <h1>Онлайн-комната</h1>
       <p>Выберите один или несколько паков и правила. В комнате могут играть до {room.capacity} человек — все одновременно увидят подсказки и отправят по одному ответу.</p>
-      <div className={`room-code-card${copied ? ' is-copied' : ''}`}><span>Код игры</span><strong>{room.code}</strong><button type="button" onClick={onCopy} title="Копировать ссылку-приглашение"><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать'}</button></div>
+      <div className={`room-code-card${copied ? ' is-copied' : ''}`}><span>Код игры</span><strong>{room.code}</strong><ControlButton type="button" onClick={onCopy} title="Копировать ссылку-приглашение"><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать'}</ControlButton></div>
       <MemberStack members={members} capacity={room.capacity} />
     </div>
     <div className="room-lobby__settings">
@@ -347,7 +348,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRou
         <legend>Игровые паки <small>можно несколько</small></legend>
         <div>{MODES.map((entry) => {
           const order = room.packs.findIndex((pack) => pack.mode === entry.id)
-          return <button key={entry.id} type="button" className={order >= 0 ? 'is-active' : ''} aria-pressed={order >= 0} style={{ '--mode-color': entry.color } as CSSProperties} onClick={() => togglePack(entry.id)}><img src={publicAssetUrl(entry.poster)} alt="" /><span>{entry.label}</span>{order >= 0 && <em>{order + 1}</em>}</button>
+          return <ControlButton key={entry.id} type="button" className={order >= 0 ? 'is-active' : ''} aria-pressed={order >= 0} style={{ '--mode-color': entry.color } as CSSProperties} onClick={() => togglePack(entry.id)}><img src={publicAssetUrl(entry.poster)} alt="" /><span>{entry.label}</span>{order >= 0 && <em>{order + 1}</em>}</ControlButton>
         })}</div>
       </fieldset>
       <div className="room-pack-options">
@@ -356,17 +357,17 @@ function Lobby({ room, mode, members, copied, busy, configSaving, onPacks, onRou
           const variants = FRIENDS_ROOM_PACK_VARIANTS[pack.mode]
           return <section key={pack.mode} style={{ '--mode-color': packMode.color } as CSSProperties}>
             <header><span>{index + 1}</span><div><strong>{packMode.label}</strong><small>{variants.find((variant) => variant.id === pack.variant)?.description}</small></div></header>
-            <div>{variants.map((variant) => <button type="button" key={variant.id} className={variant.id === pack.variant ? 'is-active' : ''} disabled={!room.isHost} onClick={() => selectVariant(pack.mode, variant.id)}>{variant.label}</button>)}</div>
+            <div>{variants.map((variant) => <ControlButton type="button" key={variant.id} className={variant.id === pack.variant ? 'is-active' : ''} disabled={!room.isHost} onClick={() => selectVariant(pack.mode, variant.id)}>{variant.label}</ControlButton>)}</div>
           </section>
         })}
       </div>
-      <button className={`room-shuffle${room.shufflePacks ? ' is-active' : ''}`} type="button" aria-pressed={room.shufflePacks} disabled={!room.isHost} onClick={onShuffle}><RoomIcon name="shuffle" /><span><strong>Перемешивать паки</strong><small>{room.shufflePacks ? 'Порядок будет случайным для этой игры' : 'Сейчас паки идут в порядке выбора'}</small></span><em>{room.shufflePacks ? 'Включено' : 'Выключено'}</em></button>
+      <ControlButton className={`room-shuffle${room.shufflePacks ? ' is-active' : ''}`} type="button" aria-pressed={room.shufflePacks} disabled={!room.isHost} onClick={onShuffle}><RoomIcon name="shuffle" /><span><strong>Перемешивать паки</strong><small>{room.shufflePacks ? 'Порядок будет случайным для этой игры' : 'Сейчас паки идут в порядке выбора'}</small></span><em>{room.shufflePacks ? 'Включено' : 'Выключено'}</em></ControlButton>
       <div className="room-rule-grid">
-        <fieldset className="room-rounds" disabled={!room.isHost}><legend>Раундов <output>{room.roundsTotal}</output></legend><input type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>Не меньше одного раунда на пак. Дальше паки повторяются по кругу.</small></fieldset>
-        <fieldset disabled={!room.isHost}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <button type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</button>)}</div></fieldset>
+        <fieldset className="room-rounds" disabled={!room.isHost}><legend>Раундов <output>{room.roundsTotal}</output></legend><TextInput type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>Не меньше одного раунда на пак. Дальше паки повторяются по кругу.</small></fieldset>
+        <fieldset disabled={!room.isHost}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <ControlButton type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</ControlButton>)}</div></fieldset>
       </div>
       {room.isHost
-        ? <button className="room-start" type="button" onClick={onStart} disabled={busy || configSaving}><RoomIcon name="play" />{busy ? 'Запускаем…' : 'Начать игру'}<span>{packCountLabel(room.packs.length)} · {room.roundsTotal} раундов · {room.answerTimeSeconds} сек</span></button>
+        ? <ControlButton className="room-start" type="button" onClick={onStart} disabled={busy || configSaving}><RoomIcon name="play" />{busy ? 'Запускаем…' : 'Начать игру'}<span>{packCountLabel(room.packs.length)} · {room.roundsTotal} раундов · {room.answerTimeSeconds} сек</span></ControlButton>
         : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>Ждём ведущего</strong><small>Настройки и запуск доступны создателю комнаты</small></span></div>}
     </div>
   </section>
@@ -426,7 +427,7 @@ function GameLayout({ room, mode, ranked, timeLeft, answer, message, copied, bus
           <h1>{mode.label}</h1>
           {room.phase === 'results'
             ? <Results room={room} mode={mode} isHost={room.isHost} busy={busy} onNext={onNext} />
-            : <><div className="room-ticket__question"><span>Задание</span><h2>{room.round?.prompt}</h2></div><div className="room-hints">{room.round?.hints.map((value) => <span key={value}>{value}</span>)}</div><AnswerForm room={room} answer={answer} submitted={submitted} busy={busy} onAnswer={onAnswer} onSubmit={onSubmit} />{room.isHost && <div className="room-ticket__foot"><span>Можно отправить только один вариант</span><button type="button" onClick={onReveal} disabled={busy}>Показать результаты</button></div>}</>}
+            : <><div className="room-ticket__question"><span>Задание</span><h2>{room.round?.prompt}</h2></div><div className="room-hints">{room.round?.hints.map((value) => <span key={value}>{value}</span>)}</div><AnswerForm room={room} answer={answer} submitted={submitted} busy={busy} onAnswer={onAnswer} onSubmit={onSubmit} />{room.isHost && <div className="room-ticket__foot"><span>Можно отправить только один вариант</span><ControlButton type="button" onClick={onReveal} disabled={busy}>Показать результаты</ControlButton></div>}</>}
         </div>
       </article>
       <ActivityLog room={room} players={ranked} />
@@ -448,7 +449,7 @@ function LeftRail({ room, ranked, timeLeft, message, copied, busy, onMessage, on
 }) {
   const answeredCount = room.members.filter((member) => !member.leftAt && member.answered).length
   return <aside className="room-left-rail">
-    <section className="room-panel room-panel--code"><span>Комната</span><strong>{room.code}</strong><small><RoomIcon name="users" /> {ranked.length} игроков</small><button type="button" onClick={onCopy}><RoomIcon name={copied ? 'check' : 'share'} />{copied ? 'Ссылка скопирована' : 'Пригласить друзей'}</button></section>
+    <section className="room-panel room-panel--code"><span>Комната</span><strong>{room.code}</strong><small><RoomIcon name="users" /> {ranked.length} игроков</small><ControlButton type="button" onClick={onCopy}><RoomIcon name={copied ? 'check' : 'share'} />{copied ? 'Ссылка скопирована' : 'Пригласить друзей'}</ControlButton></section>
     <section className="room-panel room-progress"><span>Прогресс игры</span><div><strong>Раунд {room.currentRound} из {room.roundsTotal}</strong><small><RoomIcon name="timer" /> {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:{String(timeLeft % 60).padStart(2, '0')}</small><small><RoomIcon name="check" /> Ответили {answeredCount} / {ranked.length}</small></div></section>
     <Chat room={room} message={message} busy={busy} onMessage={onMessage} onSend={onSend} />
   </aside>
@@ -498,20 +499,20 @@ function AnswerForm({ room, answer, submitted, busy, onAnswer, onSubmit }: {
   if (submitted) return <form className="room-answer is-submitted" onSubmit={onSubmit}><div><RoomIcon name="check" /><span><small>Ответ принят сервером</small><strong>{answer || 'Ждём остальных игроков'}</strong></span></div></form>
 
   return <form className="room-answer" onSubmit={onSubmit}>
-    <input id="friends-answer" aria-label="Ваш ответ" aria-autocomplete="list" aria-controls="friends-answer-suggestions" aria-expanded={suggestions.length > 0} autoFocus value={answer} onChange={(event) => { onAnswer(event.target.value, undefined); setDismissed(false) }} onKeyDown={(event) => {
+    <TextInput id="friends-answer" aria-label="Ваш ответ" aria-autocomplete="list" aria-controls="friends-answer-suggestions" aria-expanded={suggestions.length > 0} autoFocus value={answer} onChange={(event) => { onAnswer(event.target.value, undefined); setDismissed(false) }} onKeyDown={(event) => {
       if (!suggestions.length) return
       if (event.key === 'ArrowDown') { event.preventDefault(); setActiveIndex((value) => Math.min(value + 1, suggestions.length - 1)) }
       if (event.key === 'ArrowUp') { event.preventDefault(); setActiveIndex((value) => Math.max(value - 1, 0)) }
       if (event.key === 'Escape') { event.preventDefault(); setDismissed(true); setSuggestions([]) }
       if (event.key === 'Enter') { event.preventDefault(); choose(suggestions[activeIndex] ?? suggestions[0]) }
     }} placeholder={(room.round?.mode ?? room.mode) === 'city' ? 'Введите город…' : 'Введите название…'} autoComplete="off" />
-    <button type="submit" disabled={!answer.trim() || busy}>Отправить</button>
-    {suggestions.length > 0 && <div className="room-answer__suggestions" id="friends-answer-suggestions" role="listbox">{suggestions.map((item, index) => <button type="button" role="option" aria-selected={index === activeIndex} className={index === activeIndex ? 'is-active' : ''} key={item.id} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveIndex(index)} onClick={() => choose(item)}>{item.titleRu}{item.titleOriginal && item.titleOriginal !== item.titleRu ? <small>{item.titleOriginal}{item.year ? ` · ${item.year}` : ''}</small> : item.year ? <small>{item.year}</small> : null}</button>)}</div>}
+    <ControlButton type="submit" disabled={!answer.trim() || busy}>Отправить</ControlButton>
+    {suggestions.length > 0 && <div className="room-answer__suggestions" id="friends-answer-suggestions" role="listbox">{suggestions.map((item, index) => <ControlButton type="button" role="option" aria-selected={index === activeIndex} className={index === activeIndex ? 'is-active' : ''} key={item.id} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveIndex(index)} onClick={() => choose(item)}>{item.titleRu}{item.titleOriginal && item.titleOriginal !== item.titleRu ? <small>{item.titleOriginal}{item.year ? ` · ${item.year}` : ''}</small> : item.year ? <small>{item.year}</small> : null}</ControlButton>)}</div>}
   </form>
 }
 
 function Chat({ room, message, busy, onMessage, onSend }: { room: FriendsRoomSnapshot; message: string; busy: boolean; onMessage: (value: string) => void; onSend: (event: FormEvent) => void }) {
-  return <section className="room-panel room-chat"><span><RoomIcon name="chat" /> Чат комнаты</span><div role="log" aria-live="polite">{room.messages.length ? room.messages.slice(-20).map((entry) => <p className={entry.userId === room.currentUserId ? 'is-you' : ''} key={entry.id}><strong>{entry.userId === room.currentUserId ? 'Вы' : entry.displayName}</strong>{entry.text}</p>) : <small>Здесь появятся сообщения игроков.</small>}</div><form onSubmit={onSend}><input id="friends-chat" aria-label="Сообщение в чат" value={message} onChange={(event) => onMessage(event.target.value)} placeholder="Сообщение…" maxLength={300} /><button type="submit" aria-label="Отправить" disabled={!message.trim() || busy}><RoomIcon name="send" /></button></form></section>
+  return <section className="room-panel room-chat"><span><RoomIcon name="chat" /> Чат комнаты</span><div role="log" aria-live="polite">{room.messages.length ? room.messages.slice(-20).map((entry) => <p className={entry.userId === room.currentUserId ? 'is-you' : ''} key={entry.id}><strong>{entry.userId === room.currentUserId ? 'Вы' : entry.displayName}</strong>{entry.text}</p>) : <small>Здесь появятся сообщения игроков.</small>}</div><form onSubmit={onSend}><TextInput id="friends-chat" aria-label="Сообщение в чат" value={message} onChange={(event) => onMessage(event.target.value)} placeholder="Сообщение…" maxLength={300} /><ControlButton type="submit" aria-label="Отправить" disabled={!message.trim() || busy}><RoomIcon name="send" /></ControlButton></form></section>
 }
 
 function Results({ room, mode, isHost, busy, onNext }: { room: FriendsRoomSnapshot; mode: (typeof MODES)[number]; isHost: boolean; busy: boolean; onNext: () => void }) {
@@ -534,7 +535,7 @@ function Results({ room, mode, isHost, busy, onNext }: { room: FriendsRoomSnapsh
     card?.genres?.length ? { label: 'Жанры', value: card.genres.slice(0, 3).join(', ') } : null,
     people,
   ].filter((entry): entry is { label: string; value: string } => Boolean(entry?.value))
-  return <div className="room-reveal"><div className="room-reveal__card"><div className="room-reveal__poster"><img src={publicAssetUrl(card?.posterUrl || mode.poster)} alt={card?.titleRu || room.round?.answer || 'Правильный ответ'} /></div><div className="room-reveal__copy"><span>Правильный ответ</span><h2>{room.round?.answer}</h2>{room.round?.answerOriginal && room.round.answerOriginal !== room.round.answer && <small>{room.round.answerOriginal}</small>}<div className="room-reveal__facts">{facts.map((fact) => <span key={`${fact.label}-${fact.value}`}><small>{fact.label}</small><strong>{fact.value}</strong></span>)}</div><p>{correct} ответили точно{partial > 0 ? ` · ${partial} получили очки за совпавшие признаки` : ''}</p>{ownAnswer && ownAnswer.scoreBreakdown.length > 0 && <div className="room-score-breakdown" aria-label="Как начислены ваши очки"><strong>Ваши +{ownAnswer.points}</strong>{ownAnswer.scoreBreakdown.map((part) => <span key={part.key}><small>{part.label}</small><b>+{part.points}</b></span>)}</div>}{isHost ? <button type="button" onClick={onNext} disabled={busy}>{room.currentRound >= room.roundsTotal ? 'Показать итоги' : 'Следующий раунд'}<RoomIcon name="play" /></button> : <div className="room-reveal__waiting"><RoomIcon name="timer" />Ждём следующий раунд</div>}</div></div></div>
+  return <div className="room-reveal"><div className="room-reveal__card"><div className="room-reveal__poster"><img src={publicAssetUrl(card?.posterUrl || mode.poster)} alt={card?.titleRu || room.round?.answer || 'Правильный ответ'} /></div><div className="room-reveal__copy"><span>Правильный ответ</span><h2>{room.round?.answer}</h2>{room.round?.answerOriginal && room.round.answerOriginal !== room.round.answer && <small>{room.round.answerOriginal}</small>}<div className="room-reveal__facts">{facts.map((fact) => <span key={`${fact.label}-${fact.value}`}><small>{fact.label}</small><strong>{fact.value}</strong></span>)}</div><p>{correct} ответили точно{partial > 0 ? ` · ${partial} получили очки за совпавшие признаки` : ''}</p>{ownAnswer && ownAnswer.scoreBreakdown.length > 0 && <div className="room-score-breakdown" aria-label="Как начислены ваши очки"><strong>Ваши +{ownAnswer.points}</strong>{ownAnswer.scoreBreakdown.map((part) => <span key={part.key}><small>{part.label}</small><b>+{part.points}</b></span>)}</div>}{isHost ? <ControlButton type="button" onClick={onNext} disabled={busy}>{room.currentRound >= room.roundsTotal ? 'Показать итоги' : 'Следующий раунд'}<RoomIcon name="play" /></ControlButton> : <div className="room-reveal__waiting"><RoomIcon name="timer" />Ждём следующий раунд</div>}</div></div></div>
 }
 
 function PlayersPanel({ room, players }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members'] }) {
@@ -555,5 +556,5 @@ function ActivityLog({ room, players }: { room: FriendsRoomSnapshot; players: Fr
 
 function FinalScreen({ room, players, busy, onAgain, onExit }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members']; busy: boolean; onAgain: () => void; onExit: () => void }) {
   const winner = players[0]
-  return <section className="room-final"><div className="room-final__ticket"><span>Сеанс завершён</span><RoomIcon name="trophy" /><small>Победитель</small><h1>{winner?.displayName ?? 'Ничья'}</h1><strong>{score(winner?.score ?? 0)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}</div>{room.isHost && <><button type="button" onClick={onAgain} disabled={busy}><RoomIcon name="replay" />Сыграть ещё раз</button><button type="button" onClick={onAgain} disabled={busy}><RoomIcon name="apps" />Сменить категорию</button></>}<button type="button" onClick={onExit}><RoomIcon name="exit" />Выйти</button></div></section>
+  return <section className="room-final"><div className="room-final__ticket"><span>Сеанс завершён</span><RoomIcon name="trophy" /><small>Победитель</small><h1>{winner?.displayName ?? 'Ничья'}</h1><strong>{score(winner?.score ?? 0)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}</div>{room.isHost && <><ControlButton type="button" onClick={onAgain} disabled={busy}><RoomIcon name="replay" />Сыграть ещё раз</ControlButton><ControlButton type="button" onClick={onAgain} disabled={busy}><RoomIcon name="apps" />Сменить категорию</ControlButton></>}<ControlButton type="button" onClick={onExit}><RoomIcon name="exit" />Выйти</ControlButton></div></section>
 }

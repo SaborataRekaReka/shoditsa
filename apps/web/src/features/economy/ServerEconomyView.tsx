@@ -7,6 +7,7 @@ import { apiErrorMessage } from '../../api/error-message'
 import { ensureServerSession, useServerRuntime } from '../../hooks/use-server-runtime'
 import { emptyAttendanceStats } from '../../storage'
 import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
+import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
 
 const ledgerReasonLabel = (reason: string) => reason === 'game-completion'
   ? 'Награда за сеанс'
@@ -83,7 +84,7 @@ export function ServerEconomyView() {
     <p className="modal-lead">Баланс и история сохраняются в серверном профиле. Для гостя они привязаны к текущей гостевой сессии; после регистрации прогресс можно сохранить в аккаунте.</p>
     <form className="ticket-promo" onSubmit={submitPromoCode}>
       <div className="ticket-promo__copy"><span><Ticket /> Промокод</span><small>Код проверяется на сервере</small></div>
-      <div className="ticket-promo__row"><input value={promoCode} onChange={(event) => { setPromoCode(event.target.value); promoKeyRef.current = null; setPromoMessage('') }} placeholder="Промокод" autoComplete="off" /><button type="submit" disabled={promo.isPending}>{promo.isPending ? 'Проверяем…' : 'Активировать'}</button></div>
+      <div className="ticket-promo__row"><TextInput value={promoCode} onChange={(event) => { setPromoCode(event.target.value); promoKeyRef.current = null; setPromoMessage('') }} placeholder="Промокод" autoComplete="off" /><ControlButton type="submit" disabled={promo.isPending}>{promo.isPending ? 'Проверяем…' : 'Активировать'}</ControlButton></div>
       {promoMessage && <p>{promoMessage}</p>}
     </form>
     <h3 className="subheading">Как начисляется</h3>
@@ -93,7 +94,7 @@ export function ServerEconomyView() {
     {ledger.isLoading
       ? <p className="modal-lead">Загружаем историю…</p>
       : ledger.isError
-        ? <p className="server-error">{apiErrorMessage(ledger.error)}</p>
+        ? <InlineAlert tone="danger" className="server-error">{apiErrorMessage(ledger.error)}</InlineAlert>
         : ledger.data?.items.length
           ? <div className="ticket-ledger">{ledger.data.items.map((entry) => <article className={`ticket-ledger__item ${entry.amount >= 0 ? 'earn' : 'spend'}`} key={entry.id}><span>{entry.amount >= 0 ? <Ticket /> : <Lock />}</span><div><strong>{ledgerReasonLabel(entry.reason)}</strong><small>{new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(entry.createdAt))}</small></div><em>{entry.amount >= 0 ? '+' : '−'}{Math.abs(entry.amount)}</em></article>)}</div>
           : <p className="modal-lead">История появится после первого завершённого сеанса или открытия периода.</p>}

@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import { ScreenBack } from '../app-shell/AppShell'
+import './GameScreenShell.css'
 
 type GameScreenShellProps = Omit<HTMLAttributes<HTMLElement>, 'children'> & {
   children: ReactNode

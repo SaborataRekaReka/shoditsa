@@ -4,6 +4,7 @@ import { ApiClientError, api } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ActionButton } from '../../components/app-shell/AppShell'
+import { TextInput } from '../../components/ui'
 
 export function CheckoutButton({ product, authenticated, hasClub = false, label, placement = 'club_screen', returnUrl = '/club' }: { product: CommerceProduct; authenticated: boolean; hasClub?: boolean; label?: string; placement?: string; returnUrl?: string }) {
   const keyRef = useRef<string | null>(null)
@@ -39,7 +40,7 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
 
   return <>
     <label className="checkout-acceptance" htmlFor={acceptanceId}>
-      <input id={acceptanceId} type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
+      <TextInput id={acceptanceId} type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
       <span>Принимаю <a href="/legal/terms" target="_blank" rel="noreferrer">оферту</a>, <a href="/legal/tariffs" target="_blank" rel="noreferrer">тариф</a> и <a href="/legal/refunds" target="_blank" rel="noreferrer">условия возврата</a></span>
     </label>
     <ActionButton type="button" disabled={pending || !accepted} onClick={() => void start()}>{pending ? 'Создаём заказ…' : label ?? (product.kind === 'club' ? 'Выбрать абонемент' : 'Поддержать')}</ActionButton>

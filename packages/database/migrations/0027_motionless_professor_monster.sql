@@ -1,0 +1,1 @@
+DROP INDEX "danetki_ai_attempt_job_unique";

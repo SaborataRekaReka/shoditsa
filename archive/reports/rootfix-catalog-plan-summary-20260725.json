@@ -1,0 +1,462 @@
+{
+  "reportPath": "/reports/rootfix-catalog-plan-20260725.json",
+  "activeRevision": {
+    "id": "505ece9c-d256-424c-b76e-17e70b0fd64e",
+    "version": "20260725T040938468Z-series-seasons-549a79c8",
+    "checksum": "3e42eed4f87116fa46d1fb10585e858b06173e3de32eef9fac4dd3cc8a4eb7e3"
+  },
+  "repairs": 316,
+  "duplicateGroups": [
+    {
+      "canonicalId": "tgdb_20960",
+      "duplicateIds": [
+        "promo:dtf-bloodborne"
+      ],
+      "allIds": [
+        "promo:dtf-bloodborne",
+        "tgdb_20960"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_131054",
+      "duplicateIds": [
+        "promo:dtf-death-stranding"
+      ],
+      "allIds": [
+        "promo:dtf-death-stranding",
+        "tgdb_131054"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_67691",
+      "duplicateIds": [
+        "promo:dtf-disco-elysium"
+      ],
+      "allIds": [
+        "promo:dtf-disco-elysium",
+        "tgdb_67691"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_10221",
+      "duplicateIds": [
+        "tgdb_10221_1"
+      ],
+      "allIds": [
+        "tgdb_10221",
+        "tgdb_10221_1"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_128912",
+      "duplicateIds": [
+        "promo:dtf-grand-theft-auto-v"
+      ],
+      "allIds": [
+        "promo:dtf-grand-theft-auto-v",
+        "tgdb_128912"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_9308",
+      "duplicateIds": [
+        "promo:dtf-heroes-of-might-and-magic-iii"
+      ],
+      "allIds": [
+        "promo:dtf-heroes-of-might-and-magic-iii",
+        "tgdb_9308"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_75030",
+      "duplicateIds": [
+        "tgdb_4845"
+      ],
+      "allIds": [
+        "tgdb_4845",
+        "tgdb_75030"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_3300",
+      "duplicateIds": [
+        "promo:dtf-mass-effect-3"
+      ],
+      "allIds": [
+        "promo:dtf-mass-effect-3",
+        "tgdb_3300"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_114990",
+      "duplicateIds": [
+        "promo:dtf-no-mans-sky"
+      ],
+      "allIds": [
+        "promo:dtf-no-mans-sky",
+        "tgdb_114990"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_103202",
+      "duplicateIds": [
+        "promo:dtf-red-dead-redemption-2"
+      ],
+      "allIds": [
+        "promo:dtf-red-dead-redemption-2",
+        "tgdb_103202"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_2511",
+      "duplicateIds": [
+        "promo:dtf-skyrim"
+      ],
+      "allIds": [
+        "promo:dtf-skyrim",
+        "tgdb_2511"
+      ]
+    },
+    {
+      "canonicalId": "tgdb_55731",
+      "duplicateIds": [
+        "promo:dtf-the-last-of-us-part-ii"
+      ],
+      "allIds": [
+        "promo:dtf-the-last-of-us-part-ii",
+        "tgdb_55731"
+      ]
+    }
+  ],
+  "countsBefore": {
+    "movie": 1265,
+    "series": 715,
+    "anime": 998,
+    "game": 1000,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "countsAfter": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "publicationImpact": {
+    "removedFromRegularPool": [
+      {
+        "id": "tgdb_4845",
+        "mode": "game",
+        "title": "LEGO Star Wars II: The Original Trilogy",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "tgdb_10221_1",
+        "mode": "game",
+        "title": "Divinity: Original Sin",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-atomic-heart",
+        "mode": "game",
+        "title": "Atomic Heart",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-cyberpunk-2077",
+        "mode": "game",
+        "title": "Cyberpunk 2077",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-starfield",
+        "mode": "game",
+        "title": "Starfield",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-the-last-of-us-part-ii",
+        "mode": "game",
+        "title": "Одни из нас: Часть II",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-baldurs-gate-3",
+        "mode": "game",
+        "title": "Baldur’s Gate 3",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-death-stranding",
+        "mode": "game",
+        "title": "Death Stranding",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-bloodborne",
+        "mode": "game",
+        "title": "Bloodborne",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-the-witcher-3",
+        "mode": "game",
+        "title": "Ведьмак 3: Дикая Охота",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-stalker-2",
+        "mode": "game",
+        "title": "S.T.A.L.K.E.R. 2: Сердце Чернобыля",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-heroes-of-might-and-magic-iii",
+        "mode": "game",
+        "title": "Герои Меча и Магии III",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-elden-ring",
+        "mode": "game",
+        "title": "Elden Ring",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-red-dead-redemption-2",
+        "mode": "game",
+        "title": "Red Dead Redemption 2",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-skyrim",
+        "mode": "game",
+        "title": "The Elder Scrolls V: Skyrim",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-hogwarts-legacy",
+        "mode": "game",
+        "title": "Hogwarts Legacy",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-helldivers-2",
+        "mode": "game",
+        "title": "Helldivers 2",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-disco-elysium",
+        "mode": "game",
+        "title": "Disco Elysium",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-grand-theft-auto-v",
+        "mode": "game",
+        "title": "Grand Theft Auto V",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-no-mans-sky",
+        "mode": "game",
+        "title": "No Man’s Sky",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-fallout-76",
+        "mode": "game",
+        "title": "Fallout 76",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-gothic-ii",
+        "mode": "game",
+        "title": "Готика II",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-silent-hill-2-remake",
+        "mode": "game",
+        "title": "Silent Hill 2",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-kingdom-come-deliverance-ii",
+        "mode": "game",
+        "title": "Kingdom Come: Deliverance II",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-clair-obscur-expedition-33",
+        "mode": "game",
+        "title": "Clair Obscur: Expedition 33",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-escape-from-tarkov",
+        "mode": "game",
+        "title": "Escape from Tarkov",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-mass-effect-3",
+        "mode": "game",
+        "title": "Mass Effect 3",
+        "reason": [
+          "merged_into_canonical"
+        ]
+      },
+      {
+        "id": "promo:dtf-dragon-age-the-veilguard",
+        "mode": "game",
+        "title": "Dragon Age: На страже Завесы",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-the-day-before",
+        "mode": "game",
+        "title": "The Day Before",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-assassins-creed-shadows",
+        "mode": "game",
+        "title": "Assassin’s Creed Shadows",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-pathologic-2",
+        "mode": "game",
+        "title": "Мор",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      },
+      {
+        "id": "promo:dtf-concord",
+        "mode": "game",
+        "title": "Concord",
+        "reason": [
+          "promo_is_special_pack_only"
+        ]
+      }
+    ],
+    "addedToRegularPool": [],
+    "retainedAnswersViaCanonical": [
+      {
+        "removedId": "tgdb_4845",
+        "canonicalId": "tgdb_75030"
+      },
+      {
+        "removedId": "tgdb_10221_1",
+        "canonicalId": "tgdb_10221"
+      },
+      {
+        "removedId": "promo:dtf-the-last-of-us-part-ii",
+        "canonicalId": "tgdb_55731"
+      },
+      {
+        "removedId": "promo:dtf-death-stranding",
+        "canonicalId": "tgdb_131054"
+      },
+      {
+        "removedId": "promo:dtf-bloodborne",
+        "canonicalId": "tgdb_20960"
+      },
+      {
+        "removedId": "promo:dtf-heroes-of-might-and-magic-iii",
+        "canonicalId": "tgdb_9308"
+      },
+      {
+        "removedId": "promo:dtf-red-dead-redemption-2",
+        "canonicalId": "tgdb_103202"
+      },
+      {
+        "removedId": "promo:dtf-skyrim",
+        "canonicalId": "tgdb_2511"
+      },
+      {
+        "removedId": "promo:dtf-disco-elysium",
+        "canonicalId": "tgdb_67691"
+      },
+      {
+        "removedId": "promo:dtf-grand-theft-auto-v",
+        "canonicalId": "tgdb_128912"
+      },
+      {
+        "removedId": "promo:dtf-no-mans-sky",
+        "canonicalId": "tgdb_114990"
+      },
+      {
+        "removedId": "promo:dtf-mass-effect-3",
+        "canonicalId": "tgdb_3300"
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { setAnalyticsConsent, storedAnalyticsConsent, type AnalyticsConsent } from '../../app/metrics'
+import { ControlButton, DialogRegion } from '../../components/ui'
 import './LegalScreen.css'
 
 const SETTINGS_EVENT = 'shoditsa:cookie-settings'
@@ -21,16 +22,16 @@ export function CookieConsentBanner() {
   }
 
   if (!open) return null
-  return <section className="cookie-consent" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title">
+  return <DialogRegion className="cookie-consent" ariaLabelledBy="cookie-consent-title">
     <div>
       <strong id="cookie-consent-title">Настройки cookie</strong>
       <p>Необходимые данные сохраняют вход и игровой прогресс. Яндекс Метрика загружается только с вашего согласия; отказ не ограничивает сайт. Подробнее — в <a href="/legal/privacy">Политике конфиденциальности</a>.</p>
       {current && <small>Текущий выбор: {current === 'accepted' ? 'аналитика разрешена' : 'только необходимые'}.</small>}
     </div>
     <div className="cookie-consent__actions">
-      <button type="button" className="cookie-consent__secondary" onClick={() => choose('rejected')}>Только необходимые</button>
-      <button type="button" className="cookie-consent__primary" onClick={() => choose('accepted')}>Разрешить аналитику</button>
+      <ControlButton type="button" className="cookie-consent__secondary" onClick={() => choose('rejected')}>Только необходимые</ControlButton>
+      <ControlButton type="button" className="cookie-consent__primary" onClick={() => choose('accepted')}>Разрешить аналитику</ControlButton>
     </div>
-  </section>
+  </DialogRegion>
 }
 

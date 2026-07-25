@@ -3,13 +3,15 @@ import { useQuery } from '@tanstack/react-query'
 import { Clapperboard, Gamepad2, Play, Sparkles, Trophy } from 'lucide-react'
 import type { GameSessionSnapshot } from '@shoditsa/contracts'
 import { ActionButton, AppHeader, Modal, ScreenBack } from '../../components/app-shell/AppShell'
-import { GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
+import { GameLaunchControls, GameOptionAction } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { api, queryKeys } from '../../api/client'
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
 import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
+import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
+import { InlineAlert, LinearProgress } from '../../components/ui'
 import './CommercialShell.css'
 
 type ShellProps = {
@@ -229,37 +231,46 @@ export function SpecialDetailScreen({
           </div>
           <time>{pack.subtitle || 'Специальная подборка DTF'}</time>
           <p>{pack.description}</p>
-          <section className="admit-ticket admit-ticket--dossier special-title-ticket" aria-labelledby="ticket-dtf-comments">
-            <div className="admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--game">
-              <img className="admit-ticket__stub-art" src={pack.coverUrl || fallbackCover} alt="" aria-hidden="true" decoding="async" />
-              <span>ВХОД</span><strong>ОДИН</strong><small>DTF</small><em>{pack.totalItems} ИГР</em><i />
-            </div>
-            <div className="admit-ticket__body">
-              <div className="ticket-kicker"><span>Игра «Игры»</span><i /><small>специальный набор</small></div>
+          <AdmissionTitleTicket
+            id="ticket-dtf-comments"
+            mode="game"
+            posterUrl={pack.coverUrl || fallbackCover}
+            stubLabel="ВХОД"
+            stubTitle="ОДИН"
+            stubMeta="DTF"
+            stubEnd={`${pack.totalItems} ИГР`}
+            className="special-title-ticket"
+          >
+              <TicketKicker title="Игра «Игры»" detail="специальный набор" />
               <h2 id="ticket-dtf-comments">Угадайте игру по комментариям</h2>
               <p>Всё работает как в обычной игре «Игры»: выбирайте ответ из общего каталога и сверяйте подсказки. В этом показе — <strong>6 попыток</strong> на каждую игру.</p>
-              <div className="special-title-progress" aria-label={`Пройдено ${pack.completedItems} из ${pack.totalItems}`}>
-                <span><strong>{pack.completedItems}</strong> / {pack.totalItems} пройдено</span>
-                <i><b style={{ width: `${pack.totalItems ? Math.round(pack.completedItems / pack.totalItems * 100) : 0}%` }} /></i>
-              </div>
+              <LinearProgress
+                value={pack.completedItems}
+                max={pack.totalItems}
+                valueLabel={<><strong>{pack.completedItems}</strong> / {pack.totalItems}</>}
+                label="пройдено"
+                className="special-title-progress"
+              />
               <GameLaunchControls
                 mode="game"
                 action={<ActionButton className={`play-button game-launch-controls__play ${!nextEntry ? 'is-disabled' : ''}`} disabled={!nextEntry || starting} onClick={() => void start()}>
-                  <Play /> {starting ? 'Запускаем…' : pack.completedItems > 0 ? `Продолжить · игра ${nextEntry?.position ?? pack.totalItems} из ${pack.totalItems}` : 'Начать игру'}
+                  <Play /> {starting ? 'Запускаем…' : pack.completedItems > 0 ? 'Продолжить' : 'Начать игру'}
                   {nextEntry && !starting && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
                 </ActionButton>}
                 option={isDtfPack
-                  ? <ActionButton variant="secondary" className="special-title-leaderboard-button" onClick={() => setLeaderboardOpen(true)}>
-                    <Trophy /> Рейтинг
-                  </ActionButton>
+                  ? <GameOptionAction
+                    label="Общий зачёт"
+                    labelIcon={<Trophy />}
+                    value="Открыть рейтинг"
+                    onClick={() => setLeaderboardOpen(true)}
+                  />
                   : undefined}
               />
-              {error && <p className="specials-error" role="alert">{error}</p>}
-            </div>
-          </section>
+              {error && <InlineAlert tone="danger" className="specials-error">{error}</InlineAlert>}
+          </AdmissionTitleTicket>
         </section>
       </GameScreenShell>}
-      {leaderboardOpen && <Modal className="dtf-leaderboard-modal" title="Рейтинг DTF" onClose={() => setLeaderboardOpen(false)}>
+      {leaderboardOpen && <Modal className="dtf-leaderboard-modal" title="Общий зачёт" onClose={() => setLeaderboardOpen(false)}>
         <DtfLeaderboard
           data={leaderboardQuery.data}
           loading={leaderboardQuery.isLoading}

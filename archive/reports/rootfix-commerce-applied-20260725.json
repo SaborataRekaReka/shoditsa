@@ -1,0 +1,15 @@
+{
+  "task": "commerce",
+  "dryRun": false,
+  "generatedAt": "2026-07-25T06:04:59.541Z",
+  "commerce": {
+    "checked": 1,
+    "reconciled": [
+      {
+        "orderId": "f2ab0e78-0ce7-4447-8d4e-958bb7373d1d",
+        "status": "expired"
+      }
+    ],
+    "expiredCreatedOrderIds": []
+  }
+}

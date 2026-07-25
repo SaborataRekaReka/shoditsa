@@ -75,7 +75,7 @@ export type DanetkiGameState = {
   currentUserId: string
   canInvite: boolean
   lastSeq: number
-  outcome: 'playing' | 'won' | 'lost'
+  outcome: 'playing' | 'won' | 'lost' | 'expired'
   solution?: string
 }
 

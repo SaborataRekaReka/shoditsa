@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
@@ -11,73 +11,15 @@ import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime
 import { loadAttendanceStats, loadWallet } from '../../storage'
 import { formatDays } from '../../game'
 import { headerRuntimeState } from './header-runtime-state'
+import { DialogSurface } from '../ui/DialogSurface'
+import { ActionButton } from '../ui/UiControls'
+import './AppShell.css'
+
+export { useDialogFocusTrap } from '../ui/DialogSurface'
+export { ActionButton } from '../ui/UiControls'
 
 export const PROFILE_OPEN_EVENT = 'seans:open-profile'
 export type ProfileMenuTab = 'overview' | 'stats' | 'achievements' | 'settings'
-
-const dialogFocusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',')
-
-export function useDialogFocusTrap<T extends HTMLElement>(open: boolean, onClose: () => void) {
-  const dialogRef = useRef<T>(null)
-  const returnFocusRef = useRef<HTMLElement | null>(null)
-  const onCloseRef = useRef(onClose)
-
-  useEffect(() => { onCloseRef.current = onClose }, [onClose])
-
-  useEffect(() => {
-    if (!open) return
-    const dialog = dialogRef.current
-    if (!dialog) return
-
-    returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-
-    const focusables = () => [...dialog.querySelectorAll<HTMLElement>(dialogFocusableSelector)]
-      .filter((element) => element.getClientRects().length > 0 && element.getAttribute('aria-hidden') !== 'true')
-    const frame = window.requestAnimationFrame(() => (focusables()[0] ?? dialog).focus())
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        onCloseRef.current()
-        return
-      }
-      if (event.key !== 'Tab') return
-      const items = focusables()
-      if (!items.length) {
-        event.preventDefault()
-        dialog.focus()
-        return
-      }
-      const first = items[0]
-      const last = items[items.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.cancelAnimationFrame(frame)
-      document.removeEventListener('keydown', onKeyDown)
-      document.body.style.overflow = previousOverflow
-      returnFocusRef.current?.focus()
-    }
-  }, [open])
-
-  return dialogRef
-}
 
 const brandSymbolUrl = publicAssetUrl('images/symbol.svg')
 const brandLogoUrl = publicAssetUrl('images/logo.svg')
@@ -87,12 +29,6 @@ export function BrandLogo({ className = '' }: { className?: string }) {
     <source media="(max-width: 719px)" srcSet={brandSymbolUrl} />
     <img src={brandLogoUrl} alt="Сходится!" />
   </picture>
-}
-
-export function ActionButton({ variant = 'primary', className = '', children, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'hint'
-}) {
-  return <button className={`ui-button ui-button--${variant} ${className}`.trim()} {...props}>{children}</button>
 }
 
 export function ScreenBack({ onBack, href, label = 'Назад', keyboardShortcut = true, trailing, className = '' }: {
@@ -125,13 +61,10 @@ export function ScreenBack({ onBack, href, label = 'Назад', keyboardShortcu
 }
 
 export function Modal({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
-  const dialogRef = useDialogFocusTrap<HTMLDivElement>(true, onClose)
-  return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <div className={`modal ${className}`.trim()} ref={dialogRef} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1}>
+  return <DialogSurface backdropClassName="modal-backdrop" className={`modal ${className}`.trim()} ariaLabel={title} onClose={onClose}>
       <div className="modal-head"><h2>{title}</h2><button onClick={onClose} aria-label="Закрыть"><X /></button></div>
       {children}
-    </div>
-  </div>
+  </DialogSurface>
 }
 
 export type AppHeaderProps = {

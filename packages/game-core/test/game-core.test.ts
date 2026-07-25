@@ -5,6 +5,7 @@ import { GAME_MODE_MANIFEST, PLAYABLE_MODE_IDS, type LibrarySearchIndex, type Ti
 import {
   calculateCompletionReward,
   compareTitles,
+  contentDuplicateGroups,
   dailyTitle,
   formatDays,
   isAllowedInRegularGame,
@@ -15,6 +16,7 @@ import {
   normalize,
   poolFor,
   searchTitles,
+  selectPlotHintVariant,
   titleSearchNames,
 } from '../src/index.js'
 
@@ -53,6 +55,7 @@ describe('deterministic rules', () => {
       titleOriginal: '',
       alternativeTitles: [],
       popularityScore: 1,
+      plotHint: 'Герои оказываются в необычной ситуации, преодолевают трудности и постепенно раскрывают тайну.',
       year: 2000,
       countries: ['США'],
       genres: ['драма'],
@@ -73,6 +76,7 @@ describe('deterministic rules', () => {
       titleOriginal: '',
       alternativeTitles: [],
       popularityScore: 1,
+      plotHint: 'Герои оказываются в необычной ситуации, преодолевают трудности и постепенно раскрывают тайну.',
     } as TitleItem
     const music = {
       id: 'music:missing-type',
@@ -87,6 +91,7 @@ describe('deterministic rules', () => {
       genres: ['hip hop'],
       musicIsActive: true,
       musicOrigin: 'ru',
+      plotHint: 'Музыкант начинает творческий путь, находит собственное звучание и собирает преданную аудиторию.',
     } as TitleItem
 
     expect(isAllowedInRegularGame(series)).toBe(false)
@@ -140,16 +145,22 @@ describe('deterministic rules', () => {
     expect(series.find((item) => item.id === 'kp_5437615')?.seasonsCount).toBe(1)
   })
   it('normalizes Cyrillic, accents and punctuation', () => expect(normalize('  Ёж — Café! ')).toBe('еж cafe'))
+  it('keeps Russian short-i distinct while folding ё and Latin accents', () => {
+    expect(normalize('война')).toBe('война')
+    expect(normalize('воин')).toBe('воин')
+    expect(normalize('война')).not.toContain('воин')
+  })
   it('selects the same daily item for the same seed', () => {
     const pool = [{ id: '1', mode: 'movie', titleRu: 'A', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }, { id: '2', mode: 'movie', titleRu: 'B', titleOriginal: '', alternativeTitles: [], popularityScore: 1 }] as TitleItem[]
     expect(dailyTitle(pool, 'movie', 'all', '2026-07-11', 0)?.id).toBe(dailyTitle(pool, 'movie', 'all', '2026-07-11', 0)?.id)
   })
   it('filters years for a period', () => {
-    const items = [{ id: '1', mode: 'movie', titleRu: 'A', titleOriginal: '', alternativeTitles: [], popularityScore: 1, year: 1999 }, { id: '2', mode: 'movie', titleRu: 'B', titleOriginal: '', alternativeTitles: [], popularityScore: 1, year: 2021 }] as TitleItem[]
+    const plotHint = 'Герой оказывается в необычной ситуации, преодолевает трудности и постепенно раскрывает тайну.'
+    const items = [{ id: '1', mode: 'movie', titleRu: 'A', titleOriginal: '', alternativeTitles: [], popularityScore: 1, year: 1999, plotHint }, { id: '2', mode: 'movie', titleRu: 'B', titleOriginal: '', alternativeTitles: [], popularityScore: 1, year: 2021, plotHint }] as TitleItem[]
     expect(poolFor(items, 'movie', 'from_2020').map((item) => item.id)).toEqual(['2'])
   })
   it('applies city variants and city comparison through the shared mode registry', () => {
-    const capital = { id: 'city:capital', mode: 'city', titleRu: 'Столица', titleOriginal: 'Capital', alternativeTitles: [], popularityScore: 2, capital: true, popular: true, country: 'A', continent: 'Европа', languages: ['a'], population: 100, timezone: 'GMT+1', ranks: { economy: 1, humanCapital: 2, qualityOfLife: 3, ecology: 4, governance: 5 } }
+    const capital = { id: 'city:capital', mode: 'city', titleRu: 'Столица', titleOriginal: 'Capital', alternativeTitles: [], popularityScore: 2, capital: true, popular: true, country: 'A', continent: 'Европа', languages: ['a'], population: 100, timezone: 'GMT+1', plotHint: 'Крупный город расположен в известном регионе и играет заметную роль в жизни своей страны.', ranks: { economy: 1, humanCapital: 2, qualityOfLife: 3, ecology: 4, governance: 5 } }
     const popular = { ...capital, id: 'city:popular', titleRu: 'Популярный', capital: false, country: 'B' }
     const other = { ...capital, id: 'city:other', titleRu: 'Другой', capital: false, popular: false, country: 'C' }
     const items = [capital, popular, other] as TitleItem[]
@@ -175,14 +186,14 @@ describe('deterministic rules', () => {
     const explicitlyHidden = { ...promotedById, id: 'promo:dtf-hidden', allowedInGame: false }
     const items = [regular, promoById, promoByStatus, promotedById, promotedByStatus, explicitlyHidden] as TitleItem[]
 
-    expect(poolFor(items, 'game', 'all').map((item) => item.id)).toEqual(['tgdb_1', 'promo:dtf-test', 'game-promo-copy'])
+    expect(poolFor(items, 'game', 'all').map((item) => item.id)).toEqual(['tgdb_1'])
     expect(isAllowedInRegularGame(promoById as TitleItem)).toBe(false)
     expect(isAllowedInRegularGame(promoByStatus as TitleItem)).toBe(false)
-    expect(isAllowedInRegularGame(promotedById as TitleItem)).toBe(true)
-    expect(isAllowedInRegularGame(promotedByStatus as TitleItem)).toBe(true)
+    expect(isAllowedInRegularGame(promotedById as TitleItem)).toBe(false)
+    expect(isAllowedInRegularGame(promotedByStatus as TitleItem)).toBe(false)
     expect(isAllowedInRegularGame(explicitlyHidden as TitleItem)).toBe(false)
   })
-  it('keeps game availability independent from optional plot copy', () => {
+  it('keeps invalid plot copy out of the playable pool', () => {
     const base = {
       id: 'game:hint',
       mode: 'game',
@@ -198,7 +209,38 @@ describe('deterministic rules', () => {
     expect(isPlayableGamePlotHint({ ...base, plotHint: 'Герой исследует опасный мир и сражается...' })).toBe(false)
     expect(isPlayableGamePlotHint({ ...base, plotHint: 'В Secret Game герой исследует опасный мир и сражается.' })).toBe(false)
     expect(poolFor([good, { ...base, id: 'game:bad', plotHint: '[REDACTED] ведёт героя через опасный мир.' }], 'game', 'all')
-      .map((item) => item.id)).toEqual(['game:hint', 'game:bad'])
+      .map((item) => item.id)).toEqual(['game:hint'])
+  })
+  it('groups duplicate identities and chooses one stable hint variant per session', () => {
+    const base = {
+      mode: 'game', titleRu: 'Одна игра', titleOriginal: 'Same Game',
+      alternativeTitles: [], year: 2020, popularityScore: 1,
+      plotHint: 'Герой путешествует по опасному миру, собирает ресурсы и раскрывает старую тайну.',
+    } as TitleItem
+    const first = { ...base, id: 'game:canonical', externalRanks: { thegamesdb: 42 }, plotHintVariants: [
+      'Игрок исследует большой мир, встречает необычных персонажей и постепенно узнаёт правду.',
+    ] } as TitleItem
+    const duplicate = { ...base, id: 'game:duplicate', externalRanks: { thegamesdb: 42 } } as TitleItem
+
+    expect(contentDuplicateGroups([first, duplicate]).map((group) => group.map((item) => item.id)))
+      .toEqual([['game:canonical', 'game:duplicate']])
+    expect(selectPlotHintVariant(first, 'session-1')).toBe(selectPlotHintVariant(first, 'session-1'))
+    expect([
+      first.plotHint,
+      first.plotHintVariants?.[0],
+    ]).toContain(selectPlotHintVariant(first, 'session-1'))
+  })
+  it('does not merge a numbered sequel with the first work from the same year', () => {
+    const hint = 'Герои учатся справляться с трудностями, поддерживают друг друга и постепенно достигают своей цели.'
+    const first = {
+      id: 'anime:one', mode: 'anime', titleRu: 'Мы не можем учиться!', titleOriginal: 'Bokutachi wa Benkyou ga Dekinai',
+      alternativeTitles: [], year: 2019, popularityScore: 1, plotHint: hint,
+    } as TitleItem
+    const second = {
+      ...first, id: 'anime:two', titleRu: 'Мы не можем учиться! 2', titleOriginal: 'Bokutachi wa Benkyou ga Dekinai!',
+    } as TitleItem
+
+    expect(contentDuplicateGroups([first, second])).toEqual([])
   })
   it('deduplicates search results that share an external catalog id', () => {
     const base = {

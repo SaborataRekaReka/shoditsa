@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { trackClientEvent } from '../../app/client-events'
+import { ControlButton, InlineAlert, TextArea, TextInput } from '../../components/ui'
+import './ContentReport.css'
 
 export const CONTENT_REPORT_REASONS = [
   ['wrong_fact', 'Неправильный факт'],
@@ -25,7 +27,7 @@ export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportRe
 
   if (sent) return <p className="content-report__thanks" role="status">Спасибо, проверим подсказку.</p>
   return <div className="content-report">
-    <button type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>Нашли ошибку в подсказке?</button>
+    <ControlButton type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>Нашли ошибку в подсказке?</ControlButton>
     {open && <form onSubmit={async (event) => {
       event.preventDefault()
       if (sending) return
@@ -44,13 +46,13 @@ export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportRe
       <fieldset>
         <legend>Что случилось?</legend>
         {CONTENT_REPORT_REASONS.map(([value, label]) => <label key={value}>
-          <input type="radio" name="content-report-reason" value={value} checked={reason === value} onChange={() => setReason(value)} />
+          <TextInput type="radio" name="content-report-reason" value={value} checked={reason === value} onChange={() => setReason(value)} />
           <span>{label}</span>
         </label>)}
       </fieldset>
-      <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Комментарий — необязательно" maxLength={500} />
-      {error && <p className="server-error" role="alert">{error}</p>}
-      <button type="submit" disabled={sending}>{sending ? 'Отправляем…' : 'Отправить'}</button>
+      <TextArea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Комментарий — необязательно" maxLength={500} />
+      {error && <InlineAlert tone="danger" className="server-error">{error}</InlineAlert>}
+      <ControlButton type="submit" disabled={sending}>{sending ? 'Отправляем…' : 'Отправить'}</ControlButton>
     </form>}
   </div>
 }

@@ -1,42 +1,1198 @@
 {
-  "generatedAt": "2026-07-07T15:50:13.972Z",
-  "inputPath": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\series.generated.json",
-  "outputPath": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\series.generated.json",
+  "generatedAt": "2026-07-25T03:57:02.178Z",
+  "inputPath": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\series\\items.json",
+  "outputPath": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\series\\items.json",
   "totalSeries": 811,
-  "requestedToEnrich": 811,
-  "updated": 811,
-  "skipped": 0,
-  "fallbackStatusUsed": 157,
+  "requestedToEnrich": 156,
+  "updated": 78,
+  "skipped": 78,
+  "fallbackStatusUsed": 0,
   "seasonsEndpointUsed": 0,
-  "tvmazeLookupUsed": 736,
-  "tvmazeStatusUsed": 654,
-  "tvmazeSeasonsUsed": 654,
-  "keyUsage": [
+  "wikidataEntitiesMatched": 124,
+  "wikidataMatched": 60,
+  "wikidataImdbBridges": 123,
+  "wikidataSeasonsUsed": 55,
+  "wikidataConflicts": [],
+  "wikidataError": null,
+  "tvmazeLookupUsed": 140,
+  "tvmazeStatusUsed": 0,
+  "tvmazeSeasonsUsed": 42,
+  "publicSourceConflicts": [
     {
-      "index": 1,
-      "used": 0,
-      "exhausted": true
+      "id": "kp_79564",
+      "kinopoiskId": 79564,
+      "wikidataCount": 8,
+      "tvmazeCount": 9,
+      "wikidataSourceUrl": "https://www.wikidata.org/entity/Q56194",
+      "tvmazeSourceUrl": "https://www.tvmaze.com/shows/167"
     },
     {
-      "index": 2,
-      "used": 0,
-      "exhausted": true
+      "id": "kp_278143",
+      "kinopoiskId": 278143,
+      "wikidataCount": 10,
+      "tvmazeCount": 20,
+      "wikidataSourceUrl": "https://www.wikidata.org/entity/Q371207",
+      "tvmazeSourceUrl": "https://www.tvmaze.com/shows/466"
     },
     {
-      "index": 3,
-      "used": 0,
-      "exhausted": true
+      "id": "kp_1007909",
+      "kinopoiskId": 1007909,
+      "wikidataCount": 6,
+      "tvmazeCount": 7,
+      "wikidataSourceUrl": "https://www.wikidata.org/entity/Q28443753",
+      "tvmazeSourceUrl": "https://www.tvmaze.com/shows/22390"
     },
     {
-      "index": 4,
-      "used": 0,
-      "exhausted": true
+      "id": "kp_932068",
+      "kinopoiskId": 932068,
+      "wikidataCount": 1,
+      "tvmazeCount": 2,
+      "wikidataSourceUrl": "https://www.wikidata.org/entity/Q17021920",
+      "tvmazeSourceUrl": "https://www.tvmaze.com/shows/3593"
     },
     {
-      "index": 5,
-      "used": 0,
-      "exhausted": true
+      "id": "kp_1048143",
+      "kinopoiskId": 1048143,
+      "wikidataCount": 4,
+      "tvmazeCount": 5,
+      "wikidataSourceUrl": "https://www.wikidata.org/entity/Q54958411",
+      "tvmazeSourceUrl": "https://www.tvmaze.com/shows/41524"
     }
   ],
-  "skippedItems": []
+  "sourceCounts": {
+    "kinopoisk": 0,
+    "wikidata": 36,
+    "tvmaze": 18,
+    "wikidata_tvmaze": 19
+  },
+  "keyUsage": [],
+  "enrichedItems": [
+    {
+      "id": "kp_77270",
+      "kinopoiskId": 77270,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/49755",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1044497",
+      "kinopoiskId": 1044497,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q65130242",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_77247",
+      "kinopoiskId": 77247,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/13015",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1046704",
+      "kinopoiskId": 1046704,
+      "previousSeasonsCount": 3,
+      "seasonsCount": 3,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/44168",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q84079001"
+    },
+    {
+      "id": "kp_600835",
+      "kinopoiskId": 600835,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/64808",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q4066525"
+    },
+    {
+      "id": "kp_768062",
+      "kinopoiskId": 768062,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q19613665",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_85020",
+      "kinopoiskId": 85020,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/40059",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_250777",
+      "kinopoiskId": 250777,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q4096230",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_79845",
+      "kinopoiskId": 79845,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/34800",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_992490",
+      "kinopoiskId": 992490,
+      "previousSeasonsCount": 3,
+      "seasonsCount": 3,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q97180527",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_81038",
+      "kinopoiskId": 81038,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/28955",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1253157",
+      "kinopoiskId": 1253157,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/32791",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q65118624"
+    },
+    {
+      "id": "kp_503264",
+      "kinopoiskId": 503264,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q2582960",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_823594",
+      "kinopoiskId": 823594,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/46",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q16888258"
+    },
+    {
+      "id": "kp_1008398",
+      "kinopoiskId": 1008398,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q104839761",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1231016",
+      "kinopoiskId": 1231016,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/39013",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q60747802"
+    },
+    {
+      "id": "kp_77261",
+      "kinopoiskId": 77261,
+      "previousSeasonsCount": 4,
+      "seasonsCount": 4,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/40077",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_271748",
+      "kinopoiskId": 271748,
+      "previousSeasonsCount": 4,
+      "seasonsCount": 4,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/134",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q83401"
+    },
+    {
+      "id": "kp_1118176",
+      "kinopoiskId": 1118176,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q58336643",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_77185",
+      "kinopoiskId": 77185,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/40045",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q2332537"
+    },
+    {
+      "id": "kp_1171652",
+      "kinopoiskId": 1171652,
+      "previousSeasonsCount": 5,
+      "seasonsCount": 5,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q55439619",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_768068",
+      "kinopoiskId": 768068,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q18406083",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_81483",
+      "kinopoiskId": 81483,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/40081",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_77217",
+      "kinopoiskId": 77217,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/1051",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q890343"
+    },
+    {
+      "id": "kp_260901",
+      "kinopoiskId": 260901,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q4161222",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_89676",
+      "kinopoiskId": 89676,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/34892",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_95191",
+      "kinopoiskId": 95191,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/49877",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1263575",
+      "kinopoiskId": 1263575,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/42169",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q65069236"
+    },
+    {
+      "id": "kp_229162",
+      "kinopoiskId": 229162,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q746240",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1093784",
+      "kinopoiskId": 1093784,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q97276782",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_780307",
+      "kinopoiskId": 780307,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q55658009",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_586685",
+      "kinopoiskId": 586685,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q48945127",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_77277",
+      "kinopoiskId": 77277,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/50316",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_913049",
+      "kinopoiskId": 913049,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q21640013",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_4909330",
+      "kinopoiskId": 4909330,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q111210240",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_79844",
+      "kinopoiskId": 79844,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/34801",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_674019",
+      "kinopoiskId": 674019,
+      "previousSeasonsCount": 3,
+      "seasonsCount": 3,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/320",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q7733188"
+    },
+    {
+      "id": "kp_77319",
+      "kinopoiskId": 77319,
+      "previousSeasonsCount": 4,
+      "seasonsCount": 4,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/1656",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q657308"
+    },
+    {
+      "id": "kp_1271262",
+      "kinopoiskId": 1271262,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/42848",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q85782456"
+    },
+    {
+      "id": "kp_674032",
+      "kinopoiskId": 674032,
+      "previousSeasonsCount": 4,
+      "seasonsCount": 4,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/199",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q901850"
+    },
+    {
+      "id": "kp_1306638",
+      "kinopoiskId": 1306638,
+      "previousSeasonsCount": 3,
+      "seasonsCount": 3,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q97276107",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_46628",
+      "kinopoiskId": 46628,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/40080",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_687929",
+      "kinopoiskId": 687929,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q4303563",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_4489825",
+      "kinopoiskId": 4489825,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q139037496",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1263496",
+      "kinopoiskId": 1263496,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/40648",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_988784",
+      "kinopoiskId": 988784,
+      "previousSeasonsCount": 3,
+      "seasonsCount": 3,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q25391059",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_838262",
+      "kinopoiskId": 838262,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q19857470",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_861662",
+      "kinopoiskId": 861662,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q21171685",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_681879",
+      "kinopoiskId": 681879,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q16272303",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1153445",
+      "kinopoiskId": 1153445,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/34994",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q55635145"
+    },
+    {
+      "id": "kp_913033",
+      "kinopoiskId": 913033,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q28667797",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_4760889",
+      "kinopoiskId": 4760889,
+      "previousSeasonsCount": 3,
+      "seasonsCount": 3,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/59508",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_79906",
+      "kinopoiskId": 79906,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/33357",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_77284",
+      "kinopoiskId": 77284,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/6593",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_788277",
+      "kinopoiskId": 788277,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/66396",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q116591351"
+    },
+    {
+      "id": "kp_4361620",
+      "kinopoiskId": 4361620,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/27353",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_574688",
+      "kinopoiskId": 574688,
+      "previousSeasonsCount": 8,
+      "seasonsCount": 8,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/7",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q23594"
+    },
+    {
+      "id": "kp_743975",
+      "kinopoiskId": 743975,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q21644222",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_5304403",
+      "kinopoiskId": 5304403,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q121809211",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_977734",
+      "kinopoiskId": 977734,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q28035803",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_573245",
+      "kinopoiskId": 573245,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q303352",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_843207",
+      "kinopoiskId": 843207,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q23971551",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_840744",
+      "kinopoiskId": 840744,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q19975545",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1392470",
+      "kinopoiskId": 1392470,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q97177948",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_81436",
+      "kinopoiskId": 81436,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/49411",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1049751",
+      "kinopoiskId": 1049751,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q50530427",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_731962",
+      "kinopoiskId": 731962,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/64",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q5240237"
+    },
+    {
+      "id": "kp_738513",
+      "kinopoiskId": 738513,
+      "previousSeasonsCount": 4,
+      "seasonsCount": 4,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/88",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q13099470"
+    },
+    {
+      "id": "kp_656730",
+      "kinopoiskId": 656730,
+      "previousSeasonsCount": 48,
+      "seasonsCount": 48,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q497935",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_686841",
+      "kinopoiskId": 686841,
+      "previousSeasonsCount": 7,
+      "seasonsCount": 7,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q52558072",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_1108682",
+      "kinopoiskId": 1108682,
+      "previousSeasonsCount": 2,
+      "seasonsCount": 2,
+      "source": "wikidata_tvmaze",
+      "sourceUrl": "https://www.tvmaze.com/shows/41637",
+      "corroboratingSourceUrl": "https://www.wikidata.org/entity/Q69798217"
+    },
+    {
+      "id": "kp_652585",
+      "kinopoiskId": 652585,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q3524731",
+      "corroboratingSourceUrl": null
+    },
+    {
+      "id": "kp_749388",
+      "kinopoiskId": 749388,
+      "previousSeasonsCount": 1,
+      "seasonsCount": 1,
+      "source": "wikidata",
+      "sourceUrl": "https://www.wikidata.org/entity/Q7785790",
+      "corroboratingSourceUrl": null
+    }
+  ],
+  "skippedItems": [
+    {
+      "id": "kp_94103",
+      "kinopoiskId": 94103,
+      "imdbId": "tt0394150",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5333424",
+      "kinopoiskId": 5333424,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_79204",
+      "kinopoiskId": 79204,
+      "imdbId": "tt0397313",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_10179",
+      "kinopoiskId": 10179,
+      "imdbId": "tt0076101",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1399228",
+      "kinopoiskId": 1399228,
+      "imdbId": "tt15155094",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_322063",
+      "kinopoiskId": 322063,
+      "imdbId": "tt1080716",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_25108",
+      "kinopoiskId": 25108,
+      "imdbId": "tt0070861",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_252044",
+      "kinopoiskId": 252044,
+      "imdbId": "tt0804892",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1115149",
+      "kinopoiskId": 1115149,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_487573",
+      "kinopoiskId": 487573,
+      "imdbId": "tt2913010",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_38898",
+      "kinopoiskId": 38898,
+      "imdbId": "tt0063794",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1334847",
+      "kinopoiskId": 1334847,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_702759",
+      "kinopoiskId": 702759,
+      "imdbId": "tt3391842",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_85175",
+      "kinopoiskId": 85175,
+      "imdbId": "tt0367210",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_44457",
+      "kinopoiskId": 44457,
+      "imdbId": "tt0058126",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_3452",
+      "kinopoiskId": 3452,
+      "imdbId": "tt0120706",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_772832",
+      "kinopoiskId": 772832,
+      "imdbId": "tt3508584",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_416116",
+      "kinopoiskId": 416116,
+      "imdbId": "tt1181614",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_251734",
+      "kinopoiskId": 251734,
+      "imdbId": "tt3746884",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_44076",
+      "kinopoiskId": 44076,
+      "imdbId": "tt0076998",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_4510025",
+      "kinopoiskId": 4510025,
+      "imdbId": "tt15047880",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_771612",
+      "kinopoiskId": 771612,
+      "imdbId": "tt3646688",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5271229",
+      "kinopoiskId": 5271229,
+      "imdbId": "tt14660072",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_158786",
+      "kinopoiskId": 158786,
+      "imdbId": "tt0454876",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1309178",
+      "kinopoiskId": 1309178,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5452841",
+      "kinopoiskId": 5452841,
+      "imdbId": "tt26657236",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_105813",
+      "kinopoiskId": 105813,
+      "imdbId": "tt0460791",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_42664",
+      "kinopoiskId": 42664,
+      "imdbId": "tt0070233",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1144174",
+      "kinopoiskId": 1144174,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_6056265",
+      "kinopoiskId": 6056265,
+      "imdbId": "tt33048546",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5088599",
+      "kinopoiskId": 5088599,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_66341",
+      "kinopoiskId": 66341,
+      "imdbId": "tt0095467",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_9617",
+      "kinopoiskId": 9617,
+      "imdbId": "tt0319061",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_803233",
+      "kinopoiskId": 803233,
+      "imdbId": "tt4553722",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_692912",
+      "kinopoiskId": 692912,
+      "imdbId": "tt4499832",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_466466",
+      "kinopoiskId": 466466,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_22907",
+      "kinopoiskId": 22907,
+      "imdbId": "tt0095800",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_842114",
+      "kinopoiskId": 842114,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_677565",
+      "kinopoiskId": 677565,
+      "imdbId": "tt3859486",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_455",
+      "kinopoiskId": 455,
+      "imdbId": "tt0072431",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_46745",
+      "kinopoiskId": 46745,
+      "imdbId": "tt0133108",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_19334",
+      "kinopoiskId": 19334,
+      "imdbId": "tt0061138",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_277368",
+      "kinopoiskId": 277368,
+      "imdbId": "tt0082785",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_8190",
+      "kinopoiskId": 8190,
+      "imdbId": "tt0059578",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_18511",
+      "kinopoiskId": 18511,
+      "imdbId": "tt0053472",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1388641",
+      "kinopoiskId": 1388641,
+      "imdbId": "tt13812290",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_838913",
+      "kinopoiskId": 838913,
+      "imdbId": "tt5077000",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5303365",
+      "kinopoiskId": 5303365,
+      "imdbId": "tt27798978",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_10355286",
+      "kinopoiskId": 10355286,
+      "imdbId": "tt37287335",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_6356862",
+      "kinopoiskId": 6356862,
+      "imdbId": "tt34200889",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_95172",
+      "kinopoiskId": 95172,
+      "imdbId": "tt33305575",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_840941",
+      "kinopoiskId": 840941,
+      "imdbId": "tt3669304",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_844067",
+      "kinopoiskId": 844067,
+      "imdbId": "tt4793574",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_43046",
+      "kinopoiskId": 43046,
+      "imdbId": "tt0141736",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5394545",
+      "kinopoiskId": 5394545,
+      "imdbId": "tt30027562",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1048335",
+      "kinopoiskId": 1048335,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_95891",
+      "kinopoiskId": 95891,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_43231",
+      "kinopoiskId": 43231,
+      "imdbId": "tt0058489",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_929776",
+      "kinopoiskId": 929776,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_764487",
+      "kinopoiskId": 764487,
+      "imdbId": "tt3764934",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_6584388",
+      "kinopoiskId": 6584388,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_501717",
+      "kinopoiskId": 501717,
+      "imdbId": "tt2049223",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_15204",
+      "kinopoiskId": 15204,
+      "imdbId": "tt0063518",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_42147",
+      "kinopoiskId": 42147,
+      "imdbId": "tt0174174",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_4742511",
+      "kinopoiskId": 4742511,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_43783",
+      "kinopoiskId": 43783,
+      "imdbId": "tt0079907",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_723290",
+      "kinopoiskId": 723290,
+      "imdbId": "tt2967986",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_44025",
+      "kinopoiskId": 44025,
+      "imdbId": "tt0076778",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_674243",
+      "kinopoiskId": 674243,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1171922",
+      "kinopoiskId": 1171922,
+      "imdbId": "tt10750060",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_709798",
+      "kinopoiskId": 709798,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5582628",
+      "kinopoiskId": 5582628,
+      "imdbId": "tt32370407",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_601938",
+      "kinopoiskId": 601938,
+      "imdbId": "tt3624506",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_1006637",
+      "kinopoiskId": 1006637,
+      "imdbId": "tt6158624",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_533136",
+      "kinopoiskId": 533136,
+      "imdbId": "tt4136744",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_5080554",
+      "kinopoiskId": 5080554,
+      "imdbId": null,
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_43732",
+      "kinopoiskId": 43732,
+      "imdbId": "tt0166790",
+      "reason": "no_series_meta_source"
+    },
+    {
+      "id": "kp_972889",
+      "kinopoiskId": 972889,
+      "imdbId": "tt4926348",
+      "reason": "no_series_meta_source"
+    }
+  ]
 }

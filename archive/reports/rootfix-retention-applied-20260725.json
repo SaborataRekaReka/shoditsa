@@ -1,0 +1,22 @@
+{
+  "task": "retention",
+  "dryRun": false,
+  "generatedAt": "2026-07-25T05:54:25.276Z",
+  "retention": {
+    "dryRun": false,
+    "counts": {
+      "revisions": 4,
+      "revisionItems": 19819,
+      "backgroundJobs": 0,
+      "pipelineRuns": 0,
+      "qualityIssues": 0,
+      "auditRows": 0
+    },
+    "revisionIds": [
+      "ce2cdd2f-395b-4795-b485-ca60c81b5cb5",
+      "a9985e0f-0494-4a86-85d6-f301f7c8d3ff",
+      "c08f2038-e6c0-437e-9cdf-167d56efc6cd",
+      "10538da9-54a9-4ac1-adac-874477c4ec6c"
+    ]
+  }
+}

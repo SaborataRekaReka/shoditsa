@@ -1042,6 +1042,16 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-integration-current small { grid-column: 1/-1; }
 .admin-integration-card > footer { margin-top: 10px; display: flex; gap: 7px; }
 .admin-user-avatar { background: #ddded7; }
+.admin-user-avatar.is-registered { color: #27452f; background: #cce7d3; }
+.admin-user-avatar.is-guest { color: #675f50; background: #e8e2d4; }
+.admin-account-type-filter { flex: 0 0 auto; }
+.admin-account-type-filter svg { width: 13px; }
+.admin-toolbar--users { flex-wrap: wrap; }
+.admin-user-state { display: flex; align-items: flex-end; flex-direction: column; gap: 5px; }
+.admin-account-type { width: fit-content; min-height: 22px; padding: 0 7px; border: 1px solid transparent; border-radius: 6px; display: inline-flex; align-items: center; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.admin-account-type--registered { color: #31573b; border-color: #b9d8c1; background: #e8f4eb; }
+.admin-account-type--guest { color: #6e6555; border-color: #d8cfbb; background: #f4efe4; }
+.admin-user-head__statuses { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .admin-user-avatar--large { width: 50px; height: 50px; border-radius: 13px; background: var(--a-primary); font: 500 22px Oswald, sans-serif; }
 .admin-user-head { min-height: 90px; padding: 15px 18px; border-bottom: 1px solid var(--a-line); display: flex; align-items: center; gap: 12px; }
 .admin-user-head h2 { margin: 3px 0 1px; font: 500 21px Oswald, sans-serif; text-transform: uppercase; }
@@ -1205,6 +1215,9 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-economy-targets { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 640px) {
+  .admin-toolbar--users .admin-search { min-width: 100%; flex-basis: 100%; }
+  .admin-account-type-filter { width: 100%; overflow-x: auto; }
+  .admin-account-type-filter button { flex: 1 0 auto; justify-content: center; }
   .admin-sidebar { display: none; }
   .admin-dashboard-grid { grid-template-columns: 1fr; }
   .admin-revision-summary { grid-template-columns: 1fr; }

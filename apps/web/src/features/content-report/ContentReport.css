@@ -1,0 +1,14 @@
+
+
+/* Feature-owned rules migrated from the legacy screen sheet. */
+.content-report { border-top: 1px solid var(--color-paper-line); padding-top: 8px; }
+.content-report__toggle { min-height: 44px; padding: 0; border: 0; background: transparent; color: var(--color-paper-muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.content-report form { padding: 12px; background: var(--color-paper-2); border-radius: 14px; }
+.content-report fieldset { margin: 0 0 10px; padding: 0; border: 0; }
+.content-report legend { margin-bottom: 8px; font-size: 12px; font-weight: 800; }
+.content-report label { min-height: 44px; display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.content-report textarea { width: 100%; min-height: 70px; padding: 9px; border: 1px solid var(--color-paper-line); border-radius: 10px; background: var(--color-paper); color: var(--color-ink); resize: vertical; }
+.content-report form > button { min-height: 44px; margin-top: 8px; padding: 0 16px; border: 1px solid var(--color-primary-border); border-radius: 11px; background: var(--color-primary); color: var(--color-ink); font-weight: 800; }
+.content-report__thanks { margin: 0 !important; }
+@media (max-width: 719px) {
+  .content-report textarea { font-size: 16px; } }

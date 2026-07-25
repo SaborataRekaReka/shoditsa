@@ -5,7 +5,7 @@ import type { GameEngine } from './game-modes.js'
 import type { EconomyRuleSet } from './economy.js'
 
 export type ApiRole = 'player' | 'admin'
-export type ApiGameStatus = 'playing' | 'won' | 'lost'
+export type ApiGameStatus = 'playing' | 'won' | 'lost' | 'expired'
 
 export type ApiUser = {
   id: string

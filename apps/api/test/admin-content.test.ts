@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   blockingContentValidationIssues,
   contentPayloadsEqual,
+  validateCatalogInvariants,
   validateContentPayload,
   workspaceContainsOnlyRedundantImports,
 } from '../src/modules/admin/content-service.js'
@@ -96,6 +97,21 @@ describe('admin content validation', () => {
     expect(contentPayloadsEqual({ titleRu: 'Карточка' }, { titleRu: 'Другая' })).toBe(false)
   })
 
+  it('rejects an enabled promo card and invalid alternative hint variants', () => {
+    const issues = validateContentPayload({
+      ...base,
+      id: 'promo:game-test',
+      mode: 'game',
+      contentStatus: 'promo_pack',
+      plotHintVariants: ['Коротко'],
+    }, 'game')
+    expect(issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: 'promo_regular_pool', level: 'error' }),
+      expect.objectContaining({ code: 'not_publishable', level: 'error' }),
+      expect.objectContaining({ code: 'invalid_hint_variant', level: 'error' }),
+    ]))
+  })
+
   it('allows cleanup only for redundant imported workspace changes', () => {
     const active = new Map<string, unknown>([
       ['game-1', { titleRu: 'Карточка', nested: { a: 1, b: 2 } }],
@@ -110,5 +126,23 @@ describe('admin content validation', () => {
       { itemId: 'game-1', source: 'import', afterPayload: { titleRu: 'Другая карточка' } },
     ], active)).toBe(false)
     expect(workspaceContainsOnlyRedundantImports([], active)).toBe(false)
+  })
+
+  it('blocks duplicate playable identities at the catalog boundary', () => {
+    const duplicate = {
+      ...base,
+      mode: 'game' as const,
+      year: 2024,
+      popularityScore: 1,
+      externalRanks: { thegamesdb: 77 },
+    }
+    const issues = validateCatalogInvariants([
+      { ...duplicate, id: 'tgdb_77' },
+      { ...duplicate, id: 'tgdb_77_1' },
+    ])
+    expect(issues).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: 'duplicate_playable_identity', itemId: 'tgdb_77' }),
+      expect.objectContaining({ code: 'duplicate_playable_identity', itemId: 'tgdb_77_1' }),
+    ]))
   })
 })

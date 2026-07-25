@@ -1,0 +1,7 @@
+.ui-dialog-backdrop {
+  isolation: isolate;
+}
+
+.ui-dialog-surface:focus {
+  outline: 0;
+}

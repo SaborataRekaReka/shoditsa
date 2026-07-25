@@ -261,7 +261,7 @@ export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, se
       currentUserId,
       canInvite: state.roomMode === 'group' && session.status === 'playing',
       lastSeq: Math.max(0, state.nextMessageSeq - 1),
-      outcome: session.status as 'playing' | 'won' | 'lost',
+      outcome: session.status as 'playing' | 'won' | 'lost' | 'expired',
       ...(session.status === 'playing' ? {} : { solution: secret.solution }),
     },
   }

@@ -1,0 +1,406 @@
+.admit-ticket {
+  width: 100%;
+  margin-top: 24px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  box-shadow: var(--shadow-paper);
+  position: relative;
+  z-index: 30;
+  animation: tileIn .55s .14s var(--ease) both;
+}
+.admit-ticket::before,
+.admit-ticket::after {
+  content: '';
+  position: absolute;
+  left: 75px;
+  width: 20px;
+  height: 10px;
+  background: var(--color-bg);
+  pointer-events: none;
+  z-index: 2;
+}
+.admit-ticket::before {
+  top: -1px;
+  border: 1px solid var(--color-paper-line);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+}
+.admit-ticket::after {
+  bottom: -1px;
+  border: 1px solid var(--color-paper-line);
+  border-bottom: 0;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 4px 0 var(--color-bg);
+}
+.admit-ticket__stub { padding: 15px 10px; border-right: 1px dashed var(--color-paper-line); display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+.admit-ticket__stub span { font-size: 12px; letter-spacing: .12em; }
+.admit-ticket__stub strong { font: 500 22px Oswald, sans-serif; }
+.admit-ticket__stub small { margin-top: 13px; color: #736b5d; font-size: 12px; }
+.admit-ticket__stub em { margin-top: 8px; font-size: 12px; font-style: normal; }
+.admit-ticket__stub i { width: 48px; height: 24px; margin-top: auto; background: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 3px, var(--color-ink) 3px 5px, transparent 5px 7px); }
+.admit-ticket__stub--poster {
+  --title-poster-accent: #d5a33d;
+  padding: 12px 8px 11px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: calc(var(--radius-md) - 1px) 0 0 calc(var(--radius-md) - 1px);
+}
+.admit-ticket__stub--series { --title-poster-accent: #8099a4; }
+.admit-ticket__stub--anime { --title-poster-accent: #d36d58; }
+.admit-ticket__stub--city { --title-poster-accent: #c98855; }
+.admit-ticket__stub--poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(17, 20, 16, .08) 42%, rgba(17, 20, 16, .68) 100%);
+  box-shadow: inset -1px 0 rgba(239, 231, 211, .24);
+  pointer-events: none;
+}
+.admit-ticket__stub-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.admit-ticket__stub--poster span,
+.admit-ticket__stub--poster strong,
+.admit-ticket__stub--poster small,
+.admit-ticket__stub--poster em,
+.admit-ticket__stub--poster i { position: relative; box-shadow: 0 2px 0 rgba(17, 20, 16, .22); }
+.admit-ticket__stub--poster span {
+  align-self: flex-start;
+  padding: 3px 5px 2px;
+  color: #f2ead6;
+  background: #171914;
+  border: 1px solid rgba(242, 234, 214, .45);
+  transform: rotate(-2deg);
+}
+.admit-ticket__stub--poster strong {
+  align-self: flex-start;
+  margin-top: 3px;
+  padding: 1px 6px 2px;
+  background: var(--title-poster-accent);
+  border: 1px solid rgba(23, 25, 20, .55);
+  transform: rotate(1deg);
+  font-size: 19px;
+  line-height: 1.05;
+}
+.admit-ticket__stub--poster small,
+.admit-ticket__stub--poster em {
+  align-self: flex-end;
+  padding: 3px 5px;
+  color: #171914;
+  background: rgba(239, 231, 211, .93);
+  border: 1px solid rgba(23, 25, 20, .58);
+}
+.admit-ticket__stub--poster small { margin-top: auto; transform: rotate(1.5deg); }
+.admit-ticket__stub--poster em { margin-top: 3px; transform: rotate(-1deg); }
+.admit-ticket__stub--poster i {
+  width: 42px;
+  height: 18px;
+  margin-top: 7px;
+  padding: 3px 4px;
+  background-color: rgba(239, 231, 211, .94);
+  background-image: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 3px, var(--color-ink) 3px 5px, transparent 5px 7px);
+  background-origin: content-box;
+  background-clip: content-box;
+  border: 1px solid rgba(23, 25, 20, .58);
+  transform: rotate(-1deg);
+}
+.admit-ticket__body { min-width: 0; padding: 16px; text-align: left; }
+.ticket-kicker { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+.ticket-kicker span { padding: 4px 7px; border: 1px solid var(--color-paper-line); border-radius: 999px; white-space: nowrap; }
+.ticket-kicker small { white-space: nowrap; }
+.ticket-kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
+.admit-ticket h2 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
+.admit-ticket__body > p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
+.concert-ticket {
+  width: 100%;
+  margin-top: 24px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: 98px minmax(0, 1fr);
+  box-shadow: var(--shadow-paper);
+  position: relative;
+  z-index: 30;
+  animation: tileIn .55s .14s var(--ease) both;
+}
+.concert-ticket::before,
+.concert-ticket::after {
+  content: '';
+  position: absolute;
+  left: 88px;
+  width: 20px;
+  height: 10px;
+  background: var(--color-bg);
+  pointer-events: none;
+  z-index: 2;
+}
+.concert-ticket::before { top: -1px; border: 1px solid var(--color-paper-line); border-top: 0; border-radius: 0 0 20px 20px; }
+.concert-ticket::after { bottom: -1px; border: 1px solid var(--color-paper-line); border-bottom: 0; border-radius: 20px 20px 0 0; box-shadow: 0 4px 0 var(--color-bg); }
+.concert-ticket__main { min-width: 0; padding: 16px; border-left: 1px dashed var(--color-paper-line); text-align: left; }
+.concert-ticket__head { min-width: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.concert-ticket__brand { min-width: 0; }
+.concert-ticket__kicker { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid var(--color-paper-line); border-radius: 999px; color: var(--mode-music-brand); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+.concert-ticket__kicker svg { width: 12px; height: 12px; }
+.concert-ticket__brand h2 { margin: 9px 0 3px; font: 500 clamp(24px, 8vw, 34px)/.95 Oswald, sans-serif; text-transform: uppercase; letter-spacing: -.01em; }
+.concert-ticket__venue { margin: 0; color: var(--color-paper-muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.concert-ticket__when { flex-shrink: 0; text-align: right; line-height: 1.1; }
+.concert-ticket__when strong { display: block; font: 500 22px Oswald, sans-serif; }
+.concert-ticket__when small { color: var(--color-paper-muted); font-size: 12px; }
+.concert-ticket__lead { margin: 12px 0 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
+.concert-ticket__meta { display: flex; gap: 18px; margin-top: 12px; }
+.concert-ticket__meta span { display: flex; flex-direction: column; gap: 2px; }
+.concert-ticket__meta i { color: var(--color-paper-muted); font-size: 12px; font-style: normal; letter-spacing: .18em; }
+.concert-ticket__meta b { font: 500 16px Oswald, sans-serif; letter-spacing: .04em; }
+.concert-ticket__barcode { height: 32px; margin-top: 12px; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--color-ink) 0 2px, transparent 2px 4px, var(--color-ink) 4px 5px, transparent 5px 8px); }
+.concert-ticket__stub { position: relative; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; background: rgba(138, 76, 125, .08); border-radius: calc(var(--radius-md) - 1px) 0 0 calc(var(--radius-md) - 1px); }
+.concert-ticket__stub-kicker { color: var(--mode-music-brand); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.concert-ticket__stub strong { font: 500 13px Oswald, sans-serif; text-transform: uppercase; }
+.concert-ticket__stub small { color: var(--color-paper-muted); font-size: 12px; }
+.concert-ticket__stub em { margin-top: 4px; font-size: 12px; font-style: normal; }
+.concert-ticket__stub-no { margin-top: 2px; color: var(--color-paper-muted); font-size: 12px; }
+.concert-ticket__barcode--v { width: 32px; height: 44px; margin-top: auto; background: repeating-linear-gradient(0deg, var(--color-ink) 0 2px, transparent 2px 4px, var(--color-ink) 4px 5px, transparent 5px 8px); }
+.concert-ticket__stub--poster {
+  padding: 12px 8px 11px;
+  gap: 3px;
+  overflow: hidden;
+  isolation: isolate;
+  color: #171914;
+  background: transparent;
+}
+.concert-ticket__stub--poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(17, 20, 16, .1) 38%, rgba(17, 20, 16, .72) 100%);
+  box-shadow: inset -1px 0 rgba(239, 231, 211, .24);
+  pointer-events: none;
+}
+.concert-ticket__stub-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.concert-ticket__stub--poster > :not(.concert-ticket__stub-art) { position: relative; box-shadow: 0 2px 0 rgba(17, 20, 16, .22); }
+.concert-ticket__stub--poster .concert-ticket__stub-kicker {
+  align-self: flex-end;
+  padding: 3px 5px 2px;
+  color: #f2ead6;
+  background: #171914;
+  border: 1px solid rgba(242, 234, 214, .45);
+  transform: rotate(2deg);
+}
+.concert-ticket__stub--poster > strong {
+  align-self: flex-end;
+  padding: 2px 5px;
+  background: #8d718f;
+  border: 1px solid rgba(23, 25, 20, .55);
+  transform: rotate(-1deg);
+}
+.concert-ticket__stub--poster > small,
+.concert-ticket__stub--poster > em,
+.concert-ticket__stub--poster .concert-ticket__stub-no {
+  align-self: flex-start;
+  padding: 3px 4px;
+  color: #171914;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+}
+.concert-ticket__stub--poster > small { margin-top: auto; transform: rotate(-1.5deg); }
+.concert-ticket__stub--poster > em { margin-top: 0; transform: rotate(1deg); }
+.concert-ticket__stub--poster .concert-ticket__stub-no { margin-top: 0; transform: rotate(-1deg); }
+.concert-ticket__stub--poster .concert-ticket__barcode--v {
+  width: 28px;
+  height: 36px;
+  margin-top: 4px;
+  padding: 3px 4px;
+  background-color: rgba(239, 231, 211, .94);
+  background-origin: content-box;
+  background-clip: content-box;
+  border: 1px solid rgba(23, 25, 20, .58);
+  transform: rotate(1deg);
+}
+.med-chart {
+  width: 100%;
+  margin-top: 24px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  box-shadow: var(--shadow-paper);
+  position: relative;
+  overflow: hidden;
+  animation: tileIn .55s .14s var(--ease) both;
+}
+.med-chart::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, var(--color-primary) 0 16px, var(--color-accent) 16px 20px);
+  opacity: .85;
+  z-index: 3;
+}
+.med-chart__stub {
+  position: relative;
+  padding: 20px 10px 14px;
+  border-right: 2px dashed var(--color-paper-line);
+  background: var(--color-paper-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.med-chart__cross { position: relative; width: 34px; height: 34px; margin-bottom: 11px; border-radius: 10px; background: var(--color-primary); box-shadow: 2px 2px 0 var(--color-shadow); }
+.med-chart__cross i { position: absolute; top: 50%; left: 50%; background: var(--color-ink); border-radius: 2px; transform: translate(-50%, -50%); }
+.med-chart__cross i:first-child { width: 16px; height: 5px; }
+.med-chart__cross i:last-child { width: 5px; height: 16px; }
+.med-chart__stub > span { color: var(--color-paper-muted); font-size: 12px; letter-spacing: .12em; }
+.med-chart__stub > strong { font: 500 20px Oswald, sans-serif; }
+.med-chart__stub > small { margin-top: 11px; color: #736b5d; font-size: 12px; }
+.med-chart__stub > em { margin-top: 6px; font-size: 12px; font-style: normal; }
+.med-chart__pulse { width: 62px; height: 22px; margin-top: auto; color: var(--color-primary); }
+.med-chart__stub--poster {
+  padding: 18px 9px 12px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: calc(var(--radius-md) - 1px) 0 0 calc(var(--radius-md) - 1px);
+  color: #171914;
+  background: transparent;
+}
+.med-chart__stub--poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(17, 20, 16, .08) 38%, rgba(17, 20, 16, .68) 100%);
+  pointer-events: none;
+}
+.med-chart__stub-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.med-chart__stub--poster .med-chart__cross,
+.med-chart__stub--poster > span:not(.med-chart__cross),
+.med-chart__stub--poster > strong,
+.med-chart__stub--poster > small,
+.med-chart__stub--poster > em,
+.med-chart__stub--poster .med-chart__pulse { position: relative; box-shadow: 0 2px 0 rgba(17, 20, 16, .22); }
+.med-chart__stub--poster .med-chart__cross { flex-shrink: 0; margin-bottom: 8px; }
+.med-chart__stub--poster > span:not(.med-chart__cross) {
+  align-self: flex-start;
+  padding: 3px 5px 2px;
+  color: #f2ead6;
+  background: #171914;
+  border: 1px solid rgba(242, 234, 214, .45);
+  transform: rotate(-2deg);
+}
+.med-chart__stub--poster > strong {
+  align-self: flex-start;
+  margin-top: 3px;
+  padding: 1px 5px 2px;
+  background: #d36d58;
+  border: 1px solid rgba(23, 25, 20, .55);
+  font-size: 18px;
+  line-height: 1.05;
+  transform: rotate(1deg);
+}
+.med-chart__stub--poster > small,
+.med-chart__stub--poster > em {
+  align-self: flex-end;
+  padding: 3px 4px;
+  color: #171914;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+}
+.med-chart__stub--poster > small { margin-top: auto; transform: rotate(1deg); }
+.med-chart__stub--poster > em { margin-top: 3px; transform: rotate(-1deg); }
+.med-chart__stub--poster .med-chart__pulse {
+  width: 54px;
+  height: 18px;
+  margin-top: 7px;
+  padding: 3px;
+  color: #2f6b45;
+  background: rgba(239, 231, 211, .94);
+  border: 1px solid rgba(23, 25, 20, .58);
+  transform: rotate(1deg);
+}
+.med-chart__body { min-width: 0; padding: 18px 16px 16px; text-align: left; }
+.med-chart__kicker { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+.med-chart__kicker span { padding: 4px 8px; border: 1px solid var(--color-primary-border); border-radius: 999px; color: #2f6b45; background: rgba(87, 183, 119, .14); white-space: nowrap; }
+.med-chart__kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
+.med-chart__kicker small { min-width: 0; overflow-wrap: anywhere; }
+.med-chart h2 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
+.med-chart__body > p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
+.med-chart__anamnesis { width: 100%; margin-top: 14px; padding: 10px 11px; display: grid; grid-template-columns: 38px 1fr 15px; gap: 11px; align-items: center; text-align: left; color: var(--color-ink); background: var(--color-paper-2); border: 1px solid var(--color-paper-line); border-radius: var(--radius-md); box-shadow: 2px 2px 0 var(--color-shadow); cursor: pointer; transition: transform .2s var(--ease), background .2s ease, border-color .2s ease; }
+.med-chart__anamnesis:hover { transform: translateY(-2px); background: var(--color-paper-hover); border-color: var(--color-paper-line-strong); }
+.med-chart__anamnesis-portrait { width: 38px; height: 38px; border-radius: 11px; background: var(--color-primary); color: var(--color-ink); display: grid; place-items: center; box-shadow: 2px 2px 0 var(--color-shadow); }
+.med-chart__anamnesis-portrait svg { width: 20px; }
+.med-chart__anamnesis-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.med-chart__anamnesis-copy strong { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.med-chart__anamnesis-copy small { color: var(--color-paper-muted-2); font-size: 12px; }
+.med-chart__anamnesis > svg { width: 15px; color: var(--color-paper-muted); }
+@media (max-width: 719px) {
+  .ticket-kicker i { display: none; }
+}
+@media (max-width: 359px) {
+  .concert-ticket__head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; }
+}
+@media (max-width: 359px) {
+  .concert-ticket__kicker { max-width: 100%; white-space: normal; line-height: 1.25; }
+}
+@media (max-width: 359px) {
+  .concert-ticket__when { display: flex; align-items: baseline; gap: 5px; text-align: left; }
+}
+@media (min-width: 720px) {
+  .admit-ticket { margin-top: 30px; grid-template-columns: 96px 1fr; }
+}
+@media (min-width: 720px) {
+  .admit-ticket::before,
+.admit-ticket::after { left: 85px; }
+}
+@media (min-width: 720px) {
+  .admit-ticket__body { padding: 18px 21px; }
+}
+@media (min-width: 720px) {
+  .admit-ticket h2 { font-size: 24px; }
+}
+@media (min-width: 720px) {
+  .admit-ticket__body > p { font-size: 12px; }
+}
+@media (min-width: 720px) {
+  .med-chart { margin-top: 30px; grid-template-columns: 112px 1fr; }
+}
+@media (min-width: 720px) {
+  .med-chart__body { padding: 20px 22px 18px; }
+}
+@media (min-width: 720px) {
+  .med-chart h2 { font-size: 24px; }
+}
+@media (min-width: 720px) {
+  .med-chart__body > p { font-size: 12px; }
+}

@@ -9,7 +9,12 @@ import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
+import { ControlButton, DialogSurface, InlineAlert, TextArea, TextInput } from '../../components/ui'
 import './DanetkiGamePage.css'
+import './DanetkiSession.css'
+import './DanetkiCaseHeader.css'
+import './DanetkiInvestigation.css'
+import './DanetkiOutcome.css'
 
 type Props = {
   sessionId: string
@@ -45,8 +50,6 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   const [newMessages, setNewMessages] = useState(0)
   const listRef = useRef<HTMLDivElement>(null)
   const outcomeRef = useRef<HTMLElement>(null)
-  const dialogRef = useRef<HTMLElement>(null)
-  const returnFocusRef = useRef<HTMLElement | null>(null)
   const wasNearBottom = useRef(true)
   const previousMessageCount = useRef(state.messages.length)
   const sendKey = useRef<string | null>(null)
@@ -149,25 +152,6 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   }, [session.status])
 
   useEffect(() => {
-    if (!dialog) return
-    returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    const node = dialogRef.current
-    const focusable = () => [...(node?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])') ?? [])]
-    focusable()[0]?.focus()
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { event.preventDefault(); setDialog(null); return }
-      if (event.key !== 'Tab') return
-      const items = focusable()
-      if (!items.length) return
-      const first = items[0]; const last = items[items.length - 1]
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => { document.removeEventListener('keydown', onKeyDown); returnFocusRef.current?.focus(); returnFocusRef.current = null }
-  }, [dialog])
-
-  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape' || dialog) return
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement || (event.target instanceof HTMLElement && event.target.isContentEditable)) return
@@ -261,7 +245,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
             <picture><source srcSet={publicAssetUrl('images/danetki/danetka-detective-hero.webp')} type="image/webp" /><img src={publicAssetUrl('images/danetki/danetka-detective-hero.png')} width="1672" height="941" decoding="async" fetchPriority="high" alt="" /></picture>
             <span className="danetki-artwork__case"><i>Дело</i><b>№ {caseNumber}</b></span>
           </div>
-          {state.aiStatus === 'error' && <button type="button" onClick={() => retryAi.mutate()} disabled={retryAi.isPending}><RefreshCw /> Повторить</button>}
+          {state.aiStatus === 'error' && <ControlButton type="button" onClick={() => retryAi.mutate()} disabled={retryAi.isPending}><RefreshCw /> Повторить</ControlButton>}
         </div>
         <div className={`danetki-hostline danetki-hostline--${hostState}`}><strong><i aria-hidden="true" />{hostStatus}</strong><span>{state.aiStatus === 'error' ? 'Попробуйте повторить запрос' : 'Реагирует на ваши вопросы'}</span></div>
       </section>
@@ -296,18 +280,18 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
           })}
           {(send.isPending || send.isError) && send.variables && <article className="danetki-message is-mine is-user is-pending">
             <span className="danetki-message__avatar">В</span>
-            <div className="danetki-message__bubble"><strong className="danetki-message__author">Вы</strong><p>{send.variables.text}</p><small>{send.isPending ? 'Отправляется…' : 'Не отправлено'}</small>{send.isError && <button type="button" onClick={() => send.mutate(send.variables!)}>Повторить</button>}</div>
+            <div className="danetki-message__bubble"><strong className="danetki-message__author">Вы</strong><p>{send.variables.text}</p><small>{send.isPending ? 'Отправляется…' : 'Не отправлено'}</small>{send.isError && <ControlButton type="button" onClick={() => send.mutate(send.variables!)}>Повторить</ControlButton>}</div>
           </article>}
           {(state.aiStatus === 'queued' || state.aiStatus === 'processing') && <div className="danetki-typing"><LoaderCircle /> Ведущий обдумывает вопрос</div>}
         </div>
-        {newMessages > 0 && <button type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения · {newMessages}</button>}
+        {newMessages > 0 && <ControlButton type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения · {newMessages}</ControlButton>}
 
         {session.status === 'playing' && <>
-          <form className="danetki-composer" onSubmit={submit}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining > 0 ? 'Напишите вопрос…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0} /><ActionButton type="submit" className="danetki-composer__send" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос" title="Отправить вопрос">{send.isPending ? <LoaderCircle className="danetki-spinner" /> : <Send />}</ActionButton></form>
+          <form className="danetki-composer" onSubmit={submit}><TextArea value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining > 0 ? 'Напишите вопрос…' : 'Лимит вопросов исчерпан'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0} /><ActionButton type="submit" className="danetki-composer__send" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0} aria-label="Отправить вопрос" title="Отправить вопрос">{send.isPending ? <LoaderCircle className="danetki-spinner" /> : <Send />}</ActionButton></form>
         </>}
       </section>
 
-      {error && <div className="danetki-error" role="alert">{error}<button type="button" onClick={() => setError('')}>Закрыть</button></div>}
+      {error && <InlineAlert tone="danger" className="danetki-error" onDismiss={() => setError('')}>{error}</InlineAlert>}
       {session.status === 'playing' ? <div className="danetki-session-actions">
         <ActionButton type="button" variant="primary" onClick={() => setDialog('guess')}><Check /> Я знаю разгадку</ActionButton>
         <ActionButton type="button" variant="secondary" onClick={() => setDialog('hint')} disabled={state.hintLevel >= 3}><Lightbulb /> Подсказка {state.hintLevel}/3</ActionButton>
@@ -327,11 +311,11 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
       </section>}
     </GameScreenShell>
 
-    {dialog && <div className="danetki-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null) }}><section ref={dialogRef} className="danetki-dialog" role="dialog" aria-modal="true" aria-labelledby="danetki-dialog-title">
-      {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><textarea rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><button type="button" onClick={() => setDialog(null)}>Отмена</button><button type="button" className="is-primary" disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</button></div></>}
-      {dialog === 'hint' && <><h2 id="danetki-dialog-title">Открыть подсказку?</h2><p>Подсказку увидят все участники комнаты. Она снизит итоговый результат.</p><div><button type="button" onClick={() => setDialog(null)}>Отмена</button><button type="button" className="is-primary" disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</button></div></>}
-      {dialog === 'surrender' && <><h2 id="danetki-dialog-title">Завершить расследование?</h2><p>{state.roomMode === 'group' ? 'Ваш голос будет учтён. Для сдачи нужны голоса всех активных участников.' : 'После сдачи откроется полная авторская разгадка.'}</p><div><button type="button" onClick={() => setDialog(null)}>Продолжить игру</button><button type="button" className="is-danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</button></div></>}
-      {dialog === 'invite' && <><h2 id="danetki-dialog-title">Пригласить в расследование</h2><p>Ссылка действует 24 часа.</p><input aria-label="Ссылка-приглашение" readOnly value={inviteLink} /><div><button type="button" onClick={() => setDialog(null)}>Готово</button><button type="button" className="is-primary" onClick={async () => { await navigator.clipboard.writeText(inviteLink); setCopied(true) }}><Copy /> {copied ? 'Скопировано' : 'Копировать'}</button></div></>}
-    </section></div>}
+    {dialog && <DialogSurface backdropClassName="danetki-dialog-backdrop" className="danetki-dialog" onClose={() => setDialog(null)} ariaLabelledBy="danetki-dialog-title">
+      {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><TextArea rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><ControlButton onClick={() => setDialog(null)}>Отмена</ControlButton><ControlButton className="is-primary" disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</ControlButton></div></>}
+      {dialog === 'hint' && <><h2 id="danetki-dialog-title">Открыть подсказку?</h2><p>Подсказку увидят все участники комнаты. Она снизит итоговый результат.</p><div><ControlButton onClick={() => setDialog(null)}>Отмена</ControlButton><ControlButton className="is-primary" disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</ControlButton></div></>}
+      {dialog === 'surrender' && <><h2 id="danetki-dialog-title">Завершить расследование?</h2><p>{state.roomMode === 'group' ? 'Ваш голос будет учтён. Для сдачи нужны голоса всех активных участников.' : 'После сдачи откроется полная авторская разгадка.'}</p><div><ControlButton onClick={() => setDialog(null)}>Продолжить игру</ControlButton><ControlButton className="is-danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</ControlButton></div></>}
+      {dialog === 'invite' && <><h2 id="danetki-dialog-title">Пригласить в расследование</h2><p>Ссылка действует 24 часа.</p><TextInput aria-label="Ссылка-приглашение" readOnly value={inviteLink} /><div><ControlButton onClick={() => setDialog(null)}>Готово</ControlButton><ControlButton className="is-primary" onClick={async () => { await navigator.clipboard.writeText(inviteLink); setCopied(true) }}><Copy /> {copied ? 'Скопировано' : 'Копировать'}</ControlButton></div></>}
+    </DialogSurface>}
   </div>
 }

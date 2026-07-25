@@ -183,6 +183,20 @@
       "when": 1784893162339,
       "tag": "0025_fantastic_talisman",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1784955227434,
+      "tag": "0026_deep_timeslip",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1784956699679,
+      "tag": "0027_motionless_professor_monster",
+      "breakpoints": true
     }
   ]
 }

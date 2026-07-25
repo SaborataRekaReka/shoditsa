@@ -1,45 +1,60 @@
 import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { parse as parseDotenv } from 'dotenv'
 import { applySeriesOverride, loadSeriesOverrides } from './manual-overrides.mjs'
+import {
+  fetchWikidataSeasonsByKinopoiskIds,
+  kinopoiskKeysFromEnvironment,
+} from './season-sources.mjs'
 
 const root = resolve(import.meta.dirname, '../..')
-const seriesOverrides = await loadSeriesOverrides(root)
-const envFile = resolve(root, '.env.local')
+const args = process.argv.slice(2)
+const externallyDefinedEnvironment = new Set(Object.keys(process.env))
 
-if (existsSync(envFile)) {
-  const content = await readFile(envFile, 'utf8')
-  for (const line of content.split(/\r?\n/)) {
-    const [key, ...rest] = line.split('=')
-    if (!key || !rest.length) continue
-    if (key.trim().startsWith('#')) continue
-    if (!process.env[key.trim()]) process.env[key.trim()] = rest.join('=').trim()
+for (const filename of ['.env', '.env.local']) {
+  const envFile = resolve(root, filename)
+  if (!existsSync(envFile)) continue
+  const parsed = parseDotenv(await readFile(envFile))
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!externallyDefinedEnvironment.has(key)) process.env[key] = value
   }
 }
 
-const args = process.argv.slice(2)
 const argValue = (name, fallback) => {
   const index = args.indexOf(name)
   if (index === -1 || index + 1 >= args.length) return fallback
   return args[index + 1]
 }
 
-const inputPath = resolve(root, argValue('--in', 'public/data/series.generated.json'))
-const outputPath = resolve(root, argValue('--out', 'public/data/series.generated.json'))
+const useAdminSecrets = args.includes('--admin-secrets')
+if (useAdminSecrets) {
+  const [{ loadConfig }, { createDatabase }, { loadIntegrationEnvironment }] = await Promise.all([
+    import('@shoditsa/config'),
+    import('@shoditsa/database'),
+    import('../../apps/api/src/modules/admin/integration-secrets.js'),
+  ])
+  const config = loadConfig()
+  const { db, client } = createDatabase(config)
+  try {
+    Object.assign(process.env, await loadIntegrationEnvironment(db, config))
+  } finally {
+    await client.end()
+  }
+}
+
+const seriesOverrides = await loadSeriesOverrides(root)
+const configuredLibraryRoot = process.env.CONTENT_RELEASE_ROOT?.trim()
+  ? resolve(root, process.env.CONTENT_RELEASE_ROOT.trim())
+  : resolve(root, 'public/data/libraries')
+const defaultSeriesPath = resolve(configuredLibraryRoot, 'series/items.json')
+const inputPath = resolve(root, argValue('--in', defaultSeriesPath))
+const outputPath = resolve(root, argValue('--out', inputPath))
 const reportPath = resolve(root, argValue('--report', 'archive/reports/series-meta-enrichment-report.json'))
 const force = args.includes('--force')
 const maxItemsArg = Number(argValue('--max-items', '0'))
 const maxItems = Number.isFinite(maxItemsArg) && maxItemsArg > 0 ? maxItemsArg : null
-
-const keys = [
-  ...String(process.env.KINOPOISK_API_KEYS || '')
-    .split(/[\n,;\s]+/)
-    .map((value) => value.trim())
-    .filter(Boolean),
-  ...(!process.env.KINOPOISK_API_KEY ? [] : [String(process.env.KINOPOISK_API_KEY).trim()]),
-]
-
-const uniqueKeys = [...new Set(keys)]
+const uniqueKeys = kinopoiskKeysFromEnvironment(process.env)
 
 const api = 'https://kinopoiskapiunofficial.tech'
 const tvmazeApi = 'https://api.tvmaze.com'
@@ -200,31 +215,74 @@ const fallbackStatus = (item, details) => {
 
 const data = (await readCollection(inputPath)).map((item) => applySeriesOverride(item, seriesOverrides))
 const seriesItems = data.filter((item) => item?.mode === 'series')
+const managedSeasonSourceMarkers = new Set([
+  'series_meta_kinopoisk',
+  'series_meta_wikidata',
+  'series_meta_tvmaze',
+  'series_meta_wikidata_tvmaze',
+  'series_meta_conflict',
+])
+const hasManagedSeasonSource = (item) => item?.dataQuality?.source
+  ?.some((source) => managedSeasonSourceMarkers.has(source)) === true
 
 const queue = seriesItems.filter((item) => {
   if (force) return true
   const hasSeasonsCount = Number.isFinite(item?.seasonsCount)
   const hasSeriesStatus = hasTargetStatus(item?.seriesStatus)
-  return !hasSeasonsCount || !hasSeriesStatus
+  return !hasSeasonsCount || !hasSeriesStatus || hasManagedSeasonSource(item)
 })
 
 const targets = maxItems ? queue.slice(0, maxItems) : queue
+const wikidataTargetIds = targets
+  .filter((item) => (
+    !Number.isFinite(Number(item?.seasonsCount))
+    || hasManagedSeasonSource(item)
+  ))
+  .map(parseKinopoiskId)
+  .filter((value) => value != null)
+
+let wikidataSeasons = {
+  counts: new Map(),
+  imdbIds: new Map(),
+  sourceUrls: new Map(),
+  conflicts: [],
+  entityCount: 0,
+}
+let wikidataError = null
+try {
+  wikidataSeasons = await fetchWikidataSeasonsByKinopoiskIds(wikidataTargetIds)
+} catch (error) {
+  wikidataError = String(error?.message || error).slice(0, 300)
+}
 
 console.log(`Series total: ${seriesItems.length}`)
 console.log(`Need enrichment: ${targets.length}`)
 console.log(`API keys loaded: ${uniqueKeys.length}`)
+console.log(`Wikidata exact entities loaded: ${wikidataSeasons.entityCount} (${wikidataSeasons.counts.size} season counts, ${wikidataSeasons.imdbIds.size} IMDb bridges)`)
+if (wikidataError) console.log(`Wikidata unavailable: ${wikidataError}`)
 if (!uniqueKeys.length) {
-  console.log('Kinopoisk API keys missing: will use TVMaze + offline fallback only')
+  console.log(useAdminSecrets
+    ? 'No Kinopoisk keys found in the connected admin database or environment; using exact public fallbacks'
+    : 'Kinopoisk admin secrets were not requested; using environment keys and exact public fallbacks')
 }
 
 let updated = 0
 let skipped = 0
 let fallbackStatusUsed = 0
 let seasonsEndpointUsed = 0
+let wikidataSeasonsUsed = 0
 let tvmazeLookupUsed = 0
 let tvmazeStatusUsed = 0
 let tvmazeSeasonsUsed = 0
 const skippedItems = []
+const enrichedItems = []
+const publicSourceConflicts = []
+const sourceCounts = {
+  kinopoisk: 0,
+  wikidata: 0,
+  tvmaze: 0,
+  wikidata_tvmaze: 0,
+}
 
 const tvmazeShowCache = new Map()
 const tvmazeSeasonsCache = new Map()
@@ -238,8 +296,15 @@ for (let index = 0; index < targets.length; index += 1) {
 
   const beforeSeasons = Number.isFinite(Number(item?.seasonsCount)) ? Number(item.seasonsCount) : null
   const beforeStatus = hasTargetStatus(item?.seriesStatus) ? item.seriesStatus : null
-  let seasonsCount = beforeSeasons
+  const beforeManagedMarkers = (item?.dataQuality?.source ?? [])
+    .filter((source) => managedSeasonSourceMarkers.has(source))
+  const hadManagedSeasonSource = hasManagedSeasonSource(item)
+  let seasonsCount = hadManagedSeasonSource ? null : beforeSeasons
   let seriesStatus = beforeStatus
+  let seasonsSource = seasonsCount == null ? null : 'existing'
+  let seasonsSourceUrl = null
+  let seasonsCorroboratingSourceUrl = null
+  let seasonConflict = null
   let details = null
   let kinopoiskError = null
   let tvmazeError = null
@@ -251,15 +316,21 @@ for (let index = 0; index < targets.length; index += 1) {
       const seasonsFromDetails = Number(details?.seasons)
       if (seasonsCount == null && Number.isFinite(seasonsFromDetails) && seasonsFromDetails > 0) {
         seasonsCount = seasonsFromDetails
+        seasonsSource = 'kinopoisk'
       }
 
       if (seasonsCount == null) {
         try {
           const seasonsData = await request(`/api/v2.2/films/${kinopoiskId}/seasons`)
+          let endpointCount = null
           if (Number.isFinite(Number(seasonsData?.total))) {
-            seasonsCount = Number(seasonsData.total)
+            endpointCount = Number(seasonsData.total)
           } else if (Array.isArray(seasonsData?.items)) {
-            seasonsCount = seasonsData.items.length
+            endpointCount = seasonsData.items.length
+          }
+          if (Number.isInteger(endpointCount) && endpointCount > 0) {
+            seasonsCount = endpointCount
+            seasonsSource = 'kinopoisk'
           }
           seasonsEndpointUsed += 1
         } catch {
@@ -277,6 +348,9 @@ for (let index = 0; index < targets.length; index += 1) {
   }
 
   const imdbId = parseImdbId(item)
+    ?? (kinopoiskId == null ? null : wikidataSeasons.imdbIds.get(String(kinopoiskId)) ?? null)
+  let tvmazeCount = null
+  let tvmazeSourceUrl = null
   if ((seasonsCount == null || !hasTargetStatus(seriesStatus)) && imdbId) {
     try {
       let tvmazeShow = tvmazeShowCache.get(imdbId)
@@ -308,12 +382,62 @@ for (let index = 0; index < targets.length; index += 1) {
             tvmazeSeasonsCache.set(tvmazeShow.id, cachedCount)
             if (cachedCount != null) tvmazeSeasonsUsed += 1
           }
-          if (cachedCount != null) seasonsCount = cachedCount
+          if (cachedCount != null) {
+            tvmazeCount = cachedCount
+            tvmazeSourceUrl = `https://www.tvmaze.com/shows/${tvmazeShow.id}`
+          }
         }
       }
     } catch (error) {
       tvmazeError = String(error?.message || error).slice(0, 220)
     }
+  }
+
+  if (seasonsCount == null && kinopoiskId != null) {
+    const wikidataCount = wikidataSeasons.counts.get(String(kinopoiskId))
+    const wikidataSourceUrl = wikidataSeasons.sourceUrls.get(String(kinopoiskId)) ?? null
+    if (
+      Number.isInteger(tvmazeCount) && tvmazeCount > 0
+      && Number.isInteger(wikidataCount) && wikidataCount > 0
+      && tvmazeCount !== wikidataCount
+    ) {
+      seasonConflict = {
+        id: item?.id ?? `kp_${kinopoiskId}`,
+        kinopoiskId,
+        wikidataCount,
+        tvmazeCount,
+        wikidataSourceUrl,
+        tvmazeSourceUrl,
+      }
+      publicSourceConflicts.push(seasonConflict)
+    } else if (
+      Number.isInteger(tvmazeCount) && tvmazeCount > 0
+      && Number.isInteger(wikidataCount) && wikidataCount > 0
+    ) {
+      seasonsCount = tvmazeCount
+      seasonsSource = 'wikidata_tvmaze'
+      seasonsSourceUrl = tvmazeSourceUrl
+      seasonsCorroboratingSourceUrl = wikidataSourceUrl
+      wikidataSeasonsUsed += 1
+    } else if (Number.isInteger(tvmazeCount) && tvmazeCount > 0) {
+      seasonsCount = tvmazeCount
+      seasonsSource = 'tvmaze'
+      seasonsSourceUrl = tvmazeSourceUrl
+    } else if (Number.isInteger(wikidataCount) && wikidataCount > 0) {
+      seasonsCount = wikidataCount
+      seasonsSource = 'wikidata'
+      seasonsSourceUrl = wikidataSourceUrl
+      wikidataSeasonsUsed += 1
+    }
+  } else if (seasonsCount == null && Number.isInteger(tvmazeCount) && tvmazeCount > 0) {
+    seasonsCount = tvmazeCount
+    seasonsSource = 'tvmaze'
+    seasonsSourceUrl = tvmazeSourceUrl
+  }
+
+  if (seasonsCount == null && beforeSeasons != null && seasonConflict == null) {
+    seasonsCount = beforeSeasons
+    seasonsSource = 'existing'
   }
 
   if (!hasTargetStatus(seriesStatus)) {
@@ -322,9 +446,32 @@ for (let index = 0; index < targets.length; index += 1) {
   }
 
   item.seriesStatus = seriesStatus
-  if (seasonsCount != null) item.seasonsCount = seasonsCount
+  if (seasonsCount != null) {
+    item.seasonsCount = seasonsCount
+  } else if (seasonConflict != null) {
+    delete item.seasonsCount
+  }
 
-  const changed = beforeSeasons !== seasonsCount || beforeStatus !== seriesStatus
+  if (item?.dataQuality && Array.isArray(item.dataQuality.source)) {
+    const nextMarker = seasonConflict
+      ? 'series_meta_conflict'
+      : seasonsSource && seasonsSource !== 'existing'
+        ? `series_meta_${seasonsSource}`
+        : null
+    if (nextMarker) {
+      item.dataQuality.source = item.dataQuality.source
+        .filter((source) => !managedSeasonSourceMarkers.has(source))
+      item.dataQuality.source.push(nextMarker)
+    } else if (!hasTargetStatus(beforeStatus) && !item.dataQuality.source.includes('series_status_fallback')) {
+      item.dataQuality.source.push('series_status_fallback')
+    }
+  }
+
+  const afterManagedMarkers = (item?.dataQuality?.source ?? [])
+    .filter((source) => managedSeasonSourceMarkers.has(source))
+  const changed = beforeSeasons !== seasonsCount
+    || beforeStatus !== seriesStatus
+    || JSON.stringify(beforeManagedMarkers) !== JSON.stringify(afterManagedMarkers)
   const stillMissingTarget = !Number.isFinite(Number(item?.seasonsCount)) || !hasTargetStatus(item?.seriesStatus)
 
   if (!changed && stillMissingTarget) {
@@ -333,14 +480,24 @@ for (let index = 0; index < targets.length; index += 1) {
       id: item?.id ?? (kinopoiskId != null ? `kp_${kinopoiskId}` : null),
       kinopoiskId,
       imdbId,
-      reason: kinopoiskError || tvmazeError || 'no_series_meta_source',
+      reason: seasonConflict
+        ? `public_source_conflict:wikidata=${seasonConflict.wikidataCount},tvmaze=${seasonConflict.tvmazeCount}`
+        : kinopoiskError || tvmazeError || 'no_series_meta_source',
     })
     continue
   }
 
-  if (item?.dataQuality && Array.isArray(item.dataQuality.source)) {
-    const marker = seasonsCount != null ? 'series_meta_tvmaze_or_kinopoisk' : 'series_status_fallback'
-    if (!item.dataQuality.source.includes(marker)) item.dataQuality.source.push(marker)
+  if (seasonsCount != null && seasonsSource && seasonsSource !== 'existing') {
+    sourceCounts[seasonsSource] += 1
+    enrichedItems.push({
+      id: item?.id ?? (kinopoiskId != null ? `kp_${kinopoiskId}` : null),
+      kinopoiskId,
+      previousSeasonsCount: beforeSeasons,
+      seasonsCount,
+      source: seasonsSource,
+      sourceUrl: seasonsSourceUrl,
+      corroboratingSourceUrl: seasonsCorroboratingSourceUrl,
+    })
   }
 
   updated += 1
@@ -368,10 +525,19 @@ const report = {
   skipped,
   fallbackStatusUsed,
   seasonsEndpointUsed,
+  wikidataEntitiesMatched: wikidataSeasons.entityCount,
+  wikidataMatched: wikidataSeasons.counts.size,
+  wikidataImdbBridges: wikidataSeasons.imdbIds.size,
+  wikidataSeasonsUsed,
+  wikidataConflicts: wikidataSeasons.conflicts,
+  wikidataError,
   tvmazeLookupUsed,
   tvmazeStatusUsed,
   tvmazeSeasonsUsed,
+  publicSourceConflicts,
+  sourceCounts,
   keyUsage: keyState.map((entry, idx) => ({ index: idx + 1, used: entry.used, exhausted: entry.exhausted })),
+  enrichedItems,
   skippedItems,
 }
 

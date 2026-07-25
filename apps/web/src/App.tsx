@@ -19,15 +19,11 @@ import {
   Gamepad2,
   HeartPulse,
   LogIn,
-  LogOut,
   Lock,
   LockOpen,
-  Mail,
-  Music2,
   NotebookText,
   Play,
   RotateCcw,
-  Search,
   Share2,
   ShieldCheck,
   Sparkles,
@@ -48,9 +44,8 @@ import { ApiClientError, api, queryKeys } from './api/client'
 import { apiErrorMessage } from './api/error-message'
 import { DailyProgressStub } from './features/daily-progress/DailyProgressStub'
 import { buildDailyHubState, savedGameAttemptCount } from './features/daily-progress/daily-progress'
-import { buildLegacyImport, legacyImportCompleted, markLegacyImportCompleted } from './features/auth/legacy-import'
-import { notifyAuthSessionChanged, useAuthSession, type AuthSession } from './features/auth/use-auth-session'
-import { localizeYandexOAuthUrl } from './features/auth/yandex-oauth'
+import { useAuthSession } from './features/auth/use-auth-session'
+import { resetPasswordTokenFromLocation } from './features/auth/auth-helpers'
 import { ChallengeInvite } from './features/challenge/ChallengeInvite'
 import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
 import { nextDailyMode } from './features/daily-route/daily-route'
@@ -58,16 +53,15 @@ import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion
 import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, nextStreakMilestoneReward } from './features/economy/economy-rules'
 import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyView'
 import { GameResult } from './features/result/GameResult'
-import { activeSessionToSavedGame, archiveItemToSavedGame, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
+import { activeSessionToSavedGame, archiveItemToSavedGame, publicItemToTitle, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
 import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
 import type { ContentReportReason } from './features/content-report/ContentReport'
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
-import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT, useDialogFocusTrap } from './components/app-shell/AppShell'
+import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
 import { GameArtifactSeoDetails, HomeSeoContent } from './components/seo-content/SeoContent'
 import {
-  canUseAsArtistPortrait,
   canonicalMusicGenreLabel,
   canonicalMusicId,
   compareTitles,
@@ -98,7 +92,7 @@ import { createInitialGameSessionState, gameSessionReducer } from './game/sessio
 import { freePlayAnswerSalt, freePlayGameKey, freePlayLaunchFromGameKey } from './game/free-play'
 import { collectMatchSummaryTags } from './game/match-summary'
 import { attemptProgressStats } from './game/attempt-progress'
-import { searchEmptyMessage, searchMediaAlt, searchResultMeta } from './game/search-presentation'
+import { searchEmptyMessage, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
 import { commitSuggestionAttempt } from './game/suggestion-attempt'
 import { copyText, shareTextWithFallback } from './game/sharing'
@@ -113,6 +107,9 @@ import { ModeVariantControl } from './components/mode-variant/ModeVariantControl
 import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
 import { GamePageFrame } from './components/game-shell/GamePageFrame'
 import { GameScreenShell } from './components/game-shell/GameScreenShell'
+import { AdmissionTitleTicket, DiagnosisTitleCard, MusicTitleTicket, TicketKicker } from './components/title-ticket'
+import { ControlButton, DialogSurface, InlineAlert, SegmentedProgress, Tabs, TextInput } from './components/ui'
+import { SearchCombobox } from './components/search-combobox'
 import { trackClientEvent } from './app/client-events'
 import { ClubScreen } from './features/commerce/ClubScreen'
 import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
@@ -126,6 +123,16 @@ import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEnt
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
 import { UserBadgeList } from './components/user-badges/UserBadgeList'
+import { RewatchScreen } from './features/archive/RewatchScreen'
+import { AnamnesisModal, EconomyAwardPanel, ResumeSessionsView, RulesView, StatsView } from './features/player-modals/PlayerModalViews'
+import { PROFILE_TABS, ProfileScreen, type ProfileTab } from './features/profile/ProfileScreen'
+import { TitlePoster as Poster } from './components/title-poster'
+import { defaultDiagnosisSystemIcon, diagnosisSystemIconByKey, normalizeDiagnosisSystemKey } from './features/game-session/diagnosis-presentation'
+import './features/home/HomeScreen.css'
+import './features/title/TitleScreen.css'
+import './features/review/ReviewScreen.css'
+import './features/game-session/GameSession.css'
+import { dayNumber } from './game/day-number'
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -187,35 +194,6 @@ const completionSessionKey = (mode: TitleMode, period: PeriodKey, date: string, 
   const base = gameKey(mode, period, date)
   return variant ? `${base}|diff:${variant}` : base
 }
-const authErrorMessage = (error: unknown) => {
-  if (error instanceof ApiClientError) {
-    if (error.code === 'NETWORK_TIMEOUT') return 'Сервер отвечает слишком долго. Попробуйте еще раз.'
-    if (error.code === 'INVALID_EMAIL_OR_PASSWORD') return 'Неверный email или пароль.'
-    if (error.code === 'EMAIL_NOT_VERIFIED') return 'Сначала подтвердите email по ссылке из письма. Гостевой прогресс пока остаётся в этом браузере.'
-    if (error.code === 'USER_ALREADY_EXISTS') return 'Пользователь с таким email уже существует.'
-    if (error.code === 'AUTH_EMAIL_DISABLED') return 'Вход по email сейчас временно отключен на этом окружении.'
-    if (error.code === 'RESET_PASSWORD_DISABLED' || /reset password isn't enabled/i.test(error.message)) {
-      return 'Восстановление пароля пока не настроено на сервере.'
-    }
-    if (error.code === 'INVALID_TOKEN') return 'Ссылка для сброса устарела или недействительна.'
-    if (error.code === 'PASSWORD_TOO_SHORT') return 'Пароль слишком короткий. Минимум 10 символов.'
-    if (error.code === 'PASSWORD_TOO_LONG') return 'Пароль слишком длинный.'
-    if (error.code === 'INVALID_PASSWORD') return 'Текущий пароль указан неверно.'
-    if (error.code === 'CREDENTIAL_ACCOUNT_NOT_FOUND') return 'Для этого аккаунта пароль не задан. Используйте вход через провайдера или подключите email-вход.'
-    if (error.code === 'PROVIDER_CONFIG_NOT_FOUND' || /provider_config_not_found/i.test(error.message)) {
-      return 'Вход через Яндекс пока не настроен на сервере.'
-    }
-    if (error.message === 'Invalid email or password') return 'Неверный email или пароль.'
-    if (error.status >= 500) return 'Сервис авторизации временно недоступен. Попробуйте позже.'
-    return error.message || 'Не удалось выполнить запрос.'
-  }
-  return error instanceof Error ? error.message : 'Не удалось выполнить запрос.'
-}
-const resetPasswordTokenFromLocation = () => {
-  if (typeof window === 'undefined') return ''
-  const token = new URLSearchParams(window.location.search).get('token')?.trim() || ''
-  return token
-}
 const periodUnlockCost = (period: PeriodKey, unlockCost: number = ECONOMY_RULE_SET.periodUnlock) => period === 'all' ? 0 : unlockCost
 const canUnlockPeriods = (mode: TitleMode) => UNLOCKABLE_PERIOD_MODES.has(mode)
 const resultConfigureLabel = (mode: TitleMode) => mode === 'music'
@@ -227,24 +205,7 @@ const toInteger = (value: number | string | undefined, fallback: number) => {
   const parsed = Math.trunc(Number(value))
   return Number.isFinite(parsed) ? parsed : fallback
 }
-const normalizeSystemKey = (value: string) => normalizeTextMatch(value).replace(/[^a-zа-я0-9]+/gi, ' ').trim()
-const diagnosisSystemIconByKey = new Map<string, string>([
-  ['дыхательная система', publicAssetUrl('images/diagnosis-systems/respiratory.svg')],
-  ['пищеварительная система', publicAssetUrl('images/diagnosis-systems/digestive.svg')],
-  ['психика и поведение', publicAssetUrl('images/diagnosis-systems/mental.svg')],
-  ['зубы и полость рта', publicAssetUrl('images/diagnosis-systems/dental.svg')],
-  ['мочевыделительная система', publicAssetUrl('images/diagnosis-systems/urinary.svg')],
-  ['нервная система', publicAssetUrl('images/diagnosis-systems/nervous.svg')],
-  ['органы зрения', publicAssetUrl('images/diagnosis-systems/vision.svg')],
-  ['органы слуха', publicAssetUrl('images/diagnosis-systems/hearing.svg')],
-  ['кожа и подкожная клетчатка', publicAssetUrl('images/diagnosis-systems/skin.svg')],
-  ['костно мышечная система', publicAssetUrl('images/diagnosis-systems/musculoskeletal.svg')],
-  ['кровь и иммунная система', publicAssetUrl('images/diagnosis-systems/blood-immune.svg')],
-  ['репродуктивная система', publicAssetUrl('images/diagnosis-systems/reproductive.svg')],
-  ['сердечно сосудистая система', publicAssetUrl('images/diagnosis-systems/cardiovascular.svg')],
-  ['эндокринная система', publicAssetUrl('images/diagnosis-systems/endocrine.svg')],
-])
-const defaultDiagnosisSystemIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
+const normalizeSystemKey = normalizeDiagnosisSystemKey
 const splitHintValues = (value: string) => value.split(',').map((item) => item.trim()).filter((item) => item && item !== 'Нет данных')
 const visibleMatchedItems = (items: string[], matched: Set<string>, limit: number) =>
   items.filter((item, index) => index < limit || matched.has(normalizeTextMatch(item)))
@@ -426,13 +387,6 @@ const renderHintBody = (value: string): ReactNode => {
 
   return nodes
 }
-const artistInitials = (name: string) => name
-  .split(/\s+/)
-  .filter(Boolean)
-  .slice(0, 2)
-  .map((part) => part[0])
-  .join('')
-  .toUpperCase()
 const personName = (person: { nameRu: string; nameOriginal: string }) => person.nameRu || person.nameOriginal || 'Без имени'
 const titlePrimaryScore = (item: TitleItem) => {
   if (item.mode === 'anime') return item.shikimoriScore ?? item.ratings?.recognizability ?? null
@@ -700,7 +654,7 @@ function GameMatchStrip({ attempts, mode, open, onToggle }: { attempts: Attempt[
   const tags = useMemo(() => collectMatchSummaryTags(attempts, mode), [attempts, mode])
 
   return <div className={`game-match-strip ${open ? 'is-open' : ''}`}>
-    <button
+    <ControlButton
       type="button"
       className="game-match-strip__toggle"
       onClick={onToggle}
@@ -710,7 +664,7 @@ function GameMatchStrip({ attempts, mode, open, onToggle }: { attempts: Attempt[
       <span className="game-match-strip__logo" aria-hidden="true"><img src={publicAssetUrl('images/symbol.svg')} alt="" /></span>
       <span className="game-match-strip__title">Что сходится</span>
       <ChevronRight aria-hidden="true" />
-    </button>
+    </ControlButton>
     <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!open}>
       <HorizontalScrollLane className="game-match-strip__tags">
         {tags.length
@@ -877,11 +831,6 @@ const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): Assis
   return out
 }
 
-const dayNumber = (date: string) => {
-  const start = Date.UTC(2026, 0, 1)
-  const current = Date.parse(`${date}T00:00:00Z`)
-  return Math.max(1, Math.floor((current - start) / 86_400_000) + 1)
-}
 
 const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string, won: boolean, attemptsCount: number, variant = ''): EconomyAward => {
   const sessionKey = completionSessionKey(mode, period, date, variant)
@@ -974,45 +923,13 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
   }
 }
 
-const Poster = ({ item, className = '' }: { item: TitleItem; className?: string }) => {
-  const [failed, setFailed] = useState(false)
-  const portraitSource = item.mode === 'city'
-    ? [item.coatOfArmsUrl, item.cityFlagUrl, item.posterUrl, item.countryFlagUrl].find((url) => Boolean(url)) ?? null
-    : item.mode === 'music'
-    ? [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
-    : [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => Boolean(url)) ?? null
-  const diagnosisIcon = item.mode === 'diagnosis'
-    ? diagnosisSystemIconByKey.get(normalizeSystemKey(item.bodySystems?.[0] ?? '')) ?? defaultDiagnosisSystemIcon
-    : ''
-  const initials = artistInitials(item.titleRu || item.titleOriginal || '')
-
-  return portraitSource && !failed
-    ? <img className={className} src={portraitSource} alt={searchMediaAlt(item)} onError={() => setFailed(true)} />
-    : <div className={`${className} poster-fallback${item.mode === 'diagnosis' ? ' poster-fallback--diagnosis' : ''}`} role="img" aria-label={searchMediaAlt(item)}>
-      {item.mode === 'music'
-        ? <>
-            <Music2 />
-            <span>{initials || '♪'}</span>
-          </>
-        : item.mode === 'diagnosis'
-          ? <>
-              <img className="poster-fallback__dx" src={diagnosisIcon} alt="" aria-hidden="true" loading="lazy" />
-              <span>{item.titleRu}</span>
-            </>
-          : <>
-              {modeIcon(item.mode)}
-              <span>{item.titleRu}</span>
-            </>}
-    </div>
-}
-
 function GameSelector({ mode, onClick, compact = false }: { mode: TitleMode; onClick: () => void; compact?: boolean }) {
-  return <button className={`game-selector ${compact ? 'game-selector--compact' : ''}`} onClick={onClick}>
+  return <ControlButton className={`game-selector ${compact ? 'game-selector--compact' : ''}`} onClick={onClick}>
     <span>{modeIcon(mode)}</span>
     <i>Тема</i>
     <strong>{modeMeta(mode).title}</strong>
     <ChevronRight />
-  </button>
+  </ControlButton>
 }
 
 function PeriodControl({
@@ -1072,28 +989,32 @@ function PeriodControl({
         const isCompleted = !isMainSession && completed.has(periodKey)
         const cost = periodUnlockCost(periodKey, periodUnlockCostValue)
         const isUnlockable = !isUnlocked && cost > 0 && wallet.tickets >= cost
-        const optionIcon = isMainSession
-          ? <Target />
-          : isCompleted
-            ? <Check />
-            : isUnlocked || isUnlockable
-              ? <LockOpen />
-              : <Lock />
+        const missingTickets = Math.max(0, cost - wallet.tickets)
         const optionDescription = isMainSession
-          ? 'Главный сеанс'
+          ? 'Главный сеанс · доступен всегда'
           : isCompleted
-            ? 'Пройден'
+            ? 'Можно пройти снова'
             : isUnlocked
-              ? 'Открыт'
-              : `${cost} билетов`
+              ? 'Можно играть сейчас'
+              : isUnlockable
+                ? 'Хватает билетов для открытия'
+                : `Не хватает ${formatTickets(missingTickets)}`
+        const optionStatus = isCompleted
+          ? { label: 'Пройдено', tone: 'completed' as const, icon: <Check /> }
+          : isMainSession || isUnlocked
+            ? { label: 'Доступно', tone: 'available' as const, icon: isActive ? <Check /> : <Play /> }
+            : isUnlockable
+              ? { label: <>Открыть · {cost}</>, tone: 'unlockable' as const, icon: <Ticket /> }
+              : { label: 'Закрыто', tone: 'locked' as const, icon: <Lock /> }
         return <GameOption
           key={periodKey}
           className={`period-option ${isMainSession ? 'period-option--main' : ''} ${isActive ? 'active' : ''} ${isUnlocked ? 'unlocked' : isUnlockable ? 'unlockable' : 'locked'}`}
           title={PERIODS[periodKey].label}
           description={optionDescription}
-          icon={optionIcon}
+          icon={<CalendarDays />}
+          status={optionStatus}
           selected={isActive}
-          tone={isMainSession ? 'special' : isUnlocked || isUnlockable ? 'positive' : 'muted'}
+          tone={isMainSession || isCompleted || isUnlocked ? 'positive' : isUnlockable ? 'special' : 'muted'}
           onSelect={() => {
             trackMetrikaGoal('select_period', {
               mode,
@@ -1111,6 +1032,15 @@ function PeriodControl({
         title="Свободная игра"
         description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Sparkles />}
+        status={freePlayArmed
+          ? { label: 'Активна', tone: 'available', icon: <Check /> }
+          : hasActiveFreePlay
+            ? { label: 'Продолжить', tone: 'available', icon: <Play /> }
+            : freePlayShortage > 0
+              ? { label: 'Закрыто', tone: 'locked', icon: <Lock /> }
+              : clubFreePlay
+                ? { label: 'Запустить', tone: 'available', icon: <Play /> }
+                : { label: <>Открыть · {freePlayCostValue}</>, tone: 'unlockable', icon: <Ticket /> }}
         selected={freePlayArmed}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'positive' : 'muted'}
         onSelect={() => {
@@ -1188,6 +1118,15 @@ function DifficultyControl({
         title="Свободная игра"
         description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Sparkles />}
+        status={freePlayArmed
+          ? { label: 'Активна', tone: 'available', icon: <Check /> }
+          : hasActiveFreePlay
+            ? { label: 'Продолжить', tone: 'available', icon: <Play /> }
+            : freePlayShortage > 0
+              ? { label: 'Закрыто', tone: 'locked', icon: <Lock /> }
+              : clubFreePlay
+                ? { label: 'Запустить', tone: 'available', icon: <Play /> }
+                : { label: <>Открыть · {freePlayCostValue}</>, tone: 'unlockable', icon: <Ticket /> }}
         selected={freePlayArmed}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'special' : 'muted'}
         onSelect={() => {
@@ -1208,8 +1147,8 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
     <h1>Проектор не настроился</h1>
     <p>Библиотека игры не загрузилась. Прогресс сохранён — попробуйте подключиться ещё раз.</p>
     <div>
-      <button type="button" className="ui-button ui-button--primary" onClick={onRetry}>Повторить загрузку</button>
-      <button type="button" className="ui-button ui-button--secondary" onClick={onHome}>На главную</button>
+      <ControlButton type="button" className="ui-button ui-button--primary" onClick={onRetry}>Повторить загрузку</ControlButton>
+      <ControlButton type="button" className="ui-button ui-button--secondary" onClick={onHome}>На главную</ControlButton>
     </div>
   </main>
 }
@@ -1503,235 +1442,42 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
         <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
         <p>Угадайте {modeMeta(mode).subject} дня за десять попыток</p>
         {mode === 'diagnosis'
-          ? <section className="med-chart med-chart--dossier" aria-labelledby="ticket-diagnosis">
-              <div className="med-chart__stub med-chart__stub--poster">
-                <img className="med-chart__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.diagnosis)} alt="" aria-hidden="true" decoding="async" />
-                <span className="med-chart__cross" aria-hidden="true"><i /><i /></span>
-                <span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № {dayNumber(date)}</small><em>{date.slice(8, 10)}.{date.slice(5, 7)}</em>
-                <svg className="med-chart__pulse" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true">
-                  <path d="M0 14 H30 L37 14 L42 4 L49 24 L55 14 L61 9 L66 14 H120" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-                </svg>
-              </div>
-              <div className="med-chart__body">
-                <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
-                <h2 id="ticket-diagnosis">Ежедневная игра: диагнозы</h2>
-                <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
-                {hasAnamnesis && <button type="button" className="med-chart__anamnesis" onClick={onReadAnamnesis}>
-                  <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
-                  <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
-                  <ChevronRight aria-hidden="true" />
-                </button>}
-                {launchControls}
-              </div>
-              <GameArtifactSeoDetails mode="diagnosis" />
-            </section>
+          ? <DiagnosisTitleCard
+              id="ticket-diagnosis"
+              posterUrl={publicAssetUrl(TITLE_POSTER_ASSETS.diagnosis)}
+              dayNumber={dayNumber(date)}
+              dateLabel={`${date.slice(8, 10)}.${date.slice(5, 7)}`}
+              hasAnamnesis={hasAnamnesis}
+              onReadAnamnesis={onReadAnamnesis}
+              launchControls={launchControls}
+              details={<GameArtifactSeoDetails mode="diagnosis" />}
+            />
           : mode === 'music'
-            ? <section className="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music">
-                <div className="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">
-                  <img className="concert-ticket__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS.music)} alt="" decoding="async" />
-                  <span className="concert-ticket__stub-kicker">Концерт дня</span>
-                  <strong>Артист дня</strong>
-                  <small>Главная сцена</small>
-                  <em>{date.slice(8, 10)}.{date.slice(5, 7)} · 21:45</em>
-                  <span className="concert-ticket__stub-no">№ {dayNumber(date)}</span>
-                  <div className="concert-ticket__barcode concert-ticket__barcode--v" />
-                </div>
-                <div className="concert-ticket__main">
-                  <div className="concert-ticket__head">
-                    <div className="concert-ticket__brand">
-                      <span className="concert-ticket__kicker"><Music2 /> Концерт дня</span>
-                      <h2 id="ticket-music">Артист дня</h2>
-                      <p className="concert-ticket__venue">Главная сцена · сеанс №{dayNumber(date)}</p>
-                    </div>
-                    <div className="concert-ticket__when">
-                      <strong>{date.slice(8, 10)}.{date.slice(5, 7)}</strong>
-                      <small>21:45</small>
-                    </div>
-                  </div>
-                  <p className="concert-ticket__lead">Каждый ответ сравнит страну, эпоху, формат и жанры. По мере попыток откроются история артиста, похожие исполнители, альбом и главный хит.</p>
-                  <div className="concert-ticket__meta" aria-hidden="true">
-                    <span><i>GATE</i><b>10</b></span>
-                    <span><i>SEAT</i><b>A15</b></span>
-                    <span><i>ROW</i><b>07</b></span>
-                  </div>
-                  <div className="concert-ticket__barcode" aria-hidden="true" />
-                  {launchControls}
-                </div>
-                <GameArtifactSeoDetails mode="music" />
-              </section>
-          : <section className="admit-ticket admit-ticket--dossier" aria-labelledby={`ticket-${mode}`}>
-              <div className={`admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--${mode}`}>
-                <img className="admit-ticket__stub-art" src={publicAssetUrl(TITLE_POSTER_ASSETS[mode])} alt="" aria-hidden="true" decoding="async" />
-                <span>ВХОД</span><strong>ОДИН</strong><small>№ {dayNumber(date)}</small><em>{date.slice(8,10)}.{date.slice(5,7)}</em><i />
-              </div>
-              <div className="admit-ticket__body">
-                <div className="ticket-kicker"><span>Ежедневная премьера</span><i /> <small>полночный сеанс</small></div>
+            ? <MusicTitleTicket
+                id="ticket-music"
+                posterUrl={publicAssetUrl(TITLE_POSTER_ASSETS.music)}
+                dayNumber={dayNumber(date)}
+                dateLabel={`${date.slice(8, 10)}.${date.slice(5, 7)}`}
+                launchControls={launchControls}
+                details={<GameArtifactSeoDetails mode="music" />}
+              />
+            : <AdmissionTitleTicket
+                id={`ticket-${mode}`}
+                mode={mode}
+                posterUrl={publicAssetUrl(TITLE_POSTER_ASSETS[mode])}
+                stubLabel="ВХОД"
+                stubTitle="ОДИН"
+                stubMeta={`№ ${dayNumber(date)}`}
+                stubEnd={`${date.slice(8, 10)}.${date.slice(5, 7)}`}
+                details={<GameArtifactSeoDetails mode={mode} />}
+              >
+                <TicketKicker title="Ежедневная премьера" detail="полночный сеанс" />
                 <h2 id={`ticket-${mode}`}>Ежедневная игра: {modeMeta(mode).lower}</h2>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 {launchControls}
-              </div>
-              <GameArtifactSeoDetails mode={mode} />
-            </section>}
+              </AdmissionTitleTicket>}
       </section>
     </GameScreenShell>
-  </>
-}
-
-type RewatchScreenProps = {
-  mode: TitleMode
-  setMode: (mode: TitleMode) => void
-  period: PeriodKey
-  dates: string[]
-  games: SavedGame[]
-  titles: TitleItem[]
-  onOpen: (date: string, game: SavedGame | null) => void
-  onHome: () => void
-  onStats: () => void
-  onRules: () => void
-  onReview: () => void
-  onClub: () => void
-}
-
-function RewatchScreen(props: RewatchScreenProps) {
-  return SERVER_RUNTIME ? <ServerRewatchScreen {...props} /> : <LocalRewatchScreen {...props} />
-}
-
-function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onStats, onRules, onReview, onClub }: RewatchScreenProps) {
-  const serverRuntime = useServerRuntime()
-  const [lockedDate, setLockedDate] = useState<string | null>(null)
-  const archive = useQuery({
-    queryKey: queryKeys.archiveCalendar({ mode, period, from: dates.at(-1), to: dates[0] }),
-    queryFn: () => api.archiveCalendar({ mode, period, from: dates.at(-1)!, to: dates[0]! }),
-    enabled: Boolean(serverRuntime.me),
-  })
-  const sessions = useMemo<SavedGame[]>(() => {
-    return (archive.data?.items ?? []).flatMap((item) => item.session ? [archiveItemToSavedGame(item.session)] : [])
-  }, [archive.data])
-  const accessByDate = useMemo(() => new Map((archive.data?.items ?? []).map((item) => [item.date, item.access])), [archive.data])
-  const latestByDate = useMemo(() => {
-    const byDate = new Map<string, SavedGame | null>()
-    for (const itemDate of dates) {
-      const sameDay = sessions.filter((game) => game.date === itemDate && game.mode === mode)
-      const selectedPeriod = sameDay.find((game) => game.period === period)
-      byDate.set(itemDate, selectedPeriod ?? sameDay.sort((left, right) => right.updatedAt - left.updatedAt)[0] ?? null)
-    }
-    return byDate
-  }, [dates, mode, period, sessions])
-  const sessionPreviewIds = useMemo(() => {
-    const ids = new Set<string>()
-    for (const played of latestByDate.values()) {
-      if (!played?.key.startsWith('server:')) continue
-      ids.add(played.key.slice('server:'.length))
-    }
-    return [...ids]
-  }, [latestByDate])
-  const sessionPreviewQueries = useQueries({
-    queries: sessionPreviewIds.map((id) => ({
-      queryKey: queryKeys.game(id),
-      queryFn: () => api.game(id),
-      enabled: Boolean(serverRuntime.me),
-      staleTime: 30_000,
-    })),
-  })
-  const posterBySessionId = useMemo(() => {
-    const map = new Map<string, TitleItem>()
-    for (const query of sessionPreviewQueries) {
-      const session = query.data?.session
-      if (!session) continue
-      const previewItem = session.status === 'playing'
-        ? session.attempts.at(-1)?.item ?? null
-        : session.answer ?? session.attempts.at(-1)?.item ?? null
-      if (previewItem) map.set(session.id, publicItemToTitle(previewItem))
-    }
-    return map
-  }, [sessionPreviewQueries])
-
-  useEffect(() => {
-    if (!lockedDate) return
-    const archiveAgeDays = Math.max(0, dates.indexOf(lockedDate))
-    trackClientEvent('archive_paywall_view', { mode, archiveAgeDays, hasClub: serverRuntime.dashboard?.membership.active ?? false })
-    trackMetrikaGoal('archive_paywall_view', { mode, archiveAgeDays })
-  }, [dates, lockedDate, mode, serverRuntime.dashboard?.membership.active])
-
-  return <>
-    <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="rewatch-screen">
-      <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>Последние семь дат доступны всем. Полный архив с даты запуска открыт клубу.</p></div>
-      <div className="rewatch-toolbar"><div className="mode-tabs">{MODE_TABS.map((tabMode) => <button className={mode === tabMode ? 'active' : ''} key={tabMode} onClick={() => setMode(tabMode)}>{modeMeta(tabMode).plural}</button>)}</div></div>
-      {archive.isError && <p className="server-error">{apiErrorMessage(archive.error)}</p>}
-      <section className="rewatch-grid">{dates.map((itemDate, index) => {
-        const played = latestByDate.get(itemDate) ?? null
-        const access = accessByDate.get(itemDate) ?? 'locked'
-        const sessionId = played?.key.startsWith('server:') ? played.key.slice('server:'.length) : null
-        const posterItem = sessionId ? posterBySessionId.get(sessionId) : undefined
-        return <button className={`rewatch-item ${played?.status ?? ''} ${access === 'locked' && !played ? 'rewatch-item--locked' : ''}`} key={itemDate} onClick={() => {
-          if (access === 'locked' && !played) {
-            setLockedDate(itemDate)
-            trackClientEvent('archive_paywall_clicked', { mode, archiveAgeDays: index, hasClub: serverRuntime.dashboard?.membership.active ?? false })
-            trackMetrikaGoal('archive_paywall_clicked', { mode, archiveAgeDays: index })
-            return
-          }
-          onOpen(itemDate, played)
-        }} disabled={archive.isLoading}>
-          <div className="rewatch-poster">{posterItem ? <><Poster item={posterItem} className="rewatch-poster__media" /><small className="rewatch-poster__day">#{dayNumber(itemDate)}</small></> : <span className="rewatch-poster__fallback-day">{access === 'locked' ? <Lock /> : `#${dayNumber(itemDate)}`}</span>}<i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : played?.status === 'playing' ? `${played.attempts.length}/10` : ''}</i></div>
-          <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
-          <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : access === 'locked' ? 'Полный архив клуба' : 'Не сыгран'}</small>
-        </button>
-      })}</section>
-      <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
-    </main>
-    {lockedDate && <Modal title="Полный архив клуба" onClose={() => setLockedDate(null)}><p className="modal-lead">Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем.</p><ActionButton onClick={() => { setLockedDate(null); onClub() }}>Узнать о клубе</ActionButton></Modal>}
-  </>
-}
-
-function LocalRewatchScreen({ mode, setMode, period, dates, games, titles, onOpen, onHome, onStats, onRules, onReview }: RewatchScreenProps) {
-  const latestByUpdatedAt = (items: SavedGame[]): SavedGame | null => {
-    if (!items.length) return null
-    return items.reduce((best, current) => current.updatedAt > best.updatedAt ? current : best)
-  }
-  const titleById = useMemo(() => {
-    const map = new Map<string, TitleItem>()
-    for (const item of titles) map.set(item.id, item)
-    return map
-  }, [titles])
-
-  return <>
-    <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="rewatch-screen">
-      <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
-      <div className="rewatch-toolbar">
-        <div className="mode-tabs">{MODE_TABS.map((tabMode) => (
-          <button className={mode === tabMode ? 'active' : ''} key={tabMode} onClick={() => setMode(tabMode)}>{modeMeta(tabMode).plural}</button>
-        ))}</div>
-      </div>
-      <section className="rewatch-grid">{dates.map((itemDate, index) => {
-        const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
-        const playedInCurrentPeriod = dayGames.find((game) => game.period === period)
-        const played = playedInCurrentPeriod ?? latestByUpdatedAt(dayGames)
-        const normalizedAnswerId = played?.mode === 'music' ? resolveMusicRedirectId(played.answerId) : played?.answerId
-        const latestAttemptId = played?.attempts.at(-1)?.titleId
-        const normalizedLatestAttemptId = played?.mode === 'music' && latestAttemptId ? resolveMusicRedirectId(latestAttemptId) : latestAttemptId
-        const posterItem = played
-          ? titleById.get(normalizedAnswerId ?? '') ?? (normalizedLatestAttemptId ? titleById.get(normalizedLatestAttemptId) : undefined)
-          : undefined
-        return <button className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)}>
-          <div className="rewatch-poster">
-            {posterItem
-              ? <>
-                <Poster item={posterItem} className="rewatch-poster__media" />
-                <small className="rewatch-poster__day">#{dayNumber(itemDate)}</small>
-              </>
-              : <span className="rewatch-poster__fallback-day">#{dayNumber(itemDate)}</span>}
-            <i>{played?.status === 'won' ? `${played.attempts.length}/10` : played?.status === 'lost' ? '×' : ''}</i>
-          </div>
-          <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
-          <small>{played
-            ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${played.mode === 'movie' || played.mode === 'series' || played.mode === 'anime' || played.mode === 'music' ? ` · ${PERIODS[played.period].short}` : ''}`
-            : 'Не сыгран'}</small>
-        </button>
-      })}</section>
-      <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
-    </main>
   </>
 }
 
@@ -1782,7 +1528,7 @@ function ServerMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, 
   return <>
     <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="review-screen">
-      <div className="screen-back-row"><button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button><span className="keycap-hint" aria-hidden="true">Esc</span></div>
+      <div className="screen-back-row"><ControlButton className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></ControlButton><span className="keycap-hint" aria-hidden="true">Esc</span></div>
       <section className="review-heading"><span><NotebookText /> Серверная модерация</span><h1>Карточки на проверке</h1><p>Решения сохраняются в базе вместе с автором и временем изменения.</p></section>
       <section className="review-stats"><article><small>В очереди</small><strong>{items.length}</strong></article><article><small>Позиция</small><strong>{current ? activeIndex + 1 : 0}</strong></article></section>
       {queue.isLoading && <section className="review-empty"><Sparkles /> Загружаем карточки модерации…</section>}
@@ -1792,8 +1538,8 @@ function ServerMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, 
         <div className="review-card__head"><span className="review-card__number">{String(activeIndex + 1).padStart(3, '0')}</span><Poster item={publicItemToTitle({ id: current.id, mode: current.mode as TitleMode, titleRu: current.titleRu, titleOriginal: current.titleOriginal, year, posterUrl })} className="review-card__poster" /><div className="review-card__identity"><span className="attempt-label">{current.mode}</span><h2>{current.titleRu}</h2><p className="gm-head__sub"><span className="gm-head__orig">{current.titleOriginal || 'Оригинальное название не указано'}</span>{year != null && <><i className="gm-head__dot">·</i><span className="gm-year">{year}</span></>}</p></div><div className="review-approval-badge"><small>Статус</small><strong>На проверке</strong></div></div>
         {!!current.reviewReasons.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Требует внимания</strong><span>{current.reviewReasons.join(' • ')}</span></div>}
         <details className="review-details"><summary>Сырые данные карточки (JSON)</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>
-        {approve.isError && <p className="server-error">{apiErrorMessage(approve.error)}</p>}
-        <div className="review-card__actions"><button onClick={() => setActiveIndex((value) => Math.max(0, value - 1))} disabled={activeIndex === 0}><ChevronLeft /> Предыдущая</button><button className="approve" disabled={approve.isPending} onClick={() => { const key = decisionKeyRef.current ?? crypto.randomUUID(); decisionKeyRef.current = key; approve.mutate({ itemId: current.id, key }) }}><Check /> {approve.isPending ? 'Сохраняем…' : 'Одобрить'}</button><button onClick={() => setActiveIndex((value) => Math.min(items.length - 1, value + 1))} disabled={activeIndex >= items.length - 1}>Следующая <ChevronRight /></button></div>
+        {approve.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(approve.error)}</InlineAlert>}
+        <div className="review-card__actions"><ControlButton onClick={() => setActiveIndex((value) => Math.max(0, value - 1))} disabled={activeIndex === 0}><ChevronLeft /> Предыдущая</ControlButton><ControlButton className="approve" disabled={approve.isPending} onClick={() => { const key = decisionKeyRef.current ?? crypto.randomUUID(); decisionKeyRef.current = key; approve.mutate({ itemId: current.id, key }) }}><Check /> {approve.isPending ? 'Сохраняем…' : 'Одобрить'}</ControlButton><ControlButton onClick={() => setActiveIndex((value) => Math.min(items.length - 1, value + 1))} disabled={activeIndex >= items.length - 1}>Следующая <ChevronRight /></ControlButton></div>
       </section>}
     </main>
   </>
@@ -1979,7 +1725,7 @@ function LocalMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, o
     <AppHeader onHome={onHome} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="review-screen">
       <div className="screen-back-row">
-        <button className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></button>
+        <ControlButton className="screen-back" onClick={onBack} aria-label="Назад"><ChevronLeft /></ControlButton>
         <span className="keycap-hint" aria-hidden="true">Esc</span>
       </div>
 
@@ -1990,15 +1736,15 @@ function LocalMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, o
       </section>
 
       <section className="review-toolbar">
-        <button className={showServiceReasons ? 'active' : ''} onClick={() => setShowServiceReasons((currentValue) => !currentValue)}>
+        <ControlButton className={showServiceReasons ? 'active' : ''} onClick={() => setShowServiceReasons((currentValue) => !currentValue)}>
           {showServiceReasons ? <Check /> : <X />} Служебные причины
-        </button>
-        <button className={conflictsOnly ? 'active' : ''} onClick={() => setConflictsOnly((currentValue) => !currentValue)}>
+        </ControlButton>
+        <ControlButton className={conflictsOnly ? 'active' : ''} onClick={() => setConflictsOnly((currentValue) => !currentValue)}>
           {conflictsOnly ? <Check /> : <X />} Только конфликты
-        </button>
-        <button className={!showApproved ? 'active' : ''} onClick={() => setShowApproved((currentValue) => !currentValue)}>
+        </ControlButton>
+        <ControlButton className={!showApproved ? 'active' : ''} onClick={() => setShowApproved((currentValue) => !currentValue)}>
           {!showApproved ? <Check /> : <X />} Скрыть одобренные
-        </button>
+        </ControlButton>
       </section>
 
       <section className="review-stats">
@@ -2055,16 +1801,16 @@ function LocalMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, o
                   <strong>{reviewReasonLabel(pair.reason)}</strong>
                 </header>
                 <div className="review-conflict-item__options">
-                  <button className={isASelected ? 'is-selected option-a' : 'option-a'} onClick={() => chooseConflictOption(current.item.id, pair, 'A')}>
+                  <ControlButton className={isASelected ? 'is-selected option-a' : 'option-a'} onClick={() => chooseConflictOption(current.item.id, pair, 'A')}>
                     <span>Вариант A</span>
                     <strong>{pair.optionA.value}</strong>
                     <small>{pair.optionA.sources.join(', ') || 'источник не указан'}</small>
-                  </button>
-                  <button className={isBSelected ? 'is-selected option-b' : 'option-b'} onClick={() => chooseConflictOption(current.item.id, pair, 'B')}>
+                  </ControlButton>
+                  <ControlButton className={isBSelected ? 'is-selected option-b' : 'option-b'} onClick={() => chooseConflictOption(current.item.id, pair, 'B')}>
                     <span>Вариант B</span>
                     <strong>{pair.optionB.value}</strong>
                     <small>{pair.optionB.sources.join(', ') || 'источник не указан'}</small>
-                  </button>
+                  </ControlButton>
                 </div>
                 <p>
                   {selected
@@ -2101,11 +1847,11 @@ function LocalMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, o
         </details>
 
         <div className="review-card__actions">
-          <button onClick={() => setActiveIndex((currentValue) => Math.max(0, currentValue - 1))} disabled={activeIndex === 0}><ChevronLeft /> Предыдущая</button>
+          <ControlButton onClick={() => setActiveIndex((currentValue) => Math.max(0, currentValue - 1))} disabled={activeIndex === 0}><ChevronLeft /> Предыдущая</ControlButton>
           {current.approvedAt == null
-            ? <button className="approve" onClick={() => setApproval(current.item.id, true)}><Check /> Одобрить</button>
-            : <button className="revoke" onClick={() => setApproval(current.item.id, false)}><X /> Снять одобрение</button>}
-          <button onClick={() => setActiveIndex((currentValue) => Math.min(entries.length - 1, currentValue + 1))} disabled={activeIndex >= entries.length - 1}>Следующая <ChevronRight /></button>
+            ? <ControlButton className="approve" onClick={() => setApproval(current.item.id, true)}><Check /> Одобрить</ControlButton>
+            : <ControlButton className="revoke" onClick={() => setApproval(current.item.id, false)}><X /> Снять одобрение</ControlButton>}
+          <ControlButton onClick={() => setActiveIndex((currentValue) => Math.min(entries.length - 1, currentValue + 1))} disabled={activeIndex >= entries.length - 1}>Следующая <ChevronRight /></ControlButton>
         </div>
       </section>}
     </main>
@@ -2541,15 +2287,6 @@ function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {
   return <Card {...props} />
 }
 
-function Progress({ attempts, maxAttempts = 10 }: { attempts: number; maxAttempts?: number }) {
-  return <div className="progress-block">
-    <div className="progress-copy"><span>Попытка</span><strong>{Math.min(attempts + 1, maxAttempts)} <i>из {maxAttempts}</i></strong></div>
-    <div className="progress-track" aria-label={`Использовано попыток: ${attempts} из ${maxAttempts}`}>
-      {Array.from({ length: maxAttempts }, (_, index) => <i key={index} className={index < attempts ? 'used' : index === attempts ? 'current' : ''} />)}
-    </div>
-  </div>
-}
-
 function Game({
   titles,
   mode,
@@ -2868,8 +2605,6 @@ function Game({
     setHintModalRound(null)
     persistGame(attempts, status, hintChoices, nextDismissedRounds)
   }
-  const hintDialogRef = useDialogFocusTrap<HTMLElement>(Boolean(hintModalRound), dismissHintModal)
-
   const submit = (selection: TitleItem | null = selected) => {
     const nextSelection = selection
     if (!nextSelection || !answer || status !== 'playing') {
@@ -2999,7 +2734,7 @@ function Game({
       </section>}
 
       {status === 'playing' && <div className="progress-row">
-        <Progress attempts={attempts.length} />
+        <SegmentedProgress value={attempts.length} />
         {canUseHint && !hintModalRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => {
           if (!preferredHintRound) return
           trackMetrikaGoal('open_hint_modal', { mode, period: effectivePeriod, round: preferredHintRound })
@@ -3036,7 +2771,7 @@ function Game({
         opponentAttempts={challenge?.opponentAttempts}
         onNext={() => routeCompleted ? onReplay() : onPlayNext(nextMode)}
         configureLabel={configureLabel}
-        onConfigure={routeCompleted ? onHome : onConfigureMode}
+        onConfigure={onConfigureMode}
         onChallenge={shareChallenge}
         onCopy={copyResult}
         onHome={onHome}
@@ -3048,25 +2783,24 @@ function Game({
           <span>Попытка {Math.min(attempts.length + 1, 10)} из 10</span>
           {!!attempts.length && <strong>{latestMatchCount} {latestMatchCount === 1 ? 'признак совпал' : latestMatchCount >= 2 && latestMatchCount <= 4 ? 'признака совпали' : 'признаков совпали'}</strong>}
         </div>
-        <div ref={searchPickerRef} className="search-picker">
-        <div className={`search-box ${selected ? 'selected' : ''}`}>
-          <Search />
-          <input
-            ref={inputRef}
-            id="movie-search"
-            aria-label={mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название'}
-            value={query}
-            autoComplete="off"
-            placeholder={modeMeta(mode).searchPlaceholder}
-            onFocus={() => setIsSearchDropdownOpen(true)}
-            onChange={(event) => {
+        <SearchCombobox
+          containerRef={searchPickerRef}
+          inputProps={{
+            ref: inputRef,
+            id: 'movie-search',
+            'aria-label': mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название',
+            value: query,
+            autoComplete: 'off',
+            placeholder: modeMeta(mode).searchPlaceholder,
+            onFocus: () => setIsSearchDropdownOpen(true),
+            onChange: (event) => {
               dispatchSession({ type: 'set_query', query: event.target.value })
               dispatchSession({ type: 'set_selected', selected: null })
               dispatchSession({ type: 'set_active_index', index: 0 })
               dispatchSession({ type: 'set_message', message: '' })
               setIsSearchDropdownOpen(true)
-            }}
-            onKeyDown={(event) => {
+            },
+            onKeyDown: (event) => {
               if (event.key === 'Escape' && isSuggestionsOpen) {
                 event.preventDefault()
                 setIsSearchDropdownOpen(false)
@@ -3075,10 +2809,7 @@ function Game({
               if (event.key === 'ArrowDown') {
                 if (!suggestions.length || selected) return
                 event.preventDefault()
-                dispatchSession({
-                  type: 'set_active_index',
-                  index: activeSuggestionIndex < 0 ? 0 : Math.min(activeSuggestionIndex + 1, suggestions.length - 1),
-                })
+                dispatchSession({ type: 'set_active_index', index: activeSuggestionIndex < 0 ? 0 : Math.min(activeSuggestionIndex + 1, suggestions.length - 1) })
                 return
               }
               if (event.key === 'ArrowUp') {
@@ -3089,26 +2820,25 @@ function Game({
               }
               if (event.key === 'Enter') {
                 event.preventDefault()
-                if (selected) {
-                  submit()
-                  return
-                }
-                if (suggestions.length) {
-                  const index = activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0
-                  selectSuggestion(suggestions[index])
-                  return
-                }
-                submit()
+                if (selected) submit()
+                else if (suggestions.length) selectSuggestion(suggestions[activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0])
+                else submit()
               }
-            }}
-          />
-          {selected && <Check className="selected-check" />}
-          <button onClick={() => submit()} aria-label="Проверить ответ" disabled={!selected}><ChevronRight /></button>
-        </div>
-        {isSuggestionsOpen && <div className="suggestions">
-          {searchPending
-            ? <div className="search-loading" role="status">Ищем в текущем пуле…</div>
-            : suggestions.length ? suggestions.map((item, index) => <button key={item.id} className={index === activeSuggestionIndex ? 'is-active' : ''} onMouseEnter={() => dispatchSession({ type: 'set_active_index', index })} onClick={() => commitSuggestionAttempt(item, selectSuggestion, submit)}>
+            },
+          }}
+          selected={Boolean(selected)}
+          open={isSuggestionsOpen}
+          loading={searchPending}
+          loadingLabel="Ищем в текущем пуле…"
+          suggestions={suggestions}
+          activeIndex={activeSuggestionIndex}
+          emptyMessage={searchEmptyMessage(mode)}
+          submitDisabled={!selected}
+          onSubmit={() => submit()}
+          onSuggestionHover={(_, index) => dispatchSession({ type: 'set_active_index', index })}
+          onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
+          getSuggestionKey={(item) => item.id}
+          renderSuggestion={(item) => <>
             <Poster item={item} />
             <span><strong>{item.titleRu}</strong><small>{searchResultMeta(item)}</small></span>
             <em>{item.mode === 'diagnosis'
@@ -3120,19 +2850,18 @@ function Game({
                     const rankText = item.topRank != null ? `#${item.topRank}` : null
                     return rankText ? `${scoreText} · ${rankText}` : scoreText
                   })()
-              : item.mode === 'music'
-                ? (() => {
-                    const listeners = item.votes?.gamesPlayed
-                    return listeners != null
-                      ? `${new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listeners)} слуш.`
-                      : '—'
-                  })()
-              : item.mode === 'game'
-                ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
-                : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
-          </button>) : <div className="empty-search">{searchEmptyMessage(mode)}</div>}
-        </div>}
-        </div>
+                : item.mode === 'music'
+                  ? (() => {
+                      const listeners = item.votes?.gamesPlayed
+                      return listeners != null
+                        ? `${new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listeners)} слуш.`
+                        : '—'
+                    })()
+                  : item.mode === 'game'
+                    ? (item.ratings?.steamPositivePercent != null ? `${Math.round(item.ratings.steamPositivePercent)}%` : item.ratings?.metacritic ?? item.metacritic ?? item.topRank ?? '—')
+                    : (item.ratings?.kinopoisk?.toFixed(1) ?? '—')}</em>
+          </>}
+        />
         <GameMatchStrip attempts={attempts} mode={mode} open={gameMatchStripOpen} onToggle={() => {
           trackMetrikaGoal('toggle_match_strip', { mode, period: effectivePeriod })
           setGameMatchStripOpen((current) => !current)
@@ -3160,42 +2889,23 @@ function Game({
       </section>}
     </GamePageFrame>
 
-    {hintModalRound && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
-      <section className="hint-modal" ref={hintDialogRef} role="dialog" aria-modal="true" aria-labelledby="hint-modal-title" tabIndex={-1}>
+    {hintModalRound && <DialogSurface backdropClassName="hint-modal-backdrop" className="hint-modal" onClose={dismissHintModal} ariaLabelledBy="hint-modal-title">
         <div className="hint-modal__head">
           <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
-          <button onClick={dismissHintModal} aria-label="Закрыть"><X /></button>
+          <ControlButton onClick={dismissHintModal} aria-label="Закрыть"><X /></ControlButton>
         </div>
         <h2 id="hint-modal-title">{CATALOG_HINT_COPY[mode].modalTitle}</h2>
         <p>{hintModalRound === 5 ? 'Это первая возможность. Если пропустить её сейчас, она всё равно останется доступной до конца сеанса.' : 'Это вторая возможность. Её также можно открыть в любой момент до конца сеанса.'}</p>
         <div className="hint-modal__options">
-          {assistHints.filter((hint) => hint.available).map((hint, index) => <button key={`${hint.key}-${index}`} onClick={() => revealAssistHint(hint.key)}>
+          {assistHints.filter((hint) => hint.available).map((hint, index) => <ControlButton key={`${hint.key}-${index}`} onClick={() => revealAssistHint(hint.key)}>
             <i>0{index + 1}</i><span><strong>{hint.title}</strong><small>{hint.subtitle}</small></span><ChevronRight />
-          </button>)}
+          </ControlButton>)}
         </div>
-        <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
-      </section>
-    </div>}
+        <ControlButton className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</ControlButton>
+    </DialogSurface>}
 
     {anamnesisOpen && !!anamnesisText && <AnamnesisModal text={anamnesisText} dayNo={dayNumber(date)} onClose={() => setAnamnesisOpen(false)} />}
   </>
-}
-
-const publicItemToTitle = (item: PublicContentItem): TitleItem => {
-  const extended = item as Partial<TitleItem>
-  return {
-    ...extended,
-    id: item.id,
-    mode: item.mode,
-    titleRu: item.titleRu,
-    titleOriginal: item.titleOriginal,
-    alternativeTitles: extended.alternativeTitles ?? [],
-    year: item.mode === 'music' ? undefined : item.year ?? undefined,
-    activityStartYear: extended.activityStartYear ?? null,
-    genres: item.genres ?? [],
-    popularityScore: extended.popularityScore ?? 0,
-    posterUrl: item.posterUrl,
-  }
 }
 
 const serverAttemptToLegacy = (entry: GameAttemptSnapshot): Attempt => ({ titleId: entry.item.id, hints: entry.hints })
@@ -3366,8 +3076,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     }
     setHintModalRound(null)
   }, [hint.isPending, hintModalRound, revealedHint])
-  const hintDialogRef = useDialogFocusTrap<HTMLElement>(Boolean(hintModalRound), dismissHintModal)
-
   useEffect(() => {
     if (revealedHint) return
     if (!canUseHint) {
@@ -3551,7 +3259,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         ? <DtfCommentFeed comments={promoHints} attemptsCount={session.attemptsCount} />
         : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
-      {session.status === 'playing' && <div className="progress-row"><Progress attempts={session.attemptsCount} maxAttempts={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>}
+      {session.status === 'playing' && <div className="progress-row"><SegmentedProgress value={session.attemptsCount} max={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>}
       {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
       {session.status !== 'playing' && answer && <GameResult mode={session.mode} won={session.status === 'won'} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isPackSession ? undefined : completedToday} nextRewardText={isPackSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession
         ? () => {
@@ -3561,29 +3269,43 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             }
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
-        : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : routeCompleted ? onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+        : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status !== 'playing' && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
-      {session.status !== 'playing' && message && <p className="specials-error" role="alert">{message}</p>}
+      {session.status !== 'playing' && message && <InlineAlert tone="danger" className="specials-error">{message}</InlineAlert>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
-        <div className="search-picker">
-          <div className={`search-box ${selected ? 'selected' : ''}`}><Search /><input id="movie-search" value={query} autoComplete="off" placeholder={modeMeta(session.mode).searchPlaceholder} onChange={(event) => { setQuery(event.target.value); setSelected(null); attemptKeyRef.current = null; setMessage('') }} onKeyDown={(event) => {
-            if (event.key !== 'Enter') return
-            event.preventDefault()
-            if (selected) submit(selected)
-            else if (suggestions[0]) selectSuggestion(suggestions[0])
-          }} disabled={attempt.isPending} />{selected && <Check className="selected-check" />}<button onClick={() => selected && submit(selected)} aria-label="Проверить ответ" disabled={!selected || attempt.isPending}><ChevronRight /></button></div>
-          {isSuggestionsOpen && <div className="suggestions">{searchPending
-            ? <div className="search-loading" role="status">Ищем в текущем пуле…</div>
-            : suggestions.length
-              ? suggestions.map((item) => {
-                  const title = publicItemToTitle(item)
-                  return <button key={item.id} onClick={() => commitSuggestionAttempt(item, selectSuggestion, submit)} disabled={attempt.isPending}><Poster item={title} /><span><strong>{item.titleRu}</strong><small>{searchResultMeta(title)}</small></span></button>
-                })
-              : <div className="empty-search">{searchEmptyMessage(session.mode)}</div>}</div>}
-        </div>
+        <SearchCombobox
+          inputProps={{
+            id: 'movie-search',
+            value: query,
+            autoComplete: 'off',
+            placeholder: modeMeta(session.mode).searchPlaceholder,
+            onChange: (event) => { setQuery(event.target.value); setSelected(null); attemptKeyRef.current = null; setMessage('') },
+            onKeyDown: (event) => {
+              if (event.key !== 'Enter') return
+              event.preventDefault()
+              if (selected) submit(selected)
+              else if (suggestions[0]) selectSuggestion(suggestions[0])
+            },
+            disabled: attempt.isPending,
+          }}
+          selected={Boolean(selected)}
+          open={isSuggestionsOpen}
+          loading={searchPending}
+          loadingLabel="Ищем в текущем пуле…"
+          suggestions={suggestions}
+          emptyMessage={searchEmptyMessage(session.mode)}
+          submitDisabled={!selected || attempt.isPending}
+          onSubmit={() => selected && submit(selected)}
+          onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
+          getSuggestionKey={(item) => item.id}
+          renderSuggestion={(item) => {
+            const title = publicItemToTitle(item)
+            return <><Poster item={title} /><span><strong>{item.titleRu}</strong><small>{searchResultMeta(title)}</small></span></>
+          }}
+        />
         <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => {
           trackMetrikaGoal('toggle_match_strip', { mode: session.mode, period: session.period })
           setGameMatchStripOpen((current) => !current)
@@ -3598,18 +3320,17 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         return <ModeAttemptCard key={entry.position} attempt={attemptValue} item={item} index={entry.position - 1} isCorrectAttempt={correct} />
       })}</section>}
     </GamePageFrame>
-    {leaderboardOpen && <Modal className="dtf-leaderboard-modal" title="Рейтинг DTF" onClose={() => setLeaderboardOpen(false)}>
+    {leaderboardOpen && <Modal className="dtf-leaderboard-modal" title="Общий зачёт" onClose={() => setLeaderboardOpen(false)}>
       <DtfLeaderboard
         data={packLeaderboard.data}
         loading={packLeaderboard.isLoading}
         error={packLeaderboard.isError}
       />
     </Modal>}
-    {hintModalRound && (hintOptions.length > 0 || revealedHint) && <div className="hint-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && dismissHintModal()}>
-      <section className="hint-modal" ref={hintDialogRef} role="dialog" aria-modal="true" aria-label="Подсказка" tabIndex={-1}>
+    {hintModalRound && (hintOptions.length > 0 || revealedHint) && <DialogSurface backdropClassName="hint-modal-backdrop" className="hint-modal" onClose={dismissHintModal} ariaLabel="Подсказка">
         <div className="hint-modal__head">
           <span><Sparkles /> Возможность · попытка {hintModalRound}</span>
-          <button onClick={dismissHintModal} aria-label="Закрыть" disabled={hint.isPending}><X /></button>
+          <ControlButton onClick={dismissHintModal} aria-label="Закрыть" disabled={hint.isPending}><X /></ControlButton>
         </div>
         {hint.isPending ? <div className="hint-modal__state" role="status" aria-live="polite">
           <Sparkles className="hint-modal__spinner" />
@@ -3624,749 +3345,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>
         </> : <>
           <h2>{CATALOG_HINT_COPY[session.mode].modalTitle}</h2>
-          <div className="hint-modal__options">{hintOptions.map((option, index) => <button key={`${option.key}-${index}`} onClick={() => revealHint(option.key)}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></button>)}</div>
-          <button className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</button>
+          <div className="hint-modal__options">{hintOptions.map((option, index) => <ControlButton key={`${option.key}-${index}`} onClick={() => revealHint(option.key)}><i>0{index + 1}</i><span><strong>{option.title}</strong><small>{option.subtitle}</small></span><ChevronRight /></ControlButton>)}</div>
+          <ControlButton className="hint-modal__later" onClick={dismissHintModal}>Не сейчас</ControlButton>
         </>}
-      </section>
-    </div>}
-  </>
-}
-
-function AccountAccessPanel({ session, loadingSession, refreshSession }: {
-  session: AuthSession | null
-  loadingSession: boolean
-  refreshSession: () => Promise<void>
-}) {
-  const queryClient = useQueryClient()
-  const serverRuntime = useServerRuntime()
-  const [register, setRegister] = useState(false)
-  const [forgotMode, setForgotMode] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [resetPasswordValue, setResetPasswordValue] = useState('')
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [revokeOtherSessions, setRevokeOtherSessions] = useState(true)
-  const [resetToken, setResetToken] = useState(() => resetPasswordTokenFromLocation())
-  const [error, setError] = useState('')
-  const [notice, setNotice] = useState('')
-  const [pending, setPending] = useState(false)
-  const [legacyConsent, setLegacyConsent] = useState(false)
-  const [legacyPayload, setLegacyPayload] = useState(() => SERVER_RUNTIME ? buildLegacyImport() : null)
-  const authCapabilities = serverRuntime.meta?.auth
-  const emailAuthEnabled = Boolean(authCapabilities?.emailPassword)
-  const passwordResetEnabled = Boolean(authCapabilities?.passwordReset)
-  const yandexAuthEnabled = Boolean(authCapabilities?.yandex)
-
-  const clearMessages = () => {
-    setError('')
-    setNotice('')
-  }
-  const clearUserScopedQueries = () => {
-    for (const queryKey of [['dashboard'], ['ledger'], ['archive'], ['game'], ['search'], ['admin']] as const) {
-      queryClient.removeQueries({ queryKey })
-    }
-  }
-  const refreshRuntimeQueries = async () => {
-    clearUserScopedQueries()
-    await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.me }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.ledger }),
-    ])
-  }
-  const clearResetTokenFromAddress = () => {
-    if (typeof window === 'undefined') {
-      setResetToken('')
-      return
-    }
-    const params = new URLSearchParams(window.location.search)
-    if (params.has('token')) {
-      params.delete('token')
-      const query = params.toString()
-      const nextUrl = `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`
-      window.history.replaceState(window.history.state, '', nextUrl)
-    }
-    setResetToken('')
-  }
-
-  useEffect(() => {
-    setResetToken(resetPasswordTokenFromLocation())
-  }, [])
-
-  const submitEmail = async () => {
-    if (pending) return
-
-    const nextName = name.trim()
-    const nextEmail = email.trim()
-    const nextPassword = password
-    if (!nextEmail || !nextPassword) {
-      setError('Заполните email и пароль.')
-      return
-    }
-    if (register && !nextName) {
-      setError('Укажите имя для регистрации.')
-      return
-    }
-
-    clearMessages()
-    setPending(true)
-    try {
-      const guestDashboard = SERVER_RUNTIME && session?.isAnonymous
-        ? await api.dashboard().catch(() => null)
-        : null
-      const authResult = register
-        ? await api.signUp(nextName, nextEmail, nextPassword, `${window.location.origin}${window.location.pathname}`)
-        : await api.signIn(nextEmail, nextPassword)
-      if (register) {
-        if (!authResult.token) {
-          trackMetrikaGoal('auth_success', { action: 'sign_up_pending_verification' })
-          setPassword('')
-          setRegister(false)
-          setNotice(`Аккаунт создан. Подтвердите ${nextEmail} по ссылке из письма. До подтверждения вы продолжаете как гость: ${formatTickets(guestDashboard?.wallet.balance ?? 0)} и все сеансы останутся здесь, а после подтверждения автоматически перейдут в аккаунт.`)
-          await refreshSession()
-          notifyAuthSessionChanged()
-          return
-        }
-      } else if (!authResult.token) {
-        throw new Error('Сервер не создал пользовательскую сессию. Попробуйте войти ещё раз.')
-      }
-      trackMetrikaGoal('auth_success', { action: register ? 'sign_up' : 'sign_in' })
-      setPassword('')
-      await refreshSession()
-      notifyAuthSessionChanged()
-      await refreshRuntimeQueries()
-      const mergedDashboard = SERVER_RUNTIME ? await api.dashboard() : null
-      setNotice(register
-        ? `Аккаунт создан. Гостевой прогресс сохранён: текущий баланс — ${formatTickets(mergedDashboard?.wallet.balance ?? guestDashboard?.wallet.balance ?? 0)}.`
-        : `Вход выполнен. Гостевые сеансы, билеты и открытые периоды объединены с аккаунтом. Текущий баланс — ${formatTickets(mergedDashboard?.wallet.balance ?? 0)}.`)
-    } catch (value) {
-      trackMetrikaGoal('auth_error', { action: register ? 'sign_up' : 'sign_in' })
-      setError(authErrorMessage(value))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  const requestPasswordReset = async () => {
-    if (pending) return
-    const nextEmail = email.trim()
-    if (!nextEmail) {
-      setError('Укажите email для восстановления пароля.')
-      return
-    }
-
-    clearMessages()
-    setPending(true)
-    try {
-      const redirectTo = `${window.location.origin}${window.location.pathname}`
-      await api.requestPasswordReset(nextEmail, redirectTo)
-      trackMetrikaGoal('auth_success', { action: 'request_password_reset' })
-      setForgotMode(false)
-      setNotice('Письмо со ссылкой для восстановления отправлено. Проверьте почту.')
-    } catch (value) {
-      trackMetrikaGoal('auth_error', { action: 'request_password_reset' })
-      setError(authErrorMessage(value))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  const submitResetPassword = async () => {
-    if (pending) return
-    const token = resetToken.trim()
-    const nextPassword = resetPasswordValue
-    if (!token) {
-      setError('Не найден токен сброса. Запросите новую ссылку.')
-      return
-    }
-    if (!nextPassword) {
-      setError('Введите новый пароль.')
-      return
-    }
-
-    clearMessages()
-    setPending(true)
-    try {
-      await api.resetPassword(token, nextPassword)
-      trackMetrikaGoal('auth_success', { action: 'reset_password' })
-      setResetPasswordValue('')
-      setRegister(false)
-      setForgotMode(false)
-      clearResetTokenFromAddress()
-      setNotice('Пароль обновлен. Теперь войдите с новым паролем.')
-    } catch (value) {
-      trackMetrikaGoal('auth_error', { action: 'reset_password' })
-      setError(authErrorMessage(value))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  const submitChangePassword = async () => {
-    if (pending) return
-    const current = currentPassword
-    const next = newPassword
-    if (!current || !next) {
-      setError('Заполните текущий и новый пароль.')
-      return
-    }
-
-    clearMessages()
-    setPending(true)
-    try {
-      await api.changePassword(current, next, revokeOtherSessions)
-      trackMetrikaGoal('auth_success', { action: 'change_password' })
-      setCurrentPassword('')
-      setNewPassword('')
-      setNotice('Пароль успешно изменен.')
-      await refreshSession()
-      notifyAuthSessionChanged()
-      await refreshRuntimeQueries()
-    } catch (value) {
-      trackMetrikaGoal('auth_error', { action: 'change_password' })
-      setError(authErrorMessage(value))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  const signInWithYandex = async () => {
-    if (pending) return
-    clearMessages()
-    setPending(true)
-    let redirected = false
-    try {
-      const payload = await api.signInYandex(window.location.href)
-      const response = asRecord(payload)
-      const oauthUrl = typeof response?.url === 'string' ? response.url : ''
-      if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
-      trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
-      redirected = true
-      window.location.assign(localizeYandexOAuthUrl(oauthUrl))
-    } catch (value) {
-      trackMetrikaGoal('auth_error', { action: 'oauth_yandex' })
-      if (value instanceof ApiClientError && value.status === 404) {
-        setError('Вход через Яндекс пока не настроен на сервере.')
-      } else {
-        setError(authErrorMessage(value))
-      }
-    } finally {
-      if (!redirected) setPending(false)
-    }
-  }
-
-  const signOut = async () => {
-    if (pending) return
-    clearMessages()
-    setPending(true)
-    try {
-      const accountEmail = session?.email ?? ''
-      await api.signOut()
-      trackMetrikaGoal('auth_success', { action: 'sign_out' })
-      setRegister(false)
-      setForgotMode(false)
-      setName('')
-      setEmail(accountEmail)
-      setPassword('')
-      setCurrentPassword('')
-      setNewPassword('')
-      setResetPasswordValue('')
-      window.sessionStorage.removeItem('shoditsa:active-server-session')
-      clearUserScopedQueries()
-      await ensureServerSession()
-      await refreshSession()
-      notifyAuthSessionChanged()
-      await refreshRuntimeQueries()
-      setNotice('Вы вышли из аккаунта. Его прогресс и билеты сохранены на сервере. Сейчас создан новый гостевой профиль; войдите снова, чтобы вернуть данные аккаунта.')
-    } catch (value) {
-      trackMetrikaGoal('auth_error', { action: 'sign_out' })
-      setError(authErrorMessage(value))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  const importLegacyProgress = async () => {
-    if (pending || !session?.id || session.isAnonymous) return
-    if (!legacyConsent) {
-      setError('Подтвердите перенос локального прогресса.')
-      return
-    }
-    const payload = legacyPayload ?? buildLegacyImport()
-    if (!payload) {
-      setNotice('В этом браузере нет локального прогресса для переноса.')
-      return
-    }
-    clearMessages()
-    setPending(true)
-    try {
-      const result = await api.legacyImport(payload)
-      markLegacyImportCompleted(session.id)
-      setLegacyPayload(null)
-      setLegacyConsent(false)
-      setNotice(result.alreadyImported
-        ? 'Локальный прогресс уже был перенесён в этот аккаунт.'
-        : `Перенос завершён: игр — ${result.importedGames}, билетов — ${result.importedWallet}.`)
-      await refreshRuntimeQueries()
-    } catch (value) {
-      setError(authErrorMessage(value))
-    } finally {
-      setPending(false)
-    }
-  }
-
-  return <div className="account-access">
-    {loadingSession
-      ? <p className="modal-lead">Проверяем сессию...</p>
-      : session && !session.isAnonymous
-        ? <>
-          <p className="modal-lead">Вы вошли как <strong>{session.name || session.email || 'пользователь'}</strong>.</p>
-          <ActionButton variant="secondary" onClick={signOut} disabled={pending}><LogOut /> Выйти</ActionButton>
-          {SERVER_RUNTIME && session.id && legacyPayload && !legacyImportCompleted(session.id) && <div className="account-access__form account-access__legacy-import">
-            <p className="modal-lead">В этом браузере найден старый локальный прогресс. Его можно один раз добавить в аккаунт; локальная копия останется на месте.</p>
-            <label className="account-access__checkbox"><input type="checkbox" checked={legacyConsent} onChange={(event) => setLegacyConsent(event.target.checked)} /><span>Я подтверждаю перенос игр, открытых периодов и билетов в этот аккаунт</span></label>
-            <ActionButton variant="secondary" onClick={importLegacyProgress} disabled={pending || !legacyConsent}>Перенести локальный прогресс</ActionButton>
-          </div>}
-          {session.hasPassword && emailAuthEnabled
-            ? <>
-              <p className="account-access__separator">Смена пароля</p>
-              <div className="account-access__form">
-                <label className="account-access__label">Текущий пароль<input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" /></label>
-                <label className="account-access__label">Новый пароль<input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} autoComplete="new-password" /></label>
-                <label className="account-access__checkbox"><input type="checkbox" checked={revokeOtherSessions} onChange={(event) => setRevokeOtherSessions(event.target.checked)} /><span>Выйти на других устройствах</span></label>
-                <ActionButton onClick={submitChangePassword} disabled={pending}>{pending ? 'Сохраняем...' : 'Сменить пароль'}</ActionButton>
-              </div>
-            </>
-            : <p className="modal-lead">Этот аккаунт использует вход через {session.providers.filter((provider) => provider !== 'credential').join(', ') || 'внешнего провайдера'}. Кнопка смены пароля недоступна, потому что пароль к аккаунту не привязан.</p>}
-        </>
-        : resetToken
-          ? <>
-            <p className="modal-lead">Введите новый пароль, чтобы восстановить доступ к аккаунту.</p>
-            <div className="account-access__form">
-              <label className="account-access__label">Новый пароль<input type="password" value={resetPasswordValue} onChange={(event) => setResetPasswordValue(event.target.value)} autoComplete="new-password" /></label>
-              <ActionButton onClick={submitResetPassword} disabled={pending}>{pending ? 'Сохраняем...' : 'Сбросить пароль'}</ActionButton>
-              <button className="account-access__toggle" type="button" onClick={() => {
-                clearResetTokenFromAddress()
-                setForgotMode(false)
-                clearMessages()
-              }}>Вернуться ко входу</button>
-            </div>
-          </>
-          : forgotMode && passwordResetEnabled
-            ? <>
-              <p className="modal-lead">Отправим на email ссылку для восстановления пароля.</p>
-              <div className="account-access__form">
-                <label className="account-access__label">Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
-                <ActionButton onClick={requestPasswordReset} disabled={pending}>{pending ? 'Отправляем...' : 'Отправить ссылку'}</ActionButton>
-                <button className="account-access__toggle" type="button" onClick={() => {
-                  setForgotMode(false)
-                  clearMessages()
-                }}>Вернуться ко входу</button>
-              </div>
-            </>
-        : <>
-          <p className="modal-lead">Регистрация закрепит текущие гостевые сеансы, билеты и открытые периоды за новым аккаунтом. Вход в существующий аккаунт объединит два серверных профиля — заработанные билеты не пропадут.</p>
-          {yandexAuthEnabled && <ActionButton className="account-access__yandex" variant="secondary" onClick={signInWithYandex} disabled={pending}>Войти через Яндекс</ActionButton>}
-          {yandexAuthEnabled && emailAuthEnabled && <p className="account-access__separator">или по email</p>}
-          {emailAuthEnabled
-            ? <div className="account-access__form">
-              {register && <label className="account-access__label">Имя<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" /></label>}
-              <label className="account-access__label">Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
-              <label className="account-access__label">Пароль<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={register ? 'new-password' : 'current-password'} /></label>
-              {register && authCapabilities?.emailVerification && <p className="modal-lead">После регистрации нужно открыть письмо на этом устройстве и подтвердить email. До подтверждения вы останетесь гостем, а затем текущие билеты и игры автоматически перейдут в аккаунт.</p>}
-              <ActionButton onClick={submitEmail} disabled={pending}>{pending ? 'Отправляем...' : register ? 'Создать аккаунт' : 'Войти'}</ActionButton>
-              <button className="account-access__toggle" type="button" onClick={() => {
-                setRegister((current) => !current)
-                setForgotMode(false)
-                clearMessages()
-              }}>{register ? 'У меня уже есть аккаунт' : 'Создать аккаунт'}</button>
-              {!register && passwordResetEnabled && <button className="account-access__toggle" type="button" onClick={() => {
-                setForgotMode(true)
-                clearMessages()
-              }}>Забыли пароль?</button>}
-            </div>
-            : !yandexAuthEnabled && <p className="server-error">Способы входа временно не настроены на сервере. Гостевая игра продолжает работать, весь прогресс хранится в текущем серверном гостевом профиле.</p>}
-        </>}
-    {!!notice && <p className="account-access__notice">{notice}</p>}
-    {!!error && <p className="server-error">{error}</p>}
-  </div>
-}
-
-type ProfileTab = 'overview' | 'stats' | 'achievements' | 'settings'
-
-const PROFILE_TABS: Array<{ id: ProfileTab; label: string }> = [
-  { id: 'overview', label: 'Обзор' },
-  { id: 'stats', label: 'Статистика' },
-  { id: 'achievements', label: 'Достижения' },
-  { id: 'settings', label: 'Настройки' },
-]
-
-const profileTabFromLocation = (): ProfileTab => {
-  if (typeof window === 'undefined') return 'overview'
-  const value = new URLSearchParams(window.location.search).get('tab')
-  return PROFILE_TABS.some((tab) => tab.id === value) ? value as ProfileTab : 'overview'
-}
-
-const profileStatus = (completedGames: number) => completedGames >= 80
-  ? 'Мастер экрана'
-  : completedGames >= 30
-    ? 'Опытный игрок'
-    : completedGames >= 5
-      ? 'Игрок'
-      : 'Новичок'
-
-function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode, onClub }: {
-  onHome: () => void
-  onArchive: () => void
-  onStats: () => void
-  onRules: () => void
-  onReview: () => void
-  onSelectMode: (mode: TitleMode) => void
-  onClub: () => void
-}) {
-  const { session, loading, refresh: refreshSession } = useAuthSession()
-  const serverRuntime = useServerRuntime()
-  const queryClient = useQueryClient()
-  const serverArchive = useQuery({
-    queryKey: queryKeys.archive({ profile: true }),
-    queryFn: () => api.archive(),
-    enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
-  })
-  const commerceProfile = useQuery({
-    queryKey: queryKeys.commerce,
-    queryFn: api.meCommerce,
-    enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
-  })
-  const [activeTab, setActiveTab] = useState<ProfileTab>(profileTabFromLocation)
-  const [profileName, setProfileName] = useState('')
-  const [profileNotice, setProfileNotice] = useState('')
-  const [profileError, setProfileError] = useState('')
-  const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
-  const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
-  const today = SERVER_RUNTIME
-    ? toLegacyDailyAttendance(serverRuntime.dashboard?.today, serverRuntime.meta?.moscowDate ?? getMoscowDate())
-    : loadDailyAttendance(getMoscowDate())
-  const completedGames: SavedGame[] = SERVER_RUNTIME
-    ? (serverArchive.data?.items ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(archiveItemToSavedGame)
-    : allGames().filter((game) => game.status === 'won' || game.status === 'lost')
-  const wonGames = completedGames.filter((game) => game.status === 'won')
-  const winRate = completedGames.length ? Math.round(wonGames.length / completedGames.length * 100) : 0
-  const recentGames = completedGames.slice(0, 4)
-  const profile = serverRuntime.me?.profile
-  const displayName = session && !session.isAnonymous
-    ? profile?.displayName || session.name || session.email?.split('@')[0] || 'Игрок'
-    : 'Гость кинозала'
-  const initials = displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU')
-  const todayDate = serverRuntime.meta?.moscowDate ?? getMoscowDate()
-  const activeSession = serverRuntime.dashboard?.activeSessions.find((entry) => isPlayableModeId(entry.mode) && entry.kind === 'daily' && entry.puzzleDate === todayDate)
-  const selectTab = (tab: ProfileTab) => {
-    setActiveTab(tab)
-    if (typeof window === 'undefined') return
-    const url = new URL(window.location.href)
-    if (tab === 'overview') url.searchParams.delete('tab')
-    else url.searchParams.set('tab', tab)
-    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
-  }
-  const saveProfileName = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!SERVER_RUNTIME || !session || session.isAnonymous) return
-    setProfileNotice('')
-    setProfileError('')
-    try {
-      await api.updateProfile({ displayName: profileName.trim() || null })
-      await queryClient.invalidateQueries({ queryKey: queryKeys.me })
-      await refreshSession()
-      setProfileNotice('Имя профиля сохранено.')
-    } catch (error) {
-      setProfileError(authErrorMessage(error))
-    }
-  }
-
-  useEffect(() => {
-    setProfileName(profile?.displayName || session?.name || '')
-  }, [profile?.displayName, session?.name])
-
-  useEffect(() => {
-    const syncTab = () => setActiveTab(profileTabFromLocation())
-    window.addEventListener('popstate', syncTab)
-    return () => window.removeEventListener('popstate', syncTab)
-  }, [])
-
-  const weeklyAttendance = useMemo(() => {
-    const date = new Date(`${todayDate}T12:00:00+03:00`)
-    const mondayOffset = (date.getUTCDay() + 6) % 7
-    return ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((label, index) => ({
-      label,
-      isToday: index === mondayOffset,
-      hasActivity: index === mondayOffset && today.completedModes.length > 0,
-      isFullHouse: index === mondayOffset && today.fullHouse,
-    }))
-  }, [today.completedModes.length, today.fullHouse, todayDate])
-  const bullseyeUnlocked = wonGames.some((game) => game.attempts.length === 1)
-  const fullHouseProgress = today.fullHouse ? MODE_TABS.length : today.completedModes.length
-  const achievementCards = [
-    { key: 'first-game', title: 'Первая игра', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, current: Math.min(completedGames.length, 1), target: 1, image: publicAssetUrl('images/badges/first-game.webp') },
-    { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: publicAssetUrl('images/badges/bullseye.webp') },
-    { key: 'full-house', title: 'Полный зал', description: `Закончите все ${MODE_TABS.length} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: publicAssetUrl('images/badges/full-house.webp') },
-  ]
-  const profileCategoryConfig = CATEGORY_TICKET_CONFIG
-  const nextDailyCategory = profileCategoryConfig.find((category) => category.mode === activeSession?.mode)
-    ?? profileCategoryConfig.find((category) => !today.completedModes.includes(category.mode))
-    ?? profileCategoryConfig[0]
-  const openDailyMode = (mode: TitleMode) => onSelectMode(mode)
-
-  return <>
-    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} profileActive />
-    <main className="profile-screen profile-screen--new">
-      <div className="screen-back-row"><button className="screen-back" onClick={onHome} aria-label="На главную"><ChevronLeft /></button><span>Профиль</span></div>
-
-      <section className="profile-hero">
-        <div className="profile-hero__identity">
-          <div className="profile-avatar profile-avatar--large" aria-hidden="true">{loading ? <UserRound /> : initials || <UserRound />}</div>
-          <div className="profile-hero__copy">
-            <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
-            <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
-            <UserBadgeList badges={serverRuntime.me?.badges ?? []} />
-            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span>{(() => { const rank = ['gold', 'silver', 'paper'].find((level) => commerceProfile.data?.entitlements.some((entry) => entry.key === 'supporter' && entry.scope === level)); return rank ? <i>Жетон: {rank === 'gold' ? 'золотой' : rank === 'silver' ? 'серебряный' : 'бумажный'}</i> : null })()}</div>
-          </div>
-        </div>
-        <button className="profile-hero__club" type="button" onClick={onClub}>
-          <span className="profile-hero__club-mark" aria-hidden="true"><Crown /></span>
-          <span className="profile-hero__club-copy">
-            <small>Клуб «Сходится!»</small>
-            <strong>{serverRuntime.dashboard?.membership.active
-              ? serverRuntime.dashboard.membership.endsAt
-                ? `Активен до ${new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(serverRuntime.dashboard.membership.endsAt))}`
-                : 'Клубный билет активен'
-              : 'Архив и свободная игра'}</strong>
-          </span>
-          <ChevronRight aria-hidden="true" />
-        </button>
-      </section>
-
-      {session?.isAnonymous && <aside className="profile-guest-banner">
-        <span><ShieldCheck /></span>
-        <div><strong>Сохраните игровой прогресс</strong><p>Создайте аккаунт, чтобы не потерять серию, билеты и статистику при смене браузера или устройства.</p></div>
-        <a className="profile-guest-banner__primary" href="/register">Создать аккаунт</a>
-        <a className="profile-guest-banner__secondary" href="/login">Уже есть аккаунт</a>
-      </aside>}
-
-      <nav className="profile-tabs" aria-label="Разделы личного кабинета" role="tablist">
-        {PROFILE_TABS.map((tab) => <button type="button" role="tab" aria-selected={activeTab === tab.id} className={activeTab === tab.id ? 'is-active' : ''} onClick={() => selectTab(tab.id)} key={tab.id}>{tab.label}</button>)}
-      </nav>
-
-      {activeTab === 'overview' && <>
-        <section className="profile-overview profile-overview--dashboard" aria-label="Общая статистика">
-          <article><i aria-hidden="true"><Film /></i><span>Сыграно</span><strong>{completedGames.length}</strong><small>игр завершено</small></article>
-          <article><i aria-hidden="true"><Target /></i><span>Точность</span><strong>{completedGames.length ? `${winRate}%` : '—'}</strong><small>{completedGames.length ? `${wonGames.length} побед` : 'появится после игры'}</small></article>
-          <article><i aria-hidden="true"><Trophy /></i><span>Серия</span><strong>{attendance.currentDailyStreak}<em> дн.</em></strong><small>лучший результат: {attendance.bestDailyStreak}</small></article>
-          <article><i aria-hidden="true"><Ticket /></i><span>Билеты</span><strong>{wallet.tickets}</strong><small>доступно сейчас</small></article>
-        </section>
-
-        <div className="profile-overview-layout">
-          <section className="profile-section profile-route">
-            <div className="profile-section__head"><div><span>Сегодня</span><h2>Ваш игровой маршрут</h2><p>Выберите любую категорию и начните первую серию</p></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
-            <div className="profile-route__grid">{profileCategoryConfig.map((category) => {
-              const isComplete = today.completedModes.includes(category.mode)
-              const isActive = activeSession?.mode === category.mode
-              const Icon = category.icon
-              return <button className={`profile-route-card${isComplete ? ' is-complete' : ''}${isActive ? ' is-active' : ''}`} onClick={() => openDailyMode(category.mode)} key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}>
-                <span className="profile-route-card__visual"><img src={category.watermarkUrl} alt="" /><i><Icon /></i></span>
-                <strong>{category.title}</strong>
-                <em>{isComplete ? 'Сыграно' : isActive ? 'В игре' : 'Не сыграно'}</em>
-                {isComplete ? <Check /> : <ChevronRight />}
-              </button>
-            })}</div>
-            <button className="profile-route__cta" type="button" onClick={() => openDailyMode(nextDailyCategory.mode)}><Play /> {activeSession ? 'Продолжить игру' : 'Выбрать игру'}</button>
-          </section>
-
-          <div className="profile-overview-side">
-            <section className="profile-section profile-week">
-              <div className="profile-week__main">
-                <div className="profile-section__head"><div><span>Серия</span><h2>Неделя в игре</h2></div></div>
-                <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? FULL_HOUSE_MODE_IDS.length : day.hasActivity ? '•' : ''}</i></div>)}</div>
-              </div>
-              <aside className="profile-week__streak"><Trophy /><strong>{attendance.currentDailyStreak}</strong><span>{formatDays(attendance.currentDailyStreak)} подряд</span><p>{attendance.currentDailyStreak ? 'Серия продолжается' : 'Сыграйте сегодня, чтобы начать серию'}</p></aside>
-            </section>
-
-            <section className="profile-section profile-rewards">
-              <div className="profile-section__head"><div><span>Первые шаги</span><h2>Ближайшие награды</h2></div></div>
-              <div className="profile-rewards__grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}>
-                <img src={achievement.image} alt="" />
-                <div><strong>{achievement.title}</strong><b>{achievement.current}/{achievement.target}</b><i><span style={{ width: `${Math.min(100, Math.round(achievement.current / achievement.target * 100))}%` }} /></i></div>
-                <small>{achievement.unlocked ? <Check /> : <Lock />}</small>
-              </article>)}</div>
-            </section>
-          </div>
-        </div>
-
-        <section className="profile-section profile-history profile-history--new">
-          <div className="profile-section__head"><div><span>Недавнее</span><h2>Последние сеансы</h2></div><button onClick={onArchive}>Весь архив <ChevronRight /></button></div>
-          {recentGames.length ? <div className="profile-history__list">{recentGames.map((game) => <article key={game.key}><i>{modeIcon(game.mode)}</i><div><strong>{modeMeta(game.mode).title}</strong><small>{prettyDate(game.date)} · {game.attempts.length}/10 попыток</small></div><span className={game.status === 'won' ? 'is-won' : ''}>{game.status === 'won' ? 'Сошлось' : 'Не сошлось'}</span></article>)}</div> : <p className="profile-empty">Здесь появятся завершённые игры. Откройте первую карточку из афиши.</p>}
-        </section>
-      </>}
-
-      {activeTab === 'stats' && <section className="profile-section profile-stats-tab">
-        <div className="profile-section__head"><div><span>Статистика</span><h2>По категориям</h2></div><button onClick={onStats}>Подробный отчёт <BarChart3 /></button></div>
-        <div className="profile-stats-grid">{CATEGORY_TICKET_CONFIG.map((category) => {
-          const stats = (serverRuntime.dashboard?.stats ?? []).filter((entry) => entry.mode === category.mode)
-          const played = stats.reduce((sum, entry) => sum + entry.played, 0)
-          const won = stats.reduce((sum, entry) => sum + entry.won, 0)
-          const Icon = category.icon
-          return <article key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}><span><Icon /></span><strong>{category.title}</strong><b>{played}</b><small>{won ? `побед: ${won}` : 'сеансов пока нет'}</small></article>
-        })}</div>
-      </section>}
-
-      {activeTab === 'achievements' && <section className="profile-section profile-achievements-tab">
-        <div className="profile-section__head"><div><span>Коллекция</span><h2>Достижения</h2></div><strong>{achievementCards.filter((achievement) => achievement.unlocked).length}/{achievementCards.length}</strong></div>
-        <div className="profile-achievements-grid">{achievementCards.map((achievement) => <article className={achievement.unlocked ? 'is-unlocked' : ''} key={achievement.key}><span className="profile-achievement-placeholder__icon"><img src={achievement.image} alt="" /></span><div><strong>{achievement.title}</strong><p>{achievement.description}</p><small>{achievement.unlocked ? 'Открыто' : `Прогресс: ${achievement.current}/${achievement.target}`}</small></div></article>)}</div>
-        <p className="profile-section__note">Новые достижения появятся здесь после завершённых игр.</p>
-      </section>}
-
-      {activeTab === 'settings' && <section className="profile-settings-grid">
-        <section className="profile-section">
-          <div className="profile-section__head"><div><span>Профиль</span><h2>Основные данные</h2></div><UserRound /></div>
-          {session && !session.isAnonymous && SERVER_RUNTIME ? <form className="profile-settings-form" onSubmit={saveProfileName}><label>Имя игрока<input value={profileName} onChange={(event) => setProfileName(event.target.value)} maxLength={80} /></label><label>Email<input value={session.email ?? ''} readOnly /></label><ActionButton type="submit">Сохранить имя</ActionButton>{profileNotice && <p className="account-access__notice">{profileNotice}</p>}{profileError && <p className="server-error">{profileError}</p>}</form> : <p className="modal-lead">Настройки профиля станут доступны после создания аккаунта.</p>}
-        </section>
-        <section className="profile-section profile-auth" id="profile-account-access">
-          <div className="profile-section__head"><div><span>Безопасность</span><h2>Вход и пароль</h2></div><Lock /></div>
-          {SERVER_RUNTIME && session && !session.isAnonymous
-            ? <AccountAccessPanel session={session} loadingSession={loading} refreshSession={refreshSession} />
-            : SERVER_RUNTIME
-              ? <div className="profile-settings-auth-prompt"><p>Вход и регистрация вынесены на отдельную защищённую страницу.</p><div><a href="/register">Создать аккаунт</a><a href="/login">Войти</a></div></div>
-              : <p className="modal-lead">Эта сборка работает автономно, поэтому управление серверным аккаунтом недоступно.</p>}
-        </section>
-      </section>}
-    </main>
-  </>
-}
-
-function EconomyAwardPanel({ award }: { award: EconomyAward }) {
-  if (award.alreadyClaimed) {
-    return <div className="ticket-award ticket-award--claimed">
-      <Ticket />
-      <span>Билеты уже начислены</span>
-    </div>
-  }
-
-  return <div className="ticket-award">
-    <Ticket />
-    <strong>+{award.total}</strong>
-  </div>
-}
-
-function AnamnesisModal({ text, dayNo, onClose, onStart }: {
-  text: string
-  dayNo: number
-  onClose: () => void
-  onStart?: () => void
-}) {
-  const dialogRef = useDialogFocusTrap<HTMLElement>(true, onClose)
-
-  return <div className="anamnesis-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <section className="anamnesis-modal" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="anamnesis-title" tabIndex={-1}>
-      <div className="anamnesis-modal__head">
-        <span><Stethoscope /> Амбулаторная карта · Анамнез</span>
-        <button onClick={onClose} aria-label="Закрыть"><X /></button>
-      </div>
-      <div className="anamnesis-modal__patient">
-        <span className="anamnesis-modal__avatar" aria-hidden="true"><UserRound /></span>
-        <div className="anamnesis-modal__patient-copy">
-          <small>Анонимный пациент</small>
-          <h2 id="anamnesis-title">Приём № {dayNo}</h2>
-          <em>Жалобы записаны со слов пациента</em>
-        </div>
-      </div>
-      <p className="anamnesis-modal__text">{text}</p>
-      <div className="anamnesis-modal__note"><HeartPulse /> Поставьте верный диагноз по симптомам за десять попыток.</div>
-      <div className="anamnesis-modal__actions">
-        {onStart
-          ? <ActionButton className="anamnesis-modal__start" onClick={onStart}><Stethoscope /> Взяться за дело</ActionButton>
-          : <ActionButton className="anamnesis-modal__start" onClick={onClose}><Check /> Понятно</ActionButton>}
-      </div>
-    </section>
-  </div>
-}
-
-
-function StatsView({ mode, difficulty }: { mode: TitleMode; difficulty?: DifficultyKey }) {
-  const serverRuntime = useServerRuntime()
-  const serverStats = serverRuntime.dashboard?.stats.find((entry) => entry.mode === mode && entry.difficultyKey === (mode === 'music' ? difficulty ?? 'medium' : '-'))
-  const stats: Stats = SERVER_RUNTIME
-    ? {
-        played: serverStats?.played ?? 0,
-        won: serverStats?.won ?? 0,
-        currentStreak: serverStats?.currentStreak ?? 0,
-        bestStreak: serverStats?.bestStreak ?? 0,
-        distribution: serverStats?.distribution ?? Array.from({ length: 10 }, () => 0),
-      }
-    : loadStats(mode, mode === 'music' ? difficulty : undefined)
-  const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
-  const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
-  const rate = stats.played ? Math.round(stats.won / stats.played * 100) : 0
-  const max = Math.max(1, ...stats.distribution)
-  return <>
-    <div className="stats-grid stats-grid--economy">
-      <div><strong>{wallet.tickets}</strong><span>билетов</span></div>
-      <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
-      <div><strong>+{nextStreakMilestoneReward(attendance.currentDailyStreak, serverRuntime.dashboard?.economyRules)}</strong><span>на {nextStreakMilestoneAt(attendance.currentDailyStreak)}-й день</span></div>
-      <div><strong>{attendance.gracePasses}</strong><span>контрамарки</span></div>
-    </div>
-    <h3 className="subheading">Статистика темы</h3>
-    {mode === 'music' && difficulty && <p className="modal-lead">Сложность: <strong>{DIFFICULTIES[difficulty].label}</strong></p>}
-    <div className="stats-grid">
-      <div><strong>{stats.played}</strong><span>сеансов</span></div>
-      <div><strong>{rate}%</strong><span>побед</span></div>
-      <div><strong>{stats.currentStreak}</strong><span>серия побед</span></div>
-      <div><strong>{stats.bestStreak}</strong><span>рекорд побед</span></div>
-    </div>
-    <div className="attendance-line">
-      <span>Активных дней: <strong>{attendance.totalActiveDays}</strong></span>
-      <span>Полных залов: <strong>{attendance.fullHouseDays}</strong></span>
-      <span>Рекорд абонемента: <strong>{attendance.bestDailyStreak}</strong></span>
-    </div>
-    <h3 className="subheading">Победы по попыткам</h3>
-    <div className="distribution">{stats.distribution.map((count, index) => <div key={index}><span>{index + 1}</span><i style={{ width: `${Math.max(6, count / max * 100)}%` }}>{count}</i></div>)}</div>
-  </>
-}
-
-function RulesView() {
-  return <div className="rules-list">
-    <p>Выберите тайтл из поиска. После каждой попытки значения сравниваются с ответом дня.</p>
-    <p>Перед 5-й и 8-й попытками можно открыть по одной из трёх дополнительных подсказок.</p>
-    <p>В режиме «Аниме» сравниваются формат, статус, эпизоды, студия, сэйю и рейтинг Shikimori.</p>
-    <p>В режиме «Игры» дополнительно сравниваются позиция в топе, метрики Steam и Metacritic.</p>
-    <p>В режиме «Музыка» сравниваются страна, старт карьеры, десятилетие, тип артиста, статус карьеры, сцена и жанры.</p>
-    <p>Топ-трек, топ-альбом и похожие артисты открываются как дополнительные подсказки и не увеличивают основной счетчик совпадений.</p>
-    <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
-    <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
-    <div><i className="miss" /><span><strong>Мимо</strong> — значение не совпало.</span></div>
-    <p>Стрелка показывает, выше или ниже находится правильный год, рейтинг, хронометраж или количество сезонов.</p>
-  </div>
-}
-
-function ResumeSessionsView({ sessions, onOpen }: {
-  sessions: SavedGame[]
-  onOpen: (session: SavedGame) => void
-}) {
-  return <>
-    <p className="modal-lead">Незавершенные игры сохраняются автоматически. Выберите сохраненную игру, чтобы продолжить.</p>
-    <div className="resume-list">
-      {sessions.map((session) => {
-        const attemptText = `${session.attempts.length}/10`
-        const sessionLabel = session.mode === 'diagnosis' ? 'Прием' : 'Сеанс'
-        const periodText = session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime' || session.mode === 'music' ? PERIODS[session.period]?.short ?? 'Период не задан' : 'Без периода'
-        return <article className="resume-item" key={session.key}>
-          <button className="resume-item__open" onClick={() => onOpen(session)}>
-            <span className="resume-item__mode">{modeIcon(session.mode)}<i>{modeMeta(session.mode).title}</i></span>
-            <strong>{prettyDate(session.date)} · {sessionLabel} №{dayNumber(session.date)}</strong>
-            <small>{periodText} · Попытки: {attemptText}</small>
-          </button>
-        </article>
-      })}
-    </div>
+    </DialogSurface>}
   </>
 }
 
@@ -5356,7 +4338,7 @@ function GameApp() {
   }
 
   return <div className={`app app--${appTone}`}>
-    {serverActionError && <div className="server-error app-action-error" role="alert"><AlertTriangle /> <span>{serverActionError}</span><button type="button" onClick={() => setServerActionError('')} aria-label="Закрыть"><X /></button></div>}
+    {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
     {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} />}
