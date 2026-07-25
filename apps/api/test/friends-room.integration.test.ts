@@ -9,6 +9,7 @@ import {
   createDatabase,
   danetkiSessionMembers,
   danetkiSessionState,
+  friendsRoomMembers,
   friendsRoomRounds,
   friendsRooms,
   gameSessions,
@@ -34,6 +35,7 @@ describe('friends room multiplayer API', () => {
   let danetkiRoomId = ''
   let danetkiSessionId = ''
   let productionRoomId = ''
+  let staleRecoveryRoomIds: string[] = []
   let answerMediaPath = ''
 
   const createGuest = async () => {
@@ -71,6 +73,9 @@ describe('friends room multiplayer API', () => {
     if (danetkiRoomId) await database.db.delete(friendsRooms).where(eq(friendsRooms.id, danetkiRoomId))
     if (danetkiSessionId) await database.db.delete(gameSessions).where(eq(gameSessions.id, danetkiSessionId))
     if (productionRoomId) await database.db.delete(friendsRooms).where(eq(friendsRooms.id, productionRoomId))
+    for (const staleRoomId of staleRecoveryRoomIds) {
+      await database.db.delete(friendsRooms).where(eq(friendsRooms.id, staleRoomId))
+    }
     await app?.close()
     await database?.client.end()
     if (answerMediaPath) await rm(answerMediaPath, { force: true })
@@ -244,6 +249,47 @@ describe('friends room multiplayer API', () => {
     const playerRoomsAfterHostLeave = await app.inject({ method: 'GET', url: '/api/v1/friends/rooms', headers: { cookie: playerCookie } })
     expect(ownerRoomsAfterLeave.json().rooms).toEqual([])
     expect(playerRoomsAfterHostLeave.json().rooms).toEqual([])
+  })
+
+  it('releases a stale membership from a closed room before creating another room', async () => {
+    const cookie = await createGuest()
+    const first = await app.inject({
+      method: 'POST',
+      url: '/api/v1/friends/rooms',
+      headers: { cookie },
+      payload: { mode: 'series' },
+    })
+    expect(first.statusCode).toBe(201)
+    const firstRoomId = first.json().room.id as string
+    staleRecoveryRoomIds.push(firstRoomId)
+
+    await database.db.update(friendsRooms).set({
+      phase: 'finished',
+      closedAt: new Date(),
+      phaseEndsAt: null,
+    }).where(eq(friendsRooms.id, firstRoomId))
+
+    const recovered = await app.inject({
+      method: 'POST',
+      url: '/api/v1/friends/rooms',
+      headers: { cookie },
+      payload: { mode: 'movie' },
+    })
+    expect(recovered.statusCode).toBe(201)
+    const recoveredRoomId = recovered.json().room.id as string
+    staleRecoveryRoomIds.push(recoveredRoomId)
+    expect(recoveredRoomId).not.toBe(firstRoomId)
+
+    const staleMembership = await database.db.select().from(friendsRoomMembers).where(eq(friendsRoomMembers.roomId, firstRoomId))
+    expect(staleMembership[0]?.leftAt).toBeInstanceOf(Date)
+
+    const left = await app.inject({
+      method: 'POST',
+      url: `/api/v1/friends/rooms/${recoveredRoomId}/leave`,
+      headers: { cookie },
+      payload: { idempotencyKey: crypto.randomUUID() },
+    })
+    expect(left.statusCode).toBe(200)
   })
 
   it('starts a shared Danetki session inside the universal room', async () => {

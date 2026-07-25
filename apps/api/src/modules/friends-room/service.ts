@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto'
-import { and, asc, desc, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import type {
   FriendsRoomConfigBody,
@@ -114,6 +114,25 @@ const activeMember = async (db: Pick<Database, 'select'>, roomId: string, userId
 
 const lockUserRoomMembership = async (tx: Transaction, userId: string) => {
   await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${userId}))`)
+}
+
+const releaseClosedRoomMemberships = async (tx: Transaction, userId: string) => {
+  const stale = await tx.select({ roomId: friendsRoomMembers.roomId })
+    .from(friendsRoomMembers)
+    .innerJoin(friendsRooms, eq(friendsRooms.id, friendsRoomMembers.roomId))
+    .where(and(
+      eq(friendsRoomMembers.userId, userId),
+      isNull(friendsRoomMembers.leftAt),
+      isNotNull(friendsRooms.closedAt),
+    ))
+  if (!stale.length) return
+
+  const now = new Date()
+  await tx.update(friendsRoomMembers).set({ leftAt: now, lastSeenAt: now }).where(and(
+    eq(friendsRoomMembers.userId, userId),
+    isNull(friendsRoomMembers.leftAt),
+    inArray(friendsRoomMembers.roomId, stale.map((entry) => entry.roomId)),
+  ))
 }
 
 const openRoomMembership = async (db: Pick<Database, 'select'>, userId: string) => {
@@ -398,6 +417,7 @@ export const createFriendsRoom = async (db: Database, user: RequestUser, input: 
     const code = roomCode()
     const roomId = await db.transaction(async (tx) => {
       await lockUserRoomMembership(tx, user.id)
+      await releaseClosedRoomMemberships(tx, user.id)
       const existing = await openRoomMembership(tx, user.id)
       if (existing) return existing.roomId
       const inserted = await tx.insert(friendsRooms).values({
@@ -415,6 +435,7 @@ export const createFriendsRoom = async (db: Database, user: RequestUser, input: 
 export const joinFriendsRoom = async (db: Database, user: RequestUser, code: string, displayName?: string) => {
   const roomId = await db.transaction(async (tx) => {
     await lockUserRoomMembership(tx, user.id)
+    await releaseClosedRoomMemberships(tx, user.id)
     const room = (await tx.select().from(friendsRooms).where(eq(friendsRooms.code, code.trim().toUpperCase())).for('update').limit(1))[0]
     if (!room || room.closedAt) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
     const currentRoom = await openRoomMembership(tx, user.id)
