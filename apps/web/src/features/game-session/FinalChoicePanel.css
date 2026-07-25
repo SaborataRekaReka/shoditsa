@@ -164,30 +164,6 @@
   font-size: 11px;
 }
 
-.final-choice-card__check {
-  position: absolute;
-  top: 9px;
-  right: 9px;
-  width: 27px;
-  height: 27px;
-  border: 1px solid var(--color-line-strong);
-  border-radius: 50%;
-  color: transparent;
-  background: var(--color-surface);
-  display: grid;
-  place-items: center;
-}
-
-.final-choice-card__check svg {
-  width: 15px;
-}
-
-.final-choice-card.is-selected .final-choice-card__check {
-  color: var(--color-ink);
-  border-color: var(--color-primary-border);
-  background: var(--color-primary);
-}
-
 .final-choice-panel__actions {
   display: flex;
   flex-direction: row-reverse;

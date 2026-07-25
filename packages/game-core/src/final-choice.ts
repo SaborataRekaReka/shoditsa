@@ -8,7 +8,7 @@ import type {
 } from '@shoditsa/contracts'
 import { compareTitles } from './index.js'
 
-export const FINAL_CHOICE_ALGORITHM_VERSION = 1
+export const FINAL_CHOICE_ALGORITHM_VERSION = 2
 
 export type FinalChoiceCandidateRole = 'answer' | 'categorical' | 'numeric' | 'balanced'
 export type FinalChoiceGenerationSource = 'bank' | 'runtime'
@@ -218,6 +218,22 @@ type ScoredCandidate = {
   signature: string
 }
 
+type CandidateSelectionTier = {
+  minMatches: number
+  minMisses: number
+  distinctSignatures: boolean
+  maxPerFamily: number
+  allowMissingFacts?: boolean
+}
+
+const CANDIDATE_SELECTION_TIERS: readonly CandidateSelectionTier[] = [
+  { minMatches: 2, minMisses: 1, distinctSignatures: true, maxPerFamily: 2 },
+  { minMatches: 1, minMisses: 1, distinctSignatures: true, maxPerFamily: 2 },
+  { minMatches: 1, minMisses: 1, distinctSignatures: false, maxPerFamily: 2 },
+  { minMatches: 0, minMisses: 1, distinctSignatures: false, maxPerFamily: 2 },
+  { minMatches: 0, minMisses: 0, distinctSignatures: false, maxPerFamily: Number.POSITIVE_INFINITY, allowMissingFacts: true },
+]
+
 const scoreCandidate = (candidate: TitleItem, answer: TitleItem, facts: FactDefinition[], config: ModeConfig): ScoredCandidate => {
   const hints = compareTitles(candidate, answer)
   const byKey = new Map(hints.map((hint) => [hint.key, hint]))
@@ -240,6 +256,44 @@ const scoreCandidate = (candidate: TitleItem, answer: TitleItem, facts: FactDefi
     total,
     signature: scores.map((score) => score >= 0.6 ? '1' : '0').join(''),
   }
+}
+
+const selectScoredCandidates = (
+  scored: ScoredCandidate[],
+  answer: TitleItem,
+  tier: CandidateSelectionTier,
+) => {
+  const selected: ScoredCandidate[] = []
+  const signatures = new Set<string>()
+  const familyCounts = new Map<string, number>()
+  const answerFamily = familyKey(answer)
+  if (answerFamily) familyCounts.set(answerFamily, 1)
+
+  for (const candidate of scored) {
+    const matches = candidate.scores.filter((score) => score >= 0.6).length
+    const misses = candidate.scores.length - matches
+    if (matches < tier.minMatches || misses < tier.minMisses) continue
+    if (tier.distinctSignatures && signatures.has(candidate.signature)) continue
+    const family = familyKey(candidate.item)
+    if (family && (familyCounts.get(family) ?? 0) >= tier.maxPerFamily) continue
+    selected.push(candidate)
+    signatures.add(candidate.signature)
+    if (family) familyCounts.set(family, (familyCounts.get(family) ?? 0) + 1)
+    if (selected.length === 3) break
+  }
+
+  return selected
+}
+
+const candidateRole = (candidate: ScoredCandidate, facts: FactDefinition[]): FinalChoiceCandidateRole => {
+  const mismatchKinds = facts
+    .filter((_, index) => candidate.scores[index] < 0.6)
+    .map((definition) => definition.kind)
+  const categorical = mismatchKinds.includes('categorical')
+  const numeric = mismatchKinds.some((kind) => kind === 'numeric' || kind === 'additional')
+  if (categorical && !numeric) return 'categorical'
+  if (numeric && !categorical) return 'numeric'
+  return 'balanced'
 }
 
 const candidateSnapshot = (item: TitleItem, config: ModeConfig, facts: FactDefinition[]): FinalChoiceCandidateSnapshot => ({
@@ -287,6 +341,7 @@ export const buildFinalChoice = (input: {
     (!revealed.size || definition.sourceKeys.some((key) => revealed.has(key)))
     && definition.format(input.answer) !== null
   ))
+  const allAnswerFacts = config.facts.filter((definition) => definition.format(input.answer) !== null)
 
   const basePool = input.pool.filter((candidate) => (
     candidate.id !== input.answer.id
@@ -297,64 +352,69 @@ export const buildFinalChoice = (input: {
     && recognitionDistance(candidate, input.answer) <= 1
   ))
 
-  for (const selectedFacts of combinations(availableFacts, 3)) {
-    if (!selectedFacts.some((definition) => definition.kind === 'categorical')) continue
-    if (!selectedFacts.some((definition) => definition.kind === 'numeric' || definition.kind === 'additional')) continue
-
-    const scored = basePool
-      .filter((candidate) => selectedFacts.every((definition) => definition.format(candidate) !== null))
+  const isUsableFactSet = (facts: FactDefinition[]) => (
+    facts.some((definition) => definition.kind === 'categorical')
+    && facts.some((definition) => definition.kind === 'numeric' || definition.kind === 'additional')
+  )
+  const preferredCombinations = combinations(availableFacts, 3)
+  const fallbackCombinations = combinations(allAnswerFacts, 3)
+  const preferredFactSets = preferredCombinations.filter(isUsableFactSet)
+  const fallbackFactSets = fallbackCombinations.filter(isUsableFactSet)
+  const factSets = preferredFactSets.length
+    ? preferredFactSets
+    : fallbackFactSets.length
+      ? fallbackFactSets
+      : preferredCombinations.length
+        ? preferredCombinations
+        : fallbackCombinations
+  const scoredByFacts = new Map<string, { complete: ScoredCandidate[]; all: ScoredCandidate[] }>()
+  const scoredFor = (selectedFacts: FactDefinition[]) => {
+    const key = selectedFacts.map((definition) => definition.key).join('|')
+    const cached = scoredByFacts.get(key)
+    if (cached) return cached
+    const all = basePool
       .map((candidate) => scoreCandidate(candidate, input.answer, selectedFacts, config))
-      .filter((candidate) => {
-        const matches = candidate.scores.filter((score) => score >= 0.6).length
-        const misses = candidate.scores.filter((score) => score < 0.6).length
-        return matches >= 2 && misses >= 1
-      })
       .sort((left, right) => right.total - left.total || hashValue(`${input.seed}|${left.item.id}`) - hashValue(`${input.seed}|${right.item.id}`))
+    const complete = all.filter((candidate) => selectedFacts.every((definition) => definition.format(candidate.item) !== null))
+    const result = { complete, all }
+    scoredByFacts.set(key, result)
+    return result
+  }
 
-    const selected: ScoredCandidate[] = []
-    const signatures = new Set<string>()
-    const familyCounts = new Map<string, number>()
-    const answerFamily = familyKey(input.answer)
-    if (answerFamily) familyCounts.set(answerFamily, 1)
-    for (const candidate of scored) {
-      if (signatures.has(candidate.signature)) continue
-      const family = familyKey(candidate.item)
-      if (family && (familyCounts.get(family) ?? 0) >= 2) continue
-      selected.push(candidate)
-      signatures.add(candidate.signature)
-      if (family) familyCounts.set(family, (familyCounts.get(family) ?? 0) + 1)
-      if (selected.length === 3) break
-    }
-    if (selected.length !== 3) continue
+  for (const tier of CANDIDATE_SELECTION_TIERS) {
+    for (const selectedFacts of factSets) {
+      const scored = scoredFor(selectedFacts)
+      const selected = selectScoredCandidates(tier.allowMissingFacts ? scored.all : scored.complete, input.answer, tier)
+      if (selected.length !== 3) continue
 
-    const roles: FinalChoiceCandidateRole[] = ['categorical', 'numeric', 'balanced']
-    const falseCandidates = selected.map((candidate, index) => ({
-      item: candidate.item,
-      role: roles[index],
-      score: candidate.total,
-      matchKeys: selectedFacts.filter((_, factIndex) => candidate.scores[factIndex] >= 0.6).map((definition) => definition.key),
-      mismatchKeys: selectedFacts.filter((_, factIndex) => candidate.scores[factIndex] < 0.6).map((definition) => definition.key),
-    }))
-    const candidates = [
-      {
-        item: input.answer,
-        role: 'answer' as const,
-        score: 1,
-        matchKeys: selectedFacts.map((definition) => definition.key),
-        mismatchKeys: [],
-      },
-      ...falseCandidates,
-    ].sort((left, right) => hashValue(`${input.seed}|order|${left.item.id}`) - hashValue(`${input.seed}|order|${right.item.id}`))
-    const snapshots = candidates.map((candidate) => candidateSnapshot(candidate.item, config, selectedFacts))
-    return {
-      snapshot: {
-        candidates: snapshots as FinalChoiceSnapshot['candidates'],
-        displayKeys: selectedFacts.map((definition) => definition.key) as FinalChoiceSnapshot['displayKeys'],
-        choicesRemaining: 1,
-      },
-      candidates,
-      generationSource: 'runtime',
-      algorithmVersion: FINAL_CHOICE_ALGORITHM_VERSION,
+      const falseCandidates = selected.map((candidate) => ({
+        item: candidate.item,
+        role: candidateRole(candidate, selectedFacts),
+        score: candidate.total,
+        matchKeys: selectedFacts.filter((_, factIndex) => candidate.scores[factIndex] >= 0.6).map((definition) => definition.key),
+        mismatchKeys: selectedFacts.filter((_, factIndex) => candidate.scores[factIndex] < 0.6).map((definition) => definition.key),
+      }))
+      const candidates = [
+        {
+          item: input.answer,
+          role: 'answer' as const,
+          score: 1,
+          matchKeys: selectedFacts.map((definition) => definition.key),
+          mismatchKeys: [],
+        },
+        ...falseCandidates,
+      ].sort((left, right) => hashValue(`${input.seed}|order|${left.item.id}`) - hashValue(`${input.seed}|order|${right.item.id}`))
+      const snapshots = candidates.map((candidate) => candidateSnapshot(candidate.item, config, selectedFacts))
+      return {
+        snapshot: {
+          candidates: snapshots as FinalChoiceSnapshot['candidates'],
+          displayKeys: selectedFacts.map((definition) => definition.key) as FinalChoiceSnapshot['displayKeys'],
+          choicesRemaining: 1,
+        },
+        candidates,
+        generationSource: 'runtime',
+        algorithmVersion: FINAL_CHOICE_ALGORITHM_VERSION,
+      }
     }
   }
   return null

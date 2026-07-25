@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import type { FinalChoiceSnapshot } from '@shoditsa/contracts'
-import { Check } from 'lucide-react'
 import { TitlePoster } from '../../components/title-poster/TitlePoster'
 import { ActionButton, ControlButton, DialogSurface, InlineAlert, StatusBadge, TextButton } from '../../components/ui'
 import type { TitleMode } from '../../types'
@@ -176,7 +175,6 @@ export function FinalChoicePanel({
             <span className="final-choice-card__facts">
               {candidate.facts.map((fact) => <span title={fact.ariaLabel} key={fact.key}>{fact.value}</span>)}
             </span>
-            <span className="final-choice-card__check" aria-hidden="true"><Check /></span>
           </ControlButton>
         })}
       </div>
