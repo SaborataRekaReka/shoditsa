@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-26T05:53:40.174Z",
+  "activeRevision": {
+    "id": "338fcacc-1b79-4e0c-b886-2b12d6357701",
+    "version": "20260726T054856428Z-series-profile-3d902f73",
+    "checksum": "3d902f73671c5cf9fc31c62577d7a12a0a1123f4abe4533f144e470327b4d4a0"
+  },
+  "repairs": [],
+  "duplicateGroups": [],
+  "publicationImpact": {
+    "removedFromRegularPool": [],
+    "addedToRegularPool": [],
+    "retainedAnswersViaCanonical": []
+  },
+  "countsBefore": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "countsAfter": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "resultingPayloads": {}
+}

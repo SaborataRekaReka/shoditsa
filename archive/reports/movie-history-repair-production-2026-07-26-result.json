@@ -1,0 +1,86 @@
+{
+  "previousRevisionId": "338fcacc-1b79-4e0c-b886-2b12d6357701",
+  "newRevisionId": "24dcf3bb-09cb-47c3-a396-e756fef00a0c",
+  "activated": true,
+  "apiRequests": 0,
+  "updatedItems": 157,
+  "summary": {
+    "dataQuality": 20,
+    "directors": 137,
+    "seriesStatus:delete": 20,
+    "showrunners": 20,
+    "writers": 137
+  },
+  "postcheck": {
+    "totalItems": 5994,
+    "totalMovies": 1295,
+    "allowedMovies": 1295,
+    "withDirectors": 1295,
+    "withWriters": 1295,
+    "staleSeriesStatus": 0,
+    "nonemptyShowrunners": 0,
+    "staleSeriesSource": 0,
+    "productionOnlyItemsPresent": 49,
+    "aliases": 19312,
+    "vignettes": 960,
+    "modes": [
+      {
+        "mode": "movie",
+        "expectedItems": 1295,
+        "actualItems": 1295,
+        "expectedAllowed": 1295,
+        "actualAllowed": 1295
+      },
+      {
+        "mode": "series",
+        "expectedItems": 791,
+        "actualItems": 791,
+        "expectedAllowed": 791,
+        "actualAllowed": 791
+      },
+      {
+        "mode": "anime",
+        "expectedItems": 1000,
+        "actualItems": 1000,
+        "expectedAllowed": 1000,
+        "actualAllowed": 1000
+      },
+      {
+        "mode": "game",
+        "expectedItems": 1030,
+        "actualItems": 1030,
+        "expectedAllowed": 998,
+        "actualAllowed": 998
+      },
+      {
+        "mode": "music",
+        "expectedItems": 573,
+        "actualItems": 573,
+        "expectedAllowed": 306,
+        "actualAllowed": 306
+      },
+      {
+        "mode": "diagnosis",
+        "expectedItems": 320,
+        "actualItems": 320,
+        "expectedAllowed": 320,
+        "actualAllowed": 320
+      },
+      {
+        "mode": "city",
+        "expectedItems": 980,
+        "actualItems": 980,
+        "expectedAllowed": 980,
+        "actualAllowed": 980
+      },
+      {
+        "mode": "danetki",
+        "expectedItems": 5,
+        "actualItems": 5,
+        "expectedAllowed": 5,
+        "actualAllowed": 5
+      }
+    ]
+  },
+  "appliedAt": "2026-07-26T06:31:35.389Z"
+}

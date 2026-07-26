@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { CONTENT_MODE_IDS, type FriendsRoomPackSelection, type FriendsRoomScorePart } from '@shoditsa/contracts'
 import {
-  bigint, boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
+  bigint, bigserial, boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
   numeric, real, smallint, text, timestamp, unique, uniqueIndex, uuid,
 } from 'drizzle-orm/pg-core'
 
@@ -959,6 +959,7 @@ export const privateGameOrders = pgTable('private_game_orders', {
 
 export const paymentOrders = pgTable('payment_orders', {
   id: uuid().primaryKey().defaultRandom(),
+  providerInvoiceId: bigserial('provider_invoice_id', { mode: 'number' }).notNull(),
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   productId: text('product_id').notNull().references(() => commerceProducts.id),
   provider: text().notNull(),
@@ -977,6 +978,7 @@ export const paymentOrders = pgTable('payment_orders', {
   check('payment_orders_status_check', sql`${table.status} in ('created','pending','paid','failed','canceled','expired','refunded','chargeback')`),
   check('payment_orders_amount_check', sql`${table.amountMinor} >= 0`),
   check('payment_orders_currency_check', sql`${table.currency} ~ '^[A-Z]{3}$'`),
+  unique('payment_orders_provider_invoice_unique').on(table.providerInvoiceId),
   unique('payment_orders_user_idempotency_unique').on(table.userId, table.idempotencyKey),
   uniqueIndex('payment_orders_provider_payment_unique').on(table.provider, table.providerPaymentId).where(sql`${table.providerPaymentId} is not null`),
   index('payment_orders_user_created_idx').on(table.userId, table.createdAt),

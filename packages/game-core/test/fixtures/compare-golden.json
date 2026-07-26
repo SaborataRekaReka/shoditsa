@@ -269,10 +269,17 @@
           {
             "key": "creator",
             "label": "Режиссёр",
-            "value": "Нет данных",
-            "status": "unknown",
+            "value": "Джил Джангер",
+            "status": "miss",
             "direction": null,
-            "people": []
+            "people": [
+              {
+                "nameRu": "Джил Джангер",
+                "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_47443.jpg",
+                "nameOriginal": "Gil Junger",
+                "matched": false
+              }
+            ]
           },
           {
             "key": "cast",
@@ -342,7 +349,7 @@
             "direction": null
           }
         ],
-        "digest": "d2dda72ec6f85612a6c0e4d9751959a7ab625c48939e7ae8e6abe4eca51d6a1f"
+        "digest": "ba0d1fff129b7f78ebfcf8e08f7944f96177558afc770411b1f3485acb80f8e7"
       },
       {
         "guessId": "kp_1978",
@@ -938,10 +945,17 @@
           {
             "key": "creator",
             "label": "Режиссёр",
-            "value": "Нет данных",
-            "status": "unknown",
+            "value": "Сэм Мендес",
+            "status": "miss",
             "direction": null,
-            "people": []
+            "people": [
+              {
+                "nameRu": "Сэм Мендес",
+                "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_23522.jpg",
+                "nameOriginal": "Sam Mendes",
+                "matched": false
+              }
+            ]
           },
           {
             "key": "cast",
@@ -1011,7 +1025,7 @@
             "direction": null
           }
         ],
-        "digest": "367389962b2a92b62a99ae4ca64435d77a6cffa64a4ecef11e3719d4c52918be"
+        "digest": "228786f42299046794aabbecf093158fdf0de72bb924bf95939604bb170c4d59"
       },
       {
         "guessId": "kp_380",
@@ -1495,10 +1509,17 @@
           {
             "key": "creator",
             "label": "Режиссёр",
-            "value": "Нет данных",
-            "status": "unknown",
+            "value": "Зак Снайдер",
+            "status": "miss",
             "direction": null,
-            "people": []
+            "people": [
+              {
+                "nameRu": "Зак Снайдер",
+                "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_462603.jpg",
+                "nameOriginal": "Zack Snyder",
+                "matched": false
+              }
+            ]
           },
           {
             "key": "cast",
@@ -1568,7 +1589,7 @@
             "direction": null
           }
         ],
-        "digest": "7b0e43a687ab7e298281c7d4409404a04c895a68f480bf586ad84cc98dffc568"
+        "digest": "ab952b17e29a9f9d7c34cd486d6f61f0c55189abb2b974fe7ba327a1ed55f411"
       },
       {
         "guessId": "kp_6642",
@@ -1941,10 +1962,17 @@
           {
             "key": "creator",
             "label": "Режиссёр",
-            "value": "Нет данных",
-            "status": "unknown",
+            "value": "Марк Уэбб",
+            "status": "miss",
             "direction": null,
-            "people": []
+            "people": [
+              {
+                "nameRu": "Марк Уэбб",
+                "photoUrl": "https://st.kp.yandex.net/images/actor_iphone/iphone360_1158870.jpg",
+                "nameOriginal": "Marc Webb",
+                "matched": false
+              }
+            ]
           },
           {
             "key": "cast",
@@ -2014,7 +2042,7 @@
             "direction": null
           }
         ],
-        "digest": "7500d019528d36375a3c4858c4eaed83965bc5c126bfef821f45bd4a3be87835"
+        "digest": "9c16cfe0c2ecad95e7d36c51892ee26e55a339eb5763d3f976a8f3cad9f56944"
       },
       {
         "guessId": "kp_2940",
@@ -2783,9 +2811,9 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "1 сезон",
+            "value": "3 сезона",
             "status": "close",
-            "direction": "up"
+            "direction": "down"
           },
           {
             "key": "genres",
@@ -2879,7 +2907,7 @@
             "direction": null
           }
         ],
-        "digest": "75f2938fd3bc320680a5f28fea65426e45db081995bcb585f1c4d415244b2629"
+        "digest": "8c3f64a46ad6146bb525316d8f386f50399093f65b2a951aeb6c02acecb3bf2e"
       },
       {
         "guessId": "kp_4308621",
@@ -3804,8 +3832,8 @@
           {
             "key": "seasons",
             "label": "Сезоны",
-            "value": "3 сезона",
-            "status": "close",
+            "value": "4 сезона",
+            "status": "miss",
             "direction": "down"
           },
           {
@@ -3900,7 +3928,7 @@
             "direction": null
           }
         ],
-        "digest": "2ecbbb86863b27e5d30d38c09a64d0a3aeb25a45cfd8df4765bfd1f3a009e2cb"
+        "digest": "35e39d841000820dcec4d9449d98909c424552b5c0a5a8329887203ec1bca556"
       },
       {
         "guessId": "kp_820722",

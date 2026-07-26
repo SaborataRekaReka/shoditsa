@@ -265,6 +265,32 @@
 .login-password-toggle svg { width: 17px; height: 17px; stroke: currentColor !important; opacity: 1; }
 .login-field-error { margin-top: -1px; color: #a94f3b; font-size: 11px; line-height: 1.3; }
 
+.login-consent {
+  margin: 0 0 14px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 7px 9px;
+}
+
+.login-consent input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: #326d40;
+  cursor: pointer;
+}
+
+.login-consent label {
+  color: rgba(23, 28, 24, .68);
+  font-size: 11px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.login-consent a { color: #326d40; text-underline-offset: 2px; }
+.login-consent .login-field-error { grid-column: 2; }
+
 .login-forgot,
 .login-secondary-link {
   min-height: 44px;

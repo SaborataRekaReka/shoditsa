@@ -51,7 +51,7 @@ export type MeCommerceResponse = {
   entitlements: Array<{ key: string; scope: string | null; startsAt: string; endsAt: string | null }>
 }
 
-export const CURRENT_OFFER_VERSION = '2026-07-20' as const
+export const CURRENT_OFFER_VERSION = '2026-07-26' as const
 export const CheckoutBodySchema = Type.Object({
   productId: Type.String({ minLength: 1, maxLength: 120 }),
   termsAccepted: Type.Literal(true),

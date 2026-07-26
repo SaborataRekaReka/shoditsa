@@ -6,7 +6,11 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name shoditsa.ru;
+    server_name shoditsa.ru www.shoditsa.ru;
+
+    if ($host = www.shoditsa.ru) {
+        return 301 https://shoditsa.ru$request_uri;
+    }
 
     root /opt/shoditsa/current/web;
     index index.html;
@@ -55,6 +59,11 @@ server {
     # text) at the canonical browser-history URL. The /seo files themselves are
     # implementation details and cannot be opened as duplicate public pages.
     location ~ ^/games/(movie|series|anime|game|city|music|diagnosis|danetki)$ {
+        try_files /seo$uri.html =404;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location ~ ^/(partners|specials|club)$ {
         try_files /seo$uri.html =404;
         add_header Cache-Control "no-cache" always;
     }

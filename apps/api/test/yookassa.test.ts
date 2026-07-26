@@ -16,7 +16,7 @@ describe('YooKassa provider adapter', () => {
     vi.stubGlobal('fetch', fetchMock)
     const provider = createYooKassaProvider({ shopId: 'shop', secretKey: 'secret' })
     const payment = await provider.createPayment({
-      orderId: 'order-1', amountMinor: 14_900, currency: 'RUB', description: 'Спецпоказ',
+      orderId: 'order-1', invoiceId: 42, amountMinor: 14_900, currency: 'RUB', description: 'Спецпоказ', email: 'user@example.test',
       returnUrl: 'https://example.test/purchase/return', idempotencyKey: 'idem-1', metadata: { userId: 'user-1', productId: 'pack-1' },
     })
     expect(payment.checkoutUrl).toBe('https://yoomoney.ru/pay/1')

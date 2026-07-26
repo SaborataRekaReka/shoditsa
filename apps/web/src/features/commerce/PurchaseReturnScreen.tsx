@@ -17,7 +17,12 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
   const runtime = useServerRuntime()
   const startedAt = useRef(Date.now())
   const trackedStatus = useRef<string | null>(null)
-  const orderId = typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('orderId')?.trim() || ''
+  const orderId = typeof window === 'undefined'
+    ? ''
+    : (() => {
+        const params = new URLSearchParams(window.location.search)
+        return params.get('orderId')?.trim() || params.get('Shp_order')?.trim() || ''
+      })()
   const order = useQuery({
     queryKey: queryKeys.commerceOrder(orderId),
     queryFn: () => api.commerceOrder(orderId),

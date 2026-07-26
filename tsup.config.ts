@@ -10,6 +10,8 @@ export default defineConfig({
     'content-import-game-hints': 'scripts/content/import-game-plot-hints.ts',
     'content-migrate-media': 'scripts/content/migrate-media.ts',
     'content-repair-active-catalog': 'scripts/content/repair-active-catalog.ts',
+    'series-enrich-active-production': 'scripts/series/enrich-active-production.ts',
+    'movie-repair-active-production': 'scripts/movies/repair-active-production.ts',
     'production-maintenance': 'scripts/maintenance/run-production-maintenance.ts',
     'city-hints': 'scripts/cities/operate-city-hints.ts',
     'city-facts': 'scripts/cities/operate-city-facts.ts',

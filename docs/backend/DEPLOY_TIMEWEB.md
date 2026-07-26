@@ -34,3 +34,5 @@ Workflow `.github/workflows/deploy-timeweb.yml`:
 6. При несоответствии хотя бы одного пункта релиз откатывается на последний backup и считается неуспешным.
 
 Production activation требует новых DB/auth/promo secrets, SMTP, initial admin email, deploy credentials и off-host backup. Нельзя копировать значения в Git/Actions logs.
+
+TLS-сертификат должен включать оба имени: `shoditsa.ru` и `www.shoditsa.ru`. После установки Nginx-конфига перевыпустите сертификат с обоими SAN (например, `certbot --nginx -d shoditsa.ru -d www.shoditsa.ru`) и проверьте, что `https://www.shoditsa.ru/` без ошибки сертификата отвечает редиректом на `https://shoditsa.ru/`.

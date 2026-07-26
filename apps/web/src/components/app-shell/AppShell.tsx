@@ -286,7 +286,7 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
         <a className="app-footer__link" href="/partners">Для компаний</a>
         <button className="app-footer__link" onClick={onRules}>Правила</button>
       </nav>
-      <small className="app-footer__copy">© {new Date().getFullYear()} Сходится! · ИП Бренейзе А. В. · ИНН 540552157271</small>
+      <small className="app-footer__copy">© {new Date().getFullYear()} Сходится! · ИП Бренейзе Алексей Васильевич · ИНН 540552157271 · ОГРНИП 318547600133003</small>
       <nav className="app-footer__legal" aria-label="Юридическая информация">
         <a href="/legal/terms">Соглашение и оферта</a>
         <a href="/legal/tariffs">Тарифы</a>

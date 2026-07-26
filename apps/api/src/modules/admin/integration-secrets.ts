@@ -29,6 +29,11 @@ export const integrationRegistry: ReadonlyArray<{
   { key: 'SHIKIMORI_CLIENT_ID', title: 'OAuth Client ID', provider: 'Shikimori API', description: 'Идентификатор OAuth-приложения Shikimori; для публичного каталога не обязателен.', required: false, secret: false },
   { key: 'SHIKIMORI_CLIENT_SECRET', title: 'OAuth Client Secret', provider: 'Shikimori API', description: 'Секрет OAuth-приложения Shikimori. Хранится зашифрованно и не возвращается в браузер.', required: false, secret: true },
   { key: 'SHIKIMORI_ACCESS_TOKEN', title: 'OAuth Access Token', provider: 'Shikimori API', description: 'Необязательный Bearer-токен для авторизованных запросов. Публичный каталог работает без него.', required: false, secret: true },
+  { key: 'ROBOKASSA_MERCHANT_LOGIN', title: 'Идентификатор магазина', provider: 'Robokassa', description: 'MerchantLogin из технических настроек магазина Robokassa.', required: false, secret: false },
+  { key: 'ROBOKASSA_PASSWORD1', title: 'Пароль №1', provider: 'Robokassa', description: 'Боевой пароль №1 для подписи формы оплаты. Хранится зашифрованно.', required: false, secret: true },
+  { key: 'ROBOKASSA_PASSWORD2', title: 'Пароль №2', provider: 'Robokassa', description: 'Боевой пароль №2 для проверки ResultURL и статуса оплаты. Хранится зашифрованно.', required: false, secret: true },
+  { key: 'ROBOKASSA_TEST_PASSWORD1', title: 'Тестовый пароль №1', provider: 'Robokassa', description: 'Пароль №1 для тестового режима Robokassa. Хранится зашифрованно.', required: false, secret: true },
+  { key: 'ROBOKASSA_TEST_PASSWORD2', title: 'Тестовый пароль №2', provider: 'Robokassa', description: 'Пароль №2 для тестового режима Robokassa. Хранится зашифрованно.', required: false, secret: true },
   { key: 'YOOKASSA_SHOP_ID', title: 'Идентификатор магазина (shopId)', provider: 'ЮKassa', description: 'Идентификатор магазина из личного кабинета ЮKassa для серверных запросов API.', required: false, secret: false },
   { key: 'YOOKASSA_SECRET_KEY', title: 'Секретный ключ', provider: 'ЮKassa', description: 'Секретный ключ API ЮKassa. Хранится зашифрованно и никогда не возвращается в браузер.', required: false, secret: true },
 ]

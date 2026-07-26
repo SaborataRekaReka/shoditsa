@@ -56,7 +56,9 @@ export const loadConfig = () => {
     .split(',').map((origin) => origin.trim()).filter(Boolean)
   const commerceEnabled = bool('COMMERCE_ENABLED', false)
   const commerceProvider = process.env.COMMERCE_PROVIDER?.trim().toLocaleLowerCase('en-US') || 'stub'
-  if (commerceProvider !== 'stub' && commerceProvider !== 'web') throw new Error('COMMERCE_PROVIDER must be stub or web')
+  if (commerceProvider !== 'stub' && commerceProvider !== 'web' && commerceProvider !== 'robokassa') {
+    throw new Error('COMMERCE_PROVIDER must be stub, robokassa, or web')
+  }
   if (production && commerceEnabled && commerceProvider === 'stub') throw new Error('COMMERCE_PROVIDER=stub cannot be enabled in production')
   const commerceCurrency = (process.env.COMMERCE_CURRENCY?.trim() || 'RUB').toUpperCase()
   if (!/^[A-Z]{3}$/.test(commerceCurrency)) throw new Error('COMMERCE_CURRENCY must be a three-letter currency code')
@@ -70,6 +72,16 @@ export const loadConfig = () => {
   const commerceWebhookSecret = process.env.COMMERCE_WEBHOOK_SECRET?.trim() || ''
   const commerceShopId = process.env.COMMERCE_SHOP_ID?.trim() || ''
   const commerceSecretKey = process.env.COMMERCE_SECRET_KEY?.trim() || ''
+  const robokassaHashAlgorithm = process.env.ROBOKASSA_HASH_ALGORITHM?.trim().toLocaleLowerCase('en-US') || 'md5'
+  if (!['md5', 'sha256', 'sha512'].includes(robokassaHashAlgorithm)) throw new Error('ROBOKASSA_HASH_ALGORITHM must be md5, sha256, or sha512')
+  const robokassaReceiptTax = process.env.ROBOKASSA_RECEIPT_TAX?.trim().toLocaleLowerCase('en-US') || 'none'
+  if (!['none', 'vat0', 'vat5', 'vat7', 'vat10', 'vat20', 'vat105', 'vat107', 'vat110', 'vat120'].includes(robokassaReceiptTax)) {
+    throw new Error('ROBOKASSA_RECEIPT_TAX contains an unsupported tax code')
+  }
+  const robokassaReceiptSno = process.env.ROBOKASSA_RECEIPT_SNO?.trim().toLocaleLowerCase('en-US') || ''
+  if (robokassaReceiptSno && !['osn', 'usn_income', 'usn_income_outcome', 'envd', 'esn', 'patent'].includes(robokassaReceiptSno)) {
+    throw new Error('ROBOKASSA_RECEIPT_SNO contains an unsupported taxation system')
+  }
   const archiveFirstDate = process.env.ARCHIVE_FIRST_DATE?.trim() || '2026-07-01'
   const archiveFirstDateValue = new Date(`${archiveFirstDate}T00:00:00Z`)
   if (!/^\d{4}-\d{2}-\d{2}$/.test(archiveFirstDate) || Number.isNaN(archiveFirstDateValue.getTime()) || archiveFirstDateValue.toISOString().slice(0, 10) !== archiveFirstDate) {
@@ -107,6 +119,12 @@ export const loadConfig = () => {
       webhookSecret: commerceWebhookSecret,
       shopId: commerceShopId,
       secretKey: commerceSecretKey,
+      robokassa: {
+        hashAlgorithm: robokassaHashAlgorithm as 'md5' | 'sha256' | 'sha512',
+        testMode: bool('ROBOKASSA_TEST_MODE', false),
+        receiptTax: robokassaReceiptTax,
+        receiptSno: robokassaReceiptSno,
+      },
       archiveFirstDate,
       freeArchiveDays: rangedInteger('FREE_ARCHIVE_DAYS', 7, 1, 31),
     },

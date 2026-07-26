@@ -58,6 +58,18 @@ npm run content:media:migrate -- --target C:\path\to\media --apply
 
 Старые JSON и upstream-скрипты остаются staging-источниками. Production runtime читает каталоги и игровое состояние только из PostgreSQL.
 
+## Настройка Robokassa
+
+В production укажите `COMMERCE_PROVIDER=robokassa`, `COMMERCE_ENABLED=true`, `ROBOKASSA_MERCHANT_LOGIN`, боевые пароли `ROBOKASSA_PASSWORD1` и `ROBOKASSA_PASSWORD2`. Секреты также можно сохранить в административном разделе интеграций. Алгоритм `ROBOKASSA_HASH_ALGORITHM` должен совпадать с алгоритмом в технических настройках магазина. Для проверки используйте отдельные тестовые пароли и `ROBOKASSA_TEST_MODE=true`.
+
+В личном кабинете Robokassa настройте:
+
+- Result URL: `https://shoditsa.ru/api/v1/commerce/webhooks/robokassa`, метод `POST`;
+- Success URL: `https://shoditsa.ru/purchase/return`, метод `GET`;
+- Fail URL: `https://shoditsa.ru/purchase/return`, метод `GET`.
+
+Используйте точный адрес `https://shoditsa.ru` без `www`. Перед включением боевого режима примените миграции базы данных и выполните тестовую оплату с проверкой активации услуги и электронного чека.
+
 ## Архитектура и эксплуатация
 
 - [Архитектура](docs/backend/ARCHITECTURE.md)

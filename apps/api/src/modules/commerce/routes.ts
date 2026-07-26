@@ -44,16 +44,21 @@ export const registerCommerceRoutes = async (app: FastifyInstance, deps: Deps) =
 
   await app.register(async (rawScope) => {
     rawScope.addContentTypeParser('application/json', { parseAs: 'buffer' }, (_request, body, done) => done(null, body))
+    rawScope.addContentTypeParser('application/x-www-form-urlencoded', { parseAs: 'buffer' }, (_request, body, done) => done(null, body))
     rawScope.post('/api/v1/commerce/webhooks/:provider', {
       schema: { params: Type.Object({ provider: Type.String({ minLength: 1, maxLength: 40 }) }, { additionalProperties: false }) },
       bodyLimit: 128 * 1024,
       config: { rateLimit: { max: 120, timeWindow: '1 minute' } },
-    }, async (request) => acceptWebhook(
-      deps.db,
-      deps.config,
-      (request.params as { provider: string }).provider,
-      request.body as Buffer,
-      request.headers,
-    ))
+    }, async (request, reply) => {
+      const result = await acceptWebhook(
+        deps.db,
+        deps.config,
+        (request.params as { provider: string }).provider,
+        request.body as Buffer,
+        request.headers,
+      )
+      if (result.acknowledgment) return reply.type('text/plain; charset=utf-8').send(result.acknowledgment)
+      return result
+    })
   })
 }

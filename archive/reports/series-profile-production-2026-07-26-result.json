@@ -1,0 +1,94 @@
+{
+  "previousRevisionId": "b374c5d3-0d4f-4f30-9841-3f283ce6232d",
+  "newRevisionId": "338fcacc-1b79-4e0c-b886-2b12d6357701",
+  "activated": true,
+  "updatedItems": 790,
+  "summary": {
+    "backdropUrl": 2,
+    "endYear": 1,
+    "episodes": 790,
+    "seasonsCount": 116,
+    "seriesStatus": 35,
+    "slogan": 46,
+    "supportingCast": 5
+  },
+  "unresolved": [
+    {
+      "itemId": "kp_9167314",
+      "kinopoiskId": 9167314,
+      "field": "episodes",
+      "reason": "no_positive_episode_count"
+    }
+  ],
+  "postcheck": {
+    "totalItems": 5994,
+    "totalSeries": 791,
+    "allowedSeries": 791,
+    "withEpisodes": 790,
+    "withoutEpisodes": [
+      {
+        "itemId": "kp_9167314",
+        "title": "Чудовище внутри меня"
+      }
+    ],
+    "modes": [
+      {
+        "mode": "movie",
+        "expectedItems": 1295,
+        "actualItems": 1295,
+        "expectedAllowed": 1295,
+        "actualAllowed": 1295
+      },
+      {
+        "mode": "series",
+        "expectedItems": 791,
+        "actualItems": 791,
+        "expectedAllowed": 791,
+        "actualAllowed": 791
+      },
+      {
+        "mode": "anime",
+        "expectedItems": 1000,
+        "actualItems": 1000,
+        "expectedAllowed": 1000,
+        "actualAllowed": 1000
+      },
+      {
+        "mode": "game",
+        "expectedItems": 1030,
+        "actualItems": 1030,
+        "expectedAllowed": 998,
+        "actualAllowed": 998
+      },
+      {
+        "mode": "music",
+        "expectedItems": 573,
+        "actualItems": 573,
+        "expectedAllowed": 306,
+        "actualAllowed": 306
+      },
+      {
+        "mode": "diagnosis",
+        "expectedItems": 320,
+        "actualItems": 320,
+        "expectedAllowed": 320,
+        "actualAllowed": 320
+      },
+      {
+        "mode": "city",
+        "expectedItems": 980,
+        "actualItems": 980,
+        "expectedAllowed": 980,
+        "actualAllowed": 980
+      },
+      {
+        "mode": "danetki",
+        "expectedItems": 5,
+        "actualItems": 5,
+        "expectedAllowed": 5,
+        "actualAllowed": 5
+      }
+    ]
+  },
+  "appliedAt": "2026-07-26T05:49:04.104Z"
+}

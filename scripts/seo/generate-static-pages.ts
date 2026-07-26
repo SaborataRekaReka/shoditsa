@@ -15,7 +15,7 @@ import { seoRouteFromPathname, structuredDataForSeoRoute } from '../../apps/web/
 import { LEGAL_DOCUMENT_SLUGS } from '../../apps/web/src/features/legal/legal'
 
 const distRoot = resolve('dist')
-const INDEXABLE_UTILITY_PATHS = ['/partners'] as const
+const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club'] as const
 const escapeHtml = (value: string) => value
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -53,6 +53,7 @@ const renderGameLinks = (currentMode?: GameSeoContent['mode']) => INDEXABLE_GAME
 const renderHubGuideSummary = () => `<summary class="hub-guide__summary"><span class="hub-guide__summary-title"><span aria-hidden="true">▤</span><span><strong class="hub-guide__closed-label">Как устроены ежедневные игры</strong><strong class="hub-guide__open-label">Путеводитель по «Сходится!»</strong></span></span><small>формат · подсказки · все режимы</small><span class="hub-guide__summary-chevron" aria-hidden="true">⌄</span></summary>`
 
 const renderHomeFallback = () => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><div class="hub-hero__facts" aria-label="Об игре"><span><strong>8 игр</strong></span><span><strong>1 загадка в день</strong></span><span><strong>10 попыток</strong></span></div><h1>${escapeHtml(HOME_SEO.heading)}</h1><p>${escapeHtml(HOME_SEO.lead)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="#hub-guide">Узнать больше</a><a class="ui-button ui-button--secondary" href="/games/movie">Играть сейчас</a></div></div><div class="hub-hero__visual" aria-hidden="true"><img src="/images/hero.webp" alt="" width="1122" height="913"></div></section><details class="hub-guide" id="hub-guide">${renderHubGuideSummary()}<div class="hub-guide__drawer"><header class="hub-guide__intro"><span>Путеводитель · без спойлеров</span><h2>${escapeHtml(HOME_SEO.heading)}</h2><p>${escapeHtml(HOME_SEO.lead)}</p></header><div class="hub-guide__content"><section class="hub-guide__story" aria-label="О платформе">${renderParagraphs(HOME_SEO)}</section><nav class="hub-guide__game-links" aria-label="Все ежедневные игры"><span>↗ Все игровые маршруты</span><div>${renderGameLinks()}</div></nav></div></div></details></article></main>`
+const renderUtilityFallback = (content: SeoPageContent) => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead || content.description)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="${escapeHtml(content.canonicalPath)}">Открыть страницу</a><a class="ui-button ui-button--secondary" href="/">К играм</a></div></div></section><details class="hub-guide" open><summary class="hub-guide__summary"><span class="hub-guide__summary-title"><strong>Подробнее</strong></span></summary><div class="hub-guide__drawer"><header class="hub-guide__intro"><h2>${escapeHtml(content.heading)}</h2><p>${escapeHtml(content.lead || content.description)}</p></header><div class="hub-guide__content"><section class="hub-guide__story">${renderParagraphs(content)}</section></div></div></details></article></main>`
 
 const renderArtifactDossier = (content: GameSeoContent) => {
   const presentation = GAME_GUIDE_PRESENTATION[content.mode]
@@ -161,8 +162,15 @@ for (const game of INDEXABLE_GAME_SEO) {
   await writeFile(target, buildPage(template, game, fallback), 'utf8')
 }
 
+for (const canonicalPath of INDEXABLE_UTILITY_PATHS) {
+  const content = seoRouteFromPathname(canonicalPath)
+  const target = resolve(distRoot, 'seo', `${canonicalPath.slice(1)}.html`)
+  await mkdir(resolve(target, '..'), { recursive: true })
+  await writeFile(target, buildPage(template, content, renderUtilityFallback(content)), 'utf8')
+}
+
 await writeFile(resolve(distRoot, 'sitemap.xml'), renderSitemap(), 'utf8')
 await writeFile(resolve(distRoot, 'robots.txt'), renderRobots(), 'utf8')
 await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath), ...INDEXABLE_UTILITY_PATHS, ...LEGAL_DOCUMENT_SLUGS.map((slug) => `/legal/${slug}`)] }, null, 2)}\n`, 'utf8')
 
-console.log(`[seo] generated ${INDEXABLE_GAME_SEO.length + 1} indexable pages, sitemap.xml and robots.txt`)
+console.log(`[seo] generated ${INDEXABLE_GAME_SEO.length + INDEXABLE_UTILITY_PATHS.length + 1} indexable pages, sitemap.xml and robots.txt`)

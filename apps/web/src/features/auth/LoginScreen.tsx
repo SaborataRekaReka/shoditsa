@@ -20,9 +20,10 @@ type FieldErrors = {
   name: string
   email: string
   password: string
+  consent: string
 }
 
-const emptyFieldErrors: FieldErrors = { name: '', email: '', password: '' }
+const emptyFieldErrors: FieldErrors = { name: '', email: '', password: '', consent: '' }
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const loginIllustrationUrl = publicAssetUrl('images/login_illustration.webp')
 
@@ -89,6 +90,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [personalDataAccepted, setPersonalDataAccepted] = useState(false)
   const [resetToken, setResetToken] = useState(() => typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('token')?.trim() || '')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>(emptyFieldErrors)
   const [error, setError] = useState('')
@@ -143,6 +145,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     nextErrors.email = validateEmail()
     if (!password) nextErrors.password = 'Введите пароль.'
     else if (register && password.length < 10) nextErrors.password = 'Минимум 10 символов.'
+    if (register && !personalDataAccepted) nextErrors.consent = 'Подтвердите согласие на обработку персональных данных.'
     setFieldErrors(nextErrors)
     return !Object.values(nextErrors).some(Boolean)
   }
@@ -244,6 +247,10 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
   const signInWithYandex = async () => {
     if (pending) return
+    if (register && !personalDataAccepted) {
+      setFieldErrors((current) => ({ ...current, consent: 'Подтвердите согласие на обработку персональных данных.' }))
+      return
+    }
     clearMessages()
     setPending(true)
     let redirected = false
@@ -268,6 +275,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setRegister(nextRegister)
     setForgotMode(false)
     setResetToken('')
+    setPersonalDataAccepted(false)
     setFieldErrors(emptyFieldErrors)
     clearMessages()
     removeResetTokenFromAddress()
@@ -350,6 +358,24 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                     </ControlButton>
                   </div>
                   {fieldErrors.password && <small id="login-password-error" className="login-field-error">{fieldErrors.password}</small>}
+                </div>}
+
+                {register && !resetMode && <div className="login-consent">
+                  <TextInput
+                    id="login-personal-data-consent"
+                    type="checkbox"
+                    checked={personalDataAccepted}
+                    onChange={(event) => {
+                      setPersonalDataAccepted(event.target.checked)
+                      clearFieldError('consent')
+                    }}
+                    aria-invalid={Boolean(fieldErrors.consent)}
+                    aria-describedby={fieldErrors.consent ? 'login-consent-error' : undefined}
+                  />
+                  <label htmlFor="login-personal-data-consent">
+                    Я даю <a href="/legal/personal-data-consent" target="_blank" rel="noreferrer">согласие на обработку персональных данных</a> и ознакомлен(а) с <a href="/legal/privacy" target="_blank" rel="noreferrer">политикой конфиденциальности</a>.
+                  </label>
+                  {fieldErrors.consent && <small id="login-consent-error" className="login-field-error">{fieldErrors.consent}</small>}
                 </div>}
 
                 {!register && !resetMode && !forgotMode && <ControlButton className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</ControlButton>}

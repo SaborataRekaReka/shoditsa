@@ -1,0 +1,2 @@
+ALTER TABLE "payment_orders" ADD COLUMN "provider_invoice_id" bigserial NOT NULL;--> statement-breakpoint
+ALTER TABLE "payment_orders" ADD CONSTRAINT "payment_orders_provider_invoice_unique" UNIQUE("provider_invoice_id");

@@ -71,4 +71,13 @@ describe('search index contract', () => {
     expect(route.canonicalPath).toBe('/partners')
     expect(legacyRoute.canonicalPath).toBe('/partners')
   })
+
+  it('publishes canonical, indexable metadata for the club', () => {
+    const route = seoRouteFromPathname('/club')
+    expect(route.kind).toBe('utility')
+    expect(route.indexable).toBe(true)
+    expect(route.robots).toContain('index,follow')
+    expect(route.canonicalPath).toBe('/club')
+    expect(route.title).toContain('Клуб')
+  })
 })

@@ -26,6 +26,17 @@ describe('commerce config', () => {
     expect(loadConfig().friendsRoomPreview).toBe(false)
   })
 
+  it('loads validated Robokassa settings', () => {
+    process.env.COMMERCE_PROVIDER = 'robokassa'
+    process.env.ROBOKASSA_TEST_MODE = 'true'
+    process.env.ROBOKASSA_HASH_ALGORITHM = 'sha256'
+    process.env.ROBOKASSA_RECEIPT_TAX = 'none'
+    expect(loadConfig().commerce).toMatchObject({
+      provider: 'robokassa',
+      robokassa: { testMode: true, hashAlgorithm: 'sha256', receiptTax: 'none' },
+    })
+  })
+
   it('supports the server preview flag and its Vite-compatible fallback', () => {
     process.env.VITE_FRIENDS_ROOM_PREVIEW = 'true'
     expect(loadConfig().friendsRoomPreview).toBe(true)

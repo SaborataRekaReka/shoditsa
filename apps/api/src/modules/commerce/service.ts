@@ -5,6 +5,7 @@ import { commerceProducts, paymentEvents, paymentOrders, userEntitlements, type 
 import { ApiError } from '../../lib/errors.js'
 import { getActiveEntitlements, getMembershipSummary, grantProductEntitlement, revokeOrderEntitlements } from './entitlements.js'
 import { publicProduct } from './products.js'
+import { createRobokassaProvider } from './providers/robokassa.js'
 import { createStubProvider } from './providers/stub.js'
 import { createYooKassaProvider } from './providers/yookassa.js'
 import { loadIntegrationEnvironment } from '../admin/integration-secrets.js'
@@ -16,11 +17,30 @@ type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 
 const providerFor = async (db: Database, config: AppConfig, requested = config.commerce.provider): Promise<CommerceProvider> => {
   if (requested === 'stub' && !config.production) return createStubProvider(config.commerce.webhookSecret)
-  if (requested === 'web') {
+  if (requested === 'robokassa' || requested === 'web') {
     const environment = await loadIntegrationEnvironment(db, config)
+    if (requested === 'robokassa') {
+      const password1 = config.commerce.robokassa.testMode
+        ? environment.ROBOKASSA_TEST_PASSWORD1
+        : environment.ROBOKASSA_PASSWORD1
+      const password2 = config.commerce.robokassa.testMode
+        ? environment.ROBOKASSA_TEST_PASSWORD2
+        : environment.ROBOKASSA_PASSWORD2
+      if (environment.ROBOKASSA_MERCHANT_LOGIN && password1 && password2) {
+        return createRobokassaProvider({
+          merchantLogin: environment.ROBOKASSA_MERCHANT_LOGIN,
+          password1,
+          password2,
+          hashAlgorithm: config.commerce.robokassa.hashAlgorithm,
+          testMode: config.commerce.robokassa.testMode,
+          receiptTax: config.commerce.robokassa.receiptTax,
+          receiptSno: config.commerce.robokassa.receiptSno || undefined,
+        })
+      }
+    }
     const shopId = environment.YOOKASSA_SHOP_ID || config.commerce.shopId
     const secretKey = environment.YOOKASSA_SECRET_KEY || config.commerce.secretKey
-    if (shopId && secretKey) return createYooKassaProvider({ shopId, secretKey })
+    if (requested === 'web' && shopId && secretKey) return createYooKassaProvider({ shopId, secretKey })
   }
   throw new ApiError(503, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Оплата временно недоступна. Попробуйте позже')
 }
@@ -106,7 +126,7 @@ export const getOrder = async (db: Database, userId: string, orderId: string) =>
   return { order: publicOrder(result.order), product: publicProduct(result.product) }
 }
 
-export const startCheckout = async (db: Database, config: AppConfig, actor: { id: string; isAnonymous: boolean }, productId: string, idempotencyKey: string, acceptance: { offerVersion: string; termsAccepted: true }) => {
+export const startCheckout = async (db: Database, config: AppConfig, actor: { id: string; email: string; isAnonymous: boolean }, productId: string, idempotencyKey: string, acceptance: { offerVersion: string; termsAccepted: true }) => {
   if (!config.commerce.enabled) throw new ApiError(503, 'COMMERCE_DISABLED', 'Оплата пока не включена. Вы можете продолжать играть бесплатно')
   if (actor.isAnonymous) throw new ApiError(403, 'COMMERCE_ACCOUNT_REQUIRED', 'Создайте постоянный аккаунт, чтобы покупка сохранилась')
   const product = (await db.select().from(commerceProducts).where(and(eq(commerceProducts.id, productId), eq(commerceProducts.enabled, true))).limit(1))[0]
@@ -134,9 +154,11 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
   try {
     const created = await provider.createPayment({
       orderId: order.id,
+      invoiceId: order.providerInvoiceId,
       amountMinor: order.amountMinor,
       currency: order.currency,
       description: product.title,
+      email: actor.email,
       returnUrl: config.commerce.returnUrl,
       idempotencyKey: order.id,
       metadata: { userId: actor.id, productId: product.id },
@@ -177,6 +199,15 @@ const processEvent = async (db: Database, providerName: string, event: VerifiedP
     return { ignored: true }
   }
   const { order, product } = joined[0]
+  if (event.orderId && event.orderId !== order.id) {
+    throw new ApiError(409, 'PAYMENT_ORDER_MISMATCH', 'Уведомление относится к другому заказу')
+  }
+  if (event.amountMinor != null && event.amountMinor !== order.amountMinor) {
+    throw new ApiError(409, 'PAYMENT_AMOUNT_MISMATCH', 'Сумма уведомления не совпадает с суммой заказа')
+  }
+  if (event.currency && event.currency !== order.currency) {
+    throw new ApiError(409, 'PAYMENT_CURRENCY_MISMATCH', 'Валюта уведомления не совпадает с валютой заказа')
+  }
   await applyPaymentState(tx, order, product, event)
   await tx.update(paymentEvents).set({ status: 'processed', processedAt: new Date() }).where(eq(paymentEvents.id, insertedEvent[0].id))
   return { processed: true }
@@ -186,7 +217,7 @@ export const acceptWebhook = async (db: Database, config: AppConfig, providerNam
   if (providerName !== config.commerce.provider) throw new ApiError(404, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Платёжный обработчик не найден')
   const provider = await providerFor(db, config, providerName)
   const event = await provider.parseAndVerifyWebhook(rawBody, headers)
-  return processEvent(db, providerName, event, rawBody)
+  return { ...await processEvent(db, providerName, event, rawBody), acknowledgment: event.acknowledgment }
 }
 
 export const confirmStubOrder = async (db: Database, config: AppConfig, orderId: string) => {

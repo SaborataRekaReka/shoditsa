@@ -279,6 +279,8 @@ export const IntegrationKeySchema = Type.Union([
   Type.Literal('KINOPOISK_UNOFFICIAL_API_KEY_5'),
   Type.Literal('SHIKIMORI_USER_AGENT'), Type.Literal('SHIKIMORI_CLIENT_ID'),
   Type.Literal('SHIKIMORI_CLIENT_SECRET'), Type.Literal('SHIKIMORI_ACCESS_TOKEN'),
+  Type.Literal('ROBOKASSA_MERCHANT_LOGIN'), Type.Literal('ROBOKASSA_PASSWORD1'), Type.Literal('ROBOKASSA_PASSWORD2'),
+  Type.Literal('ROBOKASSA_TEST_PASSWORD1'), Type.Literal('ROBOKASSA_TEST_PASSWORD2'),
   Type.Literal('YOOKASSA_SHOP_ID'), Type.Literal('YOOKASSA_SECRET_KEY'),
 ])
 
