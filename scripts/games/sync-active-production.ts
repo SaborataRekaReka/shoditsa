@@ -11,6 +11,8 @@ import {
   contentItemVersions,
   contentRevisionModes,
   contentRevisions,
+  contentWorkspaceChanges,
+  contentWorkspaces,
   createDatabase,
   diagnosisVignettes,
 } from '@shoditsa/database'
@@ -640,6 +642,30 @@ const applyPlan = async (plan: Plan) => {
       const target = (await tx.select({ status: contentRevisions.status }).from(contentRevisions)
         .where(eq(contentRevisions.id, newRevisionId)).for('update').limit(1))[0]
       if (target?.status !== 'ready') throw new Error('Target revision is not ready for activation')
+      const workspace = (await tx.select().from(contentWorkspaces)
+        .where(sql`${contentWorkspaces.status} in ('open','building','ready')`)
+        .for('update')
+        .limit(1))[0]
+      if (workspace && workspace.baseRevisionId !== newRevisionId) {
+        const pendingChanges = (await tx.select({ count: sql<number>`count(*)::int` })
+          .from(contentWorkspaceChanges)
+          .where(eq(contentWorkspaceChanges.workspaceId, workspace.id)))[0]?.count ?? 0
+        if (pendingChanges > 0) {
+          throw new Error(`Content workspace ${workspace.id} has ${pendingChanges} pending change(s)`)
+        }
+        await tx.update(contentWorkspaces)
+          .set({ status: 'abandoned', lockedAt: null, updatedAt: new Date() })
+          .where(eq(contentWorkspaces.id, workspace.id))
+        await tx.insert(contentWorkspaces).values({
+          baseRevisionId: newRevisionId,
+          createdBy: config.adminUserIds[0],
+        })
+      } else if (!workspace) {
+        await tx.insert(contentWorkspaces).values({
+          baseRevisionId: newRevisionId,
+          createdBy: config.adminUserIds[0],
+        })
+      }
       await tx.update(contentRevisions).set({ status: 'retired' }).where(eq(contentRevisions.id, revision.id))
       await tx.update(contentRevisions).set({ status: 'active', activatedAt: new Date() })
         .where(eq(contentRevisions.id, newRevisionId))
