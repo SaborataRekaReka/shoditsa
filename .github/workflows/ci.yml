@@ -41,6 +41,7 @@ jobs:
       - run: npm run ci:seed-content-admin
       - run: npm run content:import:dtf-comments-pack -- --apply --activate --publish --actor-id=00000000-0000-4000-8000-000000000001
       - run: npm run content:import:game-hints -- --apply --activate --actor-id=00000000-0000-4000-8000-000000000001
+      - run: npm run content:import:kpop-special -- --apply --activate --actor-id=00000000-0000-4000-8000-000000000001
       - run: npm run verify:dtf-comments-pack
       - run: npm run test:integration
       - run: npm run build

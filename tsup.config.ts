@@ -8,6 +8,7 @@ export default defineConfig({
     'content-bootstrap-danetki': 'scripts/content/bootstrap-danetki.ts',
     'content-import-dtf-comments': 'scripts/content/import-dtf-comment-pack.ts',
     'content-import-game-hints': 'scripts/content/import-game-plot-hints.ts',
+    'content-import-kpop-special': 'scripts/content/import-kpop-special.ts',
     'content-migrate-media': 'scripts/content/migrate-media.ts',
     'content-repair-active-catalog': 'scripts/content/repair-active-catalog.ts',
     'series-enrich-active-production': 'scripts/series/enrich-active-production.ts',

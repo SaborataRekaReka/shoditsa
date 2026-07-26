@@ -278,6 +278,7 @@ const sourceChecks = [
       ['worker recreated with API', /--force-recreate "\$API_COMPOSE_SERVICE" "\$API_WORKER_SERVICE"/],
       ['Docker proxy refreshed after API recreation', /refresh_docker_nginx\(\)[^]*docker restart[^]*if ! refresh_docker_nginx/],
       ['worker SHA verification', /API_WORKER_IMAGE[^]*shoditsa-api:\$\{GITHUB_SHA\}/],
+      ['K-pop special release import', /content-import-kpop-special\.js --apply --activate --actor-id="\$ADMIN_USER_ID"/],
       ['superseded releases cannot activate', /Confirm release is still main tip[^]*git ls-remote origin refs\/heads\/main[^]*if:\s*steps\.main_tip\.outputs\.deploy == 'true'/],
     ],
   },
