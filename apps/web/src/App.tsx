@@ -37,7 +37,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
-import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -74,6 +74,9 @@ import {
   getMoscowDate,
   formatDays,
   isPlayableGamePlotHint,
+  isKpopArtistCard,
+  KPOP_GENERATION_RANGES,
+  kpopGenerationLabel,
   localizeMusicCountry,
   MUSIC_ID_REDIRECTS,
   musicCareerStatusLabel,
@@ -2135,6 +2138,82 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
   </article>
 }
 
+function KpopLabelMark({ label, logoUrl }: { label: string; logoUrl?: string | null }) {
+  const [failed, setFailed] = useState(false)
+  const monogram = (label.match(/[A-Za-zА-Яа-я0-9]+/g) ?? [])
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase() || 'K'
+  return <span className="kpop-label-mark" aria-hidden="true">
+    {logoUrl && !failed
+      ? <img src={logoUrl} alt="" onError={() => setFailed(true)} />
+      : monogram}
+  </span>
+}
+
+function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+  const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
+  const score = attemptProgressStats(attempt.hints)
+  const generation = item.kpopGeneration ?? null
+  const generationRange = KPOP_GENERATION_RANGES.find((entry) => entry.generation === generation)?.years ?? 'Годы не указаны'
+  const labelHint = byKey.get('kpop_current_label')
+  const detailHints = [
+    'kpop_debut_year',
+    'kpop_generation',
+    'kpop_performer_type',
+    'kpop_gender',
+    'kpop_debut_members',
+    'kpop_activity_status',
+  ].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
+  const englishName = item.kpopNameEnglish || item.titleOriginal || item.titleRu
+  const russianName = item.kpopNameRussian && normalizeTextMatch(item.kpopNameRussian) !== normalizeTextMatch(englishName)
+    ? item.kpopNameRussian
+    : ''
+
+  return <article className="attempt-card attempt-card--kpop">
+    <div className="kpop-card__header">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} className="kpop-card__portrait" />
+      <div className="kpop-card__identity">
+        <span className="attempt-label">K-pop · попытка {index + 1}</span>
+        <h2>{englishName}</h2>
+        <p>
+          {russianName && <span>{russianName}</span>}
+          {item.kpopNameHangul && <b lang="ko">{item.kpopNameHangul}</b>}
+        </p>
+      </div>
+      <div className={`kpop-card__generation ${byKey.get('kpop_generation')?.status ?? 'unknown'}`}>
+        <Crown />
+        <strong>{generation ? `${generation} GEN` : '—'}</strong>
+        <small>{kpopGenerationLabel(generation)}</small>
+      </div>
+    </div>
+
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+
+    <div className={`kpop-label-plate ${labelHint?.status ?? 'unknown'}`}>
+      <KpopLabelMark label={item.kpopCurrentLabel || 'K-pop'} logoUrl={item.kpopCurrentLabelLogoUrl} />
+      <span>
+        <small>Текущий корейский лейбл</small>
+        <strong>{item.kpopCurrentLabel || 'Нет данных'}</strong>
+      </span>
+      <i aria-hidden="true">
+        {labelHint?.status === 'match' ? <Check /> : null}
+      </i>
+    </div>
+
+    <div className="attempt-clue-grid kpop-card__facts">
+      {detailHints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+    </div>
+
+    <footer className="kpop-card__generation-note">
+      <Sparkles />
+      <span><strong>{kpopGenerationLabel(generation)}</strong>{generationRange}</span>
+    </footer>
+  </article>
+}
+
 function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories'; wrap?: boolean }) {
   if (!items.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
@@ -2285,6 +2364,7 @@ const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
 }
 
 function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {
+  if (isKpopArtistCard(props.item)) return <KpopAttemptCard {...props} />
   const Card = ATTEMPT_CARD_BY_MODE[props.item.mode]
   return <Card {...props} />
 }
@@ -3221,6 +3301,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   const isPromptSession = Boolean(session.promoPrompt)
   const isDtfCommentSession = session.promoPrompt?.packId === DTF_COMMENTS_PACK_ID
+  const isKpopSession = session.variantKey === KPOP_ARTISTS_PACK_ID || session.packId === KPOP_ARTISTS_PACK_ID
   const maxAttempts = session.maxAttempts ?? 10
   const promoHints = isPromptSession
     ? session.progressiveHints
@@ -3313,6 +3394,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
   const isPackSession = session.kind === 'pack'
+  const isSpecialSession = isPackSession || isKpopSession
   const packTotalItems = packDetail.data?.pack.totalItems ?? (isDtfCommentSession ? DTF_COMMENTS_POOL_COUNT : null)
   const nextPackPosition = isPackSession
     && session.packPosition
@@ -3320,7 +3402,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     && session.packPosition < packTotalItems
     ? session.packPosition + 1
     : null
-  const nextLabel = isPackSession
+  const nextLabel = isKpopSession
+    ? 'К ежедневному спецпоказу'
+    : isPackSession
     ? nextPackPosition
       ? nextPackSession.isPending
         ? 'Запускаем следующую…'
@@ -3329,14 +3413,18 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     : nextMode
       ? `Играть дальше: ${modeMeta(nextMode).title}`
       : 'Сыграть ещё раз'
-  const configureLabel = isPackSession
+  const configureLabel = isKpopSession
+    ? 'На главную'
+    : isPackSession
     ? nextPackPosition
       ? 'К подборке'
       : 'На главную'
     : routeCompleted
       ? 'Выбрать другой режим'
       : resultConfigureLabel(session.mode)
-  const headingPeriodBadge = session.mode === 'music' && session.difficulty
+  const headingPeriodBadge = isKpopSession
+    ? 'K-pop'
+    : session.mode === 'music' && session.difficulty
     ? DIFFICULTIES[session.difficulty].label
     : session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime'
       ? session.period === 'all'
@@ -3387,7 +3475,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
-      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · Сеанс №{dayNumber(session.puzzleDate)}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{prettyDate(session.puzzleDate)} · {isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{session.puzzleDate.slice(8, 10)}<small>/{session.puzzleDate.slice(5, 7)}</small></span></div></section>
+      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}${isKpopSession ? ' game-heading--kpop' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · {isKpopSession && session.kind === 'pack' ? `Карточка ${session.packPosition ?? 1}` : `Сеанс №${dayNumber(session.puzzleDate)}`}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isKpopSession ? 'K-pop артист дня' : isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{isKpopSession ? `${prettyDate(session.puzzleDate)} · новый артист в 00:00 МСК` : `${prettyDate(session.puzzleDate)} · ${isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}`}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{isKpopSession ? 'K' : session.puzzleDate.slice(8, 10)}<small>{isKpopSession ? 'POP' : `/${session.puzzleDate.slice(5, 7)}`}</small></span></div></section>
       {isPromptSession && (isDtfCommentSession
         ? <DtfCommentIntro subtitle={promoSubtitle} />
         : <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
@@ -3411,7 +3499,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         onRevealDialogCancel={() => trackClientEvent('final_choice_reveal_cancelled', { sessionId, mode: session.mode, kind: session.kind, packId: session.packId, attemptsCount: session.attemptsCount }, { gameSessionId: sessionId })}
       />}
       {session.status === 'final_choice' && <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => setGameMatchStripOpen((current) => !current)} />}
-      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isPackSession ? undefined : completedToday} nextRewardText={isPackSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isPackSession
+      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
+        ? onBack
+        : isPackSession
         ? () => {
             if (!session.packId || !nextPackPosition || nextPackSession.isPending) {
               onBack()
@@ -3419,7 +3509,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             }
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
-        : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+        : () => routeCompleted ? onReplay() : onPlayNext(nextMode)} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
@@ -3462,7 +3552,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         }} />
         {message && <div className="search-meta"><strong>{message}</strong></div>}
       </section>}
-      {!attempts.length && session.status === 'playing' && <section className="empty-card"><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>Начните с первой попытки</h2><p>После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.</p></div></section>}
+      {!attempts.length && session.status === 'playing' && <section className={`empty-card${isKpopSession ? ' empty-card--kpop' : ''}`}><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>{isKpopSession ? 'Назовите первого K-pop артиста' : 'Начните с первой попытки'}</h2><p>{isKpopSession ? 'После ответа появится отдельная карточка с годом дебюта, поколением, типом, полом, лейблом, составом и статусом активности.' : 'После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.'}</p></div></section>}
       {!!session.attempts.length && <section className="attempt-list"><div className="section-title"><span>Ваши попытки</span><strong>{session.attempts.length}/{maxAttempts}</strong></div>{[...session.attempts].reverse().map((entry) => {
         const item = publicItemToTitle(entry.item)
         const attemptValue = serverAttemptToLegacy(entry)
@@ -4080,7 +4170,9 @@ function GameApp() {
       const sessionId = savedGame.key.slice('server:'.length)
       setServerSessionId(sessionId)
       window.sessionStorage.setItem('shoditsa:active-server-session', sessionId)
-      setGameExperience(catalogGameExperience(backTarget))
+      setGameExperience(savedGame.variantKey === KPOP_ARTISTS_PACK_ID
+        ? { source: 'pack', packId: KPOP_ARTISTS_PACK_ID }
+        : catalogGameExperience(backTarget))
       setModeSafe(savedGame.mode)
       setModeVariant(savedGame.mode === 'city' ? savedGame.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
       setPeriod(savedGame.period)

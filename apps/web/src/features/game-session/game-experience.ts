@@ -1,4 +1,4 @@
-import type { ActiveSessionSummary, GameSessionSnapshot } from '@shoditsa/contracts'
+import { KPOP_ARTISTS_PACK_ID, type ActiveSessionSummary, type GameSessionSnapshot } from '@shoditsa/contracts'
 
 export type CatalogGameBackTarget = 'title' | 'rewatch' | 'hub'
 
@@ -12,11 +12,16 @@ export const catalogGameExperience = (backTarget: CatalogGameBackTarget): GameEx
 })
 
 export const gameExperienceForSession = (
-  session: Pick<GameSessionSnapshot, 'kind' | 'packId'>,
+  session: Pick<GameSessionSnapshot, 'kind' | 'packId' | 'variantKey'>,
   catalogBackTarget: CatalogGameBackTarget,
-): GameExperience => session.kind === 'pack' && session.packId
-  ? { source: 'pack', packId: session.packId }
-  : catalogGameExperience(catalogBackTarget)
+): GameExperience => {
+  if (session.variantKey === KPOP_ARTISTS_PACK_ID) {
+    return { source: 'pack', packId: KPOP_ARTISTS_PACK_ID }
+  }
+  return session.kind === 'pack' && session.packId
+    ? { source: 'pack', packId: session.packId }
+    : catalogGameExperience(catalogBackTarget)
+}
 
 export const catalogActiveSessions = (sessions: ActiveSessionSummary[]) =>
   sessions.filter((session) => session.kind !== 'pack')

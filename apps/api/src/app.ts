@@ -15,7 +15,7 @@ import {
   ContentReportBodySchema, FinalChoiceBodySchema, FreePlayBodySchema, GameStartBodySchema, HintChoiceBodySchema,
   LedgerQuerySchema, LegacyImportBodySchema, PeriodUnlockBodySchema, ProfilePatchSchema,
   PromoRedeemBodySchema, UuidSchema,
-  ECONOMY_RULES_VERSION,
+  ECONOMY_RULES_VERSION, KPOP_ARTISTS_PACK_ID,
   type AdminContentReviewDecision, type AdminContentReviewQuery, type AdminPromoCreateBody,
   type AdminPromoPatchBody, type AdminWalletAdjustmentBody, type ArchiveCalendarQuery, type ArchiveQuery, type AttemptBody,
   type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FinalChoiceBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
@@ -335,6 +335,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     if (body.kind === 'pack') {
       if (!body.packId || !body.packPosition) throw new ApiError(422, 'PACK_POSITION_REQUIRED', 'Для спецпоказа нужны packId и packPosition')
       if (body.archiveDate) throw new ApiError(422, 'PACK_ARCHIVE_DATE_FORBIDDEN', 'Для спецпоказа нельзя передавать archiveDate')
+      if (body.packId === KPOP_ARTISTS_PACK_ID) throw new ApiError(422, 'KPOP_DAILY_ONLY', 'K-pop спецпоказ запускается как одна ежедневная игра')
       return { session: await startPackSession(db, user!.id, body.packId, body.packPosition, user!.authSessionId, user!.role) }
     }
     return { session: await startGame(db, user!.id, {

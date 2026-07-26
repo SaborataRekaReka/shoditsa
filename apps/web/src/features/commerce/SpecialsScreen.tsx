@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Clapperboard, Gamepad2, Play, Sparkles, Trophy } from 'lucide-react'
-import type { GameSessionSnapshot } from '@shoditsa/contracts'
+import { CalendarDays, Clapperboard, Gamepad2, Music2, Play, Sparkles, Trophy } from 'lucide-react'
+import { KPOP_ARTISTS_PACK_ID, type GameSessionSnapshot } from '@shoditsa/contracts'
 import { ActionButton, AppHeader, Modal, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOptionAction } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
@@ -9,6 +9,7 @@ import { api, queryKeys } from '../../api/client'
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
+import { KPOP_GENERATION_RANGES } from '../../game'
 import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
 import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
 import { InlineAlert, LinearProgress } from '../../components/ui'
@@ -33,6 +34,11 @@ const money = (minor: number | null, currency: string | null) =>
 
 const fallbackCover = publicAssetUrl(
   'images/title-posters/game-ticket-poster.webp',
+)
+const kpopTitlePoster = publicAssetUrl('images/specials/kpop-title-poster.webp')
+
+const packSubject = (packId: string, totalItems: number) => (
+  packId === KPOP_ARTISTS_PACK_ID ? `Ежедневная игра · ${totalItems} артистов` : `${totalItems} игр`
 )
 
 export function SpecialsScreen({
@@ -91,7 +97,7 @@ export function SpecialsScreen({
             <a
               key={pack.id}
               href={`/specials/${encodeURIComponent(pack.id)}`}
-              className="special-card"
+              className={`special-card ${pack.id === KPOP_ARTISTS_PACK_ID ? 'special-card--kpop' : ''}`}
             >
               <figure>
                 <img
@@ -102,15 +108,17 @@ export function SpecialsScreen({
               </figure>
               <div className="special-card__copy">
                 <span>
-                  <Clapperboard /> {pack.totalItems} игр · {pack.completedItems}{' '}
-                  пройдено
+                  <Clapperboard /> {packSubject(pack.id, pack.totalItems)}
+                  {pack.id !== KPOP_ARTISTS_PACK_ID && <> · {pack.completedItems} пройдено</>}
                 </span>
                 <h2>{pack.title}</h2>
                 <p>{pack.subtitle || pack.description}</p>
               </div>
               <strong>
-                {pack.owned
-                  ? 'Куплено навсегда'
+                {pack.access === 'admin'
+                  ? 'Только для администратора'
+                  : pack.owned
+                  ? 'Доступ открыт'
                   : pack.access === 'club'
                     ? 'В клубе'
                     : pack.access === 'free'
@@ -145,6 +153,7 @@ export function SpecialDetailScreen({
   })
   const pack = packQuery.data?.pack
   const isDtfPack = packId === 'dtf-game-comments-25-v1'
+  const isKpopPack = packId === KPOP_ARTISTS_PACK_ID
   const leaderboardQuery = useQuery({
     queryKey: queryKeys.packLeaderboard(packId),
     queryFn: () => api.packLeaderboard(packId),
@@ -156,6 +165,7 @@ export function SpecialDetailScreen({
       ?? pack.entries.find((entry) => entry.accessible)
       ?? null
     : null
+  const canStart = isKpopPack || Boolean(nextEntry)
 
   useEffect(() => {
     mountedRef.current = true
@@ -179,11 +189,18 @@ export function SpecialDetailScreen({
   }, [pack])
 
   const start = async () => {
-    if (starting || !nextEntry) return
+    if (starting || !canStart) return
     setStarting(true)
     setError('')
     try {
-      const response = await api.startPack(packId, nextEntry.position)
+      const response = isKpopPack
+        ? await api.start({
+            kind: 'daily',
+            mode: 'music',
+            period: 'all',
+            variantKey: KPOP_ARTISTS_PACK_ID,
+          }, crypto.randomUUID())
+        : await api.startPack(packId, nextEntry!.position)
       if (mountedRef.current) onSession(response.session)
     } catch (value) {
       if (mountedRef.current) setError(
@@ -202,14 +219,14 @@ export function SpecialDetailScreen({
         event.preventDefault()
         onHome()
       }
-      if (event.key === 'Enter' && nextEntry && !starting) {
+      if (event.key === 'Enter' && canStart && !starting) {
         event.preventDefault()
         void start()
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [leaderboardOpen, nextEntry, onHome, starting])
+  }, [canStart, leaderboardOpen, onHome, starting])
 
   return (
     <>
@@ -225,37 +242,52 @@ export function SpecialDetailScreen({
       {pack && <GameScreenShell variant="title" onBack={onHome} className="title-screen special-title-screen">
         <section className="title-stage">
           <div className="title-game-mark">
-            <span><Gamepad2 /></span>
-            <i>DTF · спецпоказ · {pack.totalItems} игр</i>
+            <span>{isKpopPack ? <Music2 /> : <Gamepad2 />}</span>
+            <i>{isKpopPack ? 'K-pop · закрытый спецпоказ' : 'DTF · спецпоказ'} · {packSubject(pack.id, pack.totalItems)}</i>
             <h1>{pack.title}</h1>
           </div>
-          <time>{pack.subtitle || 'Специальная подборка DTF'}</time>
+          <time>{pack.subtitle || (isKpopPack ? 'Пять поколений корейской поп-сцены' : 'Специальная подборка DTF')}</time>
           <p>{pack.description}</p>
           <AdmissionTitleTicket
-            id="ticket-dtf-comments"
-            mode="game"
-            posterUrl={pack.coverUrl || fallbackCover}
+            id={isKpopPack ? 'ticket-kpop-artists' : 'ticket-dtf-comments'}
+            mode={isKpopPack ? 'music' : 'game'}
+            posterUrl={isKpopPack ? kpopTitlePoster : pack.coverUrl || fallbackCover}
             stubLabel="ВХОД"
             stubTitle="ОДИН"
-            stubMeta="DTF"
-            stubEnd={`${pack.totalItems} ИГР`}
-            className="special-title-ticket"
+            stubMeta={isKpopPack ? 'K-POP' : 'DTF'}
+            stubEnd={isKpopPack ? `${pack.totalItems} АРТИСТОВ` : `${pack.totalItems} ИГР`}
+            className={`special-title-ticket ${isKpopPack ? 'special-title-ticket--kpop' : ''}`}
           >
-              <TicketKicker title="Игра «Игры»" detail="специальный набор" />
-              <h2 id="ticket-dtf-comments">Угадайте игру по комментариям</h2>
-              <p>Всё работает как в обычной игре «Игры»: выбирайте ответ из общего каталога и сверяйте подсказки. В этом показе — <strong>6 попыток</strong> на каждую игру.</p>
-              <LinearProgress
-                value={pack.completedItems}
-                max={pack.totalItems}
-                valueLabel={<><strong>{pack.completedItems}</strong> / {pack.totalItems}</>}
-                label="пройдено"
-                className="special-title-progress"
-              />
+              <TicketKicker title={isKpopPack ? 'K-pop artist dossier' : 'Игра «Игры»'} detail={isKpopPack ? pack.access === 'admin' ? 'только для администратора' : 'доступ выдан администратором' : 'специальный набор'} />
+              <h2 id={isKpopPack ? 'ticket-kpop-artists' : 'ticket-dtf-comments'}>
+                {isKpopPack ? 'Угадайте K-pop артиста' : 'Угадайте игру по комментариям'}
+              </h2>
+              {isKpopPack
+                ? <>
+                  <p>Каждый день выбирается один K-pop артист. Угадывайте его за <strong>10 попыток</strong> — точно так же, как в обычном режиме «Угадай музыку».</p>
+                  <details className="kpop-generation-note">
+                    <summary>Как считаются поколения K-pop</summary>
+                    <ol>{KPOP_GENERATION_RANGES.map((entry) => <li key={entry.generation}><strong>{entry.label}</strong><span>{entry.years}</span></li>)}</ol>
+                  </details>
+                </>
+                : <p>Всё работает как в обычной игре «Игры»: выбирайте ответ из общего каталога и сверяйте подсказки. В этом показе — <strong>6 попыток</strong> на каждую игру.</p>}
+              {isKpopPack
+                ? <div className="kpop-daily-cadence">
+                  <CalendarDays />
+                  <span><strong>Один артист сегодня</strong><small>Новая ежедневная игра в 00:00 МСК</small></span>
+                </div>
+                : <LinearProgress
+                  value={pack.completedItems}
+                  max={pack.totalItems}
+                  valueLabel={<><strong>{pack.completedItems}</strong> / {pack.totalItems}</>}
+                  label="пройдено"
+                  className="special-title-progress"
+                />}
               <GameLaunchControls
-                mode="game"
-                action={<ActionButton className={`play-button game-launch-controls__play ${!nextEntry ? 'is-disabled' : ''}`} disabled={!nextEntry || starting} onClick={() => void start()}>
-                  <Play /> {starting ? 'Запускаем…' : pack.completedItems > 0 ? 'Продолжить' : 'Начать игру'}
-                  {nextEntry && !starting && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
+                mode={isKpopPack ? 'music' : 'game'}
+                action={<ActionButton className={`play-button game-launch-controls__play ${!canStart ? 'is-disabled' : ''}`} disabled={!canStart || starting} onClick={() => void start()}>
+                  <Play /> {starting ? 'Запускаем…' : isKpopPack ? 'Играть сегодня' : pack.completedItems > 0 ? 'Продолжить' : 'Начать игру'}
+                  {canStart && !starting && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
                 </ActionButton>}
                 option={isDtfPack
                   ? <GameOptionAction

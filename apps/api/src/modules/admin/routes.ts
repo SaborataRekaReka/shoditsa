@@ -30,9 +30,9 @@ import type { AppConfig } from '@shoditsa/config'
 import {
   account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
   contentAliases, contentItems, contentItemTags, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes, contentTags,
-  contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, dailyChallenges, gameAttempts, gameHintChoices,
+  contentPacks, contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, dailyChallenges, gameAttempts, gameHintChoices,
   gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
-  promoRedemptions, session, user, userModeStats, walletAccounts, walletLedger, type Database,
+  promoRedemptions, session, user, userEntitlements, userModeStats, walletAccounts, walletLedger, type Database,
 } from '@shoditsa/database'
 import type { Auth } from '../auth/auth.js'
 import { getRequestUser, requireAdmin } from '../auth/session.js'
@@ -1613,20 +1613,38 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
     const profile = await deps.db.select({ user, profile: playerProfiles, wallet: walletAccounts }).from(user)
       .leftJoin(playerProfiles, eq(playerProfiles.userId, user.id)).leftJoin(walletAccounts, eq(walletAccounts.userId, user.id)).where(eq(user.id, id)).limit(1)
     if (!profile[0]) throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
-    const [sessions, reports, stats, attendance, ledger, entitlements, redemptions, imports, notes, auth, audit] = await Promise.all([
+    const [sessions, reports, stats, attendance, ledger, entitlements, gameEntitlements, redemptions, imports, notes, auth, audit] = await Promise.all([
       deps.db.select().from(gameSessions).where(eq(gameSessions.userId, id)).orderBy(desc(gameSessions.startedAt)).limit(30),
       deps.db.select().from(contentReports).where(eq(contentReports.userId, id)).orderBy(desc(contentReports.createdAt)).limit(30),
       deps.db.select().from(userModeStats).where(eq(userModeStats.userId, id)),
       deps.db.select().from(attendanceStats).where(eq(attendanceStats.userId, id)).limit(1),
       deps.db.select().from(walletLedger).where(eq(walletLedger.userId, id)).orderBy(desc(walletLedger.createdAt)).limit(50),
       deps.db.select().from(periodEntitlements).where(eq(periodEntitlements.userId, id)),
+      deps.db.select().from(userEntitlements).where(and(
+        eq(userEntitlements.userId, id),
+        eq(userEntitlements.entitlementKey, 'pack'),
+      )).orderBy(desc(userEntitlements.createdAt)),
       deps.db.select().from(promoRedemptions).where(eq(promoRedemptions.userId, id)).orderBy(desc(promoRedemptions.createdAt)),
       deps.db.select().from(legacyImports).where(eq(legacyImports.userId, id)).orderBy(desc(legacyImports.createdAt)),
       deps.db.select().from(adminUserNotes).where(eq(adminUserNotes.userId, id)).orderBy(desc(adminUserNotes.createdAt)),
       deps.db.select().from(authEvents).where(eq(authEvents.userId, id)).orderBy(desc(authEvents.occurredAt)).limit(50),
       deps.db.select().from(auditLog).where(and(eq(auditLog.entityType, 'user'), eq(auditLog.entityId, id))).orderBy(desc(auditLog.createdAt)).limit(50),
     ])
-    return { ...profile[0], sessions, reports, stats, attendance: attendance[0] ?? null, ledger, entitlements, redemptions, imports, notes, authEvents: auth, audit }
+    return { ...profile[0], sessions, reports, stats, attendance: attendance[0] ?? null, ledger, entitlements, gameEntitlements, redemptions, imports, notes, authEvents: auth, audit }
+  })
+
+  app.get('/api/v1/admin/content-packs', async (request, reply) => {
+    await admin(request, reply, deps)
+    const items = await deps.db.select({
+      id: contentPacks.id,
+      title: contentPacks.title,
+      subtitle: contentPacks.subtitle,
+      mode: contentPacks.mode,
+      status: contentPacks.status,
+      accessModel: contentPacks.accessModel,
+      createdAt: contentPacks.createdAt,
+    }).from(contentPacks).orderBy(desc(contentPacks.createdAt))
+    return { items }
   })
 
   app.post('/api/v1/admin/users/:id/block', { schema: { params: AdminIdParamsSchema, body: AdminBlockUserBodySchema } }, async (request, reply) => {

@@ -29,8 +29,14 @@ export const canViewPack = async (
   userId: string | null,
   packId: string,
   role: ApiRole = 'player',
-) => role === 'admin'
-  || (!isAdminOnlyPack(packId) && await hasRequiredPackBadge(db, userId, packId))
+  status = 'published',
+) => {
+  if (role === 'admin') return true
+  if (userId && await hasEntitlement(db, userId, 'pack', packId)) return true
+  return status === 'published'
+    && !isAdminOnlyPack(packId)
+    && await hasRequiredPackBadge(db, userId, packId)
+}
 
 export const canAccessPack = async (
   db: ReadDatabase,
@@ -44,6 +50,7 @@ export const canAccessPack = async (
   const pack = rows[0]
   if (!pack) return { allowed: false, source: 'locked' }
   if (role === 'admin') return { allowed: true, source: 'admin' }
+  if (userId && await hasEntitlement(db, userId, 'pack', packId, now)) return { allowed: true, source: 'purchase' }
   if (isAdminOnlyPack(packId)) return { allowed: false, source: 'locked' }
   if (!await hasRequiredPackBadge(db, userId, packId)) return { allowed: false, source: 'locked' }
   if (pack.status !== 'published') return { allowed: false, source: 'locked' }
@@ -51,7 +58,6 @@ export const canAccessPack = async (
   if (pack.accessModel === 'free') return { allowed: true, source: 'free' }
   if (position <= pack.previewItems) return { allowed: true, source: 'preview' }
   if (!userId) return { allowed: false, source: 'locked' }
-  if (await hasEntitlement(db, userId, 'pack', packId, now)) return { allowed: true, source: 'purchase' }
   if (pack.includedInClub && await hasEntitlement(db, userId, 'club', undefined, now)) return { allowed: true, source: 'club' }
   return { allowed: false, source: 'locked' }
 }

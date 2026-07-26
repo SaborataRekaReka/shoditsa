@@ -1,6 +1,10 @@
+import { KPOP_ARTISTS_PACK_ID } from '@shoditsa/contracts'
+
 export const DTF_COMMENTS_PACK_ID = 'dtf-game-comments-25-v1'
 
-const ADMIN_ONLY_PACK_IDS = new Set<string>()
+const ADMIN_ONLY_PACK_IDS = new Set<string>([
+  KPOP_ARTISTS_PACK_ID,
+])
 const REQUIRED_BADGE_BY_PACK = new Map<string, string>([
   [DTF_COMMENTS_PACK_ID, 'dtf'],
 ])

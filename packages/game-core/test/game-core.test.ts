@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { GAME_MODE_MANIFEST, PLAYABLE_MODE_IDS, type LibrarySearchIndex, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PLAYABLE_MODE_IDS, type LibrarySearchIndex, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   calculateCompletionReward,
   compareTitles,
@@ -36,6 +36,44 @@ describe('game-core characterization', () => {
 })
 
 describe('deterministic rules', () => {
+  it('isolates the admin K-pop pack and compares its dedicated card fields', () => {
+    const kpop = (id: string, overrides: Partial<TitleItem> = {}): TitleItem => ({
+      id,
+      mode: 'music',
+      cardType: 'kpop_artist',
+      titleRu: id,
+      titleOriginal: id,
+      alternativeTitles: [],
+      popularityScore: 1,
+      activityStartYear: 2018,
+      countries: ['KR'],
+      genres: ['k-pop'],
+      musicType: 'Group',
+      musicIsActive: true,
+      musicOrigin: 'intl',
+      contentStatus: 'test',
+      allowedInGame: false,
+      kpopPerformerType: 'Группа',
+      kpopGender: 'женский',
+      kpopGeneration: 4,
+      kpopCurrentLabel: 'Label A',
+      kpopDebutMembers: 5,
+      kpopActivityStatus: 'Карьера продолжается',
+      ...overrides,
+    })
+    const answer = kpop('answer', { activityStartYear: 2023, kpopGeneration: 5, kpopDebutMembers: 6 })
+    const guess = kpop('guess')
+    const regular = { ...guess, id: 'regular', cardType: undefined, allowedInGame: true, contentStatus: 'ready', plotHint: 'Артист начал карьеру на большой сцене и собрал аудиторию благодаря узнаваемому звучанию.' }
+
+    expect(poolFor([regular, answer, guess], 'music', 'all', KPOP_ARTISTS_PACK_ID).map((item) => item.id)).toEqual(['answer', 'guess'])
+    expect(compareTitles(guess, answer)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ key: 'kpop_debut_year', status: 'miss', direction: 'up' }),
+      expect.objectContaining({ key: 'kpop_generation', value: expect.stringContaining('4-е поколение'), direction: 'up' }),
+      expect.objectContaining({ key: 'kpop_debut_members', status: 'close', direction: 'up' }),
+      expect.objectContaining({ key: 'kpop_current_label', status: 'match' }),
+    ]))
+  })
+
   it('formats Russian day counts for every declension branch', () => {
     expect([0, 1, 2, 5, 11, 21, 22, 25].map(formatDays)).toEqual([
       '0 дней',

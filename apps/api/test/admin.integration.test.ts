@@ -114,6 +114,16 @@ describe('admin API guard, workspace and telemetry', () => {
     currentUser = { id: adminId, email: 'breneize@yandex.ru', name: 'Integration Admin', isAnonymous: false }
   })
 
+  it('exposes special-game access data in the user administration area', async () => {
+    const packsResponse = await app.inject({ method: 'GET', url: '/api/v1/admin/content-packs' })
+    expect(packsResponse.statusCode, packsResponse.body).toBe(200)
+    expect(packsResponse.json().items).toBeInstanceOf(Array)
+
+    const userResponse = await app.inject({ method: 'GET', url: `/api/v1/admin/users/${adminId}` })
+    expect(userResponse.statusCode, userResponse.body).toBe(200)
+    expect(userResponse.json().gameEntitlements).toBeInstanceOf(Array)
+  })
+
   it('filters the complete content catalog by an exact payload field and substring', async () => {
     const candidate = (await database.db.select({
       id: contentItemVersions.itemId,

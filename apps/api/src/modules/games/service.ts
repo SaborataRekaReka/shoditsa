@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, FINAL_CHOICE_DURATION_MS, GAME_MODE_MANIFEST, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, FINAL_CHOICE_DURATION_MS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameFinalChoices, gameHintChoices, gameSessions, type Database,
@@ -22,6 +22,7 @@ import {
 import { ApiError } from '../../lib/errors.js'
 import type { AppConfig } from '@shoditsa/config'
 import { canStartArchiveSession } from '../archive/access.js'
+import { hasEntitlement } from '../commerce/entitlements.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
 import { recordPackCompletion } from '../packs/progress.js'
@@ -178,6 +179,20 @@ const renderInfoCandidate = (candidate: InfoHintCandidate, evidence: RevealedAtt
 
 const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
   if (answer.mode === 'music') {
+    if (answer.cardType === 'kpop_artist') {
+      const clues = answer.kpopClues ?? {}
+      const debutSongOrRelease = clues.debutSong || clues.debutRelease
+      return presentInfoCandidates([
+        infoScalarCandidate('kpop_fandom', 'Название фандома', clues.fandom),
+        infoScalarCandidate('kpop_parent_group', 'Родительская группа', clues.parentGroup),
+        infoListCandidate('kpop_leader', 'Лидер', clues.leaders ?? [], 3),
+        infoListCandidate('kpop_maknae', 'Макнэ', clues.maknaes ?? [], 3),
+        infoListCandidate('kpop_official_colors', 'Официальные цвета', clues.officialColors ?? [], 4),
+        infoScalarCandidate('kpop_debut_song_or_release', clues.debutSong ? 'Дебютная песня' : 'Дебютный релиз', debutSongOrRelease),
+        infoListCandidate('kpop_alternative_names', 'Альтернативные названия', clues.alternativeNames ?? [], 4),
+        infoScalarCandidate('kpop_debut_label', 'Лейбл на момент дебюта', clues.debutLabel),
+      ])
+    }
     return presentInfoCandidates([
       infoListCandidate('country', 'Страна', (answer.countries ?? []).map(localizeMusicCountry), 2),
       infoScalarCandidate('activity_start_year', 'Начало деятельности', answer.activityStartYear),
@@ -335,14 +350,17 @@ export const publicCard = (item: TitleItem) => ({
 })
 
 export const answerPool = async (tx: ReadDatabase, revisionId: string, mode: TitleMode, period: PeriodKey, difficulty: ApiDifficultyKey | null, variantKey: string | null = null) => {
+  const isKpopSpecial = mode === 'music' && variantKey === KPOP_ARTISTS_PACK_ID
   const rows = await tx.select({ id: contentItemVersions.id, payload: contentItemVersions.payload })
     .from(contentItemVersions).where(and(
-      eq(contentItemVersions.revisionId, revisionId), eq(contentItemVersions.mode, mode), eq(contentItemVersions.allowedInGame, true),
+      eq(contentItemVersions.revisionId, revisionId),
+      eq(contentItemVersions.mode, mode),
+      ...(isKpopSpecial ? [] : [eq(contentItemVersions.allowedInGame, true)]),
     )).orderBy(asc(contentItemVersions.sortOrder))
   let items = poolFor(rows.map((row) => row.payload as TitleItem), mode, period, variantKey)
   // Session searches always carry their selected difficulty. A standalone
   // catalog search (friends rooms/autocomplete) must cover every music tier.
-  if (mode === 'music' && difficulty) items = musicDifficultyPool(items, difficulty)
+  if (mode === 'music' && difficulty && !isKpopSpecial) items = musicDifficultyPool(items, difficulty)
   const byItemId = new Map(rows.map((row) => [(row.payload as TitleItem).id, row.id]))
   return { items, byItemId }
 }
@@ -360,12 +378,20 @@ const dailySalt = async (tx: Transaction) => {
 
 export const startGame = async (db: Database, userId: string, input: {
   kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null;
-}, authSessionId: string | null = null, _actorRole: ApiRole = 'player', config?: AppConfig) => db.transaction(async (tx) => {
+}, authSessionId: string | null = null, actorRole: ApiRole = 'player', config?: AppConfig) => db.transaction(async (tx) => {
   const capabilities = GAME_MODE_MANIFEST[input.mode]
   const period = capabilities.periodPolicy === 'all' ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
   const requestedVariant = input.variantKey ?? null
-  const modeVariant = input.mode === 'city' ? normalizeModeVariant(input.mode, requestedVariant) ?? 'capitals' : null
+  const isKpopDaily = input.mode === 'music' && requestedVariant === KPOP_ARTISTS_PACK_ID
+  if (isKpopDaily && actorRole !== 'admin' && !await hasEntitlement(tx, userId, 'pack', KPOP_ARTISTS_PACK_ID)) {
+    throw new ApiError(403, 'PACK_ACCESS_REQUIRED', 'Администратор ещё не открыл вам доступ к этому спецпоказу')
+  }
+  const modeVariant = input.mode === 'city'
+    ? normalizeModeVariant(input.mode, requestedVariant) ?? 'capitals'
+    : isKpopDaily
+      ? KPOP_ARTISTS_PACK_ID
+      : null
   if (input.mode === 'city' && requestedVariant && !normalizeModeVariant(input.mode, requestedVariant)) {
     throw new ApiError(422, 'GAME_VARIANT_INVALID', 'Недопустимый вариант режима')
   }
@@ -393,7 +419,7 @@ export const startGame = async (db: Database, userId: string, input: {
   let challenge = await tx.select().from(dailyChallenges).where(eq(dailyChallenges.challengeKey, challengeKey)).limit(1)
   if (!challenge[0]) {
     const pool = await answerPool(tx, revisionId, input.mode, period, difficulty, modeVariant)
-    const selectedAnswer = dailyTitle(pool.items, input.mode, period, puzzleDate, salt, input.mode === 'city' ? variant : difficulty ?? '')
+    const selectedAnswer = dailyTitle(pool.items, input.mode, period, puzzleDate, salt, modeVariant ?? difficulty ?? '')
     if (!selectedAnswer) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для выбранного режима нет доступных вариантов')
     const answerItemVersionId = pool.byItemId.get(selectedAnswer.id)
     if (!answerItemVersionId) throw new ApiError(503, 'CONTENT_VERSION_NOT_FOUND', 'Не удалось определить версию ответа для текущей ревизии')

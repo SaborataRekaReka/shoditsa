@@ -108,6 +108,17 @@ export type GameRecognitionCalibration = {
   lastGameplayCalibrationAt: string | null
   minimumResponsesForBlend: number
 }
+export type KpopArtistClues = {
+  fandom?: string | null
+  parentGroup?: string | null
+  leaders?: string[]
+  maknaes?: string[]
+  officialColors?: string[]
+  debutSong?: string | null
+  debutRelease?: string | null
+  alternativeNames?: string[]
+  debutLabel?: string | null
+}
 export type TitleItem = {
   id: string
   mode: TitleMode
@@ -229,6 +240,20 @@ export type TitleItem = {
   topAlbums?: MusicTopAlbum[]
   similarArtists?: MusicSimilarArtist[]
   musicLinks?: string[]
+  /** Distinct comparison-card family used by the admin-only K-pop special. */
+  cardType?: 'kpop_artist'
+  kpopNameEnglish?: string | null
+  kpopNameRussian?: string | null
+  kpopNameHangul?: string | null
+  kpopPerformerType?: string | null
+  kpopGender?: string | null
+  kpopGeneration?: 1 | 2 | 3 | 4 | 5 | null
+  kpopCurrentLabel?: string | null
+  kpopCurrentLabelLogoUrl?: string | null
+  kpopDebutMembers?: number | null
+  kpopActivityStatus?: string | null
+  kpopPhotoFileName?: string | null
+  kpopClues?: KpopArtistClues
   dataQuality?: {
     source: string[]
     verified: boolean

@@ -235,6 +235,7 @@ export const adminApi = {
   deleteIntegration: (key: string) => request<{ items: Array<Record<string, unknown>> }>(`/admin/integrations/${encodeURIComponent(key)}`, { method: 'DELETE', body: json({ confirmation: true }) }),
   users: (filters: Record<string, unknown>) => request<UserListResponse>(`/admin/users${query(filters)}`),
   user: (id: string) => request<Record<string, unknown>>(`/admin/users/${id}`),
+  contentPacks: () => request<{ items: Array<Record<string, unknown>> }>('/admin/content-packs'),
   blockUser: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/users/${id}/block`, { method: 'POST', body: json(body) }),
   unblockUser: (id: string, reason: string) => request<Record<string, unknown>>(`/admin/users/${id}/unblock`, { method: 'POST', body: json({ reason }) }),
   revokeSessions: (id: string) => request<Record<string, unknown>>(`/admin/users/${id}/revoke-sessions`, { method: 'POST', body: '{}' }),

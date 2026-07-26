@@ -323,6 +323,61 @@
 .special-card p { color: var(--color-muted); font-size: 12px; line-height: 1.55; }
 .special-card > strong { grid-column: 2; align-self: end; padding: 7px 20px 20px; color: var(--color-primary); font-size: 12px; }
 
+.special-card--kpop {
+  grid-template-columns: 1fr;
+  border-color: rgba(86, 216, 239, .34);
+  background: linear-gradient(145deg, rgba(86, 216, 239, .07), rgba(236, 78, 167, .07)), var(--color-surface);
+}
+.special-card--kpop figure {
+  grid-row: auto;
+  grid-column: 1;
+  height: 230px;
+  border-bottom: 1px solid rgba(86, 216, 239, .24);
+}
+.special-card--kpop figure img { object-position: center; }
+.special-card--kpop .special-card__copy > span { color: #56d8ef; }
+.special-card--kpop h2 { font-size: 31px; }
+.special-card--kpop > strong { grid-column: 1; color: #ec76ba; }
+
+.special-title-ticket--kpop .admit-ticket__stub-art { object-position: center; }
+.special-title-ticket--kpop .special-title-progress > i > b {
+  background: linear-gradient(90deg, #56d8ef, #8a66f0, #ec4ea7);
+}
+
+.kpop-daily-cadence {
+  margin-top: 13px;
+  padding: 10px 12px;
+  border: 1px solid rgba(35, 34, 31, .16);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-ink);
+  background: linear-gradient(100deg, rgba(86, 216, 239, .14), rgba(236, 78, 167, .1));
+}
+.kpop-daily-cadence > svg { width: 20px; flex: 0 0 20px; color: #7653d6; }
+.kpop-daily-cadence > span { display: grid; gap: 2px; }
+.kpop-daily-cadence strong { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.kpop-daily-cadence small { color: var(--color-paper-muted); font-size: 9px; }
+
+.kpop-generation-note {
+  margin: 13px 0 0;
+  padding: 10px 12px;
+  border: 1px dashed rgba(35, 34, 31, .28);
+  border-radius: 11px;
+  color: var(--color-paper-muted);
+  background: rgba(255, 255, 255, .18);
+}
+.kpop-generation-note summary { cursor: pointer; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.kpop-generation-note ol { margin: 10px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+.kpop-generation-note li { min-width: 0; padding: 7px; border: 1px solid rgba(35, 34, 31, .14); border-radius: 8px; display: grid; gap: 3px; }
+.kpop-generation-note li strong { font-size: 9px; }
+.kpop-generation-note li span { font-size: 8px; line-height: 1.25; }
+
+@media (max-width: 640px) {
+  .kpop-generation-note ol { grid-template-columns: 1fr 1fr; }
+}
+
 .specials-access { display: flex; flex-direction: column; gap: 5px; margin: 18px 0; }
 .special-entries { display: grid; gap: 8px; }
 .special-entries article {

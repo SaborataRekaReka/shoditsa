@@ -1,6 +1,8 @@
 import { Type, type Static } from '@sinclair/typebox'
 import { PlayableModeSchema } from './schemas.js'
 
+export const KPOP_ARTISTS_PACK_ID = 'kpop-artists-admin-v1'
+
 export const PackSessionBodySchema = Type.Object({
   position: Type.Integer({ minimum: 1, maximum: 10_000 }),
 }, { additionalProperties: false })

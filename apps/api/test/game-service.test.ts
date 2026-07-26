@@ -1,6 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { CATALOG_HINT_COPY, PLAYABLE_MODE_IDS, type Hint, type TitleItem } from '@shoditsa/contracts'
-import { answerPool, buildHintOptions, publicCard } from '../src/modules/games/service.js'
+import { CATALOG_HINT_COPY, KPOP_ARTISTS_PACK_ID, PLAYABLE_MODE_IDS, type Hint, type TitleItem } from '@shoditsa/contracts'
+import { answerPool, buildHintOptions, publicCard, startGame } from '../src/modules/games/service.js'
+
+describe('K-pop daily special access', () => {
+  it('rejects the dedicated daily variant for non-admin users before reading game state', async () => {
+    const entitlementQuery = {
+      from: () => entitlementQuery,
+      where: () => entitlementQuery,
+      limit: async () => [],
+    }
+    const db = {
+      transaction: (callback: (tx: unknown) => unknown) => callback({
+        select: () => entitlementQuery,
+      }),
+    }
+
+    await expect(startGame(db as never, 'player-id', {
+      kind: 'daily',
+      mode: 'music',
+      variantKey: KPOP_ARTISTS_PACK_ID,
+    }, null, 'player')).rejects.toMatchObject({
+      statusCode: 403,
+      code: 'PACK_ACCESS_REQUIRED',
+    })
+  })
+})
 
 describe('public game card', () => {
   it('keeps genres required by attempt cards', () => {
@@ -369,6 +393,41 @@ describe('server hint options', () => {
     const options = buildHintOptions(answer, [], attempts)
 
     expect(options.find((option) => option.key === 'info')?.value).toBe('Жанры: Rock')
+  })
+
+  it('reveals the curated K-pop clue fields in order without repeating one', () => {
+    const answer = {
+      id: 'kpop:sample',
+      mode: 'music',
+      cardType: 'kpop_artist',
+      titleRu: 'Sample',
+      titleOriginal: 'Sample',
+      alternativeTitles: [],
+      popularityScore: 0,
+      kpopClues: {
+        fandom: 'Sample Fans',
+        parentGroup: 'Parent Group',
+        leaders: ['Leader'],
+        maknaes: ['Maknae'],
+        officialColors: ['Cyan', 'Magenta'],
+        debutSong: 'First Song',
+        debutRelease: 'First EP',
+        alternativeNames: ['SMP'],
+        debutLabel: 'First Label',
+      },
+    } as TitleItem
+
+    expect(buildHintOptions(answer, []).find((option) => option.key === 'info')).toMatchObject({
+      value: 'Название фандома: Sample Fans',
+      sourceKey: 'kpop_fandom',
+    })
+    expect(buildHintOptions(answer, [{
+      hintKey: 'info',
+      response: { sourceKey: 'kpop_fandom', value: 'Название фандома: Sample Fans' },
+    }]).find((option) => option.key === 'info')).toMatchObject({
+      value: 'Родительская группа: Parent Group',
+      sourceKey: 'kpop_parent_group',
+    })
   })
 
   it('does not repeat any modeled field as an interesting fact', () => {

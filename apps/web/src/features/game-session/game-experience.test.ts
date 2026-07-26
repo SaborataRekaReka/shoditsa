@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ActiveSessionSummary, GameSessionSnapshot } from '@shoditsa/contracts'
+import { KPOP_ARTISTS_PACK_ID, type ActiveSessionSummary, type GameSessionSnapshot } from '@shoditsa/contracts'
 import {
   catalogActiveSessions,
   catalogGameExperience,
@@ -20,6 +20,15 @@ describe('game experience separation', () => {
       kind: 'daily',
       packId: null,
     } as GameSessionSnapshot, 'title')).toEqual(catalogGameExperience('title'))
+
+    expect(gameExperienceForSession({
+      kind: 'daily',
+      packId: null,
+      variantKey: KPOP_ARTISTS_PACK_ID,
+    } as GameSessionSnapshot, 'hub')).toEqual({
+      source: 'pack',
+      packId: KPOP_ARTISTS_PACK_ID,
+    })
   })
 
   it('keeps pack sessions out of the ordinary game hub', () => {

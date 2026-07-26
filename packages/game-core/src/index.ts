@@ -2,6 +2,7 @@ import {
   ECONOMY_RULE_SET,
   ECONOMY_RULES_VERSION,
   GAME_MODE_MANIFEST,
+  KPOP_ARTISTS_PACK_ID,
   economyEfficiencyReward,
   economyStreakMilestoneReward,
   type Direction,
@@ -27,6 +28,33 @@ export const PERIODS: Record<PeriodKey, { label: string; short: string; fromYear
 }
 
 export const MUSIC_DATASET_VERSION = 'music-001-300-v1'
+
+export const KPOP_GENERATION_RANGES = [
+  { generation: 1, label: '1-е поколение', years: '1990-е — 2004' },
+  { generation: 2, label: '2-е поколение', years: '2005–2011' },
+  { generation: 3, label: '3-е поколение', years: '2012–2017' },
+  { generation: 4, label: '4-е поколение', years: '2018–2022' },
+  { generation: 5, label: '5-е поколение', years: '2023 — настоящее время' },
+] as const
+
+export const kpopGenerationForYear = (year: number | null | undefined): 1 | 2 | 3 | 4 | 5 | null => {
+  if (!Number.isInteger(year)) return null
+  if (Number(year) <= 2004) return 1
+  if (Number(year) <= 2011) return 2
+  if (Number(year) <= 2017) return 3
+  if (Number(year) <= 2022) return 4
+  return 5
+}
+
+export const kpopGenerationLabel = (generation: number | null | undefined) => (
+  KPOP_GENERATION_RANGES.find((entry) => entry.generation === generation)?.label ?? 'Поколение не указано'
+)
+
+export const isKpopArtistCard = (
+  item: Pick<TitleItem, 'mode' | 'cardType'>,
+): item is Pick<TitleItem, 'mode' | 'cardType'> & { mode: 'music'; cardType: 'kpop_artist' } => (
+  item.mode === 'music' && item.cardType === 'kpop_artist'
+)
 
 export const MUSIC_ID_REDIRECTS: Record<string, string> = {
   'music:036_эндшпиль': 'music:015_andy-panda',
@@ -306,6 +334,9 @@ const isAllowedInMode = (item: TitleItem, mode: TitleMode) => {
 }
 
 export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey, variantKey: string | null = null) => {
+  if (mode === 'music' && variantKey === KPOP_ARTISTS_PACK_ID) {
+    return titles.filter((item) => isKpopArtistCard(item))
+  }
   const from = PERIODS[period].fromYear
   const base = titles.filter((item) => {
     if (!isAllowedInMode(item, mode)) return false
@@ -1221,7 +1252,67 @@ const decadeFromYear = (year: number | null | undefined) => {
   return Math.floor(year / 10) * 10
 }
 
+const compareKpopArtists = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const debutYear = numeric(guess.activityStartYear, answer.activityStartYear, 0, 1)
+  const generation = numeric(guess.kpopGeneration, answer.kpopGeneration, 0, 0)
+  const debutMembers = numeric(guess.kpopDebutMembers, answer.kpopDebutMembers, 0, 1)
+  const generationValue = guess.kpopGeneration
+    ? `${kpopGenerationLabel(guess.kpopGeneration)} · ${KPOP_GENERATION_RANGES[guess.kpopGeneration - 1]?.years ?? ''}`
+    : 'Нет данных'
+
+  return [
+    {
+      key: 'kpop_debut_year',
+      label: 'Год дебюта',
+      value: guess.activityStartYear != null ? String(guess.activityStartYear) : 'Нет данных',
+      ...debutYear,
+    },
+    {
+      key: 'kpop_generation',
+      label: 'Поколение K-pop',
+      value: generationValue,
+      ...generation,
+    },
+    {
+      key: 'kpop_performer_type',
+      label: 'Тип исполнителя',
+      value: guess.kpopPerformerType || 'Нет данных',
+      status: scalar(guess.kpopPerformerType, answer.kpopPerformerType),
+      direction: null,
+    },
+    {
+      key: 'kpop_gender',
+      label: 'Пол',
+      value: guess.kpopGender || 'Нет данных',
+      status: scalar(guess.kpopGender, answer.kpopGender),
+      direction: null,
+    },
+    {
+      key: 'kpop_current_label',
+      label: 'Текущий корейский лейбл',
+      value: guess.kpopCurrentLabel || 'Нет данных',
+      status: scalar(guess.kpopCurrentLabel, answer.kpopCurrentLabel),
+      direction: null,
+    },
+    {
+      key: 'kpop_debut_members',
+      label: 'Участников на дебюте',
+      value: guess.kpopDebutMembers != null ? String(guess.kpopDebutMembers) : 'Нет данных',
+      ...debutMembers,
+    },
+    {
+      key: 'kpop_activity_status',
+      label: 'Статус активности',
+      value: guess.kpopActivityStatus || 'Нет данных',
+      status: scalar(guess.kpopActivityStatus, answer.kpopActivityStatus),
+      direction: null,
+    },
+  ]
+}
+
 const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  if (isKpopArtistCard(guess) && isKpopArtistCard(answer)) return compareKpopArtists(guess, answer)
+
   const guessCountryCodes = countryCodes(guess.countries ?? [])
   const answerCountryCodes = countryCodes(answer.countries ?? [])
   const guessCountries = guessCountryCodes.map(localizeMusicCountry)
