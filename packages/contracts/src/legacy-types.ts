@@ -233,6 +233,11 @@ export type TitleItem = {
     source: string[]
     verified: boolean
     missingFields: string[]
+    notApplicableFields?: string[]
+    fieldAvailability?: Record<string, 'available' | 'not_available' | 'not_applicable' | 'not_on_steam' | 'not_rated' | 'unrated'>
+    fieldSources?: Record<string, string[]>
+    displayedFieldsAuditedAt?: string
+    kinopoiskRequests?: number
   }
 
   icd10?: string[]

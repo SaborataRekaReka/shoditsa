@@ -44,6 +44,15 @@ const firstRating = (item: TitleItem) => {
   return null
 }
 
+const availabilityLabel = (item: TitleItem, field: string) => {
+  const status = item.dataQuality?.fieldAvailability?.[field]
+  if (status === 'not_on_steam') return 'Нет в Steam'
+  if (status === 'not_applicable') return 'Не применимо'
+  if (status === 'not_rated') return 'Без оценки'
+  if (status === 'unrated') return 'Без рейтинга'
+  return status === 'not_available' ? 'Нет данных' : null
+}
+
 const fact = (
   key: string,
   sourceKeys: readonly string[],
@@ -102,8 +111,12 @@ export const FINAL_CHOICE_MODE_CONFIG: Record<TitleMode, ModeConfig> = {
       fact('platforms', ['platforms'], 'categorical', 'Платформы', (item) => compact(item.platforms ?? [], 3) || null),
       fact('developer', ['developer'], 'categorical', 'Разработчик', (item) => compact(item.developers ?? []) || null),
       fact('steam_metacritic', ['steam_positive', 'metacritic'], 'numeric', 'Рейтинги Steam и Metacritic', (item) => compact([
-        item.ratings?.steamPositivePercent != null ? `Steam ${Math.round(item.ratings.steamPositivePercent)}%` : null,
-        (item.ratings?.metacritic ?? item.metacritic) != null ? `MC ${Math.round(item.ratings?.metacritic ?? item.metacritic ?? 0)}` : null,
+        item.ratings?.steamPositivePercent != null
+          ? `Steam ${Math.round(item.ratings.steamPositivePercent)}%`
+          : availabilityLabel(item, 'steamRating') ? `Steam: ${availabilityLabel(item, 'steamRating')}` : null,
+        (item.ratings?.metacritic ?? item.metacritic) != null
+          ? `MC ${Math.round(item.ratings?.metacritic ?? item.metacritic ?? 0)}`
+          : availabilityLabel(item, 'metacritic') ? `MC: ${availabilityLabel(item, 'metacritic')}` : null,
       ]) || null),
       fact('players', ['players', 'rank'], 'numeric', 'Число игроков', (item) => item.votes?.gamesPlayed != null ? `${compactNumber(item.votes.gamesPlayed)} игроков` : item.topRank != null ? `Топ №${item.topRank}` : null),
     ],

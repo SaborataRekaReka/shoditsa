@@ -68,6 +68,45 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'kp')).toMatchObject({ status: 'close', direction: 'down' })
   })
 
+  it('uses explicit availability labels instead of empty game comparison values', () => {
+    const base = {
+      mode: 'game',
+      titleRu: 'Test Game',
+      titleOriginal: 'Test Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2000,
+      topRank: 1,
+      genres: ['Action'],
+      platforms: ['PC'],
+      developers: ['Studio'],
+      publishers: ['Publisher'],
+      steamCategories: ['Нет данных'],
+      ageRating: 'Нет данных',
+      dataQuality: {
+        source: ['test'],
+        verified: true,
+        missingFields: [],
+        fieldAvailability: {
+          steamCategories: 'not_available',
+          steamRating: 'not_available',
+          steamReviews: 'not_available',
+          metacritic: 'not_rated',
+          price: 'not_available',
+          ageRating: 'not_available',
+        },
+      },
+    } as TitleItem
+    const hints = compareTitles({ ...base, id: 'guess' }, { ...base, id: 'answer' })
+
+    expect(hints.find((hint) => hint.key === 'players')?.value).toBe('Нет данных')
+    expect(hints.find((hint) => hint.key === 'steam_positive')?.value).toBe('Нет данных')
+    expect(hints.find((hint) => hint.key === 'reviews')?.value).toBe('Нет данных')
+    expect(hints.find((hint) => hint.key === 'metacritic')?.value).toBe('Без оценки')
+    expect(hints.find((hint) => hint.key === 'price')?.value).toBe('Нет данных')
+    expect(hints.find((hint) => hint.key === 'age')?.value).toBe('Нет данных')
+  })
+
   it('quarantines structurally incomplete series and music records', () => {
     const series = {
       id: 'series:missing-seasons',
@@ -321,9 +360,18 @@ describe('deterministic rules', () => {
       titleOriginal: 'Six Degrees of Celebration',
       alternativeTitles: ['Елки'],
       aliases: ['  ЁЛКИ  ', 'New Year Trees'],
+      localizedTitles: { ru: 'Ёлочки', en: 'New Year Trees' },
+      acceptedAnswers: ['Праздничные ёлки'],
+      normalizedAnswers: ['праздничные елки'],
     }
 
-    expect(titleSearchNames(item)).toEqual(['Ёлки', 'Six Degrees of Celebration', 'New Year Trees'])
+    expect(titleSearchNames(item)).toEqual([
+      'Ёлки',
+      'Six Degrees of Celebration',
+      'Ёлочки',
+      'New Year Trees',
+      'Праздничные ёлки',
+    ])
   })
 })
 

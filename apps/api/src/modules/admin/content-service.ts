@@ -327,8 +327,12 @@ export const workspaceContainsOnlyRedundantImports = (
 const aliasesFor = (payload: Record<string, unknown>) => {
   const entries: Array<[unknown, string]> = [
     [payload.titleRu, 'ru'], [payload.titleOriginal, 'original'],
+    [asRecord(payload.localizedTitles).ru, 'external'],
+    [asRecord(payload.localizedTitles).en, 'external'],
     ...(Array.isArray(payload.alternativeTitles) ? payload.alternativeTitles.map((entry) => [entry, 'alternative'] as [unknown, string]) : []),
     ...(Array.isArray(payload.aliases) ? payload.aliases.map((entry) => [entry, 'external'] as [unknown, string]) : []),
+    ...(Array.isArray(payload.acceptedAnswers) ? payload.acceptedAnswers.map((entry) => [entry, 'external'] as [unknown, string]) : []),
+    ...(Array.isArray(payload.normalizedAnswers) ? payload.normalizedAnswers.map((entry) => [entry, 'external'] as [unknown, string]) : []),
   ]
   const unique = new Map<string, { alias: string; normalizedAlias: string; kind: string }>()
   for (const [entry, kind] of entries) {

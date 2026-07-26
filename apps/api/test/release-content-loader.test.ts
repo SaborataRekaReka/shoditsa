@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { CONTENT_MODE_IDS } from '@shoditsa/contracts'
-import { loadReleaseLibraries } from '../src/modules/admin/release-content-loader.js'
+import { loadReleaseLibraries, releaseAliasesFor } from '../src/modules/admin/release-content-loader.js'
 
 describe('release content catalog', () => {
   it('loads the deployable catalog as one validated revision source', async () => {
@@ -14,5 +14,25 @@ describe('release content catalog', () => {
     const danetki = release.libraries.find((library) => library.mode === 'danetki')!
     expect(danetki.items).toHaveLength(5)
     expect(danetki.items.every((item) => item.allowedInGame === true && String(item.contentStatus) === 'test')).toBe(true)
+  })
+
+  it('imports editorial, normalized and localized game answers as aliases', () => {
+    const aliases = releaseAliasesFor({
+      id: 'game-a',
+      mode: 'game',
+      titleRu: 'Ёлки',
+      titleOriginal: 'Six Degrees of Celebration',
+      popularityScore: 100,
+      alternativeTitles: ['New Year Trees'],
+      localizedTitles: { ru: 'Ёлки', en: 'Six Degrees of Celebration' },
+      acceptedAnswers: ['Ёлки', 'Елки', 'New Year Trees'],
+      normalizedAnswers: ['елки', 'new year trees'],
+    })
+
+    expect(aliases.map((entry) => entry.normalizedAlias)).toEqual([
+      'елки',
+      'six degrees of celebration',
+      'new year trees',
+    ])
   })
 })

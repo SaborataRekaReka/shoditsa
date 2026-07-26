@@ -567,7 +567,16 @@ const buildSearchIndex = (items) => {
   const docs = [...items]
     .sort((left, right) => left.titleRu.localeCompare(right.titleRu, 'ru-RU') || left.id.localeCompare(right.id, 'en-US'))
     .map((item) => {
-      const tokens = new Set(answerVariants(item.titleRu, item.titleOriginal, item.alternativeTitles, item.aliases)
+      const tokens = new Set(answerVariants(
+        item.titleRu,
+        item.titleOriginal,
+        item.localizedTitles?.ru,
+        item.localizedTitles?.en,
+        item.alternativeTitles,
+        item.aliases,
+        item.acceptedAnswers,
+        item.normalizedAnswers,
+      )
         .flatMap((value) => normalizeTitle(value).split(' '))
         .filter((value) => value.length >= 2))
       for (const token of tokens) {

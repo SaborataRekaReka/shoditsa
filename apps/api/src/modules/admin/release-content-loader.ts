@@ -69,8 +69,11 @@ export const loadReleaseLibraries = async (sourceRoot: string) => {
 export const releaseAliasesFor = (item: ReleaseContentItem) => {
   const entries = [
     [item.titleRu, 'ru'], [item.titleOriginal, 'original'],
+    [item.localizedTitles?.ru, 'external'], [item.localizedTitles?.en, 'external'],
     ...(item.alternativeTitles ?? []).map((value) => [value, 'alternative']),
     ...(item.aliases ?? []).map((value) => [value, 'external']),
+    ...(item.acceptedAnswers ?? []).map((value) => [value, 'external']),
+    ...(item.normalizedAnswers ?? []).map((value) => [value, 'external']),
   ] as Array<[string | undefined | null, string]>
   const result = new Map<string, { alias: string; normalizedAlias: string; kind: string }>()
   for (const [alias, kind] of entries) {

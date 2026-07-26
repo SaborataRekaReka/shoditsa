@@ -445,17 +445,26 @@ export const contentDuplicateGroups = (items: TitleItem[]) => {
 
 /**
  * The single source of truth for names accepted by every catalog game.
- * `titleOriginal` covers English/original names, while both alias collections
- * cover legacy and imported alternative names.
+ * `titleOriginal` covers English/original names, while the remaining fields
+ * cover localized, editorial and imported alternative names.
  */
-export const titleSearchNames = (item: Pick<TitleItem, 'titleRu' | 'titleOriginal' | 'alternativeTitles' | 'aliases'>) => {
+type SearchableTitleItem = Pick<
+  TitleItem,
+  'titleRu' | 'titleOriginal' | 'alternativeTitles' | 'aliases' | 'acceptedAnswers' | 'normalizedAnswers' | 'localizedTitles'
+>
+
+export const titleSearchNames = (item: SearchableTitleItem) => {
   const seen = new Set<string>()
   const result: string[] = []
   for (const value of [
     item.titleRu,
     item.titleOriginal,
+    item.localizedTitles?.ru,
+    item.localizedTitles?.en,
     ...(item.alternativeTitles ?? []),
     ...(item.aliases ?? []),
+    ...(item.acceptedAnswers ?? []),
+    ...(item.normalizedAnswers ?? []),
   ]) {
     const title = String(value ?? '').trim()
     const key = normalize(title)
@@ -468,7 +477,7 @@ export const titleSearchNames = (item: Pick<TitleItem, 'titleRu' | 'titleOrigina
 
 export const isExactTitleSearchMatch = (
   query: string,
-  item: Pick<TitleItem, 'titleRu' | 'titleOriginal' | 'alternativeTitles' | 'aliases'>,
+  item: SearchableTitleItem,
 ) => {
   const normalizedQuery = normalize(query)
   return Boolean(normalizedQuery) && titleSearchNames(item).some((name) => normalize(name) === normalizedQuery)
@@ -809,6 +818,32 @@ const playersNumber = (categories: string[]) => {
   return max
 }
 
+const displayedFieldAvailability = (item: TitleItem, field: string) => (
+  item.dataQuality?.fieldAvailability?.[field] ?? null
+)
+
+const displayedUnavailableLabel = (item: TitleItem, field: string, fallback = 'Нет данных') => {
+  const status = displayedFieldAvailability(item, field)
+  if (status === 'not_on_steam') return 'Нет в Steam'
+  if (status === 'not_applicable') return 'Не применимо'
+  if (status === 'not_available') return 'Нет данных'
+  if (status === 'not_rated') return 'Без оценки'
+  if (status === 'unrated') return 'Без рейтинга'
+  return fallback
+}
+
+const compareDisplayedValues = (
+  guessValue: number | null,
+  answerValue: number | null,
+  guessLabel: string,
+  answerLabel: string,
+  numericComparison: { status: MatchStatus; direction: Direction },
+) => (
+  guessValue != null && answerValue != null
+    ? numericComparison
+    : { status: scalar(guessValue == null ? guessLabel : String(guessValue), answerValue == null ? answerLabel : String(answerValue)), direction: null }
+)
+
 const reviewHint = (
   guess: number | null | undefined,
   answer: number | null | undefined,
@@ -852,14 +887,30 @@ const gamePriceLabel = (item: TitleItem) => {
   if (!item.price) return 'Нет данных'
   if (item.price.isFree) return 'Бесплатно'
   if (item.price.final != null) {
-    const rubles = item.price.final / 100
-    return `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(rubles)} ₽`
+    const amount = item.price.final / 100
+    const currency = String(item.price.currency ?? '').trim().toUpperCase()
+    if (/^[A-Z]{3}$/.test(currency)) {
+      try {
+        return new Intl.NumberFormat('ru-RU', {
+          style: 'currency',
+          currency,
+          maximumFractionDigits: Number.isInteger(amount) ? 0 : 2,
+        }).format(amount)
+      } catch {
+        // Fall back to the legacy ruble display for unknown currency codes.
+      }
+    }
+    return `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(amount)} ₽`
   }
   return 'Платно'
 }
 
 const gamePriceHint = (guess: TitleItem, answer: TitleItem): { status: MatchStatus; direction: Direction } => {
-  if (!guess.price || !answer.price) return { status: 'unknown', direction: null }
+  if (!guess.price || !answer.price) {
+    const guessLabel = guess.price ? gamePriceLabel(guess) : displayedUnavailableLabel(guess, 'price')
+    const answerLabel = answer.price ? gamePriceLabel(answer) : displayedUnavailableLabel(answer, 'price')
+    return { status: scalar(guessLabel, answerLabel), direction: null }
+  }
   if (guess.price.isFree === answer.price.isFree && (guess.price.isFree || guess.price.final == null || answer.price.final == null)) return { status: 'match', direction: null }
   if (guess.price.isFree !== answer.price.isFree) return { status: 'miss', direction: null }
   const guessFinal = toFiniteNumber(guess.price.final)
@@ -1085,13 +1136,47 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerPlayers = playersNumber(answerCategories)
   const guessAge = ageNumber(guess.ageRating)
   const answerAge = ageNumber(answer.ageRating)
+  const guessPlayerLabel = displayedUnavailableLabel(guess, 'steamCategories')
+  const answerPlayerLabel = displayedUnavailableLabel(answer, 'steamCategories')
+  const guessSteamLabel = displayedUnavailableLabel(guess, 'steamRating')
+  const answerSteamLabel = displayedUnavailableLabel(answer, 'steamRating')
+  const guessMetacriticLabel = displayedUnavailableLabel(guess, 'metacritic')
+  const answerMetacriticLabel = displayedUnavailableLabel(answer, 'metacritic')
+  const guessReviewsLabel = displayedUnavailableLabel(guess, 'steamReviews')
+  const answerReviewsLabel = displayedUnavailableLabel(answer, 'steamReviews')
 
   const year = numeric(guess.year, answer.year, 0, 2)
   const rank = numeric(guess.topRank, answer.topRank, 0, 15, { lowerIsUp: true })
-  const players = numeric(guessPlayers, answerPlayers, 0, 2)
-  const steamPositive = numeric(guessSteamPositive, answerSteamPositive, 1, 5)
-  const metacritic = numeric(guessMeta, answerMeta, 1, 5)
-  const reviews = reviewHint(guess.votes?.steamReviews, answer.votes?.steamReviews)
+  const players = compareDisplayedValues(
+    guessPlayers,
+    answerPlayers,
+    guessPlayerLabel,
+    answerPlayerLabel,
+    numeric(guessPlayers, answerPlayers, 0, 2),
+  )
+  const steamPositive = compareDisplayedValues(
+    guessSteamPositive,
+    answerSteamPositive,
+    guessSteamLabel,
+    answerSteamLabel,
+    numeric(guessSteamPositive, answerSteamPositive, 1, 5),
+  )
+  const metacritic = compareDisplayedValues(
+    guessMeta,
+    answerMeta,
+    guessMetacriticLabel,
+    answerMetacriticLabel,
+    numeric(guessMeta, answerMeta, 1, 5),
+  )
+  const guessReviews = positiveNumber(guess.votes?.steamReviews)
+  const answerReviews = positiveNumber(answer.votes?.steamReviews)
+  const reviews = compareDisplayedValues(
+    guessReviews,
+    answerReviews,
+    guessReviewsLabel,
+    answerReviewsLabel,
+    reviewHint(guessReviews, answerReviews),
+  )
   const price = gamePriceHint(guess, answer)
   const age = guessAge != null || answerAge != null
     ? numeric(guessAge, answerAge, 0, 2)
@@ -1101,26 +1186,26 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const hasPlatforms = answerPlatforms.length > 0
   const hasDevelopers = answerDevelopers.length > 0
   const hasPublishers = answerPublishers.length > 0
-  const hasPlayers = answerPlayers != null
-  const hasSteamPositive = answerSteamPositive != null
-  const hasMetacritic = answerMeta != null
-  const hasReviews = Boolean(answer.votes?.steamReviews)
-  const hasPrice = Boolean(answer.price)
+  const hasPlayers = answerPlayers != null || Boolean(displayedFieldAvailability(answer, 'steamCategories'))
+  const hasSteamPositive = answerSteamPositive != null || Boolean(displayedFieldAvailability(answer, 'steamRating'))
+  const hasMetacritic = answerMeta != null || Boolean(displayedFieldAvailability(answer, 'metacritic'))
+  const hasReviews = Boolean(answerReviews) || Boolean(displayedFieldAvailability(answer, 'steamReviews'))
+  const hasPrice = Boolean(answer.price) || Boolean(displayedFieldAvailability(answer, 'price'))
   const hasAge = Boolean(answer.ageRating)
 
   const hints: Hint[] = [
     ...(answer.year != null ? [{ key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year } satisfies Hint] : []),
     ...(answer.topRank != null ? [{ key: 'rank', label: 'Место в топе', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank } satisfies Hint] : []),
-    ...(hasPlayers ? [{ key: 'players', label: 'Игроки', value: playerCountLabel(guessPlayers), ...players } satisfies Hint] : []),
+    ...(hasPlayers ? [{ key: 'players', label: 'Игроки', value: guessPlayers != null ? playerCountLabel(guessPlayers) : guessPlayerLabel, ...players } satisfies Hint] : []),
     ...(hasGenres ? [{ key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: overlaps(guessGenres, answerGenres) } satisfies Hint] : []),
     ...(hasSteamCategories ? [{ key: 'steam_categories', label: 'Категории', value: list(guessCategories), status: setStatus(guessCategories, answerCategories), direction: null, matchedValues: overlaps(guessCategories, answerCategories) } satisfies Hint] : []),
     ...(hasPlatforms ? [{ key: 'platforms', label: 'Платформы', value: list(guessPlatforms), status: setStatus(guessPlatforms, answerPlatforms), direction: null, matchedValues: overlaps(guessPlatforms, answerPlatforms) } satisfies Hint] : []),
     ...(hasDevelopers ? [{ key: 'developer', label: 'Разработчик', value: list(guessDevelopers), status: setStatus(guessDevelopers, answerDevelopers), direction: null, matchedValues: overlaps(guessDevelopers, answerDevelopers) } satisfies Hint] : []),
     ...(hasPublishers ? [{ key: 'publisher', label: 'Издатель', value: list(guessPublishers), status: setStatus(guessPublishers, answerPublishers), direction: null, matchedValues: overlaps(guessPublishers, answerPublishers) } satisfies Hint] : []),
-    ...(hasSteamPositive ? [{ key: 'steam_positive', label: 'Позитив Steam', value: guessSteamPositive != null ? `${guessSteamPositive}%` : '—', ...steamPositive } satisfies Hint] : []),
-    ...(hasMetacritic ? [{ key: 'metacritic', label: 'Metacritic', value: formatNumber(guessMeta), ...metacritic } satisfies Hint] : []),
-    ...(hasReviews ? [{ key: 'reviews', label: 'Отзывы Steam', value: formatNumber(guess.votes?.steamReviews), ...reviews } satisfies Hint] : []),
-    ...(hasPrice ? [{ key: 'price', label: 'Цена', value: gamePriceLabel(guess), ...price } satisfies Hint] : []),
+    ...(hasSteamPositive ? [{ key: 'steam_positive', label: 'Позитив Steam', value: guessSteamPositive != null ? `${guessSteamPositive}%` : guessSteamLabel, ...steamPositive } satisfies Hint] : []),
+    ...(hasMetacritic ? [{ key: 'metacritic', label: 'Metacritic', value: guessMeta != null ? formatNumber(guessMeta) : guessMetacriticLabel, ...metacritic } satisfies Hint] : []),
+    ...(hasReviews ? [{ key: 'reviews', label: 'Отзывы Steam', value: guessReviews != null ? formatNumber(guessReviews) : guessReviewsLabel, ...reviews } satisfies Hint] : []),
+    ...(hasPrice ? [{ key: 'price', label: 'Цена', value: guess.price ? gamePriceLabel(guess) : displayedUnavailableLabel(guess, 'price'), ...price } satisfies Hint] : []),
     ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', ...age } satisfies Hint] : []),
   ]
 
