@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "description": "Точечные подтверждённые исключения для карточек, которые нельзя безопасно сопоставить с Wikidata автоматически.",
+  "items": {
+    "tgdb_65556": {
+      "countryIds": ["Q15180"],
+      "reason": "Игра создана Алексеем Пажитновым в СССР; год карточки относится к советскому периоду.",
+      "sourceUrls": ["https://tetris.com/about-us"]
+    },
+    "tgdb_5248": {
+      "countryIds": ["Q30"],
+      "reason": "Technopop называет себя первым независимым разработчиком Sega Genesis в США и указывает Spider-Man (1991) среди своих игр.",
+      "sourceUrls": ["https://www.technopop.net/"]
+    },
+    "tgdb_26955": {
+      "countryIds": ["Q55"],
+      "reason": "Версия DuckTales 1994 года — нидерландская MSX2-разработка группы Emphasys.",
+      "sourceUrls": [
+        "https://www.generation-msx.nl/software/emphasys/ducktales/2447/",
+        "https://www.msxcomputermagazine.nl/archief/bladen/msx_computer_club_magazine_70.pdf"
+      ]
+    },
+    "tgdb_127": {
+      "countryIds": ["Q17"],
+      "reason": "Sega CS R&D 2 — японское внутреннее подразделение Sega.",
+      "sourceUrls": ["https://www.sega.co.jp/en/company/profile/index.html"]
+    },
+    "tgdb_19711": {
+      "countryIds": ["Q16"],
+      "reason": "Unlimited Software Inc. была портирующим подразделением канадской Distinctive Software.",
+      "sourceUrls": ["https://www.mobygames.com/company/13/unlimited-software-inc/"]
+    },
+    "tgdb_111910": {
+      "countryIds": ["Q17"],
+      "reason": "Suikoden II разработана Konami Computer Entertainment Tokyo в Японии.",
+      "sourceUrls": [
+        "https://www.konami.com/games/ca/en/topics/28/",
+        "https://www.mobygames.com/game/4854/suikoden-ii/"
+      ]
+    },
+    "tgdb_24314": {
+      "countryIds": ["Q17"],
+      "reason": "Обе игры в сборнике разработаны японскими студиями Sega.",
+      "sourceUrls": ["https://www.sega.co.jp/en/company/profile/index.html"]
+    },
+    "tgdb_14495": {
+      "countryIds": ["Q96"],
+      "reason": "Squad — студия из Мехико, разработчик Kerbal Space Program.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q21010246"]
+    },
+    "tgdb_48943": {
+      "countryIds": ["Q145"],
+      "reason": "Карточка указывает RGCD; подразделение разработки RGCD.DEV базируется в Эксетере, Великобритания.",
+      "sourceUrls": [
+        "https://www.rgcd.co.uk/p/rgcddev.html",
+        "https://rgcd.bigcartel.com/product/p0-snake-commodore-64"
+      ]
+    },
+    "tgdb_114845": {
+      "countryIds": ["Q30"],
+      "reason": "inXile указывает студии в Южной Калифорнии и Новом Орлеане, США.",
+      "sourceUrls": ["https://www.inxile-entertainment.com/"]
+    },
+    "tgdb_403": {
+      "countryIds": ["Q30"],
+      "reason": "Factor 5 уже работала в США в период разработки Rogue Squadron; страна происхождения самой игры в Wikidata — США.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q54297"]
+    },
+    "tgdb_7055": {
+      "countryIds": ["Q30"],
+      "reason": "Rogue Leader разрабатывалась американскими подразделениями Factor 5 и LucasArts; страна происхождения игры в Wikidata — США.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q54307"]
+    },
+    "tgdb_18354": {
+      "countryIds": ["Q17"],
+      "reason": "Papers, Please создавалась Лукасом Поупом во время его жизни в Японии; Wikidata указывает Японию как страну происхождения игры.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q14565978"]
+    },
+    "tgdb_111051": {
+      "countryIds": ["Q30"],
+      "reason": "Основной разработчик Saints Row: The Third — американская Volition; Deep Silver в исходной карточке является издателем.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q1801455"]
+    },
+    "tgdb_123782": {
+      "countryIds": ["Q17"],
+      "reason": "Основная версия Final Fantasy XV разработана японским подразделением Square Enix; тайваньская студия относится к отдельным работам и портам.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q1779100"]
+    },
+    "tgdb_102985": {
+      "countryIds": ["Q30"],
+      "reason": "God of War 2018 разработана Santa Monica Studio в США; канадская студия относится к последующему PC-порту.",
+      "sourceUrls": ["https://www.wikidata.org/wiki/Q18345138"]
+    }
+  }
+}

@@ -1118,6 +1118,8 @@ const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
 }
 
 const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const guessCountries = guess.countries ?? []
+  const answerCountries = answer.countries ?? []
   const guessGenres = guess.genres ?? []
   const answerGenres = answer.genres ?? []
   const guessCategories = guess.steamCategories ?? []
@@ -1182,6 +1184,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ? numeric(guessAge, answerAge, 0, 2)
     : { status: scalar(guess.ageRating, answer.ageRating), direction: null }
   const hasGenres = answerGenres.length > 0
+  const hasCountries = answerCountries.length > 0
   const hasSteamCategories = answerCategories.length > 0
   const hasPlatforms = answerPlatforms.length > 0
   const hasDevelopers = answerDevelopers.length > 0
@@ -1197,6 +1200,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ...(answer.year != null ? [{ key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year } satisfies Hint] : []),
     ...(answer.topRank != null ? [{ key: 'rank', label: 'Место в топе', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank } satisfies Hint] : []),
     ...(hasPlayers ? [{ key: 'players', label: 'Игроки', value: guessPlayers != null ? playerCountLabel(guessPlayers) : guessPlayerLabel, ...players } satisfies Hint] : []),
+    ...(hasCountries ? [{ key: 'country', label: 'Страна разработки', value: list(guessCountries), status: setStatus(guessCountries, answerCountries), direction: null, matchedValues: overlaps(guessCountries, answerCountries) } satisfies Hint] : []),
     ...(hasGenres ? [{ key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: overlaps(guessGenres, answerGenres) } satisfies Hint] : []),
     ...(hasSteamCategories ? [{ key: 'steam_categories', label: 'Категории', value: list(guessCategories), status: setStatus(guessCategories, answerCategories), direction: null, matchedValues: overlaps(guessCategories, answerCategories) } satisfies Hint] : []),
     ...(hasPlatforms ? [{ key: 'platforms', label: 'Платформы', value: list(guessPlatforms), status: setStatus(guessPlatforms, answerPlatforms), direction: null, matchedValues: overlaps(guessPlatforms, answerPlatforms) } satisfies Hint] : []),

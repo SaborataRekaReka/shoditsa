@@ -313,6 +313,7 @@ export const publicCard = (item: TitleItem) => ({
   }) => publicItem)(item),
   titleOriginal: item.titleOriginal ?? '',
   year: item.year ?? null,
+  countries: item.countries ?? [],
   activityStartYear: item.mode === 'music' ? musicActivityStartYear(item) : item.activityStartYear ?? null,
   genres: item.genres ?? [],
   posterUrl: legacyMediaUrl(item.posterUrl, item.mode, item.id),

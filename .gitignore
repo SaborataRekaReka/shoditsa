@@ -19,6 +19,7 @@ data/kinopoisk/navigator/*/state.json
 data/kinopoisk/navigator/*/skipped.json
 data/games/cache/game-displayed-fields-enrichment.json
 data/games/cache/game-displayed-fields-enrichment.json.*.tmp
+data/games/cache/game-development-countries.json
 
 # Generated media assets (rebuild via scripts)
 public/data/libraries/movies/img/

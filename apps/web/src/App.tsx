@@ -2026,7 +2026,7 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const score = attemptProgressStats(attempt.hints)
   const genres = item.genres ?? []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
-  const attrs = ['players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
+  const attrs = ['country', 'players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const steamCategories = dedupeGameCategories(item.steamCategories ?? [], Boolean(byKey.get('players')))

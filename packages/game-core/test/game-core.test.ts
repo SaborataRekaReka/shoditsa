@@ -107,6 +107,32 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'age')?.value).toBe('Нет данных')
   })
 
+  it('compares game development countries as a visible hint', () => {
+    const base = {
+      mode: 'game',
+      titleRu: 'Test Game',
+      titleOriginal: 'Test Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2000,
+      genres: ['Action'],
+      platforms: ['PC'],
+      developers: ['Studio'],
+      publishers: ['Publisher'],
+    } as TitleItem
+    const hints = compareTitles(
+      { ...base, id: 'guess', countries: ['США', 'Канада'] },
+      { ...base, id: 'answer', countries: ['Канада', 'Франция'] },
+    )
+
+    expect(hints.find((hint) => hint.key === 'country')).toMatchObject({
+      label: 'Страна разработки',
+      value: 'США, Канада',
+      status: 'partial',
+      matchedValues: ['Канада'],
+    })
+  })
+
   it('quarantines structurally incomplete series and music records', () => {
     const series = {
       id: 'series:missing-seasons',

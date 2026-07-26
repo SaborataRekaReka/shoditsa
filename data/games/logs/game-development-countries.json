@@ -1,0 +1,2716 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-26T17:55:45.580Z",
+  "fetchSources": false,
+  "apply": true,
+  "sourcePolicy": {
+    "source": "wikidata",
+    "license": "CC0",
+    "kinopoiskRequests": 0,
+    "publisherCountryFallback": false,
+    "ambiguousMatchesAreNotApplied": true
+  },
+  "summary": {
+    "total": 1000,
+    "identityResolved": 929,
+    "identityUnresolved": 57,
+    "identityAmbiguous": 14,
+    "countriesResolved": 1000,
+    "countriesDirect": 20,
+    "countriesFromDevelopers": 964,
+    "countriesFromCardDevelopers": 878,
+    "countriesManualVerified": 16,
+    "countriesMultiple": 9,
+    "countriesCrossSourceConflicts": 36,
+    "countriesUnresolved": 0,
+    "kinopoiskRequests": 0
+  },
+  "unresolved": [
+    {
+      "itemId": "tgdb_65556",
+      "titleRu": "Tetris",
+      "titleOriginal": "Tetris",
+      "year": 1986,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q15180",
+            "code": "SU",
+            "nameRu": "СССР",
+            "nameEn": "Soviet Union"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://tetris.com/about-us"
+        ],
+        "note": "Игра создана Алексеем Пажитновым в СССР; год карточки относится к советскому периоду."
+      }
+    },
+    {
+      "itemId": "tgdb_2779",
+      "titleRu": "Tomb Raider",
+      "titleOriginal": "Tomb Raider",
+      "year": 1996,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q270503",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1996
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q317620",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1996
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q869104"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_1583",
+      "titleRu": "EarthBound",
+      "titleOriginal": "EarthBound",
+      "year": 1995,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q1780267",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1989,
+                2006,
+                1995,
+                1994
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q2529000",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1994,
+                1995,
+                2003,
+                2013,
+                2016,
+                2022,
+                2017
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1068734"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_11577",
+      "titleRu": "Diablo",
+      "titleOriginal": "Diablo",
+      "year": 1998,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q178824"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_82341",
+      "titleRu": "Zork I",
+      "titleOriginal": "Zork I",
+      "year": 1983,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q742561"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_5248",
+      "titleRu": "Spider-Man",
+      "titleOriginal": "Spider-Man",
+      "year": 1991,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.technopop.net/"
+        ],
+        "note": "Technopop называет себя первым независимым разработчиком Sega Genesis в США и указывает Spider-Man (1991) среди своих игр."
+      }
+    },
+    {
+      "itemId": "tgdb_89966",
+      "titleRu": "OutRun",
+      "titleOriginal": "OutRun",
+      "year": 1988,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q2822760"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_85162",
+      "titleRu": "Crash Bandicoot",
+      "titleOriginal": "Crash Bandicoot",
+      "year": 1996,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q507898",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1996
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q719176",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1996
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q720871"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_26955",
+      "titleRu": "DuckTales",
+      "titleOriginal": "DuckTales",
+      "year": 1994,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q55",
+            "code": null,
+            "nameRu": "Нидерланды",
+            "nameEn": "Netherlands"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.generation-msx.nl/software/emphasys/ducktales/2447/",
+          "https://www.msxcomputermagazine.nl/archief/bladen/msx_computer_club_magazine_70.pdf"
+        ],
+        "note": "Версия DuckTales 1994 года — нидерландская MSX2-разработка группы Emphasys."
+      }
+    },
+    {
+      "itemId": "tgdb_96011",
+      "titleRu": "Ninja Gaiden",
+      "titleOriginal": "Ninja Gaiden",
+      "year": 1988,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q1114224",
+            "match": {
+              "valid": true,
+              "score": 95,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1988
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q2658381",
+            "match": {
+              "valid": true,
+              "score": 95,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1988,
+                1991,
+                1989
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q119267"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_35233",
+      "titleRu": "Elite",
+      "titleOriginal": "Elite",
+      "year": 1984,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q1173809"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_99913",
+      "titleRu": "Donkey Kong Country 2 [Player's Choice]",
+      "titleOriginal": "Donkey Kong Country 2 [Player's Choice]",
+      "year": 1995,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q642707"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_127",
+      "titleRu": "Phantasy Star IV: The End of the Millennium",
+      "titleOriginal": "Phantasy Star IV: The End of the Millennium",
+      "year": 1995,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.sega.co.jp/en/company/profile/index.html"
+        ],
+        "note": "Sega CS R&D 2 — японское внутреннее подразделение Sega."
+      }
+    },
+    {
+      "itemId": "tgdb_360",
+      "titleRu": "Mega Man",
+      "titleOriginal": "Mega Man",
+      "year": 1987,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q6586317",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1987,
+                1989,
+                1990,
+                2007,
+                2008
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q7565689",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1987
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q14428"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_106020",
+      "titleRu": "Street Fighter Alpha",
+      "titleOriginal": "Street Fighter Alpha",
+      "year": 1998,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q14428"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_132250",
+      "titleRu": "BioShock",
+      "titleOriginal": "BioShock",
+      "year": 2007,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q4914658",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2007
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q57270",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2007
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q743717"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_53075",
+      "titleRu": "Dragon Quest III: Soshite Densetsu e...",
+      "titleOriginal": "Dragon Quest III: Soshite Densetsu e...",
+      "year": 1988,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1343212"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_97524",
+      "titleRu": "After Burner",
+      "titleOriginal": "After Burner",
+      "year": 1987,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q388929",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1987
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q84707652",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1987
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q2628630",
+            "match": {
+              "valid": true,
+              "score": 95,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1987,
+                1989,
+                1990,
+                1991
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q122741"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_113840",
+      "titleRu": "Rainbow Islands",
+      "titleOriginal": "Rainbow Islands",
+      "year": 1987,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1054844"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_132297",
+      "titleRu": "Baldur's Gate II + Tron Bhaala [Extra Klasyka]",
+      "titleOriginal": "Baldur's Gate II + Tron Bhaala [Extra Klasyka]",
+      "year": 2000,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q16",
+            "code": "CA",
+            "nameRu": "Канада",
+            "nameEn": "Canada"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q16"
+        ],
+        "developerIds": [
+          "Q219758"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_30032",
+      "titleRu": "Tribes",
+      "titleOriginal": "Tribes",
+      "year": 1998,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q1269052"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_6030",
+      "titleRu": "Counter-Strike",
+      "titleOriginal": "Counter-Strike",
+      "year": 2003,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q1806887",
+          "Q193559"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_5686",
+      "titleRu": "Ys Book I & II",
+      "titleOriginal": "Ys Book I & II",
+      "year": 1989,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1142226"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_3559",
+      "titleRu": "Dragon Quest V - Tenkuu no Hanayome",
+      "titleOriginal": "Dragon Quest V - Tenkuu no Hanayome",
+      "year": 1992,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q778453",
+          "Q7577190"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_130442",
+      "titleRu": "Pokemon Snap Station",
+      "titleOriginal": "Pokemon Snap Station",
+      "year": 1999,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1068734"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_17154",
+      "titleRu": "Ultima VI : The False Prophet",
+      "titleOriginal": "Ultima VI : The False Prophet",
+      "year": 1990,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q1193678"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_126679",
+      "titleRu": "Time Crisis",
+      "titleOriginal": "Time Crisis",
+      "year": 1995,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q309996",
+          "Q1194689"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_19711",
+      "titleRu": "Teenage Mutant Ninja Turtles",
+      "titleOriginal": "Teenage Mutant Ninja Turtles",
+      "year": 1989,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q1508297",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1989
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q2172154",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1989,
+                1990
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q16",
+            "code": "CA",
+            "nameRu": "Канада",
+            "nameEn": "Canada"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.mobygames.com/company/13/unlimited-software-inc/"
+        ],
+        "note": "Unlimited Software Inc. была портирующим подразделением канадской Distinctive Software."
+      }
+    },
+    {
+      "itemId": "tgdb_94821",
+      "titleRu": "Soul Calibur II [Greatest Hits]",
+      "titleOriginal": "Soul Calibur II [Greatest Hits]",
+      "year": 2003,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q20828788"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_5217",
+      "titleRu": "Star Raiders",
+      "titleOriginal": "Star Raiders",
+      "year": 1982,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q13409231"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_185",
+      "titleRu": "Shining Force III",
+      "titleOriginal": "Shining Force III",
+      "year": 1998,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q3281068",
+            "match": {
+              "valid": true,
+              "score": 97,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1997
+              ],
+              "yearDistance": 1,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q90019396",
+            "match": {
+              "valid": true,
+              "score": 97,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1997
+              ],
+              "yearDistance": 1,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q684780"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_111910",
+      "titleRu": "Suikoden II",
+      "titleOriginal": "Suikoden II",
+      "year": 2000,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.konami.com/games/ca/en/topics/28/",
+          "https://www.mobygames.com/game/4854/suikoden-ii/"
+        ],
+        "note": "Suikoden II разработана Konami Computer Entertainment Tokyo в Японии."
+      }
+    },
+    {
+      "itemId": "tgdb_25780",
+      "titleRu": "Gradius",
+      "titleOriginal": "Gradius",
+      "year": 1985,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q1324646",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1985,
+                1986,
+                1987,
+                1991,
+                1988
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q6582709",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1985
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q45700"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_10686",
+      "titleRu": "Batman",
+      "titleOriginal": "Batman",
+      "year": 1990,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q2891476",
+            "match": {
+              "valid": true,
+              "score": 95,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1990,
+                1992
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q596699",
+            "match": {
+              "valid": true,
+              "score": 95,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1990
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q245863",
+            "match": {
+              "valid": true,
+              "score": 87,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                1989
+              ],
+              "yearDistance": 1,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q1061580",
+          "Q207922"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_5095",
+      "titleRu": "Snatcher",
+      "titleOriginal": "Snatcher",
+      "year": 1994,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q45700"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_96963",
+      "titleRu": "The Legend of Zelda - The Minish Cap",
+      "titleOriginal": "The Legend of Zelda - The Minish Cap",
+      "year": 2004,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q14428"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_24314",
+      "titleRu": "Sega GT 2002 & JSRF: Jet Set Radio Future",
+      "titleOriginal": "Sega GT 2002 & JSRF: Jet Set Radio Future",
+      "year": 2002,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.sega.co.jp/en/company/profile/index.html"
+        ],
+        "note": "Обе игры в сборнике разработаны японскими студиями Sega."
+      }
+    },
+    {
+      "itemId": "tgdb_2519",
+      "titleRu": "Pikmin",
+      "titleOriginal": "Pikmin",
+      "year": 2001,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q1198484",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2001,
+                2002,
+                2008,
+                2009,
+                2023
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q8198020",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2001
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q170420"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_6055",
+      "titleRu": "Fable",
+      "titleOriginal": "Fable",
+      "year": 2004,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q765389"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_6794",
+      "titleRu": "Dragon Quest IV: Chapters of the Chosen",
+      "titleOriginal": "Dragon Quest IV: Chapters of the Chosen",
+      "year": 2008,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q2864819"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_527",
+      "titleRu": "Pokemon Ruby/Sapphire",
+      "titleOriginal": "Pokemon Ruby/Sapphire",
+      "year": 2002,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q782028"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_3659",
+      "titleRu": "Fatal Fury: Mark Of The Wolves",
+      "titleOriginal": "Fatal Fury: Mark Of The Wolves",
+      "year": 2001,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1044563",
+          "Q1073880"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_124044",
+      "titleRu": "Guild Wars",
+      "titleOriginal": "Guild Wars",
+      "year": 2005,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q219335",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2005
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          },
+          {
+            "qid": "Q2918410",
+            "match": {
+              "valid": true,
+              "score": 105,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2005
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": true
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q495054"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_78580",
+      "titleRu": "Roller Coaster Tycoon 3: Soaked!",
+      "titleOriginal": "Roller Coaster Tycoon 3: Soaked!",
+      "year": 2005,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q13409231"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_95379",
+      "titleRu": "Burnout: Revenge",
+      "titleOriginal": "Burnout: Revenge",
+      "year": 2005,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q1548159"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_829",
+      "titleRu": "Sin & Punishment: Successor to the Sky",
+      "titleOriginal": "Sin & Punishment: Successor to the Sky",
+      "year": 2009,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q1188050",
+          "Q2633052"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_125557",
+      "titleRu": "Black",
+      "titleOriginal": "Black",
+      "year": 2006,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q1548159"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_923",
+      "titleRu": "Phoenix Wright: Ace Attorney: Trials & Tribulations",
+      "titleOriginal": "Phoenix Wright: Ace Attorney: Trials & Tribulations",
+      "year": 2007,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q14428"
+        ]
+      }
+    },
+    {
+      "itemId": "steam_1151340",
+      "titleRu": "Fallout 76",
+      "titleOriginal": "Fallout 76",
+      "year": 2020,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q3300783"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_103667",
+      "titleRu": "The Last of Us",
+      "titleOriginal": "The Last of Us",
+      "year": 2013,
+      "identity": {
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "qid": "Q1986744",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2013,
+                2014
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q28062624",
+            "match": {
+              "valid": true,
+              "score": 99,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2013,
+                2014,
+                2020,
+                2022,
+                2023
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": true,
+              "developerOverlap": false
+            }
+          },
+          {
+            "qid": "Q55240246",
+            "match": {
+              "valid": true,
+              "score": 95,
+              "nameMatch": true,
+              "isGame": true,
+              "years": [
+                2013
+              ],
+              "yearDistance": 0,
+              "yearMatch": true,
+              "platformOverlap": false,
+              "developerOverlap": false
+            }
+          }
+        ]
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q720871"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_118093",
+      "titleRu": "Doom",
+      "titleOriginal": "Doom",
+      "year": 2016,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q204474"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_34972",
+      "titleRu": "The Witcher 3: Wild Hunt - Hearts of Stone",
+      "titleOriginal": "The Witcher 3: Wild Hunt - Hearts of Stone",
+      "year": 2015,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q36",
+            "code": "PL",
+            "nameRu": "Польша",
+            "nameEn": "Poland"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q36"
+        ],
+        "developerIds": [
+          "Q1172164"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_64513",
+      "titleRu": "Starcraft 2 Battle Chest",
+      "titleOriginal": "Starcraft 2 Battle Chest",
+      "year": 2015,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q178824"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_24878",
+      "titleRu": "Street Fighter III: Third Strike Online Edition",
+      "titleOriginal": "Street Fighter III: Third Strike Online Edition",
+      "year": 2011,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q6072534"
+        ]
+      }
+    },
+    {
+      "itemId": "steam_2124490",
+      "titleRu": "Silent Hill 2",
+      "titleOriginal": "SILENT HILL 2",
+      "year": 2024,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q36",
+            "code": "PL",
+            "nameRu": "Польша",
+            "nameEn": "Poland"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q36"
+        ],
+        "developerIds": [
+          "Q389526"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_14495",
+      "titleRu": "Kerbal Space Program",
+      "titleOriginal": "Kerbal Space Program",
+      "year": 2011,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q96",
+            "code": "MX",
+            "nameRu": "Мексика",
+            "nameEn": "Mexico"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.wikidata.org/wiki/Q21010246"
+        ],
+        "note": "Squad — студия из Мехико, разработчик Kerbal Space Program."
+      }
+    },
+    {
+      "itemId": "tgdb_48943",
+      "titleRu": "P0 Snake",
+      "titleOriginal": "P0 Snake",
+      "year": 2015,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "manual_verified",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [],
+        "developerIds": [],
+        "sourceUrls": [
+          "https://www.rgcd.co.uk/p/rgcddev.html",
+          "https://rgcd.bigcartel.com/product/p0-snake-commodore-64"
+        ],
+        "note": "Карточка указывает RGCD; подразделение разработки RGCD.DEV базируется в Эксетере, Великобритания."
+      }
+    },
+    {
+      "itemId": "tgdb_122106",
+      "titleRu": "Pokémon Sonne",
+      "titleOriginal": "Pokémon Sonne",
+      "year": 2016,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q782028"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_492",
+      "titleRu": "Pokemon Black/White",
+      "titleOriginal": "Pokemon Black/White",
+      "year": 2011,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q782028"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_14536",
+      "titleRu": "Ni no Kuni: Wrath of the White Witch",
+      "titleOriginal": "Ni no Kuni: Wrath of the White Witch",
+      "year": 2013,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q674686"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_4426",
+      "titleRu": "Monster Hunter 3 Tri",
+      "titleOriginal": "Monster Hunter 3 Tri",
+      "year": 2010,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q14428"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_701",
+      "titleRu": "Super Smash Bros For 3DS",
+      "titleOriginal": "Super Smash Bros For 3DS",
+      "year": 2014,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q11328408",
+          "Q1317078"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_748",
+      "titleRu": "Silent Hills: P.T.",
+      "titleOriginal": "Silent Hills: P.T.",
+      "year": 2014,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q2531521",
+          "Q22123955"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_15181",
+      "titleRu": "Monster Hunter 3 Ultimate",
+      "titleOriginal": "Monster Hunter 3 Ultimate",
+      "year": 2013,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q2937216"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_27805",
+      "titleRu": "Tales from the Borderlands: A Telltale Game Series",
+      "titleOriginal": "Tales from the Borderlands: A Telltale Game Series",
+      "year": 2014,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q1383563",
+          "Q85805488"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_807",
+      "titleRu": "Professor Layton & The Unwound Future",
+      "titleOriginal": "Professor Layton & The Unwound Future",
+      "year": 2010,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q674686"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_75574",
+      "titleRu": "The Walking Dead",
+      "titleOriginal": "The Walking Dead",
+      "year": 2017,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q30",
+            "code": "US",
+            "nameRu": "США",
+            "nameEn": "United States of America"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q30"
+        ],
+        "developerIds": [
+          "Q1383563",
+          "Q85805488"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_103553",
+      "titleRu": "Yakuza 0",
+      "titleOriginal": "Yakuza 0",
+      "year": 2017,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q18415238"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_42738",
+      "titleRu": "Snipperclips - Cut it out, together!",
+      "titleOriginal": "Snipperclips - Cut it out, together!",
+      "year": 2017,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q145",
+            "code": "GB",
+            "nameRu": "Великобритания",
+            "nameEn": "United Kingdom"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q145"
+        ],
+        "developerIds": [
+          "Q18161696"
+        ]
+      }
+    },
+    {
+      "itemId": "tgdb_67292",
+      "titleRu": "Pokemon Sword / Shield Dual Pack",
+      "titleOriginal": "Pokemon Sword / Shield Dual Pack",
+      "year": 2019,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q782028"
+        ]
+      }
+    },
+    {
+      "itemId": "fallback_seed_568",
+      "titleRu": "Pokemon: Let's Go, Pikachu! and Let's Go, Eevee!",
+      "titleOriginal": "Pokemon: Let's Go, Pikachu! and Let's Go, Eevee!",
+      "year": 2018,
+      "identity": {
+        "status": "unresolved",
+        "candidates": []
+      },
+      "countries": {
+        "status": "resolved",
+        "method": "card_developer_wikidata",
+        "conflict": false,
+        "values": [
+          {
+            "wikidataId": "Q17",
+            "code": "JP",
+            "nameRu": "Япония",
+            "nameEn": "Japan"
+          }
+        ],
+        "directCountryIds": [],
+        "developerCountryIds": [
+          "Q17"
+        ],
+        "developerIds": [
+          "Q782028"
+        ]
+      }
+    }
+  ]
+}

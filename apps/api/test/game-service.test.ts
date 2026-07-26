@@ -47,6 +47,7 @@ describe('public game card', () => {
       alternativeTitles: [],
       popularityScore: 0,
       year: 1998,
+      countries: ['Япония'],
       genres: ['Racing'],
       developers: ['Nintendo EAD'],
       publishers: ['Nintendo of America, Inc.'],
@@ -63,6 +64,7 @@ describe('public game card', () => {
     } as TitleItem
 
     const card = publicCard(item)
+    expect(card.countries).toEqual(['Япония'])
     expect(card.developers).toEqual(['Nintendo EAD'])
     expect(card.publishers).toEqual(['Nintendo of America, Inc.'])
     expect(card.platforms).toEqual(['Nintendo 64'])
