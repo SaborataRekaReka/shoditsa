@@ -1158,9 +1158,10 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectDtfSpecial: () => void
+  onSelectKpopSpecial: () => void
   onSelectFriends: () => void
   onDanetki: () => void
   danetkiEnabled: boolean
@@ -1172,6 +1173,8 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
   onResume: () => void
   onOpenSaved: (game: SavedGame) => void
   canAccessDtfSpecial: boolean
+  canAccessKpopSpecial: boolean
+  kpopPoolCount: number | null
   canAccessFriendsRoom: boolean
   activeSessionsCount: number
   games: SavedGame[]
@@ -1282,6 +1285,25 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectFriends, onDanetki, d
             onClick={() => {
               trackMetrikaGoal('pack_opened', { packId: DTF_COMMENTS_PACK_ID, placement: 'hub_specials' })
               onSelectDtfSpecial()
+            }}
+          />}
+          {canAccessKpopSpecial && <CategoryTicket
+            mode="music"
+            title="K-pop: угадай артиста"
+            description="Один артист в день. Сверяйте год дебюта, поколение, тип, пол, лейбл, состав и статус активности."
+            color="#d33178"
+            icon={Sparkles}
+            watermarkUrl={publicAssetUrl('images/specials/kpop-special-card.webp')}
+            poolCount={kpopPoolCount}
+            poolLabel="АРТИСТОВ"
+            kicker="СПЕЦПОКАЗ · 1 В ДЕНЬ"
+            newActionLabel="ИГРАТЬ"
+            status="new"
+            attempts={null}
+            href={pathnameForPlayerRoute({ screen: 'special', packId: KPOP_ARTISTS_PACK_ID })}
+            onClick={() => {
+              trackMetrikaGoal('pack_opened', { packId: KPOP_ARTISTS_PACK_ID, placement: 'hub_specials' })
+              onSelectKpopSpecial()
             }}
           />}
           <CategoryTicket
@@ -3606,6 +3628,13 @@ function GameApp() {
     queryFn: () => api.archive(),
     enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
   })
+  const serverPacks = useQuery({
+    queryKey: queryKeys.packs,
+    queryFn: api.packs,
+    enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
+  })
+  const kpopPack = serverPacks.data?.items.find((pack) => pack.id === KPOP_ARTISTS_PACK_ID) ?? null
+  const canAccessKpopSpecial = Boolean(kpopPack)
   const [challenge, setChallenge] = useState<ChallengePayload | null>(() => typeof window === 'undefined' ? null : parseChallengeUrl(window.location.href))
   const [challengeAccepted, setChallengeAccepted] = useState(false)
   const [screen, setScreen] = useState<AppScreen>(() => resetPasswordTokenFromLocation()
@@ -4269,6 +4298,13 @@ function GameApp() {
     void navigateToPlayerRoute({ screen: 'special', packId: DTF_COMMENTS_PACK_ID })
   }
 
+  const selectKpopSpecial = () => {
+    if (!canAccessKpopSpecial) return
+    setServerActionError('')
+    setModal(null)
+    void navigateToPlayerRoute({ screen: 'special', packId: KPOP_ARTISTS_PACK_ID })
+  }
+
   const selectFriendsRoom = (initialMode?: 'danetki') => {
     const destination = initialMode ? '/games/together?mode=danetki' : '/games/together?new=1'
     if (!canAccessFriendsRoom) {
@@ -4582,7 +4618,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} />}
     {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}
