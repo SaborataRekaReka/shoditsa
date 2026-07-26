@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-26T06:34:04.786Z",
+  "activeRevision": {
+    "id": "24dcf3bb-09cb-47c3-a396-e756fef00a0c",
+    "version": "20260726T063126749Z-movie-history-repair-85e485cd",
+    "checksum": "85e485cdcf2a7525c3986eef02284299d9f95eead4ba75df0940c885ea9c47ca"
+  },
+  "repairs": [],
+  "duplicateGroups": [],
+  "publicationImpact": {
+    "removedFromRegularPool": [],
+    "addedToRegularPool": [],
+    "retainedAnswersViaCanonical": []
+  },
+  "countsBefore": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "countsAfter": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 998,
+    "music": 306,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 5
+  },
+  "resultingPayloads": {}
+}
