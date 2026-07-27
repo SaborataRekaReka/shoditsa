@@ -23,7 +23,10 @@ const sourceArtist = (overrides = {}) => ({
   'Официальные цвета': ['Cyan'],
   'Дебютный релиз': 'First EP',
   'Дебютная песня': 'First Song',
-  'Фотография': { 'Имя файла': 'Sample Unit photo.png' },
+  'Фотография': {
+    'Имя файла': 'Sample Unit photo.png',
+    'Прямая ссылка на изображение': 'https://example.com/sample.png',
+  },
   ...overrides,
 })
 
@@ -42,7 +45,8 @@ test('maps the K-pop source to a separate non-regular card type', () => {
   assert.equal(item.kpopGeneration, 4)
   assert.equal(item.kpopCurrentLabel, 'New Label')
   assert.equal(item.kpopClues.debutLabel, 'Old Label')
-  assert.equal(item.posterUrl, '/media/kpop/artists/Sample%20Unit%20photo.png')
+  assert.equal(item.posterUrl, '/images/kpop/artists/sample.webp')
+  assert.match(item.kpopCurrentLabelLogoUrl, /^\/images\/kpop\/labels\/[a-f0-9]{16}\.webp$/)
   assert.deepEqual(item.alternativeTitles, ['샘플', 'SU'])
 })
 

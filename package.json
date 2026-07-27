@@ -86,6 +86,7 @@
     "data:import:dtf-special-games": "node scripts/games/import-dtf-special-games.mjs",
     "data:build:cities": "node scripts/cities/import-cities.mjs",
     "data:build:music:test": "node scripts/music/build-dataset.mjs",
+    "data:download:kpop-media": "node scripts/kpop/download-media.mjs",
     "data:build:kpop-special": "node scripts/kpop/build-special.mjs",
     "data:build:kpop-special:test": "node --test scripts/kpop/build-special.test.mjs",
     "data:agent:music": "node scripts/music/run-agent-cycle.mjs",

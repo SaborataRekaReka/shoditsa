@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -30,10 +31,20 @@ const namesFromAlternatives = (value) => Array.isArray(value)
   ? value.map((entry) => typeof entry === 'string' ? text(entry) : text(entry?.['Название'])).filter(Boolean)
   : []
 const unique = (values) => [...new Set(values.map(text).filter(Boolean))]
-const localPhotoUrl = (fileName) => fileName
-  ? `/media/kpop/artists/${encodeURIComponent(fileName)}`
+const sourceImageUrl = (value) => nullableText(value?.['Прямая ссылка на изображение'])
+
+export const artistPhotoFileName = (sourceId) => `${encodeURIComponent(sourceId)}.webp`
+export const artistPhotoUrl = (sourceId, photo) => sourceImageUrl(photo)
+  ? `/images/kpop/artists/${artistPhotoFileName(sourceId)}`
   : null
-const logoUrl = (value) => nullableText(value?.['Прямая ссылка на изображение'])
+export const labelLogoFileName = (logo) => {
+  const url = sourceImageUrl(logo)
+  return url ? `${createHash('sha256').update(url).digest('hex').slice(0, 16)}.webp` : null
+}
+export const labelLogoUrl = (logo) => {
+  const fileName = labelLogoFileName(logo)
+  return fileName ? `/images/kpop/labels/${fileName}` : null
+}
 
 const musicType = (performerType) => {
   if (performerType === 'Соло-исполнитель') return 'Person'
@@ -79,7 +90,7 @@ export const transformKpopArtist = (source, index = 0) => {
     countries: ['KR'],
     genres: ['k-pop'],
     popularityScore: Math.max(1, 1_000 - index),
-    posterUrl: localPhotoUrl(photoFileName),
+    posterUrl: artistPhotoUrl(sourceId, source['Фотография']),
     contentStatus: 'test',
     allowedInGame: false,
     gameTier: 'experimental',
@@ -93,7 +104,7 @@ export const transformKpopArtist = (source, index = 0) => {
     kpopGender: nullableText(source['Пол']),
     kpopGeneration: generationForDebutYear(debutYear),
     kpopCurrentLabel: nullableText(source['Текущий корейский лейбл']),
-    kpopCurrentLabelLogoUrl: logoUrl(source['Логотип текущего лейбла']),
+    kpopCurrentLabelLogoUrl: labelLogoUrl(source['Логотип текущего лейбла']),
     kpopDebutMembers: Number.isInteger(source['Участников на дебюте']) ? source['Участников на дебюте'] : null,
     kpopActivityStatus: activityStatus,
     kpopPhotoFileName: photoFileName,
