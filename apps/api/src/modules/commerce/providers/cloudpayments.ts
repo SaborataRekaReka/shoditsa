@@ -15,6 +15,7 @@ export type CloudPaymentsCredentials = {
 type CloudPaymentsModel = {
   TransactionId?: number | string
   PaymentTransactionId?: number | string
+  OriginalTransactionId?: number | string
   Amount?: number | string
   Currency?: string
   InvoiceId?: string
@@ -22,6 +23,7 @@ type CloudPaymentsModel = {
   SubscriptionId?: string
   Status?: string
   OperationType?: string
+  Type?: number | string
   CreatedDateIso?: string
   AuthDateIso?: string
   ConfirmDateIso?: string
@@ -124,10 +126,13 @@ const optionalDate = (raw: unknown) => {
 }
 
 const transactionStatus = (model: CloudPaymentsModel): VerifiedPaymentState['status'] => {
-  if (
+  const isSuccessfulRefund = (
     model.OperationType?.toLocaleLowerCase('en-US') === 'refund'
-    && (model.Status === 'Authorized' || model.Status === 'Completed')
-  ) return 'refunded'
+    || model.Type === 1
+    || model.Type === '1'
+    || (model.OriginalTransactionId != null && String(model.OriginalTransactionId).trim() !== '')
+  ) && (model.Status === 'Authorized' || model.Status === 'Completed')
+  if (isSuccessfulRefund) return 'refunded'
   if (model.Refunded) return 'refunded'
   if (model.Status === 'Completed') return 'paid'
   if (model.Status === 'Cancelled') return 'canceled'

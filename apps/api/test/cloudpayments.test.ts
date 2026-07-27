@@ -160,8 +160,8 @@ describe('CloudPayments provider adapter', () => {
       Success: true,
       Model: {
         TransactionId: 900000002,
-        PaymentTransactionId: 897749645,
-        OperationType: 'Refund',
+        OriginalTransactionId: 897749645,
+        Type: 1,
         InvoiceId: input.orderId,
         AccountId: input.metadata.userId,
         Amount: 199,
