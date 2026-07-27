@@ -703,8 +703,8 @@
 
 .club-plan-card .checkout-acceptance {
   width: 100%;
-  min-height: 44px;
-  margin-bottom: 8px;
+  min-height: 30px;
+  margin-bottom: 3px;
   color: var(--color-paper-muted-2);
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr);
@@ -725,7 +725,7 @@
 }
 
 .club-plan-card .checkout-acceptance a {
-  min-height: 28px;
+  min-height: 20px;
   color: var(--color-success-ink);
   font-weight: 800;
   text-underline-offset: 2px;

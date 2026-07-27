@@ -11,8 +11,8 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
   const keyRef = useRef<string | null>(null)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
-  const [accepted, setAccepted] = useState(false)
-  const [autoRenew, setAutoRenew] = useState(false)
+  const [accepted, setAccepted] = useState(true)
+  const [autoRenew, setAutoRenew] = useState(true)
   const acceptanceId = useId()
   const autoRenewId = useId()
 
