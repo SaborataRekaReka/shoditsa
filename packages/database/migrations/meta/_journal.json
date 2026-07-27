@@ -253,6 +253,13 @@
       "when": 1785133339859,
       "tag": "0035_wide_madrox",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1785154629088,
+      "tag": "0036_fix_economy_rule_sets_created_at",
+      "breakpoints": true
     }
   ]
 }
