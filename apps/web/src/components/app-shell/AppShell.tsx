@@ -284,53 +284,47 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
 export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => void; onArchive: () => void; onRules: () => void; onProfile: () => void }) {
   return <footer className="app-footer">
     <div className="app-footer__inner">
-      <div className="app-footer__top">
+      <div className="app-footer__head">
         <div className="app-footer__brand">
           <button className="app-footer__home" onClick={onHome} aria-label="На главный экран"><BrandLogo /></button>
-          <p><strong>Игра, к которой приятно возвращаться</strong><span>Новая загадка каждый день. Без спешки и бесконечной ленты.</span></p>
+          <p><strong>Неспешная игра на каждый день</strong><span>Новая загадка после полуночи по Москве</span></p>
         </div>
-        <div className="app-footer__nav-groups">
-          <nav className="app-footer__nav-group app-footer__nav-group--games" aria-label="Все игры">
-            <span>Игры</span>
-            <div>
-              <a className="app-footer__link" href="/games/movie">Кино</a>
-              <a className="app-footer__link" href="/games/series">Сериалы</a>
-              <a className="app-footer__link" href="/games/anime">Аниме</a>
-              <a className="app-footer__link" href="/games/game">Игры</a>
-              <a className="app-footer__link" href="/games/city">Города</a>
-              <a className="app-footer__link" href="/games/music">Музыка</a>
-              <a className="app-footer__link" href="/games/diagnosis">Диагнозы</a>
-              <a className="app-footer__link" href="/games/danetki">Данетки</a>
-            </div>
-          </nav>
-          <nav className="app-footer__nav-group" aria-label="Игровые разделы">
-            <span>Разделы</span>
-            <div>
-              <button className="app-footer__link" onClick={onHome}>Сегодня</button>
-              <button className="app-footer__link" onClick={onArchive}>Архив</button>
-              <a className="app-footer__link" href="/specials">Спецпоказы</a>
-              <a className="app-footer__link app-footer__link--club" href="/club"><Crown />Клуб</a>
-            </div>
-          </nav>
-          <nav className="app-footer__nav-group" aria-label="О проекте">
-            <span>Сервис</span>
-            <div>
-              <button className="app-footer__link" onClick={onProfile}>Профиль</button>
-              <button className="app-footer__link" onClick={onRules}>Как играть</button>
-              <a className="app-footer__link" href="/partners">Для компаний</a>
-            </div>
-          </nav>
-        </div>
-      </div>
-      <div className="app-footer__bottom">
-        <nav className="app-footer__legal" aria-label="Юридическая информация">
-          <a href="/legal/terms">Соглашение и оферта</a>
-          <a href="/legal/tariffs">Тарифы</a>
-          <a href="/legal/privacy">Конфиденциальность</a>
-          <a href="/legal/refunds">Оплата и возвраты</a>
-          <a href="/legal/contacts">Реквизиты</a>
-          <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Cookie</button>
+        <nav className="app-footer__primary" aria-label="Основные разделы">
+          <button className="app-footer__link" onClick={onHome}>Сегодня</button>
+          <button className="app-footer__link" onClick={onArchive}>Архив</button>
+          <a className="app-footer__link" href="/specials">Спецпоказы</a>
+          <a className="app-footer__link app-footer__link--club" href="/club"><Crown />Клуб</a>
         </nav>
+      </div>
+      <nav className="app-footer__games" aria-label="Все игры">
+        <span>Все игры</span>
+        <div>
+          <a href="/games/movie">Кино</a>
+          <a href="/games/series">Сериалы</a>
+          <a href="/games/anime">Аниме</a>
+          <a href="/games/game">Игры</a>
+          <a href="/games/city">Города</a>
+          <a href="/games/music">Музыка</a>
+          <a href="/games/diagnosis">Диагнозы</a>
+          <a href="/games/danetki">Данетки</a>
+        </div>
+      </nav>
+      <div className="app-footer__bottom">
+        <div className="app-footer__secondary">
+          <nav className="app-footer__utility" aria-label="Сервис">
+            <button onClick={onProfile}>Профиль</button>
+            <button onClick={onRules}>Как играть</button>
+            <a href="/partners">Для компаний</a>
+          </nav>
+          <nav className="app-footer__legal" aria-label="Юридическая информация">
+            <a href="/legal/terms">Оферта</a>
+            <a href="/legal/tariffs">Тарифы</a>
+            <a href="/legal/privacy">Конфиденциальность</a>
+            <a href="/legal/refunds">Возвраты</a>
+            <a href="/legal/contacts">Реквизиты</a>
+            <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Cookie</button>
+          </nav>
+        </div>
         <small className="app-footer__copy">© {new Date().getFullYear()} Сходится! · ИП Бренейзе А. В.<br />ИНН 540552157271 · ОГРНИП 318547600133003</small>
       </div>
     </div>
