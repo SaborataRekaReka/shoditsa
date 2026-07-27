@@ -79,10 +79,6 @@
   border-top: 1px solid var(--color-line);
 }
 
-.category-section--specials .category-grid--active {
-  grid-template-columns: minmax(0, 560px);
-}
-
 .category-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 12px; }
 
 .category-heading span { font: 500 18px Oswald, sans-serif; letter-spacing: .07em; text-transform: uppercase; }
