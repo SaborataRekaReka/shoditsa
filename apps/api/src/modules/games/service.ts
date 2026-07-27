@@ -25,6 +25,7 @@ import { canStartArchiveSession } from '../archive/access.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
 import { loadAssignedEconomyRules } from '../economy/rules.js'
 import { isSpecialSession } from './special.js'
+import { canAccessPack } from '../packs/access.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
 import { recordPackCompletion } from '../packs/progress.js'
@@ -403,7 +404,7 @@ export const startGame = async (db: Database, userId: string, input: {
       ))
       .limit(1)
     if (existing[0]) return buildSessionSnapshot(tx, existing[0].session)
-    if (!await hasEntitlement(tx, userId, 'club', undefined, new Date())) {
+    if (!(await canAccessPack(tx, userId, KPOP_ARTISTS_PACK_ID, 1, actorRole)).allowed) {
       throw new ApiError(403, 'CLUB_REQUIRED', 'Спецпоказы доступны участникам Клуба', {
         feature: 'special',
         packId: KPOP_ARTISTS_PACK_ID,

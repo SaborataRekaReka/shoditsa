@@ -44,7 +44,7 @@ const packCard = async (
     priceMinor: null,
     currency: null,
     access: publicAccess(source),
-    owned: false,
+    owned: source === 'personal',
     completedItems: userId ? progress?.completedPositions.length ?? 0 : 0,
   }
 }

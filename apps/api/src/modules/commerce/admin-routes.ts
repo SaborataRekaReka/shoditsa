@@ -1,13 +1,13 @@
 import type { FastifyInstance } from 'fastify'
 import { Type } from '@sinclair/typebox'
-import { and, desc, eq, lt } from 'drizzle-orm'
+import { and, desc, eq, gt, isNull, lt, or } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import {
   AdminCommerceListQuerySchema, AdminCommerceProductPatchSchema, AdminEntitlementGrantBodySchema,
   AdminEntitlementRevokeBodySchema, UuidSchema,
   type AdminCommerceListQuery, type AdminCommerceProductPatch, type AdminEntitlementGrantBody, type AdminEntitlementRevokeBody,
 } from '@shoditsa/contracts'
-import { auditLog, commerceProducts, paymentOrders, user, userEntitlements, type Database } from '@shoditsa/database'
+import { auditLog, commerceProducts, contentPacks, paymentOrders, user, userEntitlements, type Database } from '@shoditsa/database'
 import type { Auth } from '../auth/auth.js'
 import { requireAdmin } from '../auth/session.js'
 import { ApiError, requireIdempotencyKey } from '../../lib/errors.js'
@@ -60,12 +60,33 @@ export const registerCommerceAdminRoutes = async (app: FastifyInstance, deps: De
     const body = request.body as AdminEntitlementGrantBody
     const idempotencyKey = requireIdempotencyKey(request)
     if (body.entitlementKey === 'club' && (!body.durationDays || body.permanent)) throw new ApiError(422, 'ENTITLEMENT_DURATION_REQUIRED', 'Для ручного клубного доступа укажите срок')
+    if (body.entitlementKey === 'pack' && !body.scope) throw new ApiError(422, 'ENTITLEMENT_SCOPE_REQUIRED', 'Для персонального доступа укажите спецпоказ')
+    if (body.entitlementKey === 'pack' && !body.permanent && !body.durationDays) throw new ApiError(422, 'ENTITLEMENT_DURATION_REQUIRED', 'Укажите срок персонального доступа или выдайте его навсегда')
     if (body.entitlementKey === 'supporter' && !body.scope) throw new ApiError(422, 'ENTITLEMENT_SCOPE_REQUIRED', 'Для supporter-жетона укажите scope')
     if (body.entitlementKey === 'supporter' && !body.permanent) throw new ApiError(422, 'ENTITLEMENT_PERMANENT_REQUIRED', 'Supporter-жетон должен быть постоянным')
+    if (!(await deps.db.select({ id: user.id }).from(user).where(eq(user.id, body.userId)).limit(1))[0]) {
+      throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
+    }
+    if (body.entitlementKey === 'pack') {
+      const pack = (await deps.db.select({ status: contentPacks.status }).from(contentPacks).where(eq(contentPacks.id, body.scope!)).limit(1))[0]
+      if (!pack) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
+      if (pack.status !== 'published') throw new ApiError(409, 'PACK_NOT_PUBLISHED', 'Персональный доступ можно выдать только к опубликованному спецпоказу')
+    }
     const sourceId = `${actor.id}:${idempotencyKey}`
     return deps.db.transaction(async (tx) => {
       const replay = (await tx.select().from(userEntitlements).where(and(eq(userEntitlements.sourceType, 'admin'), eq(userEntitlements.sourceId, sourceId))).limit(1))[0]
       if (replay) return replay
+      if (body.entitlementKey === 'pack') {
+        await tx.select({ id: user.id }).from(user).where(eq(user.id, body.userId)).for('update').limit(1)
+        const existing = (await tx.select().from(userEntitlements).where(and(
+          eq(userEntitlements.userId, body.userId),
+          eq(userEntitlements.entitlementKey, 'pack'),
+          eq(userEntitlements.scope, body.scope!),
+          eq(userEntitlements.status, 'active'),
+          or(isNull(userEntitlements.endsAt), gt(userEntitlements.endsAt, new Date())),
+        )).for('update').limit(1))[0]
+        if (existing) return existing
+      }
       const startsAtInput = body.startsAt ? new Date(body.startsAt) : new Date()
       let startsAt = startsAtInput
       if (body.entitlementKey === 'club') {

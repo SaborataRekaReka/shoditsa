@@ -166,7 +166,7 @@ export type AdminCommerceProductPatch = Static<typeof AdminCommerceProductPatchS
 
 export const AdminEntitlementGrantBodySchema = Type.Object({
   userId: UuidSchema,
-  entitlementKey: Type.Union([Type.Literal('club'), Type.Literal('supporter')]),
+  entitlementKey: Type.Union([Type.Literal('club'), Type.Literal('pack'), Type.Literal('supporter')]),
   scope: Type.Optional(Type.Union([Type.String({ minLength: 1, maxLength: 160 }), Type.Null()])),
   startsAt: Type.Optional(DateTimeSchema),
   durationDays: Type.Optional(Type.Integer({ minimum: 1, maximum: 36_500 })),

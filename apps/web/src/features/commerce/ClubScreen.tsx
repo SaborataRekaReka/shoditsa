@@ -145,7 +145,9 @@ export function ClubScreen({
     enabled: SERVER_RUNTIME,
   })
   const membership = commerce.data?.membership ?? runtime.dashboard?.membership
-  const currentSpecial = packs.data?.items.find((pack) => pack.includedInClub) ?? packs.data?.items[0]
+  const currentSpecial = packs.data?.items.find((pack) => pack.access === 'personal')
+    ?? packs.data?.items.find((pack) => pack.includedInClub)
+    ?? packs.data?.items[0]
   const view = buildClubPageViewModel({
     authenticated,
     firstName: runtime.me?.user.name?.trim().split(/\s+/)[0],
@@ -236,11 +238,12 @@ export function ClubScreen({
   }
 
   const openSpecial = () => {
-    if (!hasClub) return lockedAction('Этот спецпоказ входит в клубный билет.')
+    if (!hasClub && currentSpecial?.access === 'locked') return lockedAction('Этот спецпоказ входит в клубный билет.')
     window.location.assign(view.currentSpecial
       ? `/specials/${encodeURIComponent(view.currentSpecial.id)}`
       : '/specials')
   }
+  const canOpenCurrentSpecial = hasClub || Boolean(currentSpecial && currentSpecial.access !== 'locked')
 
   const monthly = view.pricing.monthly
   const annual = view.pricing.annual
@@ -292,10 +295,10 @@ export function ClubScreen({
               <ActionButton
                 type="button"
                 variant="secondary"
-                onClick={hasClub ? openSpecial : () => document.getElementById('club-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                onClick={canOpenCurrentSpecial ? openSpecial : () => document.getElementById('club-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
               >
-                {hasClub ? <Clapperboard aria-hidden="true" /> : <Eye aria-hidden="true" />}
-                {hasClub ? 'Открыть спецпоказ' : 'Посмотреть, что внутри'}
+                {canOpenCurrentSpecial ? <Clapperboard aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                {canOpenCurrentSpecial ? 'Открыть спецпоказ' : 'Посмотреть, что внутри'}
               </ActionButton>
             </div>
             <div className="club-entry__service">
@@ -327,12 +330,12 @@ export function ClubScreen({
               description={specialDescription}
               image={specialImage}
               imageAlt=""
-              icon={hasClub ? <Clapperboard aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
+              icon={canOpenCurrentSpecial ? <Clapperboard aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
               action={openSpecial}
-              actionLabel={hasClub ? 'Открыть спецпоказ' : 'Открыть с клубным билетом'}
-              clubOnly={!hasClub}
+              actionLabel={canOpenCurrentSpecial ? 'Открыть спецпоказ' : 'Открыть с клубным билетом'}
+              clubOnly={!canOpenCurrentSpecial}
               label="Клубный спецпоказ"
-              stamp={hasClub ? undefined : 'Только для клуба'}
+              stamp={canOpenCurrentSpecial ? undefined : 'Только для клуба'}
             />
             <div className="club-content__features">
               <ContentCard

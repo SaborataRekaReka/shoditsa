@@ -2274,6 +2274,12 @@
                       {
                         "type": "string",
                         "enum": [
+                          "pack"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
                           "supporter"
                         ]
                       }

@@ -6,7 +6,7 @@ import { hasEntitlement } from '../commerce/entitlements.js'
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Database | Transaction
 
-export type PackAccessSource = 'admin' | 'club' | 'locked'
+export type PackAccessSource = 'admin' | 'personal' | 'club' | 'locked'
 
 // Visibility is deliberately separate from launch access: every published
 // special is a public storefront card, while drafts and archives stay admin-only.
@@ -30,6 +30,7 @@ export const canAccessPack = async (
   if (!pack) return { allowed: false, source: 'locked' }
   if (role === 'admin') return { allowed: true, source: 'admin' }
   if (pack.status !== 'published' || !userId) return { allowed: false, source: 'locked' }
+  if (await hasEntitlement(db, userId, 'pack', packId, now)) return { allowed: true, source: 'personal' }
   if (await hasEntitlement(db, userId, 'club', undefined, now)) return { allowed: true, source: 'club' }
   return { allowed: false, source: 'locked' }
 }

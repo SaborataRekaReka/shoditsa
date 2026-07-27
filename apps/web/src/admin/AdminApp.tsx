@@ -4959,27 +4959,83 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
   const [q, setQ] = useState('')
   const [status, setStatus] = useState('')
   const [accountType, setAccountType] = useState<'' | 'permanent' | 'anonymous'>('')
+  const [selectedPackId, setSelectedPackId] = useState('')
   const users = useQuery({
     queryKey: ['admin', 'users', { q, status, accountType }],
     queryFn: () => adminApi.users({ q, status, accountType, limit: 60 }),
   })
   const detail = useQuery({ queryKey: ['admin', 'user', selectedId], queryFn: () => adminApi.user(selectedId!), enabled: Boolean(selectedId) })
+  const contentPacks = useQuery({ queryKey: ['admin', 'content-packs'], queryFn: adminApi.contentPacks })
   const action = useMutation({ mutationFn: ({ type, id }: { type: string; id: string }) => { if (type === 'block') { const reason = prompt('Обязательная причина блокировки'); if (!reason) throw new Error('Действие отменено'); return adminApi.blockUser(id, { reason, revokeSessions: true, blockedUntil: null }) } if (type === 'unblock') { const reason = prompt('Причина разблокировки'); if (!reason) throw new Error('Действие отменено'); return adminApi.unblockUser(id, reason) } if (type === 'note') { const note = prompt('Внутренняя заметка'); if (!note) throw new Error('Действие отменено'); return adminApi.addUserNote(id, note) } if (type === 'wallet') { const amount = Number(prompt('Корректировка билетов (может быть отрицательной)', '10')); const reason = prompt('Причина корректировки'); if (!Number.isFinite(amount) || !reason) throw new Error('Действие отменено'); return adminApi.adjustWallet(id, amount, reason) } return adminApi.revokeSessions(id) }, onSuccess: () => { notify('success', 'Действие выполнено'); void client.invalidateQueries({ queryKey: ['admin', 'users'] }); void client.invalidateQueries({ queryKey: ['admin', 'user', selectedId] }) }, onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) } })
+  const grantPackAccess = useMutation({
+    mutationFn: async ({ userId, packId }: { userId: string; packId: string }) => {
+      const reason = prompt('Причина выдачи доступа', 'Персональный доступ к спецпоказу')
+      if (!reason?.trim()) throw new Error('Действие отменено')
+      return adminApi.grantCommerceEntitlement({ userId, entitlementKey: 'pack', scope: packId, permanent: true, reason: reason.trim() })
+    },
+    onSuccess: () => {
+      notify('success', 'Персональный доступ к спецпоказу открыт')
+      setSelectedPackId('')
+      void client.invalidateQueries({ queryKey: ['admin', 'user', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'entitlements'] })
+    },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const revokePackAccess = useMutation({
+    mutationFn: async (id: string) => {
+      const reason = prompt('Причина отзыва персонального доступа')
+      if (!reason?.trim() || !confirm('Отозвать доступ к этому спецпоказу?')) throw new Error('Действие отменено')
+      return adminApi.revokeCommerceEntitlement(id, reason.trim())
+    },
+    onSuccess: () => {
+      notify('success', 'Персональный доступ отозван')
+      void client.invalidateQueries({ queryKey: ['admin', 'user', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'entitlements'] })
+    },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const publishedPacks = (contentPacks.data?.items ?? []).filter((raw) => String(record(raw).status) === 'published').map(record)
+  const packTitles = new Map((contentPacks.data?.items ?? []).map((raw) => {
+    const pack = record(raw)
+    return [String(pack.id), title(pack.title)] as const
+  }))
   const data = detail.data; const account = record(data?.user); const profile = record(data?.profile); const wallet = record(data?.wallet)
   return <><PageHead eyebrow="Аккаунты" title="Пользователи" description="Активность, игровые сессии, билеты, репорты и безопасные административные действия." />
     <div className="admin-toolbar admin-toolbar--users"><label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Email, ID или имя" /></label><div className="admin-periods admin-account-type-filter" role="group" aria-label="Тип аккаунта"><button type="button" className={accountType === '' ? 'is-active' : ''} aria-pressed={accountType === ''} onClick={() => setAccountType('')}>Все</button><button type="button" className={accountType === 'permanent' ? 'is-active' : ''} aria-pressed={accountType === 'permanent'} onClick={() => setAccountType('permanent')}><BadgeCheck />Зарегистрированные</button><button type="button" className={accountType === 'anonymous' ? 'is-active' : ''} aria-pressed={accountType === 'anonymous'} onClick={() => setAccountType('anonymous')}><UserRound />Гостевые</button></div><label><ShieldCheck /><select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Все состояния</option><option value="active">Активны</option><option value="blocked">Заблокированы</option></select></label></div>
     <div className="admin-split"><section className="admin-list-panel">{users.isLoading ? <Loading /> : users.data?.items.map((userItem) => <button key={userItem.id} className={selectedId === userItem.id ? 'is-active' : ''} onClick={() => navigate('users', userItem.id)}><span className={`admin-user-avatar ${userItem.isAnonymous ? 'is-guest' : 'is-registered'}`}>{userItem.isAnonymous ? '?' : title(userItem.displayName || userItem.name).slice(0, 1)}</span><span><header><strong>{userItem.isAnonymous ? 'Гость' : title(userItem.displayName || userItem.name)}</strong><time>{compactDate(userItem.lastActivityAt)}</time></header><p>{userItem.isAnonymous ? userItem.id : userItem.email}</p><small>{userItem.sessionsCount} сессий · {userItem.balance} билетов</small></span><span className="admin-user-state"><span className={`admin-account-type admin-account-type--${userItem.isAnonymous ? 'guest' : 'registered'}`}>{userItem.isAnonymous ? 'Гостевой' : 'Регистрация'}</span><Status value={userItem.accountStatus} /></span></button>)}</section><section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите пользователя" text="Откроются профиль, активность и операции." icon={<UserRound />} /> : detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} /> : <><header className="admin-user-head"><span className={`admin-user-avatar admin-user-avatar--large ${account.isAnonymous ? 'is-guest' : 'is-registered'}`}>{account.isAnonymous ? '?' : title(profile.displayName || account.name).slice(0, 1)}</span><div><div className="admin-user-head__statuses"><span className={`admin-account-type admin-account-type--${account.isAnonymous ? 'guest' : 'registered'}`}>{account.isAnonymous ? 'Гостевой аккаунт' : 'Зарегистрированный аккаунт'}</span><Status value={profile.accountStatus} /></div><h2>{account.isAnonymous ? 'Гость' : title(profile.displayName || account.name)}</h2><p>{account.isAnonymous ? 'Без регистрации' : title(account.email)} · <code>{selectedId}</code></p></div></header><div className="admin-user-actions"><button onClick={() => action.mutate({ type: profile.accountStatus === 'blocked' ? 'unblock' : 'block', id: selectedId })}><LockKeyhole />{profile.accountStatus === 'blocked' ? 'Разблокировать' : 'Заблокировать'}</button><button onClick={() => action.mutate({ type: 'revoke', id: selectedId })}><RefreshCw />Завершить сессии</button><button onClick={() => action.mutate({ type: 'note', id: selectedId })}><SquarePen />Заметка</button><button onClick={() => action.mutate({ type: 'wallet', id: selectedId })}><Ticket />Билеты</button><button onClick={() => void navigator.clipboard.writeText(selectedId)}><Copy />Копировать ID</button></div><div className="admin-user-kpis"><div><span>Баланс</span><strong>{String(wallet.balance ?? 0)}</strong><small>заработано {String(wallet.lifetimeEarned ?? 0)} · долг {String(wallet.purchaseDebt ?? 0)}</small></div><div><span>Сессии</span><strong>{array(data?.sessions).length}</strong><small>последние 30</small></div><div><span>Репорты</span><strong>{array(data?.reports).length}</strong><small>последние 30</small></div><div><span>Серия</span><strong>{String(record(data?.attendance).currentDailyStreak ?? 0)}</strong><small>дней</small></div></div>
       <section className="admin-user-game-access">
-        <header><div><KeyRound /><span><strong>Legacy-доступы к спецпоказам</strong><small>Сохранены для аудита и не дают права запуска. Спецпоказы открывает только Клуб.</small></span></div></header>
+        <header><div><KeyRound /><span><strong>Персональный доступ к спецпоказам</strong><small>Работает без Клуба. Доступ действует до ручного отзыва и записывается в аудит.</small></span></div></header>
+        <div className="admin-user-game-access__grant">
+          <label>
+            <span>Спецпоказ</span>
+            <select value={selectedPackId} onChange={(event) => setSelectedPackId(event.target.value)}>
+              <option value="">Выберите опубликованный спецпоказ</option>
+              {publishedPacks.map((pack) => <option value={String(pack.id)} key={String(pack.id)}>{title(pack.title)}</option>)}
+            </select>
+          </label>
+          <button
+            className="admin-btn admin-btn--primary"
+            disabled={!selectedId || !selectedPackId || grantPackAccess.isPending}
+            onClick={() => grantPackAccess.mutate({ userId: selectedId!, packId: selectedPackId })}
+          >
+            <KeyRound />{grantPackAccess.isPending ? 'Открываем…' : 'Открыть доступ'}
+          </button>
+        </div>
         {array(data?.gameEntitlements).length
           ? <div className="admin-user-game-access__list">{array(data?.gameEntitlements).map((raw) => {
               const entitlement = record(raw)
-              return <article key={String(entitlement.id)}>
-                <span><strong>{title(entitlement.scope)}</strong><small>{title(entitlement.sourceType)} · <Status value={entitlement.status} /></small></span>
-                <span className="admin-user-game-access__state">Не даёт доступ</span>
+              const now = Date.now()
+              const startsAt = new Date(String(entitlement.startsAt)).getTime()
+              const endsAt = entitlement.endsAt ? new Date(String(entitlement.endsAt)).getTime() : null
+              const active = entitlement.status === 'active' && startsAt <= now && (endsAt === null || endsAt > now)
+              const state = active ? 'Доступ открыт' : entitlement.status === 'revoked' ? 'Отозван' : startsAt > now ? 'Запланирован' : 'Истёк'
+              return <article className={active ? 'is-enabled' : ''} key={String(entitlement.id)}>
+                <span><strong>{packTitles.get(String(entitlement.scope)) ?? title(entitlement.scope)}</strong><small>{title(entitlement.sourceType)} · выдан {compactDate(entitlement.createdAt)}{entitlement.endsAt ? ` · до ${compactDate(entitlement.endsAt)}` : ' · бессрочно'}</small></span>
+                <span className={`admin-user-game-access__state ${active ? 'is-enabled' : ''}`}>{state}</span>
+                {entitlement.status === 'active' && <button disabled={revokePackAccess.isPending} onClick={() => revokePackAccess.mutate(String(entitlement.id))}>Отозвать</button>}
               </article>
             })}</div>
-          : <p>Legacy-доступов нет.</p>}
+          : <p>Персональных доступов пока нет.</p>}
       </section>
       <div className="admin-user-columns"><section><h3>Последние игровые сессии</h3>{array(data?.sessions).map((raw) => { const sessionItem = record(raw); return <button key={String(sessionItem.id)} onClick={() => navigate('events', String(sessionItem.id))}><span><strong>{MODE_LABEL[String(sessionItem.mode) as ContentMode]}</strong><small>{title(sessionItem.kind)} · {compactDate(sessionItem.startedAt)}</small></span><Status value={sessionItem.status} /></button> })}</section><section><h3>Операции баланса</h3>{array(data?.ledger).map((raw) => { const entry = record(raw); return <div key={String(entry.id)}><span><strong>{Number(entry.amount) > 0 ? '+' : ''}{String(entry.amount)}</strong><small>{title(entry.reason)}</small></span><time>{compactDate(entry.createdAt)}</time></div> })}</section></div><section className="admin-notes"><h3>Внутренние заметки</h3>{array(data?.notes).length ? array(data?.notes).map((raw) => { const note = record(raw); return <article key={String(note.id)}><p>{title(note.text)}</p><time>{formatDate(note.createdAt)}</time></article> }) : <p>Заметок нет.</p>}</section></>}</section></div></>
 }
