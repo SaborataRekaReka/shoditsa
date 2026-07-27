@@ -65,8 +65,8 @@ const utilitySeo = (pathname: string): SeoRoute | null => {
   if (pathname === '/ui-kit') return {
     kind: 'utility', title: 'UI-кит — Сходится!', description: 'Живая витрина дизайн-системы проекта.', canonicalPath: '/ui-kit', heading: 'UI-кит', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }
-  if (pathname === '/games/together') return {
-    kind: 'utility', title: 'Игра с друзьями — Сходится!', description: 'Предпросмотр тестовой комнаты многопользовательского режима.', canonicalPath: '/games/together', heading: 'Игра с друзьями', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  if (pathname === '/games/together' || pathname === '/games/together/about') return {
+    kind: 'utility', title: 'Игра с друзьями — Сходится!', description: 'Приватная комната для совместной игры и Данеток с друзьями.', canonicalPath: pathname, heading: 'Игра с друзьями', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }
   if (pathname === '/archive') return {
     kind: 'utility', title: 'Архив игр — Сходится!', description: 'Личная история ежедневных игр.', canonicalPath: '/archive', heading: 'Архив', lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
