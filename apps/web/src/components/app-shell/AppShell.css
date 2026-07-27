@@ -468,7 +468,11 @@
 .app-footer__nav-groups {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 34px;
+  gap: 18px 34px;
+}
+
+.app-footer__nav-group--games {
+  grid-column: 1 / -1;
 }
 
 .app-footer__nav-group > span {
@@ -487,6 +491,10 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 12px;
+}
+
+.app-footer__nav-group--games > div {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .app-footer__nav-group .app-footer__link {
@@ -780,30 +788,85 @@
 
 @media (max-width: 719px) {
   .app-footer__inner {
-    padding: 28px 20px 94px;
-    gap: 24px;
+    padding: 20px 16px 82px;
+    gap: 16px;
   }
 
   .app-footer__top {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 18px;
+  }
+
+  .app-footer__brand {
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-footer__home {
+    min-width: 92px;
+    height: 36px;
+  }
+
+  .app-footer__home picture {
+    width: 92px;
+  }
+
+  .app-footer__brand p {
+    gap: 2px;
+  }
+
+  .app-footer__brand p strong {
+    font-size: 12px;
+  }
+
+  .app-footer__brand p span {
+    font-size: 9px;
+    line-height: 1.4;
   }
 
   .app-footer__nav-groups {
-    gap: 20px;
+    gap: 12px 18px;
+  }
+
+  .app-footer__nav-group > span {
+    padding-bottom: 6px;
+    font-size: 9px;
+  }
+
+  .app-footer__nav-group > div {
+    padding-top: 3px;
+    gap: 0 8px;
+  }
+
+  .app-footer__nav-group--games > div {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .app-footer__nav-group .app-footer__link {
+    min-height: 34px;
+    font-size: 10px;
   }
 
   .app-footer__bottom {
+    padding-top: 12px;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 4px;
   }
 
   .app-footer__copy {
     text-align: left;
+    font-size: 8px;
   }
 
   .app-footer__legal {
-    gap: 0 14px;
+    gap: 0 12px;
+  }
+
+  .app-footer__legal a,
+  .app-footer__legal button {
+    min-height: 32px;
+    font-size: 8px;
   }
 }
 
@@ -824,8 +887,8 @@
 }
 
 @media (max-width: 479px) {
-  .app-footer__nav-groups {
-    grid-template-columns: 1fr;
+  .app-footer__nav-group--games > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

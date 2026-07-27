@@ -290,8 +290,21 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
           <p><strong>Игра, к которой приятно возвращаться</strong><span>Новая загадка каждый день. Без спешки и бесконечной ленты.</span></p>
         </div>
         <div className="app-footer__nav-groups">
+          <nav className="app-footer__nav-group app-footer__nav-group--games" aria-label="Все игры">
+            <span>Игры</span>
+            <div>
+              <a className="app-footer__link" href="/games/movie">Кино</a>
+              <a className="app-footer__link" href="/games/series">Сериалы</a>
+              <a className="app-footer__link" href="/games/anime">Аниме</a>
+              <a className="app-footer__link" href="/games/game">Игры</a>
+              <a className="app-footer__link" href="/games/city">Города</a>
+              <a className="app-footer__link" href="/games/music">Музыка</a>
+              <a className="app-footer__link" href="/games/diagnosis">Диагнозы</a>
+              <a className="app-footer__link" href="/games/danetki">Данетки</a>
+            </div>
+          </nav>
           <nav className="app-footer__nav-group" aria-label="Игровые разделы">
-            <span>Играть</span>
+            <span>Разделы</span>
             <div>
               <button className="app-footer__link" onClick={onHome}>Сегодня</button>
               <button className="app-footer__link" onClick={onArchive}>Архив</button>
@@ -300,7 +313,7 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
             </div>
           </nav>
           <nav className="app-footer__nav-group" aria-label="О проекте">
-            <span>Сходится!</span>
+            <span>Сервис</span>
             <div>
               <button className="app-footer__link" onClick={onProfile}>Профиль</button>
               <button className="app-footer__link" onClick={onRules}>Как играть</button>
