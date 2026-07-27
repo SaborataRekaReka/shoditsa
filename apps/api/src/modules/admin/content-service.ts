@@ -200,6 +200,21 @@ export const validateCatalogInvariants = (items: TitleItem[]): CatalogValidation
   return issues
 }
 
+const catalogValidationIssueKey = (issue: CatalogValidationIssue) => JSON.stringify([
+  issue.itemId,
+  issue.field,
+  issue.code,
+  [...(issue.relatedItemIds ?? [])].sort(),
+])
+
+export const blockingCatalogInvariantIssues = (
+  before: TitleItem[],
+  after: TitleItem[],
+): CatalogValidationIssue[] => {
+  const existing = new Set(validateCatalogInvariants(before).map(catalogValidationIssueKey))
+  return validateCatalogInvariants(after).filter((issue) => !existing.has(catalogValidationIssueKey(issue)))
+}
+
 const changedFields = (before: Record<string, unknown> | null, after: Record<string, unknown>) => {
   const keys = new Set([...Object.keys(before ?? {}), ...Object.keys(after)])
   return [...keys].filter((key) => JSON.stringify(before?.[key]) !== JSON.stringify(after[key])).sort()
@@ -328,6 +343,15 @@ const stable = (value: unknown): unknown => Array.isArray(value) ? value.map(sta
   ? Object.fromEntries(Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, stable(item)]))
   : value
 const sha256 = (value: unknown) => createHash('sha256').update(JSON.stringify(stable(value))).digest('hex')
+export const contentVersionAllowedInGame = (mode: ContentMode, payload: Record<string, unknown>) => (
+  mode === 'connections'
+    ? payload.allowedInGame === true && payload.contentStatus === 'ready'
+    : mode === 'danetki'
+      ? payload.allowedInGame === true && ['test', 'ready'].includes(text(payload.contentStatus))
+      : mode === 'city'
+        ? payload.allowedInGame !== false && isAllowedInRegularGame(payload as TitleItem)
+        : isAllowedInRegularGame(payload as TitleItem)
+)
 export const contentPayloadsEqual = (left: unknown, right: unknown) => sha256(left) === sha256(right)
 export const workspaceContainsOnlyRedundantImports = (
   changes: Array<{ itemId: string; afterPayload: unknown; source: string }>,
@@ -375,7 +399,10 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
       const baseByItem = new Map(baseRows.map((row) => [row.itemId, row]))
       const merged = baseRows.map((row) => ({ base: row, change: changesByItem.get(row.itemId), payload: asRecord(changesByItem.get(row.itemId)?.afterPayload ?? row.payload) }))
       for (const change of changes) if (!baseByItem.has(change.itemId)) merged.push({ base: null as never, change, payload: asRecord(change.afterPayload) })
-      const catalogIssues = validateCatalogInvariants(merged.map((entry) => entry.payload as TitleItem))
+      const catalogIssues = blockingCatalogInvariantIssues(
+        baseRows.map((entry) => entry.payload as TitleItem),
+        merged.map((entry) => entry.payload as TitleItem),
+      )
       if (catalogIssues.length) {
         throw new ApiError(422, 'CATALOG_INVARIANTS_FAILED', 'Сборка остановлена: общий игровой пул содержит непригодные или дублирующиеся карточки', {
           fieldErrors: catalogIssues.slice(0, 200),
@@ -423,9 +450,8 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
             itemId: text(payload.id), revisionId: revision.id, mode,
             titleRu: text(payload.titleRu), titleOriginal: text(payload.titleOriginal), normalizedTitle: normalize(text(payload.titleRu)),
             year: number(payload.year), endYear: number(payload.endYear), popularityScore: number(payload.popularityScore) ?? 0,
-            topRank: number(payload.topRank), sortOrder, allowedInGame: mode === 'danetki'
-              ? payload.allowedInGame === true && ['test', 'ready'].includes(text(payload.contentStatus))
-              : mode === 'city' ? payload.allowedInGame !== false && isAllowedInRegularGame(payload as TitleItem) : isAllowedInRegularGame(payload as TitleItem),
+            topRank: number(payload.topRank), sortOrder,
+            allowedInGame: contentVersionAllowedInGame(mode, payload),
             contentStatus: text(payload.contentStatus) || null, payload,
           }
         })

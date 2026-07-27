@@ -96,9 +96,14 @@ try {
       itemVersionId,
       scheduledBy: actorId,
     }).onConflictDoNothing()
-    const scheduled = (await db.select().from(connectionsSchedule)
+    const scheduled = (await db.select({
+      itemVersionId: connectionsSchedule.itemVersionId,
+      itemId: contentItemVersions.itemId,
+      cancelledAt: connectionsSchedule.cancelledAt,
+    }).from(connectionsSchedule)
+      .innerJoin(contentItemVersions, eq(contentItemVersions.id, connectionsSchedule.itemVersionId))
       .where(eq(connectionsSchedule.puzzleDate, puzzleDate)).limit(1))[0]
-    if (!scheduled || scheduled.itemVersionId !== itemVersionId || scheduled.cancelledAt) {
+    if (!scheduled || scheduled.itemId !== itemId || scheduled.cancelledAt) {
       throw new Error(`Connections schedule conflict on ${puzzleDate}`)
     }
   }

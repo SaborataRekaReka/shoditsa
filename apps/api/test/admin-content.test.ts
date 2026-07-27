@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  blockingCatalogInvariantIssues,
   blockingContentValidationIssues,
+  contentVersionAllowedInGame,
   contentPayloadsEqual,
   validateCatalogInvariants,
   validateContentPayload,
@@ -14,6 +16,7 @@ const base = {
   titleOriginal: 'Test card',
   alternativeTitles: [],
   year: 2024,
+  popularityScore: 1,
   plotHint: 'Достаточно длинная подсказка без названия ответа.',
   allowedInGame: true,
 }
@@ -128,6 +131,17 @@ describe('admin content validation', () => {
     expect(workspaceContainsOnlyRedundantImports([], active)).toBe(false)
   })
 
+  it('keeps ready Connections rounds enabled in rebuilt content revisions', () => {
+    expect(contentVersionAllowedInGame('connections', {
+      allowedInGame: true,
+      contentStatus: 'ready',
+    })).toBe(true)
+    expect(contentVersionAllowedInGame('connections', {
+      allowedInGame: true,
+      contentStatus: 'review',
+    })).toBe(false)
+  })
+
   it('blocks duplicate playable identities at the catalog boundary', () => {
     const duplicate = {
       ...base,
@@ -143,6 +157,51 @@ describe('admin content validation', () => {
     expect(issues).toEqual(expect.arrayContaining([
       expect.objectContaining({ code: 'duplicate_playable_identity', itemId: 'tgdb_77' }),
       expect.objectContaining({ code: 'duplicate_playable_identity', itemId: 'tgdb_77_1' }),
+    ]))
+  })
+
+  it('does not block an unrelated edit because of an unchanged legacy catalog issue', () => {
+    const legacy = {
+      ...base,
+      id: 'legacy-short-hint',
+      mode: 'movie' as const,
+      plotHint: 'Короткая подсказка',
+    }
+
+    expect(blockingCatalogInvariantIssues(
+      [legacy],
+      [{ ...legacy, year: 2025 }],
+    )).toEqual([])
+  })
+
+  it('still blocks new catalog errors and newly introduced duplicate identities', () => {
+    const first = {
+      ...base,
+      id: 'tgdb_77',
+      mode: 'game' as const,
+      externalRanks: { thegamesdb: 77 },
+    }
+    const second = {
+      ...base,
+      id: 'tgdb_78',
+      mode: 'game' as const,
+      titleRu: 'Другая карточка',
+      titleOriginal: 'Another card',
+      externalRanks: { thegamesdb: 78 },
+    }
+
+    expect(blockingCatalogInvariantIssues(
+      [first],
+      [{ ...first, plotHint: 'Короткая подсказка' }],
+    )).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: 'short_hint', itemId: first.id }),
+    ]))
+    expect(blockingCatalogInvariantIssues(
+      [first, second],
+      [first, { ...second, externalRanks: { thegamesdb: 77 } }],
+    )).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: 'duplicate_playable_identity', itemId: first.id }),
+      expect.objectContaining({ code: 'duplicate_playable_identity', itemId: second.id }),
     ]))
   })
 })
