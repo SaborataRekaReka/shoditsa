@@ -483,8 +483,8 @@ export const connectionsSchedule = pgTable('connections_schedule', {
   puzzleDate: date('puzzle_date').primaryKey(),
   itemVersionId: uuid('item_version_id').notNull().references(() => contentItemVersions.id),
   scheduledBy: uuid('scheduled_by').references(() => user.id, { onDelete: 'set null' }),
-  createdAt: now(),
-  updatedAt: now(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
 }, (table) => [
   unique('connections_schedule_item_version_unique').on(table.itemVersionId),
@@ -496,7 +496,7 @@ export const connectionsSessionState = pgTable('connections_session_state', {
   solvedColors: connectionsColor('solved_colors').array().notNull().default(sql`ARRAY[]::connections_color[]`),
   mistakesUsed: smallint('mistakes_used').notNull().default(0),
   hintsUsed: smallint('hints_used').notNull().default(0),
-  updatedAt: now(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   check('connections_session_mistakes_check', sql`${table.mistakesUsed} between 0 and 4`),
   check('connections_session_hints_check', sql`${table.hintsUsed} between 0 and 2`),
@@ -513,7 +513,7 @@ export const connectionsGuesses = pgTable('connections_guesses', {
   mistakesAfter: smallint('mistakes_after').notNull(),
   responseSnapshot: jsonb('response_snapshot').notNull().default({}),
   idempotencyKey: uuid('idempotency_key').notNull(),
-  createdAt: now(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   unique('connections_guess_session_position_unique').on(table.sessionId, table.position),
   unique('connections_guess_session_signature_unique').on(table.sessionId, table.signature),
@@ -532,7 +532,7 @@ export const connectionsHintChoices = pgTable('connections_hint_choices', {
   groupColor: connectionsColor('group_color').notNull(),
   responseSnapshot: jsonb('response_snapshot').notNull().default({}),
   idempotencyKey: uuid('idempotency_key').notNull(),
-  createdAt: now(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   unique('connections_hint_session_checkpoint_unique').on(table.sessionId, table.checkpoint),
   unique('connections_hint_session_idempotency_unique').on(table.sessionId, table.idempotencyKey),
