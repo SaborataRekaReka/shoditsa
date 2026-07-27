@@ -209,6 +209,13 @@ describe('commerce API', () => {
       },
     ]).returning()
 
+    const refreshedByReturnPage = await app.inject({ method: 'GET', url: `/api/v1/commerce/orders/${pending.id}` })
+    expect(refreshedByReturnPage.statusCode).toBe(200)
+    expect(refreshedByReturnPage.json().order.status).toBe('pending')
+    const afterReturnPageRefresh = (await database.db.select().from(paymentOrders).where(eq(paymentOrders.id, pending.id)).limit(1))[0]
+    expect(afterReturnPageRefresh.metadata).toMatchObject({ lastReconciledAt: expect.any(String) })
+    expect(afterReturnPageRefresh.updatedAt.getTime()).toBe(old.getTime())
+
     const result = await reconcileCommerceOrders(database.db, config)
     expect(result.expiredCreatedOrderIds).toContain(created.id)
     expect(result.reconciled).toContainEqual({ orderId: pending.id, status: 'pending' })

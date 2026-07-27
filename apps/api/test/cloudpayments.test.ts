@@ -156,25 +156,49 @@ describe('CloudPayments provider adapter', () => {
   })
 
   it('configures all state-changing notification URLs over HTTPS', async () => {
-    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async () => new Response(
-      JSON.stringify({ Success: true }),
-      { status: 200, headers: { 'content-type': 'application/json' } },
-    ))
+    const configured = new Map<string, Record<string, unknown>>()
+    let activeRequests = 0
+    let maxActiveRequests = 0
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async (request, init) => {
+      activeRequests += 1
+      maxActiveRequests = Math.max(maxActiveRequests, activeRequests)
+      await new Promise((resolve) => setTimeout(resolve, 1))
+      const url = String(request)
+      const eventType = url.match(/\/site\/notifications\/([^/]+)\//)?.[1] ?? ''
+      let payload: Record<string, unknown>
+      if (url.endsWith('/update')) {
+        payload = JSON.parse(String(init?.body)) as Record<string, unknown>
+        configured.set(eventType, payload)
+      } else {
+        payload = configured.get(eventType) ?? {}
+      }
+      activeRequests -= 1
+      return new Response(
+        JSON.stringify(url.endsWith('/get') ? { Success: true, Model: payload } : { Success: true }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      )
+    })
     vi.stubGlobal('fetch', fetchMock)
 
     await provider().configureNotifications?.('https://shoditsa.ru')
 
-    expect(fetchMock).toHaveBeenCalledTimes(5)
+    expect(fetchMock).toHaveBeenCalledTimes(10)
+    expect(maxActiveRequests).toBe(1)
     const calls = fetchMock.mock.calls.map(([url, init]) => ({
       url: String(url),
-      body: JSON.parse(String(init?.body)) as Record<string, unknown>,
+      body: init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : {},
     }))
-    expect(calls.map(({ url }) => url).sort()).toEqual([
-      'https://api.cloudpayments.ru/site/notifications/cancel/update',
-      'https://api.cloudpayments.ru/site/notifications/fail/update',
+    expect(calls.map(({ url }) => url)).toEqual([
       'https://api.cloudpayments.ru/site/notifications/pay/update',
-      'https://api.cloudpayments.ru/site/notifications/recurrent/update',
+      'https://api.cloudpayments.ru/site/notifications/pay/get',
+      'https://api.cloudpayments.ru/site/notifications/fail/update',
+      'https://api.cloudpayments.ru/site/notifications/fail/get',
       'https://api.cloudpayments.ru/site/notifications/refund/update',
+      'https://api.cloudpayments.ru/site/notifications/refund/get',
+      'https://api.cloudpayments.ru/site/notifications/cancel/update',
+      'https://api.cloudpayments.ru/site/notifications/cancel/get',
+      'https://api.cloudpayments.ru/site/notifications/recurrent/update',
+      'https://api.cloudpayments.ru/site/notifications/recurrent/get',
     ])
     expect(calls.find(({ url }) => url.includes('/pay/'))?.body).toMatchObject({
       IsEnabled: true,
@@ -182,5 +206,20 @@ describe('CloudPayments provider adapter', () => {
       HttpMethod: 'POST',
       Format: 'CloudPayments',
     })
+  })
+
+  it('fails notification setup when CloudPayments does not persist a setting', async () => {
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async (request) => new Response(
+      JSON.stringify(String(request).endsWith('/get')
+        ? { Success: true, Model: { IsEnabled: false } }
+        : { Success: true }),
+      { status: 200, headers: { 'content-type': 'application/json' } },
+    ))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(provider().configureNotifications?.('https://shoditsa.ru')).rejects.toMatchObject({
+      code: 'CLOUDPAYMENTS_WEBHOOK_SETUP_FAILED',
+    })
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 })

@@ -32,6 +32,14 @@ type CloudPaymentsResponse<T> = {
   Message?: string | null
 }
 
+type CloudPaymentsNotificationModel = {
+  IsEnabled?: boolean
+  Address?: string
+  HttpMethod?: string
+  Encoding?: string
+  Format?: string
+}
+
 const API_URL = 'https://api.cloudpayments.ru'
 const WIDGET_URL = 'https://widget.cloudpayments.ru/bundles/cloudpayments.js' as const
 const WEBHOOK_EVENT_HEADER = 'x-shoditsa-cloudpayments-event'
@@ -333,7 +341,7 @@ export const createCloudPaymentsProvider = (credentials: CloudPaymentsCredential
         throw new ApiError(422, 'CLOUDPAYMENTS_WEBHOOK_URL_INVALID', 'Для уведомлений CloudPayments нужен публичный HTTPS-адрес')
       }
       const eventTypes = ['pay', 'fail', 'refund', 'cancel', 'recurrent'] as const
-      await Promise.all(eventTypes.map(async (eventType) => {
+      for (const eventType of eventTypes) {
         const address = new URL(`/api/v1/commerce/webhooks/cloudpayments/${eventType}`, origin).toString()
         const response = await call<unknown>(`/site/notifications/${eventType}/update`, {
           IsEnabled: true,
@@ -349,7 +357,24 @@ export const createCloudPaymentsProvider = (credentials: CloudPaymentsCredential
             response.Message || `CloudPayments не настроил уведомление ${eventType}`,
           )
         }
-      }))
+        const configured = await call<CloudPaymentsNotificationModel>(
+          `/site/notifications/${eventType}/get`,
+          {},
+        )
+        if (
+          !configured.Success
+          || configured.Model?.IsEnabled !== true
+          || configured.Model.Address !== address
+          || configured.Model.HttpMethod?.toUpperCase() !== 'POST'
+          || configured.Model.Format?.toLocaleLowerCase('en-US') !== 'cloudpayments'
+        ) {
+          throw new ApiError(
+            502,
+            'CLOUDPAYMENTS_WEBHOOK_SETUP_FAILED',
+            `CloudPayments не подтвердил настройку уведомления ${eventType}`,
+          )
+        }
+      }
     },
   }
 }

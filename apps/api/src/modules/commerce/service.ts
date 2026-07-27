@@ -203,6 +203,74 @@ const applyPaymentState = async (
   return state.status
 }
 
+const providerStateError = (order: Order, state: VerifiedPaymentState) => {
+  if (state.orderId && state.orderId !== order.id) {
+    return new ApiError(409, 'PAYMENT_ORDER_MISMATCH', 'Платёж относится к другому заказу')
+  }
+  if (state.accountId && state.accountId !== order.userId) {
+    return new ApiError(409, 'PAYMENT_ACCOUNT_MISMATCH', 'Платёж относится к другому аккаунту')
+  }
+  if (state.amountMinor != null && state.amountMinor !== order.amountMinor) {
+    return new ApiError(409, 'PAYMENT_AMOUNT_MISMATCH', 'Сумма платежа не совпадает с суммой заказа')
+  }
+  if (state.currency && state.currency !== order.currency) {
+    return new ApiError(409, 'PAYMENT_CURRENCY_MISMATCH', 'Валюта платежа не совпадает с валютой заказа')
+  }
+  return null
+}
+
+const safeProviderError = (error: unknown) => error instanceof ApiError
+  ? `${error.code}${typeof error.details.providerStatus === 'number' ? ` (${error.details.providerStatus})` : ''}: ${error.message}`
+  : (error instanceof Error ? error.message : String(error))
+
+const latestProviderCheckAt = (order: Order) => {
+  if (!order.metadata || typeof order.metadata !== 'object') return null
+  const metadata = order.metadata as Record<string, unknown>
+  const candidates = [metadata.lastReconciledAt, metadata.lastReconciliationFailedAt]
+    .map((raw) => typeof raw === 'string' ? new Date(raw) : null)
+    .filter((date): date is Date => date instanceof Date && !Number.isNaN(date.getTime()))
+  if (!candidates.length) return null
+  return new Date(Math.max(...candidates.map((date) => date.getTime())))
+}
+
+const recordReconciliationFailure = async (db: Database, orderId: string, error: unknown, now: Date) => {
+  const message = safeProviderError(error).slice(0, 300)
+  await db.update(paymentOrders).set({
+    metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({
+      lastReconciliationFailedAt: now.toISOString(),
+      lastReconciliationError: message,
+    })}::jsonb`,
+  }).where(and(eq(paymentOrders.id, orderId), eq(paymentOrders.status, 'pending')))
+  return message
+}
+
+const applyReconciledPaymentState = async (
+  db: Database,
+  orderId: string,
+  state: VerifiedPaymentState,
+  now: Date,
+  touchPendingUpdatedAt: boolean,
+) => db.transaction(async (tx) => {
+  const joined = (await tx.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
+    .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
+    .where(eq(paymentOrders.id, orderId)).for('update').limit(1))[0]
+  if (!joined) return { joined: null, status: 'missing' }
+  if (joined.order.status !== 'pending') return { joined, status: joined.order.status }
+  const mismatch = providerStateError(joined.order, state)
+  if (mismatch) throw mismatch
+  const status = await applyPaymentState(tx, joined.order, joined.product, state)
+  await upsertCommerceSubscription(tx, joined.order.provider, joined.order, joined.product, state)
+  await tx.update(paymentOrders).set({
+    metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({ lastReconciledAt: now.toISOString() })}::jsonb`,
+    ...(status === 'pending' && touchPendingUpdatedAt ? { updatedAt: now } : {}),
+  }).where(eq(paymentOrders.id, joined.order.id))
+  const refreshed = (await tx.select().from(paymentOrders).where(eq(paymentOrders.id, joined.order.id)).limit(1))[0]
+  return {
+    joined: refreshed ? { order: refreshed, product: joined.product } : null,
+    status,
+  }
+})
+
 export const publicOrder = (order: Order) => ({
   id: order.id,
   productId: order.productId,
@@ -248,8 +316,20 @@ const loadOwnedOrder = async (db: Database, userId: string, orderId: string) => 
   return rows[0]
 }
 
-export const getOrder = async (db: Database, userId: string, orderId: string) => {
-  const result = await loadOwnedOrder(db, userId, orderId)
+export const getOrder = async (db: Database, config: AppConfig, userId: string, orderId: string, now = new Date()) => {
+  let result = await loadOwnedOrder(db, userId, orderId)
+  const lastCheckedAt = latestProviderCheckAt(result.order)
+  const providerCheckDue = !lastCheckedAt || now.getTime() - lastCheckedAt.getTime() >= 5_000
+  if (result.order.status === 'pending' && result.order.providerPaymentId && providerCheckDue) {
+    try {
+      const provider = await providerFor(db, config, result.order.provider)
+      const state = await provider.getPayment(result.order.providerPaymentId)
+      const reconciled = await applyReconciledPaymentState(db, result.order.id, state, now, false)
+      if (reconciled.joined) result = reconciled.joined
+    } catch (error) {
+      await recordReconciliationFailure(db, result.order.id, error, now)
+    }
+  }
   return { order: publicOrder(result.order), product: publicProduct(result.product) }
 }
 
@@ -682,20 +762,8 @@ export const reconcileCommerceOrders = async (db: Database, config: AppConfig, n
         providers.set(candidate.order.provider, provider)
       }
       const state = await provider.getPayment(candidate.order.providerPaymentId!)
-      const status = await db.transaction(async (tx) => {
-        const joined = await tx.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
-          .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
-          .where(eq(paymentOrders.id, candidate.order.id)).for('update').limit(1)
-        if (!joined[0] || joined[0].order.status !== 'pending') return joined[0]?.order.status ?? 'missing'
-        const appliedStatus = await applyPaymentState(tx, joined[0].order, joined[0].product, state)
-        await upsertCommerceSubscription(tx, joined[0].order.provider, joined[0].order, joined[0].product, state)
-        await tx.update(paymentOrders).set({
-          metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({ lastReconciledAt: now.toISOString() })}::jsonb`,
-          ...(appliedStatus === 'pending' ? { updatedAt: now } : {}),
-        }).where(eq(paymentOrders.id, candidate.order.id))
-        return appliedStatus
-      })
-      reconciled.push({ orderId: candidate.order.id, status })
+      const applied = await applyReconciledPaymentState(db, candidate.order.id, state, now, true)
+      reconciled.push({ orderId: candidate.order.id, status: applied.status })
     } catch (error) {
       if (
         error instanceof ApiError
@@ -715,9 +783,7 @@ export const reconcileCommerceOrders = async (db: Database, config: AppConfig, n
         reconciled.push({ orderId: candidate.order.id, status: 'expired' })
         continue
       }
-      const safeMessage = error instanceof ApiError
-        ? `${error.code}${typeof error.details.providerStatus === 'number' ? ` (${error.details.providerStatus})` : ''}: ${error.message}`
-        : (error instanceof Error ? error.message : String(error))
+      const safeMessage = safeProviderError(error)
       failures.push({
         orderId: candidate.order.id,
         message: safeMessage.slice(0, 300),

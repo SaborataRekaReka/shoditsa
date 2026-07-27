@@ -48,7 +48,7 @@ export const registerCommerceRoutes = async (app: FastifyInstance, deps: Deps) =
     config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
   }, async (request) => {
     const actor = await getRequestUser(request, deps.auth, deps.db, true, deps.config)
-    return getOrder(deps.db, actor!.id, (request.params as CommerceOrderParams).orderId)
+    return getOrder(deps.db, deps.config, actor!.id, (request.params as CommerceOrderParams).orderId)
   })
   app.post('/api/v1/me/commerce/subscriptions/:subscriptionId/cancel', {
     schema: { params: CommerceSubscriptionParamsSchema },

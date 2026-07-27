@@ -489,6 +489,8 @@
 .purchase-return p { color: var(--color-muted); }
 .purchase-return button { border: 1px solid var(--color-primary-border); border-radius: 11px; color: var(--color-ink); background: var(--color-primary); }
 .purchase-return button { min-height: 44px; margin-top: 20px; padding: 0 18px; font-weight: 800; cursor: pointer; }
+.purchase-return__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.purchase-return__actions button:disabled { opacity: .6; cursor: wait; }
 .purchase-return__spin { animation: purchase-spin 1.5s linear infinite; }
 @keyframes purchase-spin { to { transform: rotate(360deg); } }
 

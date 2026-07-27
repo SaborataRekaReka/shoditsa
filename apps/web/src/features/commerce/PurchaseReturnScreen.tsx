@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle2, Clock3, XCircle } from 'lucide-react'
 import { api, queryKeys } from '../../api/client'
@@ -17,6 +17,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
   const runtime = useServerRuntime()
   const startedAt = useRef(Date.now())
   const trackedStatus = useRef<string | null>(null)
+  const [elapsedMs, setElapsedMs] = useState(0)
   const orderId = typeof window === 'undefined'
     ? ''
     : (() => {
@@ -29,7 +30,8 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
     enabled: Boolean(orderId),
     refetchInterval: (query) => {
       const status = query.state.data?.order.status
-      return (!status || status === 'created' || status === 'pending') && Date.now() - startedAt.current < 60_000 ? 2_000 : false
+      if (status && status !== 'created' && status !== 'pending') return false
+      return elapsedMs < 60_000 ? 2_000 : 15_000
     },
   })
   const status = order.data?.order.status
@@ -53,6 +55,14 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
         : productKind === 'tickets'
           ? 'Оплата подтверждена сервером, билеты уже добавлены на баланс.'
         : 'Оплата подтверждена сервером.'
+
+  useEffect(() => {
+    if (status && status !== 'created' && status !== 'pending') return
+    const updateElapsed = () => setElapsedMs(Date.now() - startedAt.current)
+    updateElapsed()
+    const timer = window.setInterval(updateElapsed, 1_000)
+    return () => window.clearInterval(timer)
+  }, [status])
 
   useEffect(() => {
     trackClientEvent('checkout_returned', { orderStatus: status ?? 'checking', placement: 'purchase_return', hasClub })
@@ -80,7 +90,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
     }
   }, [hasClub, order.data?.order.productId, productKind, queryClient, status])
 
-  const pendingTimedOut = (status === 'created' || status === 'pending') && Date.now() - startedAt.current >= 60_000
+  const pendingTimedOut = (status === 'created' || status === 'pending') && elapsedMs >= 60_000
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="purchase-return">
@@ -88,9 +98,15 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
         : order.isError ? <><XCircle /><h1>Не удалось проверить заказ</h1><p>{apiErrorMessage(order.error)}</p></>
           : status === 'paid' ? <><CheckCircle2 /><h1>{paidTitle}</h1><p>{paidDescription}</p></>
             : ['failed', 'canceled', 'expired'].includes(status ?? '') ? <><XCircle /><h1>Оплата не завершена</h1><p>Доступ не выдан. Можно безопасно попробовать ещё раз.</p></>
-              : pendingTimedOut ? <><Clock3 /><h1>Платёж ещё обрабатывается</h1><p>Мы продолжим ждать подтверждение платёжного сервиса. Проверьте статус позже.</p></>
+              : ['refunded', 'chargeback'].includes(status ?? '') ? <><XCircle /><h1>Платёж возвращён</h1><p>Возврат зарегистрирован, доступ по этому заказу не действует.</p></>
+              : pendingTimedOut ? <><Clock3 /><h1>Платёж ещё обрабатывается</h1><p>Мы продолжаем автоматически проверять CloudPayments. Обновлять страницу или оплачивать повторно не нужно.</p></>
                 : <><Clock3 className="purchase-return__spin" /><h1>Проверяем оплату</h1><p>Не закрывайте страницу — подтверждение обычно занимает несколько секунд.</p></>}
-      <ControlButton type="button" onClick={onClub}>Перейти в клуб</ControlButton>
+      <div className="purchase-return__actions">
+        {pendingTimedOut && <ControlButton type="button" disabled={order.isFetching} onClick={() => { void order.refetch() }}>
+          {order.isFetching ? 'Проверяем…' : 'Проверить ещё раз'}
+        </ControlButton>}
+        <ControlButton type="button" onClick={onClub}>Перейти в клуб</ControlButton>
+      </div>
     </main>
   </>
 }
