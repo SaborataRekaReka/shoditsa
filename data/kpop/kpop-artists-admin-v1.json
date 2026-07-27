@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-27T11:58:38.992Z",
+  "generatedAt": "2026-07-27T13:19:42.676Z",
   "source": "data/kpop/source/KPop_artists.json",
   "generationRules": [
     {
@@ -38,7 +38,7 @@
     "description": "Ежедневный закрытый спецпоказ: один K-pop артист в день по правилам обычного режима «Угадай музыку».",
     "coverUrl": "/images/specials/kpop-special-card.webp",
     "titlePosterUrl": "/images/specials/kpop-title-poster.webp",
-    "status": "draft",
+    "status": "published",
     "accessModel": "club",
     "adminOnly": false,
     "cadence": "daily",

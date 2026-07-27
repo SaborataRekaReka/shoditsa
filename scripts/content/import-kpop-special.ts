@@ -49,7 +49,7 @@ type KpopPackDocument = {
     description: string
     coverUrl: string
     titlePosterUrl: string
-    status: 'draft'
+    status: 'published'
     accessModel: 'club'
     adminOnly: false
     cadence: 'daily'
@@ -80,7 +80,14 @@ const writeJson = async (path: string, value: unknown) => {
 
 const assertDocument = (document: KpopPackDocument) => {
   if (document.schemaVersion !== 1) throw new Error(`Unsupported schemaVersion: ${document.schemaVersion}`)
-  if (document.pack.id !== KPOP_ARTISTS_PACK_ID || document.pack.mode !== 'music' || document.pack.adminOnly !== false || document.pack.cadence !== 'daily') {
+  if (
+    document.pack.id !== KPOP_ARTISTS_PACK_ID
+    || document.pack.mode !== 'music'
+    || document.pack.status !== 'published'
+    || document.pack.accessModel !== 'club'
+    || document.pack.adminOnly !== false
+    || document.pack.cadence !== 'daily'
+  ) {
     throw new Error('The source is not the expected club-only daily K-pop special')
   }
   if (!document.items.length || document.items.some((item) => (
@@ -126,7 +133,7 @@ const persistPack = async (
     subtitle: document.pack.subtitle,
     description: document.pack.description,
     coverUrl: document.pack.coverUrl,
-    status: 'draft',
+    status: document.pack.status,
     accessModel: 'club',
     productId: null,
     includedInClub: true,
@@ -150,7 +157,7 @@ const persistPack = async (
       subtitle: document.pack.subtitle,
       description: document.pack.description,
       coverUrl: document.pack.coverUrl,
-      status: 'draft',
+      status: document.pack.status,
       accessModel: 'club',
       productId: null,
       includedInClub: true,
@@ -274,7 +281,7 @@ const main = async () => {
       validation,
       activatedRevision,
       packUpdated: packReady,
-      packStatus: packReady ? 'draft_club_only' : 'not_created',
+      packStatus: packReady ? 'published_club_only' : 'not_created',
       nextStep: packReady ? null : 'Review and activate the staged content workspace, then rerun this command.',
     }
     await writeJson(reportPath, report)

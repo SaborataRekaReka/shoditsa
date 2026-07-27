@@ -153,7 +153,7 @@ export const buildKpopSpecial = (source) => {
       description: 'Ежедневный закрытый спецпоказ: один K-pop артист в день по правилам обычного режима «Угадай музыку».',
       coverUrl: '/images/specials/kpop-special-card.webp',
       titlePosterUrl: '/images/specials/kpop-title-poster.webp',
-      status: 'draft',
+      status: 'published',
       accessModel: 'club',
       adminOnly: false,
       cadence: 'daily',

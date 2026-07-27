@@ -58,7 +58,7 @@ test('builds a deterministic club-only daily special document', () => {
   assert.equal(document.pack.adminOnly, false)
   assert.equal(document.pack.accessModel, 'club')
   assert.equal(document.pack.cadence, 'daily')
-  assert.equal(document.pack.status, 'draft')
+  assert.equal(document.pack.status, 'published')
   assert.equal(document.counts.items, 2)
   assert.deepEqual(document.counts.generations, { '1': 0, '2': 0, '3': 0, '4': 1, '5': 1 })
 })

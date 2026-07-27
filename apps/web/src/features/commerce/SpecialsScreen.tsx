@@ -288,8 +288,10 @@ export function SpecialDetailScreen({
                 ? <div className="special-club-paywall" role="region" aria-label="Доступ только в Клубе">
                   <LockKeyhole aria-hidden="true" />
                   <div><strong>Спецпоказы доступны участникам Клуба</strong><p>Архив с первого дня, свободная игра, комнаты с друзьями без билетиков и все спецпоказы.</p></div>
-                  <a className="ui-button ui-button--primary" href="/club" onClick={() => trackClientEvent('special_club_cta_clicked', { packId, placement: 'special_detail' })}>Вступить в Клуб — 199 ₽</a>
-                  <a href="/club">Или 1 790 ₽ за год</a>
+                  <div className="special-club-paywall__actions">
+                    <a className="ui-button ui-button--primary" href="/club" onClick={() => trackClientEvent('special_club_cta_clicked', { packId, placement: 'special_detail' })}>Вступить в Клуб — 199 ₽</a>
+                    <a className="special-club-paywall__annual" href="/club">Или 1 790 ₽ за год</a>
+                  </div>
                 </div>
                 : <GameLaunchControls
                 mode={isKpopPack ? 'music' : 'game'}
