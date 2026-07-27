@@ -121,6 +121,7 @@ import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
 import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
 import { CreateGameScreen } from './features/private-games/CreateGameScreen'
 import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
+import { FriendsRoomIntroScreen } from './features/friends-room/FriendsRoomIntroScreen'
 import { canCreateFriendsRoom, canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
 import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
@@ -1270,7 +1271,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
         <div className="category-grid category-grid--active">
           {canAccessDtfSpecial && <CategoryTicket
             mode="game"
-            title="Что за игра?"
+            title="Игра по комментариям"
             description="Специальная подборка для DTF: угадайте 20 игр по комментариям игроков."
             color="#FF6B35"
             icon={Gamepad2}
@@ -1314,16 +1315,14 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
               : 'Комнаты и совместные Данетки доступны с активным клубным билетом.'}
             color="var(--mode-movie-brand)"
             icon={Users}
-            watermarkUrl={publicAssetUrl('images/title-posters/series-ticket-poster.webp')}
+            watermarkUrl={publicAssetUrl('images/friends-room/friends-ticket-art-v2.webp')}
             poolCount={7}
             poolLabel="КАТЕГОРИЙ"
             kicker={canAccessFriendsRoom ? 'КЛУБНАЯ ИГРА' : 'ТОЛЬКО В КЛУБЕ'}
             newActionLabel={canAccessFriendsRoom ? 'СОЗДАТЬ КОМНАТУ' : 'УЗНАТЬ О КЛУБЕ'}
             status="new"
             attempts={null}
-            href={canAccessFriendsRoom
-              ? '/games/together?new=1'
-              : '/club'}
+            href="/games/together/about"
             onClick={() => {
               trackMetrikaGoal('friends_room_opened', { placement: 'hub_specials' })
               onSelectFriends()
@@ -4027,6 +4026,7 @@ function GameApp() {
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
+    if (target.screen === 'friends-intro') return navigate({ to: '/games/together/about', replace })
     if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
     if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
     if (target.screen === 'title' && target.mode) return navigate({ to: '/games/$mode', params: { mode: target.mode }, replace })
@@ -4310,6 +4310,12 @@ function GameApp() {
     setServerActionError('')
     setModal(null)
     void navigateToPlayerRoute({ screen: 'special', packId: KPOP_ARTISTS_PACK_ID })
+  }
+
+  const selectFriendsIntro = () => {
+    setServerActionError('')
+    setModal(null)
+    void navigateToPlayerRoute({ screen: 'friends-intro' })
   }
 
   const selectFriendsRoom = (initialMode?: 'danetki') => {
@@ -4625,7 +4631,9 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+
+    {screen === 'friends-intro' && <FriendsRoomIntroScreen canCreate={canCreateFriendsRoomAccess} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={() => selectFriendsRoom()} onClub={() => moveToScreen('club')} />}
 
     {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} />}
     {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}

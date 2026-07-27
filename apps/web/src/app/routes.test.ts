@@ -31,6 +31,8 @@ describe('typed player routes', () => {
     expect(playerRouteFromPathname('/games/danetki')).toEqual({ screen: 'danetki' })
     expect(playerRouteFromPathname('/games/together')).toEqual({ screen: 'friends-room' })
     expect(pathnameForPlayerRoute({ screen: 'friends-room' })).toBe('/games/together')
+    expect(playerRouteFromPathname('/games/together/about')).toEqual({ screen: 'friends-intro' })
+    expect(pathnameForPlayerRoute({ screen: 'friends-intro' })).toBe('/games/together/about')
     expect(playerRouteFromPathname('/play/danetki')).toEqual({ screen: 'hub' })
     expect(playerRouteFromPathname('/danetki/join/abc-123')).toEqual({ screen: 'danetki-join', inviteToken: 'abc-123' })
     expect(playerRouteFromPathname('/games/not-a-mode')).toEqual({ screen: 'hub' })

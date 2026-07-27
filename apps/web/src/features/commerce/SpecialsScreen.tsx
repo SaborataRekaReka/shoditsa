@@ -5,6 +5,7 @@ import { KPOP_ARTISTS_PACK_ID, type GameSessionSnapshot } from '@shoditsa/contra
 import { ActionButton, AppHeader, Modal, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOptionAction } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
+import { ClubAccessPanel } from '../../components/club-access-panel/ClubAccessPanel'
 import { api, queryKeys } from '../../api/client'
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { trackClientEvent } from '../../app/client-events'
@@ -285,14 +286,17 @@ export function SpecialDetailScreen({
                   className="special-title-progress"
                 />}
               {pack.access === 'locked'
-                ? <div className="special-club-paywall" role="region" aria-label="Доступ только в Клубе">
-                  <LockKeyhole aria-hidden="true" />
-                  <div><strong>Спецпоказы доступны участникам Клуба</strong><p>Архив с первого дня, свободная игра, комнаты с друзьями без билетиков и все спецпоказы.</p></div>
-                  <div className="special-club-paywall__actions">
-                    <a className="ui-button ui-button--primary" href="/club" onClick={() => trackClientEvent('special_club_cta_clicked', { packId, placement: 'special_detail' })}>Вступить в Клуб — 199 ₽</a>
-                    <a className="special-club-paywall__annual" href="/club">Или 1 790 ₽ за год</a>
-                  </div>
-                </div>
+                ? <ClubAccessPanel
+                  title="Спецпоказы доступны участникам Клуба"
+                  description="Архив с первого дня, свободная игра, комнаты с друзьями без билетиков и все спецпоказы."
+                  primaryLabel="Вступить в Клуб — 199 ₽"
+                  secondaryLabel="Или 1 790 ₽ за год"
+                  onPrimary={() => {
+                    trackClientEvent('special_club_cta_clicked', { packId, placement: 'special_detail' })
+                    window.location.assign('/club')
+                  }}
+                  onSecondary={() => window.location.assign('/club')}
+                />
                 : <GameLaunchControls
                 mode={isKpopPack ? 'music' : 'game'}
                 action={<ActionButton className={`play-button game-launch-controls__play ${!canStart ? 'is-disabled' : ''}`} disabled={!canStart || starting} onClick={() => void start()}>

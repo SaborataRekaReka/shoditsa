@@ -1,0 +1,55 @@
+.friends-intro-screen .title-stage > p {
+  max-width: 680px;
+}
+
+.friends-intro-ticket .admit-ticket__stub-art {
+  object-position: 50% 44%;
+}
+
+.friends-intro-benefits {
+  margin-top: 14px;
+  padding: 11px 0;
+  border-top: 1px dashed rgba(35, 34, 31, .22);
+  border-bottom: 1px dashed rgba(35, 34, 31, .22);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.friends-intro-benefits > span {
+  min-width: 0;
+  color: var(--color-ink);
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 7px;
+}
+
+.friends-intro-benefits svg {
+  grid-row: 1 / span 2;
+  width: 19px;
+  height: 19px;
+  color: var(--mode-series-brand);
+}
+
+.friends-intro-benefits strong {
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friends-intro-benefits small {
+  color: var(--color-paper-muted);
+  font-size: 9px;
+}
+
+.friends-intro-start.ui-button {
+  width: 100%;
+  margin-top: 16px;
+}
+
+@media (max-width: 560px) {
+  .friends-intro-benefits { grid-template-columns: 1fr; }
+}
