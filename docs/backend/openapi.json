@@ -1899,8 +1899,11 @@
                   "offerVersion": {
                     "type": "string",
                     "enum": [
-                      "2026-07-20"
+                      "2026-07-27"
                     ]
+                  },
+                  "autoRenew": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -1945,6 +1948,26 @@
         }
       }
     },
+    "/api/v1/me/commerce/subscriptions/{subscriptionId}/cancel": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "subscriptionId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
     "/api/v1/commerce/test/orders/{orderId}/confirm": {
       "post": {
         "parameters": [
@@ -1976,6 +1999,72 @@
             },
             "in": "path",
             "name": "provider",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/commerce/webhooks/{provider}/{eventType}": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "minLength": 1,
+              "maxLength": 40,
+              "type": "string"
+            },
+            "in": "path",
+            "name": "provider",
+            "required": true
+          },
+          {
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "check"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "pay"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "fail"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "refund"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "cancel"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "recurrent"
+                  ]
+                }
+              ]
+            },
+            "in": "path",
+            "name": "eventType",
             "required": true
           }
         ],
@@ -2180,12 +2269,6 @@
                         "type": "string",
                         "enum": [
                           "club"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "pack"
                         ]
                       },
                       {
@@ -3419,6 +3502,41 @@
                         ]
                       }
                     ]
+                  },
+                  "danetkiLaunch": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "kind"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "daily"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "archive"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "free_play"
+                            ]
+                          }
+                        ]
+                      },
+                      "puzzleDate": {
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
@@ -3728,6 +3846,41 @@
                         ]
                       }
                     ]
+                  },
+                  "danetkiLaunch": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "kind"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "daily"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "archive"
+                            ]
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "free_play"
+                            ]
+                          }
+                        ]
+                      },
+                      "puzzleDate": {
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                        "type": "string"
+                      }
+                    }
                   }
                 },
                 "minProperties": 1
@@ -3888,6 +4041,47 @@
       }
     },
     "/api/v1/friends/rooms/{roomId}/next": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "idempotencyKey"
+                ],
+                "properties": {
+                  "idempotencyKey": {
+                    "minLength": 8,
+                    "maxLength": 120,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "roomId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/friends/rooms/{roomId}/continue": {
       "post": {
         "requestBody": {
           "required": true,
@@ -4273,6 +4467,126 @@
                               "type": "string",
                               "enum": [
                                 "club_paywall_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "special_locked_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "special_club_cta_clicked"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_created"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_started"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_free_block_started"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_block_completed"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_intermission_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_continue_clicked"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_continued"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_ended_at_intermission"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_guest_joined"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "friends_room_guest_registered"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_shown"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_candidate_selected"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_submitted"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_reveal_opened"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_reveal_cancelled"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_revealed"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_timed_out"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "final_choice_unavailable"
                               ]
                             }
                           ]
@@ -8968,13 +9282,43 @@
                 {
                   "type": "string",
                   "enum": [
-                    "YOOKASSA_SHOP_ID"
+                    "ROBOKASSA_MERCHANT_LOGIN"
                   ]
                 },
                 {
                   "type": "string",
                   "enum": [
-                    "YOOKASSA_SECRET_KEY"
+                    "ROBOKASSA_PASSWORD1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "ROBOKASSA_PASSWORD2"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "ROBOKASSA_TEST_PASSWORD1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "ROBOKASSA_TEST_PASSWORD2"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "CLOUDPAYMENTS_PUBLIC_ID"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "CLOUDPAYMENTS_API_SECRET"
                   ]
                 }
               ]
@@ -9116,13 +9460,43 @@
                 {
                   "type": "string",
                   "enum": [
-                    "YOOKASSA_SHOP_ID"
+                    "ROBOKASSA_MERCHANT_LOGIN"
                   ]
                 },
                 {
                   "type": "string",
                   "enum": [
-                    "YOOKASSA_SECRET_KEY"
+                    "ROBOKASSA_PASSWORD1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "ROBOKASSA_PASSWORD2"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "ROBOKASSA_TEST_PASSWORD1"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "ROBOKASSA_TEST_PASSWORD2"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "CLOUDPAYMENTS_PUBLIC_ID"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "CLOUDPAYMENTS_API_SECRET"
                   ]
                 }
               ]
@@ -9234,6 +9608,15 @@
             "required": true
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/content-packs": {
+      "get": {
         "responses": {
           "200": {
             "description": "Default Response"

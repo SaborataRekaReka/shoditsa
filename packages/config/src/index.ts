@@ -56,8 +56,8 @@ export const loadConfig = () => {
     .split(',').map((origin) => origin.trim()).filter(Boolean)
   const commerceEnabled = bool('COMMERCE_ENABLED', false)
   const commerceProvider = process.env.COMMERCE_PROVIDER?.trim().toLocaleLowerCase('en-US') || 'stub'
-  if (commerceProvider !== 'stub' && commerceProvider !== 'web' && commerceProvider !== 'robokassa') {
-    throw new Error('COMMERCE_PROVIDER must be stub, robokassa, or web')
+  if (commerceProvider !== 'stub' && commerceProvider !== 'web' && commerceProvider !== 'robokassa' && commerceProvider !== 'cloudpayments') {
+    throw new Error('COMMERCE_PROVIDER must be stub, cloudpayments, robokassa, or web')
   }
   if (production && commerceEnabled && commerceProvider === 'stub') throw new Error('COMMERCE_PROVIDER=stub cannot be enabled in production')
   const commerceCurrency = (process.env.COMMERCE_CURRENCY?.trim() || 'RUB').toUpperCase()

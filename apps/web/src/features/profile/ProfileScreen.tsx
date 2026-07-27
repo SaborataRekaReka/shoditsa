@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FULL_HOUSE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
-import { BarChart3, Check, ChevronLeft, ChevronRight, Crown, Film, Lock, Mail, Play, ShieldCheck, Target, Ticket, Trophy, UserRound } from 'lucide-react'
+import { BarChart3, Check, ChevronLeft, ChevronRight, CreditCard, Crown, Film, Lock, Mail, Play, ShieldCheck, Target, Ticket, Trophy, UserRound } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { publicAssetUrl } from '../../app/public-asset'
@@ -72,6 +72,20 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
   const [profileName, setProfileName] = useState('')
   const [profileNotice, setProfileNotice] = useState('')
   const [profileError, setProfileError] = useState('')
+  const [subscriptionNotice, setSubscriptionNotice] = useState('')
+  const [subscriptionError, setSubscriptionError] = useState('')
+  const cancelSubscription = useMutation({
+    mutationFn: (id: string) => api.cancelCommerceSubscription(id),
+    onSuccess: () => {
+      setSubscriptionError('')
+      setSubscriptionNotice('Автопродление отключено. Уже оплаченный клубный доступ останется активным до конца срока.')
+      void queryClient.invalidateQueries({ queryKey: queryKeys.commerce })
+    },
+    onError: (error) => {
+      setSubscriptionNotice('')
+      setSubscriptionError(authErrorMessage(error))
+    },
+  })
   const attendance = SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()
   const wallet = SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()
   const today = SERVER_RUNTIME
@@ -266,6 +280,39 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
             : SERVER_RUNTIME
               ? <div className="profile-settings-auth-prompt"><p>Вход и регистрация вынесены на отдельную защищённую страницу.</p><div><a href="/register">Создать аккаунт</a><a href="/login">Войти</a></div></div>
               : <p className="modal-lead">Эта сборка работает автономно, поэтому управление серверным аккаунтом недоступно.</p>}
+        </section>
+        <section className="profile-section profile-subscriptions">
+          <div className="profile-section__head"><div><span>Платежи</span><h2>Автопродление клуба</h2></div><CreditCard /></div>
+          {commerceProfile.isLoading
+            ? <p className="modal-lead">Загружаем настройки платежей…</p>
+            : commerceProfile.data?.subscriptions.length
+              ? <div className="profile-subscription-list">{commerceProfile.data.subscriptions.map((subscription) => {
+                const active = ['pending', 'active', 'past_due'].includes(subscription.status)
+                const status = subscription.status === 'active'
+                  ? 'Активно'
+                  : subscription.status === 'pending'
+                    ? 'Настраивается'
+                    : subscription.status === 'past_due'
+                      ? 'Ожидает повторного списания'
+                      : subscription.status === 'canceled'
+                        ? 'Отключено'
+                        : subscription.status === 'rejected'
+                          ? 'Остановлено после ошибок оплаты'
+                          : 'Завершено'
+                return <article key={subscription.id}>
+                  <div><strong>{subscription.productId === 'club_365d' ? 'Годовой клуб' : 'Клуб на 30 дней'}</strong><small>{status}{subscription.nextPaymentAt ? ` · следующее списание ${prettyDate(subscription.nextPaymentAt.slice(0, 10))}` : ''}</small></div>
+                  {active && <ActionButton
+                    type="button"
+                    disabled={cancelSubscription.isPending}
+                    onClick={() => {
+                      if (confirm('Отключить автопродление? Уже оплаченный доступ сохранится до конца срока.')) cancelSubscription.mutate(subscription.id)
+                    }}
+                  >Отключить</ActionButton>}
+                </article>
+              })}</div>
+              : <p className="modal-lead">Автопродление не подключено. Его можно включить при покупке клубного доступа.</p>}
+          {subscriptionNotice && <InlineAlert tone="success">{subscriptionNotice}</InlineAlert>}
+          {subscriptionError && <InlineAlert tone="danger">{subscriptionError}</InlineAlert>}
         </section>
       </section>}
     </main>

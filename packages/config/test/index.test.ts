@@ -41,6 +41,11 @@ describe('commerce config', () => {
     })
   })
 
+  it('accepts CloudPayments as the commerce provider', () => {
+    process.env.COMMERCE_PROVIDER = 'cloudpayments'
+    expect(loadConfig().commerce.provider).toBe('cloudpayments')
+  })
+
   it('supports the server preview flag and its Vite-compatible fallback', () => {
     process.env.VITE_FRIENDS_ROOM_PREVIEW = 'true'
     expect(loadConfig().friendsRoomPreview).toBe(true)

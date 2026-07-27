@@ -34,8 +34,8 @@ export const integrationRegistry: ReadonlyArray<{
   { key: 'ROBOKASSA_PASSWORD2', title: 'Пароль №2', provider: 'Robokassa', description: 'Боевой пароль №2 для проверки ResultURL и статуса оплаты. Хранится зашифрованно.', required: false, secret: true },
   { key: 'ROBOKASSA_TEST_PASSWORD1', title: 'Тестовый пароль №1', provider: 'Robokassa', description: 'Пароль №1 для тестового режима Robokassa. Хранится зашифрованно.', required: false, secret: true },
   { key: 'ROBOKASSA_TEST_PASSWORD2', title: 'Тестовый пароль №2', provider: 'Robokassa', description: 'Пароль №2 для тестового режима Robokassa. Хранится зашифрованно.', required: false, secret: true },
-  { key: 'YOOKASSA_SHOP_ID', title: 'Идентификатор магазина (shopId)', provider: 'ЮKassa', description: 'Идентификатор магазина из личного кабинета ЮKassa для серверных запросов API.', required: false, secret: false },
-  { key: 'YOOKASSA_SECRET_KEY', title: 'Секретный ключ', provider: 'ЮKassa', description: 'Секретный ключ API ЮKassa. Хранится зашифрованно и никогда не возвращается в браузер.', required: false, secret: true },
+  { key: 'CLOUDPAYMENTS_PUBLIC_ID', title: 'Public ID', provider: 'CloudPayments', description: 'Публичный идентификатор терминала из личного кабинета CloudPayments. После сохранения обоих ключей сервер автоматически настроит платёжные уведомления.', required: false, secret: false },
+  { key: 'CLOUDPAYMENTS_API_SECRET', title: 'Пароль для API (API Secret)', provider: 'CloudPayments', description: 'API Secret для серверных запросов и проверки HMAC. Хранится зашифрованно; после сохранения обоих ключей сервер автоматически настроит уведомления.', required: false, secret: true },
 ]
 
 const registryByKey = new Map(integrationRegistry.map((entry) => [entry.key, entry]))

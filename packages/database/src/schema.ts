@@ -1037,6 +1037,36 @@ export const paymentOrders = pgTable('payment_orders', {
   index('payment_orders_status_updated_idx').on(table.status, table.updatedAt),
 ])
 
+export const commerceSubscriptions = pgTable('commerce_subscriptions', {
+  id: uuid().primaryKey().defaultRandom(),
+  provider: text().notNull(),
+  providerSubscriptionId: text('provider_subscription_id'),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  productId: text('product_id').notNull().references(() => commerceProducts.id),
+  initialOrderId: uuid('initial_order_id').notNull().references(() => paymentOrders.id, { onDelete: 'restrict' }),
+  status: text().notNull().default('pending'),
+  amountMinor: integer('amount_minor').notNull(),
+  currency: text().notNull(),
+  interval: text().notNull(),
+  period: integer().notNull(),
+  startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
+  nextPaymentAt: timestamp('next_payment_at', { withTimezone: true }),
+  metadata: jsonb().notNull().default({}),
+  createdAt: now(),
+  updatedAt: now(),
+  canceledAt: timestamp('canceled_at', { withTimezone: true }),
+}, (table) => [
+  check('commerce_subscriptions_status_check', sql`${table.status} in ('pending','active','past_due','canceled','rejected','expired')`),
+  check('commerce_subscriptions_amount_check', sql`${table.amountMinor} > 0`),
+  check('commerce_subscriptions_currency_check', sql`${table.currency} ~ '^[A-Z]{3}$'`),
+  check('commerce_subscriptions_interval_check', sql`${table.interval} in ('Day','Week','Month')`),
+  check('commerce_subscriptions_period_check', sql`${table.period} > 0`),
+  unique('commerce_subscriptions_initial_order_unique').on(table.initialOrderId),
+  uniqueIndex('commerce_subscriptions_provider_id_unique').on(table.provider, table.providerSubscriptionId)
+    .where(sql`${table.providerSubscriptionId} is not null`),
+  index('commerce_subscriptions_user_status_idx').on(table.userId, table.status, table.createdAt),
+])
+
 export const paymentEvents = pgTable('payment_events', {
   id: uuid().primaryKey().defaultRandom(),
   provider: text().notNull(),

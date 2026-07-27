@@ -21,7 +21,7 @@ export const DEFAULT_CLUB_PRODUCTS = [
     id: 'club_30d',
     kind: 'club',
     title: 'Клубный билет на 30 дней',
-    description: 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток. Продление вручную.',
+    description: 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток. Автопродление доступно по отдельному выбору.',
     priceMinor: 19_900,
     currency: 'RUB',
     durationDays: 30,
@@ -31,7 +31,7 @@ export const DEFAULT_CLUB_PRODUCTS = [
     id: 'club_365d',
     kind: 'club',
     title: 'Годовой клубный билет',
-    description: 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Продление вручную.',
+    description: 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Автопродление доступно по отдельному выбору.',
     priceMinor: 179_000,
     currency: 'RUB',
     durationDays: 365,
@@ -72,13 +72,26 @@ export type MembershipSummary = {
 export type MeCommerceResponse = {
   membership: MembershipSummary
   entitlements: Array<{ key: string; scope: string | null; startsAt: string; endsAt: string | null }>
+  subscriptions: Array<{
+    id: string
+    productId: string
+    status: 'pending' | 'active' | 'past_due' | 'canceled' | 'rejected' | 'expired'
+    amountMinor: number
+    currency: string
+    interval: 'Day' | 'Week' | 'Month'
+    period: number
+    nextPaymentAt: string | null
+    canceledAt: string | null
+    createdAt: string
+  }>
 }
 
-export const CURRENT_OFFER_VERSION = '2026-07-26' as const
+export const CURRENT_OFFER_VERSION = '2026-07-27' as const
 export const CheckoutBodySchema = Type.Object({
   productId: Type.String({ minLength: 1, maxLength: 120 }),
   termsAccepted: Type.Literal(true),
   offerVersion: Type.Literal(CURRENT_OFFER_VERSION),
+  autoRenew: Type.Optional(Type.Boolean()),
 }, { additionalProperties: false })
 export type CheckoutBody = Static<typeof CheckoutBodySchema>
 
@@ -95,8 +108,36 @@ export type PaymentOrderPublic = {
   createdAt: string
   paidAt: string | null
 }
-export type CheckoutResponse = { order: PaymentOrderPublic; checkoutUrl: string | null }
+export type CloudPaymentsWidgetIntent = {
+  provider: 'cloudpayments'
+  scriptUrl: 'https://widget.cloudpayments.ru/bundles/cloudpayments.js'
+  publicTerminalId: string
+  description: string
+  paymentSchema: 'Single'
+  currency: string
+  culture: 'ru-RU'
+  amount: number
+  skin: 'modern'
+  externalId: string
+  userInfo: { accountId: string; email: string }
+  receiptEmail: string
+  emailBehavior: 'Hidden'
+  items: Array<{ id: string; name: string; count: number; price: number }>
+  tokenize: boolean
+  recurrent?: {
+    interval: 'Day' | 'Week' | 'Month'
+    period: number
+    startDate: string
+  }
+}
+export type CheckoutResponse = {
+  order: PaymentOrderPublic
+  checkoutUrl: string | null
+  widget: CloudPaymentsWidgetIntent | null
+}
 export type OrderResponse = { order: PaymentOrderPublic; product: CommerceProduct }
+export const CommerceSubscriptionParamsSchema = Type.Object({ subscriptionId: UuidSchema }, { additionalProperties: false })
+export type CommerceSubscriptionParams = Static<typeof CommerceSubscriptionParamsSchema>
 
 export const ArchiveCalendarQuerySchema = Type.Object({
   mode: PlayableModeSchema,

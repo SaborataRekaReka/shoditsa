@@ -95,8 +95,8 @@ describe('API schemas', () => {
     expect(Value.Check(IntegrationKeySchema, 'ROBOKASSA_MERCHANT_LOGIN')).toBe(true)
     expect(Value.Check(IntegrationKeySchema, 'ROBOKASSA_PASSWORD1')).toBe(true)
     expect(Value.Check(IntegrationKeySchema, 'ROBOKASSA_PASSWORD2')).toBe(true)
-    expect(Value.Check(IntegrationKeySchema, 'YOOKASSA_SHOP_ID')).toBe(true)
-    expect(Value.Check(IntegrationKeySchema, 'YOOKASSA_SECRET_KEY')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'CLOUDPAYMENTS_PUBLIC_ID')).toBe(true)
+    expect(Value.Check(IntegrationKeySchema, 'CLOUDPAYMENTS_API_SECRET')).toBe(true)
   })
   it('accepts pipeline bulk actions larger than the old 500 item limit', () => {
     const itemIds = Array.from({ length: 501 }, () => crypto.randomUUID())

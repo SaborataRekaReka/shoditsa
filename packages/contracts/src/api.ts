@@ -67,7 +67,7 @@ export type MetaResponse = {
   }
   commerce: {
     enabled: boolean
-    provider: 'none' | 'stub' | 'web'
+    provider: 'none' | 'stub' | 'web' | 'robokassa' | 'cloudpayments'
     currency: string
     archiveFirstDate: string
     freeArchiveDays: number

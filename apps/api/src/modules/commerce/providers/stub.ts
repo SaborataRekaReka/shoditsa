@@ -15,7 +15,7 @@ export const createStubProvider = (secret: string): CommerceProvider => ({
   async createPayment(input: CreatePaymentInput) {
     const returnUrl = new URL(input.returnUrl)
     returnUrl.searchParams.set('orderId', input.orderId)
-    return { providerPaymentId: `stub_${input.orderId}`, status: 'pending', checkoutUrl: returnUrl.toString(), rawStatus: 'pending' }
+    return { providerPaymentId: `stub_${input.orderId}`, status: 'pending', checkoutUrl: returnUrl.toString(), widget: null, rawStatus: 'pending' }
   },
   async parseAndVerifyWebhook(rawBody, headers) {
     const signature = headers['x-commerce-signature']

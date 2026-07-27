@@ -5,13 +5,16 @@ import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ActionButton } from '../../components/app-shell/AppShell'
 import { TextInput } from '../../components/ui'
+import { openCloudPaymentsWidget } from './cloudpayments-widget'
 
 export function CheckoutButton({ product, authenticated, hasClub = false, label, placement = 'club_screen', returnUrl = '/club' }: { product: CommerceProduct; authenticated: boolean; hasClub?: boolean; label?: string; placement?: string; returnUrl?: string }) {
   const keyRef = useRef<string | null>(null)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const [accepted, setAccepted] = useState(false)
+  const [autoRenew, setAutoRenew] = useState(false)
   const acceptanceId = useId()
+  const autoRenewId = useId()
 
   const start = async () => {
     if (pending) return
@@ -28,12 +31,27 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
     trackClientEvent('checkout_started', properties)
     trackMetrikaGoal('checkout_started', properties)
     try {
-      const response = await api.checkout({ productId: product.id, termsAccepted: true, offerVersion: CURRENT_OFFER_VERSION }, keyRef.current)
-      if (response.checkoutUrl) window.location.assign(response.checkoutUrl)
-      else window.location.assign(`/purchase/return?orderId=${encodeURIComponent(response.order.id)}`)
+      const response = await api.checkout({
+        productId: product.id,
+        termsAccepted: true,
+        offerVersion: CURRENT_OFFER_VERSION,
+        ...(product.kind === 'club' ? { autoRenew } : {}),
+      }, keyRef.current)
+      if (response.widget) {
+        const result = await openCloudPaymentsWidget(response.widget)
+        if (result.status === 'success') {
+          window.location.assign(`/purchase/return?orderId=${encodeURIComponent(response.order.id)}`)
+        } else if (result.type !== 'cancel') {
+          throw new Error(result.message || 'CloudPayments не подтвердил оплату')
+        }
+      } else if (response.checkoutUrl) {
+        window.location.assign(response.checkoutUrl)
+      } else {
+        window.location.assign(`/purchase/return?orderId=${encodeURIComponent(response.order.id)}`)
+      }
     } catch (value) {
       keyRef.current = null
-      setError(value instanceof ApiClientError ? value.message : 'Не удалось начать оплату. Попробуйте ещё раз.')
+      setError(value instanceof ApiClientError || value instanceof Error ? value.message : 'Не удалось начать оплату. Попробуйте ещё раз.')
     } finally {
       setPending(false)
     }
@@ -44,6 +62,10 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
       <TextInput id={acceptanceId} type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
       <span>Принимаю <a href="/legal/terms" target="_blank" rel="noreferrer">оферту</a>, <a href="/legal/tariffs" target="_blank" rel="noreferrer">тариф</a> и <a href="/legal/refunds" target="_blank" rel="noreferrer">условия возврата</a></span>
     </label>
+    {product.kind === 'club' && <label className="checkout-acceptance checkout-acceptance--renewal" htmlFor={autoRenewId}>
+      <TextInput id={autoRenewId} type="checkbox" checked={autoRenew} onChange={(event) => setAutoRenew(event.target.checked)} />
+      <span>Включить автопродление каждые {product.durationDays} суток по указанной цене. Отключить можно в профиле до следующего списания.</span>
+    </label>}
     <ActionButton type="button" disabled={pending || !accepted} onClick={() => void start()}>{pending ? 'Создаём заказ…' : label ?? (product.kind === 'club' ? 'Выбрать абонемент' : 'Поддержать')}</ActionButton>
     {error && <span className="club-card__error" role="alert">{error}</span>}
   </>

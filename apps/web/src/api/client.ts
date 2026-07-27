@@ -195,6 +195,7 @@ export const api = {
   meCommerce: () => request<MeCommerceResponse>(`${API_BASE}/me/commerce`, { retries: 1 }),
   checkout: (body: CheckoutBody, key: string) => request<CheckoutResponse>(`${API_BASE}/commerce/checkout`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify(body), retries: 1, maxRateLimitRetryMs: 10_000 }),
   commerceOrder: (id: string) => request<OrderResponse>(`${API_BASE}/commerce/orders/${encodeURIComponent(id)}`, { retries: 1 }),
+  cancelCommerceSubscription: (id: string) => request<{ subscription: { id: string; status: string } }>(`${API_BASE}/me/commerce/subscriptions/${encodeURIComponent(id)}/cancel`, { method: 'POST', retries: 1 }),
   packs: () => request<PackListResponse>(`${API_BASE}/packs`, { retries: 1 }),
   pack: (id: string) => request<PackDetailResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}`, { retries: 1 }),
   packProgress: (id: string) => request<PackProgressResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/progress`, { retries: 1 }),

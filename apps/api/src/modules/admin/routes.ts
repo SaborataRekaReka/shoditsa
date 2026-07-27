@@ -49,6 +49,7 @@ import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironmen
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
 import { inspectReleaseContent } from './release-content-service.js'
+import { createCloudPaymentsProvider } from '../commerce/providers/cloudpayments.js'
 import {
   assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, normalizationContextOptions,
   normalizationDefaultContextFields, normalizationFields, normalizationTemplateVariables, renderNormalizationPrompt,
@@ -1578,6 +1579,16 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
     }
     await saveIntegrationSecret(deps.db, deps.config, actor.id, key, body.value)
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'integration.secret.update', entityType: 'integration_secret', entityId: key, before: null, after: { configured: true }, requestId: request.id })
+    if (deps.config.production && (key === 'CLOUDPAYMENTS_PUBLIC_ID' || key === 'CLOUDPAYMENTS_API_SECRET')) {
+      const environment = await loadIntegrationEnvironment(deps.db, deps.config)
+      if (environment.CLOUDPAYMENTS_PUBLIC_ID && environment.CLOUDPAYMENTS_API_SECRET) {
+        const provider = createCloudPaymentsProvider({
+          publicId: environment.CLOUDPAYMENTS_PUBLIC_ID,
+          apiSecret: environment.CLOUDPAYMENTS_API_SECRET,
+        })
+        await provider.configureNotifications?.(deps.config.authUrl)
+      }
+    }
     return { items: await integrationStatuses(deps.db) }
   })
   app.delete('/api/v1/admin/integrations/:key', { schema: { params: IntegrationKeyParamsSchema, body: Type.Object({ confirmation: Type.Literal(true) }, { additionalProperties: false }) } }, async (request, reply) => {

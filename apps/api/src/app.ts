@@ -108,8 +108,10 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     contentSecurityPolicy: {
       reportOnly: !config.production,
       directives: {
-        defaultSrc: ["'self'"], imgSrc: ["'self'", 'data:', 'https:'], scriptSrc: ["'self'", 'https://mc.yandex.ru', 'https://yandex.ru'],
-        connectSrc: ["'self'", 'https://mc.yandex.ru'], frameAncestors: ["'self'", 'https://*.yandex.ru'],
+        defaultSrc: ["'self'"], imgSrc: ["'self'", 'data:', 'https:'], scriptSrc: ["'self'", 'https://mc.yandex.ru', 'https://yandex.ru', 'https://widget.cloudpayments.ru'],
+        connectSrc: ["'self'", 'https://mc.yandex.ru', 'https://*.cloudpayments.ru'],
+        frameSrc: ["'self'", 'https://*.cloudpayments.ru'],
+        frameAncestors: ["'self'", 'https://*.yandex.ru'],
       },
     },
     strictTransportSecurity: config.production ? { maxAge: 15552000, includeSubDomains: false } : false,

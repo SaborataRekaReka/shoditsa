@@ -107,6 +107,7 @@ export const createRobokassaProvider = (credentials: RobokassaCredentials): Comm
       providerPaymentId: String(input.invoiceId),
       status: 'pending',
       checkoutUrl: checkout.toString(),
+      widget: null,
       rawStatus: credentials.testMode ? 'test_pending' : 'pending',
     }
   },

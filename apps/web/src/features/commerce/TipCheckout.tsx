@@ -144,7 +144,7 @@ export function TipCheckoutTrigger({
               </ControlButton>
             </header>
             <p className="tip-modal__lead">
-              Выберите сумму — сразу после нажатия откроется безопасная страница оплаты Robokassa.
+              Выберите сумму — сразу после нажатия откроется защищённый платёжный виджет CloudPayments.
             </p>
             <label className="tip-modal__acceptance">
               <TextInput type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} disabled={Boolean(pendingProductId)} />

@@ -1,9 +1,10 @@
 import { createHash } from 'node:crypto'
-import { and, eq, isNotNull, isNull, lt, sql } from 'drizzle-orm'
+import { and, desc, eq, isNotNull, isNull, lt, or, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import { ECONOMY_RULES_VERSION } from '@shoditsa/contracts'
 import {
   commerceProducts,
+  commerceSubscriptions,
   clientEvents,
   paymentEvents,
   paymentOrders,
@@ -18,7 +19,7 @@ import { publicProduct } from './products.js'
 import { settlePositiveWalletCredit, walletCreditMetadata } from '../economy/wallet-credit.js'
 import { createRobokassaProvider } from './providers/robokassa.js'
 import { createStubProvider } from './providers/stub.js'
-import { createYooKassaProvider } from './providers/yookassa.js'
+import { createCloudPaymentsProvider } from './providers/cloudpayments.js'
 import { loadIntegrationEnvironment } from '../admin/integration-secrets.js'
 import type { CommerceProvider, VerifiedPaymentEvent, VerifiedPaymentState } from './providers/types.js'
 
@@ -127,7 +128,7 @@ const reverseTicketBundle = async (tx: Transaction, order: Order, product: Produ
 
 const providerFor = async (db: Database, config: AppConfig, requested = config.commerce.provider): Promise<CommerceProvider> => {
   if (requested === 'stub' && !config.production) return createStubProvider(config.commerce.webhookSecret)
-  if (requested === 'robokassa' || requested === 'web') {
+  if (requested === 'robokassa' || requested === 'web' || requested === 'cloudpayments') {
     const environment = await loadIntegrationEnvironment(db, config)
     if (requested === 'robokassa') {
       const password1 = config.commerce.robokassa.testMode
@@ -148,9 +149,11 @@ const providerFor = async (db: Database, config: AppConfig, requested = config.c
         })
       }
     }
-    const shopId = environment.YOOKASSA_SHOP_ID || config.commerce.shopId
-    const secretKey = environment.YOOKASSA_SECRET_KEY || config.commerce.secretKey
-    if (requested === 'web' && shopId && secretKey) return createYooKassaProvider({ shopId, secretKey })
+    const publicId = environment.CLOUDPAYMENTS_PUBLIC_ID || config.commerce.shopId
+    const apiSecret = environment.CLOUDPAYMENTS_API_SECRET || config.commerce.secretKey
+    if ((requested === 'web' || requested === 'cloudpayments') && publicId && apiSecret) {
+      return createCloudPaymentsProvider({ publicId, apiSecret })
+    }
   }
   throw new ApiError(503, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Оплата временно недоступна. Попробуйте позже')
 }
@@ -210,18 +213,30 @@ export const publicOrder = (order: Order) => ({
   paidAt: order.paidAt?.toISOString() ?? null,
 })
 
-const checkoutUrl = (config: AppConfig, order: Order) => {
-  if (order.status === 'paid') return null
-  const url = new URL(config.commerce.returnUrl)
-  url.searchParams.set('orderId', order.id)
-  return url.toString()
-}
-
 export const meCommerce = async (db: Database, userId: string, now = new Date()) => {
-  const [membership, entitlements] = await Promise.all([getMembershipSummary(db, userId, now), getActiveEntitlements(db, userId, now)])
+  const [membership, entitlements, subscriptions] = await Promise.all([
+    getMembershipSummary(db, userId, now),
+    getActiveEntitlements(db, userId, now),
+    db.select().from(commerceSubscriptions)
+      .where(eq(commerceSubscriptions.userId, userId))
+      .orderBy(desc(commerceSubscriptions.createdAt))
+      .limit(20),
+  ])
   return {
     membership,
     entitlements: entitlements.map((entry) => ({ key: entry.entitlementKey, scope: entry.scope, startsAt: entry.startsAt.toISOString(), endsAt: entry.endsAt?.toISOString() ?? null })),
+    subscriptions: subscriptions.map((entry) => ({
+      id: entry.id,
+      productId: entry.productId,
+      status: entry.status as 'pending' | 'active' | 'past_due' | 'canceled' | 'rejected' | 'expired',
+      amountMinor: entry.amountMinor,
+      currency: entry.currency,
+      interval: entry.interval as 'Day' | 'Week' | 'Month',
+      period: entry.period,
+      nextPaymentAt: entry.nextPaymentAt?.toISOString() ?? null,
+      canceledAt: entry.canceledAt?.toISOString() ?? null,
+      createdAt: entry.createdAt.toISOString(),
+    })),
   }
 }
 
@@ -238,7 +253,14 @@ export const getOrder = async (db: Database, userId: string, orderId: string) =>
   return { order: publicOrder(result.order), product: publicProduct(result.product) }
 }
 
-export const startCheckout = async (db: Database, config: AppConfig, actor: { id: string; email: string; isAnonymous: boolean }, productId: string, idempotencyKey: string, acceptance: { offerVersion: string; termsAccepted: true }) => {
+export const startCheckout = async (
+  db: Database,
+  config: AppConfig,
+  actor: { id: string; email: string; isAnonymous: boolean },
+  productId: string,
+  idempotencyKey: string,
+  acceptance: { offerVersion: string; termsAccepted: true; autoRenew?: boolean },
+) => {
   if (!config.commerce.enabled) throw new ApiError(503, 'COMMERCE_DISABLED', 'Оплата пока не включена. Вы можете продолжать играть бесплатно')
   if (actor.isAnonymous) throw new ApiError(403, 'COMMERCE_ACCOUNT_REQUIRED', 'Создайте постоянный аккаунт, чтобы покупка сохранилась')
   const product = (await db.select().from(commerceProducts).where(and(eq(commerceProducts.id, productId), eq(commerceProducts.enabled, true))).limit(1))[0]
@@ -248,8 +270,37 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
   }
   if (product.currency !== config.commerce.currency) throw new ApiError(409, 'PRODUCT_NOT_AVAILABLE', 'Валюта продукта временно недоступна')
 
-  let order = (await db.select().from(paymentOrders).where(and(eq(paymentOrders.userId, actor.id), eq(paymentOrders.idempotencyKey, idempotencyKey))).limit(1))[0]
+  let order = (await db.select().from(paymentOrders).where(and(
+    eq(paymentOrders.userId, actor.id),
+    eq(paymentOrders.idempotencyKey, idempotencyKey),
+  )).limit(1))[0]
   if (order && order.productId !== product.id) throw new ApiError(409, 'ORDER_ALREADY_CLOSED', 'Этот ключ уже использован для другого заказа')
+
+  let recurrence: { interval: 'Day'; period: number; startDate: string } | undefined
+  if (!order && acceptance.autoRenew) {
+    if (product.kind !== 'club' || !product.durationDays) {
+      throw new ApiError(422, 'SUBSCRIPTION_NOT_AVAILABLE', 'Автопродление доступно только для клубного доступа')
+    }
+    const existing = (await db.select({ id: commerceSubscriptions.id }).from(commerceSubscriptions).where(and(
+      eq(commerceSubscriptions.userId, actor.id),
+      or(
+        eq(commerceSubscriptions.status, 'pending'),
+        eq(commerceSubscriptions.status, 'active'),
+        eq(commerceSubscriptions.status, 'past_due'),
+      ),
+    )).limit(1))[0]
+    if (existing) {
+      throw new ApiError(409, 'SUBSCRIPTION_ALREADY_ACTIVE', 'Автопродление уже подключено. Для разовой покупки отключите его перед оплатой')
+    }
+    const membership = await getMembershipSummary(db, actor.id)
+    const paidPeriodStartsAt = membership.active && membership.endsAt ? new Date(membership.endsAt) : new Date()
+    const firstRecurringPayment = new Date(paidPeriodStartsAt.getTime() + product.durationDays * 86_400_000)
+    if (firstRecurringPayment.getTime() - Date.now() > 366 * 86_400_000) {
+      throw new ApiError(409, 'SUBSCRIPTION_START_TOO_LATE', 'CloudPayments не может запланировать первое продление позже чем через год. Отключите автопродление для этой покупки')
+    }
+    recurrence = { interval: 'Day', period: product.durationDays, startDate: firstRecurringPayment.toISOString() }
+  }
+
   if (!order) {
     const inserted = await db.insert(paymentOrders).values({
       userId: actor.id,
@@ -258,26 +309,44 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
       amountMinor: product.priceMinor,
       currency: product.currency,
       idempotencyKey,
-      metadata: { offerVersion: acceptance.offerVersion, termsAccepted: acceptance.termsAccepted, termsAcceptedAt: new Date().toISOString() },
+      metadata: {
+        offerVersion: acceptance.offerVersion,
+        termsAccepted: acceptance.termsAccepted,
+        termsAcceptedAt: new Date().toISOString(),
+        autoRenew: Boolean(recurrence),
+        ...(recurrence ? { recurrence } : {}),
+      },
     }).onConflictDoNothing().returning()
     order = inserted[0] ?? (await db.select().from(paymentOrders).where(and(eq(paymentOrders.userId, actor.id), eq(paymentOrders.idempotencyKey, idempotencyKey))).limit(1))[0]
   }
   if (!order) throw new ApiError(500, 'PAYMENT_CREATION_FAILED', 'Не удалось создать заказ. Попробуйте ещё раз')
-  if (order.status !== 'created') return { order: publicOrder(order), checkoutUrl: checkoutUrl(config, order) }
-
   const provider = await providerFor(db, config, order.provider)
+  const storedMetadata = order.metadata && typeof order.metadata === 'object'
+    ? order.metadata as Record<string, unknown>
+    : {}
+  const storedRecurrence = storedMetadata.recurrence && typeof storedMetadata.recurrence === 'object'
+    ? storedMetadata.recurrence as { interval: 'Day' | 'Week' | 'Month'; period: number; startDate: string }
+    : undefined
+  const createInput = {
+    orderId: order.id,
+    invoiceId: order.providerInvoiceId,
+    amountMinor: order.amountMinor,
+    currency: order.currency,
+    description: product.title,
+    email: actor.email,
+    returnUrl: config.commerce.returnUrl,
+    idempotencyKey: order.id,
+    metadata: { userId: actor.id, productId: product.id },
+    ...(storedRecurrence ? { recurrence: storedRecurrence } : {}),
+  }
+  if (order.status !== 'created') {
+    if (order.status !== 'pending') return { order: publicOrder(order), checkoutUrl: null, widget: null }
+    const prepared = await provider.createPayment(createInput)
+    return { order: publicOrder(order), checkoutUrl: prepared.checkoutUrl, widget: prepared.widget }
+  }
+
   try {
-    const created = await provider.createPayment({
-      orderId: order.id,
-      invoiceId: order.providerInvoiceId,
-      amountMinor: order.amountMinor,
-      currency: order.currency,
-      description: product.title,
-      email: actor.email,
-      returnUrl: config.commerce.returnUrl,
-      idempotencyKey: order.id,
-      metadata: { userId: actor.id, productId: product.id },
-    })
+    const created = await provider.createPayment(createInput)
     const updated = (await db.update(paymentOrders).set({
       providerPaymentId: created.providerPaymentId,
       providerStatus: created.rawStatus,
@@ -292,11 +361,75 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
         await grantTicketBundle(tx, order, product)
       })
     }
-    return { order: publicOrder(order), checkoutUrl: created.checkoutUrl }
+    return { order: publicOrder(order), checkoutUrl: created.checkoutUrl, widget: created.widget }
   } catch (error) {
     if (error instanceof ApiError) throw error
     throw new ApiError(502, 'PAYMENT_CREATION_FAILED', 'Платёжный сервис не ответил. Повторите попытку — новый заказ не создастся')
   }
+}
+
+const deterministicUuid = (seed: string) => {
+  const bytes = createHash('sha256').update(seed).digest().subarray(0, 16)
+  bytes[6] = (bytes[6] & 0x0f) | 0x50
+  bytes[8] = (bytes[8] & 0x3f) | 0x80
+  const hex = bytes.toString('hex')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
+const localSubscriptionStatus = (status: string | undefined) => {
+  if (status === 'Active') return 'active' as const
+  if (status === 'PastDue') return 'past_due' as const
+  if (status === 'Cancelled') return 'canceled' as const
+  if (status === 'Rejected') return 'rejected' as const
+  if (status === 'Expired') return 'expired' as const
+  return 'pending' as const
+}
+
+const recurrenceFromOrder = (order: Order) => {
+  if (!order.metadata || typeof order.metadata !== 'object') return null
+  const raw = (order.metadata as Record<string, unknown>).recurrence
+  if (!raw || typeof raw !== 'object') return null
+  const recurrence = raw as Record<string, unknown>
+  const interval = recurrence.interval
+  const period = Number(recurrence.period)
+  const startDate = typeof recurrence.startDate === 'string' ? new Date(recurrence.startDate) : null
+  if (!['Day', 'Week', 'Month'].includes(String(interval)) || !Number.isInteger(period) || period <= 0 || !startDate || Number.isNaN(startDate.getTime())) return null
+  return { interval: interval as 'Day' | 'Week' | 'Month', period, startDate }
+}
+
+const upsertCommerceSubscription = async (
+  tx: Transaction,
+  providerName: string,
+  order: Order,
+  product: Product,
+  state: Pick<VerifiedPaymentState, 'status' | 'subscriptionId' | 'occurredAt'>,
+) => {
+  const recurrence = recurrenceFromOrder(order)
+  if (state.status !== 'paid' || !state.subscriptionId || !recurrence || product.kind !== 'club') return
+  await tx.insert(commerceSubscriptions).values({
+    provider: providerName,
+    providerSubscriptionId: state.subscriptionId,
+    userId: order.userId,
+    productId: order.productId,
+    initialOrderId: order.id,
+    status: 'active',
+    amountMinor: order.amountMinor,
+    currency: order.currency,
+    interval: recurrence.interval,
+    period: recurrence.period,
+    startsAt: recurrence.startDate,
+    nextPaymentAt: recurrence.startDate,
+    metadata: { createdBy: 'cloudpayments_widget' },
+  }).onConflictDoUpdate({
+    target: commerceSubscriptions.initialOrderId,
+    set: {
+      providerSubscriptionId: state.subscriptionId,
+      status: 'active',
+      nextPaymentAt: recurrence.startDate,
+      canceledAt: null,
+      updatedAt: state.occurredAt,
+    },
+  })
 }
 
 const processEvent = async (db: Database, providerName: string, event: VerifiedPaymentEvent, rawBody: Buffer) => db.transaction(async (tx) => {
@@ -309,16 +442,114 @@ const processEvent = async (db: Database, providerName: string, event: VerifiedP
   }).onConflictDoNothing().returning()
   if (!insertedEvent[0]) return { duplicate: true }
 
-  const joined = await tx.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
-    .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
-    .where(and(eq(paymentOrders.provider, providerName), eq(paymentOrders.providerPaymentId, event.providerPaymentId))).for('update').limit(1)
-  if (!joined[0]) {
+  if (event.eventType === 'recurrent') {
+    const subscription = event.subscriptionId
+      ? (await tx.select().from(commerceSubscriptions).where(and(
+        eq(commerceSubscriptions.provider, providerName),
+        eq(commerceSubscriptions.providerSubscriptionId, event.subscriptionId),
+      )).for('update').limit(1))[0]
+      : null
+    if (!subscription) {
+      throw new ApiError(409, 'SUBSCRIPTION_NOT_FOUND', 'Подписка ещё не зарегистрирована; уведомление нужно повторить')
+    }
+    if (event.accountId && event.accountId !== subscription.userId) throw new ApiError(409, 'PAYMENT_ACCOUNT_MISMATCH', 'Уведомление относится к другому аккаунту')
+    if (event.amountMinor != null && event.amountMinor !== subscription.amountMinor) throw new ApiError(409, 'PAYMENT_AMOUNT_MISMATCH', 'Сумма подписки не совпадает')
+    if (event.currency && event.currency !== subscription.currency) throw new ApiError(409, 'PAYMENT_CURRENCY_MISMATCH', 'Валюта подписки не совпадает')
+    const status = localSubscriptionStatus(event.subscriptionStatus)
+    const now = event.occurredAt
+    await tx.update(commerceSubscriptions).set({
+      status,
+      nextPaymentAt: event.nextPaymentAt ?? null,
+      updatedAt: now,
+      ...(['canceled', 'rejected', 'expired'].includes(status) ? { canceledAt: now } : {}),
+    }).where(eq(commerceSubscriptions.id, subscription.id))
+    await tx.update(paymentEvents).set({ status: 'processed', processedAt: new Date() }).where(eq(paymentEvents.id, insertedEvent[0].id))
+    return { processed: true }
+  }
+
+  const findByOrderId = async () => event.orderId
+    ? (await tx.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
+      .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
+      .where(and(eq(paymentOrders.provider, providerName), eq(paymentOrders.id, event.orderId))).for('update').limit(1))[0]
+    : undefined
+  const findByProviderPayment = async () => (await tx.select({ order: paymentOrders, product: commerceProducts }).from(paymentOrders)
+      .innerJoin(commerceProducts, eq(commerceProducts.id, paymentOrders.productId))
+      .where(and(eq(paymentOrders.provider, providerName), eq(paymentOrders.providerPaymentId, event.providerPaymentId))).for('update').limit(1))[0]
+  const providerReferenceFirst = event.eventType === 'refund' || event.eventType === 'cancel'
+  let joined = providerReferenceFirst ? await findByProviderPayment() : await findByOrderId()
+  joined ??= providerReferenceFirst ? await findByOrderId() : await findByProviderPayment()
+
+  const isLaterSubscriptionPayment = Boolean(
+    event.subscriptionId
+    && event.status === 'paid'
+    && (!joined || (joined.order.status === 'paid' && joined.order.providerPaymentId !== event.providerPaymentId)),
+  )
+  if (isLaterSubscriptionPayment) {
+    const subscription = (await tx.select().from(commerceSubscriptions).where(and(
+      eq(commerceSubscriptions.provider, providerName),
+      eq(commerceSubscriptions.providerSubscriptionId, event.subscriptionId!),
+    )).for('update').limit(1))[0]
+    if (!subscription) throw new ApiError(409, 'SUBSCRIPTION_NOT_FOUND', 'Подписка ещё не зарегистрирована; уведомление нужно повторить')
+    if (event.accountId && event.accountId !== subscription.userId) throw new ApiError(409, 'PAYMENT_ACCOUNT_MISMATCH', 'Платёж относится к другому аккаунту')
+    const insertedOrder = await tx.insert(paymentOrders).values({
+      userId: subscription.userId,
+      productId: subscription.productId,
+      provider: providerName,
+      status: 'pending',
+      amountMinor: subscription.amountMinor,
+      currency: subscription.currency,
+      idempotencyKey: deterministicUuid(`${providerName}:${event.providerPaymentId}`),
+      providerPaymentId: event.providerPaymentId,
+      providerStatus: 'subscription_pending',
+      metadata: {
+        recurrent: true,
+        subscriptionId: subscription.id,
+        providerSubscriptionId: subscription.providerSubscriptionId,
+      },
+    }).onConflictDoNothing().returning()
+    const recurringOrder = insertedOrder[0] ?? (await tx.select().from(paymentOrders).where(and(
+      eq(paymentOrders.provider, providerName),
+      eq(paymentOrders.providerPaymentId, event.providerPaymentId),
+    )).limit(1))[0]
+    const product = (await tx.select().from(commerceProducts).where(eq(commerceProducts.id, subscription.productId)).limit(1))[0]
+    if (recurringOrder && product) joined = { order: recurringOrder, product }
+  }
+
+  if (event.eventType === 'fail' && event.subscriptionId) {
+    const updatedSubscriptions = await tx.update(commerceSubscriptions).set({
+      status: 'past_due',
+      updatedAt: event.occurredAt,
+    }).where(and(
+      eq(commerceSubscriptions.provider, providerName),
+      eq(commerceSubscriptions.providerSubscriptionId, event.subscriptionId),
+    )).returning({ id: commerceSubscriptions.id })
+    if (updatedSubscriptions[0]) {
+      await tx.update(paymentEvents).set({ status: 'processed', processedAt: new Date() }).where(eq(paymentEvents.id, insertedEvent[0].id))
+      return { processed: true }
+    }
+  }
+
+  if (!joined) {
     await tx.update(paymentEvents).set({ status: 'ignored', errorCode: 'ORDER_NOT_FOUND', processedAt: new Date() }).where(eq(paymentEvents.id, insertedEvent[0].id))
     return { ignored: true }
   }
-  const { order, product } = joined[0]
-  if (event.orderId && event.orderId !== order.id) {
+  const { order, product } = joined
+  const orderMetadata = order.metadata && typeof order.metadata === 'object'
+    ? order.metadata as Record<string, unknown>
+    : {}
+  if (event.orderId && event.orderId !== order.id && !isLaterSubscriptionPayment && orderMetadata.recurrent !== true) {
     throw new ApiError(409, 'PAYMENT_ORDER_MISMATCH', 'Уведомление относится к другому заказу')
+  }
+  if (event.accountId && event.accountId !== order.userId) {
+    throw new ApiError(409, 'PAYMENT_ACCOUNT_MISMATCH', 'Уведомление относится к другому аккаунту')
+  }
+  if (event.amountMinor != null && event.status === 'refunded' && event.amountMinor < order.amountMinor) {
+    await tx.update(paymentEvents).set({
+      status: 'ignored',
+      errorCode: 'PARTIAL_REFUND_REVIEW_REQUIRED',
+      processedAt: new Date(),
+    }).where(eq(paymentEvents.id, insertedEvent[0].id))
+    return { ignored: true }
   }
   if (event.amountMinor != null && event.amountMinor !== order.amountMinor) {
     throw new ApiError(409, 'PAYMENT_AMOUNT_MISMATCH', 'Сумма уведомления не совпадает с суммой заказа')
@@ -327,15 +558,73 @@ const processEvent = async (db: Database, providerName: string, event: VerifiedP
     throw new ApiError(409, 'PAYMENT_CURRENCY_MISMATCH', 'Валюта уведомления не совпадает с валютой заказа')
   }
   await applyPaymentState(tx, order, product, event)
+  await upsertCommerceSubscription(tx, providerName, order, product, event)
+  if (isLaterSubscriptionPayment && event.status === 'paid' && event.subscriptionId) {
+    await tx.update(commerceSubscriptions).set({
+      status: 'active',
+      updatedAt: event.occurredAt,
+    }).where(and(
+      eq(commerceSubscriptions.provider, providerName),
+      eq(commerceSubscriptions.providerSubscriptionId, event.subscriptionId),
+    ))
+  }
   await tx.update(paymentEvents).set({ status: 'processed', processedAt: new Date() }).where(eq(paymentEvents.id, insertedEvent[0].id))
   return { processed: true }
 })
 
+const checkNotificationCode = async (db: Database, providerName: string, event: VerifiedPaymentEvent) => {
+  if (!event.orderId) return 10
+  const order = (await db.select().from(paymentOrders).where(and(
+    eq(paymentOrders.id, event.orderId),
+    eq(paymentOrders.provider, providerName),
+  )).limit(1))[0]
+  if (!order) return 10
+  if (event.accountId && event.accountId !== order.userId) return 11
+  if (event.amountMinor !== order.amountMinor || event.currency !== order.currency) return 12
+  if (!['created', 'pending'].includes(order.status)) return 13
+  return 0
+}
+
 export const acceptWebhook = async (db: Database, config: AppConfig, providerName: string, rawBody: Buffer, headers: Record<string, unknown>) => {
-  if (providerName !== config.commerce.provider) throw new ApiError(404, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Платёжный обработчик не найден')
-  const provider = await providerFor(db, config, providerName)
+  const configuredProvider = config.commerce.provider
+  const storageProvider = providerName === 'cloudpayments' && configuredProvider === 'web'
+    ? 'web'
+    : providerName
+  if (storageProvider !== configuredProvider) throw new ApiError(404, 'COMMERCE_PROVIDER_UNAVAILABLE', 'Платёжный обработчик не найден')
+  const provider = await providerFor(db, config, storageProvider)
   const event = await provider.parseAndVerifyWebhook(rawBody, headers)
-  return { ...await processEvent(db, providerName, event, rawBody), acknowledgment: event.acknowledgment }
+  if (event.eventType === 'check') {
+    const code = await checkNotificationCode(db, storageProvider, event)
+    return { checked: true, acknowledgment: JSON.stringify({ code }), acknowledgmentType: 'application/json; charset=utf-8' }
+  }
+  return {
+    ...await processEvent(db, storageProvider, event, rawBody),
+    acknowledgment: event.acknowledgment,
+    acknowledgmentType: provider.category === 'cloudpayments' ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8',
+  }
+}
+
+export const cancelCommerceSubscription = async (db: Database, config: AppConfig, userId: string, subscriptionId: string) => {
+  const subscription = (await db.select().from(commerceSubscriptions).where(and(
+    eq(commerceSubscriptions.id, subscriptionId),
+    eq(commerceSubscriptions.userId, userId),
+  )).limit(1))[0]
+  if (!subscription) throw new ApiError(404, 'SUBSCRIPTION_NOT_FOUND', 'Автопродление не найдено')
+  if (['canceled', 'rejected', 'expired'].includes(subscription.status)) return { subscription: { id: subscription.id, status: subscription.status } }
+  if (!subscription.providerSubscriptionId) {
+    throw new ApiError(409, 'SUBSCRIPTION_NOT_READY', 'Автопродление ещё настраивается. Попробуйте отменить через минуту')
+  }
+  const provider = await providerFor(db, config, subscription.provider)
+  if (!provider.cancelSubscription) throw new ApiError(409, 'SUBSCRIPTION_NOT_AVAILABLE', 'Провайдер не поддерживает отмену автопродления')
+  await provider.cancelSubscription(subscription.providerSubscriptionId, subscription.id)
+  const now = new Date()
+  const updated = (await db.update(commerceSubscriptions).set({
+    status: 'canceled',
+    canceledAt: now,
+    nextPaymentAt: null,
+    updatedAt: now,
+  }).where(eq(commerceSubscriptions.id, subscription.id)).returning())[0]
+  return { subscription: { id: updated.id, status: updated.status } }
 }
 
 export const confirmStubOrder = async (db: Database, config: AppConfig, orderId: string) => {
@@ -399,6 +688,7 @@ export const reconcileCommerceOrders = async (db: Database, config: AppConfig, n
           .where(eq(paymentOrders.id, candidate.order.id)).for('update').limit(1)
         if (!joined[0] || joined[0].order.status !== 'pending') return joined[0]?.order.status ?? 'missing'
         const appliedStatus = await applyPaymentState(tx, joined[0].order, joined[0].product, state)
+        await upsertCommerceSubscription(tx, joined[0].order.provider, joined[0].order, joined[0].product, state)
         await tx.update(paymentOrders).set({
           metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({ lastReconciledAt: now.toISOString() })}::jsonb`,
           ...(appliedStatus === 'pending' ? { updatedAt: now } : {}),

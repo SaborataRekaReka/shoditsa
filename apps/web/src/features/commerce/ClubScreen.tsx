@@ -301,7 +301,7 @@ export function ClubScreen({
             <div className="club-entry__service">
               {hasClub
                 ? <ActionButton type="button" variant="ghost" onClick={onProfile}><Settings aria-hidden="true" /> Управление билетом</ActionButton>
-                : <span>{monthly.durationDays ?? 30} дней · без автопродления</span>}
+                : <span>{monthly.durationDays ?? 30} дней · автопродление по выбору</span>}
             </div>
           </div>
           <div className="club-entry__art">
@@ -419,7 +419,7 @@ export function ClubScreen({
                   : <ActionButton type="button" onClick={() => setNotice('Оплата временно недоступна. Попробуйте немного позже.')}>
                     Выбрать {monthly.durationDays ?? 30} дней
                   </ActionButton>}
-                note={<><LockKeyhole aria-hidden="true" /> Без автопродления</>}
+                note={<><LockKeyhole aria-hidden="true" /> Автопродление — только по вашему выбору</>}
               />
               <ClubCard
                 featured
@@ -441,7 +441,7 @@ export function ClubScreen({
                   : <ActionButton type="button" onClick={() => setNotice('Оплата временно недоступна. Попробуйте немного позже.')}>
                     Выбрать {annual.durationDays ?? 365} дней
                   </ActionButton>}
-                note={<><LockKeyhole aria-hidden="true" /> Без автопродления</>}
+                note={<><LockKeyhole aria-hidden="true" /> Автопродление — только по вашему выбору</>}
               />
             </div>
             <ActionButton type="button" variant="ghost" className="club-pricing__back" onClick={() => document.getElementById('club-hero')?.scrollIntoView({ behavior: 'smooth' })}>

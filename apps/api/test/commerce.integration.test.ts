@@ -77,7 +77,7 @@ describe('commerce API', () => {
     expect(catalog.json().products).toEqual(expect.arrayContaining([expect.objectContaining({ id: 'club_30d', priceMinor: 19_900 })]))
     const checkout = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': crypto.randomUUID() }, payload: { productId: 'club_30d', priceMinor: 1 } })
     expect(checkout.statusCode).toBe(400)
-    const validBody = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': crypto.randomUUID() }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-26' } })
+    const validBody = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': crypto.randomUUID() }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-27' } })
     expect(validBody.statusCode).toBe(403)
     expect(validBody.json().error.code).toBe('COMMERCE_ACCOUNT_REQUIRED')
   })
@@ -91,8 +91,8 @@ describe('commerce API', () => {
 
   it('creates one server-priced order per idempotency key and grants exactly one entitlement', async () => {
     const key = crypto.randomUUID()
-    const first = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': key }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-26' } })
-    const replay = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': key }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-26' } })
+    const first = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': key }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-27' } })
+    const replay = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': key }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-27' } })
     expect(first.statusCode).toBe(200)
     expect(replay.json()).toEqual(first.json())
     expect(first.json().order.amountMinor).toBe(19_900)
@@ -107,7 +107,7 @@ describe('commerce API', () => {
   })
 
   it('stacks a second club purchase after the existing end date', async () => {
-    const checkout = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': crypto.randomUUID() }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-26' } })
+    const checkout = await app.inject({ method: 'POST', url: '/api/v1/commerce/checkout', headers: { 'idempotency-key': crypto.randomUUID() }, payload: { productId: 'club_30d', termsAccepted: true, offerVersion: '2026-07-27' } })
     orderIds.push(checkout.json().order.id)
     await app.inject({ method: 'POST', url: `/api/v1/commerce/test/orders/${checkout.json().order.id}/confirm`, headers: { 'x-commerce-test-key': testKey } })
     const grants = await database.db.select().from(userEntitlements).where(and(eq(userEntitlements.userId, userId), eq(userEntitlements.entitlementKey, 'club')))
@@ -163,7 +163,7 @@ describe('commerce API', () => {
       method: 'POST',
       url: '/api/v1/commerce/checkout',
       headers: { 'idempotency-key': crypto.randomUUID() },
-      payload: { productId: 'tickets_60', termsAccepted: true, offerVersion: '2026-07-26' },
+      payload: { productId: 'tickets_60', termsAccepted: true, offerVersion: '2026-07-27' },
     })
     expect(checkout.statusCode).toBe(200)
     const orderId = checkout.json().order.id as string
