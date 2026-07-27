@@ -37,8 +37,6 @@ ALTER TABLE "content_packs" ALTER COLUMN "access_model" SET DEFAULT 'club';--> s
 UPDATE "content_packs"
 SET "access_model" = 'club',
     "included_in_club" = true,
-    "admin_only" = false,
-    "required_badge_id" = null,
     "preview_items" = 0,
     "product_id" = null;--> statement-breakpoint
 UPDATE "commerce_products"
