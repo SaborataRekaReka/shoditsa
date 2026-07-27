@@ -1,9 +1,7 @@
 import { and, eq, sql } from 'drizzle-orm'
 import {
-  ECONOMY_RULE_SET,
   ECONOMY_RULES_VERSION,
   FULL_HOUSE_MODE_IDS,
-  economyStreakMilestoneReward,
   type ContentMode,
   type GameCompletionType,
 } from '@shoditsa/contracts'
@@ -12,16 +10,18 @@ import {
 } from '@shoditsa/database'
 import { getMoscowDate, previousDate } from '../../lib/time.js'
 import { calculateCompletionReward } from '@shoditsa/game-core'
+import { loadEconomyRulesByVersion } from '../economy/rules.js'
+import { settlePositiveWalletCredit, walletCreditMetadata } from '../economy/wallet-credit.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 const ALL_MODES: ContentMode[] = [...FULL_HOUSE_MODE_IDS]
 
 export const completeGame = async (tx: Transaction, input: {
   sessionId: string; userId: string; kind: string; mode: ContentMode; difficulty: string | null;
-  puzzleDate: string; won: boolean; attemptsCount: number; rulesVersion?: number; completionType?: GameCompletionType | null;
+  puzzleDate: string; won: boolean; attemptsCount: number; rulesVersion?: number; completionType?: GameCompletionType | null; special?: boolean;
 }) => {
   const completionType = input.completionType ?? (input.won ? 'direct_win' : 'attempts_exhausted')
-  const statsEligible = input.kind === 'daily' || input.kind === 'archive'
+  const statsEligible = !input.special && (input.kind === 'daily' || input.kind === 'archive')
   if (statsEligible) {
     const difficulty = input.mode === 'music' ? input.difficulty ?? '-' : '-'
     await tx.insert(userModeStats).values({ userId: input.userId, mode: input.mode, difficultyKey: difficulty }).onConflictDoNothing()
@@ -40,7 +40,9 @@ export const completeGame = async (tx: Transaction, input: {
     }).where(and(eq(userModeStats.userId, input.userId), eq(userModeStats.mode, input.mode), eq(userModeStats.difficultyKey, difficulty)))
   }
 
-  if (input.kind !== 'daily' || input.puzzleDate !== getMoscowDate()) return null
+  if (input.special || input.kind !== 'daily' || input.puzzleDate !== getMoscowDate() || completionType === 'expired') return null
+  const sessionRulesVersion = input.rulesVersion ?? ECONOMY_RULES_VERSION
+  const rules = await loadEconomyRulesByVersion(tx, sessionRulesVersion)
   const now = new Date()
   await tx.insert(attendanceStats).values({ userId: input.userId }).onConflictDoNothing()
   const streakRows = await tx.select().from(attendanceStats).where(eq(attendanceStats.userId, input.userId)).for('update').limit(1)
@@ -94,20 +96,30 @@ export const completeGame = async (tx: Transaction, input: {
     firstRoute3,
     firstFullHouse,
     dailyStreak: currentDailyStreak,
+    rules,
   })
-  const sessionRulesVersion = input.rulesVersion ?? rulesVersion ?? ECONOMY_RULES_VERSION
+  const resolvedRulesVersion = input.rulesVersion ?? rulesVersion ?? ECONOMY_RULES_VERSION
   const streakMilestone = components.streakMilestone
   const completionTotal = total - streakMilestone
 
   await tx.insert(walletAccounts).values({ userId: input.userId }).onConflictDoNothing()
   const wallets = await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, input.userId)).for('update').limit(1)
   const wallet = wallets[0]
-  const completionBalanceAfter = wallet.balance + completionTotal
+  const completionCredit = settlePositiveWalletCredit(wallet, completionTotal)
+  const milestoneCredit = settlePositiveWalletCredit({
+    balance: completionCredit.balanceAfter,
+    purchaseDebt: completionCredit.purchaseDebtAfter,
+  }, streakMilestone)
   const operationKey = `game-completion:${input.sessionId}`
   const ledger = await tx.insert(walletLedger).values({
-    userId: input.userId, operationKey, type: 'earn', reason: 'game-completion', amount: completionTotal, balanceAfter: completionBalanceAfter,
-    rulesVersion: sessionRulesVersion,
-    metadata: {
+    userId: input.userId,
+    operationKey,
+    type: 'earn',
+    reason: 'game-completion',
+    amount: completionCredit.spendableAmount,
+    balanceAfter: completionCredit.balanceAfter,
+    rulesVersion: resolvedRulesVersion,
+    metadata: walletCreditMetadata(completionCredit, {
       sessionId: input.sessionId,
       components: { ...components, streakMilestone: 0 },
       source: 'daily-game',
@@ -115,47 +127,56 @@ export const completeGame = async (tx: Transaction, input: {
       sessionKind: input.kind,
       dailyCompletedCount: routeCount,
       streak: currentDailyStreak,
-      rulesVersion: sessionRulesVersion,
-    },
+      rulesVersion: resolvedRulesVersion,
+    }),
   }).onConflictDoNothing().returning({ id: walletLedger.id })
   if (!ledger[0]) {
     const existing = await tx.select({ id: walletLedger.id, amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter, metadata: walletLedger.metadata })
       .from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1)
-    const milestone = await tx.select({ amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter })
+    const milestone = await tx.select({ amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter, metadata: walletLedger.metadata })
       .from(walletLedger).where(eq(walletLedger.operationKey, `streak-milestone:${input.userId}:${input.puzzleDate}:${currentDailyStreak}`)).limit(1)
+    const gross = (row: { amount: number; metadata: unknown }) => {
+      const metadata = row.metadata && typeof row.metadata === 'object' ? row.metadata as Record<string, unknown> : {}
+      return Math.max(0, Number(metadata.grossAmount) || row.amount)
+    }
     return {
       ledgerId: existing[0].id,
-      rulesVersion: sessionRulesVersion,
-      total: existing[0].amount + (milestone[0]?.amount ?? 0),
+      rulesVersion: resolvedRulesVersion,
+      total: gross(existing[0]) + (milestone[0] ? gross(milestone[0]) : 0),
       components,
       balanceAfter: milestone[0]?.balanceAfter ?? existing[0].balanceAfter,
       alreadyClaimed: true,
     }
   }
-  let balanceAfter = completionBalanceAfter
+  const balanceAfter = milestoneCredit.balanceAfter
   if (streakMilestone > 0) {
-    balanceAfter += streakMilestone
     await tx.insert(walletLedger).values({
       userId: input.userId,
       operationKey: `streak-milestone:${input.userId}:${input.puzzleDate}:${currentDailyStreak}`,
       type: 'earn',
       reason: 'streak-milestone',
-      amount: streakMilestone,
+      amount: milestoneCredit.spendableAmount,
       balanceAfter,
-      rulesVersion: sessionRulesVersion,
-      metadata: {
+      rulesVersion: resolvedRulesVersion,
+      metadata: walletCreditMetadata(milestoneCredit, {
         sessionId: input.sessionId,
         source: 'streak-milestone',
         mode: input.mode,
         sessionKind: input.kind,
         dailyCompletedCount: routeCount,
         streak: currentDailyStreak,
-        rulesVersion: sessionRulesVersion,
-      },
+        rulesVersion: resolvedRulesVersion,
+      }),
     }).onConflictDoNothing()
   }
-  await tx.update(walletAccounts).set({ balance: balanceAfter, lifetimeEarned: wallet.lifetimeEarned + total, version: sql`${walletAccounts.version} + 1`, updatedAt: now }).where(eq(walletAccounts.userId, input.userId))
-  return { ledgerId: ledger[0].id, rulesVersion: sessionRulesVersion, total, components, balanceAfter, alreadyClaimed: false }
+  await tx.update(walletAccounts).set({
+    balance: balanceAfter,
+    lifetimeEarned: wallet.lifetimeEarned + total,
+    purchaseDebt: milestoneCredit.purchaseDebtAfter,
+    version: sql`${walletAccounts.version} + 1`,
+    updatedAt: now,
+  }).where(eq(walletAccounts.userId, input.userId))
+  return { ledgerId: ledger[0].id, rulesVersion: resolvedRulesVersion, total, components, balanceAfter, alreadyClaimed: false }
 }
 
 export const completeDanetkiDaily = async (tx: Transaction, input: {
@@ -167,100 +188,50 @@ export const completeDanetkiDaily = async (tx: Transaction, input: {
 }) => {
   if (input.puzzleDate !== getMoscowDate()) return null
   const operationKey = `danetki-daily-completion:${input.userId}:${input.puzzleDate}`
-  const existing = await tx.select({ id: walletLedger.id, amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter })
+  const existing = await tx.select({ id: walletLedger.id, amount: walletLedger.amount, balanceAfter: walletLedger.balanceAfter, metadata: walletLedger.metadata })
     .from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1)
-  if (existing[0]) return { ledgerId: existing[0].id, total: existing[0].amount, balanceAfter: existing[0].balanceAfter, alreadyClaimed: true }
+  if (existing[0]) {
+    const metadata = existing[0].metadata && typeof existing[0].metadata === 'object'
+      ? existing[0].metadata as Record<string, unknown>
+      : {}
+    return {
+      ledgerId: existing[0].id,
+      total: Math.max(0, Number(metadata.grossAmount) || existing[0].amount),
+      balanceAfter: existing[0].balanceAfter,
+      alreadyClaimed: true,
+    }
+  }
 
   const now = new Date()
-  await tx.insert(attendanceStats).values({ userId: input.userId }).onConflictDoNothing()
-  const streak = (await tx.select().from(attendanceStats).where(eq(attendanceStats.userId, input.userId)).for('update').limit(1))[0]
-  await tx.insert(dailyAttendance).values({
-    userId: input.userId,
-    activityDate: input.puzzleDate,
-    firstCompletedAt: now,
-    completedModes: [],
-    wonModes: [],
-    fullHouse: false,
-  }).onConflictDoNothing()
-  const attendance = (await tx.select().from(dailyAttendance).where(and(
-    eq(dailyAttendance.userId, input.userId),
-    eq(dailyAttendance.activityDate, input.puzzleDate),
-  )).for('update').limit(1))[0]
-  const firstCompletion = attendance.completedModes.length === 0
-  const completedModes = [...new Set([...attendance.completedModes, 'danetki' as const])]
-  const wonModes = input.won ? [...new Set([...attendance.wonModes, 'danetki' as const])] : attendance.wonModes
-
-  let currentDailyStreak = streak.currentDailyStreak
-  let bestDailyStreak = streak.bestDailyStreak
-  let gracePasses = streak.gracePasses
-  let totalActiveDays = streak.totalActiveDays
-  if (firstCompletion) {
-    const yesterday = previousDate(input.puzzleDate)
-    const twoDaysAgo = previousDate(yesterday)
-    if (!streak.lastCompletedDate) currentDailyStreak = 1
-    else if (streak.lastCompletedDate === yesterday) currentDailyStreak += 1
-    else if (streak.lastCompletedDate === twoDaysAgo && gracePasses > 0) { currentDailyStreak += 1; gracePasses -= 1 }
-    else if (streak.lastCompletedDate !== input.puzzleDate) currentDailyStreak = 1
-    totalActiveDays += 1
-    bestDailyStreak = Math.max(bestDailyStreak, currentDailyStreak)
-    if (currentDailyStreak > 0 && currentDailyStreak % 7 === 0) gracePasses = Math.min(2, gracePasses + 1)
-  }
-  await tx.update(dailyAttendance).set({ completedModes, wonModes }).where(and(
-    eq(dailyAttendance.userId, input.userId),
-    eq(dailyAttendance.activityDate, input.puzzleDate),
-  ))
-  await tx.update(attendanceStats).set({
-    currentDailyStreak,
-    bestDailyStreak,
-    gracePasses,
-    totalActiveDays,
-    lastCompletedDate: firstCompletion ? input.puzzleDate : streak.lastCompletedDate,
-    updatedAt: now,
-  }).where(eq(attendanceStats.userId, input.userId))
-
   await tx.insert(walletAccounts).values({ userId: input.userId }).onConflictDoNothing()
   const wallet = (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, input.userId)).for('update').limit(1))[0]
   const rulesVersion = input.rulesVersion ?? ECONOMY_RULES_VERSION
-  const completionReward = ECONOMY_RULE_SET.danetki.ownerDailyCompletionReward
-  let balanceAfter = wallet.balance + completionReward
+  const rules = await loadEconomyRulesByVersion(tx, rulesVersion)
+  const completionReward = rules.danetki.ownerDailyCompletionReward
+  const credit = settlePositiveWalletCredit(wallet, completionReward)
   const ledger = (await tx.insert(walletLedger).values({
     userId: input.userId,
     operationKey,
     type: 'earn',
     reason: 'danetki-daily-completion',
-    amount: completionReward,
-    balanceAfter,
+    amount: credit.spendableAmount,
+    balanceAfter: credit.balanceAfter,
     rulesVersion,
-    metadata: {
+    metadata: walletCreditMetadata(credit, {
       sessionId: input.sessionId,
       source: 'danetki-daily',
       mode: 'danetki',
       sessionKind: 'daily',
-      dailyCompletedCount: completedModes.length,
-      streak: currentDailyStreak,
       rulesVersion,
-    },
+    }),
   }).returning({ id: walletLedger.id }))[0]
-  const streakMilestone = firstCompletion ? economyStreakMilestoneReward(currentDailyStreak) : 0
-  if (streakMilestone > 0) {
-    balanceAfter += streakMilestone
-    await tx.insert(walletLedger).values({
-      userId: input.userId,
-      operationKey: `streak-milestone:${input.userId}:${input.puzzleDate}:${currentDailyStreak}`,
-      type: 'earn',
-      reason: 'streak-milestone',
-      amount: streakMilestone,
-      balanceAfter,
-      rulesVersion,
-      metadata: { sessionId: input.sessionId, source: 'streak-milestone', mode: 'danetki', sessionKind: 'daily', streak: currentDailyStreak, rulesVersion },
-    }).onConflictDoNothing()
-  }
-  const total = completionReward + streakMilestone
+  const total = completionReward
   await tx.update(walletAccounts).set({
-    balance: balanceAfter,
+    balance: credit.balanceAfter,
     lifetimeEarned: wallet.lifetimeEarned + total,
+    purchaseDebt: credit.purchaseDebtAfter,
     version: sql`${walletAccounts.version} + 1`,
     updatedAt: now,
   }).where(eq(walletAccounts.userId, input.userId))
-  return { ledgerId: ledger.id, total, balanceAfter, alreadyClaimed: false }
+  return { ledgerId: ledger.id, total, balanceAfter: credit.balanceAfter, alreadyClaimed: false }
 }

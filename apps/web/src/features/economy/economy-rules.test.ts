@@ -10,17 +10,19 @@ describe('economy rules', () => {
     }
   })
 
-  it('uses the v2 free-play ladder', () => {
+  it('uses the capped v4 free-play ladder', () => {
     expect(freePlayCost(0)).toBe(60)
     expect(freePlayCost(1)).toBe(80)
     expect(freePlayCost(3)).toBe(120)
+    expect(freePlayCost(20)).toBe(120)
   })
 
-  it('uses independent Danetki room bases with a shared paid-launch step', () => {
+  it('uses one capped Danetki ladder for solo and group rooms', () => {
     expect(economyDanetkiCost('solo', 0)).toBe(90)
-    expect(economyDanetkiCost('group', 0)).toBe(120)
+    expect(economyDanetkiCost('group', 0)).toBe(90)
     expect(economyDanetkiCost('solo', 2)).toBe(150)
-    expect(economyDanetkiCost('group', 2)).toBe(180)
+    expect(economyDanetkiCost('group', 2)).toBe(150)
+    expect(economyDanetkiCost('solo', 20)).toBe(150)
   })
 
   it('only awards configured streak milestones', () => {

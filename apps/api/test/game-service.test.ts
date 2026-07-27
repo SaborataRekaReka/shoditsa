@@ -1,28 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOG_HINT_COPY, KPOP_ARTISTS_PACK_ID, PLAYABLE_MODE_IDS, type Hint, type TitleItem } from '@shoditsa/contracts'
-import { answerPool, buildHintOptions, publicCard, startGame } from '../src/modules/games/service.js'
+import { answerPool, buildHintOptions, publicCard } from '../src/modules/games/service.js'
+import { isSpecialSession } from '../src/modules/games/special.js'
 
 describe('K-pop daily special access', () => {
-  it('rejects the dedicated daily variant for non-admin users before reading game state', async () => {
-    const entitlementQuery = {
-      from: () => entitlementQuery,
-      where: () => entitlementQuery,
-      limit: async () => [],
+  it('classifies the dedicated daily variant as a club special', async () => {
+    const query = {
+      from: () => query,
+      where: () => query,
+      limit: async () => [{ variantKey: KPOP_ARTISTS_PACK_ID }],
     }
-    const db = {
-      transaction: (callback: (tx: unknown) => unknown) => callback({
-        select: () => entitlementQuery,
-      }),
-    }
-
-    await expect(startGame(db as never, 'player-id', {
+    expect(await isSpecialSession({ select: () => query } as never, {
       kind: 'daily',
-      mode: 'music',
-      variantKey: KPOP_ARTISTS_PACK_ID,
-    }, null, 'player')).rejects.toMatchObject({
-      statusCode: 403,
-      code: 'PACK_ACCESS_REQUIRED',
-    })
+      packId: null,
+      challengeId: '00000000-0000-4000-8000-000000000001',
+    } as never)).toBe(true)
   })
 })
 

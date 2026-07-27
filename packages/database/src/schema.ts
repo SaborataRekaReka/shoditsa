@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm'
 import { CONTENT_MODE_IDS, type FriendsRoomPackSelection, type FriendsRoomScorePart } from '@shoditsa/contracts'
 import {
+  type AnyPgColumn,
   bigint, bigserial, boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
   numeric, real, smallint, text, timestamp, unique, uniqueIndex, uuid,
 } from 'drizzle-orm/pg-core'
@@ -18,7 +19,7 @@ export const danetkiMessageType = pgEnum('danetki_message_type', ['question', 'a
 export const danetkiGuessStatus = pgEnum('danetki_guess_status', ['pending', 'correct', 'incorrect'])
 export const danetkiAiPurpose = pgEnum('danetki_ai_purpose', ['answer', 'evaluate_guess', 'hint', 'summarize'])
 export const danetkiAiCallStatus = pgEnum('danetki_ai_call_status', ['pending', 'success', 'error'])
-export const friendsRoomPhase = pgEnum('friends_room_phase', ['lobby', 'countdown', 'active', 'results', 'finished'])
+export const friendsRoomPhase = pgEnum('friends_room_phase', ['lobby', 'countdown', 'active', 'results', 'intermission', 'finished'])
 export const friendsRoomMemberRole = pgEnum('friends_room_member_role', ['owner', 'player'])
 
 // Better Auth schema. IDs are UUIDs so domain foreign keys remain native UUID columns.
@@ -125,6 +126,16 @@ export const economyRuleSets = pgTable('economy_rule_sets', {
   createdAt: now(),
 }, (table) => [
   uniqueIndex('economy_rule_sets_single_active_idx').on(table.active).where(sql`${table.active} = true`),
+])
+
+export const economyRuleAssignments = pgTable('economy_rule_assignments', {
+  userId: uuid('user_id').primaryKey().references(() => user.id, { onDelete: 'cascade' }),
+  rulesVersion: integer('rules_version').notNull().references(() => economyRuleSets.version),
+  cohort: text().notNull(),
+  assignedAt: timestamp('assigned_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  check('economy_rule_assignments_cohort_check', sql`${table.cohort} in ('control','canary','admin','test','rollout')`),
+  index('economy_rule_assignments_version_cohort_idx').on(table.rulesVersion, table.cohort, table.assignedAt),
 ])
 
 export const integrationSecrets = pgTable('integration_secrets', {
@@ -631,6 +642,7 @@ export const friendsRooms = pgTable('friends_rooms', {
   mode: contentMode().notNull(),
   gameType: text('game_type').notNull().default('quiz'),
   danetkiSessionId: uuid('danetki_session_id').references(() => gameSessions.id, { onDelete: 'set null' }),
+  danetkiLaunch: jsonb('danetki_launch').$type<{ kind: 'daily' | 'archive' | 'free_play'; puzzleDate?: string }>().notNull().default({ kind: 'daily' }),
   packs: jsonb().$type<FriendsRoomPackSelection[]>().notNull().default(sql`'[{"mode":"series","variant":"all"}]'::jsonb`),
   roundsTotal: smallint('rounds_total').notNull().default(6),
   shufflePacks: boolean('shuffle_packs').notNull().default(false),
@@ -640,6 +652,7 @@ export const friendsRooms = pgTable('friends_rooms', {
   phaseStartedAt: timestamp('phase_started_at', { withTimezone: true }),
   phaseEndsAt: timestamp('phase_ends_at', { withTimezone: true }),
   nextMessageSeq: bigint('next_message_seq', { mode: 'number' }).notNull().default(1),
+  rulesVersion: integer('rules_version').notNull().default(4),
   version: bigint({ mode: 'number' }).notNull().default(1),
   closedAt: timestamp('closed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
@@ -685,7 +698,7 @@ export const friendsRoomRounds = pgTable('friends_room_rounds', {
 }, (table) => [
   unique('friends_room_round_position_unique').on(table.roomId, table.position),
   index('friends_room_round_item_idx').on(table.roomId, table.contentItemVersionId),
-  check('friends_room_round_position_check', sql`${table.position} between 1 and 7`),
+  check('friends_room_round_position_check', sql`${table.position} between 1 and 30`),
 ])
 
 export const friendsRoomAnswers = pgTable('friends_room_answers', {
@@ -720,6 +733,38 @@ export const friendsRoomMessages = pgTable('friends_room_messages', {
   unique('friends_room_message_idempotency_unique').on(table.roomId, table.userId, table.idempotencyKey),
   index('friends_room_message_room_created_idx').on(table.roomId, table.createdAt),
   check('friends_room_message_text_check', sql`char_length(${table.text}) between 1 and 300`),
+])
+
+export const friendsRoomDailyUsage = pgTable('friends_room_daily_usage', {
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  activityDate: date('activity_date').notNull(),
+  freeBlocks: integer('free_blocks').notNull().default(0),
+  paidBlocks: integer('paid_blocks').notNull().default(0),
+  clubBlocks: integer('club_blocks').notNull().default(0),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.activityDate] }),
+  check('friends_room_daily_usage_counts_check', sql`${table.freeBlocks} >= 0 and ${table.paidBlocks} >= 0 and ${table.clubBlocks} >= 0`),
+])
+
+export const friendsRoomExtensions = pgTable('friends_room_extensions', {
+  id: uuid().primaryKey().defaultRandom(),
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  ownerUserId: uuid('owner_user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  blockNumber: smallint('block_number').notNull(),
+  roundsAdded: smallint('rounds_added').notNull().default(6),
+  accessSource: text('access_source').notNull(),
+  cost: integer().notNull().default(0),
+  ledgerId: uuid('ledger_id').references((): AnyPgColumn => walletLedger.id),
+  idempotencyKey: text('idempotency_key').notNull(),
+  rulesVersion: integer('rules_version').notNull().default(4),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('friends_room_extension_room_block_unique').on(table.roomId, table.blockNumber),
+  unique('friends_room_extension_owner_key_unique').on(table.ownerUserId, table.idempotencyKey),
+  check('friends_room_extension_block_check', sql`${table.blockNumber} between 1 and 5`),
+  check('friends_room_extension_rounds_check', sql`${table.roundsAdded} between 3 and 6`),
+  check('friends_room_extension_access_check', sql`${table.accessSource} in ('free', 'tickets', 'club')`),
+  check('friends_room_extension_cost_check', sql`${table.cost} >= 0`),
 ])
 
 export const contentReports = pgTable('content_reports', {
@@ -821,8 +866,13 @@ export const attendanceStats = pgTable('attendance_stats', {
 export const walletAccounts = pgTable('wallet_accounts', {
   userId: uuid('user_id').primaryKey().references(() => user.id, { onDelete: 'cascade' }),
   balance: integer().notNull().default(0), lifetimeEarned: integer('lifetime_earned').notNull().default(0),
+  purchaseDebt: integer('purchase_debt').notNull().default(0),
   version: integer().notNull().default(1), updatedAt: now(),
-}, (table) => [check('wallet_balance_check', sql`${table.balance} >= 0`), check('wallet_lifetime_check', sql`${table.lifetimeEarned} >= 0`)])
+}, (table) => [
+  check('wallet_balance_check', sql`${table.balance} >= 0`),
+  check('wallet_lifetime_check', sql`${table.lifetimeEarned} >= 0`),
+  check('wallet_purchase_debt_check', sql`${table.purchaseDebt} >= 0`),
+])
 
 export const walletLedger = pgTable('wallet_ledger', {
   id: uuid().primaryKey().defaultRandom(), userId: uuid('user_id').notNull().references(() => user.id),
@@ -876,11 +926,12 @@ export const commerceProducts = pgTable('commerce_products', {
 }, (table) => [
   check('commerce_products_price_check', sql`${table.priceMinor} >= 0`),
   check('commerce_products_currency_check', sql`${table.currency} ~ '^[A-Z]{3}$'`),
-  check('commerce_products_kind_check', sql`${table.kind} in ('club','pack','tip')`),
+  check('commerce_products_kind_check', sql`${table.kind} in ('club','pack','tip','tickets')`),
   check('commerce_products_semantics_check', sql`(
     (${table.kind} = 'club' and ${table.durationDays} > 0 and ${table.entitlementKey} = 'club')
     or (${table.kind} = 'pack' and ${table.entitlementKey} = 'pack' and ${table.scope} is not null and length(${table.scope}) > 0)
     or (${table.kind} = 'tip' and ${table.entitlementKey} = 'supporter')
+    or (${table.kind} = 'tickets' and ${table.durationDays} is null and ${table.entitlementKey} is null and (${table.metadata}->>'ticketAmount')::int > 0)
   )`),
   index('commerce_products_enabled_sort_idx').on(table.enabled, table.sortOrder),
 ])
@@ -894,7 +945,7 @@ export const contentPacks = pgTable('content_packs', {
   description: text().notNull(),
   coverUrl: text('cover_url'),
   status: text().notNull().default('draft'),
-  accessModel: text('access_model').notNull().default('free'),
+  accessModel: text('access_model').notNull().default('club'),
   productId: text('product_id').references(() => commerceProducts.id, { onDelete: 'set null' }),
   includedInClub: boolean('included_in_club').notNull().default(true),
   previewItems: integer('preview_items').notNull().default(0),
@@ -905,6 +956,7 @@ export const contentPacks = pgTable('content_packs', {
 }, (table) => [
   check('content_packs_status_check', sql`${table.status} in ('draft','published','archived')`),
   check('content_packs_access_model_check', sql`${table.accessModel} in ('free','club','purchase')`),
+  check('content_packs_club_only_check', sql`${table.accessModel} = 'club' and ${table.includedInClub} = true and ${table.previewItems} = 0 and ${table.productId} is null`),
   check('content_packs_preview_items_check', sql`${table.previewItems} >= 0`),
   check('content_packs_manifest_version_check', sql`${table.manifestVersion} > 0`),
   index('content_packs_catalog_idx').on(table.status, table.mode, table.createdAt),
@@ -1056,7 +1108,7 @@ export const clientEvents = pgTable('client_events', {
   properties: jsonb().notNull().default({}),
   createdAt: now(),
 }, (table) => [
-  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','club_paywall_view')`),
+  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable')`),
   index('client_event_occurred_idx').on(table.occurredAt),
   index('client_event_user_occurred_idx').on(table.userId, table.occurredAt),
   index('client_event_game_session_idx').on(table.gameSessionId),

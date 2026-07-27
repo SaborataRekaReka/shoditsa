@@ -8,6 +8,8 @@ const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(
 export type AdminEconomyOverview = {
   periodDays: 7 | 14 | 30
   generatedAt: string
+  activeRule: { version: number; effectiveAt: string; active: boolean; rules: Record<string, unknown>; createdAt: string } | null
+  activeRuleDiagnostic: 'missing-active' | 'multiple-active' | null
   summary: {
     ticketsEarned: number
     ticketsSpent: number
@@ -29,6 +31,9 @@ export type AdminEconomyOverview = {
     revenuePerPayingUserMinor: number
     repeatBuyers: number
     refunds: number
+    friendsRoomContinuations: number
+    clubDanetkiRooms: number
+    ticketBundlePurchases: number
   }
   spendByReason: Array<{ reason: string; amount: number; operations: number }>
   ruleVersions: Array<{ rulesVersion: number; operations: number; earned: number; spent: number }>

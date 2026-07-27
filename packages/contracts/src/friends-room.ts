@@ -1,9 +1,14 @@
 import { Type, type Static } from '@sinclair/typebox'
 import { PlayableModeSchema } from './schemas.js'
 import type { PublicContentItem } from './api.js'
+import type { EconomyQuote } from './economy.js'
 
-export type FriendsRoomPhase = 'lobby' | 'countdown' | 'active' | 'results' | 'finished'
+export type FriendsRoomPhase = 'lobby' | 'countdown' | 'active' | 'results' | 'intermission' | 'finished'
 export type FriendsRoomGameType = 'quiz' | 'danetki'
+export type FriendsRoomDanetkiLaunch = {
+  kind: 'daily' | 'archive' | 'free_play'
+  puzzleDate?: string
+}
 
 export const FRIENDS_ROOM_CAPACITY = 8
 export const FRIENDS_ROOM_DANETKI_CAPACITY = 4
@@ -91,6 +96,10 @@ export const FriendsRoomCreateBodySchema = Type.Object({
   roundsTotal: Type.Optional(FriendsRoomRoundsTotalSchema),
   shufflePacks: Type.Optional(Type.Boolean()),
   answerTimeSeconds: Type.Optional(Type.Union([Type.Literal(15), Type.Literal(20), Type.Literal(30), Type.Literal(45)])),
+  danetkiLaunch: Type.Optional(Type.Object({
+    kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('free_play')]),
+    puzzleDate: Type.Optional(Type.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}$' })),
+  }, { additionalProperties: false })),
 }, { additionalProperties: false })
 
 export const FriendsRoomJoinBodySchema = Type.Object({
@@ -104,6 +113,10 @@ export const FriendsRoomConfigBodySchema = Type.Partial(Type.Object({
   roundsTotal: FriendsRoomRoundsTotalSchema,
   shufflePacks: Type.Boolean(),
   answerTimeSeconds: Type.Union([Type.Literal(15), Type.Literal(20), Type.Literal(30), Type.Literal(45)]),
+  danetkiLaunch: Type.Object({
+    kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('free_play')]),
+    puzzleDate: Type.Optional(Type.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}$' })),
+  }, { additionalProperties: false }),
 }, { additionalProperties: false }), { minProperties: 1 })
 
 export const FriendsRoomAnswerBodySchema = Type.Object({
@@ -186,6 +199,7 @@ export type FriendsRoomSnapshot = {
   gameType: FriendsRoomGameType
   danetkiSessionId: string | null
   danetkiLaunchCost: number
+  danetkiLaunch: FriendsRoomDanetkiLaunch
   mode: Static<typeof PlayableModeSchema>
   packs: FriendsRoomPackSelection[]
   capacity: number
@@ -193,6 +207,7 @@ export type FriendsRoomSnapshot = {
   shufflePacks: boolean
   answerTimeSeconds: 15 | 20 | 30 | 45
   phase: FriendsRoomPhase
+  rulesVersion: number
   currentRound: number
   version: number
   currentUserId: string
@@ -202,6 +217,16 @@ export type FriendsRoomSnapshot = {
   round: FriendsRoomRound | null
   answers: FriendsRoomAnswer[]
   messages: FriendsRoomMessage[]
+  continuation: {
+    canContinue: boolean
+    roundsAdded: 6
+    nextRoundsTotal: number | null
+    accessSource: 'free' | 'tickets' | 'club' | 'unavailable'
+    cost: number
+    balance: number | null
+    shortage: number
+    quote: EconomyQuote | null
+  }
 }
 
 export type FriendsRoomResponse = { room: FriendsRoomSnapshot }

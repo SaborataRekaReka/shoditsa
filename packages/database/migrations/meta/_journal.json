@@ -232,6 +232,27 @@
       "when": 1785047176621,
       "tag": "0032_mighty_radioactive_man",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1785131781886,
+      "tag": "0033_gifted_mauler",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1785133223846,
+      "tag": "0034_absent_prowler",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1785133339859,
+      "tag": "0035_wide_madrox",
+      "breakpoints": true
     }
   ]
 }

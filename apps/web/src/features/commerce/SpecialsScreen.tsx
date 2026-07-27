@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { CalendarDays, Clapperboard, Gamepad2, Music2, Play, Sparkles, Trophy } from 'lucide-react'
+import { CalendarDays, Clapperboard, Gamepad2, LockKeyhole, Music2, Play, Sparkles, Trophy } from 'lucide-react'
 import { KPOP_ARTISTS_PACK_ID, type GameSessionSnapshot } from '@shoditsa/contracts'
 import { ActionButton, AppHeader, Modal, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOptionAction } from '../../components/game-launch-controls/GameLaunchControls'
@@ -75,8 +75,8 @@ export function SpecialsScreen({
               сеансы
             </h1>
             <p>
-              Отдельные подборки с собственным прогрессом. Первые игры некоторых
-              показов можно открыть бесплатно.
+              Отдельные подборки с собственным прогрессом. Все спецпоказы
+              доступны участникам Клуба.
             </p>
           </div>
           <div className="specials-hero__poster" aria-hidden="true">
@@ -109,21 +109,17 @@ export function SpecialsScreen({
               <div className="special-card__copy">
                 <span>
                   <Clapperboard /> {packSubject(pack.id, pack.totalItems)}
-                  {pack.id !== KPOP_ARTISTS_PACK_ID && <> · {pack.completedItems} пройдено</>}
+                  {pack.id !== KPOP_ARTISTS_PACK_ID && pack.access !== 'locked' && <> · {pack.completedItems} пройдено</>}
                 </span>
                 <h2>{pack.title}</h2>
                 <p>{pack.subtitle || pack.description}</p>
               </div>
               <strong>
-                {pack.access === 'admin'
-                  ? 'Только для администратора'
-                  : pack.owned
-                  ? 'Доступ открыт'
-                  : pack.access === 'club'
-                    ? 'В клубе'
-                    : pack.access === 'free'
-                      ? 'Бесплатно'
-                      : (money(pack.priceMinor, pack.currency) ?? 'Открыть')}
+                {pack.access === 'locked'
+                  ? <><LockKeyhole aria-hidden="true" /> Только в Клубе</>
+                  : pack.access === 'admin'
+                    ? 'QA-доступ'
+                    : 'Доступно в Клубе'}
               </strong>
             </a>
           ))}
@@ -165,7 +161,7 @@ export function SpecialDetailScreen({
       ?? pack.entries.find((entry) => entry.accessible)
       ?? null
     : null
-  const canStart = isKpopPack || Boolean(nextEntry)
+  const canStart = pack?.access !== 'locked' && (isKpopPack || Boolean(nextEntry))
 
   useEffect(() => {
     mountedRef.current = true
@@ -185,6 +181,11 @@ export function SpecialDetailScreen({
       trackClientEvent('pack_paywall_view', {
         packId: pack.id,
         productId: pack.productId,
+      })
+    if (pack.access === 'locked')
+      trackClientEvent('special_locked_view', {
+        packId: pack.id,
+        placement: 'special_detail',
       })
   }, [pack])
 
@@ -243,7 +244,7 @@ export function SpecialDetailScreen({
         <section className="title-stage">
           <div className="title-game-mark">
             <span>{isKpopPack ? <Music2 /> : <Gamepad2 />}</span>
-            <i>{isKpopPack ? 'K-pop · закрытый спецпоказ' : 'DTF · спецпоказ'} · {packSubject(pack.id, pack.totalItems)}</i>
+            <i>{isKpopPack ? 'K-pop · клубный спецпоказ' : 'DTF · клубный спецпоказ'} · {packSubject(pack.id, pack.totalItems)}</i>
             <h1>{pack.title}</h1>
           </div>
           <time>{pack.subtitle || (isKpopPack ? 'Пять поколений корейской поп-сцены' : 'Специальная подборка DTF')}</time>
@@ -258,7 +259,7 @@ export function SpecialDetailScreen({
             stubEnd={isKpopPack ? `${pack.totalItems} АРТИСТОВ` : `${pack.totalItems} ИГР`}
             className={`special-title-ticket ${isKpopPack ? 'special-title-ticket--kpop' : ''}`}
           >
-              <TicketKicker title={isKpopPack ? 'K-pop artist dossier' : 'Игра «Игры»'} detail={isKpopPack ? pack.access === 'admin' ? 'только для администратора' : 'доступ выдан администратором' : 'специальный набор'} />
+              <TicketKicker title={isKpopPack ? 'K-pop artist dossier' : 'Игра «Игры»'} detail={pack.access === 'locked' ? 'только в Клубе' : pack.access === 'admin' ? 'QA-доступ' : 'доступно в Клубе'} />
               <h2 id={isKpopPack ? 'ticket-kpop-artists' : 'ticket-dtf-comments'}>
                 {isKpopPack ? 'Угадайте K-pop артиста' : 'Угадайте игру по комментариям'}
               </h2>
@@ -283,7 +284,14 @@ export function SpecialDetailScreen({
                   label="пройдено"
                   className="special-title-progress"
                 />}
-              <GameLaunchControls
+              {pack.access === 'locked'
+                ? <div className="special-club-paywall" role="region" aria-label="Доступ только в Клубе">
+                  <LockKeyhole aria-hidden="true" />
+                  <div><strong>Спецпоказы доступны участникам Клуба</strong><p>Архив с первого дня, свободная игра, комнаты с друзьями без билетиков и все спецпоказы.</p></div>
+                  <a className="ui-button ui-button--primary" href="/club" onClick={() => trackClientEvent('special_club_cta_clicked', { packId, placement: 'special_detail' })}>Вступить в Клуб — 199 ₽</a>
+                  <a href="/club">Или 1 790 ₽ за год</a>
+                </div>
+                : <GameLaunchControls
                 mode={isKpopPack ? 'music' : 'game'}
                 action={<ActionButton className={`play-button game-launch-controls__play ${!canStart ? 'is-disabled' : ''}`} disabled={!canStart || starting} onClick={() => void start()}>
                   <Play /> {starting ? 'Запускаем…' : isKpopPack ? 'Играть сегодня' : pack.completedItems > 0 ? 'Продолжить' : 'Начать игру'}
@@ -297,7 +305,7 @@ export function SpecialDetailScreen({
                     onClick={() => setLeaderboardOpen(true)}
                   />
                   : undefined}
-              />
+              />}
               {error && <InlineAlert tone="danger" className="specials-error">{error}</InlineAlert>}
           </AdmissionTitleTicket>
         </section>

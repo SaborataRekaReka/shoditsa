@@ -113,6 +113,7 @@ export const loadConfig = () => {
     trustedOrigins,
     commerce: {
       enabled: commerceEnabled,
+      ticketBundlesEnabled: bool('TICKET_BUNDLES_ENABLED', false),
       provider: commerceProvider,
       currency: commerceCurrency,
       returnUrl: commerceReturnUrl,
@@ -127,6 +128,9 @@ export const loadConfig = () => {
       },
       archiveFirstDate,
       freeArchiveDays: rangedInteger('FREE_ARCHIVE_DAYS', 7, 1, 31),
+    },
+    economy: {
+      v4RolloutPercent: rangedInteger('ECONOMY_V4_ROLLOUT_PERCENT', 100, 0, 100),
     },
     cookieSecure: bool('COOKIE_SECURE', production),
     authEmailEnabled,

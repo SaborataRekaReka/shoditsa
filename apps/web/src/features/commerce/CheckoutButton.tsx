@@ -24,6 +24,7 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
     setError('')
     keyRef.current ??= crypto.randomUUID()
     const properties = { productId: product.id, placement, isAuthenticated: true, hasClub }
+    if (product.kind === 'tickets') trackClientEvent('ticket_offer_clicked', properties)
     trackClientEvent('checkout_started', properties)
     trackMetrikaGoal('checkout_started', properties)
     try {

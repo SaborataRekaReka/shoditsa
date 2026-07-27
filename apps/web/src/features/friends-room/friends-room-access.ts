@@ -13,6 +13,11 @@ const currentEnvironment = (): FriendsRoomEnvironment => ({
 export const canUseFriendsRoom = (
   user: FriendsRoomUser,
   environment: FriendsRoomEnvironment = currentEnvironment(),
+) => environment.dev || environment.preview || Boolean(user)
+
+export const canCreateFriendsRoom = (
+  user: FriendsRoomUser,
+  environment: FriendsRoomEnvironment = currentEnvironment(),
 ) => environment.dev || environment.preview || Boolean(user && !user.isAnonymous)
 
 export const friendsRoomRegistrationHref = (returnUrl: string) =>

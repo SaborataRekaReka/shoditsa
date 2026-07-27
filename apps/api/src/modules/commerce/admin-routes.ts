@@ -60,8 +60,8 @@ export const registerCommerceAdminRoutes = async (app: FastifyInstance, deps: De
     const body = request.body as AdminEntitlementGrantBody
     const idempotencyKey = requireIdempotencyKey(request)
     if (body.entitlementKey === 'club' && (!body.durationDays || body.permanent)) throw new ApiError(422, 'ENTITLEMENT_DURATION_REQUIRED', 'Для ручного клубного доступа укажите срок')
-    if ((body.entitlementKey === 'pack' || body.entitlementKey === 'supporter') && !body.scope) throw new ApiError(422, 'ENTITLEMENT_SCOPE_REQUIRED', 'Для этого доступа укажите scope')
-    if ((body.entitlementKey === 'pack' || body.entitlementKey === 'supporter') && !body.permanent) throw new ApiError(422, 'ENTITLEMENT_PERMANENT_REQUIRED', 'Доступ к набору и supporter-жетон должны быть постоянными')
+    if (body.entitlementKey === 'supporter' && !body.scope) throw new ApiError(422, 'ENTITLEMENT_SCOPE_REQUIRED', 'Для supporter-жетона укажите scope')
+    if (body.entitlementKey === 'supporter' && !body.permanent) throw new ApiError(422, 'ENTITLEMENT_PERMANENT_REQUIRED', 'Supporter-жетон должен быть постоянным')
     const sourceId = `${actor.id}:${idempotencyKey}`
     return deps.db.transaction(async (tx) => {
       const replay = (await tx.select().from(userEntitlements).where(and(eq(userEntitlements.sourceType, 'admin'), eq(userEntitlements.sourceId, sourceId))).limit(1))[0]

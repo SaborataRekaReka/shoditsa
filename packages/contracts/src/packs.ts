@@ -22,7 +22,7 @@ export const ContentPackSchema = Type.Object({
   productId: Type.Union([Type.String(), Type.Null()]),
   priceMinor: Type.Union([Type.Integer(), Type.Null()]),
   currency: Type.Union([Type.String(), Type.Null()]),
-  access: Type.Union([Type.Literal('admin'), Type.Literal('community'), Type.Literal('free'), Type.Literal('preview'), Type.Literal('club'), Type.Literal('purchase'), Type.Literal('locked')]),
+  access: Type.Union([Type.Literal('admin'), Type.Literal('club'), Type.Literal('locked')]),
   owned: Type.Boolean(),
   completedItems: Type.Integer(),
 }, { additionalProperties: false })

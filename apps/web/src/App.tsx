@@ -121,7 +121,7 @@ import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
 import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
 import { CreateGameScreen } from './features/private-games/CreateGameScreen'
 import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
-import { canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
+import { canCreateFriendsRoom, canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
 import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
 import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
@@ -1372,7 +1372,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
 }) {
   const isDiagnosisReplay = mode === 'diagnosis' && todayCompleted
   const hasModeVariants = GAME_MODE_MANIFEST[mode].variants.length > 0
-  const periodLocked = !freePlayArmed && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
+  const periodLocked = !freePlayArmed && !clubFreePlay && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period, periodUnlockCostValue)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
   const canStart = isDiagnosisReplay || freePlayArmed
@@ -3623,9 +3623,8 @@ function GameApp() {
   const routeLocation = useRouterState({ select: (state) => state.location })
   const initialPlayerRoute = playerRouteFromPathname(routeLocation.pathname)
   const serverRuntime = useServerRuntime()
-  const isAdmin = Boolean(SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin')
-  const canAccessDtfSpecial = isAdmin || Boolean(serverRuntime.me?.badges.some((badge) => badge.key === 'dtf'))
   const canAccessFriendsRoom = canUseFriendsRoom(serverRuntime.me?.user)
+  const canCreateFriendsRoomAccess = canCreateFriendsRoom(serverRuntime.me?.user)
   const serverArchive = useQuery({
     queryKey: queryKeys.archive({ app: true }),
     queryFn: () => api.archive(),
@@ -3634,9 +3633,11 @@ function GameApp() {
   const serverPacks = useQuery({
     queryKey: queryKeys.packs,
     queryFn: api.packs,
-    enabled: SERVER_RUNTIME && Boolean(serverRuntime.me),
+    enabled: SERVER_RUNTIME,
   })
+  const dtfPack = serverPacks.data?.items.find((pack) => pack.id === DTF_COMMENTS_PACK_ID) ?? null
   const kpopPack = serverPacks.data?.items.find((pack) => pack.id === KPOP_ARTISTS_PACK_ID) ?? null
+  const canAccessDtfSpecial = Boolean(dtfPack)
   const canAccessKpopSpecial = Boolean(kpopPack)
   const [challenge, setChallenge] = useState<ChallengePayload | null>(() => typeof window === 'undefined' ? null : parseChallengeUrl(window.location.href))
   const [challengeAccepted, setChallengeAccepted] = useState(false)
@@ -3682,7 +3683,7 @@ function GameApp() {
   const freePlayCostValue = useMemo(() => clubFreePlay
     ? 0
     : SERVER_RUNTIME
-      ? serverRuntime.dashboard?.freePlayNextCost ?? ECONOMY_RULE_SET.freePlay.base
+      ? serverRuntime.dashboard?.freePlayNextCost ?? ECONOMY_RULE_SET.freePlay.ladder[0] ?? ECONOMY_RULE_SET.freePlay.max
       : freePlayCost(freePlayLaunchesToday), [clubFreePlay, freePlayLaunchesToday, serverRuntime.dashboard])
   const freePlayShortage = Math.max(0, freePlayCostValue - wallet.tickets)
   const periodUnlockCostValue = SERVER_RUNTIME
@@ -3872,7 +3873,7 @@ function GameApp() {
     },
     onSuccess: async (result, variables) => {
       setServerActionError('')
-      const cost = serverRuntime.dashboard?.economyRules.periodUnlock ?? ECONOMY_RULE_SET.periodUnlock
+      const cost = result.accessSource === 'club' ? 0 : serverRuntime.dashboard?.economyRules.periodUnlock ?? ECONOMY_RULE_SET.periodUnlock
       const balanceAfter = result.balanceAfter ?? wallet.tickets
       trackClientEvent('period_unlocked', {
         balanceBefore: balanceAfter + (result.alreadyUnlocked ? 0 : cost),
@@ -3880,7 +3881,7 @@ function GameApp() {
         amount: result.alreadyUnlocked ? 0 : cost,
         required: cost,
         shortage: 0,
-        source: 'wallet',
+        source: result.accessSource,
         sink: 'period-unlock',
         mode,
         sessionKind: 'period-unlock',
@@ -3890,7 +3891,7 @@ function GameApp() {
         rulesVersion: serverRuntime.dashboard?.economyRules.version ?? ECONOMY_RULE_SET.version,
         hasClub: clubFreePlay,
       })
-      if (!result.alreadyUnlocked) trackClientEvent('ticket_spent', {
+      if (!result.alreadyUnlocked && result.accessSource === 'tickets') trackClientEvent('ticket_spent', {
         balanceBefore: balanceAfter + cost,
         balanceAfter,
         amount: cost,
@@ -4310,7 +4311,7 @@ function GameApp() {
 
   const selectFriendsRoom = (initialMode?: 'danetki') => {
     const destination = initialMode ? '/games/together?mode=danetki' : '/games/together?new=1'
-    if (!canAccessFriendsRoom) {
+    if (!canCreateFriendsRoomAccess) {
       window.location.assign(friendsRoomRegistrationHref(destination))
       return
     }
@@ -4621,7 +4622,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canAccessFriendsRoom} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsRoom} onDanetki={openDanetki} danetkiEnabled={Boolean(SERVER_RUNTIME && serverRuntime.meta?.features.danetkiEnabled)} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-room' && canAccessFriendsRoom && <FriendsRoomScreen navigation={{ onHome: goHome, onArchive: () => moveToScreen('rewatch'), onStats: () => setModal('stats'), onRules: () => setModal('rules'), onReview: openMusicReview }} onExit={goHome} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} />}
     {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}

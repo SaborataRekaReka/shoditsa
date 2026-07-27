@@ -4,6 +4,7 @@ import type { TitleItem } from '@shoditsa/contracts'
 import { ApiError } from '../src/lib/errors.js'
 import {
   assertFriendsRoomAccess,
+  assertFriendsRoomCreator,
   buildFriendsRoomHints,
   isFriendsRoomAnswerCorrect,
   normalizeFriendsRoomAnswer,
@@ -59,18 +60,20 @@ describe('friends room service helpers', () => {
     expect(hints.join(' ')).not.toContain(movie.titleRu)
   })
 
-  it('opens development and explicit preview, but requires a permanent production account', () => {
+  it('allows anonymous guests but requires a permanent creator account', () => {
     expect(() => assertFriendsRoomAccess(accessConfig(false, false), true)).not.toThrow()
     expect(() => assertFriendsRoomAccess(accessConfig(true, true), true)).not.toThrow()
     expect(() => assertFriendsRoomAccess(accessConfig(true, false), false)).not.toThrow()
+    expect(() => assertFriendsRoomAccess(accessConfig(true, false), true)).not.toThrow()
 
     try {
-      assertFriendsRoomAccess(accessConfig(true, false), true)
-      throw new Error('expected production access to be denied')
+      assertFriendsRoomCreator(true)
+      throw new Error('expected anonymous room creation to be denied')
     } catch (error) {
       expect(error).toBeInstanceOf(ApiError)
       expect((error as ApiError).statusCode).toBe(403)
       expect((error as ApiError).code).toBe('FRIENDS_ROOM_ACCOUNT_REQUIRED')
     }
+    expect(() => assertFriendsRoomCreator(false)).not.toThrow()
   })
 })

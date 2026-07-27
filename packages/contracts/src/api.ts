@@ -2,7 +2,7 @@ import type { AssistHintKey, Hint, TitleItem } from './legacy-types.js'
 import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason, PlayableMode } from './schemas.js'
 import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
 import type { GameEngine } from './game-modes.js'
-import type { EconomyRuleSet } from './economy.js'
+import type { EconomyQuote, EconomyRuleSet } from './economy.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'final_choice' | 'won' | 'lost' | 'expired'
@@ -95,6 +95,7 @@ export type WalletAccount = {
   userId?: string
   balance: number
   lifetimeEarned: number
+  purchaseDebt?: number
   version?: number
   updatedAt?: string
 }
@@ -150,6 +151,12 @@ export type DashboardResponse = {
   freePlayLaunchesToday: number
   freePlayNextCost: number
   economyRules: EconomyRuleSet
+  economyQuotes: {
+    freePlay: EconomyQuote
+    periodUnlock: EconomyQuote
+    danetkiSolo: EconomyQuote
+    danetkiGroup: EconomyQuote
+  }
   danetkiAccess: {
     dailyRoomsStarted: number
     extraRoomsStarted: number
@@ -281,7 +288,13 @@ export type FinalChoiceResponse = {
 }
 export type HintResponse = { checkpoint: 5 | 8; hintKey: AssistHintKey; value: unknown; sourceKey?: string }
 export type GuestResponse = { user?: ApiUser; session?: unknown }
-export type PeriodUnlockResponse = { entitlement: PeriodEntitlement; balanceAfter?: number; alreadyUnlocked: boolean }
+export type PeriodUnlockResponse = {
+  entitlement: PeriodEntitlement | null
+  balanceAfter?: number
+  alreadyUnlocked: boolean
+  accessSource: 'tickets' | 'club'
+  rulesVersion: number
+}
 export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string | null; accessSource: 'tickets' | 'club' }
 export type PromoRedeemResponse = { reward?: { type: 'tickets'; amount: number; balanceAfter: number }; alreadyRedeemed: boolean }
 

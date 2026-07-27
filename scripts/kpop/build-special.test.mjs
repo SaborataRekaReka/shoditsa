@@ -50,12 +50,13 @@ test('maps the K-pop source to a separate non-regular card type', () => {
   assert.deepEqual(item.alternativeTitles, ['샘플', 'SU'])
 })
 
-test('builds a deterministic admin-only daily special document', () => {
+test('builds a deterministic club-only daily special document', () => {
   const document = buildKpopSpecial([
     sourceArtist(),
     sourceArtist({ 'ID артиста': 'second', 'Имя на английском': 'Second', 'Год дебюта': 2023 }),
   ])
-  assert.equal(document.pack.adminOnly, true)
+  assert.equal(document.pack.adminOnly, false)
+  assert.equal(document.pack.accessModel, 'club')
   assert.equal(document.pack.cadence, 'daily')
   assert.equal(document.pack.status, 'draft')
   assert.equal(document.counts.items, 2)

@@ -31,6 +31,7 @@ import {
   account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
   contentAliases, contentItems, contentItemTags, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes, contentTags,
   contentPacks, contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, dailyChallenges, gameAttempts, gameHintChoices,
+  danetkiDailyUsage, economyRuleAssignments, economyRuleSets, freePlayUsage, friendsRoomDailyUsage,
   gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
   promoRedemptions, session, user, userEntitlements, userModeStats, walletAccounts, walletLedger, type Database,
 } from '@shoditsa/database'
@@ -1613,7 +1614,8 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
     const profile = await deps.db.select({ user, profile: playerProfiles, wallet: walletAccounts }).from(user)
       .leftJoin(playerProfiles, eq(playerProfiles.userId, user.id)).leftJoin(walletAccounts, eq(walletAccounts.userId, user.id)).where(eq(user.id, id)).limit(1)
     if (!profile[0]) throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
-    const [sessions, reports, stats, attendance, ledger, entitlements, gameEntitlements, redemptions, imports, notes, auth, audit] = await Promise.all([
+    const today = getMoscowDate()
+    const [sessions, reports, stats, attendance, ledger, entitlements, gameEntitlements, redemptions, imports, notes, auth, audit, ruleAssignment, freePlay, friendsRoom, danetki] = await Promise.all([
       deps.db.select().from(gameSessions).where(eq(gameSessions.userId, id)).orderBy(desc(gameSessions.startedAt)).limit(30),
       deps.db.select().from(contentReports).where(eq(contentReports.userId, id)).orderBy(desc(contentReports.createdAt)).limit(30),
       deps.db.select().from(userModeStats).where(eq(userModeStats.userId, id)),
@@ -1629,8 +1631,33 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
       deps.db.select().from(adminUserNotes).where(eq(adminUserNotes.userId, id)).orderBy(desc(adminUserNotes.createdAt)),
       deps.db.select().from(authEvents).where(eq(authEvents.userId, id)).orderBy(desc(authEvents.occurredAt)).limit(50),
       deps.db.select().from(auditLog).where(and(eq(auditLog.entityType, 'user'), eq(auditLog.entityId, id))).orderBy(desc(auditLog.createdAt)).limit(50),
+      deps.db.select().from(economyRuleAssignments).where(eq(economyRuleAssignments.userId, id)).limit(1),
+      deps.db.select().from(freePlayUsage).where(and(eq(freePlayUsage.userId, id), eq(freePlayUsage.activityDate, today))).limit(1),
+      deps.db.select().from(friendsRoomDailyUsage).where(and(eq(friendsRoomDailyUsage.userId, id), eq(friendsRoomDailyUsage.activityDate, today))).limit(1),
+      deps.db.select().from(danetkiDailyUsage).where(and(eq(danetkiDailyUsage.userId, id), eq(danetkiDailyUsage.activityDate, today))).limit(1),
     ])
-    return { ...profile[0], sessions, reports, stats, attendance: attendance[0] ?? null, ledger, entitlements, gameEntitlements, redemptions, imports, notes, authEvents: auth, audit }
+    return {
+      ...profile[0],
+      sessions,
+      reports,
+      stats,
+      attendance: attendance[0] ?? null,
+      ledger,
+      entitlements,
+      gameEntitlements,
+      redemptions,
+      imports,
+      notes,
+      authEvents: auth,
+      audit,
+      economy: {
+        activityDate: today,
+        ruleAssignment: ruleAssignment[0] ?? null,
+        freePlay: freePlay[0] ?? null,
+        friendsRoom: friendsRoom[0] ?? null,
+        danetki: danetki[0] ?? null,
+      },
+    }
   })
 
   app.get('/api/v1/admin/content-packs', async (request, reply) => {
@@ -1753,7 +1780,7 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     await admin(request, reply, deps)
     const days = (request.query as { days?: 7 | 14 | 30 }).days ?? 14
     const since = new Date(Date.now() - days * 86_400_000).toISOString()
-    const [summaryResult, spendResult, versionsResult, balancesResult] = await Promise.all([
+    const [summaryResult, spendResult, activeRules, versionsResult, balancesResult] = await Promise.all([
       deps.db.execute(sql`
         with first_shortage as (
           select user_id, min(occurred_at) first_at
@@ -1792,7 +1819,10 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
           coalesce((select sum(revenue_minor) from paid_by_user), 0)::bigint "revenueMinor",
           (select count(*)::int from paid_by_user) "payingUsers",
           (select count(*)::int from paid_by_user where paid_orders > 1) "repeatBuyers",
-          (select count(*)::int from payment_orders where status in ('refunded','chargeback') and "updatedAt" >= ${since}::timestamptz) "refunds"
+          (select count(*)::int from payment_orders where status in ('refunded','chargeback') and "updatedAt" >= ${since}::timestamptz) "refunds",
+          (select count(*)::int from friends_room_extensions where block_number > 1 and created_at >= ${since}::timestamptz) "friendsRoomContinuations",
+          coalesce((select sum(club_rooms)::int from danetki_daily_usage where activity_date >= ${since}::date), 0) "clubDanetkiRooms",
+          (select count(*)::int from payment_orders po join commerce_products cp on cp.id = po.product_id where po.status = 'paid' and cp.kind = 'tickets' and po.paid_at >= ${since}::timestamptz) "ticketBundlePurchases"
       `),
       deps.db.execute(sql`
         select reason, (-sum(amount))::int amount, count(*)::int operations
@@ -1800,6 +1830,7 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
         where amount < 0 and "createdAt" >= ${since}::timestamptz
         group by reason order by amount desc
       `),
+      deps.db.select().from(economyRuleSets).where(eq(economyRuleSets.active, true)).limit(2),
       deps.db.execute(sql`
         select rules_version "rulesVersion", count(*)::int operations,
           coalesce(sum(amount) filter (where amount > 0), 0)::int earned,
@@ -1825,6 +1856,12 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     return {
       periodDays: days,
       generatedAt: new Date().toISOString(),
+      activeRule: activeRules.length === 1 ? {
+        ...activeRules[0],
+        effectiveAt: activeRules[0].effectiveAt.toISOString(),
+        createdAt: activeRules[0].createdAt.toISOString(),
+      } : null,
+      activeRuleDiagnostic: activeRules.length === 1 ? null : activeRules.length ? 'multiple-active' : 'missing-active',
       summary: {
         ticketsEarned,
         ticketsSpent,
@@ -1846,6 +1883,9 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
         revenuePerPayingUserMinor: payingUsers > 0 ? number('revenueMinor') / payingUsers : 0,
         repeatBuyers: number('repeatBuyers'),
         refunds: number('refunds'),
+        friendsRoomContinuations: number('friendsRoomContinuations'),
+        clubDanetkiRooms: number('clubDanetkiRooms'),
+        ticketBundlePurchases: number('ticketBundlePurchases'),
       },
       spendByReason: rows<Record<string, unknown>>(spendResult).map((entry) => ({ reason: String(entry.reason), amount: Number(entry.amount), operations: Number(entry.operations) })),
       ruleVersions: rows<Record<string, unknown>>(versionsResult).map((entry) => ({ rulesVersion: Number(entry.rulesVersion), operations: Number(entry.operations), earned: Number(entry.earned), spent: Number(entry.spent) })),

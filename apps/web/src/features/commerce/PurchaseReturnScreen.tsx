@@ -41,6 +41,8 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
       ? 'Спецпоказ открыт'
       : productKind === 'tip'
         ? 'Спасибо за поддержку!'
+        : productKind === 'tickets'
+          ? 'Билеты начислены'
         : 'Покупка подтверждена'
   const paidDescription = productKind === 'club'
     ? 'Оплата подтверждена сервером, клубный доступ уже действует.'
@@ -48,6 +50,8 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
       ? 'Спецпоказ навсегда добавлен в ваш аккаунт.'
       : productKind === 'tip'
         ? 'Памятный жетон уже добавлен в ваш профиль.'
+        : productKind === 'tickets'
+          ? 'Оплата подтверждена сервером, билеты уже добавлены на баланс.'
         : 'Оплата подтверждена сервером.'
 
   useEffect(() => {
@@ -60,6 +64,10 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
     trackedStatus.current = status
     if (status === 'paid') {
       trackClientEvent('purchase_succeeded', { ...(order.data?.order.productId ? { productId: order.data.order.productId } : {}), orderStatus: status, hasClub })
+      if (productKind === 'tickets') trackClientEvent('ticket_bundle_purchased', {
+        productId: order.data?.order.productId ?? null,
+        tickets: Number(order.data?.product.metadata.ticketAmount ?? 0),
+      })
       trackMetrikaGoal('purchase_succeeded', { productId: order.data?.order.productId })
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.dashboard }),

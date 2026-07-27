@@ -1,0 +1,1080 @@
+.club-lobby-screen {
+  width: min(1420px, calc(100% - 32px));
+  min-height: calc(100vh - 64px);
+  margin: 0 auto;
+  padding: 22px 0 104px;
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+.club-lobby-tabs {
+  position: relative;
+  z-index: 4;
+  width: max-content;
+  min-height: 46px;
+  margin: 0 0 -1px;
+  border: 1px solid var(--color-line);
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  display: flex;
+  align-items: stretch;
+}
+
+.club-lobby-tabs .ui-button {
+  position: relative;
+  min-width: 150px;
+  min-height: 46px;
+  padding: 0 28px;
+  border: 0;
+  border-right: 1px solid var(--color-line);
+  border-radius: 0;
+  color: var(--color-muted);
+  background: transparent;
+  box-shadow: none;
+  gap: 10px;
+  font-size: 12px;
+  text-transform: none;
+}
+
+.club-lobby-tabs .ui-button:nth-child(2) {
+  min-width: 190px;
+}
+
+.club-lobby-tabs .ui-button:nth-child(4) {
+  min-width: 200px;
+}
+
+.club-lobby-tabs .ui-button:last-child {
+  border-right: 0;
+}
+
+.club-lobby-tabs .ui-button:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface-2) 64%, transparent);
+  box-shadow: none;
+  transform: none;
+}
+
+.club-lobby-tabs .ui-button.is-active {
+  color: var(--color-primary);
+}
+
+.club-lobby-tabs .ui-button.is-active::after {
+  content: '';
+  position: absolute;
+  right: 24px;
+  bottom: 0;
+  left: 24px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--color-primary);
+}
+
+.club-lobby-tabs svg {
+  width: 19px;
+  height: 19px;
+}
+
+.club-entry {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  min-height: 326px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 72% 44%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 34%),
+    linear-gradient(110deg, color-mix(in srgb, var(--color-surface-2) 74%, var(--color-bg)), var(--color-surface));
+  box-shadow: 0 22px 52px rgba(0, 0, 0, .2);
+  display: grid;
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+  scroll-margin-top: 80px;
+}
+
+.club-entry::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .42;
+  background-image:
+    linear-gradient(rgba(242, 236, 223, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 236, 223, .035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(95deg, #000, transparent 82%);
+  pointer-events: none;
+}
+
+.club-entry__copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  padding: 43px 24px 34px 40px;
+  align-self: center;
+}
+
+.club-entry__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.club-entry__meta > span {
+  color: var(--color-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+
+.club-entry__meta > strong {
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 58%, transparent);
+  border-radius: 999px;
+  color: var(--color-warning-text);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.club-entry__meta > strong.is-active {
+  border-color: color-mix(in srgb, var(--color-primary) 58%, transparent);
+  color: var(--color-success-text);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.club-entry__meta > strong.is-expired {
+  border-color: color-mix(in srgb, var(--color-danger) 58%, transparent);
+  color: var(--color-danger-text);
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+
+.club-entry__meta svg {
+  width: 13px;
+  height: 13px;
+}
+
+.club-entry h1 {
+  max-width: 650px;
+  margin: 17px 0 11px;
+  color: var(--color-text);
+  font: 500 clamp(46px, 3.2vw, 52px)/1 Oswald, sans-serif;
+  letter-spacing: -.02em;
+}
+
+.club-entry__copy > p {
+  max-width: 590px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.club-entry__actions {
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.club-entry__actions .ui-button {
+  min-height: 54px;
+}
+
+.club-entry__actions .ui-button:first-child {
+  min-width: 330px;
+}
+
+.club-entry__actions .ui-button:last-child {
+  min-width: 250px;
+}
+
+.club-entry__service {
+  min-height: 26px;
+  margin-top: 10px;
+  color: var(--color-muted-2);
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+}
+
+.club-entry__service .ui-button {
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  font-size: 10px;
+}
+
+.club-entry__art {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  align-self: stretch;
+}
+
+.club-entry__art::before {
+  content: '';
+  position: absolute;
+  right: 7%;
+  bottom: 9%;
+  width: 62%;
+  height: 50%;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  filter: blur(38px);
+}
+
+.club-entry__art img {
+  position: absolute;
+  right: -2%;
+  bottom: -1px;
+  width: min(760px, 115%);
+  height: calc(100% + 26px);
+  object-fit: contain;
+  object-position: right bottom;
+  display: block;
+}
+
+.club-content {
+  margin-top: 27px;
+  scroll-margin-top: 80px;
+}
+
+.club-section-heading {
+  min-height: 31px;
+  margin: 0 3px 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.club-section-heading h2 {
+  margin: 0;
+  font: 500 25px/1 Oswald, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.club-section-heading > span {
+  min-height: 28px;
+  padding-left: 16px;
+  border-left: 1px solid var(--color-line);
+  color: var(--color-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+}
+
+.club-section-heading svg {
+  width: 15px;
+  color: var(--color-primary);
+}
+
+.club-content__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.club-content__features {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.club-content-card.ui-button {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  height: 154px;
+  min-height: 154px;
+  padding: 0;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
+  box-shadow: 0 9px 22px rgba(0, 0, 0, .15);
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) 44px;
+  gap: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s ease;
+}
+
+.club-content-card.ui-button:hover {
+  border-color: var(--color-paper-line-strong);
+  background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .22);
+  transform: translateY(-2px);
+}
+
+.club-content-card.ui-button::before,
+.club-content-card.ui-button::after {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  top: calc(50% - 10px);
+  width: 14px;
+  height: 20px;
+  border: 1px solid var(--color-paper-line);
+  background: var(--color-bg);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.club-content-card.ui-button::before {
+  left: -1px;
+  border-left: 0;
+  border-radius: 0 14px 14px 0;
+}
+
+.club-content-card.ui-button::after {
+  right: -1px;
+  border-right: 0;
+  border-radius: 14px 0 0 14px;
+}
+
+.club-content-card figure {
+  overflow: hidden;
+  grid-row: 1;
+  min-height: 0;
+  height: auto;
+  margin: 0;
+  border-right: 1px solid var(--color-paper-line);
+  background: var(--color-surface-2);
+  align-self: stretch;
+}
+
+.club-content-card figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(.78) contrast(.95);
+}
+
+.club-content-card__copy {
+  min-width: 0;
+  padding: 14px 16px 10px;
+  align-self: center;
+}
+
+.club-content-card__copy > span {
+  color: var(--color-success-ink);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.club-content-card__copy h3 {
+  margin: 3px 0 4px;
+  font: 500 26px/1 Oswald, sans-serif;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.club-content-card__copy p {
+  overflow: hidden;
+  margin: 0;
+  color: var(--color-paper-muted);
+  font-size: 10px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+
+.club-content-card__copy em {
+  width: max-content;
+  margin-top: 10px;
+  padding: 4px 8px 3px;
+  border: 2px solid var(--color-success-ink);
+  color: var(--color-success-ink);
+  display: block;
+  font: 500 13px/1 Oswald, sans-serif;
+  font-style: normal;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  opacity: .82;
+}
+
+.club-content-card__action {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 0 16px;
+  border-top: 1px dashed var(--color-paper-line);
+  color: var(--color-paper-muted-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.club-content-card__action span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.club-content-card__action svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--color-accent-ink);
+}
+
+.club-content-card__action svg:last-child {
+  margin-left: auto;
+  color: var(--color-ink);
+}
+
+.club-content-card--special.ui-button {
+  height: 322px;
+  min-height: 322px;
+  grid-template-columns: minmax(190px, 34%) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) 50px;
+}
+
+.club-content-card--special figure {
+  grid-row: 1 / -1;
+}
+
+.club-content-card--special .club-content-card__copy {
+  padding: 24px 28px;
+}
+
+.club-content-card--special .club-content-card__copy > span {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-primary) 32%, transparent);
+}
+
+.club-content-card--special .club-content-card__copy h3 {
+  margin: 16px 0 8px;
+  font-size: clamp(38px, 3.2vw, 52px);
+  line-height: .98;
+}
+
+.club-content-card--special .club-content-card__copy p {
+  max-width: 410px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.club-content-card--special .club-content-card__copy em {
+  margin-top: 25px;
+  font-size: 18px;
+}
+
+.club-content-card--special .club-content-card__action {
+  grid-column: 2;
+  padding-inline: 28px;
+  font-size: 9px;
+}
+
+.club-pricing {
+  min-height: calc(100vh - 64px);
+  margin-top: 70px;
+  padding: 40px 0 24px;
+  scroll-margin-top: 64px;
+}
+
+.club-pricing > header {
+  max-width: 780px;
+  margin: 0 auto 37px;
+  text-align: center;
+}
+
+.club-pricing > header h2 {
+  margin: 0;
+  font: 500 clamp(48px, 3.5vw, 52px)/1 Oswald, sans-serif;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.club-pricing > header p {
+  margin: 16px 0 0;
+  color: var(--color-muted);
+  font-size: 17px;
+}
+
+.club-pricing__notice {
+  max-width: 920px;
+  margin: -16px auto 22px;
+}
+
+.club-pricing__grid {
+  width: min(1394px, 100%);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 26px;
+}
+
+.club-plan-card {
+  position: relative;
+  overflow: visible;
+  min-width: 0;
+  min-height: 612px;
+  padding: 34px 34px 24px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .18);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.club-plan-card::before,
+.club-plan-card::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  width: 18px;
+  height: 36px;
+  border: 1px solid var(--color-paper-line);
+  background: var(--color-bg);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.club-plan-card::before {
+  left: -1px;
+  border-left: 0;
+  border-radius: 0 20px 20px 0;
+}
+
+.club-plan-card::after {
+  right: -1px;
+  border-right: 0;
+  border-radius: 20px 0 0 20px;
+}
+
+.club-plan-card--featured {
+  border: 3px solid var(--color-primary);
+  padding: 32px 32px 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .24), 0 0 0 5px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.club-plan-card--featured::before,
+.club-plan-card--featured::after {
+  border-color: var(--color-primary);
+}
+
+.club-plan-card--guest {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
+  color: var(--color-text);
+  background:
+    radial-gradient(circle at 50% 12%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 32%),
+    var(--color-surface);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .015), 0 14px 34px rgba(0, 0, 0, .18);
+}
+
+.club-plan-card--guest::before,
+.club-plan-card--guest::after {
+  display: none;
+}
+
+.club-plan-card__badge {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 2px);
+  min-width: 176px;
+  min-height: 34px;
+  padding: 6px 18px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  color: var(--color-ink);
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  box-sizing: border-box;
+  font: 500 13px/1 Oswald, sans-serif;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.club-plan-card__badge strong {
+  font-size: 15px;
+}
+
+.club-plan-card__header {
+  min-height: 166px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-paper-line);
+  text-align: center;
+}
+
+.club-plan-card--guest .club-plan-card__header {
+  border-bottom-color: var(--color-line);
+}
+
+.club-plan-card__header > span {
+  color: var(--color-success-ink);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.club-plan-card--guest .club-plan-card__header > span {
+  color: var(--color-accent);
+}
+
+.club-plan-card__header h3 {
+  margin: 10px 0 7px;
+  color: inherit;
+  font: 500 38px/1 Oswald, sans-serif;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.club-plan-card__header > strong {
+  display: block;
+  color: var(--color-success-ink);
+  font: 500 43px/1 Oswald, sans-serif;
+  letter-spacing: .04em;
+}
+
+.club-plan-card--guest .club-plan-card__header > strong {
+  color: var(--color-primary);
+}
+
+.club-plan-card__header p {
+  min-height: 22px;
+  margin: 7px 0 0;
+  color: var(--color-paper-muted-2);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.club-plan-card--guest .club-plan-card__header p {
+  color: var(--color-muted);
+}
+
+.club-plan-card ul {
+  list-style: none;
+  margin: 18px 0 24px;
+  padding: 0;
+}
+
+.club-plan-card li {
+  min-height: 43px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-paper-line) 64%, transparent);
+  color: inherit;
+  display: grid;
+  grid-template-columns: 23px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.club-plan-card--guest li {
+  border-bottom-color: var(--color-line);
+  color: var(--color-muted);
+}
+
+.club-plan-card li svg {
+  width: 23px;
+  height: 23px;
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 72%, var(--color-paper-line));
+  border-radius: 50%;
+  color: var(--color-success-ink);
+  background: color-mix(in srgb, var(--color-primary) 28%, transparent);
+  box-sizing: border-box;
+}
+
+.club-plan-card--guest li svg {
+  border-color: var(--color-line-strong);
+  color: var(--color-muted);
+  background: transparent;
+}
+
+.club-plan-card li.is-locked {
+  color: var(--color-muted-2);
+}
+
+.club-plan-card__action {
+  position: relative;
+  margin-top: auto;
+}
+
+.club-plan-card__action > .ui-button,
+.club-plan-card__action > .ui-button + .ui-button {
+  width: 100%;
+  min-height: 56px;
+}
+
+.club-plan-card--guest .club-plan-card__action .ui-button {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 60%, var(--color-line));
+  background: transparent;
+}
+
+.club-plan-card--featured .club-plan-card__action > .ui-button {
+  background: var(--color-primary);
+}
+
+.club-plan-card__note {
+  min-height: 28px;
+  margin-top: 7px;
+  color: var(--color-paper-muted-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.club-plan-card--guest .club-plan-card__note {
+  color: var(--color-muted);
+}
+
+.club-plan-card__note svg {
+  width: 13px;
+  height: 13px;
+  color: var(--color-accent-ink);
+}
+
+.club-plan-card .checkout-acceptance {
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 8px;
+  color: var(--color-paper-muted-2);
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  font-size: 8px;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+
+.club-plan-card .checkout-acceptance input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.club-plan-card .checkout-acceptance a {
+  min-height: 28px;
+  color: var(--color-success-ink);
+  font-weight: 800;
+  text-underline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.club-plan-card .club-card__error {
+  position: static;
+  margin-top: 8px;
+  color: var(--color-danger);
+  display: block;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.club-pricing__back.ui-button {
+  min-height: 44px;
+  margin: 22px auto 0;
+  border: 0;
+  box-shadow: none;
+  display: flex;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.club-pricing__back.ui-button svg {
+  color: var(--color-primary);
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 1199px) {
+  .club-entry {
+    grid-template-columns: minmax(0, 58fr) minmax(380px, 42fr);
+  }
+
+  .club-entry__copy {
+    padding-left: 34px;
+  }
+
+  .club-entry h1 {
+    font-size: clamp(43px, 5vw, 55px);
+  }
+
+  .club-entry__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .club-entry__actions .ui-button {
+    width: 100%;
+    min-width: 0 !important;
+  }
+
+  .club-content__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .club-content-card--special.ui-button {
+    height: 300px;
+    min-height: 300px;
+  }
+
+  .club-pricing__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .club-plan-card--guest {
+    grid-column: 1 / -1;
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 767px) {
+  .club-lobby-screen {
+    width: 100%;
+    padding: 14px 12px 98px;
+  }
+
+  .club-lobby-tabs {
+    display: none;
+  }
+
+  .club-entry {
+    overflow: hidden;
+    min-height: 0;
+    border-radius: var(--radius-md);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .club-entry__copy {
+    padding: 27px 18px 9px;
+  }
+
+  .club-entry__meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .club-entry h1 {
+    margin-top: 14px;
+    font-size: clamp(41px, 11.5vw, 51px);
+  }
+
+  .club-entry__copy > p {
+    font-size: 12px;
+  }
+
+  .club-entry__actions {
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .club-entry__actions .ui-button {
+    min-height: 52px;
+    white-space: normal;
+  }
+
+  .club-entry__art {
+    min-height: clamp(250px, 73vw, 340px);
+    order: 2;
+  }
+
+  .club-entry__art img {
+    right: 50%;
+    width: min(590px, 132%);
+    height: 112%;
+    object-position: center bottom;
+    transform: translateX(50%);
+  }
+
+  .club-section-heading {
+    margin-inline: 2px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .club-section-heading > span {
+    min-height: 24px;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .club-content__grid,
+  .club-content__features {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .club-content-card.ui-button {
+    height: 152px;
+    min-height: 152px;
+  }
+
+  .club-content-card--special.ui-button {
+    height: auto;
+    min-height: 410px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 180px minmax(0, 1fr) 52px;
+  }
+
+  .club-content-card--special figure {
+    grid-row: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-paper-line);
+  }
+
+  .club-content-card--special .club-content-card__copy {
+    padding: 20px 22px 18px;
+  }
+
+  .club-content-card--special .club-content-card__copy h3 {
+    font-size: 39px;
+  }
+
+  .club-content-card--special .club-content-card__copy p {
+    font-size: 12px;
+  }
+
+  .club-content-card--special .club-content-card__copy em {
+    margin-top: 15px;
+    font-size: 15px;
+  }
+
+  .club-content-card--special .club-content-card__action {
+    grid-column: 1;
+    padding-inline: 22px;
+  }
+
+  .club-pricing {
+    min-height: 0;
+    margin-top: 48px;
+    padding-top: 32px;
+  }
+
+  .club-pricing > header {
+    margin-bottom: 24px;
+  }
+
+  .club-pricing > header h2 {
+    font-size: clamp(43px, 12vw, 54px);
+  }
+
+  .club-pricing > header p {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .club-pricing__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  .club-plan-card--guest {
+    grid-column: auto;
+  }
+
+  .club-plan-card {
+    min-height: 620px;
+    padding: 30px 24px 20px;
+  }
+
+  .club-plan-card--featured {
+    margin-top: 34px;
+    padding: 28px 22px 18px;
+  }
+
+  .club-plan-card__header h3 {
+    font-size: 36px;
+  }
+
+  .club-plan-card__header > strong {
+    font-size: 41px;
+  }
+}
+
+@media (max-width: 390px) {
+  .club-entry__copy {
+    padding-inline: 16px;
+  }
+
+  .club-entry h1 {
+    font-size: 40px;
+  }
+
+  .club-entry__actions .ui-button {
+    padding-inline: 12px;
+    font-size: 10px;
+  }
+
+  .club-entry__art {
+    min-height: 260px;
+  }
+
+  .club-content-card.ui-button {
+    grid-template-columns: 102px minmax(0, 1fr);
+  }
+
+  .club-content-card__copy {
+    padding-inline: 13px;
+  }
+
+  .club-content-card__copy h3 {
+    font-size: 21px;
+  }
+
+  .club-content-card__action {
+    padding-inline: 13px;
+  }
+
+  .club-content-card--special.ui-button {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .club-plan-card li {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .club-content-card.ui-button {
+    transition: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { CATALOG_HINT_COPY, ECONOMY_RULES_VERSION, FINAL_CHOICE_DURATION_MS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, FINAL_CHOICE_DURATION_MS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, isCatalogGuessModeId, normalizeModeVariant, type ApiDifficultyKey, type ApiRole, type AssistHintKey, type FinalChoiceBody, type FinalChoiceSnapshot, type GameCompletionType, type Hint, type PeriodKey, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import {
   appSettings, contentItemVersions, contentRevisionModes, contentRevisions, dailyChallenges,
   diagnosisVignettes, gameAttempts, gameFinalChoices, gameHintChoices, gameSessions, type Database,
@@ -23,11 +23,12 @@ import { ApiError } from '../../lib/errors.js'
 import type { AppConfig } from '@shoditsa/config'
 import { canStartArchiveSession } from '../archive/access.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
+import { loadAssignedEconomyRules } from '../economy/rules.js'
+import { isSpecialSession } from './special.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { completeGame } from '../stats/rewards.js'
 import { recordPackCompletion } from '../packs/progress.js'
 import { loadPackSessionPrompt } from '../packs/prompt-runtime.js'
-import { DTF_COMMENTS_PACK_ID } from '../packs/policy.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type ReadDatabase = Pick<Database, 'select'>
@@ -378,14 +379,37 @@ const dailySalt = async (tx: Transaction) => {
 
 export const startGame = async (db: Database, userId: string, input: {
   kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null;
-}, authSessionId: string | null = null, actorRole: ApiRole = 'player', config?: AppConfig) => db.transaction(async (tx) => {
+}, authSessionId: string | null = null, actorRole: ApiRole = 'player', config?: AppConfig) => {
+  const rules = await loadAssignedEconomyRules(db, userId, actorRole, config?.economy.v4RolloutPercent ?? 100)
+  return db.transaction(async (tx) => {
   const capabilities = GAME_MODE_MANIFEST[input.mode]
   const period = capabilities.periodPolicy === 'all' ? 'all' : input.period ?? 'all'
   const difficulty = input.mode === 'music' ? input.difficulty ?? 'medium' : null
   const requestedVariant = input.variantKey ?? null
   const isKpopDaily = input.mode === 'music' && requestedVariant === KPOP_ARTISTS_PACK_ID
-  if (isKpopDaily && actorRole !== 'admin' && !await hasEntitlement(tx, userId, 'pack', KPOP_ARTISTS_PACK_ID)) {
-    throw new ApiError(403, 'PACK_ACCESS_REQUIRED', 'Администратор ещё не открыл вам доступ к этому спецпоказу')
+  const today = getMoscowDate()
+  if (isKpopDaily && input.kind !== 'daily') {
+    throw new ApiError(422, 'SPECIAL_DAILY_ONLY', 'Этот спецпоказ доступен только как игра дня')
+  }
+  if (isKpopDaily && actorRole !== 'admin') {
+    const existing = await tx.select({ session: gameSessions }).from(gameSessions)
+      .innerJoin(dailyChallenges, eq(dailyChallenges.id, gameSessions.challengeId))
+      .where(and(
+        eq(gameSessions.userId, userId),
+        eq(gameSessions.kind, 'daily'),
+        eq(gameSessions.mode, 'music'),
+        eq(gameSessions.puzzleDate, today),
+        eq(dailyChallenges.variantKey, KPOP_ARTISTS_PACK_ID),
+      ))
+      .limit(1)
+    if (existing[0]) return buildSessionSnapshot(tx, existing[0].session)
+    if (!await hasEntitlement(tx, userId, 'club', undefined, new Date())) {
+      throw new ApiError(403, 'CLUB_REQUIRED', 'Спецпоказы доступны участникам Клуба', {
+        feature: 'special',
+        packId: KPOP_ARTISTS_PACK_ID,
+        clubProductIds: ['club_30d', 'club_365d'],
+      })
+    }
   }
   const modeVariant = input.mode === 'city'
     ? normalizeModeVariant(input.mode, requestedVariant) ?? 'capitals'
@@ -399,9 +423,9 @@ export const startGame = async (db: Database, userId: string, input: {
     const entitlement = await tx.select({ userId: periodEntitlements.userId }).from(periodEntitlements).where(and(
       eq(periodEntitlements.userId, userId), eq(periodEntitlements.mode, input.mode), eq(periodEntitlements.period, period),
     )).limit(1)
-    if (!entitlement[0]) throw new ApiError(403, 'PERIOD_LOCKED', 'Сначала разблокируйте этот период')
+    const clubActive = await hasEntitlement(tx, userId, 'club', undefined, new Date())
+    if (!entitlement[0] && !clubActive) throw new ApiError(403, 'PERIOD_LOCKED', 'Сначала разблокируйте этот период')
   }
-  const today = getMoscowDate()
   const puzzleDate = input.kind === 'daily' ? today : input.archiveDate
   if (!puzzleDate) throw new ApiError(422, 'ARCHIVE_DATE_REQUIRED', 'Для архивной игры нужна дата')
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
@@ -431,11 +455,12 @@ export const startGame = async (db: Database, userId: string, input: {
   }
   const insertedSession = await tx.insert(gameSessions).values({
     userId, authSessionId, challengeId: challenge[0].id, kind: input.kind, mode: input.mode, period, difficulty,
-    puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: ECONOMY_RULES_VERSION,
+    puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: rules.version,
   }).onConflictDoNothing().returning()
   const session = insertedSession[0] ?? (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.challengeId, challenge[0].id))).limit(1))[0]
   return buildSessionSnapshot(tx, session)
-})
+  })
+}
 
 export const buildSessionSnapshot = async (tx: Transaction | Database, session: SessionRow) => {
   const attempts = await tx.select({
@@ -571,9 +596,12 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
       })
     : null
   const promptRuntime = promptAfterAttempt
+  const specialSession = await isSpecialSession(tx, session)
   const finalChoiceEligible = !isCorrect
     && position >= maxAttempts
-    && session.packId !== DTF_COMMENTS_PACK_ID
+    && session.kind === 'daily'
+    && session.puzzleDate === getMoscowDate()
+    && !specialSession
   let builtFinalChoice: ReturnType<typeof buildFinalChoice> = null
   let builtFinalChoiceExpiresAt: string | null = null
   if (finalChoiceEligible) {
@@ -623,11 +651,13 @@ export const submitAttempt = async (db: Database, userId: string, sessionId: str
       ? 'attempts_exhausted'
       : null
   let reward: Awaited<ReturnType<typeof completeGame>> = null
-  if (status === 'won' || status === 'lost') reward = await completeGame(tx, {
-    sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
-    puzzleDate: session.puzzleDate, won: status === 'won', attemptsCount: position, rulesVersion: session.rulesVersion,
-    completionType,
-  })
+  if (status === 'won' || status === 'lost') {
+    reward = await completeGame(tx, {
+      sessionId, userId, kind: session.kind, mode: sessionMode, difficulty: session.difficulty,
+      puzzleDate: session.puzzleDate, won: status === 'won', attemptsCount: position, rulesVersion: session.rulesVersion,
+      completionType, special: specialSession,
+    })
+  }
   await tx.update(gameSessions).set({
     attemptsCount: position, status, completionType, updatedAt: new Date(), completedAt: status === 'won' || status === 'lost' ? new Date() : null,
     rewardLedgerId: reward?.ledgerId ?? null,
@@ -670,7 +700,7 @@ export const resolveFinalChoice = async (
   )).for('update').limit(1))[0]
   if (!session) throw new ApiError(404, 'GAME_NOT_FOUND', 'Игровая сессия не найдена')
   if (!isCatalogGuessModeId(session.mode)) throw new ApiError(422, 'GAME_ACTION_ENGINE_MISMATCH', 'Для этой игры действие недоступно')
-  if (session.packId === DTF_COMMENTS_PACK_ID) throw new ApiError(422, 'GAME_FINAL_CHOICE_EXCLUDED', 'Финальная сверка недоступна в этом спецпоказе')
+  if (await isSpecialSession(tx, session)) throw new ApiError(422, 'GAME_FINAL_CHOICE_EXCLUDED', 'Финальная сверка недоступна в спецпоказах')
 
   const finalChoice = (await tx.select().from(gameFinalChoices)
     .where(eq(gameFinalChoices.sessionId, sessionId)).for('update').limit(1))[0]
@@ -713,6 +743,7 @@ export const resolveFinalChoice = async (
     attemptsCount: session.attemptsCount,
     rulesVersion: session.rulesVersion,
     completionType,
+    special: await isSpecialSession(tx, session),
   })
   const answer = (await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions)
     .where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1))[0]?.payload as TitleItem | undefined

@@ -1,5 +1,5 @@
 import { and, asc, eq, sql } from 'drizzle-orm'
-import { ECONOMY_RULES_VERSION, isPlayableModeId, type ApiRole, type ContentPack, type ContentPackDetail } from '@shoditsa/contracts'
+import { isPlayableModeId, type ApiRole, type ContentPack, type ContentPackDetail } from '@shoditsa/contracts'
 import {
   commerceProducts, contentPackEntries, contentPacks, contentItemVersions, gameSessions,
   userPackProgress, type Database,
@@ -7,7 +7,8 @@ import {
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { activeRevision, buildSessionSnapshot } from '../games/service.js'
-import { canAccessPack, canViewPack, hasPermanentPackAccess, type PackAccessSource } from './access.js'
+import { canAccessPack, canViewPack, type PackAccessSource } from './access.js'
+import { loadAssignedEconomyRules } from '../economy/rules.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 
@@ -20,15 +21,13 @@ const packCard = async (
   role: ApiRole,
 ): Promise<ContentPack> => {
   if (!isPlayableModeId(pack.mode)) throw new ApiError(404, 'PACK_MODE_NOT_PLAYABLE', 'Этот спецпоказ пока недоступен')
-  const [counts, productRows, progressRows, fullAccess, owned] = await Promise.all([
+  const [counts, progressRows, fullAccess] = await Promise.all([
     db.select({ count: sql<number>`count(*)::int` }).from(contentPackEntries).where(and(eq(contentPackEntries.packId, pack.id), eq(contentPackEntries.enabled, true))),
-    pack.productId ? db.select().from(commerceProducts).where(eq(commerceProducts.id, pack.productId)).limit(1) : Promise.resolve([]),
     userId ? db.select().from(userPackProgress).where(and(eq(userPackProgress.userId, userId), eq(userPackProgress.packId, pack.id))).limit(1) : Promise.resolve([]),
-    canAccessPack(db, userId, pack.id, Math.max(1, pack.previewItems + 1), role),
-    userId ? hasPermanentPackAccess(db, userId, pack.id) : Promise.resolve(false),
+    canAccessPack(db, userId, pack.id, 1, role),
   ])
   const progress = progressRows[0]
-  const source = fullAccess.allowed ? fullAccess.source : pack.previewItems > 0 ? 'preview' : 'locked'
+  const source = fullAccess.allowed ? fullAccess.source : 'locked'
   return {
     id: pack.id,
     slug: pack.slug,
@@ -37,16 +36,16 @@ const packCard = async (
     subtitle: pack.subtitle,
     description: pack.description,
     coverUrl: pack.coverUrl,
-    accessModel: pack.accessModel as ContentPack['accessModel'],
-    includedInClub: pack.includedInClub,
-    previewItems: pack.previewItems,
+    accessModel: 'club',
+    includedInClub: true,
+    previewItems: 0,
     totalItems: counts[0]?.count ?? 0,
-    productId: pack.productId,
-    priceMinor: productRows[0]?.priceMinor ?? null,
-    currency: productRows[0]?.currency ?? null,
+    productId: null,
+    priceMinor: null,
+    currency: null,
     access: publicAccess(source),
-    owned,
-    completedItems: progress?.completedPositions.length ?? 0,
+    owned: false,
+    completedItems: userId ? progress?.completedPositions.length ?? 0 : 0,
   }
 }
 
@@ -69,13 +68,14 @@ export const getPack = async (db: Database, packId: string, userId: string | nul
     userId ? db.select().from(userPackProgress).where(and(eq(userPackProgress.userId, userId), eq(userPackProgress.packId, pack.id))).limit(1) : Promise.resolve([]),
   ])
   const completed = new Set(progressRows[0]?.completedPositions ?? [])
+  if (card.access === 'locked') return { ...card, entries: [] }
   return {
     ...card,
     entries: await Promise.all(entries.map(async (entry) => {
       const access = await canAccessPack(db, userId, pack.id, entry.position, role)
       return {
         position: entry.position,
-        preview: entry.position <= pack.previewItems,
+        preview: false,
         completed: completed.has(entry.position),
         accessible: access.allowed,
         // Authoring payload can contain future hints; never expose it through the player catalog.
@@ -105,7 +105,10 @@ export const startPackSession = async (
   position: number,
   authSessionId: string | null,
   role: ApiRole = 'player',
-) => db.transaction(async (tx) => {
+  rolloutPercent = 100,
+) => {
+  const rules = await loadAssignedEconomyRules(db, userId, role, rolloutPercent)
+  return db.transaction(async (tx) => {
   const packRows = await tx.select().from(contentPacks).where(eq(contentPacks.id, packId)).limit(1)
   const pack = packRows[0]
   if (!pack || !await canViewPack(tx, userId, packId, role, pack.status)) throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
@@ -114,13 +117,17 @@ export const startPackSession = async (
   )).limit(1)
   const entry = entries[0]
   if (!entry) throw new ApiError(422, 'PACK_POSITION_INVALID', 'Такой позиции нет в спецпоказе')
-  const access = await canAccessPack(tx, userId, packId, position, role)
-  if (!access.allowed) throw new ApiError(403, 'PACK_ACCESS_REQUIRED', 'Для этой игры нужен клубный или постоянный доступ к спецпоказу', { packId, position })
-
   const existing = await tx.select().from(gameSessions).where(and(
     eq(gameSessions.userId, userId), eq(gameSessions.packId, packId), eq(gameSessions.packPosition, position),
   )).limit(1)
   if (existing[0]) return buildSessionSnapshot(tx, existing[0])
+
+  const access = await canAccessPack(tx, userId, packId, position, role)
+  if (!access.allowed) throw new ApiError(403, 'CLUB_REQUIRED', 'Спецпоказы доступны участникам Клуба', {
+    feature: 'special',
+    packId,
+    clubProductIds: ['club_30d', 'club_365d'],
+  })
 
   const revisionId = await activeRevision(tx)
   const versions = await tx.select({ id: contentItemVersions.id }).from(contentItemVersions).where(and(
@@ -140,7 +147,7 @@ export const startPackSession = async (
     puzzleDate: getMoscowDate(),
     revisionId,
     answerItemVersionId: versions[0].id,
-    rulesVersion: ECONOMY_RULES_VERSION,
+    rulesVersion: rules.version,
   }).onConflictDoNothing().returning()
   const session = inserted[0] ?? (await tx.select().from(gameSessions).where(and(
     eq(gameSessions.userId, userId), eq(gameSessions.packId, packId), eq(gameSessions.packPosition, position),
@@ -148,4 +155,5 @@ export const startPackSession = async (
   await tx.insert(userPackProgress).values({ userId, packId, lastPosition: position })
     .onConflictDoUpdate({ target: [userPackProgress.userId, userPackProgress.packId], set: { lastPosition: position, updatedAt: new Date() } })
   return buildSessionSnapshot(tx, session)
-})
+  })
+}

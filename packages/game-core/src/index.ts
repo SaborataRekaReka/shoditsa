@@ -5,6 +5,7 @@ import {
   KPOP_ARTISTS_PACK_ID,
   economyEfficiencyReward,
   economyStreakMilestoneReward,
+  type EconomyRuleSet,
   type Direction,
   type DifficultyKey,
   type Hint,
@@ -1513,24 +1514,24 @@ export const calculateCompletionReward = (input: {
   firstRoute3?: boolean
   firstFullHouse: boolean
   dailyStreak: number
+  rules?: EconomyRuleSet
 }) => {
+  const rules = input.rules ?? ECONOMY_RULE_SET
   const completionType = input.completionType ?? (input.won ? 'direct_win' : 'attempts_exhausted')
-  const isFinalChoice = completionType === 'final_choice_win'
-    || completionType === 'final_choice_loss'
-    || completionType === 'answer_revealed'
   const directWin = input.won && completionType === 'direct_win'
+  const completed = completionType !== 'expired'
   const components = {
-    completion: isFinalChoice ? 0 : ECONOMY_RULE_SET.rewards.completion,
-    win: directWin ? ECONOMY_RULE_SET.rewards.win : 0,
-    efficiency: economyEfficiencyReward(directWin, input.attemptsCount),
-    finalChoiceWin: completionType === 'final_choice_win' ? ECONOMY_RULE_SET.rewards.finalChoiceWin : 0,
-    firstGame: input.firstCompletion ? ECONOMY_RULE_SET.rewards.firstGame : 0,
-    route3: input.firstRoute3 ? ECONOMY_RULE_SET.rewards.route3 : 0,
-    fullRoute: input.firstFullHouse ? ECONOMY_RULE_SET.rewards.fullRoute : 0,
-    streakMilestone: input.firstCompletion ? economyStreakMilestoneReward(input.dailyStreak) : 0,
+    completion: completed ? rules.rewards.completion : 0,
+    win: directWin ? rules.rewards.win : 0,
+    efficiency: economyEfficiencyReward(directWin, input.attemptsCount, rules),
+    finalChoiceWin: completionType === 'final_choice_win' ? rules.rewards.finalChoiceWin : 0,
+    firstGame: completed && input.firstCompletion ? rules.rewards.firstGame : 0,
+    route3: completed && input.firstRoute3 ? rules.rewards.route3 : 0,
+    fullRoute: completed && input.firstFullHouse ? rules.rewards.fullRoute : 0,
+    streakMilestone: completed && input.firstCompletion ? economyStreakMilestoneReward(input.dailyStreak, rules) : 0,
   }
   return {
-    rulesVersion: ECONOMY_RULES_VERSION,
+    rulesVersion: rules.version ?? ECONOMY_RULES_VERSION,
     components,
     total: Object.values(components).reduce((sum, value) => sum + value, 0),
   }

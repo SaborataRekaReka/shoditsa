@@ -2,8 +2,6 @@ import { createHash, createHmac, randomBytes } from 'node:crypto'
 import { and, asc, count, eq, gt, inArray, isNull, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import {
-  ECONOMY_RULE_SET,
-  ECONOMY_RULES_VERSION,
   economyDanetkiCost,
   type DanetkiPayload,
   type PublicDanetka,
@@ -33,6 +31,7 @@ import { getMoscowDate } from '../../lib/time.js'
 import { canStartArchiveSession } from '../archive/access.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
 import { completeDanetkiDaily } from '../stats/rewards.js'
+import { loadActiveEconomyRules, loadAssignedEconomyRules, loadEconomyRulesByVersion } from '../economy/rules.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
@@ -111,6 +110,24 @@ export const nextDanetkiTurnUserId = (memberIds: string[], currentUserId: string
   return memberIds[(currentIndex + 1) % memberIds.length]
 }
 
+const assertDanetkiStartReplay = async (
+  tx: Transaction,
+  session: SessionRow,
+  input: { kind: 'daily' | 'archive' | 'free_play'; roomMode: 'solo' | 'group' },
+  puzzleDate: string,
+) => {
+  const state = (await tx.select({ roomMode: danetkiSessionState.roomMode }).from(danetkiSessionState)
+    .where(eq(danetkiSessionState.sessionId, session.id)).limit(1))[0]
+  if (
+    session.mode !== 'danetki'
+    || session.kind !== input.kind
+    || session.puzzleDate !== puzzleDate
+    || state?.roomMode !== input.roomMode
+  ) {
+    throw new ApiError(409, 'IDEMPOTENCY_CONFLICT', 'Этот ключ уже использован для другого запуска Данетки')
+  }
+}
+
 export const getNextDanetkiRoomCost = async (
   db: Database | Transaction,
   userId: string,
@@ -121,11 +138,12 @@ export const getNextDanetkiRoomCost = async (
     eq(danetkiDailyUsage.userId, userId),
     eq(danetkiDailyUsage.activityDate, today),
   )).limit(1))[0] ?? { clubRooms: 0, paidRooms: 0 }
+  const rules = await loadActiveEconomyRules(db)
   const clubActive = await hasEntitlement(db, userId, 'club', undefined, new Date())
   const clubRoomsRemaining = clubActive
-    ? Math.max(0, ECONOMY_RULE_SET.danetki.clubExtraRooms - usage.clubRooms)
+    ? Math.max(0, rules.danetki.clubExtraRooms - usage.clubRooms)
     : 0
-  return clubRoomsRemaining > 0 ? 0 : economyDanetkiCost(roomMode, usage.paidRooms)
+  return clubRoomsRemaining > 0 ? 0 : economyDanetkiCost(roomMode, usage.paidRooms, rules)
 }
 
 export const finishLinkedDanetkiFriendsRoom = async (
@@ -217,6 +235,7 @@ const resolveFreePlayPuzzle = async (tx: Transaction) => {
 const iso = (value: Date) => value.toISOString()
 
 export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, session: SessionRow, currentUserId: string) => {
+  const rules = await loadEconomyRulesByVersion(db, session.rulesVersion)
   const member = await db.select({ userId: danetkiSessionMembers.userId }).from(danetkiSessionMembers).where(and(
     eq(danetkiSessionMembers.sessionId, session.id),
     eq(danetkiSessionMembers.userId, currentUserId),
@@ -273,9 +292,9 @@ export const buildDanetkiSessionSnapshot = async (db: Database | Transaction, se
       currentTurnUserId: state.roomMode === 'solo' ? currentUserId : state.currentTurnUserId,
       capacity: state.roomMode === 'group' ? DANETKI_GROUP_CAPACITY : 1,
       questionCount: state.questionCount,
-      questionWarningAt: ECONOMY_RULE_SET.danetki.questionWarningAt,
-      questionLimit: ECONOMY_RULE_SET.danetki.questionLimit,
-      questionsRemaining: Math.max(0, ECONOMY_RULE_SET.danetki.questionLimit - state.questionCount),
+      questionWarningAt: rules.danetki.questionWarningAt,
+      questionLimit: rules.danetki.questionLimit,
+      questionsRemaining: Math.max(0, rules.danetki.questionLimit - state.questionCount),
       hintLevel: state.hintLevel,
       aiStatus: state.aiStatus,
       members: members.map((entry) => ({
@@ -337,23 +356,28 @@ export const startDanetkiSession = async (db: Database, user: {
   const puzzleDate = input.kind === 'daily' || input.kind === 'free_play' ? today : input.archiveDate
   if (!puzzleDate) throw new ApiError(422, 'ARCHIVE_DATE_REQUIRED', 'Для архивной игры нужна дата')
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
-  if (input.kind === 'archive') {
-    const access = await canStartArchiveSession(db, user.id, puzzleDate, config, new Date(), { mode: 'danetki', period: 'all', difficulty: null })
-    if (access.source === 'before-launch') throw new ApiError(422, 'ARCHIVE_DATE_BEFORE_LAUNCH', 'Эта дата была до запуска архива', { archiveDate: puzzleDate, archiveFirstDate: config.commerce.archiveFirstDate })
-    if (!access.allowed) throw new ApiError(403, 'ARCHIVE_CLUB_REQUIRED', 'Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем', { archiveDate: puzzleDate, freeFrom: access.freeFrom })
-  }
+  const rules = await loadAssignedEconomyRules(db, user.id, user.role, config.economy.v4RolloutPercent)
 
   return db.transaction(async (tx) => {
     const replay = input.idempotencyKey
       ? await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, user.id), eq(gameSessions.startIdempotencyKey, input.idempotencyKey))).limit(1)
       : []
-    if (replay[0]) return buildDanetkiSessionSnapshot(tx, replay[0], user.id)
+    if (replay[0]) {
+      await assertDanetkiStartReplay(tx, replay[0], input, puzzleDate)
+      return buildDanetkiSessionSnapshot(tx, replay[0], user.id)
+    }
+    if (input.kind === 'archive') {
+      const access = await canStartArchiveSession(tx as unknown as Database, user.id, puzzleDate, config, new Date(), { mode: 'danetki', period: 'all', difficulty: null })
+      if (access.source === 'before-launch') throw new ApiError(422, 'ARCHIVE_DATE_BEFORE_LAUNCH', 'Эта дата была до запуска архива', { archiveDate: puzzleDate, archiveFirstDate: config.commerce.archiveFirstDate })
+      if (!access.allowed) throw new ApiError(403, 'ARCHIVE_CLUB_REQUIRED', 'Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем', { archiveDate: puzzleDate, freeFrom: access.freeFrom })
+    }
 
     let usage: typeof danetkiDailyUsage.$inferSelect | null = null
     let roomCost = 0
-    let accessSource: 'daily' | 'club' | 'tickets' | 'archive' = input.kind === 'daily' ? 'daily' : 'archive'
+    let accessSource: 'daily' | 'club' | 'tickets' = 'daily'
     let wallet: typeof walletAccounts.$inferSelect | null = null
-    if (input.kind === 'free_play') {
+    const extraRoom = input.kind === 'free_play' || input.kind === 'archive'
+    if (extraRoom) {
       await tx.insert(danetkiDailyUsage).values({ userId: user.id, activityDate: today }).onConflictDoNothing()
       usage = (await tx.select().from(danetkiDailyUsage).where(and(
         eq(danetkiDailyUsage.userId, user.id),
@@ -363,11 +387,14 @@ export const startDanetkiSession = async (db: Database, user: {
         eq(gameSessions.userId, user.id),
         eq(gameSessions.startIdempotencyKey, input.idempotencyKey!),
       )).limit(1)
-      if (lockedReplay[0]) return buildDanetkiSessionSnapshot(tx, lockedReplay[0], user.id)
+      if (lockedReplay[0]) {
+        await assertDanetkiStartReplay(tx, lockedReplay[0], input, puzzleDate)
+        return buildDanetkiSessionSnapshot(tx, lockedReplay[0], user.id)
+      }
       const clubActive = await hasEntitlement(tx, user.id, 'club', undefined, new Date())
-      const clubIncluded = clubActive && usage.clubRooms < ECONOMY_RULE_SET.danetki.clubExtraRooms
+      const clubIncluded = clubActive && usage.clubRooms < rules.danetki.clubExtraRooms
       accessSource = clubIncluded ? 'club' : 'tickets'
-      roomCost = clubIncluded ? 0 : economyDanetkiCost(input.roomMode, usage.paidRooms)
+      roomCost = clubIncluded ? 0 : economyDanetkiCost(input.roomMode, usage.paidRooms, rules)
       wallet = await lockedWallet(tx, user.id)
       if (wallet.balance < roomCost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', {
         required: roomCost,
@@ -375,9 +402,9 @@ export const startDanetkiSession = async (db: Database, user: {
         shortage: roomCost - wallet.balance,
         sink: 'danetki-room',
         mode: 'danetki',
-        sessionKind: 'free_play',
+        sessionKind: input.kind,
         roomMode: input.roomMode,
-        rulesVersion: ECONOMY_RULES_VERSION,
+        rulesVersion: rules.version,
         hasClub: clubActive,
       })
     }
@@ -395,7 +422,7 @@ export const startDanetkiSession = async (db: Database, user: {
       puzzleDate,
       revisionId: challenge?.revisionId ?? freePlayPuzzle!.revisionId,
       answerItemVersionId: challenge?.answerItemVersionId ?? freePlayPuzzle!.answerItemVersionId,
-      rulesVersion: ECONOMY_RULES_VERSION,
+      rulesVersion: rules.version,
       startIdempotencyKey: input.idempotencyKey,
     }).onConflictDoNothing().returning()
     const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play'
@@ -409,7 +436,7 @@ export const startDanetkiSession = async (db: Database, user: {
         set: { dailyRooms: sql`${danetkiDailyUsage.dailyRooms} + 1` },
       })
     }
-    if (inserted[0] && input.kind === 'free_play' && usage && wallet) {
+    if (inserted[0] && extraRoom && usage && wallet) {
       const balanceAfter = wallet.balance - roomCost
       if (roomCost > 0) {
         await tx.insert(walletLedger).values({
@@ -419,17 +446,17 @@ export const startDanetkiSession = async (db: Database, user: {
           reason: 'danetki-room',
           amount: -roomCost,
           balanceAfter,
-          rulesVersion: ECONOMY_RULES_VERSION,
+          rulesVersion: rules.version,
           metadata: {
             sessionId: session.id,
             sink: 'danetki-room',
             mode: 'danetki',
-            sessionKind: 'free_play',
+            sessionKind: input.kind,
             roomMode: input.roomMode,
             launch: usage.extraRooms + 1,
             paidLaunch: usage.paidRooms + 1,
             accessSource,
-            rulesVersion: ECONOMY_RULES_VERSION,
+            rulesVersion: rules.version,
           },
         })
         await tx.update(walletAccounts).set({
@@ -602,10 +629,11 @@ export const createDanetkiMessage = async (db: Database, userId: string, session
     throw new ApiError(409, 'DANETKI_HOST_BUSY', 'Дождитесь ответа ведущего')
   }
   if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_COMPLETED', 'Игра уже завершена')
-  if (state.questionCount >= ECONOMY_RULE_SET.danetki.questionLimit) throw new ApiError(409, 'DANETKI_QUESTION_LIMIT_REACHED', 'Лимит вопросов в этой комнате исчерпан', {
-    required: ECONOMY_RULE_SET.danetki.questionLimit,
+  const rules = await loadEconomyRulesByVersion(tx, session.rulesVersion)
+  if (state.questionCount >= rules.danetki.questionLimit) throw new ApiError(409, 'DANETKI_QUESTION_LIMIT_REACHED', 'Лимит вопросов в этой комнате исчерпан', {
+    required: rules.danetki.questionLimit,
     questionCount: state.questionCount,
-    warningAt: ECONOMY_RULE_SET.danetki.questionWarningAt,
+    warningAt: rules.danetki.questionWarningAt,
     mode: 'danetki',
     sessionKind: session.kind,
     rulesVersion: session.rulesVersion,

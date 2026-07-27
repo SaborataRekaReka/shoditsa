@@ -20,7 +20,9 @@ import { ActionButton, AppHeader, type AppHeaderProps } from '../../components/a
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { api, danetkiEventsUrl, friendsRoomEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
+import { trackClientEvent } from '../../app/client-events'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
+import { currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './friends-room-access'
 import { friendsRoomTimeLeft } from './friends-room-time'
 import { friendsRoomActionLabel, friendsRoomPhaseLabel, friendsRoomSummaryTitle } from './friends-room-summary'
 import { ControlButton, DialogSurface, InlineAlert, TextArea, TextInput } from '../../components/ui'
@@ -106,12 +108,14 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
   const [answerItemId, setAnswerItemId] = useState<string | undefined>()
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
+  const [anonymousUser, setAnonymousUser] = useState(false)
   const [now, setNow] = useState(Date.now())
   const bootstrapRef = useRef<Promise<FriendsRoomBootstrap> | null>(null)
   const roomRef = useRef<FriendsRoomSnapshot | null>(null)
   const configQueueRef = useRef<Promise<void>>(Promise.resolve())
   const configMutationRef = useRef(0)
   const configDraftRef = useRef<FriendsRoomConfigBody>({})
+  const intermissionEventRef = useRef('')
   const queryClient = useQueryClient()
 
   const applyIncomingRoom = useCallback((snapshot: FriendsRoomSnapshot) => {
@@ -127,14 +131,21 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
       const gameType: FriendsRoomGameType = search.get('mode') === 'danetki' ? 'danetki' : 'quiz'
       const createExplicitly = search.get('new') === '1' || gameType === 'danetki'
       bootstrapRef.current = ensureServerSession()
-        .then(async () => {
+        .then(async (identity) => {
+          setAnonymousUser(identity.user.isAnonymous)
           if (code) {
             const directory = await api.friendsRoomList()
             const current = directory.rooms.find((entry) => entry.code === code)
             if (current) return { room: (await api.friendsRoomSnapshot(current.id)).room, rooms: [], preview: null }
             return { room: null, rooms: [], preview: await api.friendsRoomPreview(code) }
           }
-          if (createExplicitly) return { room: (await api.friendsRoomCreate({ gameType })).room, rooms: [], preview: null }
+          if (createExplicitly) {
+            if (identity.user.isAnonymous) {
+              window.location.replace(friendsRoomRegistrationHref(currentFriendsRoomReturnUrl()))
+              return { room: null, rooms: [], preview: null }
+            }
+            return { room: (await api.friendsRoomCreate({ gameType })).room, rooms: [], preview: null }
+          }
           const directory = await api.friendsRoomList()
           return { room: null, rooms: directory.rooms, preview: null }
         })
@@ -223,6 +234,27 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     }
   }, [room?.currentRound, room?.phase])
 
+  useEffect(() => {
+    if (!room || room.phase !== 'intermission') return
+    const key = `${room.id}:${room.currentRound}`
+    if (intermissionEventRef.current === key) return
+    intermissionEventRef.current = key
+    trackClientEvent('friends_room_block_completed', {
+      roomId: room.id,
+      roundsCompleted: room.currentRound,
+      rulesVersion: room.rulesVersion,
+    })
+    trackClientEvent('friends_room_intermission_view', {
+      roomId: room.id,
+      roundsCompleted: room.currentRound,
+      required: room.continuation.cost,
+      balance: room.continuation.balance,
+      shortage: room.continuation.shortage,
+      hasClub: room.continuation.accessSource === 'club',
+      rulesVersion: room.rulesVersion,
+    })
+  }, [room])
+
   const run = useCallback(async (action: () => Promise<{ room: FriendsRoomSnapshot }>) => {
     if (busy) return
     setBusy(true)
@@ -252,8 +284,13 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     setBusy(true)
     setError('')
     try {
-      await ensureServerSession()
+      const identity = await ensureServerSession()
+      if (identity.user.isAnonymous) {
+        window.location.assign(friendsRoomRegistrationHref('/games/together?new=1'))
+        return
+      }
       const snapshot = (await api.friendsRoomCreate({ gameType: gameTypeOverride ?? room?.gameType ?? 'quiz' })).room
+      trackClientEvent('friends_room_created', { roomId: snapshot.id, gameType: snapshot.gameType, rulesVersion: snapshot.rulesVersion })
       setRoom(snapshot)
       setRoomDirectory(null)
       setInvitePreview(null)
@@ -278,7 +315,12 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     setBusy(true)
     setError('')
     try {
+      const identity = await ensureServerSession()
       const snapshot = (await api.friendsRoomJoin(summary.code)).room
+      setAnonymousUser(identity.user.isAnonymous)
+      if (identity.user.isAnonymous) {
+        trackClientEvent('friends_room_guest_joined', { roomId: snapshot.id, roomMode: snapshot.gameType, rulesVersion: snapshot.rulesVersion })
+      }
       roomRef.current = snapshot
       setRoom(snapshot)
       setRoomDirectory(null)
@@ -299,7 +341,12 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     setBusy(true)
     setError('')
     try {
+      const identity = await ensureServerSession()
       const snapshot = (await api.friendsRoomJoin(invitePreview.code)).room
+      setAnonymousUser(identity.user.isAnonymous)
+      if (identity.user.isAnonymous) {
+        trackClientEvent('friends_room_guest_joined', { roomId: snapshot.id, roomMode: snapshot.gameType, rulesVersion: snapshot.rulesVersion })
+      }
       roomRef.current = snapshot
       setRoom(snapshot)
       setRoomDirectory(null)
@@ -451,10 +498,29 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
       {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} configSaving={configSaving} danetkiGroupCost={room.danetkiLaunchCost} ticketBalance={ticketBalance} message={message} onMessage={setMessage} onSend={sendMessage} onGameType={(gameType, selectedMode) => updateConfig({
         gameType,
         ...(selectedMode ? { packs: [{ mode: selectedMode, variant: FRIENDS_ROOM_DEFAULT_PACK_VARIANTS[selectedMode] }] } : {}),
-      })} onPacks={(packs) => updateConfig({ gameType: 'quiz', packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(() => api.friendsRoomStart(room.id, idempotencyKey()))} />}
+      })} onPacks={(packs) => updateConfig({ gameType: 'quiz', packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(async () => {
+        const response = await api.friendsRoomStart(room.id, idempotencyKey())
+        const quote = room.continuation
+        trackClientEvent('friends_room_started', { roomId: room.id, cost: quote?.cost ?? 0, accessSource: quote?.accessSource ?? 'free', rulesVersion: room.rulesVersion ?? 4 })
+        if (quote?.accessSource === 'free') {
+          trackClientEvent('friends_room_free_block_started', { roomId: room.id, roundsAdded: 6, rulesVersion: room.rulesVersion ?? 4 })
+        }
+        if ((quote?.cost ?? 0) > 0) trackClientEvent('ticket_spent', { sink: 'friends-room', amount: quote!.cost, roomId: room.id, rulesVersion: room.rulesVersion ?? 4 })
+        return response
+      })} />}
       {room?.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} copied={copied} busy={busy} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} />}
       {room && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} copied={copied} busy={busy} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
-      {room?.phase === 'finished' && <FinalScreen room={room} players={ranked} busy={busy} onAgain={() => void run(() => api.friendsRoomRestart(room.id, idempotencyKey()))} onExit={() => void leaveCurrentRoom()} />}
+      {room?.phase === 'intermission' && <IntermissionScreen room={room} players={ranked} busy={busy} onContinue={() => void run(async () => {
+        trackClientEvent('friends_room_continue_clicked', { roomId: room.id, required: room.continuation.cost, balance: room.continuation.balance, shortage: room.continuation.shortage, roundsAdded: room.continuation.roundsAdded, rulesVersion: room.rulesVersion })
+        const response = await api.friendsRoomContinue(room.id, idempotencyKey())
+        trackClientEvent('friends_room_continued', { roomId: room.id, cost: room.continuation.cost, accessSource: room.continuation.accessSource, nextRoundsTotal: room.continuation.nextRoundsTotal, rulesVersion: room.rulesVersion })
+        if (room.continuation.cost > 0) trackClientEvent('ticket_spent', { sink: 'friends-room', amount: room.continuation.cost, roomId: room.id, rulesVersion: room.rulesVersion })
+        return response
+      })} onExit={() => {
+        trackClientEvent('friends_room_ended_at_intermission', { roomId: room.id, roundsCompleted: room.currentRound, rulesVersion: room.rulesVersion })
+        void leaveCurrentRoom()
+      }} />}
+      {room?.phase === 'finished' && <FinalScreen room={room} players={ranked} busy={busy} anonymousUser={anonymousUser} onAgain={() => void run(() => api.friendsRoomRestart(room.id, idempotencyKey()))} onExit={() => void leaveCurrentRoom()} />}
     </GameScreenShell>
   </div>
 }
@@ -916,6 +982,17 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
     togglePack(modeId)
   }
   const isDanetki = room.gameType === 'danetki'
+  const quote = room.continuation ?? {
+    canContinue: false,
+    roundsAdded: 6,
+    nextRoundsTotal: room.roundsTotal,
+    accessSource: 'free' as const,
+    cost: 0,
+    balance: ticketBalance,
+    shortage: 0,
+  }
+  const clubRoom = quote.accessSource === 'club'
+  const quizShortage = isDanetki ? 0 : quote.shortage
   return <section className={`room-lobby${isDanetki ? ' is-danetki' : ''}`}>
     <div className="room-lobby__intro">
       <span className="room-kicker">Игра с друзьями · общая онлайн-комната</span>
@@ -950,12 +1027,12 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
       </div>
       <ControlButton className={`room-shuffle${room.shufflePacks ? ' is-active' : ''}`} type="button" aria-pressed={room.shufflePacks} disabled={!room.isHost} onClick={onShuffle}><RoomIcon name="shuffle" /><span><strong>Перемешивать паки</strong><small>{room.shufflePacks ? 'Порядок будет случайным для этой игры' : 'Сейчас паки идут в порядке выбора'}</small></span><em>{room.shufflePacks ? 'Включено' : 'Выключено'}</em></ControlButton>
       <div className="room-rule-grid">
-        <fieldset className="room-rounds" disabled={!room.isHost}><legend>Раундов <output>{room.roundsTotal}</output></legend><TextInput type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>Не меньше одного раунда на пак. Дальше паки повторяются по кругу.</small></fieldset>
+        <fieldset className="room-rounds" disabled={!room.isHost || !clubRoom}><legend>Раундов <output>{room.roundsTotal}</output></legend><TextInput type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>{clubRoom ? 'Участникам Клуба доступно от 3 до 30 раундов.' : 'Первый блок — 6 раундов. После него можно продолжить.'}</small></fieldset>
         <fieldset disabled={!room.isHost}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <ControlButton type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</ControlButton>)}</div></fieldset>
       </div>
       </>}
       {room.isHost
-        ? <ControlButton className="room-start" type="button" onClick={onStart} disabled={busy || configSaving || (isDanetki && danetkiGroupCost > ticketBalance)}><RoomIcon name="play" />{busy ? 'Запускаем…' : isDanetki && danetkiGroupCost > ticketBalance ? 'Не хватает билетов' : isDanetki ? 'Начать расследование' : 'Начать игру'}<span>{isDanetki ? `${members.length} из ${room.capacity} · вопросы по очереди` : `${packCountLabel(room.packs.length)} · ${room.roundsTotal} раундов · ${room.answerTimeSeconds} сек`}</span></ControlButton>
+        ? <ControlButton className="room-start" type="button" onClick={onStart} disabled={busy || configSaving || (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0)}><RoomIcon name="play" />{busy ? 'Запускаем…' : (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0) ? 'Не хватает билетов' : isDanetki ? 'Начать расследование' : 'Начать игру'}<span>{isDanetki ? `${members.length} из ${room.capacity} · вопросы по очереди` : `${packCountLabel(room.packs.length)} · ${room.roundsTotal} раундов · ${quote.cost ? `${quote.cost} билетов` : 'бесплатно'}`}</span></ControlButton>
         : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>Ждём ведущего</strong><small>Настройки и запуск доступны создателю комнаты</small></span></div>}
     </div>
   </section>
@@ -1181,7 +1258,41 @@ function ActivityLog({ room, players }: { room: FriendsRoomSnapshot; players: Fr
   return <section className="room-activity" aria-live="polite"><span>Ход игры</span><article><i><RoomIcon name="play" /></i><div><strong>Раунд {room.currentRound} начался</strong><small>Угадайте ответ по подсказкам</small></div><time>сейчас</time></article>{events.map(({ answer: eventAnswer, player }) => player && <article key={player.userId}><i><RoomIcon name={eventAnswer && eventAnswer.points === 0 ? 'remove' : 'check'} /></i><div><strong>{player.displayName} {room.phase === 'results' ? eventAnswer?.correct ? 'дал точный ответ' : eventAnswer && eventAnswer.points > 0 ? 'нашёл совпавшие признаки' : 'не получил очков' : 'отправил ответ'}</strong>{room.phase === 'results' && <small>+{eventAnswer?.points ?? 0} очков</small>}</div><time>сейчас</time></article>)}</section>
 }
 
-function FinalScreen({ room, players, busy, onAgain, onExit }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members']; busy: boolean; onAgain: () => void; onExit: () => void }) {
+function IntermissionScreen({ room, players, busy, onContinue, onExit }: {
+  room: FriendsRoomSnapshot
+  players: FriendsRoomSnapshot['members']
+  busy: boolean
+  onContinue: () => void
+  onExit: () => void
+}) {
+  const quote = room.continuation
+  const ownerCanPay = quote.shortage === 0
+  return <section className="room-intermission">
+    <div className="room-intermission__card">
+      <span>Перерыв после {room.currentRound} раундов</span>
+      <RoomIcon name="timer" />
+      <h1>Продолжим?</h1>
+      <p>{quote.accessSource === 'club'
+        ? 'Для участников Клуба следующий блок включён.'
+        : quote.cost === 0
+          ? 'Следующий блок из 6 раундов бесплатный.'
+          : `Следующий блок из 6 раундов стоит ${quote.cost} билетов.`}</p>
+      <div className="room-intermission__leaders">
+        {players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}
+      </div>
+      {room.isHost ? <>
+        {!ownerCanPay && <InlineAlert tone="warning">Не хватает {quote.shortage} билетов. Баланс: {quote.balance ?? 0}.</InlineAlert>}
+        <ControlButton type="button" onClick={onContinue} disabled={busy || !quote.canContinue || !ownerCanPay}>
+          <RoomIcon name="play" />{busy ? 'Запускаем…' : quote.cost > 0 ? `Продолжить за ${quote.cost} билетов` : 'Продолжить бесплатно'}
+        </ControlButton>
+        {!ownerCanPay && <a className="ui-button ui-button--secondary" href="/club">Вступить в Клуб</a>}
+      </> : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>Решает ведущий</strong><small>Следующий блок запускает создатель комнаты</small></span></div>}
+      <ControlButton type="button" onClick={onExit} disabled={busy}><RoomIcon name="exit" />Завершить для себя</ControlButton>
+    </div>
+  </section>
+}
+
+function FinalScreen({ room, players, busy, anonymousUser, onAgain, onExit }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members']; busy: boolean; anonymousUser: boolean; onAgain: () => void; onExit: () => void }) {
   const winner = players[0]
-  return <section className="room-final"><div className="room-final__ticket"><span>Сеанс завершён</span><RoomIcon name="trophy" /><small>Победитель</small><h1>{winner?.displayName ?? 'Ничья'}</h1><strong>{score(winner?.score ?? 0)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}</div>{room.isHost && <ControlButton type="button" onClick={onAgain} disabled={busy}><RoomIcon name="apps" />Настроить новую игру</ControlButton>}<ControlButton type="button" onClick={onExit} disabled={busy}><RoomIcon name="exit" />{busy ? 'Выходим…' : 'Покинуть комнату'}</ControlButton></div></section>
+  return <section className="room-final"><div className="room-final__ticket"><span>Сеанс завершён</span><RoomIcon name="trophy" /><small>Победитель</small><h1>{winner?.displayName ?? 'Ничья'}</h1><strong>{score(winner?.score ?? 0)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}</div>{anonymousUser && <a className="ui-button ui-button--primary" href={friendsRoomRegistrationHref(`/games/together?room=${room.code}`)}>Сохранить результат и играть снова</a>}{room.isHost && <ControlButton type="button" onClick={onAgain} disabled={busy}><RoomIcon name="apps" />Настроить новую игру</ControlButton>}<ControlButton type="button" onClick={onExit} disabled={busy}><RoomIcon name="exit" />{busy ? 'Выходим…' : 'Покинуть комнату'}</ControlButton></div></section>
 }

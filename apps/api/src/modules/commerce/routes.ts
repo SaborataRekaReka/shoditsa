@@ -13,7 +13,12 @@ type Deps = { db: Database; auth: Auth; config: AppConfig }
 const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
 
 export const registerCommerceRoutes = async (app: FastifyInstance, deps: Deps) => {
-  app.get('/api/v1/commerce/catalog', async () => commerceCatalog(deps.db, deps.config.commerce.enabled, deps.config.commerce.currency))
+  app.get('/api/v1/commerce/catalog', async () => commerceCatalog(
+    deps.db,
+    deps.config.commerce.enabled,
+    deps.config.commerce.currency,
+    deps.config.commerce.ticketBundlesEnabled,
+  ))
   app.get('/api/v1/me/commerce', async (request) => {
     const actor = await getRequestUser(request, deps.auth, deps.db, true, deps.config)
     return meCommerce(deps.db, actor!.id)

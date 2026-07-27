@@ -12,19 +12,31 @@ import type {
   PlayableMode,
   TitleItem,
 } from '@shoditsa/contracts'
-import { FRIENDS_ROOM_CAPACITY, FRIENDS_ROOM_DANETKI_CAPACITY, friendsRoomMinimumRounds } from '@shoditsa/contracts'
+import {
+  FRIENDS_ROOM_CAPACITY,
+  FRIENDS_ROOM_DANETKI_CAPACITY,
+  economyFriendsRoomCost,
+  friendsRoomMinimumRounds,
+} from '@shoditsa/contracts'
 import { isExactTitleSearchMatch, musicDifficultyPool, normalize } from '@shoditsa/game-core'
 import {
   contentItemVersions,
   contentRevisions,
   friendsRoomAnswers,
+  friendsRoomDailyUsage,
+  friendsRoomExtensions,
   friendsRoomMembers,
   friendsRoomMessages,
   friendsRoomRounds,
   friendsRooms,
+  walletAccounts,
+  walletLedger,
   type Database,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
+import { getMoscowDate } from '../../lib/time.js'
+import { hasEntitlement } from '../commerce/entitlements.js'
+import { loadAssignedEconomyRules, loadEconomyRulesByVersion } from '../economy/rules.js'
 import { publicCard } from '../games/service.js'
 import {
   getNextDanetkiRoomCost,
@@ -43,6 +55,7 @@ type RequestUser = {
   name: string
   role: 'player' | 'admin'
   authSessionId: string | null
+  isAnonymous?: boolean
 }
 
 const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -93,9 +106,8 @@ const roomCode = () => [...randomBytes(5)].map((byte) => ROOM_CODE_ALPHABET[byte
 const iso = (value: Date | null) => value?.toISOString() ?? null
 
 export const assertFriendsRoomAccess = (config: AppConfig, isAnonymous: boolean) => {
-  if (config.production && isAnonymous && !config.friendsRoomPreview) {
-    throw new ApiError(403, 'FRIENDS_ROOM_ACCOUNT_REQUIRED', 'Сначала зарегистрируйтесь, чтобы играть с друзьями')
-  }
+  void config
+  void isAnonymous
 }
 
 const activeRevisionId = async (db: Pick<Database, 'select'>) => {
@@ -110,6 +122,12 @@ const activeMember = async (db: Pick<Database, 'select'>, roomId: string, userId
   )).limit(1)
   if (!rows[0]) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
   return rows[0]
+}
+
+export const assertFriendsRoomCreator = (isAnonymous: boolean) => {
+  if (isAnonymous) {
+    throw new ApiError(403, 'FRIENDS_ROOM_ACCOUNT_REQUIRED', 'Создавать комнаты можно только с постоянного аккаунта')
+  }
 }
 
 const lockUserRoomMembership = async (tx: Transaction, userId: string) => {
@@ -164,6 +182,134 @@ const roomPacks = (room: RoomRow) => normalizeFriendsRoomPacks(
   Array.isArray(room.packs) ? room.packs as FriendsRoomPackSelection[] : null,
   room.mode as PlayableMode,
 )
+
+const lockedWallet = async (tx: Transaction, userId: string) => {
+  await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
+  return (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).for('update').limit(1))[0]
+}
+
+const friendsRoomContinuationQuote = async (
+  db: Database,
+  room: RoomRow,
+  isHost: boolean,
+) => {
+  const rules = await loadEconomyRulesByVersion(db, room.rulesVersion)
+  const clubActive = await hasEntitlement(db, room.ownerUserId, 'club', undefined, new Date())
+  const date = getMoscowDate()
+  const usage = (await db.select().from(friendsRoomDailyUsage).where(and(
+    eq(friendsRoomDailyUsage.userId, room.ownerUserId),
+    eq(friendsRoomDailyUsage.activityDate, date),
+  )).limit(1))[0]
+  const wallet = (await db.select({ balance: walletAccounts.balance }).from(walletAccounts)
+    .where(eq(walletAccounts.userId, room.ownerUserId)).limit(1))[0]
+  const cost = clubActive ? 0 : (usage?.freeBlocks ?? 0) < rules.friendsRoom.freeBlocksPerDay
+    ? 0
+    : economyFriendsRoomCost(usage?.paidBlocks ?? 0, rules)
+  const accessSource = clubActive ? 'club' as const : cost === 0 ? 'free' as const : 'tickets' as const
+  const balance = wallet?.balance ?? 0
+  const available = room.currentRound < rules.friendsRoom.maxRoundsPerRoom
+  const nextRoundsTotal = room.currentRound < room.roundsTotal
+    ? room.roundsTotal
+    : Math.min(rules.friendsRoom.maxRoundsPerRoom, room.roundsTotal + rules.friendsRoom.roundsPerBlock)
+  return {
+    canContinue: isHost && room.phase === 'intermission' && room.currentRound < rules.friendsRoom.maxRoundsPerRoom,
+    roundsAdded: rules.friendsRoom.roundsPerBlock as 6,
+    nextRoundsTotal: room.currentRound < rules.friendsRoom.maxRoundsPerRoom ? nextRoundsTotal : null,
+    accessSource: room.currentRound < rules.friendsRoom.maxRoundsPerRoom ? accessSource : 'unavailable' as const,
+    cost,
+    balance,
+    shortage: Math.max(0, cost - balance),
+    quote: available ? {
+      sink: 'friends-room-block' as const,
+      allowed: isHost && room.phase === 'intermission' && (cost === 0 || balance >= cost),
+      accessSource,
+      cost,
+      balance,
+      shortage: Math.max(0, cost - balance),
+      paidUsesToday: usage?.paidBlocks ?? 0,
+      rulesVersion: rules.version,
+    } : null,
+  }
+}
+
+const chargeFriendsRoomBlock = async (
+  tx: Transaction,
+  room: RoomRow,
+  idempotencyKey: string,
+  blockNumber: number,
+  roundsAdded: number,
+) => {
+  const existing = (await tx.select().from(friendsRoomExtensions).where(and(
+    eq(friendsRoomExtensions.roomId, room.id),
+    eq(friendsRoomExtensions.blockNumber, blockNumber),
+  )).limit(1))[0]
+  if (existing) return existing
+
+  const rules = await loadEconomyRulesByVersion(tx, room.rulesVersion)
+  const date = getMoscowDate()
+  await tx.insert(friendsRoomDailyUsage).values({
+    userId: room.ownerUserId,
+    activityDate: date,
+  }).onConflictDoNothing()
+  const usage = (await tx.select().from(friendsRoomDailyUsage).where(and(
+    eq(friendsRoomDailyUsage.userId, room.ownerUserId),
+    eq(friendsRoomDailyUsage.activityDate, date),
+  )).for('update').limit(1))[0]
+  const clubActive = await hasEntitlement(tx, room.ownerUserId, 'club', undefined, new Date())
+  const free = !clubActive && usage.freeBlocks < rules.friendsRoom.freeBlocksPerDay
+  const cost = clubActive ? 0 : free ? 0 : economyFriendsRoomCost(usage.paidBlocks, rules)
+  const wallet = await lockedWallet(tx, room.ownerUserId)
+  if (wallet.balance < cost) {
+    throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', {
+      required: cost,
+      balance: wallet.balance,
+      shortage: cost - wallet.balance,
+      sink: 'friends-room',
+      blockNumber,
+      rulesVersion: rules.version,
+    })
+  }
+  const balanceAfter = wallet.balance - cost
+  const ledger = cost > 0
+    ? await tx.insert(walletLedger).values({
+        userId: room.ownerUserId,
+        operationKey: `friends-room:${room.id}:block:${blockNumber}`,
+        type: 'spend',
+        reason: 'friends-room',
+        amount: -cost,
+        balanceAfter,
+        rulesVersion: rules.version,
+        metadata: { roomId: room.id, blockNumber, roundsAdded, sink: 'friends-room', rulesVersion: rules.version },
+      }).returning({ id: walletLedger.id })
+    : []
+  if (cost > 0) {
+    await tx.update(walletAccounts).set({
+      balance: balanceAfter,
+      version: sql`${walletAccounts.version} + 1`,
+      updatedAt: new Date(),
+    }).where(eq(walletAccounts.userId, room.ownerUserId))
+  }
+  await tx.update(friendsRoomDailyUsage).set(clubActive
+    ? { clubBlocks: usage.clubBlocks + 1 }
+    : free
+      ? { freeBlocks: usage.freeBlocks + 1 }
+      : { paidBlocks: usage.paidBlocks + 1 })
+    .where(and(
+      eq(friendsRoomDailyUsage.userId, room.ownerUserId),
+      eq(friendsRoomDailyUsage.activityDate, date),
+    ))
+  return (await tx.insert(friendsRoomExtensions).values({
+    roomId: room.id,
+    ownerUserId: room.ownerUserId,
+    blockNumber,
+    roundsAdded,
+    accessSource: clubActive ? 'club' : free ? 'free' : 'tickets',
+    cost,
+    ledgerId: ledger[0]?.id ?? null,
+    idempotencyKey,
+    rulesVersion: rules.version,
+  }).returning())[0]
+}
 
 const createRound = async (tx: Transaction, room: RoomRow, position: number) => {
   const packs = roomPacks(room)
@@ -246,19 +392,23 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     round ? db.select().from(friendsRoomAnswers).where(eq(friendsRoomAnswers.roundId, round.id)).orderBy(asc(friendsRoomAnswers.submittedAt)) : Promise.resolve([]),
     db.select().from(friendsRoomMessages).where(eq(friendsRoomMessages.roomId, roomId)).orderBy(desc(friendsRoomMessages.seq)).limit(100),
     round ? db.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, round.contentItemVersionId)).limit(1) : Promise.resolve([]),
-    room.gameType === 'danetki' ? getNextDanetkiRoomCost(db, room.ownerUserId, 'group') : Promise.resolve(0),
+    room.gameType === 'danetki' && room.danetkiLaunch.kind !== 'daily'
+      ? getNextDanetkiRoomCost(db, room.ownerUserId, 'group')
+      : Promise.resolve(0),
   ])
   const memberById = new Map(members.map((entry) => [entry.userId, entry]))
   const answered = new Set(answerRows.map((entry) => entry.userId))
-  const reveal = room.phase === 'results' || room.phase === 'finished'
+  const reveal = room.phase === 'results' || room.phase === 'intermission' || room.phase === 'finished'
   const item = content[0]?.payload as TitleItem | undefined
   const packs = roomPacks(room)
+  const continuation = await friendsRoomContinuationQuote(db, room, membership.role === 'owner')
   return {
     id: room.id,
     code: room.code,
     gameType: room.gameType as FriendsRoomGameType,
     danetkiSessionId: room.danetkiSessionId,
     danetkiLaunchCost,
+    danetkiLaunch: room.danetkiLaunch,
     mode: room.mode as PlayableMode,
     packs,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
@@ -266,6 +416,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     shufflePacks: room.shufflePacks,
     answerTimeSeconds: room.answerTimeSeconds as 15 | 20 | 30 | 45,
     phase: room.phase,
+    rulesVersion: room.rulesVersion,
     currentRound: room.currentRound,
     version: room.version,
     currentUserId,
@@ -317,6 +468,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
       text: entry.text,
       createdAt: entry.createdAt.toISOString(),
     })),
+    continuation,
   }
 }
 
@@ -329,7 +481,7 @@ export const getFriendsRoomAnswerMediaSource = async (db: Database, roomId: stri
   await activeMember(db, roomId, userId)
   const room = (await db.select().from(friendsRooms).where(eq(friendsRooms.id, roomId)).limit(1))[0]
   if (!room) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
-  if (room.phase !== 'results' && room.phase !== 'finished') {
+  if (room.phase !== 'results' && room.phase !== 'intermission' && room.phase !== 'finished') {
     throw new ApiError(409, 'FRIENDS_ROOM_ANSWER_HIDDEN', 'Изображение ответа откроется после завершения раунда')
   }
   const round = (await db.select().from(friendsRoomRounds).where(and(
@@ -353,7 +505,7 @@ export const previewFriendsRoom = async (db: Database, code: string) => {
     code: room.code,
     hostName: owner?.displayNameSnapshot ?? 'Ведущий',
     gameType: room.gameType as FriendsRoomGameType,
-    danetkiLaunchCost: room.gameType === 'danetki'
+    danetkiLaunchCost: room.gameType === 'danetki' && room.danetkiLaunch.kind !== 'daily'
       ? await getNextDanetkiRoomCost(db, room.ownerUserId, 'group')
       : 0,
     mode: room.mode as PlayableMode,
@@ -406,12 +558,22 @@ export const listFriendsRooms = async (db: Database, userId: string): Promise<Fr
   }))
 }
 
-export const createFriendsRoom = async (db: Database, user: RequestUser, input: FriendsRoomCreateBody = {}) => {
+export const createFriendsRoom = async (
+  db: Database,
+  user: RequestUser,
+  input: FriendsRoomCreateBody = {},
+  config: AppConfig,
+) => {
+  assertFriendsRoomCreator(Boolean(user.isAnonymous))
   const revisionId = await activeRevisionId(db)
+  const rules = await loadAssignedEconomyRules(db, user.id, user.role, config.economy.v4RolloutPercent)
+  const clubActive = await hasEntitlement(db, user.id, 'club', undefined, new Date())
   const gameType = input.gameType ?? 'quiz'
   const packs = normalizeFriendsRoomPacks(input.packs, input.mode ?? 'series')
   const mode = packs[0].mode
-  const roundsTotal = input.roundsTotal ?? Math.max(6, friendsRoomMinimumRounds(packs.length))
+  const roundsTotal = clubActive
+    ? input.roundsTotal ?? Math.max(6, friendsRoomMinimumRounds(packs.length))
+    : rules.friendsRoom.roundsPerBlock
   if (roundsTotal < packs.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const code = roomCode()
@@ -421,7 +583,17 @@ export const createFriendsRoom = async (db: Database, user: RequestUser, input: 
       const existing = await openRoomMembership(tx, user.id)
       if (existing) return existing.roomId
       const inserted = await tx.insert(friendsRooms).values({
-        code, ownerUserId: user.id, revisionId, mode, gameType, packs, roundsTotal, shufflePacks: input.shufflePacks ?? false, answerTimeSeconds: input.answerTimeSeconds ?? 30,
+        code,
+        ownerUserId: user.id,
+        revisionId,
+        mode,
+        gameType,
+        danetkiLaunch: input.danetkiLaunch ?? { kind: 'daily' },
+        packs,
+        roundsTotal,
+        shufflePacks: input.shufflePacks ?? false,
+        answerTimeSeconds: input.answerTimeSeconds ?? 30,
+        rulesVersion: rules.version,
       }).onConflictDoNothing().returning()
       if (!inserted[0]) return null
       await tx.insert(friendsRoomMembers).values({ roomId: inserted[0].id, userId: user.id, role: 'owner', displayNameSnapshot: safeName(user.name), colorKey: colorFor(user.id) })
@@ -507,6 +679,12 @@ export const startFriendsRoom = async (
 ) => {
   const roomBeforeStart = await db.transaction((tx) => hostRoom(tx, roomId, user.id))
   if (roomBeforeStart.phase !== 'lobby') {
+    const replay = await db.select({ id: friendsRoomExtensions.id }).from(friendsRoomExtensions).where(and(
+      eq(friendsRoomExtensions.roomId, roomId),
+      eq(friendsRoomExtensions.ownerUserId, user.id),
+      eq(friendsRoomExtensions.idempotencyKey, idempotencyKey),
+    )).limit(1)
+    if (replay[0]) return buildSnapshot(db, roomId, user.id)
     if (roomBeforeStart.gameType === 'danetki' && roomBeforeStart.danetkiSessionId) {
       return buildSnapshot(db, roomId, user.id)
     }
@@ -524,8 +702,9 @@ export const startFriendsRoom = async (
     }
 
     const session = await startDanetkiSession(db, user, {
-      kind: 'free_play',
+      kind: roomBeforeStart.danetkiLaunch.kind,
       roomMode: 'group',
+      ...(roomBeforeStart.danetkiLaunch.puzzleDate ? { archiveDate: roomBeforeStart.danetkiLaunch.puzzleDate } : {}),
       idempotencyKey,
     }, config)
     await syncDanetkiRoomMembers(db, session.id, members.map((member) => ({
@@ -559,11 +738,24 @@ export const startFriendsRoom = async (
 
   await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, user.id)
-    if (room.phase !== 'lobby') throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра уже запущена')
-    await createRound(tx, room, 1)
+    if (room.phase !== 'lobby') {
+      const replay = await tx.select({ id: friendsRoomExtensions.id }).from(friendsRoomExtensions).where(and(
+        eq(friendsRoomExtensions.roomId, roomId),
+        eq(friendsRoomExtensions.ownerUserId, user.id),
+        eq(friendsRoomExtensions.idempotencyKey, idempotencyKey),
+      )).limit(1)
+      if (replay[0]) return
+      throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра уже запущена')
+    }
+    const rules = await loadEconomyRulesByVersion(tx, room.rulesVersion)
+    const clubActive = await hasEntitlement(tx, room.ownerUserId, 'club', undefined, new Date())
+    const roundsTotal = clubActive ? room.roundsTotal : rules.friendsRoom.roundsPerBlock
+    const roomForStart = roundsTotal === room.roundsTotal ? room : { ...room, roundsTotal }
+    await createRound(tx, roomForStart, 1)
+    await chargeFriendsRoomBlock(tx, roomForStart, idempotencyKey, 1, Math.min(roundsTotal, rules.friendsRoom.roundsPerBlock))
     const now = new Date()
     await tx.update(friendsRoomMembers).set({ score: 0 }).where(eq(friendsRoomMembers.roomId, roomId))
-    await tx.update(friendsRooms).set({ phase: 'countdown', currentRound: 1, phaseStartedAt: now, phaseEndsAt: new Date(now.getTime() + COUNTDOWN_MS), version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
+    await tx.update(friendsRooms).set({ roundsTotal, phase: 'countdown', currentRound: 1, phaseStartedAt: now, phaseEndsAt: new Date(now.getTime() + COUNTDOWN_MS), version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
   })
   return buildSnapshot(db, roomId, user.id)
 }
@@ -647,6 +839,15 @@ export const nextFriendsRoomRound = async (db: Database, userId: string, roomId:
     const room = await hostRoom(tx, roomId, userId)
     if (room.phase !== 'results') throw new ApiError(409, 'FRIENDS_ROOM_RESULTS_REQUIRED', 'Сначала завершите текущий раунд')
     const now = new Date()
+    const rules = await loadEconomyRulesByVersion(tx, room.rulesVersion)
+    if (
+      room.currentRound > 0
+      && room.currentRound % rules.friendsRoom.roundsPerBlock === 0
+      && room.currentRound < rules.friendsRoom.maxRoundsPerRoom
+    ) {
+      await tx.update(friendsRooms).set({ phase: 'intermission', phaseStartedAt: now, phaseEndsAt: null, version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
+      return
+    }
     if (room.currentRound >= room.roundsTotal) {
       await tx.update(friendsRooms).set({ phase: 'finished', phaseStartedAt: now, phaseEndsAt: null, version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
       return
@@ -658,18 +859,91 @@ export const nextFriendsRoomRound = async (db: Database, userId: string, roomId:
   return buildSnapshot(db, roomId, userId)
 }
 
-export const restartFriendsRoom = async (db: Database, userId: string, roomId: string) => {
+export const continueFriendsRoom = async (
+  db: Database,
+  userId: string,
+  roomId: string,
+  idempotencyKey: string,
+) => {
+  const replay = await db.select({ id: friendsRoomExtensions.id }).from(friendsRoomExtensions).where(and(
+    eq(friendsRoomExtensions.roomId, roomId),
+    eq(friendsRoomExtensions.ownerUserId, userId),
+    eq(friendsRoomExtensions.idempotencyKey, idempotencyKey),
+  )).limit(1)
+  if (replay[0]) return buildSnapshot(db, roomId, userId)
+
   await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, userId)
-    if (room.phase !== 'finished') throw new ApiError(409, 'FRIENDS_ROOM_NOT_FINISHED', 'Текущая игра ещё не завершена')
-    await tx.delete(friendsRoomAnswers).where(eq(friendsRoomAnswers.roomId, roomId))
-    await tx.delete(friendsRoomRounds).where(eq(friendsRoomRounds.roomId, roomId))
-    await tx.update(friendsRoomMembers).set({ score: 0 }).where(eq(friendsRoomMembers.roomId, roomId))
+    if (room.phase !== 'intermission') {
+      const replay = await tx.select({ id: friendsRoomExtensions.id }).from(friendsRoomExtensions).where(and(
+        eq(friendsRoomExtensions.roomId, roomId),
+        eq(friendsRoomExtensions.ownerUserId, userId),
+        eq(friendsRoomExtensions.idempotencyKey, idempotencyKey),
+      )).limit(1)
+      if (replay[0]) return
+      throw new ApiError(409, 'FRIENDS_ROOM_INTERMISSION_REQUIRED', 'Продолжить игру можно только в перерыве')
+    }
+    const rules = await loadEconomyRulesByVersion(tx, room.rulesVersion)
+    if (room.currentRound >= rules.friendsRoom.maxRoundsPerRoom) {
+      throw new ApiError(409, 'FRIENDS_ROOM_ROUND_LIMIT', 'В одной комнате доступно не больше 30 раундов')
+    }
+    const nextRoundsTotal = room.currentRound < room.roundsTotal
+      ? room.roundsTotal
+      : Math.min(rules.friendsRoom.maxRoundsPerRoom, room.roundsTotal + rules.friendsRoom.roundsPerBlock)
+    const roundsAdded = Math.min(rules.friendsRoom.roundsPerBlock, nextRoundsTotal - room.currentRound)
+    const position = room.currentRound + 1
+    const roomForNext = { ...room, roundsTotal: nextRoundsTotal }
+    await createRound(tx, roomForNext, position)
+    await chargeFriendsRoomBlock(
+      tx,
+      roomForNext,
+      idempotencyKey,
+      Math.floor(room.currentRound / rules.friendsRoom.roundsPerBlock) + 1,
+      roundsAdded,
+    )
+    const now = new Date()
     await tx.update(friendsRooms).set({
-      phase: 'lobby', currentRound: 0, phaseStartedAt: null, phaseEndsAt: null, version: sql`${friendsRooms.version} + 1`, updatedAt: new Date(),
+      roundsTotal: nextRoundsTotal,
+      phase: 'countdown',
+      currentRound: position,
+      phaseStartedAt: now,
+      phaseEndsAt: new Date(now.getTime() + COUNTDOWN_MS),
+      version: sql`${friendsRooms.version} + 1`,
+      updatedAt: now,
     }).where(eq(friendsRooms.id, roomId))
   })
   return buildSnapshot(db, roomId, userId)
+}
+
+export const restartFriendsRoom = async (
+  db: Database,
+  user: RequestUser,
+  roomId: string,
+  config: AppConfig,
+) => {
+  const previous = await db.transaction(async (tx) => {
+    const room = await hostRoom(tx, roomId, user.id)
+    if (room.phase !== 'finished') throw new ApiError(409, 'FRIENDS_ROOM_NOT_FINISHED', 'Текущая игра ещё не завершена')
+    const now = new Date()
+    await tx.update(friendsRoomMembers).set({ leftAt: now, lastSeenAt: now }).where(and(
+      eq(friendsRoomMembers.roomId, roomId),
+      isNull(friendsRoomMembers.leftAt),
+    ))
+    await tx.update(friendsRooms).set({
+      closedAt: now,
+      version: sql`${friendsRooms.version} + 1`,
+      updatedAt: now,
+    }).where(eq(friendsRooms.id, roomId))
+    return room
+  })
+  return createFriendsRoom(db, user, {
+    gameType: previous.gameType as FriendsRoomGameType,
+    packs: roomPacks(previous),
+    roundsTotal: previous.roundsTotal,
+    shufflePacks: previous.shufflePacks,
+    answerTimeSeconds: previous.answerTimeSeconds as 15 | 20 | 30 | 45,
+    danetkiLaunch: previous.danetkiLaunch,
+  }, config)
 }
 
 export const sendFriendsRoomMessage = async (db: Database, userId: string, roomId: string, text: string, idempotencyKey: string) => {
@@ -691,10 +965,11 @@ export const leaveFriendsRoom = async (db: Database, userId: string, roomId: str
   const roomBeforeLeave = (await db.select({
     gameType: friendsRooms.gameType,
     danetkiSessionId: friendsRooms.danetkiSessionId,
+    ownerUserId: friendsRooms.ownerUserId,
   }).from(friendsRooms).where(eq(friendsRooms.id, roomId)).limit(1))[0]
-  const danetkiLeave = roomBeforeLeave?.gameType === 'danetki' && roomBeforeLeave.danetkiSessionId
-    ? await leaveDanetkiSession(db, userId, roomBeforeLeave.danetkiSessionId)
-    : null
+  if (roomBeforeLeave?.gameType === 'danetki' && roomBeforeLeave.danetkiSessionId && roomBeforeLeave.ownerUserId !== userId) {
+    await leaveDanetkiSession(db, userId, roomBeforeLeave.danetkiSessionId)
+  }
 
   await db.transaction(async (tx) => {
     const room = (await tx.select().from(friendsRooms).where(eq(friendsRooms.id, roomId)).for('update').limit(1))[0]
@@ -711,22 +986,6 @@ export const leaveFriendsRoom = async (db: Database, userId: string, roomId: str
       isNull(friendsRoomMembers.leftAt),
     )).orderBy(asc(friendsRoomMembers.joinedAt), asc(friendsRoomMembers.userId))
     const roomIsFinished = room.phase === 'finished'
-    const transferredOwnerUserId = danetkiLeave?.newOwnerUserId
-      ?? (member.role === 'owner' && room.gameType === 'danetki' ? remaining[0]?.userId ?? null : null)
-
-    if (member.role === 'owner' && transferredOwnerUserId && (room.gameType === 'danetki' || roomIsFinished)) {
-      await tx.update(friendsRoomMembers).set({ role: 'owner' }).where(and(
-        eq(friendsRoomMembers.roomId, roomId),
-        eq(friendsRoomMembers.userId, transferredOwnerUserId),
-      ))
-      await tx.update(friendsRooms).set({
-        ownerUserId: transferredOwnerUserId,
-        version: sql`${friendsRooms.version} + 1`,
-        updatedAt: now,
-      }).where(eq(friendsRooms.id, roomId))
-      return
-    }
-
     const shouldClose = remaining.length === 0 || (member.role === 'owner' && !roomIsFinished)
     if (shouldClose && remaining.length > 0) {
       await tx.update(friendsRoomMembers).set({ leftAt: now, lastSeenAt: now }).where(and(

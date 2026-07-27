@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
+import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ApiClientError, api } from '../../api/client'
 import { ActionButton, BrandLogo } from '../../components/app-shell/AppShell'
@@ -120,8 +121,12 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
   useEffect(() => {
     if (!serverRuntime.me?.user || serverRuntime.me.user.isAnonymous) return
+    if (window.sessionStorage.getItem('shoditsa:friends-room-registration') === 'pending') {
+      trackClientEvent('friends_room_guest_registered', { placement: 'friends_room_registration', returnUrl })
+      window.sessionStorage.removeItem('shoditsa:friends-room-registration')
+    }
     window.location.replace(currentReturnUrl())
-  }, [serverRuntime.me])
+  }, [returnUrl, serverRuntime.me])
 
   const clearMessages = () => {
     setError('')
@@ -222,6 +227,9 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     try {
       const registrationCallback = new URL(window.location.pathname, window.location.origin)
       if (returnUrl !== '/') registrationCallback.searchParams.set('returnUrl', returnUrl)
+      if (register && returnUrl.startsWith('/games/together')) {
+        window.sessionStorage.setItem('shoditsa:friends-room-registration', 'pending')
+      }
       const authResult = register
         ? await api.signUp(name.trim(), email.trim(), password, registrationCallback.toString(), registrationReferral ?? undefined)
         : await api.signIn(email.trim(), password)
@@ -255,6 +263,9 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setPending(true)
     let redirected = false
     try {
+      if (register && returnUrl.startsWith('/games/together')) {
+        window.sessionStorage.setItem('shoditsa:friends-room-registration', 'pending')
+      }
       const payload = await api.signInYandex(window.location.href, register ? registrationReferral ?? undefined : undefined)
       const oauthUrl = typeof payload?.url === 'string' ? payload.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')

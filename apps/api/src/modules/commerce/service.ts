@@ -1,10 +1,21 @@
 import { createHash } from 'node:crypto'
 import { and, eq, isNotNull, isNull, lt, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import { commerceProducts, paymentEvents, paymentOrders, userEntitlements, type Database } from '@shoditsa/database'
+import { ECONOMY_RULES_VERSION } from '@shoditsa/contracts'
+import {
+  commerceProducts,
+  clientEvents,
+  paymentEvents,
+  paymentOrders,
+  userEntitlements,
+  walletAccounts,
+  walletLedger,
+  type Database,
+} from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { getActiveEntitlements, getMembershipSummary, grantProductEntitlement, revokeOrderEntitlements } from './entitlements.js'
 import { publicProduct } from './products.js'
+import { settlePositiveWalletCredit, walletCreditMetadata } from '../economy/wallet-credit.js'
 import { createRobokassaProvider } from './providers/robokassa.js'
 import { createStubProvider } from './providers/stub.js'
 import { createYooKassaProvider } from './providers/yookassa.js'
@@ -14,6 +25,105 @@ import type { CommerceProvider, VerifiedPaymentEvent, VerifiedPaymentState } fro
 type Order = typeof paymentOrders.$inferSelect
 type Product = typeof commerceProducts.$inferSelect
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
+
+const ticketAmount = (product: Product) => {
+  if (product.kind !== 'tickets' || !product.metadata || typeof product.metadata !== 'object') return 0
+  const amount = Number((product.metadata as Record<string, unknown>).ticketAmount)
+  return Number.isInteger(amount) && amount > 0 ? amount : 0
+}
+
+const lockWallet = async (tx: Transaction, userId: string) => {
+  await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
+  return (await tx.select().from(walletAccounts).where(eq(walletAccounts.userId, userId)).for('update').limit(1))[0]
+}
+
+const grantTicketBundle = async (tx: Transaction, order: Order, product: Product) => {
+  const tickets = ticketAmount(product)
+  if (!tickets) return
+  const operationKey = `ticket-purchase:${order.id}`
+  await tx.insert(clientEvents).values({
+    eventId: order.id,
+    eventName: 'ticket_bundle_purchased',
+    occurredAt: order.paidAt ?? new Date(),
+    userId: order.userId,
+    route: 'server:commerce',
+    properties: {
+      orderId: order.id,
+      productId: product.id,
+      ticketAmount: tickets,
+      providerStatus: order.providerStatus ?? 'paid',
+      source: 'server',
+    },
+  }).onConflictDoNothing()
+  if ((await tx.select({ id: walletLedger.id }).from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1))[0]) return
+  const wallet = await lockWallet(tx, order.userId)
+  const credit = settlePositiveWalletCredit(wallet, tickets)
+  await tx.insert(walletLedger).values({
+    userId: order.userId,
+    operationKey,
+    type: 'earn',
+    reason: 'ticket-purchase',
+    amount: credit.spendableAmount,
+    balanceAfter: credit.balanceAfter,
+    rulesVersion: ECONOMY_RULES_VERSION,
+    metadata: walletCreditMetadata(credit, {
+      orderId: order.id,
+      productId: product.id,
+      providerStatus: order.providerStatus ?? 'paid',
+      ticketAmount: tickets,
+      source: 'purchase',
+    }),
+  })
+  await tx.update(walletAccounts).set({
+    balance: credit.balanceAfter,
+    purchaseDebt: credit.purchaseDebtAfter,
+    version: sql`${walletAccounts.version} + 1`,
+    updatedAt: order.paidAt ?? new Date(),
+  }).where(eq(walletAccounts.userId, order.userId))
+}
+
+const reverseTicketBundle = async (tx: Transaction, order: Order, product: Product, occurredAt: Date) => {
+  const tickets = ticketAmount(product)
+  if (!tickets) return
+  const operationKey = `ticket-reversal:${order.id}`
+  if ((await tx.select({ id: walletLedger.id }).from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1))[0]) return
+  const grant = (await tx.select({ metadata: walletLedger.metadata }).from(walletLedger)
+    .where(eq(walletLedger.operationKey, `ticket-purchase:${order.id}`)).limit(1))[0]
+  if (!grant) return
+  const wallet = await lockWallet(tx, order.userId)
+  const metadata = grant.metadata && typeof grant.metadata === 'object' ? grant.metadata as Record<string, unknown> : {}
+  const purchasedAmount = Math.max(0, Number(metadata.grossAmount) || tickets)
+  const deductNow = Math.min(wallet.balance, purchasedAmount)
+  const balanceAfter = wallet.balance - deductNow
+  const debtAdded = purchasedAmount - deductNow
+  const purchaseDebt = wallet.purchaseDebt + debtAdded
+  await tx.insert(walletLedger).values({
+    userId: order.userId,
+    operationKey,
+    type: 'adjustment',
+    reason: order.status === 'chargeback' ? 'ticket-chargeback' : 'ticket-refund',
+    amount: -deductNow,
+    balanceAfter,
+    rulesVersion: ECONOMY_RULES_VERSION,
+    metadata: {
+      grossAmount: purchasedAmount,
+      spendableAmount: -deductNow,
+      debtAdded,
+      debtSettled: 0,
+      orderId: order.id,
+      productId: product.id,
+      providerStatus: order.status,
+      ticketAmount: tickets,
+      purchaseDebt,
+    },
+  })
+  await tx.update(walletAccounts).set({
+    balance: balanceAfter,
+    purchaseDebt,
+    version: sql`${walletAccounts.version} + 1`,
+    updatedAt: occurredAt,
+  }).where(eq(walletAccounts.userId, order.userId))
+}
 
 const providerFor = async (db: Database, config: AppConfig, requested = config.commerce.provider): Promise<CommerceProvider> => {
   if (requested === 'stub' && !config.production) return createStubProvider(config.commerce.webhookSecret)
@@ -66,6 +176,7 @@ const applyPaymentState = async (
       product,
       occurredAt: updated.paidAt ?? state.occurredAt,
     })
+    await grantTicketBundle(tx, updated, product)
     return updated.status
   }
   if (state.status === 'refunded' || state.status === 'chargeback') {
@@ -76,6 +187,7 @@ const applyPaymentState = async (
       updatedAt: state.occurredAt,
     }).where(eq(paymentOrders.id, order.id))
     await revokeOrderEntitlements(tx, order.id, state.occurredAt)
+    await reverseTicketBundle(tx, { ...order, status: state.status }, product, state.occurredAt)
     return state.status
   }
   if (order.status === 'paid') return order.status
@@ -131,6 +243,9 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
   if (actor.isAnonymous) throw new ApiError(403, 'COMMERCE_ACCOUNT_REQUIRED', 'Создайте постоянный аккаунт, чтобы покупка сохранилась')
   const product = (await db.select().from(commerceProducts).where(and(eq(commerceProducts.id, productId), eq(commerceProducts.enabled, true))).limit(1))[0]
   if (!product) throw new ApiError(404, 'PRODUCT_NOT_AVAILABLE', 'Этот продукт сейчас недоступен')
+  if (product.kind === 'pack' || (product.kind === 'tickets' && !config.commerce.ticketBundlesEnabled)) {
+    throw new ApiError(404, 'PRODUCT_NOT_AVAILABLE', 'Этот продукт сейчас недоступен')
+  }
   if (product.currency !== config.commerce.currency) throw new ApiError(409, 'PRODUCT_NOT_AVAILABLE', 'Валюта продукта временно недоступна')
 
   let order = (await db.select().from(paymentOrders).where(and(eq(paymentOrders.userId, actor.id), eq(paymentOrders.idempotencyKey, idempotencyKey))).limit(1))[0]
@@ -172,7 +287,10 @@ export const startCheckout = async (db: Database, config: AppConfig, actor: { id
     }).where(and(eq(paymentOrders.id, order.id), eq(paymentOrders.status, 'created'))).returning())[0]
     order = updated ?? (await db.select().from(paymentOrders).where(eq(paymentOrders.id, order.id)).limit(1))[0]
     if (created.status === 'paid') {
-      await db.transaction(async (tx) => grantProductEntitlement(tx, { userId: actor.id, order, product, occurredAt: order.paidAt ?? new Date() }))
+      await db.transaction(async (tx) => {
+        await grantProductEntitlement(tx, { userId: actor.id, order, product, occurredAt: order.paidAt ?? new Date() })
+        await grantTicketBundle(tx, order, product)
+      })
     }
     return { order: publicOrder(order), checkoutUrl: created.checkoutUrl }
   } catch (error) {
@@ -232,6 +350,7 @@ export const confirmStubOrder = async (db: Database, config: AppConfig, orderId:
     const occurredAt = new Date()
     const updated = (await tx.update(paymentOrders).set({ status: 'paid', providerStatus: 'paid', paidAt: occurredAt, closedAt: occurredAt, updatedAt: occurredAt }).where(eq(paymentOrders.id, order.id)).returning())[0]
     await grantProductEntitlement(tx, { userId: order.userId, order: updated, product, occurredAt })
+    await grantTicketBundle(tx, updated, product)
     return { order: publicOrder(updated) }
   })
 }

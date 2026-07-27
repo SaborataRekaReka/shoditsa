@@ -38,6 +38,6 @@ export const registerPackRoutes = (app: FastifyInstance, db: Database, auth: Aut
     const user = await getRequestUser(request, auth, db, true, config)
     const { packId } = request.params as { packId: string }
     const { position } = request.body as PackSessionBody
-    return { session: await startPackSession(db, user!.id, packId, position, user!.authSessionId, user!.role) }
+    return { session: await startPackSession(db, user!.id, packId, position, user!.authSessionId, user!.role, config.economy.v4RolloutPercent) }
   })
 }

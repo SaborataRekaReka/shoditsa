@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * Stage the normalized K-pop artist cards into an admin content workspace,
- * optionally activate the resulting revision, and create the admin-only daily
+ * optionally activate the resulting revision, and create the club-only daily
  * special catalog.
  *
  * Validate source only:
@@ -50,8 +50,8 @@ type KpopPackDocument = {
     coverUrl: string
     titlePosterUrl: string
     status: 'draft'
-    accessModel: 'free'
-    adminOnly: true
+    accessModel: 'club'
+    adminOnly: false
     cadence: 'daily'
     maxAttempts: number
   }
@@ -80,8 +80,8 @@ const writeJson = async (path: string, value: unknown) => {
 
 const assertDocument = (document: KpopPackDocument) => {
   if (document.schemaVersion !== 1) throw new Error(`Unsupported schemaVersion: ${document.schemaVersion}`)
-  if (document.pack.id !== KPOP_ARTISTS_PACK_ID || document.pack.mode !== 'music' || document.pack.adminOnly !== true || document.pack.cadence !== 'daily') {
-    throw new Error('The source is not the expected admin-only daily K-pop special')
+  if (document.pack.id !== KPOP_ARTISTS_PACK_ID || document.pack.mode !== 'music' || document.pack.adminOnly !== false || document.pack.cadence !== 'daily') {
+    throw new Error('The source is not the expected club-only daily K-pop special')
   }
   if (!document.items.length || document.items.some((item) => (
     item.mode !== 'music'
@@ -127,14 +127,14 @@ const persistPack = async (
     description: document.pack.description,
     coverUrl: document.pack.coverUrl,
     status: 'draft',
-    accessModel: 'free',
+    accessModel: 'club',
     productId: null,
-    includedInClub: false,
+    includedInClub: true,
     previewItems: 0,
     manifestVersion: document.schemaVersion,
     metadata: {
       source: document.source,
-      adminOnly: true,
+      adminOnly: false,
       cardType: 'kpop_artist',
       titlePosterUrl: document.pack.titlePosterUrl,
       maxAttempts: document.pack.maxAttempts,
@@ -151,14 +151,14 @@ const persistPack = async (
       description: document.pack.description,
       coverUrl: document.pack.coverUrl,
       status: 'draft',
-      accessModel: 'free',
+      accessModel: 'club',
       productId: null,
-      includedInClub: false,
+      includedInClub: true,
       previewItems: 0,
       manifestVersion: document.schemaVersion,
       metadata: {
         source: document.source,
-        adminOnly: true,
+        adminOnly: false,
         cardType: 'kpop_artist',
         titlePosterUrl: document.pack.titlePosterUrl,
         maxAttempts: document.pack.maxAttempts,
@@ -274,7 +274,7 @@ const main = async () => {
       validation,
       activatedRevision,
       packUpdated: packReady,
-      packStatus: packReady ? 'draft_admin_only' : 'not_created',
+      packStatus: packReady ? 'draft_club_only' : 'not_created',
       nextStep: packReady ? null : 'Review and activate the staged content workspace, then rerun this command.',
     }
     await writeJson(reportPath, report)

@@ -2,7 +2,7 @@ import { Type, type Static } from '@sinclair/typebox'
 import { DateSchema, DateTimeSchema, DifficultyKeySchema, PeriodKeySchema, PlayableModeSchema, UuidSchema } from './schemas.js'
 import type { ArchiveItem } from './api.js'
 
-export const CommerceProductKindSchema = Type.Union(['club', 'pack', 'tip'].map((value) => Type.Literal(value)))
+export const CommerceProductKindSchema = Type.Union(['club', 'pack', 'tip', 'tickets'].map((value) => Type.Literal(value)))
 export type CommerceProductKind = Static<typeof CommerceProductKindSchema>
 
 export type CommerceProduct = {
@@ -21,7 +21,7 @@ export const DEFAULT_CLUB_PRODUCTS = [
     id: 'club_30d',
     kind: 'club',
     title: 'Клубный билет на 30 дней',
-    description: 'Полный архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток. Продление вручную.',
+    description: 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 30 суток. Продление вручную.',
     priceMinor: 19_900,
     currency: 'RUB',
     durationDays: 30,
@@ -31,11 +31,34 @@ export const DEFAULT_CLUB_PRODUCTS = [
     id: 'club_365d',
     kind: 'club',
     title: 'Годовой клубный билет',
-    description: 'Полный архив, свободная игра, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Продление вручную.',
+    description: 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Продление вручную.',
     priceMinor: 179_000,
     currency: 'RUB',
     durationDays: 365,
     metadata: {},
+  },
+] as const satisfies readonly CommerceProduct[]
+
+export const DEFAULT_TICKET_BUNDLES = [
+  {
+    id: 'tickets_60',
+    kind: 'tickets',
+    title: '60 билетов',
+    description: 'Набор для свободной игры, Данеток и комнат с друзьями.',
+    priceMinor: 6_900,
+    currency: 'RUB',
+    durationDays: null,
+    metadata: { ticketAmount: 60 },
+  },
+  {
+    id: 'tickets_180',
+    kind: 'tickets',
+    title: '180 билетов',
+    description: 'Большой набор билетов для дополнительных игр.',
+    priceMinor: 14_900,
+    currency: 'RUB',
+    durationDays: null,
+    metadata: { ticketAmount: 180 },
   },
 ] as const satisfies readonly CommerceProduct[]
 
@@ -102,7 +125,7 @@ export type AdminCommerceProductPatch = Static<typeof AdminCommerceProductPatchS
 
 export const AdminEntitlementGrantBodySchema = Type.Object({
   userId: UuidSchema,
-  entitlementKey: Type.Union([Type.Literal('club'), Type.Literal('pack'), Type.Literal('supporter')]),
+  entitlementKey: Type.Union([Type.Literal('club'), Type.Literal('supporter')]),
   scope: Type.Optional(Type.Union([Type.String({ minLength: 1, maxLength: 160 }), Type.Null()])),
   startsAt: Type.Optional(DateTimeSchema),
   durationDays: Type.Optional(Type.Integer({ minimum: 1, maximum: 36_500 })),

@@ -1,10 +1,12 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Lock, Ticket } from 'lucide-react'
 import { ECONOMY_RULE_SET } from '@shoditsa/contracts'
 import { api, queryKeys } from '../../api/client'
 import { apiErrorMessage } from '../../api/error-message'
 import { ensureServerSession, useServerRuntime } from '../../hooks/use-server-runtime'
+import { trackClientEvent } from '../../app/client-events'
+import { CheckoutButton } from '../commerce/CheckoutButton'
 import { emptyAttendanceStats } from '../../storage'
 import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
 import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
@@ -23,6 +25,12 @@ const ledgerReasonLabel = (reason: string) => reason === 'game-completion'
             ? 'Данетка дня'
             : reason === 'danetki-room'
               ? 'Комната Данеток'
+              : reason === 'friends-room'
+                ? 'Игра с друзьями'
+                : reason === 'ticket-purchase'
+                  ? 'Набор билетов'
+                  : reason === 'ticket-refund' || reason === 'ticket-chargeback'
+                    ? 'Возврат набора билетов'
         : reason === 'legacy-import'
           ? 'Перенос прогресса'
           : 'Операция с билетами'
@@ -35,6 +43,11 @@ export function ServerEconomyView() {
     queryFn: api.ledger,
     enabled: Boolean(serverRuntime.me),
   })
+  const catalog = useQuery({
+    queryKey: queryKeys.commerceCatalog,
+    queryFn: api.commerceCatalog,
+  })
+  const ticketBundles = catalog.data?.products.filter((product) => product.kind === 'tickets') ?? []
   const [promoCode, setPromoCode] = useState('')
   const [promoMessage, setPromoMessage] = useState('')
   const promoKeyRef = useRef<string | null>(null)
@@ -73,6 +86,14 @@ export function ServerEconomyView() {
     promo.mutate({ code, key })
   }
 
+  const viewedBundlesRef = useRef('')
+  const bundleIds = ticketBundles.map((product) => product.id).join(',')
+  useEffect(() => {
+    if (!bundleIds || viewedBundlesRef.current === bundleIds) return
+    viewedBundlesRef.current = bundleIds
+    trackClientEvent('ticket_offer_view', { productIds: bundleIds, placement: 'economy_view' })
+  }, [bundleIds])
+
   return <div className="economy-view">
     <div className="stats-grid stats-grid--economy">
       <div><strong>{wallet.balance}</strong><span>сейчас</span></div>
@@ -81,6 +102,14 @@ export function ServerEconomyView() {
       <div><strong>+{nextBonus}</strong><span>на {nextAt}-й день</span></div>
     </div>
     <div className="economy-note"><Ticket /><p>Билеты открывают дополнительные периоды и свободные игры. Все списания и начисления подтверждает сервер.</p></div>
+    {ticketBundles.length > 0 && <section className="ticket-bundles">
+      <header><span><Ticket /> Наборы билетов</span><small>Разовая покупка без подписки</small></header>
+      <div>{ticketBundles.map((product) => <article key={product.id}>
+        <strong>{String((product.metadata as { ticketAmount?: number }).ticketAmount ?? product.title)}</strong>
+        <span>{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: product.currency, maximumFractionDigits: 0 }).format(product.priceMinor / 100)}</span>
+        <CheckoutButton product={product} authenticated={Boolean(serverRuntime.me && !serverRuntime.me.user.isAnonymous)} label="Купить" placement="economy_view" returnUrl="/club" />
+      </article>)}</div>
+    </section>}
     <p className="modal-lead">Баланс и история сохраняются в серверном профиле. Для гостя они привязаны к текущей гостевой сессии; после регистрации прогресс можно сохранить в аккаунте.</p>
     <form className="ticket-promo" onSubmit={submitPromoCode}>
       <div className="ticket-promo__copy"><span><Ticket /> Промокод</span><small>Код проверяется на сервере</small></div>

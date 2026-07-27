@@ -6,7 +6,7 @@ import { publicAssetUrl } from '../../app/public-asset'
 import { api, queryKeys } from '../../api/client'
 import { EconomyView } from '../../features/economy/EconomyView'
 import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
-import { canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/friends-room/friends-room-access'
+import { canCreateFriendsRoom, canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/friends-room/friends-room-access'
 import { toLegacyAttendance, toLegacyWallet } from '../../features/server-runtime/adapters'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { loadAttendanceStats, loadWallet } from '../../storage'
@@ -77,9 +77,10 @@ export type AppHeaderProps = {
   onReview: () => void
   onCreateRoom?: () => void
   profileActive?: boolean
+  minimal?: boolean
 }
 
-export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileActive = false }: AppHeaderProps) {
+export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileActive = false, minimal = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -89,7 +90,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
   const serverRuntime = useServerRuntime()
   const createRoom = onCreateRoom ?? (() => {
     const returnUrl = '/games/together?new=1'
-    window.location.assign(canUseFriendsRoom(session)
+    window.location.assign(canCreateFriendsRoom(session)
       ? returnUrl
       : friendsRoomRegistrationHref(returnUrl))
   })
@@ -102,7 +103,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
   const openRooms = useQuery({
     queryKey: queryKeys.friendsRooms,
     queryFn: api.friendsRoomList,
-    enabled: !authLoading && canUseFriendsRoom(session),
+    enabled: !minimal && !authLoading && canUseFriendsRoom(session),
     staleTime: 15_000,
     refetchInterval: 30_000,
   })
@@ -167,10 +168,10 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
   }
 
   return <>
-    <header className="app-header">
+    <header className={`app-header${minimal ? ' app-header--minimal' : ''}`}>
       <div className="app-header__inner">
         <button className="brand" aria-label="На главный экран" onClick={() => { trackMetrikaGoal('header_home_click'); onHome() }}><BrandLogo /></button>
-        <button
+        {!minimal && <button
           className="header-economy"
           type="button"
           aria-busy={runtimeState === 'loading'}
@@ -182,9 +183,9 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         >
           <span><Ticket /> <strong>{wallet?.tickets ?? '—'}</strong></span>
           <span><Trophy /> <strong>{attendance?.currentDailyStreak ?? '—'}</strong>{attendance && <i>дн.</i>}</span>
-        </button>
+        </button>}
         <nav aria-label="Навигация">
-          <a
+          {!minimal && <a
             className={`header-club ${hasClub ? 'is-active' : ''}`}
             href="/club"
             aria-label={hasClub ? 'Клубный билет активен' : 'Клуб'}
@@ -192,8 +193,8 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
             onClick={() => trackMetrikaGoal('open_club', { placement: 'header' })}
           >
             <Crown /><span>Клуб</span>
-          </a>
-          <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} />
+          </a>}
+          {!minimal && <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} />}
           <div className="header-profile-menu" ref={profileMenuRef}>
             <button ref={profileTriggerRef} disabled={!runtimeReady} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label={runtimeReady ? 'Открыть меню' : profileLabel} title={runtimeReady ? 'Меню' : profileLabel} aria-busy={runtimeState === 'loading'} aria-haspopup="menu" aria-expanded={profileMenuOpen}>
               <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />

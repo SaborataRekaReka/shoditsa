@@ -1,0 +1,1 @@
+ALTER TABLE "friends_room_extensions" ADD CONSTRAINT "friends_room_extensions_ledger_id_wallet_ledger_id_fk" FOREIGN KEY ("ledger_id") REFERENCES "public"."wallet_ledger"("id") ON DELETE no action ON UPDATE no action;

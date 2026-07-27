@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { canUseFriendsRoom, friendsRoomRegistrationHref } from './friends-room-access'
+import { canCreateFriendsRoom, canUseFriendsRoom, friendsRoomRegistrationHref } from './friends-room-access'
 
 describe('friends room access', () => {
   it('allows permanent accounts in production and keeps anonymous preview opt-ins', () => {
     expect(canUseFriendsRoom({ isAnonymous: false }, { dev: false, preview: false })).toBe(true)
-    expect(canUseFriendsRoom({ isAnonymous: true }, { dev: false, preview: false })).toBe(false)
+    expect(canUseFriendsRoom({ isAnonymous: true }, { dev: false, preview: false })).toBe(true)
     expect(canUseFriendsRoom({ isAnonymous: true }, { dev: true, preview: false })).toBe(true)
     expect(canUseFriendsRoom({ isAnonymous: true }, { dev: false, preview: true })).toBe(true)
+  })
+
+  it('requires a permanent account only for room creation', () => {
+    expect(canCreateFriendsRoom({ isAnonymous: false }, { dev: false, preview: false })).toBe(true)
+    expect(canCreateFriendsRoom({ isAnonymous: true }, { dev: false, preview: false })).toBe(false)
   })
 
   it('preserves the invited room in the registration return URL', () => {

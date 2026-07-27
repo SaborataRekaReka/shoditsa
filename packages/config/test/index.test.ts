@@ -14,6 +14,8 @@ describe('commerce config', () => {
     process.env.FREE_ARCHIVE_DAYS = '7'
     delete process.env.FRIENDS_ROOM_PREVIEW
     delete process.env.VITE_FRIENDS_ROOM_PREVIEW
+    delete process.env.TICKET_BUNDLES_ENABLED
+    delete process.env.ECONOMY_V4_ROLLOUT_PERCENT
   })
 
   afterEach(() => {
@@ -23,6 +25,8 @@ describe('commerce config', () => {
 
   it('loads disabled stub commerce with public archive settings', () => {
     expect(loadConfig().commerce).toMatchObject({ enabled: false, provider: 'stub', currency: 'RUB', archiveFirstDate: '2026-07-01', freeArchiveDays: 7 })
+    expect(loadConfig().commerce.ticketBundlesEnabled).toBe(false)
+    expect(loadConfig().economy.v4RolloutPercent).toBe(100)
     expect(loadConfig().friendsRoomPreview).toBe(false)
   })
 
@@ -52,6 +56,13 @@ describe('commerce config', () => {
   it('restricts the free archive window to 31 days', () => {
     process.env.FREE_ARCHIVE_DAYS = '32'
     expect(() => loadConfig()).toThrow('FREE_ARCHIVE_DAYS must be an integer between 1 and 31')
+  })
+
+  it('validates the stable economy rollout percentage', () => {
+    process.env.ECONOMY_V4_ROLLOUT_PERCENT = '20'
+    expect(loadConfig().economy.v4RolloutPercent).toBe(20)
+    process.env.ECONOMY_V4_ROLLOUT_PERCENT = '101'
+    expect(() => loadConfig()).toThrow('ECONOMY_V4_ROLLOUT_PERCENT must be an integer between 0 and 100')
   })
 
   it('rejects calendar dates that only look valid', () => {

@@ -22,7 +22,9 @@ import type { Auth } from '../auth/auth.js'
 import { getRequestUser } from '../auth/session.js'
 import {
   assertFriendsRoomAccess,
+  assertFriendsRoomCreator,
   configureFriendsRoom,
+  continueFriendsRoom,
   createFriendsRoom,
   getFriendsRoom,
   getFriendsRoomAnswerMediaSource,
@@ -85,7 +87,8 @@ export const registerFriendsRoomRoutes = (app: FastifyInstance, deps: Deps) => {
     config: { rateLimit: { max: 10, timeWindow: '1 hour' } },
   }, async (request, reply) => {
     const user = await authorizedUser(request, deps)
-    const room = await createFriendsRoom(deps.db, user, request.body as FriendsRoomCreateBody)
+    assertFriendsRoomCreator(user.isAnonymous)
+    const room = await createFriendsRoom(deps.db, user, request.body as FriendsRoomCreateBody, deps.config)
     return reply.code(201).send({ room })
   })
 
@@ -185,9 +188,15 @@ export const registerFriendsRoomRoutes = (app: FastifyInstance, deps: Deps) => {
     return { room: await nextFriendsRoomRound(deps.db, user.id, (request.params as { roomId: string }).roomId) }
   })
 
+  app.post('/api/v1/friends/rooms/:roomId/continue', { schema: { params: roomParams, body: FriendsRoomMutationBodySchema } }, async (request) => {
+    const user = await authorizedUser(request, deps)
+    const body = request.body as { idempotencyKey: string }
+    return { room: await continueFriendsRoom(deps.db, user.id, (request.params as { roomId: string }).roomId, body.idempotencyKey) }
+  })
+
   app.post('/api/v1/friends/rooms/:roomId/restart', { schema: { params: roomParams, body: FriendsRoomMutationBodySchema } }, async (request) => {
     const user = await authorizedUser(request, deps)
-    return { room: await restartFriendsRoom(deps.db, user.id, (request.params as { roomId: string }).roomId) }
+    return { room: await restartFriendsRoom(deps.db, user, (request.params as { roomId: string }).roomId, deps.config) }
   })
 
   app.post('/api/v1/friends/rooms/:roomId/messages', {

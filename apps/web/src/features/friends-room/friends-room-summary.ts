@@ -21,9 +21,9 @@ export const friendsRoomPhaseLabel = (phase: FriendsRoomPhase) => ({
   countdown: 'Игра начинается',
   active: 'Игра идёт',
   results: 'Результаты раунда',
+  intermission: 'Перерыв между блоками',
   finished: 'Игра завершена',
 })[phase]
 
 export const friendsRoomActionLabel = (room: FriendsRoomSummary) =>
   room.phase === 'lobby' ? 'Открыть лобби' : room.phase === 'finished' ? 'Открыть результаты' : 'Вернуться в игру'
-

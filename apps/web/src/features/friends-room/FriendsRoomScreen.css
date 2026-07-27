@@ -839,4 +839,33 @@
   .room-state__spinner { animation: none; }
 }
 
+.room-intermission {
+  display: grid;
+  min-height: min(720px, calc(100vh - 180px));
+  place-items: center;
+  padding: 28px;
+}
+
+.room-intermission__card {
+  width: min(560px, 100%);
+  padding: 42px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-xl);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.room-intermission__card > .room-icon { width: 52px; height: 52px; margin: 18px auto; }
+.room-intermission__card h1 { margin: 0; font-size: clamp(36px, 7vw, 64px); }
+.room-intermission__card p { margin: 12px auto 24px; color: var(--color-text-muted); }
+.room-intermission__card > .ui-button { width: 100%; margin-top: 10px; justify-content: center; }
+.room-intermission__leaders { display: grid; gap: 8px; margin: 24px 0; text-align: left; }
+.room-intermission__leaders article { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--radius-md); background: var(--color-paper-soft); }
+
+@media (max-width: 560px) {
+  .room-intermission { padding: 12px; }
+  .room-intermission__card { padding: 30px 18px; }
+}
+
 @keyframes room-spin { to { transform: rotate(360deg); } }

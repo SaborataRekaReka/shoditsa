@@ -11,7 +11,7 @@ export type DailyMilestoneClaims = {
 export type DailyRewardState = {
   fullHouse: boolean
   remaining: number
-  reward: 10 | 20
+  reward: number
   milestone: DailyMilestone
 }
 

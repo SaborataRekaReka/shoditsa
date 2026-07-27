@@ -336,7 +336,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       if (!body.packId || !body.packPosition) throw new ApiError(422, 'PACK_POSITION_REQUIRED', 'Для спецпоказа нужны packId и packPosition')
       if (body.archiveDate) throw new ApiError(422, 'PACK_ARCHIVE_DATE_FORBIDDEN', 'Для спецпоказа нельзя передавать archiveDate')
       if (body.packId === KPOP_ARTISTS_PACK_ID) throw new ApiError(422, 'KPOP_DAILY_ONLY', 'K-pop спецпоказ запускается как одна ежедневная игра')
-      return { session: await startPackSession(db, user!.id, body.packId, body.packPosition, user!.authSessionId, user!.role) }
+      return { session: await startPackSession(db, user!.id, body.packId, body.packPosition, user!.authSessionId, user!.role, config.economy.v4RolloutPercent) }
     }
     return { session: await startGame(db, user!.id, {
       kind: body.kind as 'daily' | 'archive',
@@ -408,21 +408,27 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     return rows[0]
   })
 
-  app.get('/api/v1/me/dashboard', async (request) => dashboard(db, (await getRequestUser(request, auth, db, true, config))!.id))
+  app.get('/api/v1/me/dashboard', async (request) => {
+    const user = (await getRequestUser(request, auth, db, true, config))!
+    return dashboard(db, user.id, user.role, config.economy.v4RolloutPercent)
+  })
   app.get('/api/v1/me/stats', async (request) => ({ items: await db.select().from(userModeStats).where(eq(userModeStats.userId, (await getRequestUser(request, auth, db, true, config))!.id)) }))
   app.get('/api/v1/me/wallet', async (request) => ({ wallet: (await db.select().from(walletAccounts).where(eq(walletAccounts.userId, (await getRequestUser(request, auth, db, true, config))!.id)).limit(1))[0] ?? { balance: 0, lifetimeEarned: 0 } }))
   app.get('/api/v1/me/wallet/ledger', { schema: { querystring: LedgerQuerySchema } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const query = request.query as LedgerQuery
     return ledgerPage(db, user!.id, query.cursor, query.limit ?? 30)
   })
-  app.get('/api/v1/me/entitlements', async (request) => ({ entitlements: (await dashboard(db, (await getRequestUser(request, auth, db, true, config))!.id)).entitlements }))
+  app.get('/api/v1/me/entitlements', async (request) => {
+    const user = (await getRequestUser(request, auth, db, true, config))!
+    return { entitlements: (await dashboard(db, user.id, user.role, config.economy.v4RolloutPercent)).entitlements }
+  })
   app.post('/api/v1/economy/period-unlocks', { schema: { body: PeriodUnlockBodySchema, headers: idempotencyHeaders } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const body = request.body as PeriodUnlockBody
-    return unlockPeriod(db, user!.id, body.mode, body.period, requireIdempotencyKey(request))
+    return unlockPeriod(db, user!.id, user!.role, config.economy.v4RolloutPercent, body.mode, body.period, requireIdempotencyKey(request))
   })
   app.post('/api/v1/economy/free-play/start', { schema: { body: FreePlayBodySchema, headers: idempotencyHeaders } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const body = request.body as FreePlayBody
-    return startFreePlay(db, user!.id, body.mode, body.difficulty ?? null, requireIdempotencyKey(request), user!.authSessionId)
+    return startFreePlay(db, user!.id, user!.role, config.economy.v4RolloutPercent, body.mode, body.difficulty ?? null, requireIdempotencyKey(request), user!.authSessionId)
   })
   app.post('/api/v1/promos/redeem', { schema: { body: PromoRedeemBodySchema, headers: idempotencyHeaders }, config: { rateLimit: { max: 5, timeWindow: '1 hour' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)

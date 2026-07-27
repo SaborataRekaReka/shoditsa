@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, isNull, lte, or } from 'drizzle-orm'
+import { and, desc, eq, gt, isNotNull, isNull, lte, or } from 'drizzle-orm'
 import { userEntitlements, type Database } from '@shoditsa/database'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
@@ -30,13 +30,36 @@ export const hasEntitlement = async (db: ReadDatabase, userId: string, key: stri
 }
 
 export const getMembershipSummary = async (db: ReadDatabase, userId: string, now = new Date()) => {
-  const rows = await db.select().from(userEntitlements).where(and(
+  const activeRows = await db.select().from(userEntitlements).where(and(
     activeWhere(userId, now),
     eq(userEntitlements.entitlementKey, 'club'),
   )).orderBy(desc(userEntitlements.endsAt)).limit(1)
-  const membership = rows[0]
-  return membership
-    ? { active: true, startsAt: membership.startsAt.toISOString(), endsAt: membership.endsAt?.toISOString() ?? null, source: membership.sourceType as 'order' | 'admin' | 'promo' | 'migration' | 'yandex' }
+  const activeMembership = activeRows[0]
+  if (activeMembership) {
+    return {
+      active: true,
+      startsAt: activeMembership.startsAt.toISOString(),
+      endsAt: activeMembership.endsAt?.toISOString() ?? null,
+      source: activeMembership.sourceType as 'order' | 'admin' | 'promo' | 'migration' | 'yandex',
+    }
+  }
+
+  const expiredRows = await db.select().from(userEntitlements).where(and(
+    eq(userEntitlements.userId, userId),
+    eq(userEntitlements.status, 'active'),
+    eq(userEntitlements.entitlementKey, 'club'),
+    lte(userEntitlements.startsAt, now),
+    isNotNull(userEntitlements.endsAt),
+    lte(userEntitlements.endsAt, now),
+  )).orderBy(desc(userEntitlements.endsAt)).limit(1)
+  const expiredMembership = expiredRows[0]
+  return expiredMembership
+    ? {
+      active: false,
+      startsAt: expiredMembership.startsAt.toISOString(),
+      endsAt: expiredMembership.endsAt?.toISOString() ?? null,
+      source: expiredMembership.sourceType as 'order' | 'admin' | 'promo' | 'migration' | 'yandex',
+    }
     : { active: false, startsAt: null, endsAt: null, source: null }
 }
 

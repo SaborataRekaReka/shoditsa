@@ -1,5 +1,6 @@
 import { createHmac } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
+import { DEFAULT_TICKET_BUNDLES } from '@shoditsa/contracts'
 import { getFreeArchiveStart } from '../src/modules/archive/access.js'
 import { createStubProvider } from '../src/modules/commerce/providers/stub.js'
 
@@ -15,5 +16,12 @@ describe('commerce primitives', () => {
     const signature = createHmac('sha256', 'test-secret').update(body).digest('hex')
     await expect(provider.parseAndVerifyWebhook(body, { 'x-commerce-signature': signature })).resolves.toMatchObject({ providerEventId: 'event-1', status: 'paid' })
     await expect(provider.parseAndVerifyWebhook(body, { 'x-commerce-signature': '0'.repeat(64) })).rejects.toMatchObject({ code: 'PAYMENT_SIGNATURE_INVALID' })
+  })
+
+  it('ships only the two feature-flagged ticket bundles from the specification', () => {
+    expect(DEFAULT_TICKET_BUNDLES).toEqual([
+      expect.objectContaining({ id: 'tickets_60', priceMinor: 6_900, metadata: { ticketAmount: 60 } }),
+      expect.objectContaining({ id: 'tickets_180', priceMinor: 14_900, metadata: { ticketAmount: 180 } }),
+    ])
   })
 })

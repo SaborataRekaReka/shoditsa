@@ -57,6 +57,7 @@ describe('friends room packs', () => {
 
     expect(new Set(fullSchedule.map((pack) => pack.mode)).size).toBe(6)
     expect(buildFriendsRoomPackSchedule(packs, 6, 'room-one', true)).toEqual(fullSchedule)
+    expect(buildFriendsRoomPackSchedule(packs, 30, 'room-one', true).slice(0, 6)).toEqual(fullSchedule)
   })
 
   it('keeps the selected order unless shuffle is enabled', () => {
