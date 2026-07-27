@@ -57,7 +57,7 @@ export function TipCheckoutTrigger({
   className = '',
   placement = 'victory_tip',
   initialOpen = false,
-  label = 'Оставить чаевые',
+  label = 'Подарить жетон кассиру',
   hint = '99, 299 или 699 ₽',
 }: TipCheckoutTriggerProps) {
   const runtime = useServerRuntime()
@@ -136,15 +136,15 @@ export function TipCheckoutTrigger({
             <header className="tip-modal__header">
               <span className="tip-modal__mark" aria-hidden="true"><Heart /></span>
               <div>
-                <span>Поддержать проект</span>
-                <h2 id="tip-modal-title">Оставить чаевые кассиру</h2>
+                <span>Цифровой сувенир</span>
+                <h2 id="tip-modal-title">Выберите жетон кассиру</h2>
               </div>
               <ControlButton onClick={close} disabled={Boolean(pendingProductId)} aria-label="Закрыть">
                 <X />
               </ControlButton>
             </header>
             <p className="tip-modal__lead">
-              Выберите сумму — сразу после нажатия откроется защищённый платёжный виджет CloudPayments.
+              Это настоящая покупка памятного цифрового жетона. После оплаты он останется в личном кабинете и увеличит счётчик поддержки кассира.
             </p>
             <label className="tip-modal__acceptance">
               <TextInput type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} disabled={Boolean(pendingProductId)} />
@@ -184,7 +184,7 @@ export function TipCheckoutTrigger({
             )}
             {error && <p className="tip-modal__error" role="alert">{error}</p>}
             <p className="tip-modal__note">
-              Оплата добровольная и не даёт игровых преимуществ. Услуга состоит в выдаче памятного цифрового жетона выбранного уровня в профиле.
+              Жетон — цифровой контент без игровых преимуществ. Каждый оплаченный жетон сохраняется отдельно; при возврате он снимается со счётчика.
             </p>
         </DialogSurface>,
         document.body,

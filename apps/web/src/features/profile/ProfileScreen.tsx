@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FULL_HOUSE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
-import { BarChart3, Check, ChevronLeft, ChevronRight, CreditCard, Crown, Film, Lock, Mail, Play, ShieldCheck, Target, Ticket, Trophy, UserRound } from 'lucide-react'
+import { BarChart3, Check, ChevronLeft, ChevronRight, CreditCard, Crown, Film, Heart, Lock, Mail, Medal, Play, ShieldCheck, Target, Ticket, Trophy, UserRound } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { publicAssetUrl } from '../../app/public-asset'
@@ -15,6 +15,7 @@ import { formatDays, getMoscowDate, prettyDate } from '../../game'
 import type { SavedGame, TitleMode } from '../../types'
 import { authErrorMessage } from '../auth/auth-helpers'
 import { useAuthSession } from '../auth/use-auth-session'
+import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import { AccountAccessPanel } from './AccountAccessPanel'
 import { archiveItemToSavedGame, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from '../server-runtime/adapters'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
@@ -45,6 +46,14 @@ const profileStatus = (completedGames: number) => completedGames >= 80
     : completedGames >= 5
       ? 'Игрок'
       : 'Новичок'
+
+type SupporterTier = 'paper' | 'silver' | 'gold'
+
+const supporterTimes = (count: number) => {
+  const mod100 = count % 100
+  const mod10 = count % 10
+  return mod100 >= 11 && mod100 <= 14 ? 'раз' : mod10 >= 2 && mod10 <= 4 ? 'раза' : 'раз'
+}
 
 export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, onSelectMode, onClub }: {
   onHome: () => void
@@ -147,6 +156,25 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
       isFullHouse: index === mondayOffset && today.fullHouse,
     }))
   }, [today.completedModes.length, today.fullHouse, todayDate])
+  const supporterCounts = (commerceProfile.data?.entitlements ?? []).reduce<Record<SupporterTier, number>>((counts, entitlement) => {
+    if (entitlement.key === 'supporter' && (entitlement.scope === 'paper' || entitlement.scope === 'silver' || entitlement.scope === 'gold')) {
+      counts[entitlement.scope] += 1
+    }
+    return counts
+  }, { paper: 0, silver: 0, gold: 0 })
+  const supporterTotal = supporterCounts.paper + supporterCounts.silver + supporterCounts.gold
+  const supporterTopTier: SupporterTier | null = supporterCounts.gold
+    ? 'gold'
+    : supporterCounts.silver
+      ? 'silver'
+      : supporterCounts.paper
+        ? 'paper'
+        : null
+  const supporterTiers = [
+    { scope: 'paper' as const, label: 'Бумажные', count: supporterCounts.paper, Icon: Ticket },
+    { scope: 'silver' as const, label: 'Серебряные', count: supporterCounts.silver, Icon: Medal },
+    { scope: 'gold' as const, label: 'Золотые', count: supporterCounts.gold, Icon: Crown },
+  ]
   const bullseyeUnlocked = wonGames.some((game) => game.attempts.length === 1)
   const fullHouseProgress = today.fullHouse ? MODE_TABS.length : today.completedModes.length
   const achievementCards = [
@@ -172,7 +200,13 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
             <h1>{loading ? 'Загружаем профиль...' : displayName}</h1>
             <p className="profile-hero__email">{session && !session.isAnonymous ? <><Mail /> {session.email}</> : 'Ваш прогресс сохранён в текущем браузере.'}</p>
             <UserBadgeList badges={serverRuntime.me?.badges ?? []} />
-            <div className="profile-hero__meta"><span>{profileStatus(completedGames.length)}</span>{(() => { const rank = ['gold', 'silver', 'paper'].find((level) => commerceProfile.data?.entitlements.some((entry) => entry.key === 'supporter' && entry.scope === level)); return rank ? <i>Жетон: {rank === 'gold' ? 'золотой' : rank === 'silver' ? 'серебряный' : 'бумажный'}</i> : null })()}</div>
+            <div className="profile-hero__meta">
+              <span>{profileStatus(completedGames.length)}</span>
+              {supporterTopTier && <i className={`profile-cashier-badge profile-cashier-badge--${supporterTopTier}`}>
+                <Heart aria-hidden="true" />
+                Кассир поддержан {supporterTotal} {supporterTimes(supporterTotal)}
+              </i>}
+            </div>
           </div>
         </div>
         <ControlButton className="profile-hero__club" type="button" onClick={onClub}>
@@ -207,6 +241,33 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
           <article><i aria-hidden="true"><Trophy /></i><span>Серия</span><strong>{attendance.currentDailyStreak}<em> дн.</em></strong><small>лучший результат: {attendance.bestDailyStreak}</small></article>
           <article><i aria-hidden="true"><Ticket /></i><span>Билеты</span><strong>{wallet.tickets}</strong><small>доступно сейчас</small></article>
         </section>
+
+        {session && !session.isAnonymous && <section className={`profile-cashier-support${supporterTotal ? ' is-supported' : ''}`} aria-label="Жетоны поддержки кассира">
+          <div className="profile-cashier-support__seal" aria-hidden="true">
+            <Heart />
+            <strong>{supporterTotal}</strong>
+            <span>жетонов</span>
+          </div>
+          <div className="profile-cashier-support__copy">
+            <span>Личная коллекция</span>
+            <h2>{supporterTotal
+              ? `Вы поддержали кассира ${supporterTotal} ${supporterTimes(supporterTotal)}`
+              : 'Первый жетон ждёт своего сеанса'}</h2>
+            <p>Каждая покупка остаётся отдельным цифровым жетоном и навсегда пополняет этот счётчик.</p>
+          </div>
+          <div className="profile-cashier-support__tokens">
+            {supporterTiers.map(({ scope, label, count, Icon }) => <div className={`profile-cashier-token profile-cashier-token--${scope}${count ? ' is-collected' : ''}`} key={scope}>
+              <i aria-hidden="true"><Icon /></i>
+              <span><small>{label}</small><strong>× {count}</strong></span>
+            </div>)}
+          </div>
+          <TipCheckoutTrigger
+            className="profile-cashier-support__action"
+            placement="profile_support"
+            label={supporterTotal ? 'Добавить жетон' : 'Подарить первый жетон'}
+            hint="99 · 299 · 699 ₽"
+          />
+        </section>}
 
         <div className="profile-overview-layout">
           <section className="profile-section profile-route">

@@ -10,9 +10,9 @@ import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { ControlButton } from '../../components/ui'
 import './CommercialShell.css'
 
-type Props = { onHome: () => void; onClub: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }
+type Props = { onHome: () => void; onClub: () => void; onProfile: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }
 
-export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRules, onReview }: Props) {
+export function PurchaseReturnScreen({ onHome, onClub, onProfile, onArchive, onStats, onRules, onReview }: Props) {
   const queryClient = useQueryClient()
   const runtime = useServerRuntime()
   const startedAt = useRef(Date.now())
@@ -42,7 +42,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
     : productKind === 'pack'
       ? 'Спецпоказ открыт'
       : productKind === 'tip'
-        ? 'Спасибо за поддержку!'
+        ? 'Жетон передан кассиру!'
         : productKind === 'tickets'
           ? 'Билеты начислены'
         : 'Покупка подтверждена'
@@ -51,7 +51,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
     : productKind === 'pack'
       ? 'Спецпоказ навсегда добавлен в ваш аккаунт.'
       : productKind === 'tip'
-        ? 'Памятный жетон уже добавлен в ваш профиль.'
+        ? 'Покупка подтверждена: памятный цифровой жетон добавлен в личный кабинет, а счётчик поддержки кассира обновлён.'
         : productKind === 'tickets'
           ? 'Оплата подтверждена сервером, билеты уже добавлены на баланс.'
         : 'Оплата подтверждена сервером.'
@@ -105,7 +105,9 @@ export function PurchaseReturnScreen({ onHome, onClub, onArchive, onStats, onRul
         {pendingTimedOut && <ControlButton type="button" disabled={order.isFetching} onClick={() => { void order.refetch() }}>
           {order.isFetching ? 'Проверяем…' : 'Проверить ещё раз'}
         </ControlButton>}
-        <ControlButton type="button" onClick={onClub}>Перейти в клуб</ControlButton>
+        <ControlButton type="button" onClick={productKind === 'tip' ? onProfile : onClub}>
+          {productKind === 'tip' ? 'Посмотреть жетон' : 'Перейти в клуб'}
+        </ControlButton>
       </div>
     </main>
   </>

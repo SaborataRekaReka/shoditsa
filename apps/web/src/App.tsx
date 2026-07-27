@@ -4661,7 +4661,7 @@ function GameApp() {
 
     {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'purchase-return' && <PurchaseReturnScreen onHome={goHome} onClub={() => moveToScreen('club')} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+    {screen === 'purchase-return' && <PurchaseReturnScreen onHome={goHome} onClub={() => moveToScreen('club')} onProfile={() => moveToScreen('profile')} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'legal' && <LegalScreen document={playerRouteFromPathname(routeLocation.pathname).legalDocument ?? 'terms'} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

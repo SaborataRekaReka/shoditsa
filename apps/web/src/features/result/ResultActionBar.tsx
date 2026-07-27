@@ -58,7 +58,7 @@ export function ResultActionBar({
         </span>
       </ControlButton>}
       <ControlButton className="result-copy" onClick={onCopy}>{copied ? <Check /> : <Copy />}{copied ? 'Скопировано' : 'Скопировать результат'}</ControlButton>
-      {showTip && <TipCheckoutTrigger className="result-tip" label="Поддержать проект" hint="Чаевые · 99–699 ₽" />}
+      {showTip && <TipCheckoutTrigger className="result-tip" label="Жетон кассиру" hint="99 · 299 · 699 ₽" />}
     </div>
   </>
 }
