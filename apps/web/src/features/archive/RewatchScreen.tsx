@@ -8,7 +8,7 @@ import { api, queryKeys } from '../../api/client'
 import { apiErrorMessage } from '../../api/error-message'
 import { ActionButton, AppHeader, Modal } from '../../components/app-shell/AppShell'
 import { TitlePoster as Poster } from '../../components/title-poster'
-import { ControlButton, InlineAlert, Tabs } from '../../components/ui'
+import { ControlButton, InlineAlert, SelectControl, Tabs } from '../../components/ui'
 import { PERIODS, prettyDate, resolveMusicRedirectId } from '../../game'
 import { dayNumber } from '../../game/day-number'
 import { useServerRuntime, SERVER_RUNTIME } from '../../hooks/use-server-runtime'
@@ -17,6 +17,30 @@ import { archiveItemToSavedGame, publicItemToTitle } from '../server-runtime/ada
 import './RewatchScreen.css'
 
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
+
+function ArchiveModePicker({ mode, setMode }: Pick<RewatchScreenProps, 'mode' | 'setMode'>) {
+  return <div className="rewatch-toolbar">
+    <Tabs
+      className="mode-tabs"
+      activeClassName="active"
+      label="Режим архива"
+      items={MODE_TABS.map((tabMode) => ({ id: tabMode, label: modeMeta(tabMode).plural }))}
+      value={mode}
+      onChange={setMode}
+    />
+    <label className="rewatch-mode-select">
+      <span>Раздел архива</span>
+      <SelectControl
+        surface="dark"
+        aria-label="Раздел архива"
+        value={mode}
+        onChange={(event) => setMode(event.currentTarget.value as TitleMode)}
+      >
+        {MODE_TABS.map((tabMode) => <option key={tabMode} value={tabMode}>{modeMeta(tabMode).plural}</option>)}
+      </SelectControl>
+    </label>
+  </div>
+}
 
 type RewatchScreenProps = {
   mode: TitleMode
@@ -98,7 +122,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>Последние семь дат доступны всем. Полный архив с даты запуска открыт клубу.</p></div>
-      <div className="rewatch-toolbar"><Tabs className="mode-tabs" activeClassName="active" label="Режим архива" items={MODE_TABS.map((tabMode) => ({ id: tabMode, label: modeMeta(tabMode).plural }))} value={mode} onChange={setMode} /></div>
+      <ArchiveModePicker mode={mode} setMode={setMode} />
       {archive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert>}
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const played = latestByDate.get(itemDate) ?? null
@@ -140,9 +164,7 @@ function LocalRewatchScreen({ mode, setMode, period, dates, games, titles, onOpe
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
-      <div className="rewatch-toolbar">
-        <Tabs className="mode-tabs" activeClassName="active" label="Режим архива" items={MODE_TABS.map((tabMode) => ({ id: tabMode, label: modeMeta(tabMode).plural }))} value={mode} onChange={setMode} />
-      </div>
+      <ArchiveModePicker mode={mode} setMode={setMode} />
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
         const playedInCurrentPeriod = dayGames.find((game) => game.period === period)

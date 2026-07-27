@@ -4,6 +4,7 @@ import type { TitleItem } from '@shoditsa/contracts'
 import { ApiError } from '../src/lib/errors.js'
 import {
   assertFriendsRoomAccess,
+  assertFriendsRoomClubAccess,
   assertFriendsRoomCreator,
   buildFriendsRoomHints,
   isFriendsRoomAnswerCorrect,
@@ -75,5 +76,15 @@ describe('friends room service helpers', () => {
       expect((error as ApiError).code).toBe('FRIENDS_ROOM_ACCOUNT_REQUIRED')
     }
     expect(() => assertFriendsRoomCreator(false)).not.toThrow()
+
+    expect(() => assertFriendsRoomClubAccess(true)).not.toThrow()
+    try {
+      assertFriendsRoomClubAccess(false)
+      throw new Error('expected room creation without club to be denied')
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiError)
+      expect((error as ApiError).statusCode).toBe(403)
+      expect((error as ApiError).code).toBe('FRIENDS_ROOM_CLUB_REQUIRED')
+    }
   })
 })

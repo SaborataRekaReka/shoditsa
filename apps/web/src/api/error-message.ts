@@ -6,6 +6,7 @@ const labels: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: 'Неверный email или пароль.',
   USER_ALREADY_EXISTS: 'Пользователь с таким email уже существует.',
   INSUFFICIENT_TICKETS: 'Недостаточно билетов.',
+  FRIENDS_ROOM_CLUB_REQUIRED: 'Создание комнат доступно с активным клубным билетом.',
   PERIOD_LOCKED: 'Сначала разблокируйте этот период.',
   PROMO_NOT_FOUND: 'Промокод не найден.',
   LEGACY_IMPORT_DISABLED: 'Период переноса старого прогресса завершён.',

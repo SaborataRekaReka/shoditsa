@@ -130,6 +130,12 @@ export const assertFriendsRoomCreator = (isAnonymous: boolean) => {
   }
 }
 
+export const assertFriendsRoomClubAccess = (clubActive: boolean) => {
+  if (!clubActive) {
+    throw new ApiError(403, 'FRIENDS_ROOM_CLUB_REQUIRED', 'Создание комнат доступно с активным клубным билетом')
+  }
+}
+
 const lockUserRoomMembership = async (tx: Transaction, userId: string) => {
   await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${userId}))`)
 }
@@ -568,6 +574,7 @@ export const createFriendsRoom = async (
   const revisionId = await activeRevisionId(db)
   const rules = await loadAssignedEconomyRules(db, user.id, user.role, config.economy.v4RolloutPercent)
   const clubActive = await hasEntitlement(db, user.id, 'club', undefined, new Date())
+  assertFriendsRoomClubAccess(clubActive)
   const gameType = input.gameType ?? 'quiz'
   const packs = normalizeFriendsRoomPacks(input.packs, input.mode ?? 'series')
   const mode = packs[0].mode
@@ -678,6 +685,8 @@ export const startFriendsRoom = async (
   config: AppConfig,
 ) => {
   const roomBeforeStart = await db.transaction((tx) => hostRoom(tx, roomId, user.id))
+  const clubActiveAtStart = await hasEntitlement(db, roomBeforeStart.ownerUserId, 'club', undefined, new Date())
+  assertFriendsRoomClubAccess(clubActiveAtStart)
   if (roomBeforeStart.phase !== 'lobby') {
     const replay = await db.select({ id: friendsRoomExtensions.id }).from(friendsRoomExtensions).where(and(
       eq(friendsRoomExtensions.roomId, roomId),

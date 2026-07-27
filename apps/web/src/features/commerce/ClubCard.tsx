@@ -1,8 +1,8 @@
-import { Check, LockKeyhole } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 export type ClubPlanFeature = {
   label: string
+  value: ReactNode
   locked?: boolean
 }
 
@@ -42,22 +42,25 @@ export function ClubCard({
       aria-label={`${eyebrow}: ${title}`}
     >
       {badge && <span className="club-plan-card__badge">{badge}</span>}
-      <header className="club-plan-card__header">
-        <span>{eyebrow}</span>
-        <h3>{title}</h3>
-        <strong>{priceLabel}</strong>
-        <p>{unitLabel}</p>
-      </header>
-      <ul>
-        {features.map((feature) => (
-          <li className={feature.locked ? 'is-locked' : undefined} key={feature.label}>
-            {feature.locked ? <LockKeyhole aria-hidden="true" /> : <Check aria-hidden="true" />}
-            <span>{feature.label}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="club-plan-card__action">{action}</div>
-      <small className="club-plan-card__note">{note}</small>
+      <div className="club-plan-card__surface">
+        <header className="club-plan-card__header">
+          <span>{eyebrow}</span>
+          <h3>{title}</h3>
+          <strong>{priceLabel}</strong>
+          <p>{unitLabel}</p>
+        </header>
+        <ul>
+          {features.map((feature) => (
+            <li className={feature.locked ? 'is-locked' : undefined} key={feature.label}>
+              <span className="club-plan-card__feature-label">{feature.label}</span>
+              <span className="club-plan-card__feature-dots" aria-hidden="true" />
+              <strong className="club-plan-card__feature-value">{feature.value}</strong>
+            </li>
+          ))}
+        </ul>
+        <div className="club-plan-card__action">{action}</div>
+        <small className="club-plan-card__note">{note}</small>
+      </div>
     </article>
   )
 }

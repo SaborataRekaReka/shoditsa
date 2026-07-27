@@ -28,6 +28,7 @@ import './ClubScreen.css'
 type Props = {
   onHome: () => void
   onArchive: () => void
+  onFreePlay: () => void
   onProfile: () => void
   onStats: () => void
   onRules: () => void
@@ -67,6 +68,8 @@ function ContentCard({
   imageAlt = '',
   icon,
   action,
+  actionLabel,
+  clubOnly = false,
   large = false,
   label,
   stamp,
@@ -77,6 +80,8 @@ function ContentCard({
   imageAlt?: string
   icon: ReactNode
   action: () => void
+  actionLabel: string
+  clubOnly?: boolean
   large?: boolean
   label?: string
   stamp?: string
@@ -86,7 +91,11 @@ function ContentCard({
       type="button"
       variant="ghost"
       surface="paper"
-      className={`club-content-card${large ? ' club-content-card--special' : ''}`}
+      className={[
+        'club-content-card',
+        clubOnly ? 'club-content-card--club-only' : 'club-content-card--available',
+        large && 'club-content-card--special',
+      ].filter(Boolean).join(' ')}
       onClick={action}
     >
       <figure>
@@ -100,7 +109,7 @@ function ContentCard({
       </div>
       <strong className="club-content-card__action">
         {icon}
-        <span>{stamp ? 'Открыть с клубным билетом' : 'Нужен клубный билет'}</span>
+        <span>{actionLabel}</span>
         <ArrowRight aria-hidden="true" />
       </strong>
     </ActionButton>
@@ -110,6 +119,7 @@ function ContentCard({
 export function ClubScreen({
   onHome,
   onArchive,
+  onFreePlay,
   onProfile,
   onStats,
   onRules,
@@ -158,20 +168,20 @@ export function ClubScreen({
   const specialImage = view.currentSpecial?.coverUrl || publicAssetUrl('images/title-posters/movie-ticket-poster.webp')
   const archiveDescription = `${number.format(view.stats.archiveGames)} ${plural(view.stats.archiveGames, 'игра', 'игры', 'игр')} · ${view.stats.archiveDays} ${plural(view.stats.archiveDays, 'день', 'дня', 'дней')}`
   const clubFeatures: ClubPlanFeature[] = [
-    { label: 'Весь архив с первого дня' },
-    { label: 'Свободная игра без списания билетиков' },
-    { label: 'Все клубные спецпоказы' },
-    { label: `${view.stats.danetkiPerDay} ${plural(view.stats.danetkiPerDay, 'Данетка', 'Данетки', 'Данеток')} в сутки` },
-    { label: `Комнаты до ${view.stats.friendRoomRoundLimit} раундов без списания` },
-    { label: 'Заработанные билетики сохраняются' },
+    { label: 'Архив', value: 'Весь' },
+    { label: 'Свободная игра', value: '∞' },
+    { label: 'Клубные спецпоказы', value: 'Все' },
+    { label: 'Данетки', value: `${view.stats.danetkiPerDay} в сутки` },
+    { label: 'Комната друзей', value: `${view.stats.friendRoomRoundLimit} раундов` },
+    { label: 'Билетики', value: 'Сохраняются' },
   ]
   const guestFeatures: ClubPlanFeature[] = [
-    { label: `Ежедневные игры: сегодня + ${Math.max(0, view.stats.freeArchiveDays - 1)} дней` },
-    { label: `Свободная игра: от ${view.stats.guestFreePlayCost} билетиков` },
-    { label: 'Клубные спецпоказы закрыты', locked: true },
-    { label: `${view.stats.guestDanetkiPerDay} ${plural(view.stats.guestDanetkiPerDay, 'Данетка', 'Данетки', 'Данеток')} в сутки` },
-    { label: `Комната друзей: бесплатный блок до ${view.stats.guestFriendRoomRoundLimit} раундов` },
-    { label: 'Заработанные билетики сохраняются' },
+    { label: 'Архив', value: `${view.stats.freeArchiveDays} дней` },
+    { label: 'Свободная игра', value: `${view.stats.guestFreePlayCost} билетиков` },
+    { label: 'Клубные спецпоказы', value: 'Закрыты', locked: true },
+    { label: 'Данетки', value: `${view.stats.guestDanetkiPerDay} в сутки` },
+    { label: 'Комната друзей', value: `${view.stats.guestFriendRoomRoundLimit} раундов` },
+    { label: 'Билетики', value: 'Сохраняются' },
   ]
 
   useEffect(() => {
@@ -256,32 +266,6 @@ export function ClubScreen({
         minimal
       />
       <main className={`club-lobby-screen${hasClub ? ' club-lobby-screen--active' : ''}`}>
-        <nav className="club-lobby-tabs" aria-label="Разделы клуба">
-          <ActionButton type="button" variant="ghost" className="is-active" onClick={() => document.getElementById('club-hero')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-            <Ticket aria-hidden="true" />
-            Сегодня
-          </ActionButton>
-          <ActionButton type="button" variant="ghost" onClick={() => document.getElementById('club-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-            <Clapperboard aria-hidden="true" />
-            Спецпоказы
-          </ActionButton>
-          <ActionButton
-            type="button"
-            variant="ghost"
-            onClick={featureAction(onArchive, 'Весь архив открывается с клубным билетом.')}
-          >
-            <Archive aria-hidden="true" />
-            Архив
-          </ActionButton>
-          <ActionButton
-            type="button"
-            variant="ghost"
-            onClick={featureAction(onHome, 'Свободная игра без списания билетиков входит в Клуб.')}
-          >
-            <Gamepad2 aria-hidden="true" />
-            Свободная игра
-          </ActionButton>
-        </nav>
         <section className="club-entry" id="club-hero">
           <div className="club-entry__copy">
             <div className="club-entry__meta">
@@ -333,8 +317,8 @@ export function ClubScreen({
 
         <section className="club-content" id="club-content">
           <header className="club-section-heading">
-            <h2>Сегодня в клубе</h2>
-            <span><Archive aria-hidden="true" /> {number.format(view.stats.archiveGames)} игр в архиве</span>
+            <h2>Играть и смотреть</h2>
+            <span><Ticket aria-hidden="true" /> Больше возможностей с клубным билетом</span>
           </header>
           <div className="club-content__grid">
             <ContentCard
@@ -345,43 +329,55 @@ export function ClubScreen({
               imageAlt=""
               icon={hasClub ? <Clapperboard aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
               action={openSpecial}
+              actionLabel={hasClub ? 'Открыть спецпоказ' : 'Открыть с клубным билетом'}
+              clubOnly={!hasClub}
               label="Клубный спецпоказ"
               stamp={hasClub ? undefined : 'Только для клуба'}
             />
             <div className="club-content__features">
               <ContentCard
-                title="Весь архив"
-                description={archiveDescription}
+                title={hasClub ? 'Весь архив' : 'Архив'}
+                description={hasClub
+                  ? archiveDescription
+                  : `${view.stats.freeArchiveDays} дней доступны бесплатно · весь архив — в клубе`}
                 image={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')}
-                icon={hasClub ? <Archive aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-                action={featureAction(onArchive, 'Весь архив открывается с клубным билетом.')}
+                icon={<Archive aria-hidden="true" />}
+                action={onArchive}
+                actionLabel={hasClub ? 'Открыть весь архив' : 'Открыть доступные игры'}
               />
               <ContentCard
                 title="Свободная игра"
-                description={`${view.stats.freePlayModes} режимов · без списания билетиков`}
+                description={hasClub
+                  ? `${view.stats.freePlayModes} режимов · без списания билетиков`
+                  : `${view.stats.freePlayModes} режимов · от ${view.stats.guestFreePlayCost} билетиков`}
                 image={publicAssetUrl('images/title-posters/game-ticket-poster.webp')}
-                icon={hasClub ? <Gamepad2 aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-                action={featureAction(onHome, 'Свободная игра без списания билетиков входит в Клуб.')}
+                icon={<Gamepad2 aria-hidden="true" />}
+                action={onFreePlay}
+                actionLabel={hasClub ? 'Выбрать режим' : `Играть от ${view.stats.guestFreePlayCost} билетиков`}
               />
               <ContentCard
                 title="Данетки"
-                description={`${view.stats.danetkiPerDay} истории в сутки`}
+                description={hasClub
+                  ? `${view.stats.danetkiPerDay} истории в сутки`
+                  : `${view.stats.guestDanetkiPerDay} история в сутки · в клубе — ${view.stats.danetkiPerDay}`}
                 image={publicAssetUrl('images/title-posters/danetki-ticket-poster.webp')}
-                icon={hasClub ? <Sparkles aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-                action={featureAction(
-                  () => window.location.assign('/games/danetki'),
-                  `${view.stats.danetkiPerDay} Данетки в сутки доступны с клубным билетом.`,
-                )}
+                icon={<Sparkles aria-hidden="true" />}
+                action={() => window.location.assign('/games/danetki')}
+                actionLabel={`Играть · ${hasClub ? view.stats.danetkiPerDay : view.stats.guestDanetkiPerDay} в сутки`}
               />
               <ContentCard
                 title="Комната друзей"
-                description={`До ${view.stats.friendRoomRoundLimit} раундов без списания`}
+                description={hasClub
+                  ? `До ${view.stats.friendRoomRoundLimit} раундов · включая совместные Данетки`
+                  : 'Совместная игра, включая Данетки'}
                 image={publicAssetUrl('images/friends-room/lobby-collage-lower.webp')}
                 icon={hasClub ? <UsersRound aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
                 action={featureAction(
                   () => window.location.assign('/games/together?new=1'),
-                  `Комнаты до ${view.stats.friendRoomRoundLimit} раундов входят в клубный билет.`,
+                  'Комната друзей и совместные Данетки входят в клубный билет.',
                 )}
+                actionLabel={hasClub ? 'Создать комнату' : 'Только с клубным билетом'}
+                clubOnly={!hasClub}
               />
             </div>
           </div>

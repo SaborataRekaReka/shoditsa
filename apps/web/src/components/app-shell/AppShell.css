@@ -636,6 +636,10 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
     align-items: end;
   }
+
+  .mobile-app-nav--without-room {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 719px) {

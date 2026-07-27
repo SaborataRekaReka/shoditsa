@@ -15,6 +15,7 @@ import {
   gameSessions,
   playerProfiles,
   user,
+  userEntitlements,
   walletAccounts,
 } from '@shoditsa/database'
 import { buildApp } from '../src/app.js'
@@ -50,6 +51,20 @@ describe('friends room multiplayer API', () => {
     return response.json().room as FriendsRoomSnapshot
   }
 
+  const grantClub = async (cookie: string) => {
+    const me = await app.inject({ method: 'GET', url: '/api/v1/me', headers: { cookie } })
+    const userId = me.json().user.id as string
+    await database.db.insert(userEntitlements).values({
+      userId,
+      entitlementKey: 'club',
+      startsAt: new Date(Date.now() - 60_000),
+      endsAt: new Date(Date.now() + 86_400_000),
+      sourceType: 'admin',
+      sourceId: `friends-room-test-${crypto.randomUUID()}`,
+    })
+    return userId
+  }
+
   beforeAll(async () => {
     process.env.BETTER_AUTH_SECRET ||= 'integration-secret-at-least-32-characters'
     process.env.BETTER_AUTH_URL ||= 'http://localhost:3001'
@@ -66,6 +81,7 @@ describe('friends room multiplayer API', () => {
     await app.ready()
     ownerCookie = await createGuest()
     playerCookie = await createGuest()
+    await grantClub(ownerCookie)
   })
 
   afterAll(async () => {
@@ -253,6 +269,7 @@ describe('friends room multiplayer API', () => {
 
   it('releases a stale membership from a closed room before creating another room', async () => {
     const cookie = await createGuest()
+    await grantClub(cookie)
     const first = await app.inject({
       method: 'POST',
       url: '/api/v1/friends/rooms',
@@ -455,6 +472,20 @@ describe('friends room multiplayer API', () => {
       expect(denied.json().error.code).toBe('FRIENDS_ROOM_ACCOUNT_REQUIRED')
 
       await database.db.update(user).set({ isAnonymous: false }).where(eq(user.id, userId))
+      const clubDenied = await productionApp.inject({
+        method: 'POST', url: '/api/v1/friends/rooms', headers: { cookie }, payload: { mode: 'movie' },
+      })
+      expect(clubDenied.statusCode).toBe(403)
+      expect(clubDenied.json().error.code).toBe('FRIENDS_ROOM_CLUB_REQUIRED')
+
+      await database.db.insert(userEntitlements).values({
+        userId,
+        entitlementKey: 'club',
+        startsAt: new Date(Date.now() - 60_000),
+        endsAt: new Date(Date.now() + 86_400_000),
+        sourceType: 'admin',
+        sourceId: `friends-room-production-test-${crypto.randomUUID()}`,
+      })
       const allowed = await productionApp.inject({
         method: 'POST', url: '/api/v1/friends/rooms', headers: { cookie }, payload: { mode: 'movie' },
       })

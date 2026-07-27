@@ -7,75 +7,6 @@
   box-sizing: border-box;
 }
 
-.club-lobby-tabs {
-  position: relative;
-  z-index: 4;
-  width: max-content;
-  min-height: 46px;
-  margin: 0 0 -1px;
-  border: 1px solid var(--color-line);
-  border-bottom: 0;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  display: flex;
-  align-items: stretch;
-}
-
-.club-lobby-tabs .ui-button {
-  position: relative;
-  min-width: 150px;
-  min-height: 46px;
-  padding: 0 28px;
-  border: 0;
-  border-right: 1px solid var(--color-line);
-  border-radius: 0;
-  color: var(--color-muted);
-  background: transparent;
-  box-shadow: none;
-  gap: 10px;
-  font-size: 12px;
-  text-transform: none;
-}
-
-.club-lobby-tabs .ui-button:nth-child(2) {
-  min-width: 190px;
-}
-
-.club-lobby-tabs .ui-button:nth-child(4) {
-  min-width: 200px;
-}
-
-.club-lobby-tabs .ui-button:last-child {
-  border-right: 0;
-}
-
-.club-lobby-tabs .ui-button:hover {
-  color: var(--color-text);
-  background: color-mix(in srgb, var(--color-surface-2) 64%, transparent);
-  box-shadow: none;
-  transform: none;
-}
-
-.club-lobby-tabs .ui-button.is-active {
-  color: var(--color-primary);
-}
-
-.club-lobby-tabs .ui-button.is-active::after {
-  content: '';
-  position: absolute;
-  right: 24px;
-  bottom: 0;
-  left: 24px;
-  height: 2px;
-  border-radius: 2px 2px 0 0;
-  background: var(--color-primary);
-}
-
-.club-lobby-tabs svg {
-  width: 19px;
-  height: 19px;
-}
-
 .club-entry {
   position: relative;
   isolation: isolate;
@@ -296,6 +227,8 @@
 }
 
 .club-content-card.ui-button {
+  --ticket-notch-radius: 10px;
+  --ticket-notch-y: 50%;
   position: relative;
   overflow: hidden;
   min-width: 0;
@@ -306,7 +239,8 @@
   border-radius: var(--radius-md);
   color: var(--color-ink);
   background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
-  box-shadow: 0 9px 22px rgba(0, 0, 0, .15);
+  box-shadow: none;
+  filter: drop-shadow(0 9px 11px rgba(0, 0, 0, .15));
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) 44px;
@@ -314,40 +248,21 @@
   text-align: left;
   text-transform: none;
   white-space: normal;
-  transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s ease;
+  -webkit-mask:
+    radial-gradient(circle var(--ticket-notch-radius) at 0 var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--ticket-notch-radius) at 100% var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--ticket-notch-radius) at 0 var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--ticket-notch-radius) at 100% var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) right / 51% 100% no-repeat;
+  transition: transform .2s var(--ease), filter .2s var(--ease), border-color .2s ease;
 }
 
 .club-content-card.ui-button:hover {
   border-color: var(--color-paper-line-strong);
   background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, .22);
+  box-shadow: none;
+  filter: drop-shadow(0 13px 15px rgba(0, 0, 0, .22));
   transform: translateY(-2px);
-}
-
-.club-content-card.ui-button::before,
-.club-content-card.ui-button::after {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  top: calc(50% - 10px);
-  width: 14px;
-  height: 20px;
-  border: 1px solid var(--color-paper-line);
-  background: var(--color-bg);
-  box-sizing: border-box;
-  pointer-events: none;
-}
-
-.club-content-card.ui-button::before {
-  left: -1px;
-  border-left: 0;
-  border-radius: 0 14px 14px 0;
-}
-
-.club-content-card.ui-button::after {
-  right: -1px;
-  border-right: 0;
-  border-radius: 14px 0 0 14px;
 }
 
 .club-content-card figure {
@@ -447,6 +362,28 @@
   color: var(--color-ink);
 }
 
+.club-content-card--available .club-content-card__action {
+  color: var(--color-success-ink);
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+
+.club-content-card--available .club-content-card__action svg {
+  color: var(--color-success-ink);
+}
+
+.club-content-card--club-only .club-content-card__action {
+  color: var(--color-paper-muted-2);
+}
+
+.club-content-card--special.club-content-card--club-only .club-content-card__action {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-primary) 78%, var(--color-paper));
+}
+
+.club-content-card--special.club-content-card--club-only .club-content-card__action svg {
+  color: var(--color-accent-ink);
+}
+
 .club-content-card--special.ui-button {
   height: 322px;
   min-height: 322px;
@@ -536,66 +473,57 @@
   overflow: visible;
   min-width: 0;
   min-height: 612px;
-  padding: 34px 34px 24px;
-  border: 1px solid var(--color-paper-line);
-  border-radius: var(--radius-md);
   color: var(--color-ink);
-  background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, .18);
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-}
-
-.club-plan-card::before,
-.club-plan-card::after {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  top: 18px;
-  width: 18px;
-  height: 36px;
-  border: 1px solid var(--color-paper-line);
-  background: var(--color-bg);
-  box-sizing: border-box;
-  pointer-events: none;
-}
-
-.club-plan-card::before {
-  left: -1px;
-  border-left: 0;
-  border-radius: 0 20px 20px 0;
-}
-
-.club-plan-card::after {
-  right: -1px;
-  border-right: 0;
-  border-radius: 20px 0 0 20px;
-}
-
-.club-plan-card--featured {
-  border: 3px solid var(--color-primary);
-  padding: 32px 32px 22px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, .24), 0 0 0 5px color-mix(in srgb, var(--color-primary) 12%, transparent);
-}
-
-.club-plan-card--featured::before,
-.club-plan-card--featured::after {
-  border-color: var(--color-primary);
 }
 
 .club-plan-card--guest {
-  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
   color: var(--color-text);
+}
+
+.club-plan-card__surface {
+  --ticket-notch-radius: 18px;
+  --ticket-notch-y: 36px;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  min-height: inherit;
+  flex: 1;
+  padding: 34px 34px 24px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-md);
+  background: var(--color-paper) url('/assets/club/club-paper-ivory.webp') center / cover no-repeat;
+  box-shadow: none;
+  filter: drop-shadow(0 14px 17px rgba(0, 0, 0, .18));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  -webkit-mask:
+    radial-gradient(circle var(--ticket-notch-radius) at 0 var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--ticket-notch-radius) at 100% var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--ticket-notch-radius) at 0 var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--ticket-notch-radius) at 100% var(--ticket-notch-y), transparent calc(100% - 1px), #000 100%) right / 51% 100% no-repeat;
+}
+
+.club-plan-card--featured .club-plan-card__surface {
+  border: 3px solid var(--color-primary);
+  padding: 32px 32px 22px;
+  filter:
+    drop-shadow(0 18px 20px rgba(0, 0, 0, .24))
+    drop-shadow(0 0 4px color-mix(in srgb, var(--color-primary) 26%, transparent));
+}
+
+.club-plan-card--guest .club-plan-card__surface {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
   background:
     radial-gradient(circle at 50% 12%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 32%),
     var(--color-surface);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .015), 0 14px 34px rgba(0, 0, 0, .18);
-}
-
-.club-plan-card--guest::before,
-.club-plan-card--guest::after {
-  display: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .015);
+  filter: drop-shadow(0 14px 17px rgba(0, 0, 0, .18));
+  -webkit-mask: none;
+  mask: none;
 }
 
 .club-plan-card__badge {
@@ -686,40 +614,47 @@
 .club-plan-card li {
   min-height: 43px;
   padding: 9px 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-paper-line) 64%, transparent);
   color: inherit;
   display: grid;
-  grid-template-columns: 23px minmax(0, 1fr);
-  align-items: start;
-  gap: 10px;
+  grid-template-columns: max-content minmax(14px, 1fr) max-content;
+  align-items: baseline;
+  gap: 7px;
   box-sizing: border-box;
   font-size: 14px;
   line-height: 1.4;
 }
 
 .club-plan-card--guest li {
-  border-bottom-color: var(--color-line);
   color: var(--color-muted);
 }
 
-.club-plan-card li svg {
-  width: 23px;
-  height: 23px;
-  padding: 3px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 72%, var(--color-paper-line));
-  border-radius: 50%;
+.club-plan-card__feature-label {
+  min-width: 0;
+}
+
+.club-plan-card__feature-dots {
+  min-width: 14px;
+  height: .85em;
+  border-bottom: 2px dotted color-mix(in srgb, var(--color-paper-line) 70%, transparent);
+}
+
+.club-plan-card--guest .club-plan-card__feature-dots {
+  border-bottom-color: color-mix(in srgb, var(--color-line-strong) 72%, transparent);
+}
+
+.club-plan-card__feature-value {
   color: var(--color-success-ink);
-  background: color-mix(in srgb, var(--color-primary) 28%, transparent);
-  box-sizing: border-box;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
 }
 
-.club-plan-card--guest li svg {
-  border-color: var(--color-line-strong);
-  color: var(--color-muted);
-  background: transparent;
+.club-plan-card--guest .club-plan-card__feature-value {
+  color: var(--color-text);
 }
 
-.club-plan-card li.is-locked {
+.club-plan-card li.is-locked .club-plan-card__feature-label,
+.club-plan-card li.is-locked .club-plan-card__feature-value {
   color: var(--color-muted-2);
 }
 
@@ -871,10 +806,6 @@
     padding: 14px 12px 98px;
   }
 
-  .club-lobby-tabs {
-    display: none;
-  }
-
   .club-entry {
     overflow: hidden;
     min-height: 0;
@@ -1013,11 +944,17 @@
 
   .club-plan-card {
     min-height: 620px;
+  }
+
+  .club-plan-card__surface {
     padding: 30px 24px 20px;
   }
 
   .club-plan-card--featured {
     margin-top: 34px;
+  }
+
+  .club-plan-card--featured .club-plan-card__surface {
     padding: 28px 22px 18px;
   }
 

@@ -88,18 +88,6 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
   const profileTriggerRef = useRef<HTMLButtonElement>(null)
   const { session, loading: authLoading } = useAuthSession()
   const serverRuntime = useServerRuntime()
-  const createRoom = onCreateRoom ?? (() => {
-    const returnUrl = '/games/together?new=1'
-    window.location.assign(canCreateFriendsRoom(session)
-      ? returnUrl
-      : friendsRoomRegistrationHref(returnUrl))
-  })
-  const openRoomHub = () => {
-    const returnUrl = '/games/together'
-    window.location.assign(canUseFriendsRoom(session)
-      ? returnUrl
-      : friendsRoomRegistrationHref(returnUrl))
-  }
   const openRooms = useQuery({
     queryKey: queryKeys.friendsRooms,
     queryFn: api.friendsRoomList,
@@ -123,6 +111,28 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
       : 'Гость'
   const signedIn = runtimeReady && Boolean(session && !session.isAnonymous)
   const hasClub = runtimeReady && Boolean(serverRuntime.dashboard?.membership.active)
+  const hasOpenRoom = Boolean(openRooms.data?.rooms.length)
+  const showRoomEntry = hasClub || hasOpenRoom
+  const createRoom = onCreateRoom ?? (() => {
+    if (!hasClub) {
+      window.location.assign('/club')
+      return
+    }
+    const returnUrl = '/games/together?new=1'
+    window.location.assign(canCreateFriendsRoom(session)
+      ? returnUrl
+      : friendsRoomRegistrationHref(returnUrl))
+  })
+  const openRoomHub = () => {
+    if (!hasClub && !hasOpenRoom) {
+      window.location.assign('/club')
+      return
+    }
+    const returnUrl = '/games/together'
+    window.location.assign(canUseFriendsRoom(session)
+      ? returnUrl
+      : friendsRoomRegistrationHref(returnUrl))
+  }
   const hashRoute = typeof window === 'undefined' ? null : window.location.hash.match(/^#(\/[^?]*)/)
   const currentPath = hashRoute?.[1] ?? (typeof window === 'undefined' ? '/' : window.location.pathname)
   const mobileSection = currentPath === '/archive'
@@ -194,7 +204,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
           >
             <Crown /><span>Клуб</span>
           </a>}
-          {!minimal && <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} />}
+          {!minimal && showRoomEntry && <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} />}
           <div className="header-profile-menu" ref={profileMenuRef}>
             <button ref={profileTriggerRef} disabled={!runtimeReady} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label={runtimeReady ? 'Открыть меню' : profileLabel} title={runtimeReady ? 'Меню' : profileLabel} aria-busy={runtimeState === 'loading'} aria-haspopup="menu" aria-expanded={profileMenuOpen}>
               <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
@@ -225,7 +235,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         </nav>
       </div>
     </header>
-    <nav className="mobile-app-nav" aria-label="Основная навигация">
+    <nav className={`mobile-app-nav${showRoomEntry ? '' : ' mobile-app-nav--without-room'}`} aria-label="Основная навигация">
       <button
         className={`mobile-app-nav__item ${mobileSection === 'games' ? 'is-active' : ''}`}
         type="button"
@@ -242,14 +252,14 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
       >
         <Archive /><span>Архив</span>
       </button>
-      <button
+      {showRoomEntry && <button
         className={`mobile-app-nav__item mobile-app-nav__create ${mobileSection === 'room' ? 'is-active' : ''}`}
         type="button"
         aria-current={mobileSection === 'room' ? 'page' : undefined}
         onClick={() => { trackMetrikaGoal('friends_room_opened', { placement: 'mobile_nav' }); openRoomHub() }}
       >
-        <i aria-hidden="true">{openRooms.data?.rooms.length ? <DoorOpen /> : <Plus />}</i><span>Комната</span>
-      </button>
+        <i aria-hidden="true">{hasOpenRoom ? <DoorOpen /> : <Plus />}</i><span>Комната</span>
+      </button>}
       <a
         className={`mobile-app-nav__item mobile-app-nav__club ${mobileSection === 'club' ? 'is-active' : ''}`}
         href="/club"
