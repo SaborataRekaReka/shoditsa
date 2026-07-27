@@ -155,6 +155,30 @@ describe('CloudPayments provider adapter', () => {
     expect((init?.headers as Record<string, string>).Authorization).toBe(`Basic ${Buffer.from(`${credentials.publicId}:${credentials.apiSecret}`).toString('base64')}`)
   })
 
+  it('recognizes a successful refund returned as the latest invoice operation', async () => {
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async () => new Response(JSON.stringify({
+      Success: true,
+      Model: {
+        TransactionId: 900000002,
+        PaymentTransactionId: 897749645,
+        OperationType: 'Refund',
+        InvoiceId: input.orderId,
+        AccountId: input.metadata.userId,
+        Amount: 199,
+        Currency: 'RUB',
+        Status: 'Authorized',
+        CreatedDateIso: '2026-07-27T16:39:00Z',
+      },
+    }), { status: 200, headers: { 'content-type': 'application/json' } }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(provider().getPayment(`invoice:${input.orderId}`)).resolves.toMatchObject({
+      status: 'refunded',
+      amountMinor: 19_900,
+      orderId: input.orderId,
+    })
+  })
+
   it('configures all state-changing notification URLs over HTTPS', async () => {
     const configured = new Map<string, Record<string, unknown>>()
     let activeRequests = 0
