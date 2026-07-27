@@ -118,6 +118,12 @@ export const run = async (args = process.argv.slice(2)) => {
         sourceUrl: thumbnailUrl(logoUrl, 320),
         targetPath: resolve(publicRoot, 'labels', logoFileName),
       })
+      tasks.push({
+        key: `artist-label:${sourceId}`,
+        kind: 'label',
+        sourceUrl: thumbnailUrl(logoUrl, 320),
+        targetPath: resolve(publicRoot, 'labels', 'by-artist', artistPhotoFileName(sourceId)),
+      })
     }
   }
 

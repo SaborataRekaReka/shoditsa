@@ -20,10 +20,13 @@ const artistInitials = (name: string) => name
 
 export function TitlePoster({ item, className = '' }: { item: TitleItem; className?: string }) {
   const [failed, setFailed] = useState(false)
+  const kpopPortraitUrl = item.cardType === 'kpop_artist' && item.id.startsWith('kpop:')
+    ? `/images/kpop/artists/${encodeURIComponent(item.id.slice('kpop:'.length))}.webp`
+    : null
   const portraitSource = item.mode === 'city'
     ? [item.coatOfArmsUrl, item.cityFlagUrl, item.posterUrl, item.countryFlagUrl].find(Boolean) ?? null
     : item.mode === 'music'
-      ? [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
+      ? [kpopPortraitUrl, item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
       : [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find(Boolean) ?? null
   const diagnosisIcon = item.mode === 'diagnosis'
     ? diagnosisSystemIconByKey.get(normalizeDiagnosisSystemKey(item.bodySystems?.[0] ?? '')) ?? defaultDiagnosisSystemIcon

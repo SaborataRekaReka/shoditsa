@@ -2192,6 +2192,9 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const russianName = item.kpopNameRussian && normalizeTextMatch(item.kpopNameRussian) !== normalizeTextMatch(englishName)
     ? item.kpopNameRussian
     : ''
+  const localLabelLogoUrl = item.kpopCurrentLabelLogoUrl && item.id.startsWith('kpop:')
+    ? `/images/kpop/labels/by-artist/${encodeURIComponent(item.id.slice('kpop:'.length))}.webp`
+    : item.kpopCurrentLabelLogoUrl
 
   return <article className="attempt-card attempt-card--kpop">
     <div className="kpop-card__header">
@@ -2215,7 +2218,7 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
     <div className={`kpop-label-plate ${labelHint?.status ?? 'unknown'}`}>
-      <KpopLabelMark label={item.kpopCurrentLabel || 'K-pop'} logoUrl={item.kpopCurrentLabelLogoUrl} />
+      <KpopLabelMark label={item.kpopCurrentLabel || 'K-pop'} logoUrl={localLabelLogoUrl} />
       <span>
         <small>Текущий корейский лейбл</small>
         <strong>{item.kpopCurrentLabel || 'Нет данных'}</strong>
