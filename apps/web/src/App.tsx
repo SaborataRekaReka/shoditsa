@@ -106,7 +106,7 @@ import { useDebouncedValue } from './hooks/use-debounced-value'
 import { ensureServerSession, SERVER_RUNTIME, useServerRuntime } from './hooks/use-server-runtime'
 import { addTicketLedgerEntry, allGames, claimDailyMilestones, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadDailyMilestoneClaims, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadStats, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
-import { pathnameForPlayerRoute, playerRouteFromPathname, type PlayerScreen } from './app/routes'
+import { pathnameForPlayerRoute, playerRouteFromLocation, playerRouteFromPathname, type PlayerScreen } from './app/routes'
 import { MODE_PRESENTATION } from './app/mode-presentation'
 import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
 import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
@@ -1322,7 +1322,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
             newActionLabel={canAccessFriendsRoom ? 'СОЗДАТЬ КОМНАТУ' : 'УЗНАТЬ О КЛУБЕ'}
             status="new"
             attempts={null}
-            href="/games/together/about"
+            href="/games/together"
             onClick={() => {
               trackMetrikaGoal('friends_room_opened', { placement: 'hub_specials' })
               onSelectFriends()
@@ -3622,7 +3622,10 @@ function GameApp() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const routeLocation = useRouterState({ select: (state) => state.location })
-  const initialPlayerRoute = playerRouteFromPathname(routeLocation.pathname)
+  const initialPlayerRoute = playerRouteFromLocation(
+    routeLocation.pathname,
+    typeof window === 'undefined' ? '' : window.location.search,
+  )
   const serverRuntime = useServerRuntime()
   const hasActiveClub = Boolean(SERVER_RUNTIME && serverRuntime.dashboard?.membership.active)
   const canAccessFriendsRoom = canUseFriendsRoom(serverRuntime.me?.user)
@@ -4026,7 +4029,7 @@ function GameApp() {
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
-    if (target.screen === 'friends-intro') return navigate({ to: '/games/together/about', replace })
+    if (target.screen === 'friends-intro') return navigate({ to: '/games/together', replace })
     if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
     if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
     if (target.screen === 'title' && target.mode) return navigate({ to: '/games/$mode', params: { mode: target.mode }, replace })

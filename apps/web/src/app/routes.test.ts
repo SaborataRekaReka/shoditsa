@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pathnameForPlayerRoute, playerRouteFromPathname } from './routes'
+import { pathnameForPlayerRoute, playerRouteFromLocation, playerRouteFromPathname } from './routes'
 
 describe('typed player routes', () => {
   it('round-trips every canonical mode through title and local-play routes', async () => {
@@ -29,10 +29,12 @@ describe('typed player routes', () => {
     expect(pathnameForPlayerRoute({ screen: 'legal', legalDocument: 'tariffs' })).toBe('/legal/tariffs')
     expect(playerRouteFromPathname('/legal/not-a-document')).toEqual({ screen: 'hub' })
     expect(playerRouteFromPathname('/games/danetki')).toEqual({ screen: 'danetki' })
-    expect(playerRouteFromPathname('/games/together')).toEqual({ screen: 'friends-room' })
+    expect(playerRouteFromPathname('/games/together')).toEqual({ screen: 'friends-intro' })
+    expect(playerRouteFromLocation('/games/together', '?new=1')).toEqual({ screen: 'friends-room' })
+    expect(playerRouteFromLocation('/games/together', '?room=AB234')).toEqual({ screen: 'friends-room' })
+    expect(playerRouteFromLocation('/games/together', '?mode=danetki')).toEqual({ screen: 'friends-room' })
     expect(pathnameForPlayerRoute({ screen: 'friends-room' })).toBe('/games/together')
-    expect(playerRouteFromPathname('/games/together/about')).toEqual({ screen: 'friends-intro' })
-    expect(pathnameForPlayerRoute({ screen: 'friends-intro' })).toBe('/games/together/about')
+    expect(pathnameForPlayerRoute({ screen: 'friends-intro' })).toBe('/games/together')
     expect(playerRouteFromPathname('/play/danetki')).toEqual({ screen: 'hub' })
     expect(playerRouteFromPathname('/danetki/join/abc-123')).toEqual({ screen: 'danetki-join', inviteToken: 'abc-123' })
     expect(playerRouteFromPathname('/games/not-a-mode')).toEqual({ screen: 'hub' })

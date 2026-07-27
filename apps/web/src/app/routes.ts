@@ -32,8 +32,7 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   if (normalized === '/purchase/return') return { screen: 'purchase-return' }
   if (normalized === '/review/music') return { screen: 'review', mode: 'music' }
   if (normalized === '/games/danetki') return { screen: 'danetki' }
-  if (normalized === '/games/together/about') return { screen: 'friends-intro' }
-  if (normalized === '/games/together') return { screen: 'friends-room' }
+  if (normalized === '/games/together') return { screen: 'friends-intro' }
   const danetkiJoinMatch = normalized.match(/^\/danetki\/join\/([^/]+)$/)
   if (danetkiJoinMatch) return { screen: 'danetki-join', inviteToken: decodedSegment(danetkiJoinMatch[1]) }
   const legalMatch = normalized.match(/^\/legal\/([^/]+)$/)
@@ -59,9 +58,18 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   return { screen: 'hub' }
 }
 
+export const playerRouteFromLocation = (pathname: string, search = ''): PlayerRouteState => {
+  const route = playerRouteFromPathname(pathname)
+  if (route.screen !== 'friends-intro') return route
+  const params = new URLSearchParams(search)
+  return params.has('room') || params.get('new') === '1' || params.get('mode') === 'danetki'
+    ? { screen: 'friends-room' }
+    : route
+}
+
 export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken }: PlayerRouteState) => {
   if (screen === 'danetki') return '/games/danetki'
-  if (screen === 'friends-intro') return '/games/together/about'
+  if (screen === 'friends-intro') return '/games/together'
   if (screen === 'friends-room') return '/games/together'
   if (screen === 'danetki-join' && inviteToken) return `/danetki/join/${encodeURIComponent(inviteToken)}`
   if (screen === 'title' && mode) return `/games/${encodeURIComponent(mode)}`
