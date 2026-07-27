@@ -17,6 +17,7 @@ import {
   Crown,
   Film,
   Gamepad2,
+  Grid2X2,
   HeartPulse,
   LogIn,
   Lock,
@@ -37,7 +38,7 @@ import {
   X,
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
-import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -55,7 +56,7 @@ import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyVie
 import { GameResult } from './features/result/GameResult'
 import { FinalChoicePanel } from './features/game-session/FinalChoicePanel'
 import { FINAL_CHOICE_DURATION_SECONDS, finalChoiceSecondsRemaining } from './features/game-session/final-choice-countdown'
-import { activeSessionToSavedGame, archiveItemToSavedGame, publicItemToTitle, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
+import { activeSessionToSavedGame, archiveItemToSavedGame, isCatalogArchiveItem, publicItemToTitle, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
 import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
 import type { ContentReportReason } from './features/content-report/ContentReport'
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
@@ -106,7 +107,7 @@ import { useDebouncedValue } from './hooks/use-debounced-value'
 import { ensureServerSession, SERVER_RUNTIME, useServerRuntime } from './hooks/use-server-runtime'
 import { addTicketLedgerEntry, allGames, claimDailyMilestones, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadDailyMilestoneClaims, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadStats, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
-import { pathnameForPlayerRoute, playerRouteFromLocation, playerRouteFromPathname, type PlayerScreen } from './app/routes'
+import { pathnameForPlayerRoute, playerRouteFromLocation, playerRouteFromPathname, type PlayerRouteState, type PlayerScreen } from './app/routes'
 import { MODE_PRESENTATION } from './app/mode-presentation'
 import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
 import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
@@ -124,8 +125,9 @@ import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
 import { FriendsRoomIntroScreen } from './features/friends-room/FriendsRoomIntroScreen'
 import { canCreateFriendsRoom, canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
 import { LegalScreen } from './features/legal/LegalScreen'
-import { SESSION_RENDERER_BY_ENGINE } from './features/danetki/DanetkiGamePage'
+import { SESSION_RENDERER_BY_ENGINE } from './features/game-session/session-renderers'
 import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
+import { ConnectionsTitleScreen } from './features/connections/ConnectionsTitleScreen'
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
 import { UserBadgeList } from './components/user-badges/UserBadgeList'
@@ -162,8 +164,8 @@ const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
-const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS)
-const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS)
+const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId))
+const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS.filter(isCatalogGuessModeId))
 const DTF_COMMENTS_PACK_ID = 'dtf-game-comments-25-v1'
 const DTF_COMMENTS_POOL_COUNT = 25
 
@@ -1159,14 +1161,19 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, danetkiEnabled, danetkiPoolCount, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, onConnections, danetkiEnabled, danetkiPoolCount, connectionsEnabled, connectionsPoolCount, connectionsStatus, connectionsMistakes, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectDtfSpecial: () => void
   onSelectKpopSpecial: () => void
   onSelectFriends: () => void
   onDanetki: () => void
+  onConnections: () => void
   danetkiEnabled: boolean
   danetkiPoolCount: number | null
+  connectionsEnabled: boolean
+  connectionsPoolCount: number | null
+  connectionsStatus: 'new' | 'active' | 'completed'
+  connectionsMistakes: number | null
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1186,8 +1193,11 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
 }) {
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   const dailyState = useMemo(
-    () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt),
-    [games, globalDailySalt, preferredMode, todayAttendance],
+    () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt, {
+      enabled: connectionsEnabled,
+      completed: connectionsStatus === 'completed',
+    }),
+    [connectionsEnabled, connectionsStatus, games, globalDailySalt, preferredMode, todayAttendance],
   )
 
   return <>
@@ -1197,12 +1207,12 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
         <div className="hub-hero">
           <div className="hub-hero__copy">
             <div className="hub-hero__facts" aria-label="Об игре">
-              <span><Gamepad2 /><strong>8 игр</strong></span>
+              <span><Gamepad2 /><strong>9 игр</strong></span>
               <span><CalendarDays /><strong>1 загадка в день</strong></span>
               <span><Target /><strong>10 попыток</strong></span>
             </div>
             <h1>Все сойдется!</h1>
-            <p>Кино, сериалы, аниме, игры, города, музыка, диагнозы и данетки. Каждый день — новая загадка, которую можно раскрыть по подсказкам.</p>
+            <p>Кино, сериалы, аниме, игры, города, музыка, диагнозы, связи и данетки. Каждый день — новая загадка, которую можно раскрыть по подсказкам.</p>
             <div className="hub-hero__actions">
               <ActionButton onClick={() => {
                 trackMetrikaGoal('hub_scroll_to_games')
@@ -1248,6 +1258,31 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
             }
             return <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
           })}
+          {connectionsEnabled && <CategoryTicket
+            mode="connections"
+            title="Связи"
+            description="Соберите 16 слов в четыре связанные группы"
+            color="var(--mode-connections-brand)"
+            icon={Grid2X2}
+            watermarkUrl={publicAssetUrl('images/connections/connections-title-hero.webp')}
+            poolCount={connectionsPoolCount}
+            poolLabel="РАУНДОВ"
+            status={connectionsStatus}
+            attempts={connectionsMistakes}
+            progressLabel="ОШИБКИ"
+            progressMax={4}
+            completedProgress={false}
+            href={pathnameForPlayerRoute({ screen: 'title', mode: 'connections' })}
+            onClick={() => {
+              trackMetrikaGoal('category_ticket_play', {
+                mode: 'connections',
+                status: connectionsStatus,
+                mistakes: connectionsMistakes ?? 0,
+                date: todayAttendance.date,
+              })
+              onConnections()
+            }}
+          />}
           {danetkiEnabled && <CategoryTicket
             mode="danetki"
             title="Данетки"
@@ -3324,6 +3359,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     const DanetkiRenderer = SESSION_RENDERER_BY_ENGINE.danetki_chat
     return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
   }
+  if (session.engine === 'connections_grid' && session.connections) {
+    const ConnectionsRenderer = SESSION_RENDERER_BY_ENGINE.connections_grid
+    return <ConnectionsRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
+  }
 
   const isPromptSession = Boolean(session.promoPrompt)
   const isDtfCommentSession = session.promoPrompt?.packId === DTF_COMMENTS_PACK_ID
@@ -3415,7 +3454,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     finalChoiceMutation.mutate({ body: { action: 'reveal' }, key })
   }
   const pendingHintOption = hintOptions.find((option) => option.key === hint.variables?.hintKey) ?? null
-  const completedModes = (dashboard.data?.today?.completedModes ?? []).filter(isPlayableModeId)
+  const completedModes = (dashboard.data?.today?.completedModes ?? []).filter(isCatalogGuessModeId)
   const completedToday = new Set(completedModes).size
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
@@ -3652,7 +3691,9 @@ function GameApp() {
       ? 'profile'
       : initialPlayerRoute.screen)
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
-  const [mode, setMode] = useState<TitleMode>(() => challenge?.mode ?? initialPlayerRoute.mode ?? 'movie')
+  const [mode, setMode] = useState<TitleMode>(() => (
+    challenge?.mode ?? (isCatalogGuessModeId(initialPlayerRoute.mode) ? initialPlayerRoute.mode : 'movie')
+  ))
   const [period, setPeriod] = useState<PeriodKey>(() => challenge?.period ?? 'all')
   const [difficulty, setDifficulty] = useState<DifficultyKey>(() => challenge?.difficulty ?? 'medium')
   const [modeVariant, setModeVariant] = useState<string | null>(() => GAME_MODE_MANIFEST.city.variants[0].id)
@@ -3730,7 +3771,7 @@ function GameApp() {
     setServerSessionId(session.id)
     window.sessionStorage.setItem('shoditsa:active-server-session', session.id)
     setGameExperience(gameExperienceForSession(session, backTarget))
-    if (session.engine !== 'danetki_chat') {
+    if (session.engine === 'catalog_guess') {
       setMode(session.mode)
       setModeVariant(session.mode === 'city' ? session.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id : null)
       setPeriod(session.period)
@@ -3745,7 +3786,7 @@ function GameApp() {
     window.scrollTo({ top: 0 })
   }, [])
   const syncServerSessionContext = useCallback((session: GameSessionSnapshot) => {
-    if (session.engine === 'danetki_chat') {
+    if (session.engine !== 'catalog_guess') {
       setDate(session.puzzleDate)
       return
     }
@@ -4056,7 +4097,7 @@ function GameApp() {
     setTransition('idle')
     setModal(null)
     setScreen(target.screen)
-    if (target.mode) {
+    if (isCatalogGuessModeId(target.mode)) {
       setModeSafe(target.mode)
       if (target.screen === 'title') setGameExperience(catalogGameExperience('title'))
     }
@@ -4066,9 +4107,14 @@ function GameApp() {
 
   useEffect(() => {
     const routedScreen: PlayerScreen = screen
-    const target = {
+    const currentRouteMode = playerRouteFromPathname(routeLocation.pathname).mode
+    const target: PlayerRouteState = {
       screen: routedScreen,
-      mode: routedScreen === 'title' || (routedScreen === 'game' && !serverSessionId) ? mode : undefined,
+      mode: routedScreen === 'title'
+        ? currentRouteMode === 'connections' ? 'connections' : mode
+        : routedScreen === 'game' && !serverSessionId
+          ? mode
+          : undefined,
       sessionId: routedScreen === 'game' ? serverSessionId ?? undefined : undefined,
       packId: routedScreen === 'special' ? playerRouteFromPathname(routeLocation.pathname).packId : undefined,
       legalDocument: routedScreen === 'legal' ? playerRouteFromPathname(routeLocation.pathname).legalDocument : undefined,
@@ -4146,11 +4192,26 @@ function GameApp() {
   const games = useMemo<SavedGame[]>(() => {
     if (!SERVER_RUNTIME) return allGames()
     return [
-      ...catalogActiveSessions(serverRuntime.dashboard?.activeSessions ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(activeSessionToSavedGame),
-      ...(serverArchive.data?.items ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(archiveItemToSavedGame),
+      ...catalogActiveSessions(serverRuntime.dashboard?.activeSessions ?? []).map(activeSessionToSavedGame),
+      ...(serverArchive.data?.items ?? []).filter(isCatalogArchiveItem).map(archiveItemToSavedGame),
     ]
   }, [serverArchive.data, serverRuntime.dashboard])
   const activeDanetkiSessionId = (serverRuntime.dashboard?.activeSessions ?? []).find((session) => String(session.mode) === 'danetki' && session.status === 'playing')?.id ?? null
+  const activeConnectionsSession = (serverRuntime.dashboard?.activeSessions ?? []).find((session) => (
+    session.mode === 'connections' && session.status === 'playing'
+  )) ?? null
+  const completedConnectionsSession = (serverArchive.data?.items ?? []).find((session) => (
+    session.mode === 'connections'
+    && session.puzzleDate === (serverRuntime.meta?.moscowDate ?? getMoscowDate())
+    && (session.status === 'won' || session.status === 'lost')
+  )) ?? null
+  const connectionsStatus = activeConnectionsSession
+    ? 'active' as const
+    : completedConnectionsSession
+      ? 'completed' as const
+      : 'new' as const
+  const connectionsTitleActive = screen === 'title'
+    && playerRouteFromPathname(routeLocation.pathname).mode === 'connections'
   const currentCompletedPeriods = useMemo(() => {
     if (!canUnlockPeriods(mode)) return [] as PeriodKey[]
     const completed = new Set<PeriodKey>()
@@ -4186,6 +4247,15 @@ function GameApp() {
   const goHome = () => moveToScreen('hub')
   const goBackFromTitle = () => moveToScreen('hub')
   const goBackFromGame = () => {
+    if (
+      serverSessionId
+      && (activeConnectionsSession?.id === serverSessionId || completedConnectionsSession?.id === serverSessionId)
+      && gameExperience.source === 'catalog'
+      && gameExperience.backTarget === 'title'
+    ) {
+      void navigateToPlayerRoute({ screen: 'title', mode: 'connections' })
+      return
+    }
     if (gameExperience.source === 'pack') {
       void navigateToPlayerRoute({ screen: 'special', packId: gameExperience.packId })
       return
@@ -4273,6 +4343,75 @@ function GameApp() {
     setModal(null)
     setScreen('danetki')
     window.scrollTo({ top: 0 })
+  }
+
+  const openConnectionsSession = (sessionId: string, puzzleDate: string, backTarget: 'hub' | 'title' | 'rewatch') => {
+    clearTransitionTimer()
+    setTransition('idle')
+    setServerActionError('')
+    setServerSessionId(sessionId)
+    window.sessionStorage.setItem('shoditsa:active-server-session', sessionId)
+    setGameExperience(catalogGameExperience(backTarget))
+    setDate(puzzleDate)
+    setModal(null)
+    setScreen('game')
+    window.scrollTo({ top: 0 })
+  }
+
+  const openConnections = () => {
+    if (!SERVER_RUNTIME || serverRuntime.meta?.features.connectionsEnabled === false) return
+    const existing = activeConnectionsSession ?? completedConnectionsSession
+    if (existing) {
+      openConnectionsSession(existing.id, existing.puzzleDate, 'hub')
+      return
+    }
+    clearTransitionTimer()
+    setTransition('idle')
+    setServerActionError('')
+    setModal(null)
+    void navigateToPlayerRoute({ screen: 'title', mode: 'connections' })
+  }
+
+  const playConnectionsToday = () => {
+    const existing = activeConnectionsSession ?? completedConnectionsSession
+    if (existing) {
+      openConnectionsSession(existing.id, existing.puzzleDate, 'title')
+      return
+    }
+    if (!SERVER_RUNTIME || startServerSession.isPending) return
+    setServerActionError('')
+    startServerSession.mutate({
+      key: crypto.randomUUID(),
+      body: {
+        kind: 'daily',
+        mode: 'connections',
+        period: 'all',
+        difficulty: null,
+        archiveDate: null,
+      },
+      backTarget: 'title',
+    })
+  }
+
+  const openConnectionsArchive = (archiveDate: string, sessionId: string | null) => {
+    trackMetrikaGoal('open_archive_day', { mode: 'connections', hasSavedSession: Boolean(sessionId) })
+    if (sessionId) {
+      openConnectionsSession(sessionId, archiveDate, 'rewatch')
+      return
+    }
+    if (!SERVER_RUNTIME || startServerSession.isPending) return
+    setServerActionError('')
+    startServerSession.mutate({
+      key: crypto.randomUUID(),
+      body: {
+        kind: 'archive',
+        mode: 'connections',
+        period: 'all',
+        difficulty: null,
+        archiveDate,
+      },
+      backTarget: 'rewatch',
+    })
   }
 
   const startDanetki = (roomMode: 'solo' | 'group') => {
@@ -4462,7 +4601,7 @@ function GameApp() {
         setServerSessionId(activeServerFreePlay.id)
         window.sessionStorage.setItem('shoditsa:active-server-session', activeServerFreePlay.id)
         setGameExperience(catalogGameExperience(backTarget))
-        setModeSafe(activeServerFreePlay.mode)
+        setModeSafe(mode)
         setPeriod(activeServerFreePlay.period)
         if (activeServerFreePlay.mode === 'music' && activeServerFreePlay.difficulty) setDifficulty(activeServerFreePlay.difficulty)
         setDate(activeServerFreePlay.puzzleDate)
@@ -4634,7 +4773,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} onConnections={openConnections} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} connectionsEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.connectionsEnabled !== false : false} connectionsPoolCount={serverRuntime.meta?.modes.find((entry) => entry.mode === 'connections')?.count ?? null} connectionsStatus={connectionsStatus} connectionsMistakes={activeConnectionsSession?.mistakesUsed ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-intro' && <FriendsRoomIntroScreen canCreate={canCreateFriendsRoomAccess} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={() => selectFriendsRoom()} onClub={() => moveToScreen('club')} />}
 
@@ -4645,9 +4784,11 @@ function GameApp() {
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onJoined={(session) => activateServerSession(session, 'hub')} />}
 
-    {screen === 'title' && <TitleScreen mode={mode} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficultyFromTitle} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />}
+    {screen === 'title' && (connectionsTitleActive
+      ? <ConnectionsTitleScreen date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} status={connectionsStatus} busy={startServerSession.isPending} onHome={goHome} onBack={goBackFromTitle} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onPlay={playConnectionsToday} />
+      : <TitleScreen mode={mode} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficultyFromTitle} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />)}
 
-    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onClub={() => moveToScreen('club')} />}
+    {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onOpenConnections={openConnectionsArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onClub={() => moveToScreen('club')} />}
 
     {screen === 'review' && <MusicReviewScreen onHome={goHome} onBack={goBackFromReview} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

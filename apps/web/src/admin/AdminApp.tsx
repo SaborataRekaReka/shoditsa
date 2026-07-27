@@ -3,7 +3,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import {
   Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
   Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
-  Download, FileClock, FileJson, Filter, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
+  Download, FileClock, FileJson, Filter, Grid2X2, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
   LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
   RotateCcw, Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
   UsersRound, WandSparkles, X,
@@ -14,9 +14,10 @@ import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { adminCommentUnlockLabel, adminContentComments } from './content-comments'
 import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
 import { GameBuilderPage } from './GameBuilderPage'
+import { ConnectionsAdminPage } from './connections/ConnectionsAdminPage'
 import './admin.css'
 
-type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'integrations' | 'system' | 'audit'
+type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'connections' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
 const adminLogoUrl = publicAssetUrl('images/logo.svg')
 
@@ -45,7 +46,7 @@ const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admi
 const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
   { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' },
-  { value: 'danetki', label: 'Данетки' },
+  { value: 'danetki', label: 'Данетки' }, { value: 'connections', label: 'Связи' },
 ]
 const MODE_LABEL = Object.fromEntries(MODES.map((mode) => [mode.value, mode.label])) as Record<ContentMode, string>
 type ContentFieldFilter = string
@@ -237,6 +238,8 @@ const contentFieldOperatorLabel = (operator: ContentFieldOperator, field?: strin
 const REPORT_REASON: Record<string, string> = {
   wrong_fact: 'Неверный факт', disputed_comparison: 'Спорное сравнение', title_not_found: 'Не принимается ответ', bad_hint: 'Плохая подсказка',
   bad_image: 'Плохое изображение', duplicate_card: 'Дубликат', typo_or_translation: 'Опечатка / перевод', technical_error: 'Техническая ошибка', other: 'Другое',
+  ambiguous_group: 'Неоднозначная группа', wrong_group_title: 'Неверное название группы', word_does_not_fit: 'Слово не подходит',
+  duplicate_word: 'Слово повторяется',
 }
 const STATUS_LABEL: Record<string, string> = {
   open: 'Новый', in_progress: 'В работе', resolved: 'Исправлен', dismissed: 'Отклонён', duplicate: 'Дубликат',
@@ -309,7 +312,7 @@ const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => ty
 const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
   const candidate = (parts[0] || 'dashboard') as Section
-  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'danetki', 'integrations', 'system', 'audit']
+  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'danetki', 'connections', 'integrations', 'system', 'audit']
   return {
     section: allowed.includes(candidate) ? candidate : 'dashboard',
     id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null,
@@ -800,6 +803,13 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Ключевые факты', ['keyFacts']],
       ['Подсказки', ['hints']],
       ['Стартовые вопросы', ['starterQuestions']],
+      ['Статус', ['contentStatus']],
+    ],
+    connections: [
+      ['Сложность', ['difficulty']],
+      ['Карточки', ['tiles']],
+      ['Группы', ['groups']],
+      ['Локаль', ['locale']],
       ['Статус', ['contentStatus']],
     ],
   }
@@ -2723,6 +2733,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
+  connections: ['locale', 'difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'popularityScore'],
 }
 const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Год окончания', titleRu: 'Русское название',
@@ -5250,6 +5261,7 @@ const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> 
   { id: 'commerce', label: 'Монетизация', icon: CircleDollarSign },
   { id: 'private-orders', label: 'Корпоративные заявки', icon: BriefcaseBusiness },
   { id: 'danetki', label: 'Данетки', icon: Bot },
+  { id: 'connections', label: 'Связи', icon: Grid2X2 },
   { id: 'integrations', label: 'API-интеграции', icon: KeyRound }, { id: 'system', label: 'Система', icon: Settings2 }, { id: 'audit', label: 'Журнал администратора', icon: FileClock },
 ]
 
@@ -5277,6 +5289,7 @@ export default function AdminApp() {
     {route.section === 'commerce' && <CommercePage notify={notify} />}
     {route.section === 'private-orders' && <PrivateOrdersPage notify={notify} />}
     {route.section === 'danetki' && <DanetkiAdminPage notify={notify} />}
+    {route.section === 'connections' && <ConnectionsAdminPage notify={notify} onEdit={(itemId) => route.navigate('content', itemId)} />}
     {route.section === 'integrations' && <IntegrationsPage notify={notify} />}
     {route.section === 'system' && <SystemPage notify={notify} />}
     {route.section === 'audit' && <AuditPage />}

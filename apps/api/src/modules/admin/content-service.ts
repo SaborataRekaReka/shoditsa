@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
-import { CONTENT_MODE_IDS, type ContentMode, type TitleItem } from '@shoditsa/contracts'
+import { CONTENT_MODE_IDS, isCatalogGuessModeId, type ContentMode, type TitleItem } from '@shoditsa/contracts'
 import {
   appSettings, auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   contentWorkspaceChanges, contentWorkspaces, diagnosisVignettes, type Database,
@@ -13,6 +13,7 @@ import {
   isPromoGameItem,
   normalize,
   playablePlotHints,
+  validateConnectionsRound,
 } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 
@@ -54,6 +55,18 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
       error('media', 'invalid_url', 'Медиа должно использовать HTTPS или разрешённый внутренний путь')
       break
     }
+  }
+  if (mode === 'connections') {
+    if (typeof payload.allowedInGame !== 'boolean') {
+      error('allowedInGame', 'required', 'Укажите, разрешён ли раунд в игре')
+    }
+    issues.push(...validateConnectionsRound(payload).map((issue) => ({
+      level: issue.severity,
+      field: issue.path,
+      code: issue.code,
+      message: issue.message,
+    })))
+    return issues
   }
   if (payload.comments != null) {
     if (mode !== 'game') {
@@ -116,17 +129,18 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
     const duplicatedFacts = payload.facts.map(text).filter((fact) => fact && modelFacts.has(normalize(fact)))
     if (duplicatedFacts.length) error('facts', 'duplicate_model_fact', 'Интересные факты не должны повторять формат, статус или количество эпизодов')
   }
-  const hint = mode === 'danetki' ? '' : text(payload.plotHint)
+  const catalogMode = isCatalogGuessModeId(mode)
+  const hint = catalogMode ? text(payload.plotHint) : ''
   const enabled = payload.allowedInGame !== false
   const item = payload as TitleItem
-  if (mode !== 'danetki' && !hint) (enabled ? error : warning)('plotHint', 'missing_hint', 'Описание не заполнено')
+  if (catalogMode && !hint) (enabled ? error : warning)('plotHint', 'missing_hint', 'Описание не заполнено')
   if (hint && hint.length < 30) error('plotHint', 'short_hint', 'Подсказка должна содержать не меньше 30 символов')
   if (hint && /(?:\.\.\.|…)\s*$/.test(hint)) error('plotHint', 'truncated_hint', 'Подсказка не должна заканчиваться многоточием')
   if (hint && /\[+\s*REDACTED\s*\]+|_KEEP_\d+_/i.test(hint)) error('plotHint', 'placeholder_hint', 'Подсказка содержит служебную заглушку вместо готового текста')
   const hintLeaksAnswer = plotHintLeaksAnswer({ ...item, plotHint: hint })
   if (hint && hintLeaksAnswer) error('plotHint', 'answer_leak', 'Подсказка содержит название ответа')
   if (hint && /(?:json|undefined|null|nan|stack trace|exception|http(?:s)?:\/\/|\bapi\b|\bid\s*[:=])/i.test(hint)) error('plotHint', 'technical_leak', 'Подсказка содержит технический текст')
-  if (mode !== 'danetki' && enabled && playablePlotHints(item).length === 0 && hint) {
+  if (catalogMode && enabled && playablePlotHints(item).length === 0 && hint) {
     error('plotHint', 'unplayable_hint', 'У включённой карточки должна быть хотя бы одна безопасная полноценная подсказка')
   }
   if (payload.plotHintVariants != null) {
@@ -152,7 +166,7 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
 export const validateCatalogInvariants = (items: TitleItem[]): CatalogValidationIssue[] => {
   const issues: CatalogValidationIssue[] = []
   for (const item of items) {
-    if (String(item.mode) === 'danetki') continue
+    if (!isCatalogGuessModeId(item.mode)) continue
     if (item.allowedInGame === false) continue
     const publishabilityCodes = new Set([
       'missing_hint', 'short_hint', 'truncated_hint', 'placeholder_hint', 'answer_leak',
@@ -169,7 +183,7 @@ export const validateCatalogInvariants = (items: TitleItem[]): CatalogValidation
       issues.push({ level: 'error', field: 'allowedInGame', code: 'regular_pool_ineligible', message: 'Карточка помечена как включённая, но не проходит единые правила игрового пула', itemId: item.id })
     }
   }
-  const eligible = items.filter(isAllowedInRegularGame)
+  const eligible = items.filter((item) => isCatalogGuessModeId(item.mode) && isAllowedInRegularGame(item))
   for (const group of contentDuplicateGroups(eligible)) {
     const ids = group.map((item) => item.id).sort()
     for (const itemId of ids) {

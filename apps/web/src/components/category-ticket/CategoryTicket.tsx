@@ -10,6 +10,9 @@ type Props = Omit<CategoryTicketConfig, 'mode'> & {
   poolCount: number | null
   status: CategoryTicketStatus
   attempts: number | null
+  progressLabel?: string
+  progressMax?: number
+  completedProgress?: boolean
   kicker?: string
   poolLabel?: string
   newActionLabel?: string
@@ -29,18 +32,18 @@ const actionLabel: Record<CategoryTicketStatus, string> = {
   completed: 'РЕЗУЛЬТАТ',
 }
 
-const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number | null) => {
-  if (status === 'active') return `Продолжить игру: ${title}, попытка ${attempts ?? 0} из 10`
+const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number | null, progressLabel: string, progressMax: number) => {
+  if (status === 'active') return `Продолжить игру: ${title}, ${progressLabel.toLocaleLowerCase('ru-RU')} ${attempts ?? 0} из ${progressMax}`
   if (status === 'completed') return `Открыть результат игры: ${title}`
   return `Играть: ${title}`
 }
 
-export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, onClick }: Props) {
+export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, progressLabel = 'ПОПЫТКИ', progressMax = 10, completedProgress = true, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
   const badge = status === 'active'
-    ? `В ПРОЦЕССЕ · ${attempts ?? 0}/10`
+    ? `${progressLabel} · ${attempts ?? 0}/${progressMax}`
     : status === 'completed'
-      ? `ГОТОВО · ${attempts ?? 0}/10`
+      ? completedProgress ? `ГОТОВО · ${attempts ?? 0}/${progressMax}` : 'ГОТОВО'
       : null
 
   const content = <>
@@ -62,7 +65,7 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
     {badge && <span className={`category-ticket__badge ${status === 'completed' ? 'category-ticket__badge--completed' : ''}`}>{badge}</span>}
   </>
   const className = `category-ticket category-ticket--${mode} ${status === 'completed' ? 'is-completed' : ''}`
-  const label = ariaLabel(title, status, attempts)
+  const label = ariaLabel(title, status, attempts, progressLabel, progressMax)
   const openInApp = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
     event.preventDefault()

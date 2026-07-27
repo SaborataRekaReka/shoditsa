@@ -1,4 +1,5 @@
 import type { SavedGame, TitleMode } from '../../types'
+import type { FullHouseModeId } from '@shoditsa/contracts'
 
 // Full-house size comes from the mode manifest and can grow with new modes.
 export type DailyMilestone = number
@@ -16,7 +17,8 @@ export type DailyRewardState = {
 }
 
 export type DailyHubState = {
-  completedModes: TitleMode[]
+  completedModes: FullHouseModeId[]
+  dailyModes: FullHouseModeId[]
   completedCount: number
   activeGame: SavedGame | null
   activeGamesByMode: Partial<Record<TitleMode, SavedGame>>

@@ -29,8 +29,6 @@ type Props = {
 
 const errorText = (error: unknown) => error instanceof ApiClientError ? error.message : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 const localTime = (value: string) => new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
-export const SESSION_RENDERER_BY_ENGINE = { danetki_chat: DanetkiGamePage }
-
 export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive, onStats, onRules, onReview }: Props) {
   const client = useQueryClient()
   const runtime = useServerRuntime()

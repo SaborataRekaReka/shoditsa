@@ -18,6 +18,8 @@ import {
   type TitleMode,
 } from '@shoditsa/contracts'
 
+export * from './connections.js'
+
 export const PERIODS: Record<PeriodKey, { label: string; short: string; fromYear: number | null }> = {
   all: { label: 'Все годы', short: 'Весь экран', fromYear: null },
   from_1960: { label: 'С 1960 года', short: '1960+', fromYear: 1960 },

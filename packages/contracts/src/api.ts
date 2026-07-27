@@ -1,8 +1,9 @@
 import type { AssistHintKey, Hint, TitleItem } from './legacy-types.js'
 import type { ApiDifficultyKey, ApiPeriodKey, ContentMode, ContentReportReason, PlayableMode } from './schemas.js'
 import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
-import type { GameEngine } from './game-modes.js'
+import type { CatalogGuessModeId } from './game-modes.js'
 import type { EconomyQuote, EconomyRuleSet } from './economy.js'
+import type { ConnectionsGameState, ConnectionsHintSnapshot } from './connections.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'final_choice' | 'won' | 'lost' | 'expired'
@@ -76,6 +77,9 @@ export type MetaResponse = {
     danetkiEnabled: boolean
     danetkiMultiplayerEnabled: boolean
     finalChoiceEnabled: boolean
+    connectionsEnabled: boolean
+    connectionsHintsEnabled: boolean
+    connectionsLaunchDate: string | null
   }
 }
 
@@ -125,6 +129,9 @@ export type ModeStats = {
   bestStreak: number
   distribution: number[]
   finalChoiceWins: number
+  distributionKind?: 'attempts' | 'mistakes'
+  hintsUsed?: number
+  perfectWins?: number
 }
 
 export type PeriodEntitlement = { mode: PlayableMode; period: ApiPeriodKey; source: string; unlockedAt?: string }
@@ -138,6 +145,7 @@ export type ActiveSessionSummary = {
   difficulty: ApiDifficultyKey | null
   puzzleDate: string
   attemptsCount: number
+  mistakesUsed?: number
   updatedAt: string
 }
 
@@ -216,14 +224,12 @@ export type FinalChoiceSnapshot = {
   expiresAt?: string
 }
 
-export type GameSessionSnapshot = {
-  engine: GameEngine
+type GameSessionSnapshotBase = {
   rulesVersion: number
   id: string
   kind: 'daily' | 'archive' | 'free_play' | 'pack'
   packId: string | null
   packPosition: number | null
-  mode: PlayableMode
   variantKey: string | null
   period: ApiPeriodKey
   difficulty: ApiDifficultyKey | null
@@ -242,12 +248,40 @@ export type GameSessionSnapshot = {
   promoPrompt: PromoPromptSnapshot | null
   diagnosisVignette: { id: string; text: string } | null
   serverTime: string
-  danetki?: DanetkiGameState
   answer?: PublicContentItem
 }
 
+export type GameSessionSnapshot =
+  | (GameSessionSnapshotBase & {
+      engine: 'catalog_guess'
+      mode: CatalogGuessModeId
+      danetki?: never
+      connections?: never
+    })
+  | (GameSessionSnapshotBase & {
+      engine: 'danetki_chat'
+      mode: 'danetki'
+      danetki: DanetkiGameState
+      connections?: never
+    })
+  | (GameSessionSnapshotBase & {
+      engine: 'connections_grid'
+      mode: 'connections'
+      connections: ConnectionsGameState
+      danetki?: never
+    })
+
 export type GameStartResponse = { session: GameSessionSnapshot }
 export type GameResponse = { session: GameSessionSnapshot }
+export type ConnectionsGuessResponse = {
+  result: 'correct' | 'wrong' | 'one_away'
+  session: Extract<GameSessionSnapshot, { engine: 'connections_grid' }>
+  reward?: AttemptResponse['reward']
+}
+export type ConnectionsHintResponse = {
+  hint: ConnectionsHintSnapshot
+  session: Extract<GameSessionSnapshot, { engine: 'connections_grid' }>
+}
 
 export type DanetkiStartBody = {
   mode: 'danetki'

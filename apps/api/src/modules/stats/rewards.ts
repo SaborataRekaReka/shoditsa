@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm'
+import { and, eq, isNull, sql } from 'drizzle-orm'
 import {
   ECONOMY_RULES_VERSION,
   FULL_HOUSE_MODE_IDS,
@@ -6,7 +6,7 @@ import {
   type GameCompletionType,
 } from '@shoditsa/contracts'
 import {
-  attendanceStats, dailyAttendance, type Database, userModeStats, walletAccounts, walletLedger,
+  attendanceStats, connectionsSchedule, dailyAttendance, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { getMoscowDate, previousDate } from '../../lib/time.js'
 import { calculateCompletionReward } from '@shoditsa/game-core'
@@ -18,7 +18,7 @@ const ALL_MODES: ContentMode[] = [...FULL_HOUSE_MODE_IDS]
 
 export const completeGame = async (tx: Transaction, input: {
   sessionId: string; userId: string; kind: string; mode: ContentMode; difficulty: string | null;
-  puzzleDate: string; won: boolean; attemptsCount: number; rulesVersion?: number; completionType?: GameCompletionType | null; special?: boolean;
+  puzzleDate: string; won: boolean; attemptsCount: number; distributionIndex?: number; rulesVersion?: number; completionType?: GameCompletionType | null; special?: boolean;
 }) => {
   const completionType = input.completionType ?? (input.won ? 'direct_win' : 'attempts_exhausted')
   const statsEligible = !input.special && (input.kind === 'daily' || input.kind === 'archive')
@@ -30,7 +30,9 @@ export const completeGame = async (tx: Transaction, input: {
     )).for('update').limit(1)
     const row = current[0]
     const distribution = [...row.distribution]
-    if (completionType === 'direct_win') distribution[Math.max(0, Math.min(9, input.attemptsCount - 1))] += 1
+    if (completionType === 'direct_win') {
+      distribution[Math.max(0, Math.min(9, input.distributionIndex ?? input.attemptsCount - 1))] += 1
+    }
     await tx.update(userModeStats).set({
       played: row.played + 1, won: row.won + (input.won ? 1 : 0),
       currentStreak: input.won ? row.currentStreak + 1 : 0,
@@ -55,12 +57,17 @@ export const completeGame = async (tx: Transaction, input: {
     eq(dailyAttendance.userId, input.userId), eq(dailyAttendance.activityDate, input.puzzleDate),
   )).for('update').limit(1)
   const attendance = attendanceRows[0]
+  const connectionsAvailable = Boolean((await tx.select({ puzzleDate: connectionsSchedule.puzzleDate })
+    .from(connectionsSchedule)
+    .where(and(eq(connectionsSchedule.puzzleDate, input.puzzleDate), isNull(connectionsSchedule.cancelledAt)))
+    .limit(1))[0])
+  const routeModes = connectionsAvailable ? ALL_MODES : ALL_MODES.filter((mode) => mode !== 'connections')
   const firstCompletion = attendance.completedModes.length === 0
-  const previousRouteCount = ALL_MODES.filter((mode) => attendance.completedModes.includes(mode)).length
+  const previousRouteCount = routeModes.filter((mode) => attendance.completedModes.includes(mode)).length
   const completedModes = [...new Set([...attendance.completedModes, input.mode])]
-  const routeCount = ALL_MODES.filter((mode) => completedModes.includes(mode)).length
+  const routeCount = routeModes.filter((mode) => completedModes.includes(mode)).length
   const wonModes = input.won ? [...new Set([...attendance.wonModes, input.mode])] : attendance.wonModes
-  const fullHouse = ALL_MODES.every((mode) => completedModes.includes(mode))
+  const fullHouse = routeModes.every((mode) => completedModes.includes(mode))
   const firstRoute3 = previousRouteCount < 3 && routeCount >= 3
   const firstFullHouse = fullHouse && !attendance.fullHouse
 

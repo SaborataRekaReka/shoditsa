@@ -34,4 +34,15 @@ describe('daily hub ticket states', () => {
     ], 'series', 3)
     expect(state.finishedGamesByMode.movie?.attempts[0]?.titleId).toBe('answer')
   })
+
+  it('adds Connections to the full-house route only when the mode is available', () => {
+    const beforeLaunch = buildDailyHubState(attendance, [], 'movie')
+    const afterLaunch = buildDailyHubState(attendance, [], 'movie', 0, { enabled: true, completed: false })
+    const completed = buildDailyHubState(attendance, [], 'movie', 0, { enabled: true, completed: true })
+
+    expect(beforeLaunch.dailyModes).not.toContain('connections')
+    expect(afterLaunch.dailyModes).toContain('connections')
+    expect(completed.completedModes).toContain('connections')
+    expect(completed.completedCount).toBe(1)
+  })
 })

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { CaseVignetteMap, DiagnosisCaseVignettes, LibrarySearchIndex, TitleItem, TitleMode } from '../types'
 import { MODE_CONFIG } from '../app/mode-config'
-import { PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
+import { CATALOG_GUESS_MODE_IDS } from '@shoditsa/contracts'
 
 type ModeData = Record<TitleMode, TitleItem[]>
 type ModeCounts = Record<TitleMode, number | null>
 type ModeSearchIndexes = Record<TitleMode, LibrarySearchIndex | null>
 
-const modeRecord = <T,>(create: () => T) => Object.fromEntries(PLAYABLE_MODE_IDS.map((mode) => [mode, create()])) as Record<TitleMode, T>
+const modeRecord = <T,>(create: () => T) => Object.fromEntries(CATALOG_GUESS_MODE_IDS.map((mode) => [mode, create()])) as Record<TitleMode, T>
 const initialData: ModeData = modeRecord(() => [])
 const initialCounts: ModeCounts = modeRecord(() => null)
 const initialSearchIndexes: ModeSearchIndexes = modeRecord(() => null)

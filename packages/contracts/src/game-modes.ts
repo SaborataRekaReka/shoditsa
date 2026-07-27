@@ -1,26 +1,27 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections'] as const
 // Danetki content can already be prepared in the admin panel, but its chat
 // runtime is not wired into the player application yet. Keep it out of public
 // game routes until that engine is available end to end.
-export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city'] as const
+export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'connections'] as const
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
 export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]
-export type GameEngine = 'catalog_guess' | 'danetki_chat'
+export type GameEngine = 'catalog_guess' | 'danetki_chat' | 'connections_grid'
 
 export type GameModeCapabilities = {
   engine: GameEngine
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'danetki'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'danetki' | 'connections'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
   difficultyPolicy: 'music' | 'none'
   freePlay: boolean
   variants: readonly GameModeVariant[]
+  runtimes: readonly ('hosted' | 'local')[]
 }
 
 export type GameModeVariant = {
@@ -38,19 +39,19 @@ export type GameModeVariant = {
 export const GAME_MODE_MANIFEST = {
   movie: {
     engine: 'catalog_guess', label: 'Кино', dailyLabel: 'Фильм', shareIcon: '🎬', dataDir: 'movies', dailyOrder: 1,
-    countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
   series: {
     engine: 'catalog_guess', label: 'Сериалы', dailyLabel: 'Сериал', shareIcon: '📺', dataDir: 'series', dailyOrder: 2,
-    countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
   anime: {
     engine: 'catalog_guess', label: 'Аниме', dailyLabel: 'Аниме', shareIcon: '🌸', dataDir: 'animes', dailyOrder: 3,
-    countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'year', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
   game: {
     engine: 'catalog_guess', label: 'Игры', dailyLabel: 'Игра', shareIcon: '🎮', dataDir: 'games', dailyOrder: 4,
-    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
   city: {
     engine: 'catalog_guess', label: 'Города', dailyLabel: 'Город', shareIcon: '🌍', dataDir: 'cities', dailyOrder: 5,
@@ -59,19 +60,23 @@ export const GAME_MODE_MANIFEST = {
       { id: 'capitals', label: 'Столицы', shortLabel: 'Столицы', description: 'Только столицы государств' },
       { id: 'capitals-popular', label: 'Столицы и популярные', shortLabel: 'Столицы +', description: 'Столицы и самые узнаваемые города' },
       { id: 'all', label: 'Все города', shortLabel: 'Все', description: 'Полный набор без ограничений' },
-    ],
+    ], runtimes: ['hosted', 'local'],
   },
   music: {
     engine: 'catalog_guess', label: 'Музыка', dailyLabel: 'Артист', shareIcon: '🎵', dataDir: 'music', dailyOrder: 6,
-    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'music', freePlay: true, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'music', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
   diagnosis: {
     engine: 'catalog_guess', label: 'Диагнозы', dailyLabel: 'Диагноз', shareIcon: '🩺', dataDir: 'diagnoses', dailyOrder: 7,
-    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
   danetki: {
-    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 8,
-    countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [],
+    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 9,
+    countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted'],
+  },
+  connections: {
+    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 8,
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>
 
@@ -93,7 +98,12 @@ export const DAILY_MODE_IDS = PLAYABLE_MODE_IDS
 
 export const CATALOG_GUESS_DAILY_MODE_IDS = DAILY_MODE_IDS.filter(isCatalogGuessModeId)
 
-export const FULL_HOUSE_MODE_IDS = DAILY_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].countsTowardFullHouse)
+export type FullHouseModeId = {
+  [Mode in PlayableModeId]: typeof GAME_MODE_MANIFEST[Mode]['countsTowardFullHouse'] extends true ? Mode : never
+}[PlayableModeId]
+export const FULL_HOUSE_MODE_IDS = DAILY_MODE_IDS.filter(
+  (mode): mode is FullHouseModeId => GAME_MODE_MANIFEST[mode].countsTowardFullHouse,
+)
 export const PERIOD_UNLOCKABLE_MODE_IDS = PLAYABLE_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].periodPolicy === 'year')
 export const FREE_PLAY_MODE_IDS = PLAYABLE_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].freePlay)
 

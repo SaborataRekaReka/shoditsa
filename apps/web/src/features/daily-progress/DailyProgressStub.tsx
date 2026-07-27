@@ -4,13 +4,13 @@ import type { DailyHubState } from './daily-progress.types'
 import { ProgressPunches } from './ProgressPunches'
 
 export function DailyProgressStub({ state }: { state: DailyHubState }) {
-  const { completedCount, completedModes, punchesCaption, reward } = state
+  const { completedCount, completedModes, dailyModes, punchesCaption, reward } = state
   return <div className="daily-progress-stub" aria-label="Прогресс игр за сегодня">
     <div className="daily-progress-summary">
       <span className="daily-progress-summary__label">{reward.fullHouse ? 'Полный зал' : 'Прогресс за сегодня'}</span>
-      <strong className="daily-progress-summary__value">{dailyCompletedCopy(completedCount)}</strong>
+      <strong className="daily-progress-summary__value">{dailyCompletedCopy(completedCount, dailyModes.length)}</strong>
     </div>
-    <ProgressPunches completedModes={completedModes} caption={punchesCaption} />
+    <ProgressPunches completedModes={completedModes} dailyModes={dailyModes} caption={punchesCaption} />
     <div className={`next-reward ${reward.fullHouse ? 'is-full-house' : ''}`}>
       <p className="next-reward__copy">
         {reward.fullHouse

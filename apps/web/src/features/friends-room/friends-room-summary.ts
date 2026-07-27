@@ -1,6 +1,6 @@
-import type { FriendsRoomPhase, FriendsRoomSummary, PlayableMode } from '@shoditsa/contracts'
+import type { CatalogGuessModeId, FriendsRoomPhase, FriendsRoomSummary } from '@shoditsa/contracts'
 
-const modeLabels: Record<PlayableMode, string> = {
+const modeLabels: Record<CatalogGuessModeId, string> = {
   movie: 'Кино',
   series: 'Сериалы',
   anime: 'Аниме',

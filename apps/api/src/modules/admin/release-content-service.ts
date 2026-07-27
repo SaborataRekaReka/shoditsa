@@ -1,5 +1,5 @@
 import { eq, sql } from 'drizzle-orm'
-import type { ContentMode } from '@shoditsa/contracts'
+import { isCatalogGuessModeId, type ContentMode } from '@shoditsa/contracts'
 import {
   auditLog, contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   diagnosisVignettes, type Database,
@@ -119,16 +119,24 @@ const insertContentVersions = async (tx: Parameters<Parameters<Database['transac
         popularityScore: Number.isFinite(item.popularityScore) ? item.popularityScore : 0,
         topRank: item.topRank ?? null,
         sortOrder,
-        allowedInGame: entry.mode === 'city'
-          ? item.allowedInGame !== false
-          : isAllowedInRegularGame(item as Parameters<typeof isAllowedInRegularGame>[0]),
+        allowedInGame: entry.mode === 'connections'
+          ? item.allowedInGame === true && item.contentStatus === 'ready'
+          : entry.mode === 'city'
+            ? item.allowedInGame !== false
+            : isCatalogGuessModeId(entry.mode)
+              ? isAllowedInRegularGame(item as Parameters<typeof isAllowedInRegularGame>[0])
+              : item.allowedInGame === true,
         contentStatus: item.contentStatus ?? null,
         payload: item,
       }
     })).returning({ id: contentItemVersions.id, itemId: contentItemVersions.itemId })
     const itemById = new Map(chunk.map((entry) => [entry.itemId, entry.payload]))
-    const aliasRows = versions.flatMap((row) => releaseAliasesFor(itemById.get(row.itemId)!)
-      .map((entry) => ({ itemVersionId: row.id, ...entry })))
+    const aliasRows = versions.flatMap((row) => {
+      const item = itemById.get(row.itemId)!
+      return isCatalogGuessModeId(item.mode)
+        ? releaseAliasesFor(item).map((entry) => ({ itemVersionId: row.id, ...entry }))
+        : []
+    })
     if (aliasRows.length) await tx.insert(contentAliases).values(aliasRows)
     for (const version of versions) versionByItem.set(version.itemId, version.id)
   }

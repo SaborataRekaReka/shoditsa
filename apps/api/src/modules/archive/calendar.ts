@@ -1,7 +1,7 @@
 import { and, desc, eq, gte, inArray, isNull, lte } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import type { ArchiveCalendarQuery } from '@shoditsa/contracts'
-import { dailyChallenges, gameSessions, type Database } from '@shoditsa/database'
+import { connectionsSchedule, dailyChallenges, gameSessions, type Database } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
@@ -47,14 +47,29 @@ export const archiveCalendar = async (db: Database, config: AppConfig, userId: s
   )).orderBy(desc(gameSessions.updatedAt))
   const latestByDate = new Map<string, typeof rows[number]>()
   for (const row of rows) if (!latestByDate.has(row.puzzleDate)) latestByDate.set(row.puzzleDate, row)
+  const scheduledConnectionsDates = query.mode === 'connections'
+    ? new Set((await db.select({ puzzleDate: connectionsSchedule.puzzleDate })
+      .from(connectionsSchedule)
+      .where(and(
+        gte(connectionsSchedule.puzzleDate, query.from),
+        lte(connectionsSchedule.puzzleDate, query.to),
+        isNull(connectionsSchedule.cancelledAt),
+      ))).map((row) => row.puzzleDate))
+    : null
   const clubActive = await hasEntitlement(db, userId, 'club', undefined, now)
   const freeFrom = getFreeArchiveStart(today, config.commerce.freeArchiveDays)
   return {
     access: { archiveFirstDate: config.commerce.archiveFirstDate, freeFrom, clubActive },
-    items: dates.map((date) => ({
-      date,
-      access: date < config.commerce.archiveFirstDate ? 'locked' as const : date >= freeFrom ? 'free' as const : clubActive ? 'club' as const : 'locked' as const,
-      session: latestByDate.get(date) ?? null,
-    })),
+    items: dates.map((date) => {
+      const available = scheduledConnectionsDates
+        ? scheduledConnectionsDates.has(date) && (!config.connectionsLaunchDate || date >= config.connectionsLaunchDate)
+        : true
+      return {
+        date,
+        access: date < config.commerce.archiveFirstDate ? 'locked' as const : date >= freeFrom ? 'free' as const : clubActive ? 'club' as const : 'locked' as const,
+        available,
+        session: latestByDate.get(date) ?? null,
+      }
+    }),
   }
 }

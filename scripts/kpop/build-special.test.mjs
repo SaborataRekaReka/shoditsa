@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildKpopSpecial, generationForDebutYear, transformKpopArtist } from './build-special.mjs'
+import { buildKpopSpecial, generationForArtist, generationForDebutYear, transformKpopArtist } from './build-special.mjs'
 
 const sourceArtist = (overrides = {}) => ({
   'ID артиста': 'sample',
@@ -11,6 +11,7 @@ const sourceArtist = (overrides = {}) => ({
   'Родительская группа': 'Parent',
   'Альтернативные названия': [{ 'Название': 'SU' }],
   'Год дебюта': 2018,
+  'Поколение': 4,
   'Статус активности': 'Карьера продолжается',
   'Пол': 'смешанный',
   'Корейский лейбл на дебюте': 'Old Label',
@@ -37,6 +38,15 @@ test('uses the requested K-pop generation boundaries', () => {
   )
 })
 
+test('prefers the source generation inherited from a parent group', () => {
+  assert.equal(generationForArtist(3, 2023), 3)
+  assert.equal(transformKpopArtist(sourceArtist({
+    'Год дебюта': 2023,
+    'Поколение': 3,
+  })).kpopGeneration, 3)
+  assert.equal(generationForArtist(null, 2023), 5)
+})
+
 test('maps the K-pop source to a separate non-regular card type', () => {
   const item = transformKpopArtist(sourceArtist())
   assert.equal(item.id, 'kpop:sample')
@@ -53,7 +63,12 @@ test('maps the K-pop source to a separate non-regular card type', () => {
 test('builds a deterministic club-only daily special document', () => {
   const document = buildKpopSpecial([
     sourceArtist(),
-    sourceArtist({ 'ID артиста': 'second', 'Имя на английском': 'Second', 'Год дебюта': 2023 }),
+    sourceArtist({
+      'ID артиста': 'second',
+      'Имя на английском': 'Second',
+      'Год дебюта': 2023,
+      'Поколение': 5,
+    }),
   ])
   assert.equal(document.pack.adminOnly, false)
   assert.equal(document.pack.accessModel, 'club')

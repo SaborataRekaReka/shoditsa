@@ -13,7 +13,7 @@ import {
   type FriendsRoomSummary,
   type GameResponse,
   type GameSessionSnapshot,
-  type PlayableMode,
+  type CatalogGuessModeId,
   type PublicContentItem,
 } from '@shoditsa/contracts'
 import { ActionButton, AppHeader, type AppHeaderProps } from '../../components/app-shell/AppShell'
@@ -36,7 +36,7 @@ const RoomIcon = ({ name }: { name: IconName }) => <i
   style={{ '--room-icon-url': `url("${publicAssetUrl(`images/friends-room/icons/${name}.svg`)}")` } as CSSProperties}
 />
 
-const MODES: Array<{ id: PlayableMode; label: string; poster: string; color: string }> = [
+const MODES: Array<{ id: CatalogGuessModeId; label: string; poster: string; color: string }> = [
   { id: 'series', label: 'Сериалы', poster: 'images/title-posters/series-ticket-poster.webp', color: 'var(--mode-series-brand)' },
   { id: 'movie', label: 'Кино', poster: 'images/title-posters/movie-ticket-poster.webp', color: 'var(--mode-movie-brand)' },
   { id: 'anime', label: 'Аниме', poster: 'images/title-posters/anime-ticket-poster.webp', color: 'var(--mode-anime-brand)' },
@@ -950,7 +950,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
   message: string
   onMessage: (value: string) => void
   onSend: (event: FormEvent) => void
-  onGameType: (gameType: FriendsRoomGameType, selectedMode?: PlayableMode) => void
+  onGameType: (gameType: FriendsRoomGameType, selectedMode?: CatalogGuessModeId) => void
   onPacks: (value: FriendsRoomPackSelection[]) => void
   onRounds: (value: number) => void
   onTime: (value: 15 | 20 | 30 | 45) => void
@@ -959,7 +959,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
   onStart: () => void
 }) {
   const minimumRounds = friendsRoomMinimumRounds(room.packs.length)
-  const togglePack = (modeId: PlayableMode) => {
+  const togglePack = (modeId: CatalogGuessModeId) => {
     const existing = room.packs.find((pack) => pack.mode === modeId)
     if (existing) {
       if (room.packs.length > 1) onPacks(room.packs.filter((pack) => pack.mode !== modeId))
@@ -967,7 +967,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
     }
     onPacks([...room.packs, { mode: modeId, variant: FRIENDS_ROOM_DEFAULT_PACK_VARIANTS[modeId] }])
   }
-  const selectVariant = (modeId: PlayableMode, variant: string) => {
+  const selectVariant = (modeId: CatalogGuessModeId, variant: string) => {
     onPacks(room.packs.map((pack) => pack.mode === modeId ? { ...pack, variant } : pack))
   }
   const selectMode = (modeId: RoomMode) => {

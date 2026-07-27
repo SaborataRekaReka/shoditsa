@@ -15,6 +15,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
+  connections: ['difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'allowedInGame', 'popularityScore'],
 }
 
 const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
@@ -26,6 +27,7 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'ranks'],
   danetki: ['condition', 'solution', 'difficulty', 'genres', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'allowedInGame'],
+  connections: ['difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'allowedInGame'],
 }
 
 const TEMPLATE_SPECIAL_VARIABLES = [

@@ -11,13 +11,25 @@ export const CONTENT_REPORT_REASONS = [
   ['bad_image', 'Неверное или битое изображение'],
   ['duplicate_card', 'Дубликат карточки'],
   ['typo_or_translation', 'Опечатка или плохой перевод'],
+  ['ambiguous_group', 'Неоднозначная группа'],
+  ['wrong_group_title', 'Неверное название группы'],
+  ['word_does_not_fit', 'Слово не подходит'],
+  ['duplicate_word', 'Слово повторяется'],
   ['technical_error', 'Техническая ошибка'],
   ['other', 'Другое'],
 ] as const
 
 export type ContentReportReason = typeof CONTENT_REPORT_REASONS[number][0]
 
-export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportReason, comment: string) => void | Promise<void> }) {
+export function ContentReport({
+  onSubmit,
+  prompt = 'Нашли ошибку в подсказке?',
+  thanks = 'Спасибо, проверим подсказку.',
+}: {
+  onSubmit: (reason: ContentReportReason, comment: string) => void | Promise<void>
+  prompt?: string
+  thanks?: string
+}) {
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState<ContentReportReason>('wrong_fact')
   const [comment, setComment] = useState('')
@@ -25,9 +37,9 @@ export function ContentReport({ onSubmit }: { onSubmit: (reason: ContentReportRe
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
 
-  if (sent) return <p className="content-report__thanks" role="status">Спасибо, проверим подсказку.</p>
+  if (sent) return <p className="content-report__thanks" role="status">{thanks}</p>
   return <div className="content-report">
-    <ControlButton type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>Нашли ошибку в подсказке?</ControlButton>
+    <ControlButton type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>{prompt}</ControlButton>
     {open && <form onSubmit={async (event) => {
       event.preventDefault()
       if (sending) return

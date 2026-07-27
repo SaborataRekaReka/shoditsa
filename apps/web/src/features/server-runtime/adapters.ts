@@ -7,7 +7,7 @@ import type {
   PublicContentItem,
   TodayAttendance,
 } from '@shoditsa/contracts'
-import { PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
+import { CATALOG_GUESS_MODE_IDS, isCatalogGuessModeId } from '@shoditsa/contracts'
 import type { AttendanceStats, DailyAttendance, SavedGame, TitleItem, TitleMode, Wallet } from '../../types'
 
 export const publicItemToTitle = (item: PublicContentItem): TitleItem => {
@@ -15,7 +15,7 @@ export const publicItemToTitle = (item: PublicContentItem): TitleItem => {
   return {
     ...extended,
     id: item.id,
-    mode: item.mode,
+    mode: item.mode as TitleMode,
     titleRu: item.titleRu,
     titleOriginal: item.titleOriginal,
     alternativeTitles: extended.alternativeTitles ?? [],
@@ -43,8 +43,8 @@ export const toLegacyAttendance = (attendance: AttendanceSummary | null | undefi
 
 export const toLegacyDailyAttendance = (today: TodayAttendance | null | undefined, fallbackDate: string): DailyAttendance => ({
   date: today?.activityDate ?? fallbackDate,
-  completedModes: (today?.completedModes ?? []).filter((mode): mode is TitleMode => (PLAYABLE_MODE_IDS as readonly string[]).includes(mode)),
-  wonModes: (today?.wonModes ?? []).filter((mode): mode is TitleMode => (PLAYABLE_MODE_IDS as readonly string[]).includes(mode)),
+  completedModes: (today?.completedModes ?? []).filter(isCatalogGuessModeId),
+  wonModes: (today?.wonModes ?? []).filter(isCatalogGuessModeId),
   completedSessions: [],
   firstCompletedAt: 0,
   fullHouse: today?.fullHouse ?? false,
@@ -55,7 +55,7 @@ const placeholderAttempts = (count: number) => Array.from({ length: count }, (_,
   hints: [],
 }))
 
-export const activeSessionToSavedGame = (session: ActiveSessionSummary): SavedGame => ({
+export const activeSessionToSavedGame = (session: ActiveSessionSummary & { mode: TitleMode }): SavedGame => ({
   key: `server:${session.id}`,
   mode: session.mode,
   variantKey: session.variantKey,
@@ -68,7 +68,11 @@ export const activeSessionToSavedGame = (session: ActiveSessionSummary): SavedGa
   difficulty: session.difficulty ?? undefined,
 })
 
-export const archiveItemToSavedGame = (session: ArchiveItem): SavedGame => ({
+export const isCatalogArchiveItem = (session: ArchiveItem): session is ArchiveItem & { mode: TitleMode } => (
+  isCatalogGuessModeId(session.mode)
+)
+
+export const archiveItemToSavedGame = (session: ArchiveItem & { mode: TitleMode }): SavedGame => ({
   key: `server:${session.id}`,
   mode: session.mode,
   variantKey: session.variantKey,
@@ -82,7 +86,7 @@ export const archiveItemToSavedGame = (session: ArchiveItem): SavedGame => ({
 })
 
 export const serverTitleCounts = (meta: MetaResponse | null): Record<TitleMode, number | null> => {
-  const counts = Object.fromEntries(PLAYABLE_MODE_IDS.map((mode) => [mode, null])) as Record<TitleMode, number | null>
-  for (const entry of meta?.modes ?? []) counts[entry.mode] = entry.count
+  const counts = Object.fromEntries(CATALOG_GUESS_MODE_IDS.map((mode) => [mode, null])) as Record<TitleMode, number | null>
+  for (const entry of meta?.modes ?? []) if (isCatalogGuessModeId(entry.mode)) counts[entry.mode] = entry.count
   return counts
 }

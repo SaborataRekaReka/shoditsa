@@ -142,6 +142,40 @@ export type ContentExchangePreview = {
   items: Array<{ id: string; mode: ContentMode; status: 'create' | 'update' | 'unchanged' | 'conflict' | 'invalid'; title: string; changedFields: string[]; conflicts: string[]; issues: Array<Record<string, unknown>>; message: string | null }>
 }
 
+export type ConnectionsImportPreview = {
+  version: 1
+  locale: string
+  summary: { total: number; valid: number; invalid: number; warnings: number }
+  items: Array<{
+    index: number
+    id: string
+    externalId: string
+    title: string
+    payload: Record<string, unknown>
+    valid: boolean
+    issues: Array<{ severity: 'error' | 'warning'; code: string; path: string; message: string }>
+  }>
+}
+
+export type ConnectionsRoundAdminItem = {
+  itemVersionId: string
+  itemId: string
+  titleRu: string
+  contentStatus: string | null
+  allowedInGame: boolean
+  payload: Record<string, unknown>
+  issues: Array<{ severity: 'error' | 'warning'; code: string; path: string; message: string }>
+}
+
+export type ConnectionsScheduleItem = {
+  puzzleDate: string
+  itemVersionId: string
+  itemId: string
+  titleRu: string
+  cancelledAt: string | null
+  updatedAt: string
+}
+
 export type ReleaseContentStatus = {
   state: 'active' | 'ready' | 'building' | 'failed' | 'update_available'
   updateAvailable: boolean
@@ -229,6 +263,25 @@ export const adminApi = {
   deletePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`, { method: 'DELETE', body: json({ confirmation: true }) }),
   cleanupPipelineRuns: (keepLatest = 30) => request<Record<string, unknown>>('/admin/pipeline-runs/cleanup', { method: 'POST', body: json({ confirmation: true, keepLatest }) }),
   integrations: () => request<{ items: Array<Record<string, unknown>> }>('/admin/integrations'),
+  connectionsRounds: () => request<{ items: ConnectionsRoundAdminItem[] }>('/admin/connections/rounds'),
+  connectionsImportPreview: (document: Record<string, unknown>) => request<ConnectionsImportPreview>('/admin/connections/import/preview', { method: 'POST', body: json(document), timeoutMs: 60_000 }),
+  connectionsImportApply: (document: Record<string, unknown>, reason: string) => request<{ summary: { staged: number }; results: Array<Record<string, unknown>>; workspaceId: string }>('/admin/connections/import/apply', { method: 'POST', body: json({ document, reason }), timeoutMs: 120_000 }),
+  connectionsSchedule: (from?: string, to?: string) => request<{ items: ConnectionsScheduleItem[] }>(`/admin/connections/schedule${query({ from, to })}`),
+  connectionsScheduleBulk: (startDate: string, itemVersionIds: string[], reason?: string) => request<{ items: ConnectionsScheduleItem[] }>('/admin/connections/schedule/bulk', { method: 'POST', body: json({ startDate, itemVersionIds, ...(reason ? { reason } : {}) }) }),
+  connectionsScheduleDay: (date: string, itemVersionId: string, reason?: string) => request<ConnectionsScheduleItem>(`/admin/connections/schedule/${date}`, { method: 'PUT', body: json({ itemVersionId, ...(reason ? { reason } : {}) }) }),
+  connectionsCancelDay: (date: string, reason: string) => request<ConnectionsScheduleItem>(`/admin/connections/schedule/${date}`, { method: 'DELETE', body: json({ reason }) }),
+  connectionsAnalytics: () => request<{
+    played: number
+    averageMistakes: number
+    averageHints: number
+    outcomes: Array<{ status: string; count: number }>
+    hints: Array<{ checkpoint: number; count: number }>
+    guesses: Array<{ result: string; count: number }>
+    scheduledAhead: number
+    nearestGap: string
+    openReports: number
+    launchDate: string | null
+  }>('/admin/connections/analytics'),
   danetkiSettings: () => request<{ settings: Record<string, unknown>; openAiConfigured: boolean }>('/admin/danetki/settings'),
   saveDanetkiSettings: (settings: Record<string, unknown>) => request<{ settings: Record<string, unknown> }>('/admin/danetki/settings', { method: 'PUT', body: json(settings) }),
   danetkiSessions: () => request<{ items: Array<Record<string, unknown>> }>('/admin/danetki/sessions'),

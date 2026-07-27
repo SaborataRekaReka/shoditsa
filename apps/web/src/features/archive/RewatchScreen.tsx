@@ -13,7 +13,7 @@ import { PERIODS, prettyDate, resolveMusicRedirectId } from '../../game'
 import { dayNumber } from '../../game/day-number'
 import { useServerRuntime, SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import type { PeriodKey, SavedGame, TitleItem, TitleMode } from '../../types'
-import { archiveItemToSavedGame, publicItemToTitle } from '../server-runtime/adapters'
+import { archiveItemToSavedGame, isCatalogArchiveItem, publicItemToTitle } from '../server-runtime/adapters'
 import './RewatchScreen.css'
 
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
@@ -50,6 +50,7 @@ type RewatchScreenProps = {
   games: SavedGame[]
   titles: TitleItem[]
   onOpen: (date: string, game: SavedGame | null) => void
+  onOpenConnections: (date: string, sessionId: string | null) => void
   onHome: () => void
   onStats: () => void
   onRules: () => void
@@ -61,7 +62,7 @@ export function RewatchScreen(props: RewatchScreenProps) {
   return SERVER_RUNTIME ? <ServerRewatchScreen {...props} /> : <LocalRewatchScreen {...props} />
 }
 
-function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onStats, onRules, onReview, onClub }: RewatchScreenProps) {
+function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConnections, onHome, onStats, onRules, onReview, onClub }: RewatchScreenProps) {
   const serverRuntime = useServerRuntime()
   const [lockedDate, setLockedDate] = useState<string | null>(null)
   const archive = useQuery({
@@ -69,8 +70,15 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
     queryFn: () => api.archiveCalendar({ mode, period, from: dates.at(-1)!, to: dates[0]! }),
     enabled: Boolean(serverRuntime.me),
   })
+  const connectionsArchive = useQuery({
+    queryKey: queryKeys.archiveCalendar({ mode: 'connections', from: dates.at(-1), to: dates[0] }),
+    queryFn: () => api.archiveCalendar({ mode: 'connections', from: dates.at(-1)!, to: dates[0]! }),
+    enabled: Boolean(serverRuntime.me) && serverRuntime.meta?.features.connectionsEnabled !== false,
+  })
   const sessions = useMemo<SavedGame[]>(() => {
-    return (archive.data?.items ?? []).flatMap((item) => item.session ? [archiveItemToSavedGame(item.session)] : [])
+    return (archive.data?.items ?? []).flatMap((item) => (
+      item.session && isCatalogArchiveItem(item.session) ? [archiveItemToSavedGame(item.session)] : []
+    ))
   }, [archive.data])
   const accessByDate = useMemo(() => new Map((archive.data?.items ?? []).map((item) => [item.date, item.access])), [archive.data])
   const latestByDate = useMemo(() => {
@@ -122,6 +130,50 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onHome, onS
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>Последние семь дат доступны всем. Полный архив с даты запуска открыт клубу.</p></div>
+      {serverRuntime.meta?.features.connectionsEnabled !== false && <section className="rewatch-connections" aria-labelledby="rewatch-connections-title">
+        <header>
+          <div><span>Ежедневная головоломка</span><h2 id="rewatch-connections-title">Связи</h2></div>
+          <p>Вернитесь к точной версии раунда, опубликованной в выбранный день.</p>
+        </header>
+        {connectionsArchive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(connectionsArchive.error)}</InlineAlert>}
+        <div className="rewatch-connections__grid">{dates.map((itemDate, index) => {
+          const item = connectionsArchive.data?.items.find((entry) => entry.date === itemDate)
+          const session = item?.session?.mode === 'connections' ? item.session : null
+          const unavailable = item?.available === false
+          const locked = item?.access === 'locked' && !session
+          const status = session?.status
+          return <ControlButton
+            className={`rewatch-connection ${status ?? ''} ${locked || unavailable ? 'rewatch-connection--disabled' : ''}`}
+            key={itemDate}
+            disabled={connectionsArchive.isLoading || unavailable}
+            onClick={() => {
+              if (locked) {
+                setLockedDate(itemDate)
+                trackClientEvent('archive_paywall_clicked', { mode: 'connections', archiveAgeDays: index, hasClub: serverRuntime.dashboard?.membership.active ?? false })
+                trackMetrikaGoal('archive_paywall_clicked', { mode: 'connections', archiveAgeDays: index })
+                return
+              }
+              onOpenConnections(itemDate, session?.id ?? null)
+            }}
+          >
+            <span className="rewatch-connection__day">{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</span>
+            <strong>#{dayNumber(itemDate)}</strong>
+            <small>{connectionsArchive.isLoading
+              ? 'Загружаем…'
+              : unavailable
+                ? 'Нет раунда'
+                : locked
+                  ? <><Lock /> Полный архив</>
+                  : status === 'won'
+                    ? 'Собрано'
+                    : status === 'lost'
+                      ? 'Не собрано'
+                      : status === 'playing'
+                        ? 'В процессе'
+                        : 'Не сыграно'}</small>
+          </ControlButton>
+        })}</div>
+      </section>}
       <ArchiveModePicker mode={mode} setMode={setMode} />
       {archive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert>}
       <section className="rewatch-grid">{dates.map((itemDate, index) => {

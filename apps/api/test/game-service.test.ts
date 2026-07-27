@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CATALOG_HINT_COPY, KPOP_ARTISTS_PACK_ID, PLAYABLE_MODE_IDS, type Hint, type TitleItem } from '@shoditsa/contracts'
+import { CATALOG_GUESS_MODE_IDS, CATALOG_HINT_COPY, KPOP_ARTISTS_PACK_ID, type Hint, type TitleItem } from '@shoditsa/contracts'
 import { answerPool, buildHintOptions, publicCard } from '../src/modules/games/service.js'
 import { isSpecialSession } from '../src/modules/games/special.js'
 
@@ -500,7 +500,7 @@ describe('server hint options', () => {
       diagnosis: { bodySystems: ['Нервная система'] },
     } as const
 
-    for (const mode of PLAYABLE_MODE_IDS) {
+    for (const mode of CATALOG_GUESS_MODE_IDS) {
       const answer = {
         id: `${mode}:copy`,
         mode,
@@ -520,7 +520,7 @@ describe('server hint options', () => {
   })
 
   it('uses exhaustive mode-specific copy for valid plot hints in every playable mode', () => {
-    for (const mode of PLAYABLE_MODE_IDS) {
+    for (const mode of CATALOG_GUESS_MODE_IDS) {
       const answer = {
         id: `${mode}:plot-copy`,
         mode,

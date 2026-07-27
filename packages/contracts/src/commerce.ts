@@ -149,7 +149,7 @@ export const ArchiveCalendarQuerySchema = Type.Object({
 export type ArchiveCalendarQuery = Static<typeof ArchiveCalendarQuerySchema>
 export type ArchiveCalendarResponse = {
   access: { archiveFirstDate: string; freeFrom: string; clubActive: boolean }
-  items: Array<{ date: string; access: 'free' | 'club' | 'locked'; session: ArchiveItem | null }>
+  items: Array<{ date: string; access: 'free' | 'club' | 'locked'; available?: boolean; session: ArchiveItem | null }>
 }
 
 export const AdminCommerceProductPatchSchema = Type.Partial(Type.Object({

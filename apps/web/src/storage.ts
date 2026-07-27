@@ -17,7 +17,7 @@ import type {
   Wallet,
 } from './types'
 import type { DailyMilestone, DailyMilestoneClaims } from './features/daily-progress/daily-progress.types'
-import { FULL_HOUSE_MODE_IDS, PLAYABLE_MODE_IDS } from '@shoditsa/contracts'
+import { CATALOG_GUESS_MODE_IDS, FULL_HOUSE_MODE_IDS } from '@shoditsa/contracts'
 
 const GAME_PREFIX = 'seans:v1:game:'
 const STATS_PREFIX = 'seans:v1:stats:'
@@ -41,7 +41,7 @@ export type MusicReviewConflictChoice = {
 }
 export type MusicReviewConflictChoices = Record<string, Record<string, MusicReviewConflictChoice>>
 
-const TITLE_MODES: TitleMode[] = [...PLAYABLE_MODE_IDS]
+const TITLE_MODES: TitleMode[] = [...CATALOG_GUESS_MODE_IDS]
 const PERIOD_KEYS: PeriodKey[] = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020']
 const GAME_STATUSES: GameStatus[] = ['playing', 'won', 'lost', 'expired']
 const HINT_CHECKPOINTS: HintCheckpoint[] = [5, 8]

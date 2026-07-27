@@ -309,6 +309,7 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
           <a href="/games/music">Музыка</a>
           <a href="/games/diagnosis">Диагнозы</a>
           <a href="/games/danetki">Данетки</a>
+          <a href="/games/connections">Связи</a>
         </div>
       </nav>
       <div className="app-footer__bottom">

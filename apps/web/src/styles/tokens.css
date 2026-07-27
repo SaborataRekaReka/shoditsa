@@ -27,6 +27,7 @@
   --mode-city-brand: var(--palette-brand-terracotta);
   --mode-music-brand: var(--palette-brand-plum);
   --mode-danetki-brand: var(--palette-brand-green-deep);
+  --mode-connections-brand: #c6a15b;
   --color-paper: var(--palette-brand-paper);
   --color-paper-2: #ddd3bd;
   --color-ink: #171a17;
@@ -80,4 +81,12 @@
   --friends-paper: #eee7d8;
   --friends-paper-muted: #746c5e;
   --friends-green: #477558;
+  --connections-yellow: #d9b95b;
+  --connections-green: #7cae75;
+  --connections-blue: #738fc4;
+  --connections-purple: #9a78aa;
+  --connections-paper: #f0e8d8;
+  --connections-paper-hover: #e5dac3;
+  --connections-ink: #172019;
+  --connections-table: #173126;
 }

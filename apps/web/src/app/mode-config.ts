@@ -1,5 +1,5 @@
 import type { TitleMode } from '../types'
-import { DAILY_MODE_IDS } from '@shoditsa/contracts'
+import { CATALOG_GUESS_DAILY_MODE_IDS } from '@shoditsa/contracts'
 
 export type ModeConfig = {
   title: string
@@ -93,4 +93,4 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
   },
 }
 
-export const MODE_TABS: TitleMode[] = [...DAILY_MODE_IDS]
+export const MODE_TABS: TitleMode[] = [...CATALOG_GUESS_DAILY_MODE_IDS]

@@ -10,6 +10,7 @@ import {
   Film,
   Flower2,
   Gamepad2,
+  Grid2X2,
   MapPinned,
   Music2,
   Route,
@@ -29,6 +30,7 @@ const GUIDE_ICONS = {
   city: MapPinned,
   music: Music2,
   diagnosis: Stethoscope,
+  connections: Grid2X2,
 } satisfies Record<PlayableModeId, LucideIcon>
 
 const DANETKI_RULES = {
@@ -108,9 +110,13 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
         <ol>
           <li><strong>01</strong><span>{rules.searchInstruction}</span></li>
           <li><strong>02</strong><span>{rules.comparisonInstruction}</span></li>
-          <li><strong>03</strong><span>{mode === 'danetki' ? DANETKI_RULES.directionInstruction : 'Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.'}</span></li>
+          <li><strong>03</strong><span>{mode === 'danetki'
+            ? DANETKI_RULES.directionInstruction
+            : mode === 'connections'
+              ? GAME_RULES.connections.directionInstruction
+              : 'Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.'}</span></li>
         </ol>
-        {mode !== 'danetki' && <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
+        {mode !== 'danetki' && mode !== 'connections' && <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
           <span><i className="match" /><b>Точно</b><small>значение совпало</small></span>
           <span><i className="close" /><b>Рядом</b><small>число близко или есть частичное совпадение</small></span>
           <span><i className="miss" /><b>Мимо</b><small>значение не совпало</small></span>

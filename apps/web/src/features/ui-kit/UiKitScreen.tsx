@@ -26,6 +26,7 @@ import { SearchCombobox } from '../../components/search-combobox'
 import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
 import {
   EmptyState,
+  ControlButton,
   FormField,
   IconButton,
   InlineAlert,
@@ -64,6 +65,7 @@ const modeColors = [
   { token: '--mode-music-brand', label: 'Музыка' },
   { token: '--mode-diagnosis-brand', label: 'Диагноз' },
   { token: '--mode-danetki-brand', label: 'Данетки' },
+  { token: '--mode-connections-brand', label: 'Связи' },
 ]
 
 const sections = [
@@ -74,6 +76,7 @@ const sections = [
   ['forms', 'Поля'],
   ['tickets', 'Билеты'],
   ['final-choice', 'Последний выбор'],
+  ['connections', 'Связи'],
   ['result-actions', 'После игры'],
   ['leaderboard', 'Рейтинг'],
   ['feedback', 'Состояния'],
@@ -146,6 +149,7 @@ export default function UiKitScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState<'daily' | 'archive'>('daily')
   const [finalChoiceSelection, setFinalChoiceSelection] = useState<string | null>('interstellar')
+  const [connectionsSelection, setConnectionsSelection] = useState<string[]>(['МАЙ'])
   const filteredExamples = searchExamples.filter((item) => item.title.toLocaleLowerCase('ru-RU').includes(searchQuery.toLocaleLowerCase('ru-RU')))
 
   return <div className="ui-kit-screen">
@@ -170,7 +174,7 @@ export default function UiKitScreen() {
           <strong>UI<br />01</strong>
           <dl>
             <div><dt>Шрифты</dt><dd>2</dd></div>
-            <div><dt>Режимы</dt><dd>7</dd></div>
+            <div><dt>Режимы</dt><dd>9</dd></div>
             <div><dt>Кнопки</dt><dd>4</dd></div>
           </dl>
         </aside>
@@ -336,8 +340,41 @@ export default function UiKitScreen() {
             />
           </section>
 
+          <section className="ui-kit-section" id="connections">
+            <SectionTitle index="08" title="Связи" description="Состояния плиток, четыре уровня группы и счётчик ошибок. Выбор не зависит только от цвета и остаётся клавиатурно доступным." component="ConnectionsGrid" />
+            <div className="ui-kit-connections">
+              <div className="ui-kit-connections__tiles" aria-label="Состояния плитки">
+                {[
+                  ['МАЙ', 'default'],
+                  ['ЛАЙ', 'default'],
+                  ['ЧАЙ', 'default'],
+                  ['КРАЙ', 'disabled'],
+                ].map(([word, state]) => <ControlButton
+                  key={word}
+                  type="button"
+                  disabled={state === 'disabled'}
+                  className={connectionsSelection.includes(word) ? 'is-selected' : ''}
+                  onClick={() => setConnectionsSelection((current) => current.includes(word) ? current.filter((item) => item !== word) : [...current, word])}
+                >{word}<small>{state === 'disabled' ? 'disabled' : connectionsSelection.includes(word) ? 'selected' : 'default'}</small></ControlButton>)}
+              </div>
+              <div className="ui-kit-connections__groups">
+                {[
+                  ['yellow', 'Оканчиваются на -АЙ', 'МАЙ · ЛАЙ · ЧАЙ · КРАЙ'],
+                  ['green', 'Можно открыть ключом', 'ДВЕРЬ · ЗАМОК · СЕЙФ · СУНДУК'],
+                  ['blue', 'Виды волн', 'ЗВУК · СВЕТ · ПРИЛИВ · РАДИО'],
+                  ['purple', 'Скрытая связь', 'ЧЕТЫРЕ СЛОВА'],
+                ].map(([color, title, words]) => <article key={color} className={`ui-kit-connections__group ui-kit-connections__group--${color}`}>
+                  <strong>{title}</strong><span>{words}</span>
+                </article>)}
+              </div>
+              <div className="ui-kit-connections__mistakes">
+                <span>Ошибок осталось</span><i>×</i><i>×</i><i className="is-used">×</i><i className="is-used">×</i>
+              </div>
+            </div>
+          </section>
+
           <section className="ui-kit-section" id="result-actions">
-            <SectionTitle index="08" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
+            <SectionTitle index="09" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
             <div className="ui-kit-result-action">
               <ResultActionBar
                 nextLabel="Играть дальше: кино"
@@ -356,12 +393,12 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="leaderboard">
-            <SectionTitle index="09" title="Таблица рейтинга" description="Рейтинг использует бумажную поверхность, режимный акцент и читаемую служебную типографику не меньше 10 px." component="DtfLeaderboard" />
+            <SectionTitle index="10" title="Таблица рейтинга" description="Рейтинг использует бумажную поверхность, режимный акцент и читаемую служебную типографику не меньше 10 px." component="DtfLeaderboard" />
             <div className="ui-kit-leaderboard"><DtfLeaderboard data={leaderboardFixture} /></div>
           </section>
 
           <section className="ui-kit-section" id="feedback">
-            <SectionTitle index="10" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
+            <SectionTitle index="11" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
             <div className="ui-kit-feedback-grid">
               <InlineAlert tone="success"><strong>Подсказка открыта.</strong> Режиссёр также работал над известной научно-фантастической картиной.</InlineAlert>
               <div className="ui-kit-status-list">

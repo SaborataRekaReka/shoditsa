@@ -54,6 +54,9 @@ import { getDanetkiSession, loadDanetkiFeatureFlags, startDanetkiSession } from 
 import { registerDanetkiRoutes, type DanetkiRealtimeMetrics } from './modules/danetki/routes.js'
 import { registerDanetkiAdminRoutes } from './modules/danetki/admin-routes.js'
 import { registerFriendsRoomRoutes } from './modules/friends-room/routes.js'
+import { getConnectionsSession, startConnectionsSession } from './modules/connections/service.js'
+import { registerConnectionsRoutes } from './modules/connections/routes.js'
+import { registerConnectionsAdminRoutes } from './modules/connections/admin-routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -185,6 +188,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         danetkiEnabled: danetkiFeatures.enabled,
         danetkiMultiplayerEnabled: danetkiFeatures.enabled && danetkiFeatures.multiplayerEnabled,
         finalChoiceEnabled: true,
+        connectionsEnabled: config.connectionsEnabled,
+        connectionsHintsEnabled: config.connectionsHintsEnabled,
+        connectionsLaunchDate: config.connectionsLaunchDate,
       },
     }
   })
@@ -332,6 +338,20 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         idempotencyKey: requireIdempotencyKey(request),
       }, config) }
     }
+    if (body.mode === 'connections') {
+      if (body.kind !== 'daily' && body.kind !== 'archive') {
+        throw new ApiError(422, 'GAME_KIND_UNSUPPORTED', 'Для «Связей» доступны ежедневная игра и архив')
+      }
+      requireIdempotencyKey(request)
+      return { session: await startConnectionsSession(
+        db,
+        user!.id,
+        { kind: body.kind, archiveDate: body.archiveDate },
+        user!.authSessionId,
+        user!.role,
+        config,
+      ) }
+    }
     if (!isCatalogGuessModeId(body.mode)) throw new ApiError(422, 'GAME_MODE_UNSUPPORTED', 'Этот игровой режим пока не поддерживается')
     if (body.kind === 'free_play') throw new ApiError(422, 'GAME_KIND_UNSUPPORTED', 'Свободная игра для этого режима запускается через экономику')
     if (body.kind === 'pack') {
@@ -355,7 +375,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const rows = await db.select({ mode: gameSessions.mode }).from(gameSessions).where(eq(gameSessions.id, sessionId)).limit(1)
     return { session: rows[0]?.mode === 'danetki'
       ? await getDanetkiSession(db, user!.id, sessionId)
-      : await getOwnedSession(db, user!.id, sessionId) }
+      : rows[0]?.mode === 'connections'
+        ? await getConnectionsSession(db, user!.id, sessionId, config)
+        : await getOwnedSession(db, user!.id, sessionId) }
   })
   app.post('/api/v1/games/:sessionId/attempts', { schema: { params: paramsId, headers: idempotencyHeaders, body: AttemptBodySchema }, config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -472,6 +494,8 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   registerPrivateGameRoutes(app, { db, auth, config })
   registerDanetkiRoutes(app, { db, auth, config, realtimeMetrics: danetkiRealtimeMetrics })
   registerDanetkiAdminRoutes(app, { db, auth, config })
+  registerConnectionsRoutes(app, { db, auth, config })
+  registerConnectionsAdminRoutes(app, { db, auth, config })
   registerFriendsRoomRoutes(app, { db, auth, config })
 
   await registerClientEventRoutes(app, { db, auth, config })

@@ -24,6 +24,12 @@ export const generationForDebutYear = (year) => {
   return 5
 }
 
+export const generationForArtist = (sourceGeneration, debutYear) => (
+  KPOP_GENERATIONS.some(({ generation }) => generation === sourceGeneration)
+    ? sourceGeneration
+    : generationForDebutYear(debutYear)
+)
+
 const text = (value) => typeof value === 'string' ? value.trim() : ''
 const nullableText = (value) => text(value) || null
 const stringList = (value) => Array.isArray(value) ? value.map(text).filter(Boolean) : []
@@ -102,7 +108,7 @@ export const transformKpopArtist = (source, index = 0) => {
     kpopNameHangul: hangul,
     kpopPerformerType: performerType,
     kpopGender: nullableText(source['Пол']),
-    kpopGeneration: generationForDebutYear(debutYear),
+    kpopGeneration: generationForArtist(source['Поколение'], debutYear),
     kpopCurrentLabel: nullableText(source['Текущий корейский лейбл']),
     kpopCurrentLabelLogoUrl: labelLogoUrl(source['Логотип текущего лейбла']),
     kpopDebutMembers: Number.isInteger(source['Участников на дебюте']) ? source['Участников на дебюте'] : null,

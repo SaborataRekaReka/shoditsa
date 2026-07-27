@@ -46,6 +46,9 @@ const meta: MetaResponse = {
     danetkiEnabled: true,
     danetkiMultiplayerEnabled: true,
     finalChoiceEnabled: true,
+    connectionsEnabled: true,
+    connectionsHintsEnabled: true,
+    connectionsLaunchDate: '2026-07-27',
   },
 }
 

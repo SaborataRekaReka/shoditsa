@@ -1,9 +1,9 @@
 import type { LucideIcon } from 'lucide-react'
-import { DAILY_MODE_IDS, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
+import { CATALOG_GUESS_DAILY_MODE_IDS, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import type { TitleMode } from '../../types'
 
-export type CategoryTicketMode = TitleMode | 'danetki'
+export type CategoryTicketMode = TitleMode | 'danetki' | 'connections'
 
 export type CategoryTicketConfig = {
   mode: TitleMode
@@ -14,7 +14,7 @@ export type CategoryTicketConfig = {
   watermarkUrl: string
 }
 
-export const CATEGORY_TICKET_CONFIG: CategoryTicketConfig[] = DAILY_MODE_IDS.map((mode) => ({
+export const CATEGORY_TICKET_CONFIG: CategoryTicketConfig[] = CATALOG_GUESS_DAILY_MODE_IDS.map((mode) => ({
   mode,
   title: GAME_MODE_MANIFEST[mode].label,
   ...MODE_PRESENTATION[mode],

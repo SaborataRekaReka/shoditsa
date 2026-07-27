@@ -188,12 +188,18 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: 'Стартовые вопросы', present: (payload) => hasContentValue(payload.starterQuestions) },
     { label: 'Правила ответа', present: (payload) => hasContentValue(payload.answerRules) },
   ],
+  connections: [
+    { label: 'Сложность', present: (payload) => hasTextValue(payload.difficulty) },
+    { label: '16 карточек', present: (payload) => Array.isArray(payload.tiles) && payload.tiles.length === 16 },
+    { label: '4 группы', present: (payload) => Array.isArray(payload.groups) && payload.groups.length === 4 },
+    { label: 'Подсказки', present: (payload) => Array.isArray(payload.groups) && payload.groups.every((group) => hasTextValue(asRecord(group).hint)) },
+  ],
 }
 
 const completionMeta = (payload: unknown, mode: ContentMode) => {
   const record = asRecord(payload)
-  const fields = mode === 'danetki'
-    ? COMPLETION_MODE_FIELDS.danetki
+  const fields = mode === 'danetki' || mode === 'connections'
+    ? COMPLETION_MODE_FIELDS[mode]
     : [...COMPLETION_COMMON_FIELDS, ...COMPLETION_MODE_FIELDS[mode]]
   const missingFields = fields.filter((field) => !field.present(record)).map((field) => field.label)
   const fieldsTotal = fields.length

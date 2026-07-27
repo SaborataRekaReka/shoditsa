@@ -1,6 +1,7 @@
 export * from './game-modes.js'
 export * from './hint-copy.js'
 export * from './danetki.js'
+export * from './connections.js'
 export * from './economy.js'
 export * from './legacy-types.js'
 export * from './schemas.js'

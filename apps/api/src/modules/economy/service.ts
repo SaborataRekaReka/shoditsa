@@ -2,17 +2,19 @@ import { createHmac, randomInt } from 'node:crypto'
 import { and, asc, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import {
-  FREE_PLAY_MODE_IDS,
+  CATALOG_GUESS_MODE_IDS,
+  GAME_MODE_MANIFEST,
   PERIOD_UNLOCKABLE_MODE_IDS,
   economyDanetkiCost,
   economyFreePlayCost,
   type ApiDifficultyKey,
   type ApiRole,
+  type CatalogGuessModeId,
   type PeriodKey,
   type PlayableMode,
 } from '@shoditsa/contracts'
 import {
-  attendanceStats, dailyAttendance, dailyChallenges, danetkiDailyUsage, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
+  attendanceStats, connectionsSessionState, dailyAttendance, dailyChallenges, danetkiDailyUsage, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
   promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
@@ -24,7 +26,7 @@ import { settlePositiveWalletCredit, walletCreditMetadata } from './wallet-credi
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 const UNLOCKABLE: PlayableMode[] = [...PERIOD_UNLOCKABLE_MODE_IDS]
-const FREE_PLAY: PlayableMode[] = [...FREE_PLAY_MODE_IDS]
+const FREE_PLAY: CatalogGuessModeId[] = CATALOG_GUESS_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].freePlay)
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
@@ -36,7 +38,7 @@ const replayFreePlay = async (
   userId: string,
   session: typeof gameSessions.$inferSelect,
   idempotencyKey: string,
-  mode: PlayableMode,
+  mode: CatalogGuessModeId,
   difficulty: ApiDifficultyKey | null,
 ) => {
   const requestedDifficulty = mode === 'music' ? difficulty ?? 'medium' : null
@@ -130,7 +132,7 @@ export const startFreePlay = async (
   userId: string,
   role: ApiRole,
   rolloutPercent: number,
-  mode: PlayableMode,
+  mode: CatalogGuessModeId,
   difficulty: ApiDifficultyKey | null,
   idempotencyKey: string,
   authSessionId: string | null = null,
@@ -253,10 +255,12 @@ export const dashboard = async (db: Database, userId: string, role: ApiRole = 'p
       difficulty: gameSessions.difficulty,
       puzzleDate: gameSessions.puzzleDate,
       attemptsCount: gameSessions.attemptsCount,
+      mistakesUsed: connectionsSessionState.mistakesUsed,
       updatedAt: gameSessions.updatedAt,
     })
       .from(gameSessions)
       .leftJoin(dailyChallenges, eq(dailyChallenges.id, gameSessions.challengeId))
+      .leftJoin(connectionsSessionState, eq(connectionsSessionState.sessionId, gameSessions.id))
       .where(and(eq(gameSessions.userId, userId), sql`${gameSessions.status} in ('playing','final_choice')`))
       .orderBy(desc(gameSessions.updatedAt)),
     db.select({ launches: freePlayUsage.launches }).from(freePlayUsage)
@@ -276,7 +280,9 @@ export const dashboard = async (db: Database, userId: string, role: ApiRole = 'p
     wallet: wallet[0] ?? { balance: 0, lifetimeEarned: 0 },
     attendance: attendance[0] ?? null,
     today: today[0] ?? null,
-    stats,
+    stats: stats.map((entry) => entry.mode === 'connections'
+      ? { ...entry, distributionKind: 'mistakes' as const }
+      : { ...entry, distributionKind: 'attempts' as const }),
     entitlements,
     activeSessions,
     freePlayLaunchesToday: staticLaunches,

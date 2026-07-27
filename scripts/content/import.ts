@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { and, eq, sql } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
+import { isCatalogGuessModeId } from '@shoditsa/contracts'
 import {
   contentAliases, contentItems, contentItemVersions, contentRevisionModes, contentRevisions,
   createDatabase, diagnosisVignettes,
@@ -57,13 +58,22 @@ try {
           titleOriginal: item.titleOriginal ?? '', normalizedTitle: normalize(item.titleRu), year: item.year,
           endYear: item.endYear ?? null, popularityScore: Number.isFinite(item.popularityScore) ? item.popularityScore : 0, topRank: item.topRank ?? null,
           sortOrder: offset + index,
-          allowedInGame: library.mode === 'city'
-            ? item.allowedInGame !== false
-            : isAllowedInRegularGame(item as Parameters<typeof isAllowedInRegularGame>[0]),
+          allowedInGame: library.mode === 'connections'
+            ? item.allowedInGame === true && item.contentStatus === 'ready'
+            : library.mode === 'city'
+              ? item.allowedInGame !== false
+              : isCatalogGuessModeId(library.mode)
+                ? isAllowedInRegularGame(item as Parameters<typeof isAllowedInRegularGame>[0])
+                : item.allowedInGame === true,
           contentStatus: item.contentStatus ?? null, payload: item,
         }))).returning({ id: contentItemVersions.id, itemId: contentItemVersions.itemId })
         const itemMap = new Map(chunk.map((item) => [item.id, item]))
-        const aliases = versions.flatMap((row) => aliasesFor(itemMap.get(row.itemId)!).map((alias) => ({ itemVersionId: row.id, ...alias })))
+        const aliases = versions.flatMap((row) => {
+          const item = itemMap.get(row.itemId)!
+          return isCatalogGuessModeId(item.mode)
+            ? aliasesFor(item).map((alias) => ({ itemVersionId: row.id, ...alias }))
+            : []
+        })
         if (aliases.length) await tx.insert(contentAliases).values(aliases)
       }
     }

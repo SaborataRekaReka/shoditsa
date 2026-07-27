@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { GAME_MODE_MANIFEST, PLAYABLE_MODE_IDS, type TitleItem, type TitleMode } from '@shoditsa/contracts'
+import { CATALOG_GUESS_MODE_IDS, GAME_MODE_MANIFEST, type TitleItem, type TitleMode } from '@shoditsa/contracts'
 import { compareTitles, resultText, searchTitles } from '../src/index.js'
 
-const libraryDirs = Object.fromEntries(PLAYABLE_MODE_IDS.map((mode) => [mode, GAME_MODE_MANIFEST[mode].dataDir])) as Record<TitleMode, string>
+const libraryDirs = Object.fromEntries(CATALOG_GUESS_MODE_IDS.map((mode) => [mode, GAME_MODE_MANIFEST[mode].dataDir])) as Record<TitleMode, string>
 
 const modes = Object.keys(libraryDirs) as TitleMode[]
 

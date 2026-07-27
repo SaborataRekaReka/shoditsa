@@ -10,6 +10,7 @@ import type {
   PrivateGameOrderBody, PrivateGameOrderResponse,
   DanetkiMessage,
   FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomListResponse, FriendsRoomPreview, FriendsRoomResponse,
+  ConnectionsGuessResponse, ConnectionsHintResponse,
 } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
@@ -157,6 +158,31 @@ export const api = {
     maxRateLimitRetryMs: 10_000,
   }),
   game: (id: string) => request<GameResponse>(`${API_BASE}/games/${id}`, { retries: 1 }),
+  connectionsGuess: (
+    id: string,
+    tileIds: [string, string, string, string],
+    idempotencyKey: string,
+  ) => request<ConnectionsGuessResponse>(`${API_BASE}/connections/sessions/${id}/guesses`, {
+    method: 'POST',
+    headers: { 'Idempotency-Key': idempotencyKey },
+    body: JSON.stringify({ tileIds }),
+    retries: 1,
+    maxRateLimitRetryMs: 10_000,
+  }),
+  connectionsHint: (
+    id: string,
+    checkpoint: 1 | 3,
+    idempotencyKey: string,
+  ) => request<ConnectionsHintResponse>(
+    `${API_BASE}/connections/sessions/${id}/hints`,
+    {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey },
+      body: JSON.stringify({ checkpoint }),
+      retries: 1,
+      maxRateLimitRetryMs: 10_000,
+    },
+  ),
   danetkiSnapshot: (id: string, afterSeq = 0) => request<GameResponse>(`${API_BASE}/danetki/sessions/${id}/snapshot?afterSeq=${afterSeq}`, { retries: 1 }),
   danetkiMessage: (id: string, text: string, idempotencyKey: string) => request<{ message: DanetkiMessage; aiStatus: 'queued' }>(`${API_BASE}/danetki/sessions/${id}/messages`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ text, idempotencyKey }), retries: 1, timeoutMs: 15_000 }),
   danetkiHint: (id: string, idempotencyKey: string) => request<{ message: DanetkiMessage; hintLevel: number }>(`${API_BASE}/danetki/sessions/${id}/hints`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }), retries: 1 }),

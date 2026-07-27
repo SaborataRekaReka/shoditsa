@@ -19,6 +19,8 @@ export const danetkiMessageType = pgEnum('danetki_message_type', ['question', 'a
 export const danetkiGuessStatus = pgEnum('danetki_guess_status', ['pending', 'correct', 'incorrect'])
 export const danetkiAiPurpose = pgEnum('danetki_ai_purpose', ['answer', 'evaluate_guess', 'hint', 'summarize'])
 export const danetkiAiCallStatus = pgEnum('danetki_ai_call_status', ['pending', 'success', 'error'])
+export const connectionsColor = pgEnum('connections_color', ['yellow', 'green', 'blue', 'purple'])
+export const connectionsGuessResult = pgEnum('connections_guess_result', ['correct', 'wrong', 'one_away'])
 export const friendsRoomPhase = pgEnum('friends_room_phase', ['lobby', 'countdown', 'active', 'results', 'intermission', 'finished'])
 export const friendsRoomMemberRole = pgEnum('friends_room_member_role', ['owner', 'player'])
 
@@ -477,6 +479,66 @@ export const gameSessions = pgTable('game_sessions', {
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
 ])
 
+export const connectionsSchedule = pgTable('connections_schedule', {
+  puzzleDate: date('puzzle_date').primaryKey(),
+  itemVersionId: uuid('item_version_id').notNull().references(() => contentItemVersions.id),
+  scheduledBy: uuid('scheduled_by').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: now(),
+  updatedAt: now(),
+  cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
+}, (table) => [
+  unique('connections_schedule_item_version_unique').on(table.itemVersionId),
+  index('connections_schedule_active_date_idx').on(table.puzzleDate, table.cancelledAt),
+])
+
+export const connectionsSessionState = pgTable('connections_session_state', {
+  sessionId: uuid('session_id').primaryKey().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  solvedColors: connectionsColor('solved_colors').array().notNull().default(sql`ARRAY[]::connections_color[]`),
+  mistakesUsed: smallint('mistakes_used').notNull().default(0),
+  hintsUsed: smallint('hints_used').notNull().default(0),
+  updatedAt: now(),
+}, (table) => [
+  check('connections_session_mistakes_check', sql`${table.mistakesUsed} between 0 and 4`),
+  check('connections_session_hints_check', sql`${table.hintsUsed} between 0 and 2`),
+])
+
+export const connectionsGuesses = pgTable('connections_guesses', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  position: smallint().notNull(),
+  tileIds: text('tile_ids').array().notNull(),
+  signature: text().notNull(),
+  result: connectionsGuessResult().notNull(),
+  matchedColor: connectionsColor('matched_color'),
+  mistakesAfter: smallint('mistakes_after').notNull(),
+  responseSnapshot: jsonb('response_snapshot').notNull().default({}),
+  idempotencyKey: uuid('idempotency_key').notNull(),
+  createdAt: now(),
+}, (table) => [
+  unique('connections_guess_session_position_unique').on(table.sessionId, table.position),
+  unique('connections_guess_session_signature_unique').on(table.sessionId, table.signature),
+  unique('connections_guess_session_idempotency_unique').on(table.sessionId, table.idempotencyKey),
+  check('connections_guess_tiles_count_check', sql`cardinality(${table.tileIds}) = 4`),
+  check('connections_guess_position_check', sql`${table.position} between 1 and 6`),
+  check('connections_guess_mistakes_check', sql`${table.mistakesAfter} between 0 and 4`),
+  check('connections_guess_match_check', sql`(${table.result} = 'correct' and ${table.matchedColor} is not null) or (${table.result} <> 'correct' and ${table.matchedColor} is null)`),
+  index('connections_guess_session_created_idx').on(table.sessionId, table.createdAt),
+])
+
+export const connectionsHintChoices = pgTable('connections_hint_choices', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  checkpoint: smallint().notNull(),
+  groupColor: connectionsColor('group_color').notNull(),
+  responseSnapshot: jsonb('response_snapshot').notNull().default({}),
+  idempotencyKey: uuid('idempotency_key').notNull(),
+  createdAt: now(),
+}, (table) => [
+  unique('connections_hint_session_checkpoint_unique').on(table.sessionId, table.checkpoint),
+  unique('connections_hint_session_idempotency_unique').on(table.sessionId, table.idempotencyKey),
+  check('connections_hint_checkpoint_check', sql`${table.checkpoint} in (1, 3)`),
+])
+
 export const gameFinalChoices = pgTable('game_final_choices', {
   sessionId: uuid('session_id').primaryKey().references(() => gameSessions.id, { onDelete: 'cascade' }),
   candidateItemVersionIds: uuid('candidate_item_version_ids').array().notNull(),
@@ -795,7 +857,7 @@ export const contentReports = pgTable('content_reports', {
   index('content_report_status_created_idx').on(table.status, table.createdAt),
   index('content_report_item_idx').on(table.itemId),
   uniqueIndex('content_report_user_client_event_unique').on(table.userId, table.clientEventId).where(sql`${table.clientEventId} is not null`),
-  check('content_report_reason_check', sql`${table.reason} in ('wrong_fact','disputed_comparison','title_not_found','bad_hint','bad_image','duplicate_card','typo_or_translation','technical_error','other')`),
+  check('content_report_reason_check', sql`${table.reason} in ('wrong_fact','disputed_comparison','title_not_found','bad_hint','bad_image','duplicate_card','ambiguous_group','wrong_group_title','word_does_not_fit','duplicate_word','typo_or_translation','technical_error','other')`),
   check('content_report_status_check', sql`${table.status} in ('open','in_progress','resolved','dismissed','duplicate')`),
   check('content_report_resolution_type_check', sql`${table.resolutionType} is null or ${table.resolutionType} in ('fixed_by_revision','already_fixed','expected_behavior','insufficient_data','duplicate','other')`),
   check('content_report_not_self_duplicate_check', sql`${table.duplicateOfReportId} is null or ${table.duplicateOfReportId} <> ${table.id}`),
@@ -1138,7 +1200,7 @@ export const clientEvents = pgTable('client_events', {
   properties: jsonb().notNull().default({}),
   createdAt: now(),
 }, (table) => [
-  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable')`),
+  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable','connections_started','connections_guess_submitted','connections_one_away','connections_group_solved','connections_hint_used','connections_completed','connections_shared','connections_report_submitted')`),
   index('client_event_occurred_idx').on(table.occurredAt),
   index('client_event_user_occurred_idx').on(table.userId, table.occurredAt),
   index('client_event_game_session_idx').on(table.gameSessionId),

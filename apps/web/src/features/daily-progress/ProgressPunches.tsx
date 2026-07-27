@@ -1,13 +1,13 @@
 import { Check } from 'lucide-react'
 import type { CSSProperties } from 'react'
-import type { TitleMode } from '../../types'
-import { DAILY_MODE_LABELS, DAILY_MODE_ORDER } from './daily-progress'
+import type { FullHouseModeId } from '@shoditsa/contracts'
+import { DAILY_MODE_LABELS } from './daily-progress'
 
-export function ProgressPunches({ completedModes, caption }: { completedModes: TitleMode[]; caption: string }) {
+export function ProgressPunches({ completedModes, dailyModes, caption }: { completedModes: FullHouseModeId[]; dailyModes: FullHouseModeId[]; caption: string }) {
   const completed = new Set(completedModes)
   return <div className="progress-punches-wrap">
-    <div className="progress-punches" role="list" aria-label={`${DAILY_MODE_ORDER.length} ежедневных игр`}>
-      {DAILY_MODE_ORDER.map((mode, index) => {
+    <div className="progress-punches" role="list" aria-label={`${dailyModes.length} ежедневных игр`}>
+      {dailyModes.map((mode, index) => {
         const isCompleted = completed.has(mode)
         return <span
           className={`progress-punch ${isCompleted ? 'is-completed' : 'is-pending'}`}

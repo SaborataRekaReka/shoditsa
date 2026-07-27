@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { FULL_HOUSE_MODE_IDS, isPlayableModeId } from '@shoditsa/contracts'
-import { BarChart3, Check, ChevronLeft, ChevronRight, CreditCard, Crown, Film, Heart, Lock, Mail, Medal, Play, ShieldCheck, Target, Ticket, Trophy, UserRound } from 'lucide-react'
+import { FULL_HOUSE_MODE_IDS, isCatalogGuessModeId } from '@shoditsa/contracts'
+import { BarChart3, Check, ChevronLeft, ChevronRight, CreditCard, Crown, Film, Grid2X2, Heart, Lock, Mail, Medal, Play, ShieldCheck, Target, Ticket, Trophy, UserRound } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { publicAssetUrl } from '../../app/public-asset'
@@ -17,7 +17,7 @@ import { authErrorMessage } from '../auth/auth-helpers'
 import { useAuthSession } from '../auth/use-auth-session'
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import { AccountAccessPanel } from './AccountAccessPanel'
-import { archiveItemToSavedGame, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from '../server-runtime/adapters'
+import { archiveItemToSavedGame, isCatalogArchiveItem, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from '../server-runtime/adapters'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import './ProfileScreen.css'
 
@@ -101,10 +101,14 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
     ? toLegacyDailyAttendance(serverRuntime.dashboard?.today, serverRuntime.meta?.moscowDate ?? getMoscowDate())
     : loadDailyAttendance(getMoscowDate())
   const completedGames: SavedGame[] = SERVER_RUNTIME
-    ? (serverArchive.data?.items ?? []).filter((entry) => isPlayableModeId(entry.mode)).map(archiveItemToSavedGame)
+    ? (serverArchive.data?.items ?? []).filter(isCatalogArchiveItem).map(archiveItemToSavedGame)
     : allGames().filter((game) => game.status === 'won' || game.status === 'lost')
   const wonGames = completedGames.filter((game) => game.status === 'won')
-  const winRate = completedGames.length ? Math.round(wonGames.length / completedGames.length * 100) : 0
+  const dashboardPlayed = (serverRuntime.dashboard?.stats ?? []).reduce((sum, entry) => sum + entry.played, 0)
+  const dashboardWon = (serverRuntime.dashboard?.stats ?? []).reduce((sum, entry) => sum + entry.won, 0)
+  const totalPlayed = SERVER_RUNTIME ? dashboardPlayed : completedGames.length
+  const totalWon = SERVER_RUNTIME ? dashboardWon : wonGames.length
+  const winRate = totalPlayed ? Math.round(totalWon / totalPlayed * 100) : 0
   const recentGames = completedGames.slice(0, 4)
   const profile = serverRuntime.me?.profile
   const displayName = session && !session.isAnonymous
@@ -112,7 +116,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
     : 'Гость кинозала'
   const initials = displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU')
   const todayDate = serverRuntime.meta?.moscowDate ?? getMoscowDate()
-  const activeSession = serverRuntime.dashboard?.activeSessions.find((entry) => isPlayableModeId(entry.mode) && entry.kind === 'daily' && entry.puzzleDate === todayDate)
+  const activeSession = serverRuntime.dashboard?.activeSessions.find((entry) => isCatalogGuessModeId(entry.mode) && entry.kind === 'daily' && entry.puzzleDate === todayDate)
   const selectTab = (tab: ProfileTab) => {
     setActiveTab(tab)
     if (typeof window === 'undefined') return
@@ -176,11 +180,16 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
     { scope: 'gold' as const, label: 'Золотые', count: supporterCounts.gold, Icon: Crown },
   ]
   const bullseyeUnlocked = wonGames.some((game) => game.attempts.length === 1)
-  const fullHouseProgress = today.fullHouse ? MODE_TABS.length : today.completedModes.length
+  const connectionsCompleted = serverRuntime.dashboard?.today?.completedModes.includes('connections') ?? false
+  const todayRouteProgress = today.completedModes.length + (connectionsCompleted ? 1 : 0)
+  const fullHouseTarget = SERVER_RUNTIME && serverRuntime.meta?.features.connectionsEnabled !== false
+    ? FULL_HOUSE_MODE_IDS.length
+    : MODE_TABS.length
+  const fullHouseProgress = today.fullHouse ? fullHouseTarget : todayRouteProgress
   const achievementCards = [
     { key: 'first-game', title: 'Первая игра', description: 'Закончите первую игру.', unlocked: completedGames.length > 0, current: Math.min(completedGames.length, 1), target: 1, image: publicAssetUrl('images/badges/first-game.webp') },
     { key: 'bullseye', title: 'Точно в цель', description: 'Выиграйте с первой попытки.', unlocked: bullseyeUnlocked, current: bullseyeUnlocked ? 1 : 0, target: 1, image: publicAssetUrl('images/badges/bullseye.webp') },
-    { key: 'full-house', title: 'Полный зал', description: `Закончите все ${MODE_TABS.length} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: MODE_TABS.length, image: publicAssetUrl('images/badges/full-house.webp') },
+    { key: 'full-house', title: 'Полный зал', description: `Закончите все ${fullHouseTarget} игр за день.`, unlocked: attendance.fullHouseDays > 0 || today.fullHouse, current: fullHouseProgress, target: fullHouseTarget, image: publicAssetUrl('images/badges/full-house.webp') },
   ]
   const profileCategoryConfig = CATEGORY_TICKET_CONFIG
   const nextDailyCategory = profileCategoryConfig.find((category) => category.mode === activeSession?.mode)
@@ -236,8 +245,8 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
 
       {activeTab === 'overview' && <>
         <section className="profile-overview profile-overview--dashboard" aria-label="Общая статистика">
-          <article><i aria-hidden="true"><Film /></i><span>Сыграно</span><strong>{completedGames.length}</strong><small>игр завершено</small></article>
-          <article><i aria-hidden="true"><Target /></i><span>Точность</span><strong>{completedGames.length ? `${winRate}%` : '—'}</strong><small>{completedGames.length ? `${wonGames.length} побед` : 'появится после игры'}</small></article>
+          <article><i aria-hidden="true"><Film /></i><span>Сыграно</span><strong>{totalPlayed}</strong><small>игр завершено</small></article>
+          <article><i aria-hidden="true"><Target /></i><span>Точность</span><strong>{totalPlayed ? `${winRate}%` : '—'}</strong><small>{totalPlayed ? `${totalWon} побед` : 'появится после игры'}</small></article>
           <article><i aria-hidden="true"><Trophy /></i><span>Серия</span><strong>{attendance.currentDailyStreak}<em> дн.</em></strong><small>лучший результат: {attendance.bestDailyStreak}</small></article>
           <article><i aria-hidden="true"><Ticket /></i><span>Билеты</span><strong>{wallet.tickets}</strong><small>доступно сейчас</small></article>
         </section>
@@ -271,7 +280,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
 
         <div className="profile-overview-layout">
           <section className="profile-section profile-route">
-            <div className="profile-section__head"><div><span>Сегодня</span><h2>Ваш игровой маршрут</h2><p>Выберите любую категорию и начните первую серию</p></div><strong>{today.completedModes.length}/{MODE_TABS.length}</strong></div>
+            <div className="profile-section__head"><div><span>Сегодня</span><h2>Ваш игровой маршрут</h2><p>Выберите любую категорию и начните первую серию</p></div><strong>{todayRouteProgress}/{fullHouseTarget}</strong></div>
             <div className="profile-route__grid">{profileCategoryConfig.map((category) => {
               const isComplete = today.completedModes.includes(category.mode)
               const isActive = activeSession?.mode === category.mode
@@ -320,7 +329,12 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
           const won = stats.reduce((sum, entry) => sum + entry.won, 0)
           const Icon = category.icon
           return <article key={category.mode} style={{ '--profile-card-color': category.color } as CSSProperties}><span><Icon /></span><strong>{category.title}</strong><b>{played}</b><small>{won ? `побед: ${won}` : 'сеансов пока нет'}</small></article>
-        })}</div>
+        })}{SERVER_RUNTIME && serverRuntime.meta?.features.connectionsEnabled !== false && (() => {
+          const stats = (serverRuntime.dashboard?.stats ?? []).filter((entry) => entry.mode === 'connections')
+          const played = stats.reduce((sum, entry) => sum + entry.played, 0)
+          const won = stats.reduce((sum, entry) => sum + entry.won, 0)
+          return <article key="connections" style={{ '--profile-card-color': 'var(--mode-connections-brand)' } as CSSProperties}><span><Grid2X2 /></span><strong>Связи</strong><b>{played}</b><small>{won ? `побед: ${won}` : 'сеансов пока нет'}</small></article>
+        })()}</div>
       </section>}
 
       {activeTab === 'achievements' && <section className="profile-section profile-achievements-tab">
