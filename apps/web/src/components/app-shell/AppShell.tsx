@@ -286,7 +286,9 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
     <div className="app-footer__inner">
       <div className="app-footer__head">
         <div className="app-footer__brand">
-          <button className="app-footer__home" onClick={onHome} aria-label="На главный экран"><BrandLogo /></button>
+          <button className="app-footer__home" onClick={onHome} aria-label="На главный экран">
+            <img src={brandSymbolUrl} alt="" />
+          </button>
           <p><strong>Неспешная игра на каждый день</strong><span>Новая загадка после полуночи по Москве</span></p>
         </div>
         <nav className="app-footer__primary" aria-label="Основные разделы">
