@@ -45,9 +45,9 @@ SET "description" = CASE "id"
       WHEN 'club_365d' THEN 'Полный архив, свободная игра, комнаты с друзьями до 30 раундов без списаний, клубные спецпоказы и 2 дополнительные Данетки в сутки на 365 суток. Продление вручную.'
       ELSE "description"
     END,
-    "updated_at" = now()
+    "updatedAt" = now()
 WHERE "id" IN ('club_30d', 'club_365d');--> statement-breakpoint
-UPDATE "commerce_products" SET "enabled" = false, "updated_at" = now() WHERE "kind" = 'pack';--> statement-breakpoint
+UPDATE "commerce_products" SET "enabled" = false, "updatedAt" = now() WHERE "kind" = 'pack';--> statement-breakpoint
 ALTER TABLE "friends_rooms" ADD COLUMN "danetki_launch" jsonb DEFAULT '{"kind":"daily"}'::jsonb NOT NULL;--> statement-breakpoint
 ALTER TABLE "friends_rooms" ADD COLUMN "rules_version" integer DEFAULT 4 NOT NULL;--> statement-breakpoint
 ALTER TABLE "wallet_accounts" ADD COLUMN "purchase_debt" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
@@ -67,7 +67,7 @@ ALTER TABLE "friends_room_rounds" ADD CONSTRAINT "friends_room_round_position_ch
 ALTER TABLE "wallet_accounts" ADD CONSTRAINT "wallet_purchase_debt_check" CHECK ("wallet_accounts"."purchase_debt" >= 0);
 --> statement-breakpoint
 INSERT INTO "commerce_products"
-  ("id", "kind", "title", "description", "price_minor", "currency", "duration_days", "entitlement_key", "scope", "enabled", "sort_order", "metadata", "updated_at")
+  ("id", "kind", "title", "description", "price_minor", "currency", "duration_days", "entitlement_key", "scope", "enabled", "sort_order", "metadata", "updatedAt")
 VALUES
   ('tickets_60', 'tickets', '60 билетов', 'Набор для свободной игры, Данеток и комнат с друзьями.', 6900, 'RUB', null, null, null, true, 40, '{"ticketAmount":60}'::jsonb, now()),
   ('tickets_180', 'tickets', '180 билетов', 'Большой набор билетов для дополнительных игр.', 14900, 'RUB', null, null, null, true, 41, '{"ticketAmount":180}'::jsonb, now())
@@ -81,4 +81,4 @@ ON CONFLICT ("id") DO UPDATE SET
   "entitlement_key" = EXCLUDED."entitlement_key",
   "scope" = EXCLUDED."scope",
   "metadata" = EXCLUDED."metadata",
-  "updated_at" = now();
+  "updatedAt" = now();

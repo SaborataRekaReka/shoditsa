@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type { DanetkiRoomMode, DashboardResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { Clock3, HelpCircle, LoaderCircle, Play, Sparkles, UserRound, Users } from 'lucide-react'
+import { Clock3, HelpCircle, LoaderCircle, LockKeyhole, Play, Sparkles, UserRound, Users } from 'lucide-react'
 import { api, ApiClientError } from '../../api/client'
 import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import { GameLaunchControls, GameOption, GameOptionSelect } from '../../components/game-launch-controls/GameLaunchControls'
@@ -18,10 +18,11 @@ const messageFor = (error: unknown) => error instanceof ApiClientError
   ? error.message
   : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 
-export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartFreePlay, onCreateRoom, busy, error }: {
+export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGroupRoom, onHome, onBack, onArchive, onStats, onRules, onReview, onStart, onContinue, onStartFreePlay, onCreateRoom, busy, error }: {
   date: string
   access?: DashboardResponse['danetkiAccess']
   ticketBalance?: number
+  canCreateGroupRoom: boolean
   onHome: () => void
   onBack: () => void
   onArchive: () => void
@@ -40,9 +41,12 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
   const groupStartCost = access?.nextGroupCost ?? 0
   const launchCost = roomMode === 'group' || dailyAvailable ? 0 : access?.nextSoloCost ?? 0
   const launchShortage = Math.max(0, launchCost - ticketBalance)
-  const canLaunch = !busy && (roomMode === 'group' || (launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay))))
+  const canLaunch = !busy && (roomMode === 'group'
+    ? canCreateGroupRoom
+    : launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay)))
   const launch = () => {
     if (roomMode === 'group') {
+      if (!canCreateGroupRoom) return
       onCreateRoom()
       return
     }
@@ -59,6 +63,9 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
         ? `Начать игру · ${launchCost} билетов`
         : 'Начать игру'
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
+  useEffect(() => {
+    if (!canCreateGroupRoom && roomMode === 'group') setRoomMode('solo')
+  }, [canCreateGroupRoom, roomMode])
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { event.preventDefault(); onBack(); return }
@@ -112,7 +119,17 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, onHome, onBa
               resetKey={roomMode}
             >{(close) => <>
               <GameOption title="Одному" description="С ИИ-ведущим" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
-              <GameOption title="Вместе" description={`До 4 игроков · запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}`} icon={<Users />} selected={roomMode === 'group'} onSelect={() => { setRoomMode('group'); close() }} />
+              <GameOption
+                title="Вместе"
+                description={canCreateGroupRoom
+                  ? `До 4 игроков · запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}`
+                  : 'До 4 игроков · нужен клубный билет'}
+                icon={canCreateGroupRoom ? <Users /> : <LockKeyhole />}
+                status={canCreateGroupRoom ? undefined : { label: 'Только клуб', tone: 'locked', icon: <LockKeyhole /> }}
+                selected={roomMode === 'group'}
+                disabled={!canCreateGroupRoom}
+                onSelect={() => { setRoomMode('group'); close() }}
+              />
             </>}</GameOptionSelect>}
           />
           {busy && <p className="danetki-entry__status">Готовим расследование…</p>}
