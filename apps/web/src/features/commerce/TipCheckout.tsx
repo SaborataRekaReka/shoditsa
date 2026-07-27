@@ -17,6 +17,7 @@ import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ControlButton, DialogSurface, TextInput } from '../../components/ui'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
+import { checkoutDestination } from './checkout-flow'
 import './CommercialShell.css'
 
 type TipTier = 'paper' | 'silver' | 'gold'
@@ -114,13 +115,12 @@ export function TipCheckoutTrigger({
         { productId: product.id, termsAccepted: true, offerVersion: CURRENT_OFFER_VERSION },
         idempotencyKeyRef.current,
       )
-      if (response.checkoutUrl) {
-        window.location.assign(response.checkoutUrl)
+      const destination = await checkoutDestination(response)
+      if (!destination) {
+        setPendingProductId(null)
         return
       }
-      window.location.assign(
-        `/purchase/return?orderId=${encodeURIComponent(response.order.id)}`,
-      )
+      window.location.assign(destination)
     } catch (value) {
       idempotencyKeyRef.current = null
       setError(value instanceof ApiClientError

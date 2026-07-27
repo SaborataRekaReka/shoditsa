@@ -5,7 +5,7 @@ import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ActionButton } from '../../components/app-shell/AppShell'
 import { TextInput } from '../../components/ui'
-import { openCloudPaymentsWidget } from './cloudpayments-widget'
+import { checkoutDestination } from './checkout-flow'
 
 export function CheckoutButton({ product, authenticated, hasClub = false, label, placement = 'club_screen', returnUrl = '/club' }: { product: CommerceProduct; authenticated: boolean; hasClub?: boolean; label?: string; placement?: string; returnUrl?: string }) {
   const keyRef = useRef<string | null>(null)
@@ -37,18 +37,8 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
         offerVersion: CURRENT_OFFER_VERSION,
         ...(product.kind === 'club' ? { autoRenew } : {}),
       }, keyRef.current)
-      if (response.widget) {
-        const result = await openCloudPaymentsWidget(response.widget)
-        if (result.status === 'success') {
-          window.location.assign(`/purchase/return?orderId=${encodeURIComponent(response.order.id)}`)
-        } else if (result.type !== 'cancel') {
-          throw new Error(result.message || 'CloudPayments не подтвердил оплату')
-        }
-      } else if (response.checkoutUrl) {
-        window.location.assign(response.checkoutUrl)
-      } else {
-        window.location.assign(`/purchase/return?orderId=${encodeURIComponent(response.order.id)}`)
-      }
+      const destination = await checkoutDestination(response)
+      if (destination) window.location.assign(destination)
     } catch (value) {
       keyRef.current = null
       setError(value instanceof ApiClientError || value instanceof Error ? value.message : 'Не удалось начать оплату. Попробуйте ещё раз.')
