@@ -101,7 +101,9 @@ export const seoRouteFromPathname = (pathname: string): SeoRoute => {
     kind: 'game',
     robots: INDEXABLE_ROBOTS,
     indexable: true,
-    imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+    imagePath: game.mode === 'connections'
+      ? '/images/connections/connections-title-hero-v2.webp'
+      : DEFAULT_SOCIAL_IMAGE_PATH,
   }
 
   return utilitySeo(normalized) ?? {

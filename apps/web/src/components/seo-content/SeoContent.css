@@ -244,6 +244,7 @@
 .ticket-dossier--game { --ticket-dossier-accent: #2f6b45; --ticket-dossier-accent-rgb: 47, 107, 69; }
 .ticket-dossier--music { --ticket-dossier-accent: #9a5d24; --ticket-dossier-accent-rgb: 154, 93, 36; }
 .ticket-dossier--diagnosis { --ticket-dossier-accent: #9d3f39; --ticket-dossier-accent-rgb: 157, 63, 57; }
+.ticket-dossier--connections { --ticket-dossier-accent: #805f1f; --ticket-dossier-accent-rgb: 128, 95, 31; }
 
 .ticket-dossier__summary {
   min-height: 56px;

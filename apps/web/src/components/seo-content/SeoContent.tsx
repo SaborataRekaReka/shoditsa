@@ -121,7 +121,7 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
           <span><i className="close" /><b>Рядом</b><small>число близко или есть частичное совпадение</small></span>
           <span><i className="miss" /><b>Мимо</b><small>значение не совпало</small></span>
         </div>}
-        {mode !== 'danetki' && rules.directionInstruction && <p>{rules.directionInstruction}</p>}
+        {mode !== 'danetki' && mode !== 'connections' && rules.directionInstruction && <p>{rules.directionInstruction}</p>}
         {rules.modeNote && <p className="ticket-dossier__mode-note">{rules.modeNote}</p>}
       </section>
 

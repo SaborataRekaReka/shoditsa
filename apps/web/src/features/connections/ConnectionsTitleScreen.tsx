@@ -1,16 +1,16 @@
-import { CalendarDays, Grid2X2, Play, RotateCcw, Trophy } from 'lucide-react'
+import { useEffect } from 'react'
+import { Play, RotateCcw, Trophy, Waypoints } from 'lucide-react'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
+import { GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
+import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
+import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket/TitleTicket'
+import { prettyDate } from '../../game'
+import { dayNumber } from '../../game/day-number'
 import './ConnectionsTitleScreen.css'
 
 type ConnectionsTitleStatus = 'new' | 'active' | 'completed'
-
-const dateLabel = (date: string) => new Intl.DateTimeFormat('ru-RU', {
-  day: 'numeric',
-  month: 'long',
-  timeZone: 'Europe/Moscow',
-}).format(new Date(`${date}T12:00:00+03:00`))
 
 export function ConnectionsTitleScreen({
   date,
@@ -39,39 +39,66 @@ export function ConnectionsTitleScreen({
     ? { label: 'Продолжить', icon: RotateCcw }
     : status === 'completed'
       ? { label: 'Посмотреть результат', icon: Trophy }
-      : { label: 'Играть', icon: Play }
+      : { label: 'Начать игру', icon: Play }
   const ActionIcon = action.icon
+  const canPlay = !busy
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onBack()
+      } else if (event.key === 'Enter' && canPlay) {
+        event.preventDefault()
+        onPlay()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [canPlay, onBack, onPlay])
 
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <GameScreenShell className="connections-title" variant="title" onBack={onBack}>
-      <section className="connections-title__ticket" aria-labelledby="connections-title-heading">
-        <div className="connections-title__art">
-          <img
-            src={publicAssetUrl('images/connections/connections-title-hero-v2.webp')}
-            alt="Коллаж из шестнадцати карточек, объединённых линиями и цветными метками"
-            width="1536"
-            height="1024"
-            fetchPriority="high"
-            decoding="async"
+    <GameScreenShell className="title-screen connections-title" variant="title" onBack={onBack}>
+      <section className="title-stage connections-title__stage">
+        <div className="title-game-mark">
+          <span aria-hidden="true"><Waypoints /></span>
+          <i>Игра дня · №{dayNumber(date)}</i>
+          <h1>Связи</h1>
+        </div>
+        <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
+        <p>Русскоязычная головоломка: соберите 16 слов в четыре группы по смыслу или форме</p>
+
+        <AdmissionTitleTicket
+          id="ticket-connections"
+          mode="connections"
+          className="connections-title__ticket"
+          posterUrl={publicAssetUrl('images/connections/connections-title-hero-v2.webp')}
+          stubLabel="ВХОД"
+          stubTitle="ОДИН"
+          stubMeta={`№ ${dayNumber(date)}`}
+          stubEnd={`${date.slice(8, 10)}.${date.slice(5, 7)}`}
+          details={<GameArtifactSeoDetails mode="connections" />}
+          eager
+        >
+          <TicketKicker title="Ежедневная загадка" detail="новая сетка в полночь" />
+          <h2 id="ticket-connections">Connections на русском: игра «Связи»</h2>
+          <p>Найдите четыре скрытые связи и соберите по четыре слова в каждую группу. Можно допустить <strong>4 ошибки</strong>.</p>
+          <GameLaunchControls
+            mode="connections"
+            action={<ActionButton
+              className={`play-button game-launch-controls__play ${!canPlay ? 'is-disabled' : ''}`}
+              onClick={onPlay}
+              disabled={!canPlay}
+            >
+              <ActionIcon className={status === 'active' ? 'play-button__replay-icon' : undefined} aria-hidden="true" />
+              {busy ? 'Открываем…' : action.label}
+              {canPlay && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
+            </ActionButton>}
           />
-          <span className="connections-title__stamp">ЕЖЕДНЕВНАЯ ИГРА</span>
-        </div>
-        <div className="connections-title__copy">
-          <p className="connections-title__date"><CalendarDays aria-hidden="true" /> {dateLabel(date)}</p>
-          <h1 id="connections-title-heading">Связи</h1>
-          <p className="connections-title__lead">Соберите 16 слов в четыре группы по смыслу или форме.</p>
-          <div className="connections-title__mini-grid" aria-hidden="true">
-            {Array.from({ length: 4 }, (_, index) => <span key={index}><Grid2X2 /></span>)}
-          </div>
-          <p className="connections-title__rules">4 группы <i aria-hidden="true">·</i> можно допустить 4 ошибки</p>
-          <ActionButton className="connections-title__action" onClick={onPlay} disabled={busy}>
-            <ActionIcon aria-hidden="true" />
-            {busy ? 'Открываем…' : action.label}
-          </ActionButton>
-        </div>
+        </AdmissionTitleTicket>
       </section>
-      <p className="connections-title__footnote">Один и тот же набор для всех игроков. Новый раунд — в 00:00 МСК.</p>
     </GameScreenShell>
   </>
 }

@@ -2,14 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ConnectionsColor, GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
 import {
-  CalendarDays,
   Check,
-  Grid2X2,
   Lightbulb,
   LoaderCircle,
   RotateCcw,
   Shuffle,
   Sparkles,
+  Waypoints,
   X,
 } from 'lucide-react'
 import { api, ApiClientError, queryKeys } from '../../api/client'
@@ -24,6 +23,7 @@ import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { copyText } from '../../game/sharing'
 import { dayNumber } from '../../game/day-number'
 import { connectionsShareText } from './connections-sharing'
+import { ConnectionsSelectionLinks } from './ConnectionsSelectionLinks'
 import './ConnectionsGamePage.css'
 
 export type ConnectionsSession = Extract<GameSessionSnapshot, { engine: 'connections_grid' }>
@@ -92,6 +92,8 @@ export function ConnectionsGamePage({
   const hintKey = useRef<string | null>(null)
   const started = useRef(false)
   const completionTracked = useRef(false)
+  const gridShellRef = useRef<HTMLDivElement>(null)
+  const tileRefs = useRef(new Map<string, HTMLButtonElement>())
 
   const solvedTileIds = useMemo(
     () => new Set(state.solvedGroups.flatMap((group) => group.tiles.map((tile) => tile.id))),
@@ -288,116 +290,155 @@ export function ConnectionsGamePage({
       variant="session"
       wide
       onBack={onBack}
-      status={mistakeDots}
     >
-      <section className="connections-board" aria-labelledby="connections-game-title">
-        <header className="connections-board__head">
-          <span className="connections-board__icon" aria-hidden="true"><Grid2X2 /></span>
-          <div>
-            <p><CalendarDays /> {dateLabel(session.puzzleDate)} · №{dayNumber(session.puzzleDate)}</p>
-            <h1 id="connections-game-title">Связи дня</h1>
-            <small>Новая сетка в 00:00 МСК</small>
+      <div className="connections-layout">
+        <aside className="connections-sidebar" aria-label="Состояние игры">
+          <span className="connections-sidebar__icon" aria-hidden="true"><Waypoints /></span>
+          <div className="connections-sidebar__title">
+            <p>Игра дня · №{dayNumber(session.puzzleDate)}</p>
+            <h1 id="connections-game-title">Связи</h1>
+            <span className="connections-sidebar__scraps" aria-hidden="true"><i /><i /><i /></span>
           </div>
-        </header>
+          <time dateTime={session.puzzleDate}>{dateLabel(session.puzzleDate)}</time>
+          <p className="connections-sidebar__lead">Соберите 4 группы по 4 слова</p>
 
-        <div className="connections-solved" aria-live="polite">
-          {state.solvedGroups.map((group) => (
-            <article key={group.color} className={`connections-solved__group connections-color--${group.color}`}>
-              <strong>{group.title}</strong>
-              <span>{group.tiles.map((tile) => tile.label).join(', ')}</span>
-              {group.autoSolved && <small>последняя группа раскрыта автоматически</small>}
-            </article>
-          ))}
-        </div>
+          <div className="connections-sidebar__section connections-sidebar__progress">
+            <strong><b>{state.solvedGroups.length}</b> / 4 группы</strong>
+            <div aria-label={`Собрано групп: ${state.solvedGroups.length} из 4`}>
+              {Array.from({ length: 4 }, (_, index) => <i key={index} className={index < state.solvedGroups.length ? 'is-complete' : ''} />)}
+            </div>
+          </div>
 
-        {!terminal && <div
-          className={`connections-grid${guess.isPending ? ' is-submitting' : ''}`}
-          aria-label="Карточки со словами"
-          aria-busy={guess.isPending}
-        >
-          {remainingIds.map((tileId) => {
-            const tile = tileById.get(tileId)
-            if (!tile) return null
-            const isSelected = selected.includes(tileId)
-            return <ControlButton
-              key={tileId}
-              type="button"
-              className={isSelected ? 'is-selected' : ''}
-              aria-pressed={isSelected}
-              disabled={isPending}
-              onClick={() => toggle(tileId)}
-            >
-              <span>{tile.label}</span>
-            </ControlButton>
-          })}
-        </div>}
+          <div className="connections-sidebar__section connections-sidebar__mistakes">
+            {mistakeDots}
+          </div>
 
-        {!terminal && <div
-          className={`connections-message${feedback ? ` connections-message--${feedback}` : ''}`}
-          role="status"
-          aria-live="polite"
-        >
-          {isPending
-            ? <><LoaderCircle className="is-spinning" /> Проверяем связь…</>
-            : message
-              ? <>{feedback === 'correct' ? <Check /> : feedback === 'one_away' ? <Sparkles /> : <X />}{message}</>
-              : <>Выберите четыре карточки</>}
-        </div>}
-
-        {!terminal && <div className="connections-controls">
-          <ControlButton
-            className="connections-controls__shuffle"
-            onClick={() => setOrder((current) => {
-              const remaining = new Set(remainingIds)
-              const shuffledRemaining = shuffled(current.filter((id) => remaining.has(id)))
-              let offset = 0
-              return current.map((id) => remaining.has(id) ? shuffledRemaining[offset++] : id)
-            })}
-            disabled={isPending}
+          {!terminal && <ControlButton
+            className="connections-sidebar__hint"
+            onClick={openHint}
+            disabled={!state.hintAvailableAt || isPending}
           >
-            <Shuffle /> Перемешать
-          </ControlButton>
-          <ControlButton
-            className="connections-controls__clear"
-            onClick={() => setSelected([])}
-            disabled={isPending || selected.length === 0}
-          >
-            <RotateCcw /> Снять выбор
-          </ControlButton>
-          {state.hintAvailableAt && <ControlButton className="connections-controls__hint" onClick={openHint} disabled={isPending}>
-            <Lightbulb /> Подсказка
+            <Lightbulb /> Открыть подсказку
           </ControlButton>}
-          <ActionButton className="connections-controls__submit" onClick={submit} disabled={isPending || selected.length !== 4}>
-            <Check /> Проверить
-          </ActionButton>
-        </div>}
+        </aside>
 
-        {terminal && <ConnectionsResult
-          session={session}
-          copied={copied}
-          reward={lastReward}
-          streak={runtime.dashboard?.attendance?.currentDailyStreak ?? null}
-          onCopy={() => void copyResult()}
-          onHome={onHome}
-          onArchive={onArchive}
-          onReport={async (reason, comment) => {
-            await api.contentReport({ sessionId, reason, comment: comment || undefined })
-            trackClientEvent('connections_report_submitted', {
-              mode: 'connections',
-              sessionKind: session.kind,
-              puzzleDate: session.puzzleDate,
-              difficulty: session.difficulty,
-              mistakesUsed: state.mistakesUsed,
-              groupsSolved: state.solvedGroups.length,
-              hintsUsed: state.hints.length,
-              reason,
-              rulesVersion: session.rulesVersion,
-            }, { gameSessionId: sessionId })
-          }}
-        />}
+        <section className="connections-board" aria-labelledby="connections-game-title">
+          {!terminal && <div className="connections-grid-shell" ref={gridShellRef}>
+            <ConnectionsSelectionLinks
+              hostRef={gridShellRef}
+              tileRefs={tileRefs}
+              selected={selected}
+              layoutKey={remainingIds.join('|')}
+            />
+            <div className="connections-solved" aria-live="polite">
+              {state.solvedGroups.map((group) => (
+                <article key={group.color} className={`connections-solved__group connections-color--${group.color}`}>
+                  <strong>{group.title}</strong>
+                  <span>{group.tiles.map((tile) => tile.label).join(', ')}</span>
+                  {group.autoSolved && <small>последняя группа раскрыта автоматически</small>}
+                </article>
+              ))}
+            </div>
 
-        {(guess.error || hint.error) && !message && <InlineAlert tone="danger">{errorText(guess.error ?? hint.error)}</InlineAlert>}
-      </section>
+            <div
+              className={`connections-grid${guess.isPending ? ' is-submitting' : ''}`}
+              aria-label="Карточки со словами"
+              aria-busy={guess.isPending}
+            >
+              {remainingIds.map((tileId) => {
+                const tile = tileById.get(tileId)
+                if (!tile) return null
+                const selectedIndex = selected.indexOf(tileId)
+                const isSelected = selectedIndex !== -1
+                return <ControlButton
+                  key={tileId}
+                  ref={(node) => {
+                    if (node) tileRefs.current.set(tileId, node)
+                    else tileRefs.current.delete(tileId)
+                  }}
+                  type="button"
+                  className={isSelected ? 'is-selected' : ''}
+                  aria-pressed={isSelected}
+                  disabled={isPending}
+                  onClick={() => toggle(tileId)}
+                >
+                  {isSelected && <small className="connections-tile__number" aria-hidden="true">{selectedIndex + 1}</small>}
+                  <span className="connections-tile__label">{tile.label}</span>
+                </ControlButton>
+              })}
+            </div>
+          </div>}
+
+          {!terminal && (isPending || message) && <div
+            className={`connections-message${feedback ? ` connections-message--${feedback}` : ''}`}
+            role="status"
+            aria-live="polite"
+          >
+            {isPending
+              ? <><LoaderCircle className="is-spinning" /> Проверяем связь…</>
+              : <>{feedback === 'correct' ? <Check /> : feedback === 'one_away' ? <Sparkles /> : <X />}{message}</>}
+          </div>}
+
+          {!terminal && <div className="connections-controls">
+            <ControlButton
+              className="connections-controls__shuffle"
+              onClick={() => setOrder((current) => {
+                const remaining = new Set(remainingIds)
+                const shuffledRemaining = shuffled(current.filter((id) => remaining.has(id)))
+                let offset = 0
+                return current.map((id) => remaining.has(id) ? shuffledRemaining[offset++] : id)
+              })}
+              disabled={isPending}
+            >
+              <Shuffle /> Перемешать
+            </ControlButton>
+            <ControlButton
+              className="connections-controls__clear"
+              onClick={() => setSelected([])}
+              disabled={isPending || selected.length === 0}
+            >
+              <RotateCcw /> Снять выбор
+            </ControlButton>
+            <ActionButton
+              className="connections-controls__submit"
+              onClick={submit}
+              disabled={isPending || selected.length !== 4}
+              aria-label={selected.length === 4
+                ? 'Проверить выбранную группу'
+                : `Проверить группу: выберите ещё ${4 - selected.length}`}
+            >
+              <Check />
+              Проверить группу
+            </ActionButton>
+          </div>}
+
+          {terminal && <ConnectionsResult
+            session={session}
+            copied={copied}
+            reward={lastReward}
+            streak={runtime.dashboard?.attendance?.currentDailyStreak ?? null}
+            onCopy={() => void copyResult()}
+            onHome={onHome}
+            onArchive={onArchive}
+            onReport={async (reason, comment) => {
+              await api.contentReport({ sessionId, reason, comment: comment || undefined })
+              trackClientEvent('connections_report_submitted', {
+                mode: 'connections',
+                sessionKind: session.kind,
+                puzzleDate: session.puzzleDate,
+                difficulty: session.difficulty,
+                mistakesUsed: state.mistakesUsed,
+                groupsSolved: state.solvedGroups.length,
+                hintsUsed: state.hints.length,
+                reason,
+                rulesVersion: session.rulesVersion,
+              }, { gameSessionId: sessionId })
+            }}
+          />}
+
+          {(guess.error || hint.error) && !message && <InlineAlert tone="danger">{errorText(guess.error ?? hint.error)}</InlineAlert>}
+        </section>
+      </div>
     </GameScreenShell>
   </>
 }

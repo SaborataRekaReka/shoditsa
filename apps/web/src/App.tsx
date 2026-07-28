@@ -17,7 +17,6 @@ import {
   Crown,
   Film,
   Gamepad2,
-  Grid2X2,
   HeartPulse,
   LogIn,
   Lock,
@@ -32,6 +31,7 @@ import {
   Ticket,
   Target,
   Trophy,
+  Waypoints,
   Tv,
   UserRound,
   Users,
@@ -1263,7 +1263,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
             title="Связи"
             description="Соберите 16 слов в четыре связанные группы"
             color="var(--mode-connections-brand)"
-            icon={Grid2X2}
+            icon={Waypoints}
             watermarkUrl={publicAssetUrl('images/connections/connections-card-v2.webp')}
             poolCount={connectionsPoolCount}
             poolLabel="РАУНДОВ"
