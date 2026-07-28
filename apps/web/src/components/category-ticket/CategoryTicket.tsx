@@ -40,11 +40,10 @@ const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number
 
 export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, progressLabel = 'ПОПЫТКИ', progressMax = 10, completedProgress = true, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
-  const badge = status === 'active'
-    ? `${progressLabel} · ${attempts ?? 0}/${progressMax}`
-    : status === 'completed'
-      ? completedProgress ? `ГОТОВО · ${attempts ?? 0}/${progressMax}` : 'ГОТОВО'
-      : null
+  const badge = status === 'active' ? `${progressLabel} · ${attempts ?? 0}/${progressMax}` : null
+  const state = status === 'completed'
+    ? completedProgress ? `ГОТОВО · ${attempts ?? 0}/${progressMax}` : 'ГОТОВО'
+    : statusLabel[status]
 
   const content = <>
     <span className="category-ticket__stub" aria-hidden="true">
@@ -58,7 +57,7 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
       <strong className="category-ticket__title">{title}</strong>
       <span className="category-ticket__description">{description}</span>
       <span className="category-ticket__footer">
-        <span className="category-ticket__state">{statusLabel[status]}</span>
+        <span className="category-ticket__state">{state}</span>
         <span className="category-ticket__action">{status === 'new' && newActionLabel ? newActionLabel : actionLabel[status]} <ChevronRight aria-hidden="true" /></span>
       </span>
     </span>

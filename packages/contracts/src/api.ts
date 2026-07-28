@@ -186,7 +186,7 @@ export type HintChoiceSnapshot = { checkpoint: 5 | 8; hintKey: AssistHintKey; re
 export type HintOptionSnapshot = { key: AssistHintKey; title: string; subtitle: string }
 export type PromoPromptSnapshot = { packId: string; title: string; subtitle: string; disclaimer: string }
 
-export const FINAL_CHOICE_DURATION_MS = 10_000
+export const FINAL_CHOICE_DURATION_MS = 45_000
 
 export type FinalChoiceFactSnapshot = {
   key: string

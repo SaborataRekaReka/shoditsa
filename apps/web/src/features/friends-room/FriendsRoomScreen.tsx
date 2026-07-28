@@ -67,7 +67,7 @@ const errorText = (error: unknown) => error instanceof Error ? error.message : '
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toLocaleUpperCase('ru-RU') || 'И'
 const score = (value: number) => new Intl.NumberFormat('ru-RU').format(value)
 const packCountLabel = (count: number) => `${count} ${count === 1 ? 'пак' : count < 5 ? 'пака' : 'паков'}`
-const activeMembers = (room: FriendsRoomSnapshot) => room.members.filter((member) => !member.leftAt)
+const activeMembers = (room: FriendsRoomSnapshot) => room.members.filter((member) => !member.leftAt && member.connected)
 const idempotencyKey = () => crypto.randomUUID()
 const localTime = (value: string) => new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
 const plural = (value: number, one: string, few: string, many: string) => {
@@ -101,6 +101,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
   const [invitePreview, setInvitePreview] = useState<FriendsRoomPreview | null>(null)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
+  const [messageSending, setMessageSending] = useState(false)
   const [configSaving, setConfigSaving] = useState(false)
   const [error, setError] = useState('')
   const [connection, setConnection] = useState<'connected' | 'reconnecting' | 'offline'>('reconnecting')
@@ -439,10 +440,19 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
   }
   const sendMessage = (event: FormEvent) => {
     event.preventDefault()
-    if (!room || !message.trim()) return
+    if (!room || !message.trim() || messageSending) return
     const text = message.trim()
-    setMessage('')
-    void run(() => api.friendsRoomMessage(room.id, text, idempotencyKey()))
+    setMessageSending(true)
+    setError('')
+    void api.friendsRoomMessage(room.id, text, idempotencyKey()).then((response) => {
+      roomRef.current = response.room
+      setRoom(response.room)
+      setMessage((current) => current.trim() === text ? '' : current)
+    }).catch((reason) => {
+      setError(errorText(reason))
+    }).finally(() => {
+      setMessageSending(false)
+    })
   }
 
   const currentMode = room?.round?.mode ?? room?.packs[0]?.mode ?? room?.mode
@@ -495,7 +505,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
       {!loading && !room && invitePreview && <RoomInvitePreview preview={invitePreview} busy={busy} onJoin={() => void joinInvitedRoom()} onDecline={onExit} />}
       {!loading && !room && !invitePreview && roomDirectory && <RoomDirectory rooms={roomDirectory} busy={busy} onOpen={(summary) => void openExistingRoom(summary)} onLeave={(roomId) => void leaveDirectoryRoom(roomId)} onCreate={(gameType) => void createNewRoom(gameType)} />}
       {!loading && !room && !invitePreview && !roomDirectory && <RoomError onRetry={() => window.location.reload()} onExit={onExit} />}
-      {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} configSaving={configSaving} danetkiGroupCost={room.danetkiLaunchCost} ticketBalance={ticketBalance} message={message} onMessage={setMessage} onSend={sendMessage} onGameType={(gameType, selectedMode) => updateConfig({
+      {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} messageSending={messageSending} configSaving={configSaving} danetkiGroupCost={room.danetkiLaunchCost} ticketBalance={ticketBalance} message={message} onMessage={setMessage} onSend={sendMessage} onGameType={(gameType, selectedMode) => updateConfig({
         gameType,
         ...(selectedMode ? { packs: [{ mode: selectedMode, variant: FRIENDS_ROOM_DEFAULT_PACK_VARIANTS[selectedMode] }] } : {}),
       })} onPacks={(packs) => updateConfig({ gameType: 'quiz', packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(async () => {
@@ -508,8 +518,8 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
         if ((quote?.cost ?? 0) > 0) trackClientEvent('ticket_spent', { sink: 'friends-room', amount: quote!.cost, roomId: room.id, rulesVersion: room.rulesVersion ?? 4 })
         return response
       })} />}
-      {room?.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} copied={copied} busy={busy} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} />}
-      {room && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} copied={copied} busy={busy} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
+      {room?.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} copied={copied} busy={busy} messageSending={messageSending} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} />}
+      {room && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} copied={copied} busy={busy} messageSending={messageSending} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
       {room?.phase === 'intermission' && <IntermissionScreen room={room} players={ranked} busy={busy} onContinue={() => void run(async () => {
         trackClientEvent('friends_room_continue_clicked', { roomId: room.id, required: room.continuation.cost, balance: room.continuation.balance, shortage: room.continuation.shortage, roundsAdded: room.continuation.roundsAdded, rulesVersion: room.rulesVersion })
         const response = await api.friendsRoomContinue(room.id, idempotencyKey())
@@ -938,12 +948,13 @@ function RoomInvitePreview({ preview, busy, onJoin, onDecline }: {
   </section>
 }
 
-function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCost, ticketBalance, message, onMessage, onSend, onGameType, onPacks, onRounds, onTime, onShuffle, onCopy, onStart }: {
+function Lobby({ room, mode, members, copied, busy, messageSending, configSaving, danetkiGroupCost, ticketBalance, message, onMessage, onSend, onGameType, onPacks, onRounds, onTime, onShuffle, onCopy, onStart }: {
   room: FriendsRoomSnapshot
   mode: (typeof MODES)[number]
   members: FriendsRoomSnapshot['members']
   copied: boolean
   busy: boolean
+  messageSending: boolean
   configSaving: boolean
   danetkiGroupCost: number
   ticketBalance: number
@@ -1001,7 +1012,7 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
         ? 'Пригласите до трёх друзей. После запуска вы будете вместе раскрывать одну необычную историю и задавать вопросы ИИ-ведущему по очереди.'
         : `Выберите один или несколько паков и правила. В комнате могут играть до ${room.capacity} человек — все одновременно увидят подсказки и отправят по одному ответу.`}</p>
       <div className={`room-code-card${copied ? ' is-copied' : ''}`}><span>Код игры</span><strong>{room.code}</strong><ControlButton type="button" onClick={onCopy} title="Копировать ссылку-приглашение"><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать'}</ControlButton></div>
-      <LobbyCommunity room={room} members={members} message={message} busy={busy} onMessage={onMessage} onSend={onSend} />
+      <LobbyCommunity room={room} members={members} message={message} busy={messageSending} onMessage={onMessage} onSend={onSend} />
     </div>
     <div className="room-lobby__settings">
       <header className="room-settings-heading"><span>Режим комнаты</span><strong>{isDanetki ? DANETKI_MODE.label : room.packs.length === 1 ? mode.label : packCountLabel(room.packs.length)}</strong></header>
@@ -1027,12 +1038,12 @@ function Lobby({ room, mode, members, copied, busy, configSaving, danetkiGroupCo
       </div>
       <ControlButton className={`room-shuffle${room.shufflePacks ? ' is-active' : ''}`} type="button" aria-pressed={room.shufflePacks} disabled={!room.isHost} onClick={onShuffle}><RoomIcon name="shuffle" /><span><strong>Перемешивать паки</strong><small>{room.shufflePacks ? 'Порядок будет случайным для этой игры' : 'Сейчас паки идут в порядке выбора'}</small></span><em>{room.shufflePacks ? 'Включено' : 'Выключено'}</em></ControlButton>
       <div className="room-rule-grid">
-        <fieldset className="room-rounds" disabled={!room.isHost || !clubRoom}><legend>Раундов <output>{room.roundsTotal}</output></legend><TextInput type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>{clubRoom ? 'Участникам Клуба доступно от 3 до 30 раундов.' : 'Первый блок — 6 раундов. После него можно продолжить.'}</small></fieldset>
+        <fieldset className="room-rounds" disabled={!room.isHost || !clubRoom}><legend>Раундов <output>{room.roundsTotal}</output></legend><TextInput type="range" min={minimumRounds} max={FRIENDS_ROOM_ROUND_MAX} step={FRIENDS_ROOM_ROUND_STEP} value={room.roundsTotal} onChange={(event) => onRounds(Number(event.currentTarget.value))} aria-label="Количество раундов" /><div className="room-rounds__scale" aria-hidden="true"><span>{minimumRounds}</span><span>30</span></div><small>{room.packs.length > 1 ? `Для ${packCountLabel(room.packs.length)} минимум ${minimumRounds} ${plural(minimumRounds, 'раунд', 'раунда', 'раундов')}. ` : ''}{clubRoom ? 'Участникам Клуба доступно до 30 раундов.' : 'Первый блок — 6 раундов. После него можно продолжить.'}</small></fieldset>
         <fieldset disabled={!room.isHost}><legend>Время на ответ</legend><div>{([15, 20, 30, 45] as const).map((value) => <ControlButton type="button" className={room.answerTimeSeconds === value ? 'is-active' : ''} key={value} onClick={() => onTime(value)}>{value} сек</ControlButton>)}</div></fieldset>
       </div>
       </>}
       {room.isHost
-        ? <ControlButton className="room-start" type="button" onClick={onStart} disabled={busy || configSaving || (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0)}><RoomIcon name="play" />{busy ? 'Запускаем…' : (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0) ? 'Не хватает билетов' : isDanetki ? 'Начать расследование' : 'Начать игру'}<span>{isDanetki ? `${members.length} из ${room.capacity} · вопросы по очереди` : `${packCountLabel(room.packs.length)} · ${room.roundsTotal} раундов · ${quote.cost ? `${quote.cost} билетов` : 'бесплатно'}`}</span></ControlButton>
+        ? <ControlButton className="room-start" type="button" onClick={onStart} disabled={busy || configSaving || (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0)}><RoomIcon name="play" />{busy ? 'Запускаем…' : (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0) ? 'Не хватает билетов' : isDanetki ? 'Начать расследование' : 'Начать игру'}<span>{isDanetki ? `${members.length} из ${room.capacity} · вопросы по очереди` : `${packCountLabel(room.packs.length)} · ${room.roundsTotal} ${plural(room.roundsTotal, 'раунд', 'раунда', 'раундов')} · ${quote.cost ? `${quote.cost} билетов` : 'бесплатно'}`}</span></ControlButton>
         : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>Ждём ведущего</strong><small>Настройки и запуск доступны создателю комнаты</small></span></div>}
     </div>
   </section>
@@ -1047,7 +1058,7 @@ function DanetkiRoomBrief({ cost, ticketBalance, isHost, ownerName }: { cost: nu
     <div className="room-danetki__rules">
       <article><RoomIcon name="users" /><span><strong>До 4 игроков</strong><small>У всех одна история и общий протокол</small></span></article>
       <article><RoomIcon name="timer" /><span><strong>Вопросы по очереди</strong><small>Следующий ход передаётся автоматически</small></span></article>
-      <article><RoomIcon name="play" /><span><strong>{cost > 0 ? `${cost} билетов` : 'Без доплаты'}</strong><small>{shortage > 0 ? `Не хватает ${shortage} билетов` : isHost ? 'Спишутся с вас при запуске' : `${ownerName} оплатит при запуске`}</small></span></article>
+      <article><RoomIcon name="play" /><span><strong>{cost > 0 ? `${cost} ${plural(cost, 'билет', 'билета', 'билетов')}` : 'Без доплаты'}</strong><small>{shortage > 0 ? `Не хватает ${shortage} ${plural(shortage, 'билета', 'билетов', 'билетов')}` : cost === 0 ? 'Списаний при запуске не будет' : isHost ? `При запуске спишется ${cost}` : `${ownerName} оплатит запуск`}</small></span></article>
     </div>
   </div>
 }
@@ -1085,25 +1096,26 @@ function Countdown({ room, value }: { room: FriendsRoomSnapshot; value: number }
   return <section className="room-countdown" aria-live="polite"><span>Раунд {room.currentRound} из {room.roundsTotal}</span><strong>{value}</strong><p>Приготовьтесь</p></section>
 }
 
-function CountdownLayout({ room, ranked, value, message, copied, busy, onMessage, onSend, onCopy }: {
+function CountdownLayout({ room, ranked, value, message, copied, busy, messageSending, onMessage, onSend, onCopy }: {
   room: FriendsRoomSnapshot
   ranked: FriendsRoomSnapshot['members']
   value: number
   message: string
   copied: boolean
   busy: boolean
+  messageSending: boolean
   onMessage: (value: string) => void
   onSend: (event: FormEvent) => void
   onCopy: () => void
 }) {
   return <div className="friends-room__columns">
-    <LeftRail room={room} ranked={ranked} timeLeft={0} message={message} copied={copied} busy={busy} onMessage={onMessage} onSend={onSend} onCopy={onCopy} />
+    <LeftRail room={room} ranked={ranked} timeLeft={value} message={message} copied={copied} busy={messageSending} onMessage={onMessage} onSend={onSend} onCopy={onCopy} />
     <section className="friends-room__stage"><Countdown room={room} value={value} /><ActivityLog room={room} players={ranked} /></section>
     <PlayersPanel room={room} players={ranked} />
   </div>
 }
 
-function GameLayout({ room, mode, ranked, timeLeft, answer, message, copied, busy, submitted, onAnswer, onSubmit, onMessage, onSend, onCopy, onReveal, onNext }: {
+function GameLayout({ room, mode, ranked, timeLeft, answer, message, copied, busy, messageSending, submitted, onAnswer, onSubmit, onMessage, onSend, onCopy, onReveal, onNext }: {
   room: FriendsRoomSnapshot
   mode: (typeof MODES)[number]
   ranked: FriendsRoomSnapshot['members']
@@ -1112,6 +1124,7 @@ function GameLayout({ room, mode, ranked, timeLeft, answer, message, copied, bus
   message: string
   copied: boolean
   busy: boolean
+  messageSending: boolean
   submitted: boolean
   onAnswer: (value: string, itemId?: string) => void
   onSubmit: (event: FormEvent) => void
@@ -1121,8 +1134,10 @@ function GameLayout({ room, mode, ranked, timeLeft, answer, message, copied, bus
   onReveal: () => void
   onNext: () => void
 }) {
+  const answeredCount = ranked.filter((player) => player.answered).length
+  const allAnswered = ranked.length > 0 && answeredCount === ranked.length
   return <div className="friends-room__columns">
-    <LeftRail room={room} ranked={ranked} timeLeft={timeLeft} message={message} copied={copied} busy={busy} onMessage={onMessage} onSend={onSend} onCopy={onCopy} />
+    <LeftRail room={room} ranked={ranked} timeLeft={timeLeft} message={message} copied={copied} busy={messageSending} onMessage={onMessage} onSend={onSend} onCopy={onCopy} />
     <section className="friends-room__stage">
       <article className={`room-ticket ${room.phase === 'results' ? 'is-results' : ''}`}>
         <div className="room-ticket__stub"><img src={publicAssetUrl(mode.poster)} alt="" /><span>Вход<br /><strong>один</strong></span><small>№ {String(room.currentRound).padStart(3, '0')}</small></div>
@@ -1131,7 +1146,7 @@ function GameLayout({ room, mode, ranked, timeLeft, answer, message, copied, bus
           <h1>{mode.label}</h1>
           {room.phase === 'results'
             ? <Results room={room} mode={mode} isHost={room.isHost} busy={busy} onNext={onNext} />
-            : <><div className="room-ticket__question"><span>Задание</span><h2>{room.round?.prompt}</h2></div><div className="room-hints">{room.round?.hints.map((value) => <span key={value}>{value}</span>)}</div><AnswerForm room={room} answer={answer} submitted={submitted} busy={busy} onAnswer={onAnswer} onSubmit={onSubmit} />{room.isHost && <div className="room-ticket__foot"><span>Можно отправить только один вариант</span><ControlButton type="button" onClick={onReveal} disabled={busy}>Показать результаты</ControlButton></div>}</>}
+            : <><div className="room-ticket__question"><span>Задание</span><h2>{room.round?.prompt}</h2></div><div className="room-hints">{room.round?.hints.map((value) => <span key={value}>{value}</span>)}</div><AnswerForm room={room} answer={answer} submitted={submitted} busy={busy} onAnswer={onAnswer} onSubmit={onSubmit} />{room.isHost && <div className="room-ticket__foot"><span>{allAnswered ? 'Все ответы получены' : `Ждём ответы: ${answeredCount} из ${ranked.length}`}</span><ControlButton type="button" onClick={() => { if (window.confirm('Показать результаты всем участникам? После этого ответы изменить нельзя.')) onReveal() }} disabled={busy || !allAnswered} title={allAnswered ? undefined : 'Раунд завершится автоматически по таймеру или после ответа всех игроков'}>Показать результаты</ControlButton></div>}</>}
         </div>
       </article>
       <ActivityLog room={room} players={ranked} />
@@ -1151,10 +1166,10 @@ function LeftRail({ room, ranked, timeLeft, message, copied, busy, onMessage, on
   onSend: (event: FormEvent) => void
   onCopy: () => void
 }) {
-  const answeredCount = room.members.filter((member) => !member.leftAt && member.answered).length
+  const answeredCount = ranked.filter((member) => member.answered).length
   return <aside className="room-left-rail">
     <section className="room-panel room-panel--code"><span>Комната</span><strong>{room.code}</strong><small><RoomIcon name="users" /> {ranked.length} игроков</small><ControlButton type="button" onClick={onCopy}><RoomIcon name={copied ? 'check' : 'share'} />{copied ? 'Ссылка скопирована' : 'Пригласить друзей'}</ControlButton></section>
-    <section className="room-panel room-progress"><span>Прогресс игры</span><div><strong>Раунд {room.currentRound} из {room.roundsTotal}</strong><small><RoomIcon name="timer" /> {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:{String(timeLeft % 60).padStart(2, '0')}</small><small><RoomIcon name="check" /> Ответили {answeredCount} / {ranked.length}</small></div></section>
+    <section className="room-panel room-progress"><span>Прогресс игры</span><div><strong>Раунд {room.currentRound} из {room.roundsTotal}</strong><small><RoomIcon name="timer" /> {room.phase === 'countdown' ? `Старт через ${timeLeft} сек` : `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`}</small><small><RoomIcon name="check" /> Ответили {answeredCount} / {ranked.length}</small></div></section>
     <Chat room={room} message={message} busy={busy} onMessage={onMessage} onSend={onSend} />
   </aside>
 }
@@ -1225,7 +1240,7 @@ function Results({ room, mode, isHost, busy, onNext }: { room: FriendsRoomSnapsh
   const ownAnswer = room.answers.find((entry) => entry.userId === room.currentUserId)
   const card = room.round?.answerCard
   const people = card?.showrunners?.length
-    ? { label: 'Шоураннер', value: card.showrunners.map((person) => person.nameRu || person.nameOriginal).join(', ') }
+    ? { label: 'Создатели сериала', value: card.showrunners.map((person) => person.nameRu || person.nameOriginal).join(', ') }
     : card?.directors?.length
       ? { label: 'Режиссёр', value: card.directors.map((person) => person.nameRu || person.nameOriginal).join(', ') }
       : card?.developers?.length
@@ -1248,7 +1263,8 @@ function PlayersPanel({ room, players }: { room: FriendsRoomSnapshot; players: F
     const rightPoints = room.answers.find((entry) => entry.userId === right.userId)?.points ?? 0
     return rightPoints - leftPoints
   }).slice(0, 3)
-  return <aside className="room-right-rail"><section className="room-panel room-players"><span>Игроки ({players.length})</span><div>{players.map((player, index) => <article key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><strong>{player.displayName}{player.userId === room.currentUserId ? ' (вы)' : ''}</strong>{index === 0 && <RoomIcon name="trophy" />}<small>{score(player.score)}</small></article>)}</div></section><section className="room-panel room-answers"><span>Ответы раунда</span>{room.phase === 'results' ? <div>{players.map((player) => { const answer = room.answers.find((entry) => entry.userId === player.userId); return <article className={answer && !answer.correct && answer.points > 0 ? 'is-partial' : ''} key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><span><strong>{player.displayName}</strong><small>{answer ? `${answer.text} · +${answer.points}` : 'Нет ответа'}</small></span><RoomIcon name={answer && answer.points > 0 ? 'check' : 'remove'} /></article> })}</div> : <div className="room-waiting"><RoomIcon name="chat" /><p>Ответы откроются одновременно после завершения раунда</p></div>}</section>{room.phase === 'results' && <section className="room-panel room-podium"><span>Счёт за раунд</span><div>{podium.map((player, index) => <article key={player.userId} className={`place-${index + 1}`}><strong>{index + 1}</strong><small>+{room.answers.find((entry) => entry.userId === player.userId)?.points ?? 0}</small></article>)}</div></section>}</aside>
+  const scoresVisible = room.phase === 'results' || room.phase === 'intermission' || room.phase === 'finished'
+  return <aside className="room-right-rail"><section className="room-panel room-players"><span>Игроки ({players.length})</span><div>{players.map((player, index) => <article key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><strong>{player.displayName}{player.userId === room.currentUserId ? ' (вы)' : ''}</strong>{scoresVisible && index === 0 && <RoomIcon name="trophy" />}<small>{scoresVisible ? score(player.score) : '—'}</small></article>)}</div></section><section className="room-panel room-answers"><span>Ответы раунда</span>{room.phase === 'results' ? <div>{players.map((player) => { const answer = room.answers.find((entry) => entry.userId === player.userId); return <article className={answer && !answer.correct && answer.points > 0 ? 'is-partial' : ''} key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><span><strong>{player.displayName}</strong><small>{answer ? `${answer.text} · +${answer.points}` : 'Нет ответа'}</small></span><RoomIcon name={answer && answer.points > 0 ? 'check' : 'remove'} /></article> })}</div> : <div className="room-waiting"><RoomIcon name="chat" /><p>Ответы откроются одновременно после завершения раунда</p></div>}</section>{room.phase === 'results' && <section className="room-panel room-podium"><span>Счёт за раунд</span><div>{podium.map((player, index) => <article key={player.userId} className={`place-${index + 1}`}><strong>{index + 1}</strong><small>+{room.answers.find((entry) => entry.userId === player.userId)?.points ?? 0}</small></article>)}</div></section>}</aside>
 }
 
 function ActivityLog({ room, players }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members'] }) {
@@ -1294,5 +1310,6 @@ function IntermissionScreen({ room, players, busy, onContinue, onExit }: {
 
 function FinalScreen({ room, players, busy, anonymousUser, onAgain, onExit }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members']; busy: boolean; anonymousUser: boolean; onAgain: () => void; onExit: () => void }) {
   const winner = players[0]
-  return <section className="room-final"><div className="room-final__ticket"><span>Сеанс завершён</span><RoomIcon name="trophy" /><small>Победитель</small><h1>{winner?.displayName ?? 'Ничья'}</h1><strong>{score(winner?.score ?? 0)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}</div>{anonymousUser && <a className="ui-button ui-button--primary" href={friendsRoomRegistrationHref(`/games/together?room=${room.code}`)}>Сохранить результат и играть снова</a>}{room.isHost && <ControlButton type="button" onClick={onAgain} disabled={busy}><RoomIcon name="apps" />Настроить новую игру</ControlButton>}<ControlButton type="button" onClick={onExit} disabled={busy}><RoomIcon name="exit" />{busy ? 'Выходим…' : 'Покинуть комнату'}</ControlButton></div></section>
+  const soloResult = players.length === 1
+  return <section className="room-final"><div className="room-final__ticket"><span>Сеанс завершён</span><RoomIcon name="trophy" /><small>{soloResult ? 'Ваш результат' : 'Победитель'}</small><h1>{winner?.displayName ?? 'Ничья'}</h1><strong>{score(winner?.score ?? 0)} очков</strong><div>{players.slice(0, 3).map((player, index) => <article key={player.userId}><i>{index + 1}</i><span>{player.displayName}</span><strong>{score(player.score)}</strong></article>)}</div>{anonymousUser && <a className="ui-button ui-button--primary" href={friendsRoomRegistrationHref(`/games/together?room=${room.code}`)}>Сохранить результат и играть снова</a>}{room.isHost && <><ControlButton type="button" onClick={onAgain} disabled={busy}><RoomIcon name="apps" />Создать новую комнату</ControlButton><small>Текущая комната и её чат закроются.</small></>}<ControlButton type="button" onClick={onExit} disabled={busy}><RoomIcon name="exit" />{busy ? 'Выходим…' : 'Покинуть комнату'}</ControlButton></div></section>
 }

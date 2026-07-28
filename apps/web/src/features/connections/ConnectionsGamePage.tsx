@@ -517,7 +517,7 @@ function ConnectionsResult({
   const nextArtworkUrl = nextMode
     ? MODE_PRESENTATION[nextMode].watermarkUrl
     : MODE_PRESENTATION.diagnosis.watermarkUrl
-  const attemptsLabel = `${state.guesses.length} ${state.guesses.length === 1 ? 'ход' : state.guesses.length >= 2 && state.guesses.length <= 4 ? 'хода' : 'ходов'}`
+  const solvedLabel = `${state.solvedGroups.length} ${state.solvedGroups.length === 1 ? 'связь найдена' : state.solvedGroups.length >= 2 && state.solvedGroups.length <= 4 ? 'связи найдены' : 'связей найдено'}`
   const mistakesLabel = `${state.mistakesUsed} ${state.mistakesUsed === 1 ? 'ошибка' : state.mistakesUsed >= 2 && state.mistakesUsed <= 4 ? 'ошибки' : 'ошибок'}`
   const hintsLabel = `${state.hints.length} ${state.hints.length === 1 ? 'подсказка' : state.hints.length >= 2 && state.hints.length <= 4 ? 'подсказки' : 'подсказок'}`
   return <section className={`connections-result connections-result--${state.status}`} aria-labelledby="connections-result-title">
@@ -546,7 +546,7 @@ function ConnectionsResult({
       onCopy={onCopy}
       showTip={false}
       compactNext
-      afterMeta={<><strong>История попыток</strong><i aria-hidden="true"> · </i>{attemptsLabel}</>}
+      afterMeta={<strong>{solvedLabel}</strong>}
     />
 
     <details className="connections-result__groups result-card__wide">

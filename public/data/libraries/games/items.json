@@ -22005,7 +22005,7 @@
         ],
         "authorArchetype": null,
         "authorId": "329166",
-        "authorName": "Неподходящая длина или формат",
+        "authorName": "Пользователь DTF #329166",
         "authorAvatarUrl": "https://leonardo.osnova.io/453ef5ad-5b22-5fad-9903-512e1d4a84a7/-/scale_crop/96x96/",
         "authorProfileUrl": "https://dtf.ru/id329166",
         "authorIsVerified": false,
@@ -100399,8 +100399,7 @@
     },
     "genres": [
       "Action",
-      "Beat 'em up",
-      "Fighting"
+      "Beat 'em up"
     ],
     "ratings": {
       "metacritic": null,
@@ -100420,14 +100419,12 @@
     "posterUrl": "./data/libraries/games/img/tgdb_6910/poster.webp",
     "steamTags": [],
     "developers": [
-      "Technōs Japan",
-      "Binary Design, Ltd."
+      "Technōs Japan"
     ],
     "metacritic": null,
     "publishers": [
       "Technōs Japan",
-      "Taito",
-      "Melbourne House"
+      "Taito"
     ],
     "steamAppId": null,
     "backdropUrl": "./data/libraries/games/img/tgdb_6910/backdrop.webp",
@@ -234962,7 +234959,9 @@
     "year": 2011,
     "notes": [
       "seed_incremental",
-      "thegamesdb_enriched"
+      "thegamesdb_enriched",
+      "game_manual_identity_override",
+      "Canonical title-level Minecraft card must represent the cross-platform game family, not one Android port."
     ],
     "price": null,
     "votes": {
@@ -234971,11 +234970,9 @@
       "steamPositive": 0
     },
     "genres": [
-      "Action",
-      "Adventure",
-      "Construction and Management Simulation",
-      "Fighting",
-      "Sandbox"
+      "Sandbox",
+      "Survival",
+      "Adventure"
     ],
     "ratings": {
       "metacritic": null,
@@ -234988,16 +234985,22 @@
     "ageRating": "E - Everyone",
     "headerUrl": "./data/libraries/games/img/tgdb_68757/poster.webp",
     "platforms": [
-      "Android"
+      "PC",
+      "PlayStation 4",
+      "PlayStation 5",
+      "Xbox One",
+      "Xbox Series X|S",
+      "Nintendo Switch",
+      "Android",
+      "iOS"
     ],
     "posterUrl": "./data/libraries/games/img/tgdb_68757/poster.webp",
     "steamTags": [],
     "developers": [
-      "Mojang"
+      "Mojang Studios"
     ],
     "metacritic": null,
     "publishers": [
-      "4JStudios",
       "Xbox Game Studios"
     ],
     "steamAppId": null,
@@ -235009,7 +235012,8 @@
         "thegamesdb_images",
         "legacy_ptg",
         "production_game_catalog_upgrade_2026_07",
-        "wikidata_development_country"
+        "wikidata_development_country",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": [
@@ -235060,8 +235064,9 @@
     "titleOriginal": "Minecraft",
     "popularityScore": 73.37,
     "steamCategories": [
-      "5 игроков",
-      "Мультиплеер"
+      "Одиночная игра",
+      "Мультиплеер",
+      "Кооператив"
     ],
     "shortDescription": "… (также известный как … или просто …) относится к многоплатформенному семейству изданий …, разработанных … 4J … и SkyBox …",
     "alternativeTitles": [],
@@ -235093,7 +235098,8 @@
       "thegamesdb_bygamename",
       "thegamesdb_images",
       "legacy_ptg",
-      "production_game_catalog_upgrade_2026_07"
+      "production_game_catalog_upgrade_2026_07",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -296198,19 +296204,16 @@
     "headerUrl": "./data/libraries/games/img/tgdb_113840/poster.webp",
     "platforms": [
       "Arcade",
-      "Nintendo Entertainment System",
-      "Nintendo Entertainment System (NES)"
+      "Nintendo Entertainment System"
     ],
     "posterUrl": "./data/libraries/games/img/tgdb_113840/poster.webp",
     "steamTags": [],
     "developers": [
-      "Taito",
-      "Taito Corporation"
+      "Taito"
     ],
     "metacritic": null,
     "publishers": [
-      "Taito",
-      "Taito Corporation"
+      "Taito"
     ],
     "steamAppId": null,
     "backdropUrl": "./data/libraries/games/img/tgdb_113840/poster.webp",

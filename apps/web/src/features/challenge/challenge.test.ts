@@ -11,6 +11,19 @@ describe('challenge deep links', () => {
     })
   })
 
+  it('omits an irrelevant all-time period for modes without period selection', () => {
+    const url = buildChallengeUrl('https://shoditsa.ru/games/diagnosis', {
+      mode: 'diagnosis',
+      date: '2026-07-28',
+      period: 'all',
+      opponentAttempts: 3,
+      from: 'player',
+    })
+
+    expect(new URL(url).searchParams.has('period')).toBe(false)
+    expect(parseChallengeUrl(url)?.period).toBe('all')
+  })
+
   it('rejects malformed or incomplete challenges', () => {
     expect(parseChallengeUrl('https://shoditsa.ru/?play=movie&date=bad&challenge=4&from=x')).toBeNull()
     expect(parseChallengeUrl('https://shoditsa.ru/?play=movie&date=2026-07-12&challenge=99&from=x')).toBeNull()

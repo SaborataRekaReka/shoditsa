@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { trackClientEvent } from '../../app/client-events'
 import { ControlButton, InlineAlert, TextArea, TextInput } from '../../components/ui'
+import type { TitleMode } from '../../types'
 import './ContentReport.css'
 
 export const CONTENT_REPORT_REASONS = [
@@ -21,12 +22,27 @@ export const CONTENT_REPORT_REASONS = [
 
 export type ContentReportReason = typeof CONTENT_REPORT_REASONS[number][0]
 
+const CONNECTIONS_ONLY_REASONS = new Set<ContentReportReason>([
+  'ambiguous_group',
+  'wrong_group_title',
+  'word_does_not_fit',
+  'duplicate_word',
+])
+
+export const contentReportReasonsForMode = (mode?: TitleMode | 'connections') => (
+  mode === 'connections'
+    ? CONTENT_REPORT_REASONS
+    : CONTENT_REPORT_REASONS.filter(([reason]) => !CONNECTIONS_ONLY_REASONS.has(reason))
+)
+
 export function ContentReport({
   onSubmit,
+  mode,
   prompt = 'Нашли ошибку в подсказке?',
   thanks = 'Спасибо, проверим подсказку.',
 }: {
   onSubmit: (reason: ContentReportReason, comment: string) => void | Promise<void>
+  mode?: TitleMode | 'connections'
   prompt?: string
   thanks?: string
 }) {
@@ -57,7 +73,7 @@ export function ContentReport({
     }}>
       <fieldset>
         <legend>Что случилось?</legend>
-        {CONTENT_REPORT_REASONS.map(([value, label]) => <label key={value}>
+        {contentReportReasonsForMode(mode).map(([value, label]) => <label key={value}>
           <TextInput type="radio" name="content-report-reason" value={value} checked={reason === value} onChange={() => setReason(value)} />
           <span>{label}</span>
         </label>)}

@@ -135,7 +135,8 @@
   .rewatch-connections { margin: 22px auto; padding: 14px; overflow: hidden; }
   .rewatch-connections > header { align-items: start; flex-direction: column; gap: 5px; }
   .rewatch-connections > header p { text-align: left; }
-  .rewatch-connections__grid { margin-inline: -14px; padding: 0 14px 4px; grid-template-columns: repeat(7, 104px); overflow-x: auto; }
+  .rewatch-connections__grid { margin-inline: -14px; padding: 0 14px 6px; grid-template-columns: repeat(7, 104px); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+  .rewatch-connection { scroll-snap-align: start; }
   .rewatch-toolbar .mode-tabs { display: none; }
   .rewatch-mode-select {
     padding: 10px 12px;
@@ -165,4 +166,8 @@
     grid-template-columns: minmax(0, 1fr);
     gap: 7px;
   }
+}
+@media (max-width: 359px) {
+  .rewatch-screen { padding-inline: 8px; }
+  .rewatch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap-inline: 8px; }
 }

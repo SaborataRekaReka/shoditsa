@@ -150,6 +150,7 @@ export type FriendsRoomMember = {
   joinedAt: string
   leftAt: string | null
   lastSeenAt: string
+  connected: boolean
 }
 
 export type FriendsRoomAnswer = {

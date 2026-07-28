@@ -1,4 +1,3 @@
-import { useLayoutEffect, useRef, useState } from 'react'
 import {
   ArrowDown,
   ArrowUp,
@@ -102,34 +101,10 @@ export function DtfCommentFeed({
 }) {
   const newestKey = newestDtfCommentKey(comments, attemptsCount)
   const orderedComments = [...comments].reverse()
-  const feedRef = useRef<HTMLElement | null>(null)
-  const [viewportHeight, setViewportHeight] = useState<number | null>(null)
-  const commentKeys = orderedComments.map((comment) => comment.key).join('|')
-
-  useLayoutEffect(() => {
-    const feed = feedRef.current
-    if (!feed) return
-    const cards = Array.from(feed.querySelectorAll<HTMLElement>(':scope > .dtf-comment-card')).slice(0, 2)
-    const measure = () => {
-      const gap = Number.parseFloat(window.getComputedStyle(feed).rowGap) || 0
-      const height = Math.ceil(cards.reduce((total, card) => total + Math.max(card.scrollHeight, card.getBoundingClientRect().height), 0)
-        + gap * Math.max(0, cards.length - 1))
-      setViewportHeight((current) => current === height ? current : height)
-    }
-    measure()
-    feed.scrollTop = 0
-    if (typeof ResizeObserver === 'undefined') return
-    const observer = new ResizeObserver(measure)
-    cards.forEach((card) => observer.observe(card))
-    return () => observer.disconnect()
-  }, [commentKeys])
 
   return <section
-    ref={feedRef}
     className="dtf-comment-feed"
     aria-label="Открытые комментарии DTF"
-    tabIndex={orderedComments.length > 2 ? 0 : undefined}
-    style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
   >
     {orderedComments.map((comment) => {
       const isNew = comment.key === newestKey

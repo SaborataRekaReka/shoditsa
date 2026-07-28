@@ -26,6 +26,11 @@ export const archiveCalendar = async (db: Database, config: AppConfig, userId: s
   if (query.to > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
   const period = query.period ?? 'all'
   const difficulty = query.mode === 'music' ? query.difficulty ?? 'medium' : null
+  const difficultyCondition = query.mode === 'connections'
+    ? undefined
+    : difficulty === null
+      ? isNull(gameSessions.difficulty)
+      : eq(gameSessions.difficulty, difficulty)
   const rows = await db.select({
     id: gameSessions.id,
     mode: gameSessions.mode,
@@ -41,7 +46,7 @@ export const archiveCalendar = async (db: Database, config: AppConfig, userId: s
     inArray(gameSessions.kind, ['daily', 'archive']),
     eq(gameSessions.mode, query.mode),
     eq(gameSessions.period, period),
-    difficulty === null ? isNull(gameSessions.difficulty) : eq(gameSessions.difficulty, difficulty),
+    difficultyCondition,
     gte(gameSessions.puzzleDate, query.from),
     lte(gameSessions.puzzleDate, query.to),
   )).orderBy(desc(gameSessions.updatedAt))

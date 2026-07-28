@@ -130,6 +130,7 @@ import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEnt
 import { ConnectionsTitleScreen } from './features/connections/ConnectionsTitleScreen'
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
+import { dtfShareText } from './features/dtf-comments/dtf-sharing'
 import { UserBadgeList } from './components/user-badges/UserBadgeList'
 import { RewatchScreen } from './features/archive/RewatchScreen'
 import { AnamnesisModal, EconomyAwardPanel, ResumeSessionsView, RulesView, StatsView } from './features/player-modals/PlayerModalViews'
@@ -167,7 +168,7 @@ const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId))
 const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS.filter(isCatalogGuessModeId))
 const DTF_COMMENTS_PACK_ID = 'dtf-game-comments-25-v1'
-const DTF_COMMENTS_POOL_COUNT = 25
+const DTF_COMMENTS_POOL_COUNT = 20
 
 type EconomyAward = {
   total: number
@@ -634,6 +635,7 @@ const isPlayerCategory = (value: string) => {
 const normalizeGameCategoryKey = (value: string) => {
   const text = normalizeTextMatch(value).trim()
   if (!text) return ''
+  if (['pc', 'windows', 'windows pc', 'win'].includes(text)) return 'platform:pc'
   const playersCount = playerCountFromCategory(text)
   if (playersCount != null) return `players:${playersCount}`
   if (text.includes('одиноч') || text.includes('single')) return 'players:single'
@@ -653,10 +655,22 @@ const dedupeGameCategories = (categories: string[], removePlayerCategories: bool
     const key = normalizeGameCategoryKey(category) || normalizeTextMatch(category)
     if (seen.has(key)) continue
     seen.add(key)
-    result.push(category)
+    result.push(key === 'platform:pc' ? 'PC' : category)
   }
 
   return result
+}
+const dedupeOrganizationNames = (names: string[]) => {
+  const seen = new Set<string>()
+  return names
+    .flatMap((name) => name.split(/[,;]/))
+    .map((name) => name.trim())
+    .filter((name) => {
+      const key = normalizeTextMatch(name)
+      if (!key || seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
 }
 function GameMatchStrip({ attempts, mode, open, onToggle }: { attempts: Attempt[]; mode: TitleMode; open: boolean; onToggle: () => void }) {
   const tags = useMemo(() => collectMatchSummaryTags(attempts, mode), [attempts, mode])
@@ -971,7 +985,7 @@ function PeriodControl({
   unlockedPeriods: PeriodKey[]
   completedPeriods: PeriodKey[]
 }) {
-  const unlocked = new Set(unlockedPeriods)
+  const unlocked = new Set(clubFreePlay ? PERIOD_UNLOCK_ORDER : unlockedPeriods)
   const completed = new Set(completedPeriods)
   const selectedLocked = !unlocked.has(value)
   const selectedCost = periodUnlockCost(value, periodUnlockCostValue)
@@ -995,6 +1009,7 @@ function PeriodControl({
         const isActive = !freePlayArmed && value === periodKey
         const isMainSession = periodKey === 'all'
         const isCompleted = !isMainSession && completed.has(periodKey)
+        const includedWithClub = clubFreePlay && !isMainSession && !isCompleted
         const cost = periodUnlockCost(periodKey, periodUnlockCostValue)
         const isUnlockable = !isUnlocked && cost > 0 && wallet.tickets >= cost
         const missingTickets = Math.max(0, cost - wallet.tickets)
@@ -1002,6 +1017,8 @@ function PeriodControl({
           ? 'Главный сеанс · доступен всегда'
           : isCompleted
             ? 'Можно пройти снова'
+            : includedWithClub
+              ? 'Включено в клубный абонемент'
             : isUnlocked
               ? 'Можно играть сейчас'
               : isUnlockable
@@ -1009,6 +1026,8 @@ function PeriodControl({
                 : `Не хватает ${formatTickets(missingTickets)}`
         const optionStatus = isCompleted
           ? { label: 'Пройдено', tone: 'completed' as const, icon: <Check /> }
+          : includedWithClub
+            ? { label: 'Включено в клуб', tone: 'available' as const, icon: isActive ? <Check /> : <Play /> }
           : isMainSession || isUnlocked
             ? { label: 'Доступно', tone: 'available' as const, icon: isActive ? <Check /> : <Play /> }
             : isUnlockable
@@ -1071,6 +1090,7 @@ function DifficultyControl({
   freePlayArmed,
   onChange,
   counts,
+  completedDifficulties,
   onStartFreePlay,
   hasActiveFreePlay,
   freePlayCostValue,
@@ -1082,6 +1102,7 @@ function DifficultyControl({
   freePlayArmed: boolean
   onChange: (difficulty: DifficultyKey) => void
   counts?: Record<DifficultyKey, number> | null
+  completedDifficulties: DifficultyKey[]
   onStartFreePlay: () => void
   hasActiveFreePlay: boolean
   freePlayCostValue: number
@@ -1110,7 +1131,7 @@ function DifficultyControl({
           key={key}
           className={`difficulty-option ${isActive ? 'active' : ''}`}
           title={meta.label}
-          description={counts ? `${formatArtists(counts[key])} · ${meta.hint}` : meta.hint}
+          description={`${counts ? `${formatArtists(counts[key])} · ` : ''}${meta.hint}${completedDifficulties.includes(key) ? ' · сыграно сегодня' : ''}`}
           icon={<span className={`difficulty-bars difficulty-bars--${key}`}><i /><i /><i /></span>}
           selected={isActive}
           tone={isActive ? 'positive' : 'default'}
@@ -1161,7 +1182,7 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, onConnections, danetkiEnabled, danetkiPoolCount, connectionsEnabled, connectionsPoolCount, connectionsStatus, connectionsMistakes, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, onConnections, danetkiEnabled, danetkiPoolCount, connectionsEnabled, connectionsPoolCount, connectionsStatus, connectionsMistakes, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, dtfPoolCount, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
   onSelect: (mode: TitleMode) => void
   onSelectDtfSpecial: () => void
   onSelectKpopSpecial: () => void
@@ -1182,6 +1203,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
   onOpenSaved: (game: SavedGame) => void
   canAccessDtfSpecial: boolean
   canAccessKpopSpecial: boolean
+  dtfPoolCount: number | null
   kpopPoolCount: number | null
   canAccessFriendsRoom: boolean
   activeSessionsCount: number
@@ -1208,7 +1230,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
           <div className="hub-hero__copy">
             <div className="hub-hero__facts" aria-label="Об игре">
               <span><Gamepad2 /><strong>9 игр</strong></span>
-              <span><CalendarDays /><strong>1 загадка в день</strong></span>
+              <span><CalendarDays /><strong>Новые загадки каждый день</strong></span>
               <span><Target /><strong>10 попыток</strong></span>
             </div>
             <h1>Все сойдется!</h1>
@@ -1307,11 +1329,11 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
           {canAccessDtfSpecial && <CategoryTicket
             mode="game"
             title="Игра по комментариям"
-            description="Специальная подборка для DTF: угадайте 20 игр по комментариям игроков."
+            description={`Специальная подборка для DTF: угадайте ${dtfPoolCount ?? DTF_COMMENTS_POOL_COUNT} игр по комментариям игроков.`}
             color="#FF6B35"
             icon={Gamepad2}
             watermarkUrl={publicAssetUrl('images/category-stubs/game-stub.webp')}
-            poolCount={DTF_COMMENTS_POOL_COUNT}
+            poolCount={dtfPoolCount ?? DTF_COMMENTS_POOL_COUNT}
             poolLabel="ИГР"
             kicker="СПЕЦПОКАЗ DTF"
             newActionLabel="ОТКРЫТЬ"
@@ -1369,7 +1391,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
   </>
 }
 
-function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, wallet, unlockedPeriods, completedPeriods, onUnlockPeriod, periodUnlockCostValue, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, clubFreePlay, difficulty, setDifficulty, difficultyCounts, isBusy }: {
+function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date, onHome, onBack, onPlay, onReplay, onViewTodayResult, onRewatch, onStats, onRules, onReview, isLeaving, onLeaveComplete, onReadAnamnesis, hasAnamnesis, todayCompleted, todayResultAvailable, wallet, unlockedPeriods, completedPeriods, completedDifficulties, onUnlockPeriod, periodUnlockCostValue, onStartFreePlay, freePlayArmed, hasActiveFreePlay, freePlayCostValue, freePlayShortage, freePlayLaunchesToday, clubFreePlay, difficulty, setDifficulty, difficultyCounts, isBusy }: {
   mode: TitleMode
   variantKey: string | null
   setVariantKey: (variant: string) => void
@@ -1380,6 +1402,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
   onBack: () => void
   onPlay: () => void
   onReplay: () => void
+  onViewTodayResult: () => void
   onRewatch: () => void
   onStats: () => void
   onRules: () => void
@@ -1389,9 +1412,11 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
   onReadAnamnesis: () => void
   hasAnamnesis: boolean
   todayCompleted: boolean
+  todayResultAvailable: boolean
   wallet: Wallet
   unlockedPeriods: PeriodKey[]
   completedPeriods: PeriodKey[]
+  completedDifficulties: DifficultyKey[]
   onUnlockPeriod: (period: PeriodKey) => boolean | Promise<boolean>
   periodUnlockCostValue: number
   onStartFreePlay: () => void
@@ -1407,15 +1432,20 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
   isBusy: boolean
 }) {
   const isDiagnosisReplay = mode === 'diagnosis' && todayCompleted
+  const isMusicResult = mode === 'music' && todayResultAvailable && !freePlayArmed
   const hasModeVariants = GAME_MODE_MANIFEST[mode].variants.length > 0
   const periodLocked = !freePlayArmed && !clubFreePlay && canUnlockPeriods(mode) && !unlockedPeriods.includes(period)
   const periodCost = periodUnlockCost(period, periodUnlockCostValue)
   const periodShortage = periodLocked ? Math.max(0, periodCost - wallet.tickets) : 0
-  const canStart = isDiagnosisReplay || freePlayArmed
-    ? hasActiveFreePlay || freePlayShortage === 0
-    : !periodLocked || periodShortage === 0
+  const canStart = isMusicResult
+    ? true
+    : isDiagnosisReplay || freePlayArmed
+      ? hasActiveFreePlay || freePlayShortage === 0
+      : !periodLocked || periodShortage === 0
   const canTriggerStart = canStart && !isBusy
-  const playButtonLabel = isDiagnosisReplay
+  const playButtonLabel = isMusicResult
+    ? `Посмотреть результат · ${DIFFICULTIES[difficulty].label}`
+    : isDiagnosisReplay
     ? hasActiveFreePlay
       ? 'Продолжить'
       : freePlayShortage > 0
@@ -1435,6 +1465,10 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
   const playButtonText = isBusy ? 'Запускаем…' : playButtonLabel
   const startSelectedPeriod = async () => {
     if (!canTriggerStart) return
+    if (isMusicResult) {
+      onViewTodayResult()
+      return
+    }
     if (isDiagnosisReplay) {
       onReplay()
       return
@@ -1448,7 +1482,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
   }
 
   const launchOption = mode === 'music'
-    ? <DifficultyControl value={difficulty} freePlayArmed={freePlayArmed} onChange={setDifficulty} counts={difficultyCounts} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} />
+    ? <DifficultyControl value={difficulty} freePlayArmed={freePlayArmed} onChange={setDifficulty} counts={difficultyCounts} completedDifficulties={completedDifficulties} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} />
     : hasModeVariants
       ? <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
       : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
@@ -1504,6 +1538,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
         </div>
         <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
         <p>Угадайте {modeMeta(mode).subject} дня за десять попыток</p>
+        {mode === 'diagnosis' && <p className="diagnosis-disclaimer">Это игровая загадка, а не медицинская рекомендация. Не используйте её для самодиагностики.</p>}
         {mode === 'diagnosis'
           ? <DiagnosisTitleCard
               id="ticket-diagnosis"
@@ -2092,6 +2127,8 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
     .filter(Boolean) as Attempt['hints']
   const steamCategories = dedupeGameCategories(item.steamCategories ?? [], Boolean(byKey.get('players')))
   const platforms = dedupeGameCategories(item.platforms ?? [], false)
+  const developers = dedupeOrganizationNames(item.developers ?? [])
+  const publishers = dedupeOrganizationNames(item.publishers ?? [])
   const rankText = item.topRank != null ? `#${item.topRank}` : '—'
 
   return <article className="attempt-card attempt-card--game">
@@ -2130,9 +2167,9 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
 
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
-    {(!!(item.developers ?? []).length || !!(item.publishers ?? []).length) && <div className="gm-studios">
-      <GameStudioPlate label="Разработчик" names={item.developers ?? []} hint={byKey.get('developer')} />
-      <GameStudioPlate label="Издатель" names={item.publishers ?? []} hint={byKey.get('publisher')} />
+    {(!!developers.length || !!publishers.length) && <div className="gm-studios">
+      <GameStudioPlate label="Разработчик" names={developers} hint={byKey.get('developer')} />
+      <GameStudioPlate label="Издатель" names={publishers} hint={byKey.get('publisher')} />
     </div>}
 
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
@@ -2358,7 +2395,7 @@ function CityRankProfile({ item, hints }: { item: TitleItem; hints: Attempt['hin
   return <section className="city-rank-profile" aria-label="Рейтинговый профиль города">
     <header className="city-rank-profile__heading">
       <span><BarChart3 /> Городской профиль</span>
-      <small>Длиннее шкала — выше место в рейтинге</small>
+      <small>№ 1 — лучшее место; длиннее шкала — ближе к первому</small>
     </header>
     <div className="city-rank-profile__grid">
       {CITY_RANK_METRICS.map(({ key, label }) => {
@@ -2975,7 +3012,9 @@ function Game({
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
           activeIndex={activeSuggestionIndex}
-          emptyMessage={searchEmptyMessage(mode)}
+          emptyMessage={mode === 'music'
+            ? <span>Артист не входит в выбранную сложность. <ControlButton type="button" onClick={onBack}>Сменить сложность</ControlButton></span>
+            : searchEmptyMessage(mode)}
           submitDisabled={!selected}
           onSubmit={() => submit()}
           onSuggestionHover={(_, index) => dispatchSession({ type: 'set_active_index', index })}
@@ -3454,8 +3493,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     finalChoiceMutation.mutate({ body: { action: 'reveal' }, key })
   }
   const pendingHintOption = hintOptions.find((option) => option.key === hint.variables?.hintKey) ?? null
-  const completedModes = (dashboard.data?.today?.completedModes ?? []).filter(isCatalogGuessModeId)
-  const completedToday = new Set(completedModes).size
+  const completedModeSet = new Set((dashboard.data?.today?.completedModes ?? []).filter(isCatalogGuessModeId))
+  if (session.kind === 'daily' && ['won', 'lost', 'expired'].includes(session.status)) completedModeSet.add(session.mode)
+  const completedModes = [...completedModeSet]
+  const completedToday = completedModeSet.size
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
   const isPackSession = session.kind === 'pack'
@@ -3491,12 +3532,16 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     ? 'K-pop'
     : session.mode === 'music' && session.difficulty
     ? DIFFICULTIES[session.difficulty].label
+    : session.mode === 'city'
+      ? GAME_MODE_MANIFEST.city.variants.find((entry) => entry.id === session.variantKey)?.label ?? 'Столицы'
     : session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime'
       ? session.period === 'all'
         ? 'Главная премьера'
         : PERIODS[session.period].label.replace(' года', '')
       : null
-  const shareText = resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts, session.completionType ?? undefined)
+  const shareText = isDtfCommentSession
+    ? dtfShareText(attempts.length, maxAttempts, session.status === 'won')
+    : resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts, session.completionType ?? undefined)
   const challengeLink = buildChallengeUrl(location.href, {
     mode: session.mode,
     date: session.puzzleDate,
@@ -3601,7 +3646,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           loading={searchPending}
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
-          emptyMessage={searchEmptyMessage(session.mode)}
+          emptyMessage={session.mode === 'music'
+            ? <span>Артист не входит в выбранную сложность. <ControlButton type="button" onClick={onBack}>Сменить сложность</ControlButton></span>
+            : searchEmptyMessage(session.mode)}
           submitDisabled={!selected || attempt.isPending}
           onSubmit={() => selected && submit(selected)}
           onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
@@ -3681,8 +3728,8 @@ function GameApp() {
   })
   const dtfPack = serverPacks.data?.items.find((pack) => pack.id === DTF_COMMENTS_PACK_ID) ?? null
   const kpopPack = serverPacks.data?.items.find((pack) => pack.id === KPOP_ARTISTS_PACK_ID) ?? null
-  const canAccessDtfSpecial = Boolean(dtfPack)
-  const canAccessKpopSpecial = Boolean(kpopPack)
+  const canAccessDtfSpecial = Boolean(dtfPack && dtfPack.access !== 'locked')
+  const canAccessKpopSpecial = Boolean(kpopPack && kpopPack.access !== 'locked')
   const [challenge, setChallenge] = useState<ChallengePayload | null>(() => typeof window === 'undefined' ? null : parseChallengeUrl(window.location.href))
   const [challengeAccepted, setChallengeAccepted] = useState(false)
   const [screen, setScreen] = useState<AppScreen>(() => resetPasswordTokenFromLocation()
@@ -3738,12 +3785,13 @@ function GameApp() {
   const periodUnlocks = useMemo(() => loadPeriodUnlocks(), [economyVersion])
   const currentUnlockedPeriods = useMemo<PeriodKey[]>(() => {
     if (!SERVER_RUNTIME) return unlockedPeriodsFor(mode, periodUnlocks)
+    if (hasActiveClub) return [...PERIOD_UNLOCK_ORDER]
     const unlocked = new Set<PeriodKey>(['all'])
     for (const entitlement of serverRuntime.dashboard?.entitlements ?? []) {
       if (entitlement.mode === mode) unlocked.add(entitlement.period)
     }
     return PERIOD_UNLOCK_ORDER.filter((entry) => unlocked.has(entry))
-  }, [mode, periodUnlocks, serverRuntime.dashboard])
+  }, [hasActiveClub, mode, periodUnlocks, serverRuntime.dashboard])
   const musicDifficultyCounts = useMemo<Record<DifficultyKey, number> | null>(() => {
     if (!data.music.length) return null
     const base = poolFor(data.music, 'music', 'all')
@@ -4167,7 +4215,7 @@ function GameApp() {
       setScreen('game')
       setTransition('idle')
       window.scrollTo({ top: 0 })
-    }, 400)
+    }, 160)
   }
 
   const moveToScreen = (target: 'hub' | 'title' | 'rewatch' | 'profile' | 'club' | 'specials') => {
@@ -4223,6 +4271,28 @@ function GameApp() {
     return PERIOD_UNLOCK_ORDER.filter((periodKey) => completed.has(periodKey))
   }, [games, mode])
   const activeGames = useMemo(() => games.filter((game) => game.status === 'playing' || game.status === 'final_choice').sort((a, b) => b.updatedAt - a.updatedAt), [games])
+  const completedDifficulties = useMemo(() => {
+    const today = getMoscowDate()
+    return DIFFICULTY_ORDER.filter((difficultyKey) => games.some((game) => (
+      game.mode === 'music'
+      && game.date === today
+      && game.difficulty === difficultyKey
+      && (game.status === 'won' || game.status === 'lost' || game.status === 'expired')
+    )))
+  }, [games])
+  const todayResultGame = useMemo(() => {
+    const today = getMoscowDate()
+    return games
+      .filter((game) => (
+        game.mode === mode
+        && game.date === today
+        && (game.status === 'won' || game.status === 'lost' || game.status === 'expired')
+        && (mode !== 'music' || game.difficulty === difficulty)
+        && (mode !== 'city' || (game.variantKey ?? GAME_MODE_MANIFEST.city.variants[0].id) === (modeVariant ?? GAME_MODE_MANIFEST.city.variants[0].id))
+        && (GAME_MODE_MANIFEST[mode].periodPolicy !== 'year' || game.period === period)
+      ))
+      .sort((left, right) => right.updatedAt - left.updatedAt)[0] ?? null
+  }, [difficulty, games, mode, modeVariant, period])
   const hasActiveFreePlay = useMemo(() => {
     if (!FREE_PLAY_MODES.has(mode)) return false
     if (SERVER_RUNTIME) {
@@ -4773,7 +4843,7 @@ function GameApp() {
 
   return <div className={`app app--${appTone}`}>
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} onConnections={openConnections} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} connectionsEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.connectionsEnabled !== false : false} connectionsPoolCount={serverRuntime.meta?.modes.find((entry) => entry.mode === 'connections')?.count ?? null} connectionsStatus={connectionsStatus} connectionsMistakes={activeConnectionsSession?.mistakesUsed ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} onConnections={openConnections} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} connectionsEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.connectionsEnabled !== false : false} connectionsPoolCount={serverRuntime.meta?.modes.find((entry) => entry.mode === 'connections')?.count ?? null} connectionsStatus={connectionsStatus} connectionsMistakes={activeConnectionsSession?.mistakesUsed ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} dtfPoolCount={dtfPack?.totalItems ?? null} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
 
     {screen === 'friends-intro' && <FriendsRoomIntroScreen canCreate={canCreateFriendsRoomAccess} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={() => selectFriendsRoom()} onClub={() => moveToScreen('club')} />}
 
@@ -4786,7 +4856,7 @@ function GameApp() {
 
     {screen === 'title' && (connectionsTitleActive
       ? <ConnectionsTitleScreen date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} status={connectionsStatus} busy={startServerSession.isPending} onHome={goHome} onBack={goBackFromTitle} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onPlay={playConnectionsToday} />
-      : <TitleScreen mode={mode} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficultyFromTitle} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />)}
+      : <TitleScreen mode={mode} variantKey={modeVariant} setVariantKey={setModeVariant} period={period} setPeriod={setPeriodFromTitle} date={getMoscowDate()} onHome={goHome} onBack={goBackFromTitle} onPlay={playToday} onReplay={launchFreePlay} onViewTodayResult={() => { if (todayResultGame) openSavedSession(todayResultGame, 'title') }} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} isLeaving={transition === 'title-to-game'} onLeaveComplete={completeTitleTransition} onReadAnamnesis={() => setModal('anamnesis')} hasAnamnesis={Boolean(diagnosisAnamnesis)} todayCompleted={todayAttendance.completedModes.includes(mode)} todayResultAvailable={Boolean(todayResultGame)} wallet={wallet} unlockedPeriods={currentUnlockedPeriods} completedPeriods={currentCompletedPeriods} completedDifficulties={completedDifficulties} onUnlockPeriod={buyPeriodUnlock} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={startFreePlay} freePlayArmed={freePlayArmed} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} difficulty={difficulty} setDifficulty={setDifficultyFromTitle} difficultyCounts={musicDifficultyCounts} isBusy={titleActionPending} />)}
 
     {screen === 'rewatch' && <RewatchScreen mode={mode} setMode={setModeSafe} period={period} dates={archiveDates} games={games} titles={data[mode]} onOpen={openArchive} onOpenConnections={openConnectionsArchive} onHome={goHome} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onClub={() => moveToScreen('club')} />}
 

@@ -38,6 +38,36 @@
     }
   },
   "byCanonicalGameId": {
+    "tgdb_68757": {
+      "releaseScope": "title",
+      "developers": [
+        "Mojang Studios"
+      ],
+      "publishers": [
+        "Xbox Game Studios"
+      ],
+      "platforms": [
+        "PC",
+        "PlayStation 4",
+        "PlayStation 5",
+        "Xbox One",
+        "Xbox Series X|S",
+        "Nintendo Switch",
+        "Android",
+        "iOS"
+      ],
+      "genres": [
+        "Sandbox",
+        "Survival",
+        "Adventure"
+      ],
+      "steamCategories": [
+        "Одиночная игра",
+        "Мультиплеер",
+        "Кооператив"
+      ],
+      "reason": "Canonical title-level Minecraft card must represent the cross-platform game family, not one Android port."
+    },
     "tgdb_38455": {
       "releaseScope": "title",
       "platforms": [

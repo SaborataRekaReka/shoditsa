@@ -6447,6 +6447,16 @@
             "direction": "up"
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Япония",
+            "status": "match",
+            "direction": null,
+            "matchedValues": [
+              "Япония"
+            ]
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Sports",
@@ -6549,6 +6559,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -6655,6 +6673,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Adventure, Casual, Indie, Simulation, Strategy",
@@ -6759,6 +6785,14 @@
             "direction": "up"
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Экшены, Приключенческие игры, Инди, Ролевые игры, Симуляторы, Стратегии",
@@ -6859,6 +6893,14 @@
             "value": "2 игрока",
             "status": "close",
             "direction": "up"
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Великобритания",
+            "status": "miss",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -6963,6 +7005,14 @@
             "direction": "up"
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "RPG",
@@ -7063,6 +7113,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -7167,6 +7225,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Indie, Simulation, Free To Play",
@@ -7267,6 +7333,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -7371,6 +7445,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Adventure, Indie",
@@ -7471,6 +7553,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -7575,6 +7665,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Action, Adventure",
@@ -7677,6 +7775,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Adventure, Casual, Indie",
@@ -7777,6 +7883,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -7883,6 +7997,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Action, Massively Multiplayer, Free To Play",
@@ -7983,6 +8105,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -8087,6 +8217,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Action, Casual, Indie, Sports",
@@ -8187,6 +8325,14 @@
             "value": "Нет данных",
             "status": "miss",
             "direction": null
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
           },
           {
             "key": "genres",
@@ -8293,6 +8439,14 @@
             "direction": null
           },
           {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Нет данных",
+            "status": "unknown",
+            "direction": null,
+            "matchedValues": []
+          },
+          {
             "key": "genres",
             "label": "Жанры",
             "value": "Action, Adventure, RPG, Free To Play",
@@ -8393,6 +8547,16 @@
             "value": "1 игрок",
             "status": "miss",
             "direction": "up"
+          },
+          {
+            "key": "country",
+            "label": "Страна разработки",
+            "value": "Япония",
+            "status": "match",
+            "direction": null,
+            "matchedValues": [
+              "Япония"
+            ]
           },
           {
             "key": "genres",
@@ -8505,7 +8669,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "dance, dance-pop, disco, funk, pop, R&B, soul",
+            "value": "dance, дэнс-поп, disco, funk, поп, R&B, soul",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8540,7 +8704,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "607fae27d11caeb27de75a90f82e79d5e8010d56226dc890a91c7ed65cb4e3cc"
+        "digest": "8fca78f870c8576b35b8a33476d6c35569b23fbc5e1d4b1ed69f19e36465a18f"
       },
       {
         "guessId": "music:004_shadowraze",
@@ -8572,11 +8736,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop",
+            "value": "хип-хоп",
             "status": "match",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -8609,7 +8773,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "723a13f21bc30304f2b4ebafd1055c3b961d5f44c2a8036bb8ddbe9381aa1b82"
+        "digest": "09357126bea8f7bb7eb387939dd3a427156f0b532ca940a4f605cb105946b0e8"
       },
       {
         "guessId": "music:006_artik",
@@ -8639,11 +8803,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop, R&B",
+            "value": "хип-хоп, R&B",
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -8676,7 +8840,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "0eefb862580961ad1b23b0a77fe136f7173c7750febd46a8862942b7eef861bd"
+        "digest": "ab8018692278a43d2ec7cb454aa00d3a281c9d36716130c1bc17acc8cafdb8dd"
       },
       {
         "guessId": "music:007_asti",
@@ -8708,7 +8872,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop, dance-pop",
+            "value": "поп, дэнс-поп",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8716,7 +8880,7 @@
           {
             "key": "music_type",
             "label": "Тип артиста",
-            "value": "Группа или дуэт",
+            "value": "Группа",
             "status": "match",
             "direction": null
           },
@@ -8743,7 +8907,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "b48f44fbeaf6c597590d133c7031e79fda7fa41bd0c4465a108fbd83b260eb13"
+        "digest": "0b90329cdf52ad109dc0168e078377de953ae6afff71fec4ececa6fdb8920a80"
       },
       {
         "guessId": "music:009_big-baby-tape",
@@ -8775,11 +8939,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop, trap",
+            "value": "хип-хоп, трэп",
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -8812,7 +8976,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "97e41fc8cd6706ee72badd2a41e1dfbafdfd0b758894c5c333021f8a02e20ffb"
+        "digest": "65b3a50969ad67b1c0f8fca93c9a5b6b472c0245d16b8d0deaa390fad380e93e"
       },
       {
         "guessId": "music:010_adele",
@@ -8842,7 +9006,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "soul, neo soul, pop, R&B, rock",
+            "value": "soul, neo soul, поп, R&B, рок",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8877,7 +9041,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "18c864bd25692e36cfb019c5dc1e39f8a38c21daed8cb98fd884b8bd33217527"
+        "digest": "cc85063e2530f8e04ccbd1f66c8f594b072f66bb8aa442884d9d518f19a5c012"
       },
       {
         "guessId": "music:012_face",
@@ -8909,11 +9073,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop, trap",
+            "value": "хип-хоп, трэп",
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -8946,7 +9110,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "c2da1f6bce673210c1ab76c93af403985f20d0f8f89c411f36a2f929a86e2392"
+        "digest": "4ccd925ad2ef4b6cd6b69d95c0444ad9257cbed55427ec613cae4b11f80099db"
       },
       {
         "guessId": "music:014_bts",
@@ -8976,7 +9140,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "dance, k-pop, pop, rock",
+            "value": "dance, K-pop, поп, рок",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8984,7 +9148,7 @@
           {
             "key": "music_type",
             "label": "Тип артиста",
-            "value": "Группа или дуэт",
+            "value": "Группа",
             "status": "match",
             "direction": null
           },
@@ -9011,7 +9175,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "9fc8dac823303f45450d1d735983766a6cfcdffb1f10e758effea419b9ac816e"
+        "digest": "5ee8d4f1e1cd2c322e93baf0f25941af60adbf38bd8847085ed0436df9745c07"
       },
       {
         "guessId": "music:015_andy-panda",
@@ -9043,11 +9207,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop",
+            "value": "хип-хоп",
             "status": "match",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -9080,7 +9244,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "55fcb0d07cda31d8feb2ca8ae1d1c792e2f000ade5b974c4b7aeda7883b9aa03"
+        "digest": "f60c99e18a5a5caa1f3e37ba27aced6232a223eb0d2e07d0deb1ffe43c8bacd0"
       },
       {
         "guessId": "music:016_bearwolf",
@@ -9112,7 +9276,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop",
+            "value": "поп",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9147,7 +9311,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "60dcae1ed71d4f4842f7a8a543941bc3046cf211b7a3dfaaaf9b73e3512b48ea"
+        "digest": "48649e6e29bd75abe15bebd53915f27269df2cdd3855e2bfdca36f9e5bdf3b56"
       },
       {
         "guessId": "music:020_enzro",
@@ -9177,7 +9341,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop, dance-pop",
+            "value": "поп, дэнс-поп",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9212,7 +9376,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "c37011f9c83e5b6f380e45e3385786f7929eec69290dab2c5458610fe9d96740"
+        "digest": "26e01d7db7f73fe9e9274c60303e098fbab2d0a21e383e7316e1f047af136376"
       },
       {
         "guessId": "music:020_taemin",
@@ -9242,7 +9406,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "k-pop",
+            "value": "K-pop",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9277,7 +9441,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "f02ca5a69afcff0403b21dfd1d68b673b2805dacbf120f54ed6d4c2d8dd5e9d8"
+        "digest": "f2f18ee91b9b61467aa6e10ccd5fd740d1d5d1870f02ff9b466b3c94a22005f8"
       },
       {
         "guessId": "music:021_xolidayboy",
@@ -9309,7 +9473,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop, rock, alternative pop",
+            "value": "поп, рок, alternative pop",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9346,7 +9510,7 @@
             ]
           }
         ],
-        "digest": "986d84272511255a2f799fe442b749c5da93c55a94444f9998320c8aa8b724d6"
+        "digest": "6f188321d3efa6b835f301c9fd2f8faf0694fb7d45faff1cfd37c95a6267475b"
       },
       {
         "guessId": "music:022_anna-asti",
@@ -9378,7 +9542,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop",
+            "value": "поп",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9413,7 +9577,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "6cc226ffda518fdbaba0121c8b2fee0f72f3d1e486404d31d30c85a7330e79be"
+        "digest": "115eab19237b55eebd466ed8b3091dd9df40751b701517e4db819012caa45887"
       },
       {
         "guessId": "music:024_by-индия",
@@ -9445,11 +9609,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "R&B, hip-hop, pop",
+            "value": "R&B, хип-хоп, поп",
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -9482,7 +9646,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "5946baab11684230e8e633a2917f4ee99771abdac9c6270245ab42825f8a65bc"
+        "digest": "a00201b258c0717ce71f64ef77f0b692d3799ada4f05e0b63137f2f8f8f31a03"
       },
       {
         "guessId": "music:025_hugel",
@@ -9512,7 +9676,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "latin house, house, electronic",
+            "value": "latin house, house, электронная музыка",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9547,7 +9711,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "8557d66ee383ebecac9b3455940dd88e3931228c31f9415152632dd157769517"
+        "digest": "e5a057f4ea016d07bbfc9d3cf6a6a8b6a4503312fec8736015719026e8d48cb5"
       },
       {
         "guessId": "music:025_sayan",
@@ -9579,7 +9743,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop, rap",
+            "value": "поп, рэп",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9614,7 +9778,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "ae23b8c54f619b002427632550dbbb4e06f90a85b283162323ef42ba90001e94"
+        "digest": "48773d0cee102613f5bb0ae808986ee94b38d76de924df562d8a4abc50549188"
       },
       {
         "guessId": "music:026_женя-трофимов",
@@ -9646,7 +9810,7 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "pop rock, indie pop",
+            "value": "pop rock, инди-поп",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -9681,7 +9845,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "6bfbd3bb47435944e16601b2d5da512da6a55a439b33eeac18a6e107c9d8e953"
+        "digest": "e3f96d612e6a94fd13beccf266342aee0e439c59fa23354361ecdd608af0bdc9"
       },
       {
         "guessId": "music:027_macan",
@@ -9713,11 +9877,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "rap, hip-hop",
+            "value": "рэп, хип-хоп",
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -9750,7 +9914,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "131da96135ad51d9753619f0750abced6989e8f6abc1f9cf52cd8d73fea2ac35"
+        "digest": "1fa5a227a5b40e5521af40159e78c10b8b40ce06730106e910944f4b3c85a80f"
       },
       {
         "guessId": "music:028_полка",
@@ -9782,11 +9946,11 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "hip-hop, pop rap",
+            "value": "хип-хоп, pop rap",
             "status": "partial",
             "direction": null,
             "matchedValues": [
-              "hip-hop"
+              "хип-хоп"
             ]
           },
           {
@@ -9819,7 +9983,7 @@
             "matchedValues": []
           }
         ],
-        "digest": "1319a0f7fc09420eed450b28a2fd808c3d00e6adf9274560517cb565a4ae315b"
+        "digest": "3828be63e3f05ec71e67a1fb72c01d5c0d6d4f3a644b6c19062612fc641c83f8"
       }
     ]
   },

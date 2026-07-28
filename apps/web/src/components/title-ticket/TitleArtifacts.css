@@ -376,6 +376,19 @@
 @media (max-width: 359px) {
   .concert-ticket__when { display: flex; align-items: baseline; gap: 5px; text-align: left; }
 }
+@media (max-width: 359px) {
+  .admit-ticket { grid-template-columns: 72px minmax(0, 1fr); }
+  .admit-ticket::before,
+  .admit-ticket::after { left: 61px; }
+  .admit-ticket__body { padding: 13px 11px; }
+  .admit-ticket h2 { font-size: 18px; overflow-wrap: anywhere; }
+  .concert-ticket { grid-template-columns: 78px minmax(0, 1fr); }
+  .concert-ticket::before,
+  .concert-ticket::after { left: 68px; }
+  .concert-ticket__main { padding: 13px 11px; }
+  .med-chart { grid-template-columns: 78px minmax(0, 1fr); }
+  .med-chart__body { padding: 13px 11px; }
+}
 @media (min-width: 720px) {
   .admit-ticket { margin-top: 30px; grid-template-columns: 96px 1fr; }
 }

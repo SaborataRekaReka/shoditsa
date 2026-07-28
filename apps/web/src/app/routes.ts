@@ -44,13 +44,13 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   const gameMatch = normalized.match(/^\/games\/([^/]+)$/)
   if (gameMatch) {
     const mode = decodedSegment(gameMatch[1])
-    return isPlayableModeId(mode) ? { screen: 'title', mode } : { screen: 'hub' }
+    return isPlayableModeId(mode) && mode !== 'danetki' ? { screen: 'title', mode } : { screen: 'hub' }
   }
 
   const localPlayMatch = normalized.match(/^\/play\/([^/]+)$/)
   if (localPlayMatch) {
     const mode = decodedSegment(localPlayMatch[1])
-    return isPlayableModeId(mode) ? { screen: 'game', mode } : { screen: 'hub' }
+    return isPlayableModeId(mode) && mode !== 'danetki' ? { screen: 'game', mode } : { screen: 'hub' }
   }
 
   const sessionMatch = normalized.match(/^\/sessions\/([^/]+)$/)
@@ -69,6 +69,7 @@ export const playerRouteFromLocation = (pathname: string, search = ''): PlayerRo
 
 export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken }: PlayerRouteState) => {
   if (screen === 'danetki') return '/games/danetki'
+  if ((screen === 'title' || screen === 'game') && mode === 'danetki') return '/games/danetki'
   if (screen === 'friends-intro') return '/games/together'
   if (screen === 'friends-room') return '/games/together'
   if (screen === 'danetki-join' && inviteToken) return `/danetki/join/${encodeURIComponent(inviteToken)}`

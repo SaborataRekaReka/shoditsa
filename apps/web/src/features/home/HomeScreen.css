@@ -344,10 +344,16 @@
 
 @media (max-width: 719px) {
   .hub-hero::after { opacity: .1; }
+  .hub-screen { padding-bottom: 108px; }
 }
 
 @media (max-width: 719px) {
   .hub-hero__facts { flex-wrap: wrap; overflow: visible; }
+}
+@media (max-width: 359px) {
+  .hub-screen { padding-inline: 8px; }
+  .hub-hero__copy { padding-inline: 14px; }
+  .hub-hero h1 { font-size: 36px; overflow-wrap: anywhere; }
 }
 
 @media (min-width: 720px) {

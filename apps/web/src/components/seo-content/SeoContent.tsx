@@ -1,6 +1,6 @@
 import type { PlayableModeId } from '@shoditsa/contracts'
 import type { LucideIcon } from 'lucide-react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import {
   BookOpenText,
   Check,
@@ -31,6 +31,7 @@ const GUIDE_ICONS = {
   music: Music2,
   diagnosis: Stethoscope,
   connections: Grid2X2,
+  danetki: ScanSearch,
 } satisfies Record<PlayableModeId, LucideIcon>
 
 const DANETKI_RULES = {
@@ -40,7 +41,7 @@ const DANETKI_RULES = {
   modeNote: 'В совместной комнате все участники видят один диалог, подсказки и итоговую версию в реальном времени.',
 }
 
-const GuideSummary = ({ title, openTitle, note }: { title: string; openTitle: string; note: string }) => <summary className="hub-guide__summary">
+const GuideSummary = ({ title, openTitle, note, expanded, controls }: { title: string; openTitle: string; note: string; expanded: boolean; controls: string }) => <summary className="hub-guide__summary" role="button" aria-expanded={expanded} aria-controls={controls}>
   <span className="hub-guide__summary-title"><BookOpenText aria-hidden="true" /><span><strong className="hub-guide__closed-label">{title}</strong><strong className="hub-guide__open-label">{openTitle}</strong></span></span>
   <small>{note}</small>
   <ChevronDown className="hub-guide__summary-chevron" aria-hidden="true" />
@@ -50,11 +51,14 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
   const content = GAME_SEO[mode]
   const presentation = GAME_GUIDE_PRESENTATION[mode]
   const rules = mode === 'danetki' ? DANETKI_RULES : GAME_RULES[mode]
-  const ModeIcon = mode === 'danetki' ? ScanSearch : GUIDE_ICONS[mode]
+  const ModeIcon = GUIDE_ICONS[mode]
   const scrollPosition = useRef<number | null>(null)
+  const [open, setOpen] = useState(false)
   return <details
     className={`artifact-dossier ticket-dossier ticket-dossier--${mode}`}
+    open={open}
     onToggle={(event) => {
+      setOpen(event.currentTarget.open)
       if (!event.currentTarget.open || scrollPosition.current === null) return
       const top = scrollPosition.current
       const details = event.currentTarget
@@ -67,6 +71,9 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
   >
     <summary
       className="ticket-dossier__summary"
+      role="button"
+      aria-expanded={open}
+      aria-controls={`ticket-dossier-drawer-${mode}`}
       onPointerDown={() => { scrollPosition.current = window.scrollY }}
       onMouseDown={(event) => { event.preventDefault() }}
       onKeyDown={(event) => {
@@ -84,7 +91,7 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
       <ChevronDown className="ticket-dossier__chevron" aria-hidden="true" />
     </summary>
 
-    <div className="ticket-dossier__drawer">
+    <div className="ticket-dossier__drawer" id={`ticket-dossier-drawer-${mode}`}>
       <header className="ticket-dossier__intro">
         <div>
           <span className="ticket-dossier__eyebrow">{presentation.introLabel}</span>
@@ -160,9 +167,10 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
 }
 
 export function HomeSeoContent() {
-  return <details className="hub-guide">
-    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат · подсказки · все режимы" />
-    <div className="hub-guide__drawer">
+  const [open, setOpen] = useState(false)
+  return <details className="hub-guide" open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
+    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат · подсказки · все режимы" expanded={open} controls="home-guide-drawer" />
+    <div className="hub-guide__drawer" id="home-guide-drawer">
       <header className="hub-guide__intro">
         <span>Путеводитель · без спойлеров</span>
         <h2 id="home-about-title">{HOME_SEO.heading}</h2>

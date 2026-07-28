@@ -26,7 +26,7 @@ describe('result presentation', () => {
     expect(resultCardMeta(artist)).toContain('с 2010')
     expect(resultCardMeta(artist)).toContain('Азербайджан')
     expect(resultCardMeta(artist)).not.toContain('1985')
-    expect(resultCardTags(artist)).toEqual(['hip-hop'])
+    expect(resultCardTags(artist)).toEqual(['хип-хоп'])
   })
 
   it('shows the platform identity for title-level games', () => {

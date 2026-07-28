@@ -7,6 +7,12 @@ describe('typed player routes', () => {
     for (const mode of PLAYABLE_MODE_IDS) {
       const titlePath = pathnameForPlayerRoute({ screen: 'title', mode })
       const gamePath = pathnameForPlayerRoute({ screen: 'game', mode })
+      if (mode === 'danetki') {
+        expect(titlePath).toBe('/games/danetki')
+        expect(gamePath).toBe('/games/danetki')
+        expect(playerRouteFromPathname(titlePath)).toEqual({ screen: 'danetki' })
+        continue
+      }
       expect(playerRouteFromPathname(titlePath)).toEqual({ screen: 'title', mode })
       expect(playerRouteFromPathname(gamePath)).toEqual({ screen: 'game', mode })
     }

@@ -626,7 +626,7 @@
   outline: 3px solid color-mix(in srgb, var(--color-primary) 72%, white);
   outline-offset: 2px;
 }
-.app--transition-game .app-header { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.app--transition-game .app-header { opacity: .9; transform: translateY(-2px); pointer-events: none; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 120; background: rgba(5, 7, 5, .84); display: flex; align-items: flex-end; justify-content: center; animation: fadeIn .2s both; }
 
 .modal-backdrop { padding-top: 70px; }

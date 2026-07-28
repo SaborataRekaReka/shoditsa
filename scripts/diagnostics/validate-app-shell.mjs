@@ -81,7 +81,7 @@ const sourceChecks = [
   {
     path: 'apps/web/src/components/seo-content/SeoContent.tsx',
     required: [
-      ['native SEO disclosure', /<details\s+className="hub-guide">/],
+      ['native SEO disclosure', /<details\s+className="hub-guide"[^>]*>/],
       ['HTML-resident game copy', /content\.paragraphs\.map/],
       ['useful nested FAQ disclosure', /ticket-dossier__faq[^]*content\.faq\.map/],
       ['manifest-driven game guide icons', /satisfies\s+Record<PlayableModeId,\s*LucideIcon>/],

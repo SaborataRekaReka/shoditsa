@@ -18,7 +18,7 @@ import {
   economyFriendsRoomCost,
   friendsRoomMinimumRounds,
 } from '@shoditsa/contracts'
-import { isExactTitleSearchMatch, musicDifficultyPool, normalize } from '@shoditsa/game-core'
+import { canonicalMusicGenreLabel, isExactTitleSearchMatch, localizeMusicCountry, musicDifficultyPool, normalize } from '@shoditsa/game-core'
 import {
   contentItemVersions,
   contentRevisions,
@@ -60,7 +60,9 @@ type RequestUser = {
 
 const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const COUNTDOWN_MS = 3_000
+const FRIENDS_ROOM_PRESENCE_SECONDS = 35
 const roomCapacity = (gameType: FriendsRoomGameType) => gameType === 'danetki' ? FRIENDS_ROOM_DANETKI_CAPACITY : FRIENDS_ROOM_CAPACITY
+const connectedMemberCondition = () => sql`${friendsRoomMembers.lastSeenAt} >= now() - (${FRIENDS_ROOM_PRESENCE_SECONDS} * interval '1 second')`
 
 const modePrompt: Record<CatalogGuessModeId, string> = {
   movie: 'Какой фильм соответствует этим подсказкам?',
@@ -83,12 +85,12 @@ export const buildFriendsRoomHints = (item: TitleItem): string[] => {
     : item.mode === 'city'
       ? [hint('Страна', item.country), hint('Континент', item.continent), hint('Языки', list(item.languages, 3)), item.population ? `Население: ${new Intl.NumberFormat('ru-RU').format(item.population)}` : '']
       : item.mode === 'music'
-        ? [hint('Начало карьеры', item.activityStartYear), hint('Страны', list(item.countries)), hint('Жанры', list(item.genres, 3)), hint('Известный трек', item.topTracks?.[0]?.title)]
+        ? [hint('Начало карьеры', item.activityStartYear), hint('Страны', list(item.countries?.map(localizeMusicCountry))), hint('Жанры', list(item.genres?.map(canonicalMusicGenreLabel), 3)), hint('Известный трек', item.topTracks?.[0]?.title)]
         : item.mode === 'diagnosis'
           ? [hint('Системы организма', list(item.bodySystems, 2)), hint('Симптомы', list(item.keySymptoms, 3)), hint('Диагностика', first(item.diagnostics)), hint('Группа МКБ', item.icdGroup)]
           : item.mode === 'anime'
             ? [hint('Год', item.year), hint('Формат', item.animeKind), hint('Студия', first(item.studios)), hint('Жанры', list(item.genres, 3))]
-            : [hint('Год', item.year), hint('Страны', list(item.countries)), hint('Жанры', list(item.genres, 3)), hint(item.mode === 'series' ? 'Шоураннер' : 'Режиссёр', first(item.mode === 'series' ? item.showrunners?.map((person) => person.nameRu || person.nameOriginal) : item.directors?.map((person) => person.nameRu || person.nameOriginal)))]
+            : [hint('Год', item.year), hint('Страны', list(item.countries)), hint('Жанры', list(item.genres, 3)), hint(item.mode === 'series' ? 'Создатели' : 'Режиссёр', first(item.mode === 'series' ? item.showrunners?.map((person) => person.nameRu || person.nameOriginal) : item.directors?.map((person) => person.nameRu || person.nameOriginal)))]
   const result = candidates.filter(Boolean).slice(0, 4)
   if (result.length < 3 && clean(item.plotHint)) result.push(clean(item.plotHint).slice(0, 180))
   return result.length ? result : ['Подсказки появятся после обновления контента']
@@ -373,10 +375,15 @@ const advanceRoomClock = async (db: Database, roomId: string) => db.transaction(
   )).limit(1))[0]
   if (!currentRound) return
   const [members, answers] = await Promise.all([
-    tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(eq(friendsRoomMembers.roomId, room.id), isNull(friendsRoomMembers.leftAt))),
+    tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
+      eq(friendsRoomMembers.roomId, room.id),
+      isNull(friendsRoomMembers.leftAt),
+      connectedMemberCondition(),
+    )),
     tx.select({ userId: friendsRoomAnswers.userId }).from(friendsRoomAnswers).where(eq(friendsRoomAnswers.roundId, currentRound.id)),
   ])
-  if ((room.phaseEndsAt && room.phaseEndsAt <= now) || (members.length > 0 && answers.length >= members.length)) {
+  const answeredUserIds = new Set(answers.map((entry) => entry.userId))
+  if ((room.phaseEndsAt && room.phaseEndsAt <= now) || (members.length > 0 && members.every((entry) => answeredUserIds.has(entry.userId)))) {
     await tx.update(friendsRooms).set({ phase: 'results', phaseEndsAt: null, version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, room.id))
     await tx.update(friendsRoomRounds).set({ revealedAt: now }).where(eq(friendsRoomRounds.id, currentRound.id))
   }
@@ -393,6 +400,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
   const round = room.currentRound > 0
     ? (await db.select().from(friendsRoomRounds).where(and(eq(friendsRoomRounds.roomId, roomId), eq(friendsRoomRounds.position, room.currentRound))).limit(1))[0] ?? null
     : null
+  const serverNow = new Date()
   const [members, answerRows, messageRows, content, danetkiLaunchCost] = await Promise.all([
     db.select().from(friendsRoomMembers).where(eq(friendsRoomMembers.roomId, roomId)).orderBy(asc(friendsRoomMembers.joinedAt)),
     round ? db.select().from(friendsRoomAnswers).where(eq(friendsRoomAnswers.roundId, round.id)).orderBy(asc(friendsRoomAnswers.submittedAt)) : Promise.resolve([]),
@@ -427,7 +435,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     version: room.version,
     currentUserId,
     isHost: membership.role === 'owner',
-    serverTime: new Date().toISOString(),
+    serverTime: serverNow.toISOString(),
     members: members.map((entry) => ({
       userId: entry.userId,
       role: entry.role,
@@ -438,6 +446,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
       joinedAt: entry.joinedAt.toISOString(),
       leftAt: iso(entry.leftAt),
       lastSeenAt: entry.lastSeenAt.toISOString(),
+      connected: !entry.leftAt && serverNow.getTime() - entry.lastSeenAt.getTime() <= FRIENDS_ROOM_PRESENCE_SECONDS * 1_000,
     })),
     round: round ? {
       position: round.position,
@@ -505,7 +514,11 @@ export const getFriendsRoomAnswerMediaSource = async (db: Database, roomId: stri
 export const previewFriendsRoom = async (db: Database, code: string) => {
   const room = (await db.select().from(friendsRooms).where(eq(friendsRooms.code, code.trim().toUpperCase())).limit(1))[0]
   if (!room || room.closedAt) throw new ApiError(404, 'FRIENDS_ROOM_NOT_FOUND', 'Комната не найдена')
-  const members = await db.select().from(friendsRoomMembers).where(and(eq(friendsRoomMembers.roomId, room.id), isNull(friendsRoomMembers.leftAt)))
+  const members = await db.select().from(friendsRoomMembers).where(and(
+    eq(friendsRoomMembers.roomId, room.id),
+    isNull(friendsRoomMembers.leftAt),
+    connectedMemberCondition(),
+  ))
   const owner = members.find((entry) => entry.role === 'owner')
   return {
     code: room.code,
@@ -543,6 +556,7 @@ export const listFriendsRooms = async (db: Database, userId: string): Promise<Fr
     .where(and(
       inArray(friendsRoomMembers.roomId, entries.map((entry) => entry.room.id)),
       isNull(friendsRoomMembers.leftAt),
+      connectedMemberCondition(),
     ))
   const playerCounts = new Map<string, number>()
   for (const entry of counts) playerCounts.set(entry.roomId, (playerCounts.get(entry.roomId) ?? 0) + 1)
@@ -632,7 +646,11 @@ export const joinFriendsRoom = async (db: Database, user: RequestUser, code: str
       }
       throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра в этой комнате уже началась')
     }
-    const members = await tx.select().from(friendsRoomMembers).where(and(eq(friendsRoomMembers.roomId, room.id), isNull(friendsRoomMembers.leftAt)))
+    const members = await tx.select().from(friendsRoomMembers).where(and(
+      eq(friendsRoomMembers.roomId, room.id),
+      isNull(friendsRoomMembers.leftAt),
+      connectedMemberCondition(),
+    ))
     if (!existing[0] && members.length >= roomCapacity(room.gameType as FriendsRoomGameType)) throw new ApiError(409, 'FRIENDS_ROOM_FULL', room.gameType === 'danetki' ? 'В комнате уже четыре игрока' : 'В комнате уже восемь игроков')
     await tx.insert(friendsRoomMembers).values({
       roomId: room.id, userId: user.id, role: user.id === room.ownerUserId ? 'owner' : 'player', displayNameSnapshot: safeName(displayName ?? user.name), colorKey: colorFor(user.id),
@@ -653,6 +671,7 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
       const members = await tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
         eq(friendsRoomMembers.roomId, roomId),
         isNull(friendsRoomMembers.leftAt),
+        connectedMemberCondition(),
       ))
       if (members.length > FRIENDS_ROOM_DANETKI_CAPACITY) {
         throw new ApiError(409, 'FRIENDS_ROOM_DANETKI_TOO_MANY_PLAYERS', 'Для Данетки в комнате должно быть не больше четырёх игроков')
@@ -704,6 +723,7 @@ export const startFriendsRoom = async (
     const members = await db.select().from(friendsRoomMembers).where(and(
       eq(friendsRoomMembers.roomId, roomId),
       isNull(friendsRoomMembers.leftAt),
+      connectedMemberCondition(),
     )).orderBy(asc(friendsRoomMembers.joinedAt), asc(friendsRoomMembers.userId))
     if (!members.length) throw new ApiError(409, 'FRIENDS_ROOM_EMPTY', 'В комнате нет игроков')
     if (members.length > FRIENDS_ROOM_DANETKI_CAPACITY) {
@@ -713,6 +733,7 @@ export const startFriendsRoom = async (
     const session = await startDanetkiSession(db, user, {
       kind: roomBeforeStart.danetkiLaunch.kind,
       roomMode: 'group',
+      roomInstance: true,
       ...(roomBeforeStart.danetkiLaunch.puzzleDate ? { archiveDate: roomBeforeStart.danetkiLaunch.puzzleDate } : {}),
       idempotencyKey,
     }, config)
@@ -836,6 +857,24 @@ export const revealFriendsRoomResults = async (db: Database, userId: string, roo
   await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, userId)
     if (room.phase !== 'active') throw new ApiError(409, 'FRIENDS_ROOM_ROUND_NOT_ACTIVE', 'Раунд уже завершён')
+    const round = (await tx.select({ id: friendsRoomRounds.id }).from(friendsRoomRounds).where(and(
+      eq(friendsRoomRounds.roomId, roomId),
+      eq(friendsRoomRounds.position, room.currentRound),
+    )).limit(1))[0]
+    if (!round) throw new ApiError(404, 'FRIENDS_ROOM_ROUND_NOT_FOUND', 'Раунд не найден')
+    const [members, answers] = await Promise.all([
+      tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
+        eq(friendsRoomMembers.roomId, roomId),
+        isNull(friendsRoomMembers.leftAt),
+        connectedMemberCondition(),
+      )),
+      tx.select({ userId: friendsRoomAnswers.userId }).from(friendsRoomAnswers).where(eq(friendsRoomAnswers.roundId, round.id)),
+    ])
+    const answeredUserIds = new Set(answers.map((entry) => entry.userId))
+    const connectedAnswers = members.filter((entry) => answeredUserIds.has(entry.userId)).length
+    if (connectedAnswers < members.length) {
+      throw new ApiError(409, 'FRIENDS_ROOM_ANSWERS_PENDING', `Ждём ответы игроков: ${connectedAnswers} из ${members.length}`)
+    }
     const now = new Date()
     await tx.update(friendsRooms).set({ phase: 'results', phaseEndsAt: null, version: sql`${friendsRooms.version} + 1`, updatedAt: now }).where(eq(friendsRooms.id, roomId))
     await tx.update(friendsRoomRounds).set({ revealedAt: now }).where(and(eq(friendsRoomRounds.roomId, roomId), eq(friendsRoomRounds.position, room.currentRound)))

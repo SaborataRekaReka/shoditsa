@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import './Progress.css'
 
-export function SegmentedProgress({ value, max = 10, label = 'Попытка', valueLabel, className = '' }: {
+export function SegmentedProgress({ value, max = 10, label = 'Использовано попыток', valueLabel, className = '' }: {
   value: number
   max?: number
   label?: ReactNode
@@ -9,9 +9,9 @@ export function SegmentedProgress({ value, max = 10, label = 'Попытка', v
   className?: string
 }) {
   return <div className={`progress-block ui-segmented-progress ${className}`.trim()}>
-    <div className="progress-copy"><span>{label}</span><strong>{valueLabel ?? <>{Math.min(value + 1, max)} <i>из {max}</i></>}</strong></div>
+    <div className="progress-copy"><span>{label}</span><strong>{valueLabel ?? <>{Math.min(value, max)} <i>из {max}</i></>}</strong></div>
     <div className="progress-track" aria-label={`${String(label)}: ${value} из ${max}`}>
-      {Array.from({ length: max }, (_, index) => <i key={index} className={index < value ? 'used' : index === value ? 'current' : ''} />)}
+      {Array.from({ length: max }, (_, index) => <i key={index} className={index < value ? 'used' : ''} />)}
     </div>
   </div>
 }

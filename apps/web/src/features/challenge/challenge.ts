@@ -1,5 +1,5 @@
 import type { DifficultyKey, PeriodKey, TitleMode } from '../../types'
-import { isPlayableModeId } from '@shoditsa/contracts'
+import { GAME_MODE_MANIFEST, isPlayableModeId } from '@shoditsa/contracts'
 
 const PERIODS = new Set<PeriodKey>(['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'])
 const DIFFICULTIES = new Set<DifficultyKey>(['easy', 'medium', 'hard', 'expert', 'experimental'])
@@ -51,7 +51,9 @@ export const buildChallengeUrl = (baseUrl: string, payload: ChallengePayload) =>
   url.search = ''
   url.searchParams.set('play', payload.mode)
   url.searchParams.set('date', payload.date)
-  url.searchParams.set('period', payload.period)
+  if (GAME_MODE_MANIFEST[payload.mode].periodPolicy === 'year' || payload.period !== 'all') {
+    url.searchParams.set('period', payload.period)
+  }
   if (payload.difficulty) url.searchParams.set('difficulty', payload.difficulty)
   if (payload.variantKey) url.searchParams.set('variant', payload.variantKey)
   url.searchParams.set('challenge', String(payload.opponentAttempts))

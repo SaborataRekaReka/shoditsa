@@ -93,7 +93,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
   const sessionPreviewIds = useMemo(() => {
     const ids = new Set<string>()
     for (const played of latestByDate.values()) {
-      if (!played?.key.startsWith('server:')) continue
+      if (!played?.key.startsWith('server:') || (played.status !== 'won' && played.status !== 'lost')) continue
       ids.add(played.key.slice('server:'.length))
     }
     return [...ids]
@@ -110,10 +110,8 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
     const map = new Map<string, TitleItem>()
     for (const query of sessionPreviewQueries) {
       const session = query.data?.session
-      if (!session) continue
-      const previewItem = session.status === 'playing' || session.status === 'final_choice'
-        ? session.attempts.at(-1)?.item ?? null
-        : session.answer ?? session.attempts.at(-1)?.item ?? null
+      if (!session || (session.status !== 'won' && session.status !== 'lost')) continue
+      const previewItem = session.answer ?? session.attempts.at(-1)?.item ?? null
       if (previewItem) map.set(session.id, publicItemToTitle(previewItem))
     }
     return map
@@ -130,6 +128,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>Последние семь дат доступны всем. Полный архив с даты запуска открыт клубу.</p></div>
+      <ArchiveModePicker mode={mode} setMode={setMode} />
       {serverRuntime.meta?.features.connectionsEnabled !== false && <section className="rewatch-connections" aria-labelledby="rewatch-connections-title">
         <header>
           <div><span>Ежедневная головоломка</span><h2 id="rewatch-connections-title">Связи</h2></div>
@@ -174,7 +173,6 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
           </ControlButton>
         })}</div>
       </section>}
-      <ArchiveModePicker mode={mode} setMode={setMode} />
       {archive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert>}
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const played = latestByDate.get(itemDate) ?? null
@@ -224,7 +222,7 @@ function LocalRewatchScreen({ mode, setMode, period, dates, games, titles, onOpe
         const normalizedAnswerId = played?.mode === 'music' ? resolveMusicRedirectId(played.answerId) : played?.answerId
         const latestAttemptId = played?.attempts.at(-1)?.titleId
         const normalizedLatestAttemptId = played?.mode === 'music' && latestAttemptId ? resolveMusicRedirectId(latestAttemptId) : latestAttemptId
-        const posterItem = played
+        const posterItem = played && (played.status === 'won' || played.status === 'lost')
           ? titleById.get(normalizedAnswerId ?? '') ?? (normalizedLatestAttemptId ? titleById.get(normalizedLatestAttemptId) : undefined)
           : undefined
         return <ControlButton className={`rewatch-item ${played?.status ?? ''}`} key={itemDate} onClick={() => onOpen(itemDate, played)}>

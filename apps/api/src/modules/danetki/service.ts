@@ -103,6 +103,15 @@ export const normalizeDanetkiQuestion = (value: string) => value
   .replace(/[^a-zа-я0-9]+/gi, ' ')
   .trim()
 
+const OPEN_QUESTION_START = /^(?:что|кто|почему|зачем|как|где|куда|откуда|когда|како(?:й|е|я|ие|го|му|м)|чем|сколько|расскажи(?:те)?|объясни(?:те)?|опиши(?:те)?|назови(?:те)?|перечисли(?:те)?)\b/
+
+export const isDanetkiYesNoQuestion = (value: string) => {
+  const normalized = normalizeDanetkiQuestion(value)
+  if (normalized.length < 2) return false
+  if (/\bли\b/.test(normalized)) return true
+  return !OPEN_QUESTION_START.test(normalized)
+}
+
 export const nextDanetkiTurnUserId = (memberIds: string[], currentUserId: string) => {
   if (!memberIds.length) return null
   const currentIndex = memberIds.indexOf(currentUserId)
@@ -343,6 +352,11 @@ export const startDanetkiSession = async (db: Database, user: {
   roomMode: 'solo' | 'group'
   archiveDate?: string | null
   idempotencyKey?: string
+  /**
+   * A friends-room launch is an independent multiplayer session that may use
+   * the same daily/archive puzzle as the owner's personal session.
+   */
+  roomInstance?: boolean
 }, config: AppConfig) => {
   const flags = await loadDanetkiFeatureFlags(db, {
     enabled: config.danetkiEnabled,
@@ -414,7 +428,7 @@ export const startDanetkiSession = async (db: Database, user: {
     const inserted = await tx.insert(gameSessions).values({
       userId: user.id,
       authSessionId: user.authSessionId,
-      challengeId: challenge?.id ?? null,
+      challengeId: input.roomInstance ? null : challenge?.id ?? null,
       kind: input.kind,
       mode: 'danetki',
       period: 'all',
@@ -425,12 +439,12 @@ export const startDanetkiSession = async (db: Database, user: {
       rulesVersion: rules.version,
       startIdempotencyKey: input.idempotencyKey,
     }).onConflictDoNothing().returning()
-    const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play'
+    const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play' || input.roomInstance
       ? and(eq(gameSessions.userId, user.id), eq(gameSessions.startIdempotencyKey, input.idempotencyKey!))
       : and(eq(gameSessions.userId, user.id), eq(gameSessions.challengeId, challenge!.id))).limit(1))[0]
     if (!session) throw new ApiError(503, 'DANETKI_SESSION_NOT_READY', 'Не удалось создать игровую сессию')
 
-    if (inserted[0] && input.kind === 'daily') {
+    if (inserted[0] && input.kind === 'daily' && !input.roomInstance) {
       await tx.insert(danetkiDailyUsage).values({ userId: user.id, activityDate: today, dailyRooms: 1 }).onConflictDoUpdate({
         target: [danetkiDailyUsage.userId, danetkiDailyUsage.activityDate],
         set: { dailyRooms: sql`${danetkiDailyUsage.dailyRooms} + 1` },
@@ -640,6 +654,9 @@ export const createDanetkiMessage = async (db: Database, userId: string, session
   })
   const normalized = normalizeDanetkiQuestion(input.text)
   if (normalized.length < 2) throw new ApiError(422, 'DANETKI_QUESTION_TOO_SHORT', 'Сформулируйте вопрос подробнее')
+  if (!isDanetkiYesNoQuestion(input.text)) {
+    throw new ApiError(422, 'DANETKI_YES_NO_REQUIRED', 'Сформулируйте вопрос так, чтобы ведущая могла ответить «да» или «нет». Например: «Это произошло случайно?»')
+  }
 
   const rateSettings = await tx.select({ key: appSettings.key, value: appSettings.value }).from(appSettings).where(inArray(appSettings.key, [
     'danetki.userCooldownMs', 'danetki.roomQuestionsPerMinute',
@@ -807,15 +824,8 @@ const finishLost = async (tx: Transaction, context: MemberContext) => {
   const message = (await addSystemMessage(tx, context.state, { sessionId: context.session.id, messageType: 'solution', text: puzzle.solution }))[0]
   const now = new Date()
   await completeDanetkiParticipantStats(tx, context.session.id, false)
-  const reward = context.session.kind === 'daily' ? await completeDanetkiDaily(tx, {
-    sessionId: context.session.id,
-    userId: context.session.userId,
-    puzzleDate: context.session.puzzleDate,
-    won: false,
-    rulesVersion: context.session.rulesVersion,
-  }) : null
   await Promise.all([
-    tx.update(gameSessions).set({ status: 'lost', completionType: 'attempts_exhausted', completedAt: now, updatedAt: now, rewardLedgerId: reward?.ledgerId ?? null }).where(eq(gameSessions.id, context.session.id)),
+    tx.update(gameSessions).set({ status: 'lost', completionType: 'answer_revealed', completedAt: now, updatedAt: now, rewardLedgerId: null }).where(eq(gameSessions.id, context.session.id)),
     tx.update(danetkiSessionState).set({ nextMessageSeq: sql`${danetkiSessionState.nextMessageSeq} + 1`, aiStatus: 'idle', updatedAt: now }).where(eq(danetkiSessionState.sessionId, context.session.id)),
     tx.update(danetkiInvites).set({ revokedAt: now }).where(and(eq(danetkiInvites.sessionId, context.session.id), isNull(danetkiInvites.revokedAt))),
     finishLinkedDanetkiFriendsRoom(tx, context.session.id, now),

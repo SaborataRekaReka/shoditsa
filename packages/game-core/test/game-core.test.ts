@@ -226,9 +226,9 @@ describe('deterministic rules', () => {
     )
 
     expect(hints.find((hint) => hint.key === 'genres')).toMatchObject({
-      value: 'hip-hop',
+      value: 'хип-хоп',
       status: 'match',
-      matchedValues: ['hip-hop'],
+      matchedValues: ['хип-хоп'],
     })
   })
 

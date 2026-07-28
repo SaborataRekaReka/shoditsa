@@ -96,7 +96,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     if (session.status === 'playing' || completionTracked.current) return
     completionTracked.current = true
     const balanceBefore = runtime.dashboard?.wallet.balance ?? 0
-    const amount = session.kind === 'daily' && isOwner ? runtime.dashboard?.economyRules.danetki.ownerDailyCompletionReward ?? 10 : 0
+    const amount = session.status === 'won' && session.kind === 'daily' && isOwner ? runtime.dashboard?.economyRules.danetki.ownerDailyCompletionReward ?? 10 : 0
     trackClientEvent('danetki_room_completed', {
       balanceBefore,
       balanceAfter: balanceBefore + amount,
@@ -268,7 +268,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
 
         <div className="danetki-messages" ref={listRef} role="log" aria-live="polite" onScroll={(event) => { const node = event.currentTarget; wasNearBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 80; if (wasNearBottom.current) setNewMessages(0) }}>
           {state.roomMode === 'group' && activeMembers.length === 1 && <div className="danetki-system danetki-waiting"><Users /><span>Комната готова. Отправьте ссылку друзьям — расследование синхронизируется для всех.</span></div>}
-          {!state.messages.length && <div className="danetki-empty"><Sparkles /><p>Расследование начинается. Выберите стартовый вопрос или задайте свой.</p></div>}
+          {!state.messages.length && <div className="danetki-empty"><Sparkles /><p>Расследование начинается. Выберите стартовый вопрос или задайте свой.</p><div>{state.puzzle.starterQuestions.slice(0, 3).map((question) => <ControlButton type="button" key={question} onClick={() => setDraft(question)} disabled={!isMyTurn || !hostReady}>{question}</ControlButton>)}</div></div>}
           {state.messages.map((message) => {
             if (message.senderKind === 'system') return <div key={message.id} className={`danetki-system ${message.messageType === 'solution' ? 'is-solution' : ''}`}><span>{message.text}</span><time>{localTime(message.createdAt)}</time></div>
             const mine = message.senderUserId === state.currentUserId
@@ -301,9 +301,9 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
       </div> : <section ref={outcomeRef} className={`danetki-outcome danetki-outcome--${session.status}`} aria-labelledby="danetki-outcome-title" aria-live="polite">
         <span className="danetki-outcome__mark" aria-hidden="true"><CheckCircle2 /></span>
         <div className="danetki-outcome__copy">
-          <span>{session.status === 'won' ? 'Версия подтверждена' : 'Разгадка открыта'}</span>
+          <span>{session.status === 'won' ? 'Версия подтверждена' : session.completionType === 'answer_revealed' ? 'Вы сдались' : 'Разгадка открыта'}</span>
           <h2 id="danetki-outcome-title">Дело закрыто</h2>
-          <p>{session.status === 'won' ? 'Вы восстановили цепочку событий.' : 'Расследование завершено.'} Полная разгадка сохранена в протоколе выше.</p>
+          <p>{session.status === 'won' ? 'Вы восстановили цепочку событий.' : session.completionType === 'answer_revealed' ? 'Расследование завершено по вашему решению.' : 'Расследование завершено.'} Полная разгадка сохранена в протоколе выше.</p>
           <div className="danetki-outcome__meta">
             <span><HelpCircle aria-hidden="true" /> {state.questionCount} {questionWord}</span>
             <span><Lightbulb aria-hidden="true" /> {state.hintLevel > 0 ? `Подсказки: ${state.hintLevel}/3` : 'Без подсказок'}</span>
@@ -314,8 +314,8 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     </GameScreenShell>
 
     {dialog && <DialogSurface backdropClassName="danetki-dialog-backdrop" className="danetki-dialog" onClose={() => setDialog(null)} ariaLabelledBy="danetki-dialog-title">
-      {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><TextArea surface="paper" rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</ActionButton><ActionButton disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</ActionButton></div></>}
-      {dialog === 'hint' && <><h2 id="danetki-dialog-title">Открыть подсказку?</h2><p>Подсказку увидят все участники комнаты. Она снизит итоговый результат.</p><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</ActionButton><ActionButton disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</ActionButton></div></>}
+      {dialog === 'guess' && <><h2 id="danetki-dialog-title">Ваша разгадка</h2><p>{state.roomMode === 'group' ? 'Опишите всю причинно-следственную связь. Версию увидят все участники.' : 'Опишите всю причинно-следственную связь. Ведущая проверит версию.'}</p><TextArea surface="paper" rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</ActionButton><ActionButton disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</ActionButton></div></>}
+      {dialog === 'hint' && <><h2 id="danetki-dialog-title">Открыть подсказку?</h2><p>{state.roomMode === 'group' ? 'Подсказку увидят все участники комнаты. Она снизит итоговый результат.' : 'Подсказка появится в протоколе и снизит итоговый результат.'}</p><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</ActionButton><ActionButton disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</ActionButton></div></>}
       {dialog === 'surrender' && <><h2 id="danetki-dialog-title">Завершить расследование?</h2><p>{state.roomMode === 'group' ? 'Ваш голос будет учтён. Для сдачи нужны голоса всех активных участников.' : 'После сдачи откроется полная авторская разгадка.'}</p><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Продолжить игру</ActionButton><ActionButton variant="danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</ActionButton></div></>}
       {dialog === 'invite' && <><h2 id="danetki-dialog-title">Пригласить в расследование</h2><p>Ссылка действует 24 часа.</p><TextInput surface="paper" aria-label="Ссылка-приглашение" readOnly value={inviteLink} /><div><ActionButton variant="secondary" onClick={() => setDialog(null)}>Готово</ActionButton><ActionButton onClick={async () => { await navigator.clipboard.writeText(inviteLink); setCopied(true) }}><Copy /> {copied ? 'Скопировано' : 'Копировать'}</ActionButton></div></>}
     </DialogSurface>}

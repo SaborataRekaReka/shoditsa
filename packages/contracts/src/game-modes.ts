@@ -1,9 +1,8 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
 export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections'] as const
-// Danetki content can already be prepared in the admin panel, but its chat
-// runtime is not wired into the player application yet. Keep it out of public
-// game routes until that engine is available end to end.
-export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'connections'] as const
+// Every listed runtime is available in the player application. Full-house
+// participation remains a separate capability below.
+export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'connections', 'danetki'] as const
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
 export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]

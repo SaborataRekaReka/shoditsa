@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
   ChevronDown,
@@ -13,6 +13,7 @@ import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { publicAssetUrl } from '../../app/public-asset'
 import { formatDays } from '../../game'
 import { ControlButton } from '../../components/ui'
+import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
 import './GameResult.css'
 
@@ -62,6 +63,7 @@ type Props = {
 }
 
 export function GameResult(props: Props) {
+  const [rewardOpen, setRewardOpen] = useState(false)
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
   const nextLabelSeparator = props.nextLabel.indexOf(':')
   const hasNextDestination = nextLabelSeparator >= 0
@@ -102,6 +104,7 @@ export function GameResult(props: Props) {
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
       <strong>{resultLine}</strong>
+      {props.mode === 'diagnosis' && <p className="result-disclaimer">Это игровая загадка, а не медицинская рекомендация. Не используйте её для самодиагностики.</p>}
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
         <span>{props.nextRewardText}</span>
@@ -125,9 +128,9 @@ export function GameResult(props: Props) {
       onCopy={props.onCopy}
       showTip={props.won}
     />
-    {props.award && <details className="reward-breakdown result-card__wide">
-      <summary><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} билетов`}</span><ChevronDown /></summary>
-      {!props.award.alreadyClaimed && <ul>
+    {props.award && <details className="reward-breakdown result-card__wide" open={rewardOpen} onToggle={(event) => setRewardOpen(event.currentTarget.open)}>
+      <summary role="button" aria-expanded={rewardOpen} aria-controls="result-reward-details"><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} ${countWord(props.award.total, ['билет', 'билета', 'билетов'])}`}</span><ChevronDown /></summary>
+      {!props.award.alreadyClaimed && <ul id="result-reward-details">
         {!!props.award.completed && <li><span>За завершение</span><strong>+{props.award.completed}</strong></li>}
         {!!props.award.win && <li><span>За победу</span><strong>+{props.award.win}</strong></li>}
         {!!props.award.speed && <li><span>За эффективность</span><strong>+{props.award.speed}</strong></li>}
@@ -141,7 +144,7 @@ export function GameResult(props: Props) {
     {(props.streak !== undefined || props.telegramUrl || props.onReport || props.onHome) && <div className="result-utility result-card__wide">
       {props.streak !== undefined && <span className="result-streak">Серия: {formatDays(props.streak)}</span>}
       {props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Telegram</a>}
-      {props.onReport && <ContentReport onSubmit={props.onReport} />}
+      {props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}
       {props.onHome && <ControlButton className="result-home" onClick={props.onHome}>На главную</ControlButton>}
     </div>}
   </section>

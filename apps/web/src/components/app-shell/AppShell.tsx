@@ -25,6 +25,8 @@ export type ProfileMenuTab = 'overview' | 'stats' | 'achievements' | 'settings'
 
 const brandSymbolUrl = publicAssetUrl('images/symbol.svg')
 const brandLogoUrl = publicAssetUrl('images/logo.svg')
+let lastKnownHeaderWallet: ReturnType<typeof loadWallet> | null = null
+let lastKnownHeaderAttendance: ReturnType<typeof loadAttendanceStats> | null = null
 
 export function BrandLogo({ className = '' }: { className?: string }) {
   return <picture className={className}>
@@ -102,8 +104,12 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
     hasDashboard: Boolean(serverRuntime.dashboard),
   })
   const runtimeReady = runtimeState === 'ready'
-  const wallet = runtimeReady ? (SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()) : null
-  const attendance = runtimeReady ? (SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()) : null
+  const readyWallet = runtimeReady ? (SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet()) : null
+  const readyAttendance = runtimeReady ? (SERVER_RUNTIME ? toLegacyAttendance(serverRuntime.dashboard?.attendance) : loadAttendanceStats()) : null
+  if (readyWallet) lastKnownHeaderWallet = readyWallet
+  if (readyAttendance) lastKnownHeaderAttendance = readyAttendance
+  const wallet = readyWallet ?? lastKnownHeaderWallet
+  const attendance = readyAttendance ?? lastKnownHeaderAttendance
   const profileLabel = !runtimeReady
     ? runtimeState === 'loading' ? 'Загрузка…' : 'Недоступно'
     : session && !session.isAnonymous

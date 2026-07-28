@@ -119,7 +119,7 @@ export function SpecialsScreen({
                 {pack.access === 'locked'
                   ? <><LockKeyhole aria-hidden="true" /> Только в Клубе</>
                   : pack.access === 'admin'
-                    ? 'QA-доступ'
+                    ? 'Доступно'
                     : pack.access === 'personal'
                       ? 'Персональный доступ'
                       : 'Доступно в Клубе'}
@@ -262,7 +262,7 @@ export function SpecialDetailScreen({
             stubEnd={isKpopPack ? `${pack.totalItems} АРТИСТОВ` : `${pack.totalItems} ИГР`}
             className={`special-title-ticket ${isKpopPack ? 'special-title-ticket--kpop' : ''}`}
           >
-              <TicketKicker title={isKpopPack ? 'K-pop artist dossier' : 'Игра «Игры»'} detail={pack.access === 'locked' ? 'только в Клубе' : pack.access === 'admin' ? 'QA-доступ' : pack.access === 'personal' ? 'персональный доступ' : 'доступно в Клубе'} />
+              <TicketKicker title={isKpopPack ? 'Досье K-pop артиста' : 'Игра «Игры»'} detail={pack.access === 'locked' ? 'только в Клубе' : pack.access === 'admin' ? 'доступно' : pack.access === 'personal' ? 'персональный доступ' : 'доступно в Клубе'} />
               <h2 id={isKpopPack ? 'ticket-kpop-artists' : 'ticket-dtf-comments'}>
                 {isKpopPack ? 'Угадайте K-pop артиста' : 'Угадайте игру по комментариям'}
               </h2>

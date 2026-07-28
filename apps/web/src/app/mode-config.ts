@@ -67,7 +67,7 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     lower: 'города',
     searchPlaceholder: 'Найти город…',
     dataFile: 'cities',
-    emptyArticle: 'любой',
+    emptyArticle: 'любого',
   },
   music: {
     title: 'Музыка',

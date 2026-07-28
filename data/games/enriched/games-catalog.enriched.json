@@ -189184,7 +189184,7 @@
         ],
         "authorArchetype": null,
         "authorId": "329166",
-        "authorName": "Неподходящая длина или формат",
+        "authorName": "Пользователь DTF #329166",
         "authorAvatarUrl": "https://leonardo.osnova.io/453ef5ad-5b22-5fad-9903-512e1d4a84a7/-/scale_crop/96x96/",
         "authorProfileUrl": "https://dtf.ru/id329166",
         "authorIsVerified": false,
@@ -260219,15 +260219,17 @@
     "year": 1987,
     "releaseDate": "1987-07-26",
     "developers": [
-      "Taito Corporation"
+      "Taito"
     ],
     "publishers": [
-      "Taito Corporation"
+      "Taito"
     ],
     "platforms": [
-      "Nintendo Entertainment System (NES)"
+      "Arcade",
+      "Nintendo Entertainment System"
     ],
     "genres": [
+      "Action",
       "Platform"
     ],
     "steamCategories": [
@@ -260272,7 +260274,9 @@
     "notes": [
       "seed_backfill",
       "thegamesdb_enriched",
-      "fallback_filled"
+      "fallback_filled",
+      "game_manual_identity_override",
+      "The title-level card represents Taito's 1987 arcade game and its home release family."
     ],
     "dataQuality": {
       "source": [
@@ -260281,7 +260285,8 @@
         "thegamesdb_images",
         "wikipedia_fallback",
         "legacy_ptg",
-        "wikidata_development_country"
+        "wikidata_development_country",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": [],
@@ -260323,7 +260328,8 @@
       "thegamesdb_bygamename",
       "thegamesdb_images",
       "wikipedia_fallback",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -260389,7 +260395,8 @@
     "contentStatus": "ready",
     "countries": [
       "Япония"
-    ]
+    ],
+    "releaseScope": "title"
   },
   {
     "id": "tgdb_113943",
@@ -342271,6 +342278,7 @@
       "Nintendo"
     ],
     "platforms": [
+      "Nintendo Switch",
       "Nintendo Wii U"
     ],
     "genres": [
@@ -342328,7 +342336,9 @@
     "plotHint": "Фэнтезийное приключение в открытом мире разрушенного королевства, построенное на лазании, планировании и импровизированных исследованиях.",
     "notes": [
       "seed_incremental",
-      "thegamesdb_enriched"
+      "thegamesdb_enriched",
+      "game_manual_identity_override",
+      "Nintendo documents the same 2017 title for both Switch and Wii U."
     ],
     "dataQuality": {
       "source": [
@@ -342336,7 +342346,8 @@
         "thegamesdb_bygamename",
         "thegamesdb_images",
         "legacy_ptg",
-        "wikidata_development_country"
+        "wikidata_development_country",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": [],
@@ -342377,7 +342388,8 @@
       "play_that_game_seed_list",
       "thegamesdb_bygamename",
       "thegamesdb_images",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -342448,7 +342460,8 @@
       "Япония"
     ],
     "wikidataId": "Q17185964",
-    "wikidataUrl": "https://www.wikidata.org/wiki/Q17185964"
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q17185964",
+    "releaseScope": "title"
   },
   {
     "id": "tgdb_3854",
@@ -386468,25 +386481,30 @@
     "year": 2011,
     "releaseDate": "2011-08-16",
     "developers": [
-      "Mojang"
+      "Mojang Studios"
     ],
     "publishers": [
-      "4JStudios",
       "Xbox Game Studios"
     ],
     "platforms": [
-      "Android"
+      "PC",
+      "PlayStation 4",
+      "PlayStation 5",
+      "Xbox One",
+      "Xbox Series X|S",
+      "Nintendo Switch",
+      "Android",
+      "iOS"
     ],
     "genres": [
-      "Action",
-      "Adventure",
-      "Construction and Management Simulation",
-      "Fighting",
-      "Sandbox"
+      "Sandbox",
+      "Survival",
+      "Adventure"
     ],
     "steamCategories": [
-      "5 игроков",
-      "Мультиплеер"
+      "Одиночная игра",
+      "Мультиплеер",
+      "Кооператив"
     ],
     "steamTags": [],
     "supportedLanguages": [],
@@ -386529,7 +386547,9 @@
     "plotHint": "Песочница в блочном стиле, посвященная добыче ресурсов, крафту, выживанию и строительству с нуля.",
     "notes": [
       "seed_incremental",
-      "thegamesdb_enriched"
+      "thegamesdb_enriched",
+      "game_manual_identity_override",
+      "Canonical title-level Minecraft card must represent the cross-platform game family, not one Android port."
     ],
     "dataQuality": {
       "source": [
@@ -386537,7 +386557,8 @@
         "thegamesdb_bygamename",
         "thegamesdb_images",
         "legacy_ptg",
-        "wikidata_development_country"
+        "wikidata_development_country",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": [],
@@ -386578,7 +386599,8 @@
       "play_that_game_seed_list",
       "thegamesdb_bygamename",
       "thegamesdb_images",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -386650,7 +386672,8 @@
       "Швеция"
     ],
     "wikidataId": "Q49740",
-    "wikidataUrl": "https://www.wikidata.org/wiki/Q49740"
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q49740",
+    "releaseScope": "title"
   },
   {
     "id": "tgdb_6890",
@@ -386849,16 +386872,20 @@
     "year": 1987,
     "releaseDate": "1987-07-15",
     "developers": [
-      "Binary Design, Ltd."
+      "Technōs Japan"
     ],
     "publishers": [
-      "Melbourne House"
+      "Technōs Japan",
+      "Taito"
     ],
     "platforms": [
+      "Arcade",
+      "Nintendo Entertainment System",
       "Commodore 64"
     ],
     "genres": [
-      "Fighting"
+      "Action",
+      "Beat 'em up"
     ],
     "steamCategories": [
       "2 игроков",
@@ -386904,7 +386931,9 @@
     "plotHint": "Кооперативный сайд-скроллер, в котором два брата-бойца пробиваются через уличную банду, собирая оружие, чтобы спасти похищенную возлюбленную.",
     "notes": [
       "seed_incremental",
-      "thegamesdb_enriched"
+      "thegamesdb_enriched",
+      "game_manual_identity_override",
+      "The generic title must describe the original 1987 Technōs arcade identity, not only one later port."
     ],
     "dataQuality": {
       "source": [
@@ -386912,7 +386941,8 @@
         "thegamesdb_bygamename",
         "thegamesdb_images",
         "legacy_ptg",
-        "wikidata_development_country"
+        "wikidata_development_country",
+        "game_manual_overrides"
       ],
       "verified": true,
       "missingFields": [],
@@ -386953,7 +386983,8 @@
       "play_that_game_seed_list",
       "thegamesdb_bygamename",
       "thegamesdb_images",
-      "legacy_ptg"
+      "legacy_ptg",
+      "game_manual_overrides"
     ],
     "poolIds": [
       "daily-general",
@@ -387021,7 +387052,8 @@
       "Япония"
     ],
     "wikidataId": "Q698705",
-    "wikidataUrl": "https://www.wikidata.org/wiki/Q698705"
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q698705",
+    "releaseScope": "title"
   },
   {
     "id": "tgdb_6917",

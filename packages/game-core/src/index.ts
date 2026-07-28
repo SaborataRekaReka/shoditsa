@@ -66,7 +66,7 @@ export const MUSIC_ID_REDIRECTS: Record<string, string> = {
 
 export const MUSIC_TYPE_LABELS: Record<string, string> = {
   Person: 'Сольный исполнитель',
-  Group: 'Группа или дуэт',
+  Group: 'Группа',
   Project: 'Музыкальный проект',
   Unknown: 'Тип уточняется',
 }
@@ -768,7 +768,16 @@ const overlaps = (guess: string[], answer: string[]) => {
 export const canonicalMusicGenreLabel = (value: string) => {
   const key = normalize(value)
   const labels: Record<string, string> = {
-    'hip hop': 'hip-hop',
+    'pop': 'поп',
+    'dance pop': 'дэнс-поп',
+    'edm': 'электронная танцевальная музыка',
+    'electronic': 'электронная музыка',
+    'hip hop': 'хип-хоп',
+    'rap': 'рэп',
+    'trap': 'трэп',
+    'rock': 'рок',
+    'indie pop': 'инди-поп',
+    'k pop': 'K-pop',
     'r b': 'R&B',
     'r and b': 'R&B',
     'rhythm and blues': 'R&B',
@@ -1544,7 +1553,13 @@ export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hin
   const dailyLabel = `${modeDefinition.dailyLabel} дня`
   const icon = modeDefinition.shareIcon
   const result = completionType === 'final_choice_win' ? 'Ф' : won ? hints.length : 'X'
-  return `Сеанс — ${dailyLabel}\n${date} · ${PERIODS[period].label}\n${icon} ${result}/${maxAttempts}\n${rows}`
+  const [year, month, day] = date.split('-').map(Number)
+  const monthLabel = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'][month - 1]
+  const dateLabel = year && monthLabel && day ? `${day} ${monthLabel} ${year}` : date
+  const selectionLabel = modeDefinition.periodPolicy === 'year'
+    ? `${dateLabel} · ${PERIODS[period].label}`
+    : dateLabel
+  return `Сеанс — ${dailyLabel}\n${selectionLabel}\n${icon} ${result}/${maxAttempts}\n${rows}`
 }
 
 export * from './final-choice.js'

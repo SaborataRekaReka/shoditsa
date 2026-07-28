@@ -193,7 +193,7 @@
 
 .city-rank-meter:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-.city-rank-meter__label { overflow: hidden; color: var(--color-muted); font-size: 9px; font-weight: 800; letter-spacing: .045em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.city-rank-meter__label { min-height: 2.4em; color: var(--color-muted); font-size: 9px; font-weight: 800; line-height: 1.2; letter-spacing: .035em; overflow-wrap: anywhere; text-transform: uppercase; white-space: normal; }
 
 .city-rank-meter > strong { font-size: 11px; }
 
@@ -1063,7 +1063,14 @@
 }
 
 @media (max-width: 719px) {
-  .game-screen-shell.game-shell.game-screen-shell--session { width: 100%; padding: 20px 14px 64px; }
+  .game-shell,
+  .game-screen-shell.game-shell.game-screen-shell--session { width: 100%; padding: 20px 14px 108px; }
+}
+@media (max-width: 359px) {
+  .game-shell,
+  .game-screen-shell.game-shell.game-screen-shell--session { padding-inline: 10px; }
+  .game-heading h1 { font-size: 32px; overflow-wrap: anywhere; }
+  .mini-ticket { width: 68px; height: 68px; padding: 8px; }
 }
 
 /* Feature-owned rules migrated from the legacy screen sheet. */
@@ -1210,26 +1217,10 @@
 .dtf-comment-intro small { color: var(--color-muted); font-size: 11px; line-height: 1.45; }
 .dtf-comment-feed {
   margin: 0 0 12px;
-  padding-right: 4px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--color-primary) 42%, transparent) transparent;
   display: grid;
   grid-auto-rows: max-content;
   gap: 9px;
   align-content: start;
-}
-.dtf-comment-feed:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-primary) 65%, transparent);
-  outline-offset: 3px;
-}
-.dtf-comment-feed::-webkit-scrollbar { width: 6px; }
-.dtf-comment-feed::-webkit-scrollbar-track { background: transparent; }
-.dtf-comment-feed::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-primary) 42%, transparent);
 }
 .dtf-comment-card {
   position: relative;
