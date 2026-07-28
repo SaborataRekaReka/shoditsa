@@ -95,6 +95,20 @@ if command -v nginx >/dev/null 2>&1; then
     sed -Ei "s#root[[:space:]]+${LEGACY_ROOT_ESC}/?;#root ${CURRENT_ROOT};#" "$NGINX_CONFIG"
     HOST_NGINX_CHANGED=1
   fi
+  if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' "$NGINX_CONFIG"; then
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$NGINX_CONFIG"; then
+      echo "Host Nginx is missing the canonical game SEO route allowlist" >&2
+      cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+      exit 1
+    fi
+    sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/connections|danetki/' "$NGINX_CONFIG"
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' "$NGINX_CONFIG"; then
+      cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+      echo "Could not add Connections to the host Nginx route" >&2
+      exit 1
+    fi
+    HOST_NGINX_CHANGED=1
+  fi
   if ! grep -Eq 'client_max_body_size[[:space:]]+25m;' "$NGINX_CONFIG"; then
     if grep -Eq 'client_max_body_size[[:space:]]+[0-9]+[kKmM]?;' "$NGINX_CONFIG"; then
       sed -Ei 's/client_max_body_size[[:space:]]+[0-9]+[kKmM]?;/client_max_body_size 25m;/g' "$NGINX_CONFIG"
@@ -131,23 +145,66 @@ elif command -v docker >/dev/null 2>&1; then
     echo "Docker Nginx is missing a supported single-file Compose configuration" >&2
     exit 1
   fi
+  NGINX_ROUTE_CONFIG=""
+  NGINX_ROUTE_BACKUP=""
+  NGINX_ROUTE_CHANGED=0
+  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null; then
+    mapfile -t NGINX_ROUTE_CONFIGS < <(
+      while IFS= read -r source; do
+        if [ -f "$source" ]; then
+          grep -IlE 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$source" 2>/dev/null || true
+        elif [ -d "$source" ]; then
+          grep -RIlE --exclude='*.pre-*' 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$source" 2>/dev/null || true
+        fi
+      done < <(docker inspect --format '{{range .Mounts}}{{println .Source}}{{end}}' "$NGINX_CONTAINER")
+    )
+    if [ "${#NGINX_ROUTE_CONFIGS[@]}" -ne 1 ]; then
+      echo "Expected exactly one mounted Docker Nginx game route config, found ${#NGINX_ROUTE_CONFIGS[@]}" >&2
+      exit 1
+    fi
+    NGINX_ROUTE_CONFIG="${NGINX_ROUTE_CONFIGS[0]}"
+    NGINX_ROUTE_BACKUP="${NGINX_ROUTE_CONFIG}.pre-connections-route"
+    cp -a "$NGINX_ROUTE_CONFIG" "$NGINX_ROUTE_BACKUP"
+    sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/connections|danetki/' "$NGINX_ROUTE_CONFIG"
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
+      cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
+      echo "Could not add Connections to the mounted Docker Nginx route" >&2
+      exit 1
+    fi
+    NGINX_ROUTE_CHANGED=1
+  fi
   compose() {
     docker compose --project-directory "$COMPOSE_DIR" --project-name "$COMPOSE_PROJECT" -f "$COMPOSE_FILES" "$@"
+  }
+  rollback_nginx_route() {
+    if [ "$NGINX_ROUTE_CHANGED" -eq 1 ] && [ -f "$NGINX_ROUTE_BACKUP" ]; then
+      cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
+      compose up -d --no-deps --force-recreate "$COMPOSE_SERVICE" || true
+    fi
   }
   compose config --quiet
   # Docker resolves the target of a symlinked bind mount when the container
   # starts, so a release symlink switch is not visible until Nginx restarts.
   if ! compose up -d --no-deps --force-recreate "$COMPOSE_SERVICE"; then
+    rollback_nginx_route
     exit 1
   fi
   NGINX_CONTAINER="$(compose ps -q "$COMPOSE_SERVICE")"
   if [ -z "$NGINX_CONTAINER" ] || ! docker exec "$NGINX_CONTAINER" nginx -t; then
+    rollback_nginx_route
     exit 1
   fi
   if ! docker exec "$NGINX_CONTAINER" grep -Fq "\"commitSha\": \"${BUILD_SHA}\"" /var/www/shoditsa/build-manifest.json; then
     echo "Docker Nginx does not see build ${BUILD_SHA} from release ${GITHUB_SHA}" >&2
+    rollback_nginx_route
     exit 1
   fi
+  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null; then
+    echo "Docker Nginx did not activate the Connections SEO route" >&2
+    rollback_nginx_route
+    exit 1
+  fi
+  [ "$NGINX_ROUTE_CHANGED" -eq 0 ] || rm -f "$NGINX_ROUTE_BACKUP"
 else
   echo "Neither host Nginx nor Docker is available to activate the web release" >&2
   exit 1

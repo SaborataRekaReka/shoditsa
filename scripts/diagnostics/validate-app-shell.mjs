@@ -247,7 +247,7 @@ const sourceChecks = [
     path: 'infra/nginx/shoditsa.conf.template',
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
-      ['danetki refresh route', /location\s+~\s+\^\/games\/\([^)]*danetki[^)]*\)\$/],
+      ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*connections[^)]*danetki[^)]*\)\$/],
       ['friends room SPA refresh route', /location\s+=\s+\/games\/together\s*\{[^}]*try_files\s+\/index\.html\s+=404/s],
       ['private route noindex header', /X-Robots-Tag\s+"noindex, follow, noarchive"/],
       ['invalid game route 404', /location\s+\/games\/\s*\{[^}]*return\s+404/s],
