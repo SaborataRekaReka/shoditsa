@@ -71,6 +71,14 @@
 }
 .result-challenge strong { font-size: 11px; line-height: 1.15; }
 .result-after-actions .result-copy { color: var(--color-paper-muted-2); }
+.result-after-actions__meta {
+  min-width: 0;
+  color: var(--color-paper-muted);
+  font: 500 11px/1.25 Oswald, sans-serif;
+  letter-spacing: .07em;
+  text-align: center;
+  text-transform: uppercase;
+}
 
 .result-after-actions .result-tip {
   height: 48px;
@@ -181,6 +189,26 @@
 }
 .result-next__arrow svg { width: 15px; height: 15px; }
 .result-primary-actions .result-next:hover .result-next__arrow { transform: translateX(3px); }
+.result-next__serial {
+  position: absolute;
+  left: 14px;
+  bottom: 11px;
+  z-index: 2;
+  color: color-mix(in srgb, var(--color-paper) 82%, transparent);
+  font: 500 12px/1 Oswald, sans-serif;
+  letter-spacing: .08em;
+}
+.result-primary-actions.is-compact {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.result-primary-actions.is-compact .result-next {
+  min-height: 100%;
+  border-radius: var(--radius-md);
+  align-items: flex-start;
+}
+.result-primary-actions.is-compact .result-next__copy { padding-bottom: 25px; }
 .result-primary-actions .result-config {
   min-height: 50px;
   padding: 7px 10px 7px 8px;
@@ -280,4 +308,5 @@
   .result-after-actions .result-challenge { grid-column: 3; min-width: 0; }
   .result-after-actions .result-copy { grid-column: 5; }
   .result-after-actions .result-tip { grid-column: 7; min-width: 0; }
+  .result-after-actions__meta { grid-column: 7; text-align: right; }
 }

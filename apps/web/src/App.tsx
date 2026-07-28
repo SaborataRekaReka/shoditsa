@@ -3361,7 +3361,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   }
   if (session.engine === 'connections_grid' && session.connections) {
     const ConnectionsRenderer = SESSION_RENDERER_BY_ENGINE.connections_grid
-    return <ConnectionsRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
+    return <ConnectionsRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} onPlayNext={onPlayNext} />
   }
 
   const isPromptSession = Boolean(session.promoPrompt)
