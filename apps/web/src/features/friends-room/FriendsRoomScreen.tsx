@@ -122,7 +122,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key !== 'Escape' || event.defaultPrevented) return
-      if (document.querySelector('[role="dialog"], .modal-backdrop, .room-danetki-dialog-backdrop')) return
+      if (document.querySelector('.ui-dialog-backdrop, .modal-backdrop, .room-danetki-dialog-backdrop')) return
       event.preventDefault()
       onExit()
     }
