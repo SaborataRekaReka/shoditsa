@@ -278,6 +278,7 @@ const sourceChecks = [
       ['worker recreated with API', /--force-recreate "\$API_COMPOSE_SERVICE" "\$API_WORKER_SERVICE"/],
       ['Docker proxy refreshed after API recreation', /refresh_docker_nginx\(\)[^]*docker restart[^]*if ! refresh_docker_nginx/],
       ['worker SHA verification', /API_WORKER_IMAGE[^]*shoditsa-api:\$\{GITHUB_SHA\}/],
+      ['Connections production rollout', /set_env_value CONNECTIONS_ENABLED true/],
       ['K-pop special release import', /content-import-kpop-special\.js --apply --activate --actor-id="\$ADMIN_USER_ID"/],
       ['superseded releases cannot activate', /Confirm release is still main tip[^]*git ls-remote origin refs\/heads\/main[^]*if:\s*steps\.main_tip\.outputs\.deploy == 'true'/],
     ],
@@ -293,6 +294,7 @@ const sourceChecks = [
     path: 'scripts/diagnostics/smoke-production-main.mjs',
     required: [
       ['manifest-driven production API modes', /for \(const mode of manifest\.playableModes\)/],
+      ['Connections home-page rollout', /features\?\.connectionsEnabled !== true/],
       ['legacy answer data blocked', /Legacy answer dataset is publicly reachable/],
       ['legacy city answer data blocked', /Legacy city answer dataset is publicly reachable/],
     ],

@@ -48,10 +48,12 @@ export function ConnectionsTitleScreen({
       <section className="connections-title__ticket" aria-labelledby="connections-title-heading">
         <div className="connections-title__art">
           <img
-            src={publicAssetUrl('images/connections/connections-title-hero.webp')}
-            alt="Шестнадцать бумажных карточек на зелёном игровом столе"
-            width="1440"
-            height="960"
+            src={publicAssetUrl('images/connections/connections-title-hero-v2.webp')}
+            alt="Коллаж из шестнадцати карточек, объединённых линиями и цветными метками"
+            width="1536"
+            height="1024"
+            fetchPriority="high"
+            decoding="async"
           />
           <span className="connections-title__stamp">ЕЖЕДНЕВНАЯ ИГРА</span>
         </div>

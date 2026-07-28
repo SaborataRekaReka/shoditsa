@@ -48,6 +48,7 @@ if (!String(profileResponse.headers.get('x-robots-tag')).includes('noindex')) th
 const meta = JSON.parse(await fetchText(`/api/v1/meta?smoke=${Date.now()}`))
 if (meta.buildSha !== expectedSha) throw new Error(`Production API SHA ${meta.buildSha ?? 'missing'} does not match expected main SHA ${expectedSha}`)
 if (meta.auth?.yandex !== true) throw new Error('Production API does not advertise Yandex OAuth')
+if (meta.features?.connectionsEnabled !== true) throw new Error('Production API does not expose Connections on the home page')
 const modes = new Map((meta.modes ?? []).map((entry) => [entry.mode, entry.count]))
 if (!Array.isArray(manifest.playableModes) || !manifest.playableModes.length) throw new Error('Build manifest does not expose canonical playable modes')
 for (const mode of manifest.playableModes) {

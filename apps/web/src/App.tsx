@@ -1264,7 +1264,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
             description="Соберите 16 слов в четыре связанные группы"
             color="var(--mode-connections-brand)"
             icon={Grid2X2}
-            watermarkUrl={publicAssetUrl('images/connections/connections-title-hero.webp')}
+            watermarkUrl={publicAssetUrl('images/connections/connections-card-v2.webp')}
             poolCount={connectionsPoolCount}
             poolLabel="РАУНДОВ"
             status={connectionsStatus}

@@ -237,6 +237,7 @@ jobs:
           }
           set_env_value ADMIN_EMAILS breneize@yandex.ru
           set_env_value ADMIN_USER_IDS "$ADMIN_USER_ID"
+          set_env_value CONNECTIONS_ENABLED true
           chmod 600 "$API_ENV_FILE"
 
           if ! api_compose --profile migrate run --rm shoditsa-migrate </dev/null; then

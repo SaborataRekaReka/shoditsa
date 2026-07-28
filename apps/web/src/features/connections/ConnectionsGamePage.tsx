@@ -458,7 +458,7 @@ function ConnectionsResult({
     <ResultActionBar
       nextLabel="Играть дальше"
       nextDestination="Другие игры дня"
-      nextArtworkUrl={publicAssetUrl('images/connections/connections-title-hero.webp')}
+      nextArtworkUrl={publicAssetUrl('images/connections/connections-title-hero-v2.webp')}
       nextTicketNumber={`№${dayNumber(session.puzzleDate)}`}
       configureLabel="Открыть архив"
       copied={copied}
