@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "packId": "dtf-game-comments-25-v1",
+  "editorialPolicy": {
+    "commentsPerGame": 6,
+    "unlockAfterAttempts": [0, 0, 1, 2, 3, 4],
+    "maxDisplayLength": 330,
+    "allowProfanity": true,
+    "allowSharpTone": true,
+    "rejectPlotSpoilers": true,
+    "rejectDirectAnswer": true,
+    "rejectEmbeddedUrls": true,
+    "rejectPersonalData": true,
+    "rejectTruncation": true
+  },
+  "supplementalPosts": {
+    "2227558": "https://dtf.ru/games/2227558-death-stranding-i-naskolko-ona-horosha",
+    "2303316": "https://dtf.ru/games/2303316-death-stranding-spustya-chetyre-goda-posle-reliza",
+    "2325532": "https://dtf.ru/games/2325532-bethesda-obnovila-skyrim-apdeit-dobavil-v-igru-pererabotannyi-magazin-i-slomal-mnogie-mody",
+    "2478384": "https://dtf.ru/games/2478384-kooperativnyi-shuter-helldivers-2-vyshel-na-pk-i-ps5",
+    "2480291": "https://dtf.ru/thegreatestdwwr/2480291-helldivers-ii-obrazcovyi-kooperativnyi-shuter",
+    "2551369": "https://dtf.ru/games/2551369-v-helldivers-2-zametili-letayushih-protivnikov-tvorcheskii-direktor-igry-nazval-podobnye-soobsheniya-propagandoi",
+    "2628277": "https://dtf.ru/flood/2628277-hochu-nachat-prohodit-skyrim-pervyi-raz-v-zhizni-tak-chto-proshu-vashei-pomoshi-v-ustanovke-horoshei-sborki-ili-modov-ne-klounskih-dlya-chilovogo-prohozhdeniya",
+    "2658316": "https://dtf.ru/games/2658316-bitva-za-helldivers-kratkoe-soderzhanie-mega-sracha-dlya-teh-kto-tolko-chto-prishel",
+    "3238951": "https://dtf.ru/games/3238951-death-stranding-vpechatlenie-cherez-8-chasov",
+    "3246058": "https://dtf.ru/id63086/3246058-razrabotchiki-stalker-2-poyasnili-chto-poshlo-ne-tak-s-a-life-20-k-oshibkam-privela-optimizaciya-igry",
+    "3734367": "https://dtf.ru/games/3734367-istoriya-iz-morrowind-oblivion-i-skyrim",
+    "3985516": "https://dtf.ru/games/3985516-obzor-tes-v-skyrim-true-anniversary-edition"
+  },
+  "games": [
+    {
+      "gameId": "starfield",
+      "comments": [
+        "29575384",
+        "29091641",
+        "28944248",
+        "29575376",
+        "33869308",
+        "33868947"
+      ]
+    },
+    {
+      "gameId": "cyberpunk-2077",
+      "comments": [
+        {
+          "sourceId": "54077369",
+          "redactions": [
+            ["уровню киберпанка 2077", "уровню этой игры"]
+          ]
+        },
+        "32736444",
+        "54077822",
+        {
+          "sourceId": "34184389",
+          "redactions": [
+            ["В киберпанке и основную игру", "И основную игру"]
+          ]
+        },
+        {
+          "sourceId": "37506770",
+          "redactions": [
+            ["Даже самый забагованный релизный Киберпанк", "Даже самый забагованный релиз"]
+          ]
+        },
+        "54077930"
+      ]
+    },
+    {
+      "gameId": "baldurs-gate-3",
+      "comments": [
+        "31852563",
+        "27409902",
+        {
+          "sourceId": "44334433",
+          "redactions": [
+            ["но БГ3 - это прям игра", "но это прям игра"],
+            ["что БГ3 не может", "что она не может"]
+          ]
+        },
+        "27410193",
+        {
+          "sourceId": "27410199",
+          "redactions": [
+            ["по BG3 пишешь", "об этой игре пишешь"]
+          ]
+        },
+        {
+          "sourceId": "33921327",
+          "redactions": [
+            ["БГ3 простая", "Она простая"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "death-stranding",
+      "comments": [
+        { "sourceId": "46174446", "postId": "3238951" },
+        { "sourceId": "32730318", "postId": "2303316" },
+        { "sourceId": "46172769", "postId": "3238951" },
+        { "sourceId": "31706954", "postId": "2227558" },
+        { "sourceId": "31704779", "postId": "2227558" },
+        { "sourceId": "46173002", "postId": "3238951" }
+      ]
+    },
+    {
+      "gameId": "the-day-before",
+      "comments": [
+        "33139923",
+        "35242851",
+        "33176637",
+        {
+          "sourceId": "35242867",
+          "redactions": [
+            [">The Day Before меняли", ">Игру меняли"]
+          ]
+        },
+        "33142810",
+        {
+          "sourceId": "33132080",
+          "redactions": [
+            ["Студия создавшая The Day Before закрылась", "Студия, создавшая эту игру, закрылась"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "atomic-heart",
+      "comments": [
+        "22858255",
+        "22857723",
+        "33626111",
+        "22733511",
+        "22767372",
+        {
+          "sourceId": "23042995",
+          "redactions": [
+            ["Разработчики Atomic Heart", "Разработчики"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "skyrim",
+      "comments": [
+        {
+          "sourceId": "55471088",
+          "postId": "3985516",
+          "redactions": [
+            ["четвёртый скайрим", "четвёртую копию игры"]
+          ]
+        },
+        { "sourceId": "37998227", "postId": "2628277" },
+        { "sourceId": "32911058", "postId": "2325532" },
+        { "sourceId": "51361549", "postId": "3734367" },
+        {
+          "sourceId": "32907824",
+          "postId": "2325532",
+          "redactions": [
+            ["после завершения Скайрима", "после завершения этой игры"],
+            ["в Скайриме", "в ней"]
+          ]
+        },
+        { "sourceId": "55475302", "postId": "3985516" }
+      ]
+    },
+    {
+      "gameId": "elden-ring",
+      "comments": [
+        "39472840",
+        "45632397",
+        "35974017",
+        "41241874",
+        "35946739",
+        {
+          "sourceId": "35947233",
+          "redactions": [
+            ["В первую очередь ЭР прекрасен великолепным эксплойрингом и боёвкой", "В первую очередь у игры великолепные эксплойринг и боёвка"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "concord",
+      "comments": [
+        "42417622",
+        "42258136",
+        "42579100",
+        "42257876",
+        "42262233",
+        {
+          "sourceId": "42417532",
+          "redactions": [
+            ["фанат Concord, что играет в него", "фанат этой игры, что играет в неё"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "the-last-of-us-part-ii",
+      "comments": [
+        "32156347",
+        "32156310",
+        "32156888",
+        "34570593",
+        "34569356",
+        "51036579"
+      ]
+    },
+    {
+      "gameId": "bloodborne",
+      "comments": [
+        "39789735",
+        "35012788",
+        "41540172",
+        "39791109",
+        {
+          "sourceId": "47979223",
+          "redactions": [
+            ["чтобы бладик запускался", "чтобы игра запускалась"]
+          ]
+        },
+        "39790666"
+      ]
+    },
+    {
+      "gameId": "no-mans-sky",
+      "comments": [
+        "35738709",
+        "24132943",
+        "40900567",
+        "33082732",
+        "35740683",
+        {
+          "sourceId": "33007064",
+          "redactions": [
+            ["довёл No Man's Sky до", "довёл игру до"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "hogwarts-legacy",
+      "comments": [
+        {
+          "sourceId": "32012785",
+          "redactions": [
+            ["запустить Hogwarts Legacy", "запустить игру"]
+          ]
+        },
+        {
+          "sourceId": "32014433",
+          "redactions": [
+            ["borderlands 3/hogwarts legacy он тооочно не потянет", "borderlands 3 — ну эту-то игру он тооочно не потянет"]
+          ]
+        },
+        "32016273",
+        "32014762",
+        "33796427",
+        {
+          "sourceId": "22494139",
+          "redactions": [
+            ["ваш хогвартс легаси", "вашу игру"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "grand-theft-auto-v",
+      "comments": [
+        "49486900",
+        "42157140",
+        "33634344",
+        "33632968",
+        {
+          "sourceId": "33686354",
+          "redactions": [
+            ["Майкл миниган в кармане держит Гта 5 явно", "Майкл миниган в кармане держит. Эта игра явно"]
+          ]
+        },
+        "42161969"
+      ]
+    },
+    {
+      "gameId": "helldivers-2",
+      "comments": [
+        { "sourceId": "35474450", "postId": "2478384" },
+        { "sourceId": "35543917", "postId": "2480291" },
+        { "sourceId": "36772856", "postId": "2551369" },
+        { "sourceId": "38480917", "postId": "2658316" },
+        { "sourceId": "36773090", "postId": "2551369" },
+        { "sourceId": "38481886", "postId": "2658316" }
+      ]
+    },
+    {
+      "gameId": "dragon-age-the-veilguard",
+      "comments": [
+        "42292210",
+        "39706203",
+        {
+          "sourceId": "39712797",
+          "redactions": [
+            ["превью Dragon Age: The Veilguard Хорошо", "превью игры. Хорошо"]
+          ]
+        },
+        "52866425",
+        "46256977",
+        {
+          "sourceId": "39713962",
+          "redactions": [
+            ["Драгон эйдж деградировала с каждой серией", "Серия деградировала с каждой новой частью"]
+          ]
+        }
+      ]
+    },
+    {
+      "gameId": "stalker-2",
+      "comments": [
+        "41172114",
+        { "sourceId": "46195416", "postId": "3246058" },
+        { "sourceId": "46194953", "postId": "3246058" },
+        {
+          "sourceId": "41836150",
+          "redactions": [
+            ["В S.T.A.L.K.E.R. 2", "В этой игре"]
+          ]
+        },
+        { "sourceId": "46195239", "postId": "3246058" },
+        { "sourceId": "46197747", "postId": "3246058" }
+      ]
+    },
+    {
+      "gameId": "assassins-creed-shadows",
+      "comments": [
+        "49933693",
+        "49933585",
+        "38820564",
+        "49968890",
+        "49968959",
+        "49933571"
+      ]
+    },
+    {
+      "gameId": "kingdom-come-deliverance-ii",
+      "comments": [
+        "48563793",
+        "48568944",
+        "48564987",
+        "48563988",
+        "48565905",
+        "37943719"
+      ]
+    },
+    {
+      "gameId": "clair-obscur-expedition-33",
+      "comments": [
+        "51209786",
+        "51209924",
+        "59761762",
+        "51209831",
+        "53222602",
+        {
+          "sourceId": "53222810",
+          "redactions": [
+            ["> Clair Obscur: Expedition 33 > Продажи", "> Продажи этой игры"]
+          ]
+        }
+      ]
+    }
+  ]
+}

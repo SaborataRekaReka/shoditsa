@@ -61,6 +61,7 @@ import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession,
 import type { ContentReportReason } from './features/content-report/ContentReport'
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
+import { ArcGameCarousel } from './features/home/ArcGameCarousel'
 import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
 import { GameArtifactSeoDetails, HomeSeoContent } from './components/seo-content/SeoContent'
@@ -138,6 +139,7 @@ import { PROFILE_TABS, ProfileScreen, type ProfileTab } from './features/profile
 import { TitlePoster as Poster } from './components/title-poster'
 import { defaultDiagnosisSystemIcon, diagnosisSystemIconByKey, normalizeDiagnosisSystemKey } from './features/game-session/diagnosis-presentation'
 import './features/home/HomeScreen.css'
+import './features/home/CodapressHomePreview.css'
 import './features/title/TitleScreen.css'
 import './features/review/ReviewScreen.css'
 import './features/game-session/GameSession.css'
@@ -1183,7 +1185,22 @@ function GameDataLoadError({ onRetry, onHome }: { onRetry: () => void; onHome: (
   </main>
 }
 
-function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, onConnections, danetkiEnabled, danetkiPoolCount, connectionsEnabled, connectionsPoolCount, connectionsStatus, connectionsMistakes, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, dtfPoolCount, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt }: {
+function CodapressPreviewHeader() {
+  return <header className="codapress-preview-header">
+    <a className="codapress-preview-header__brand" href="/?preview=codapress" aria-label="Сходится! — на главный экран">
+      <img src={publicAssetUrl('images/symbol.svg')} alt="" aria-hidden="true" />
+      <span>Сходится!</span>
+    </a>
+    <nav aria-label="Навигация превью">
+      <a href="#available-games">Игры</a>
+      <a href="/archive">Архив</a>
+      <a href="/specials">Спецпоказы</a>
+      <a href="/club">Клуб</a>
+    </nav>
+  </header>
+}
+
+function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelectFriends, onDanetki, onConnections, danetkiEnabled, danetkiPoolCount, connectionsEnabled, connectionsPoolCount, connectionsStatus, connectionsMistakes, onRewatch, onStats, onRules, onReview, onResume, onOpenSaved, canAccessDtfSpecial, canAccessKpopSpecial, dtfPoolCount, kpopPoolCount, canAccessFriendsRoom, activeSessionsCount, games, preferredMode, titleCounts, todayAttendance, globalDailySalt, arcPreview = false, codapressPreview = false }: {
   onSelect: (mode: TitleMode) => void
   onSelectDtfSpecial: () => void
   onSelectKpopSpecial: () => void
@@ -1213,16 +1230,42 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
   titleCounts: Record<TitleMode, number | null>
   todayAttendance: DailyAttendance
   globalDailySalt: number
+  arcPreview?: boolean
+  codapressPreview?: boolean
 }) {
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   const dailyState = useMemo(
     () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt),
     [games, globalDailySalt, preferredMode, todayAttendance],
   )
+  const mainRouteCards = CATEGORY_TICKET_CONFIG.map((config) => {
+    const configMode = config.mode
+    const activeGame = dailyState.activeGamesByMode[configMode] ?? null
+    const completedGame = dailyState.finishedGamesByMode[configMode] ?? null
+    const completed = todayAttendance.completedModes.includes(configMode) || Boolean(completedGame)
+    const status = activeGame ? 'active' : completed ? 'completed' : 'new'
+    const savedGame = activeGame ?? completedGame
+    const handleClick = () => {
+      const eventName = status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play'
+      trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGameAttemptCount(savedGame), date: todayAttendance.date })
+      if (savedGame) {
+        onOpenSaved(savedGame)
+        return
+      }
+      onSelect(configMode)
+    }
+    return {
+      id: config.mode,
+      content: <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />,
+    }
+  })
+  const useArcCarousel = arcPreview || codapressPreview
 
   return <>
-    <AppHeader onHome={() => undefined} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="hub-screen">
+    {codapressPreview
+      ? <CodapressPreviewHeader />
+      : <AppHeader onHome={() => undefined} onArchive={onRewatch} onStats={onStats} onRules={onRules} onReview={onReview} />}
+    <main className={`hub-screen ${arcPreview ? 'hub-screen--arc-preview' : ''} ${codapressPreview ? 'hub-screen--codapress-preview' : ''}`}>
       <section className="hub-hero-ticket">
         <div className="hub-hero">
           <div className="hub-hero__copy">
@@ -1231,8 +1274,16 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
               <span><CalendarDays /><strong>Новые загадки каждый день</strong></span>
               <span><Target /><strong>10 попыток</strong></span>
             </div>
-            <h1>Все сойдется!</h1>
-            <p>Кино, сериалы, аниме, игры, города, музыка, диагнозы, связи и данетки. Каждый день — новая загадка, которую можно раскрыть по подсказкам.</p>
+            {codapressPreview
+              ? <h1 className="codapress-preview__title" aria-label="Всё сойдётся сегодня">
+                <span>ВСЁ</span>
+                <span>СОЙДЁТСЯ</span>
+                <span>СЕГОДНЯ</span>
+              </h1>
+              : <h1>Все сойдется!</h1>}
+            <p>{codapressPreview
+              ? 'Девять игровых премьер. Семь ежедневных загадок. Один маршрут, который хочется закрыть до конца.'
+              : 'Кино, сериалы, аниме, игры, города, музыка, диагнозы, связи и данетки. Каждый день — новая загадка, которую можно раскрыть по подсказкам.'}</p>
             <div className="hub-hero__actions">
               <ActionButton onClick={() => {
                 trackMetrikaGoal('hub_scroll_to_games')
@@ -1253,32 +1304,22 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
             <img src={publicAssetUrl('images/hero.webp')} alt="" width="1122" height="913" fetchPriority="high" decoding="async" />
           </div>
         </div>
+        {codapressPreview && <>
+          <p className="codapress-preview__manifesto"><strong>Сходится!</strong> — ежедневная игровая афиша для тех, кто любит кино, игры, музыку и неожиданные связи. Мы превращаем каталоги и факты в короткие расследования: без спешки, без бесконечной ленты, по одной премьере каждого жанра в день.</p>
+          <div className="codapress-preview__ticker" aria-hidden="true"><span>КИНО · СЕРИАЛЫ · АНИМЕ · ИГРЫ · ГОРОДА · МУЗЫКА · ДИАГНОЗЫ ·</span><span>КИНО · СЕРИАЛЫ · АНИМЕ · ИГРЫ · ГОРОДА · МУЗЫКА · ДИАГНОЗЫ ·</span></div>
+        </>}
         <DailyProgressStub state={dailyState} />
         <HomeSeoContent />
       </section>
 
-      <section className="category-section" id="available-games">
-        <div className="category-heading"><span>ОСНОВНОЙ МАРШРУТ</span></div>
-        <div className="category-grid category-grid--active">
-          {CATEGORY_TICKET_CONFIG.map((config) => {
-            const configMode = config.mode
-            const activeGame = dailyState.activeGamesByMode[configMode] ?? null
-            const completedGame = dailyState.finishedGamesByMode[configMode] ?? null
-            const completed = todayAttendance.completedModes.includes(configMode) || Boolean(completedGame)
-            const status = activeGame ? 'active' : completed ? 'completed' : 'new'
-            const savedGame = activeGame ?? completedGame
-            const handleClick = () => {
-              const eventName = status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play'
-              trackMetrikaGoal(eventName, { mode: config.mode, status, attempts: savedGameAttemptCount(savedGame), date: todayAttendance.date })
-              if (savedGame) {
-                onOpenSaved(savedGame)
-                return
-              }
-              onSelect(configMode)
-            }
-            return <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />
-          })}
+      <section className={`category-section ${useArcCarousel ? 'category-section--arc' : ''}`} id="available-games">
+        <div className="category-heading">
+          <span>ОСНОВНОЙ МАРШРУТ</span>
+          {useArcCarousel && <small>ТЯНИТЕ ИЛИ ← →</small>}
         </div>
+        {useArcCarousel
+          ? <ArcGameCarousel items={mainRouteCards} />
+          : <div className="category-grid category-grid--active">{mainRouteCards.map(({ content }) => content)}</div>}
       </section>
 
       <section className="category-section category-section--other" aria-labelledby="other-games-heading">
@@ -4878,6 +4919,9 @@ function GameApp() {
     setDifficulty(nextDifficulty)
   }
   const appTone = transition === 'title-to-game' ? 'transition-game' : screen
+  const homePreview = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('preview') : null
+  const arcPreview = homePreview === 'arc'
+  const codapressPreview = homePreview === 'codapress'
   const titleActionPending = startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending
   const completeTitleTransition = () => {
     if (transition !== 'title-to-game') return
@@ -4887,9 +4931,9 @@ function GameApp() {
     window.scrollTo({ top: 0 })
   }
 
-  return <div className={`app app--${appTone}`}>
+  return <div className={`app app--${appTone} ${screen === 'hub' && codapressPreview ? 'app--codapress-preview' : ''}`}>
     {serverActionError && <InlineAlert tone="danger" className="server-error app-action-error" onDismiss={() => setServerActionError('')}>{serverActionError}</InlineAlert>}
-    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} onConnections={openConnections} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} connectionsEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.connectionsEnabled !== false : false} connectionsPoolCount={serverRuntime.meta?.modes.find((entry) => entry.mode === 'connections')?.count ?? null} connectionsStatus={connectionsStatus} connectionsMistakes={activeConnectionsSession?.mistakesUsed ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} dtfPoolCount={dtfPack?.totalItems ?? null} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} />}
+    {screen === 'hub' && <HubScreen onSelect={selectCategory} onSelectDtfSpecial={selectDtfSpecial} onSelectKpopSpecial={selectKpopSpecial} onSelectFriends={selectFriendsIntro} onDanetki={openDanetki} onConnections={openConnections} danetkiEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.danetkiEnabled !== false : false} danetkiPoolCount={serverRuntime.meta?.modes.find((entry) => String(entry.mode) === 'danetki')?.count ?? null} connectionsEnabled={SERVER_RUNTIME ? serverRuntime.meta?.features.connectionsEnabled !== false : false} connectionsPoolCount={serverRuntime.meta?.modes.find((entry) => entry.mode === 'connections')?.count ?? null} connectionsStatus={connectionsStatus} connectionsMistakes={activeConnectionsSession?.mistakesUsed ?? null} onRewatch={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onResume={resumeActiveSession} onOpenSaved={(savedGame) => openSavedSession(savedGame, 'hub')} canAccessDtfSpecial={canAccessDtfSpecial} canAccessKpopSpecial={canAccessKpopSpecial} dtfPoolCount={dtfPack?.totalItems ?? null} kpopPoolCount={kpopPack?.totalItems ?? null} canAccessFriendsRoom={canCreateFriendsRoomAccess} activeSessionsCount={activeGames.length} games={games} preferredMode={mode} titleCounts={titleCounts} todayAttendance={todayAttendance} globalDailySalt={globalDailySalt} arcPreview={arcPreview} codapressPreview={codapressPreview} />}
 
     {screen === 'friends-intro' && <FriendsRoomIntroScreen canCreate={canCreateFriendsRoomAccess} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={() => selectFriendsRoom()} onClub={() => moveToScreen('club')} />}
 
