@@ -31,6 +31,7 @@ export const registerConnectionsRoutes = (
     return submitConnectionsGuess(
       db,
       user!.id,
+      user!.role,
       (request.params as { sessionId: string }).sessionId,
       body.tileIds,
       requireIdempotencyKey(request),

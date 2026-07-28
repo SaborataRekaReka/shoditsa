@@ -32,6 +32,7 @@ import {
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { canStartArchiveSession } from '../archive/access.js'
+import { loadAssignedEconomyRules } from '../economy/rules.js'
 import { completeGame } from '../stats/rewards.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
@@ -171,7 +172,9 @@ export const startConnectionsSession = async (
   authSessionId: string | null,
   role: 'player' | 'admin',
   config: AppConfig,
-) => db.transaction(async (tx) => {
+) => {
+  const rules = await loadAssignedEconomyRules(db, userId, role, config.economy.v4RolloutPercent)
+  return db.transaction(async (tx) => {
   if (!config.connectionsEnabled && role !== 'admin') {
     throw new ApiError(404, 'CONNECTIONS_DISABLED', 'Режим пока недоступен')
   }
@@ -234,13 +237,20 @@ export const startConnectionsSession = async (
     puzzleDate,
     revisionId: schedule.revisionId,
     answerItemVersionId: schedule.itemVersionId,
-    rulesVersion: 1,
+    rulesVersion: rules.version,
   }).onConflictDoNothing().returning()
-  const session = inserted[0] ?? (await tx.select().from(gameSessions)
+  let session = inserted[0] ?? (await tx.select().from(gameSessions)
     .where(and(eq(gameSessions.userId, userId), eq(gameSessions.challengeId, challenge.id))).limit(1))[0]
+  if (session.status === 'playing' && session.rulesVersion !== rules.version) {
+    session = (await tx.update(gameSessions)
+      .set({ rulesVersion: rules.version, updatedAt: new Date() })
+      .where(eq(gameSessions.id, session.id))
+      .returning())[0] ?? session
+  }
   await tx.insert(connectionsSessionState).values({ sessionId: session.id }).onConflictDoNothing()
   return buildConnectionsSessionSnapshot(tx, session, config.connectionsHintsEnabled)
-})
+  })
+}
 
 export const getConnectionsSession = async (
   db: Database,
@@ -256,11 +266,14 @@ export const getConnectionsSession = async (
 export const submitConnectionsGuess = async (
   db: Database,
   userId: string,
+  role: 'player' | 'admin',
   sessionId: string,
   tileIds: [string, string, string, string],
   idempotencyKey: string,
   config: AppConfig,
-) => db.transaction(async (tx) => {
+) => {
+  const rules = await loadAssignedEconomyRules(db, userId, role, config.economy.v4RolloutPercent)
+  return db.transaction(async (tx) => {
   const replay = (await tx.select({ response: connectionsGuesses.responseSnapshot }).from(connectionsGuesses)
     .innerJoin(gameSessions, eq(gameSessions.id, connectionsGuesses.sessionId))
     .where(and(
@@ -269,12 +282,18 @@ export const submitConnectionsGuess = async (
       eq(gameSessions.userId, userId),
     )).limit(1))[0]
   if (replay) return replay.response
-  const session = assertConnectionsSession((await tx.select().from(gameSessions)
+  let session = assertConnectionsSession((await tx.select().from(gameSessions)
     .where(and(eq(gameSessions.id, sessionId), eq(gameSessions.userId, userId))).for('update').limit(1))[0])
   const state = (await tx.select().from(connectionsSessionState)
     .where(eq(connectionsSessionState.sessionId, sessionId)).for('update').limit(1))[0]
   if (!state) throw new ApiError(503, 'CONNECTIONS_STATE_MISSING', 'Состояние игры недоступно')
   if (session.status !== 'playing') throw new ApiError(409, 'CONNECTIONS_SESSION_FINISHED', 'Игра уже завершена')
+  if (session.rulesVersion !== rules.version) {
+    session = (await tx.update(gameSessions)
+      .set({ rulesVersion: rules.version, updatedAt: new Date() })
+      .where(eq(gameSessions.id, session.id))
+      .returning())[0] ?? session
+  }
   if (tileIds.length !== 4 || new Set(tileIds).size !== 4) {
     throw new ApiError(422, 'CONNECTIONS_SELECTION_SIZE_INVALID', 'Выберите четыре разные карточки')
   }
@@ -334,6 +353,7 @@ export const submitConnectionsGuess = async (
     completedAt: status === 'playing' ? null : new Date(),
     updatedAt: new Date(),
     rewardLedgerId: reward?.ledgerId ?? null,
+    rulesVersion: rules.version,
   }).where(eq(gameSessions.id, sessionId))
   const insertedGuess = (await tx.insert(connectionsGuesses).values({
     sessionId,
@@ -351,7 +371,8 @@ export const submitConnectionsGuess = async (
   const response = { result: evaluated.result, session: snapshot, ...(reward ? { reward } : {}) }
   await tx.update(connectionsGuesses).set({ responseSnapshot: response }).where(eq(connectionsGuesses.id, insertedGuess.id))
   return response
-})
+  })
+}
 
 export const chooseConnectionsHint = async (
   db: Database,
