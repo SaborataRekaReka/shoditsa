@@ -140,6 +140,31 @@ test('result actions and leaderboard retain their mobile composition', async ({ 
   })
 })
 
+test('standard game result keeps primary actions together and copy in the utility row', async ({ page }) => {
+  await page.setViewportSize({ width: 999, height: 792 })
+  const result = page.locator('#result-actions .result-card')
+  await result.scrollIntoViewIfNeeded()
+
+  const contract = await result.evaluate((element) => {
+    const top = (selector: string) => element.querySelector<HTMLElement>(selector)!.getBoundingClientRect().top
+    return {
+      actionTops: [
+        top('.result-replay'),
+        top('.result-challenge'),
+        top('.result-tip'),
+      ],
+      copyInActions: element.querySelectorAll('.result-after-actions .result-copy').length,
+      copyInUtility: element.querySelectorAll('.result-utility .result-copy-bottom').length,
+      overflow: element.scrollWidth - element.clientWidth,
+    }
+  })
+
+  expect(Math.max(...contract.actionTops) - Math.min(...contract.actionTops)).toBeLessThan(1)
+  expect(contract.copyInActions).toBe(0)
+  expect(contract.copyInUtility).toBe(1)
+  expect(contract.overflow).toBeLessThanOrEqual(0)
+})
+
 test('next game remains a compact card on tablet', async ({ page }) => {
   await page.setViewportSize({ width: 768, height: 1024 })
   const section = page.locator('#result-actions')

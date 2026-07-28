@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   FULL_HOUSE_MODE_IDS,
@@ -10,7 +10,7 @@ import {
 import {
   Check,
   ChevronDown,
-  ChevronRight,
+  Copy,
   Lightbulb,
   LoaderCircle,
   RotateCcw,
@@ -78,6 +78,13 @@ const shuffled = <T,>(values: readonly T[]) => {
     ;[result[index], result[target]] = [result[target], result[index]]
   }
   return result
+}
+
+const toggleDetailsOnKey = (event: ReactKeyboardEvent<HTMLElement>) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return
+  event.preventDefault()
+  const details = event.currentTarget.closest('details')
+  if (details) details.open = !details.open
 }
 
 export function ConnectionsGamePage({
@@ -459,7 +466,6 @@ export function ConnectionsGamePage({
             onCopy={() => void copyResult()}
             onChallenge={() => void shareChallenge()}
             onNext={() => nextMode ? onPlayNext(nextMode) : onHome()}
-            onHome={onHome}
             onArchive={onArchive}
             onReport={async (reason, comment) => {
               await api.contentReport({ sessionId, reason, comment: comment || undefined })
@@ -484,7 +490,7 @@ export function ConnectionsGamePage({
   </>
 }
 
-function ConnectionsResult({
+export function ConnectionsResult({
   session,
   copied,
   reward,
@@ -494,9 +500,9 @@ function ConnectionsResult({
   onCopy,
   onChallenge,
   onNext,
-  onHome,
   onArchive,
   onReport,
+  autoScroll = true,
 }: {
   session: ConnectionsSession
   copied: boolean
@@ -507,34 +513,47 @@ function ConnectionsResult({
   onCopy: () => void
   onChallenge: () => void
   onNext: () => void
-  onHome: () => void
   onArchive: () => void
   onReport: (reason: ContentReportReason, comment: string) => void | Promise<void>
+  autoScroll?: boolean
 }) {
   const state = session.connections
   const won = state.status === 'won'
   const resultRef = useRef<HTMLElement>(null)
+  const rewardId = useId()
   useEffect(() => {
+    if (!autoScroll) return
     const frame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
     return () => window.cancelAnimationFrame(frame)
-  }, [])
+  }, [autoScroll])
   const nextDestination = nextMode ? MODE_CONFIG[nextMode].title : 'Другие игры дня'
   const nextArtworkUrl = nextMode
     ? MODE_PRESENTATION[nextMode].watermarkUrl
     : MODE_PRESENTATION.diagnosis.watermarkUrl
-  const solvedLabel = `${state.solvedGroups.length} ${state.solvedGroups.length === 1 ? 'связь найдена' : state.solvedGroups.length >= 2 && state.solvedGroups.length <= 4 ? 'связи найдены' : 'связей найдено'}`
-  const mistakesLabel = `${state.mistakesUsed} ${state.mistakesUsed === 1 ? 'ошибка' : state.mistakesUsed >= 2 && state.mistakesUsed <= 4 ? 'ошибки' : 'ошибок'}`
-  const hintsLabel = `${state.hints.length} ${state.hints.length === 1 ? 'подсказка' : state.hints.length >= 2 && state.hints.length <= 4 ? 'подсказки' : 'подсказок'}`
+  const routeTotal = FULL_HOUSE_MODE_IDS.length
+  const routeCompleted = Math.min(completedToday, routeTotal)
+  const rewardTitle = reward
+    ? reward.alreadyClaimed
+      ? 'Награда уже получена'
+      : `Получено +${reward.total} билетов`
+    : session.kind === 'daily'
+      ? 'Награда учтена'
+      : 'Архивная игра завершена'
+  const rewardHint = reward && !reward.alreadyClaimed
+    ? 'Посмотреть начисление'
+    : session.kind === 'daily'
+      ? 'Подробнее о начислении'
+      : 'Как работает архив'
   return <section ref={resultRef} className={`connections-result connections-result--${state.status}`} aria-labelledby="connections-result-title">
     <div className="connections-result__summary">
-      <p>{won ? 'Все 4 связи найдены' : `Найдено ${state.solvedGroups.length} из 4 связей`}</p>
-      <h2 id="connections-result-title">{won ? 'Всё сошлось!' : 'Сегодня не сошлось'}</h2>
-      <div className="connections-result__meta">{mistakesLabel}<i aria-hidden="true">·</i>{hintsLabel}</div>
-      <div className="connections-result__route">
-        <strong>Сегодня: {Math.min(completedToday, FULL_HOUSE_MODE_IDS.length)} из {FULL_HOUSE_MODE_IDS.length}</strong>
-        <span>{completedToday >= FULL_HOUSE_MODE_IDS.length
-          ? 'Маршрут дня завершён'
-          : `До полного маршрута: ещё ${FULL_HOUSE_MODE_IDS.length - completedToday}`}</span>
+      <div className="connections-result__outcome">
+        <p>{won ? 'Все 4 связи найдены' : `Найдено ${state.solvedGroups.length} из 4 связей`}</p>
+        <h2 id="connections-result-title">{won ? 'Всё сошлось!' : 'Сегодня не сошлось'}</h2>
+        <div className="connections-result__meta" aria-label={`Ошибок: ${state.mistakesUsed} из 4. Подсказок: ${state.hints.length}.`}>
+          <span>Ошибки {state.mistakesUsed}/4</span>
+          <i aria-hidden="true" />
+          <span>Подсказки {state.hints.length}</span>
+        </div>
       </div>
     </div>
 
@@ -542,7 +561,7 @@ function ConnectionsResult({
       nextLabel={nextMode ? `Играть дальше: ${nextDestination}` : 'К другим играм дня'}
       nextDestination={nextDestination}
       nextArtworkUrl={nextArtworkUrl}
-      nextTicketNumber={`${String(Math.min(completedToday + 1, FULL_HOUSE_MODE_IDS.length)).padStart(2, '0')}/${String(FULL_HOUSE_MODE_IDS.length).padStart(2, '0')}`}
+      nextTicketNumber={`${String(Math.min(routeCompleted + 1, routeTotal)).padStart(2, '0')}/${String(routeTotal).padStart(2, '0')}`}
       configureLabel="Открыть архив"
       copied={copied}
       onNext={onNext}
@@ -552,48 +571,50 @@ function ConnectionsResult({
       showTip={false}
       showReplayGate
       compactNext
-      afterMeta={<strong>{solvedLabel}</strong>}
+      afterLabel={null}
+      showCopy={false}
     />
 
-    <details className="connections-result__groups result-card__wide">
-      <summary>
-        <span className="connections-result__chips" aria-hidden="true">
-          {(['yellow', 'green', 'blue', 'purple'] as ConnectionsColor[]).map((color) => <i key={color} className={`connections-color--${color}`} />)}
+    <details className="reward-breakdown connections-result__reward">
+      <summary role="button" aria-controls={rewardId} onKeyDown={toggleDetailsOnKey}>
+        <span className="connections-result__reward-icon" aria-hidden="true"><Ticket /></span>
+        <span className="connections-result__accordion-copy">
+          <strong>{rewardTitle}</strong>
+          <small>{rewardHint}</small>
         </span>
-        <strong>{state.solvedGroups.length} {state.solvedGroups.length === 1 ? 'связь найдена' : state.solvedGroups.length >= 2 && state.solvedGroups.length <= 4 ? 'связи найдены' : 'связей найдено'}</strong>
         <ChevronDown aria-hidden="true" />
       </summary>
-      <div>
-        {state.solvedGroups.map((group) => (
-          <article key={group.color} className={`connections-solved__group connections-color--${group.color}`}>
-            <strong>{group.title}</strong>
-            <span>{group.tiles.map((tile) => tile.label).join(', ')}</span>
-          </article>
-        ))}
+      <div id={rewardId} className="connections-result__reward-body">
+        {reward && !reward.alreadyClaimed
+          ? <ul>
+              {!!reward.components.completion && <li><span>За завершение</span><strong>+{reward.components.completion}</strong></li>}
+              {!!reward.components.win && <li><span>За победу</span><strong>+{reward.components.win}</strong></li>}
+              {!!reward.components.efficiency && <li><span>За аккуратность</span><strong>+{reward.components.efficiency}</strong></li>}
+              {!!reward.components.firstGame && <li><span>Первая игра дня</span><strong>+{reward.components.firstGame}</strong></li>}
+              {!!reward.components.route3 && <li><span>Маршрут дня</span><strong>+{reward.components.route3}</strong></li>}
+              {!!reward.components.fullRoute && <li><span>Полный маршрут</span><strong>+{reward.components.fullRoute}</strong></li>}
+              {!!reward.components.streakMilestone && <li><span>Бонус за серию</span><strong>+{reward.components.streakMilestone}</strong></li>}
+              <li className="connections-result__reward-total"><span>Итого</span><strong>+{reward.total}</strong></li>
+            </ul>
+          : <p>
+              <strong>{session.kind === 'daily' ? 'Повторного начисления не будет' : 'Архив — для игры и статистики'}</strong>
+              <span>{session.kind === 'daily'
+                ? reward
+                  ? `Билеты уже были добавлены. Баланс после начисления: ${reward.balanceAfter}.`
+                  : 'Билеты за эту игру уже учтены в балансе. При повторном открытии результата сумма не начисляется ещё раз.'
+                : 'За архивные партии билеты не начисляются, но результат сохраняется в статистике.'}</span>
+            </p>}
       </div>
-    </details>
-
-    <details className="reward-breakdown connections-result__reward result-card__wide">
-      <summary>
-        <span><Ticket aria-hidden="true" /> {reward ? reward.alreadyClaimed ? 'Награда уже получена' : `Получено +${reward.total} билетов` : 'Награда начислена'}</span>
-        <ChevronRight aria-hidden="true" />
-      </summary>
-      {reward && !reward.alreadyClaimed && <ul>
-        {!!reward.components.completion && <li><span>За завершение</span><strong>+{reward.components.completion}</strong></li>}
-        {!!reward.components.win && <li><span>За победу</span><strong>+{reward.components.win}</strong></li>}
-        {!!reward.components.efficiency && <li><span>За аккуратность</span><strong>+{reward.components.efficiency}</strong></li>}
-        {!!reward.components.firstGame && <li><span>Первая игра дня</span><strong>+{reward.components.firstGame}</strong></li>}
-        {!!reward.components.route3 && <li><span>Маршрут дня</span><strong>+{reward.components.route3}</strong></li>}
-        {!!reward.components.fullRoute && <li><span>Полный маршрут</span><strong>+{reward.components.fullRoute}</strong></li>}
-        {!!reward.components.streakMilestone && <li><span>Бонус за серию</span><strong>+{reward.components.streakMilestone}</strong></li>}
-      </ul>}
     </details>
 
     <div className="connections-result__utility result-card__wide">
       <span>Серия: {streak == null ? '—' : formatDays(streak)}</span>
       <a href={`https://t.me/share/url?url=${encodeURIComponent(new URL('/games/connections', window.location.origin).toString())}&text=${encodeURIComponent(connectionsShareText(session.puzzleDate, state))}`} target="_blank" rel="noreferrer"><Send aria-hidden="true" /> Telegram</a>
       <ContentReport prompt="Нашли ошибку в раунде?" thanks="Спасибо, проверим раунд." onSubmit={onReport} />
-      <ControlButton onClick={onHome}>На главную</ControlButton>
+      <ControlButton className="connections-result__copy" onClick={onCopy}>
+        {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+        <span>{copied ? 'Скопировано' : 'Скопировать результат'}</span>
+      </ControlButton>
     </div>
   </section>
 }

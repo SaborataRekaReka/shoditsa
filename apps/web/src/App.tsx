@@ -3001,7 +3001,6 @@ function Game({
         onConfigure={onConfigureMode}
         onChallenge={shareChallenge}
         onCopy={copyResult}
-        onHome={onHome}
         onReport={reportContent}
       />}
 
@@ -3669,7 +3668,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             }
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
-        : () => routeCompleted ? onHome() : onPlayNext(nextMode)} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onHome={onHome} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+        : () => routeCompleted ? onHome() : onPlayNext(nextMode)} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}

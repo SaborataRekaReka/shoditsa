@@ -20,6 +20,8 @@ export function ResultActionBar({
   showTip,
   compactNext = false,
   afterMeta,
+  afterLabel = 'После сеанса',
+  showCopy = true,
   showReplayGate = false,
 }: {
   nextLabel: string
@@ -36,6 +38,8 @@ export function ResultActionBar({
   showTip: boolean
   compactNext?: boolean
   afterMeta?: ReactNode
+  afterLabel?: string | null
+  showCopy?: boolean
   showReplayGate?: boolean
 }) {
   const [replayNoticeOpen, setReplayNoticeOpen] = useState(false)
@@ -58,7 +62,7 @@ export function ResultActionBar({
       </ControlButton>}
     </div>
     <div className="result-after-actions result-card__wide">
-      <span className="result-after-actions__label">После сеанса</span>
+      {afterLabel && <span className="result-after-actions__label">{afterLabel}</span>}
       {showReplayGate && <ControlButton className="result-replay" onClick={() => setReplayNoticeOpen(true)}>
         <RotateCcw />
         <span>Сыграть ещё раз</span>
@@ -70,7 +74,7 @@ export function ResultActionBar({
           <strong>{opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}</strong>
         </span>
       </ControlButton>}
-      <ControlButton
+      {showCopy && <ControlButton
         className="result-copy"
         onClick={onCopy}
         aria-label={copied ? 'Скопировано' : 'Скопировать результат'}
@@ -78,7 +82,7 @@ export function ResultActionBar({
       >
         {copied ? <Check /> : <Copy />}
         {copied && <span className="result-copy__tooltip" role="status">Скопировано</span>}
-      </ControlButton>
+      </ControlButton>}
       {showTip && <TipCheckoutTrigger className="result-tip" label="Жетон кассиру" hint="99 · 299 · 699 ₽" />}
       {afterMeta && <div className="result-after-actions__meta">{afterMeta}</div>}
     </div>

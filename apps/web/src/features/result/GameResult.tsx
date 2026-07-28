@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
+  Check,
   ChevronDown,
+  Copy,
   Send,
   Ticket,
 } from 'lucide-react'
@@ -58,17 +60,18 @@ type Props = {
   onConfigure: () => void
   onChallenge?: () => void
   onCopy: () => void
-  onHome?: () => void
   onReport?: (reason: ContentReportReason, comment: string) => void
+  autoScroll?: boolean
 }
 
 export function GameResult(props: Props) {
   const [rewardOpen, setRewardOpen] = useState(false)
   const resultRef = useRef<HTMLElement>(null)
   useEffect(() => {
+    if (props.autoScroll === false) return
     const frame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
     return () => window.cancelAnimationFrame(frame)
-  }, [])
+  }, [props.autoScroll])
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
   const nextLabelSeparator = props.nextLabel.indexOf(':')
   const hasNextDestination = nextLabelSeparator >= 0
@@ -132,6 +135,7 @@ export function GameResult(props: Props) {
       onChallenge={props.onChallenge}
       onCopy={props.onCopy}
       showTip={props.won}
+      showCopy={false}
       showReplayGate={props.completedToday !== undefined}
     />
     {props.award && <details className="reward-breakdown result-card__wide" open={rewardOpen} onToggle={(event) => setRewardOpen(event.currentTarget.open)}>
@@ -147,11 +151,14 @@ export function GameResult(props: Props) {
         {!!props.award.streakMilestone && <li><span>Бонус за серию</span><strong>+{props.award.streakMilestone}</strong></li>}
       </ul>}
     </details>}
-    {(props.streak !== undefined || props.telegramUrl || props.onReport || props.onHome) && <div className="result-utility result-card__wide">
+    <div className="result-utility result-card__wide">
       {props.streak !== undefined && <span className="result-streak">Серия: {formatDays(props.streak)}</span>}
       {props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Telegram</a>}
       {props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}
-      {props.onHome && <ControlButton className="result-home" onClick={props.onHome}>На главную</ControlButton>}
-    </div>}
+      <ControlButton className="result-copy-bottom" onClick={props.onCopy}>
+        {props.copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+        <span>{props.copied ? 'Скопировано' : 'Скопировать результат'}</span>
+      </ControlButton>
+    </div>
   </section>
 }

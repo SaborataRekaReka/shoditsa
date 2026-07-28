@@ -40,9 +40,10 @@ import {
   TextInput,
 } from '../../components/ui'
 import { publicAssetUrl } from '../../app/public-asset'
-import { ResultActionBar } from '../result/ResultActionBar'
+import { GameResult } from '../result/GameResult'
 import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
 import { FinalChoicePanel } from '../game-session/FinalChoicePanel'
+import { ConnectionsResult, type ConnectionsSession } from '../connections/ConnectionsGamePage'
 import './UiKitScreen.css'
 
 const foundations = [
@@ -123,6 +124,63 @@ const finalChoiceFixture: FinalChoiceSnapshot = {
   ],
   displayKeys: ['countries', 'genres', 'runtime_rating'],
   choicesRemaining: 1,
+}
+
+const connectionsResultGroups = [
+  { color: 'yellow', title: 'Оканчиваются на «-ай»', words: ['МАЙ', 'ЛАЙ', 'ЧАЙ', 'КРАЙ'] },
+  { color: 'green', title: 'Можно открыть ключом', words: ['ДВЕРЬ', 'ЗАМОК', 'СЕЙФ', 'СУНДУК'] },
+  { color: 'blue', title: 'Виды волн', words: ['ЗВУК', 'СВЕТ', 'ПРИЛИВ', 'РАДИО'] },
+  { color: 'purple', title: 'Скрытая связь', words: ['ЛИНИЯ', 'УЗЕЛ', 'ЦЕПЬ', 'МОСТ'] },
+] as const
+
+const connectionsResultTiles = connectionsResultGroups.flatMap((group, groupIndex) => group.words.map((label, wordIndex) => ({
+  id: `${group.color}-${wordIndex}`,
+  label,
+  initialPosition: groupIndex * 4 + wordIndex,
+})))
+
+const connectionsResultFixture: ConnectionsSession = {
+  engine: 'connections_grid',
+  rulesVersion: 4,
+  id: 'ui-kit-connections-result',
+  kind: 'daily',
+  packId: null,
+  packPosition: null,
+  mode: 'connections',
+  variantKey: null,
+  period: 'all',
+  difficulty: 'medium',
+  puzzleDate: '2026-07-28',
+  status: 'won',
+  completionType: 'direct_win',
+  finalChoice: null,
+  attemptsCount: 5,
+  attemptsRemaining: 1,
+  maxAttempts: 6,
+  attempts: [],
+  hintCheckpoints: [],
+  hintChoices: [],
+  hintOptions: [],
+  progressiveHints: [],
+  promoPrompt: null,
+  diagnosisVignette: null,
+  serverTime: '2026-07-28T12:00:00.000Z',
+  connections: {
+    tiles: connectionsResultTiles,
+    solvedGroups: connectionsResultGroups.map((group) => ({
+      color: group.color,
+      title: group.title,
+      tiles: connectionsResultTiles.filter((tile) => tile.id.startsWith(`${group.color}-`)),
+    })),
+    guesses: [],
+    hints: [{ checkpoint: 1, text: 'Одна группа связана с тем, что можно открыть.' }],
+    mistakesUsed: 1,
+    mistakesRemaining: 3,
+    maxMistakes: 4,
+    maxGuesses: 6,
+    hintAvailableAt: null,
+    status: 'won',
+  },
 }
 
 function SectionTitle({ index, title, description, component }: {
@@ -371,23 +429,52 @@ export default function UiKitScreen() {
                 <span>Ошибок осталось</span><i>×</i><i>×</i><i className="is-used">×</i><i className="is-used">×</i>
               </div>
             </div>
+            <div className="ui-kit-connections-result">
+              <div className="ui-kit-specimen__label">
+                <span>Завершённая игра · восстановленный результат</span>
+                <code>desktop / mobile</code>
+              </div>
+              <ConnectionsResult
+                session={connectionsResultFixture}
+                copied={false}
+                reward={null}
+                streak={1}
+                completedToday={4}
+                nextMode="series"
+                onCopy={() => undefined}
+                onChallenge={() => undefined}
+                onNext={() => undefined}
+                onArchive={() => undefined}
+                onReport={() => undefined}
+                autoScroll={false}
+              />
+            </div>
           </section>
 
           <section className="ui-kit-section" id="result-actions">
             <SectionTitle index="09" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
             <div className="ui-kit-result-action">
-              <ResultActionBar
+              <GameResult
+                mode="series"
+                won
+                attempts={4}
+                poster={<img src={publicAssetUrl('images/category-stubs/movie-stub.webp')} alt="Постер демонстрационного результата" />}
+                title="Тёмные начала"
+                meta="His Dark Materials · 2019"
+                tags={['фэнтези', 'драма']}
+                completedToday={4}
+                nextRewardText="До полного маршрута: ещё 3"
                 nextLabel="Играть дальше: кино"
-                nextDestination="Кино"
-                nextArtworkUrl={publicAssetUrl('images/category-stubs/movie-stub.webp')}
-                nextTicketNumber="07/07"
                 configureLabel="Период / свободная игра"
+                award={null}
+                streak={5}
                 copied={false}
+                telegramUrl="#"
                 onNext={() => undefined}
                 onConfigure={() => undefined}
                 onChallenge={() => undefined}
                 onCopy={() => undefined}
-                showTip
+                autoScroll={false}
               />
             </div>
           </section>
