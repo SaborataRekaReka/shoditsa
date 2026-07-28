@@ -1216,11 +1216,8 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
 }) {
   const scrollToGames = () => document.getElementById('available-games')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   const dailyState = useMemo(
-    () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt, {
-      enabled: connectionsEnabled,
-      completed: connectionsStatus === 'completed',
-    }),
-    [connectionsEnabled, connectionsStatus, games, globalDailySalt, preferredMode, todayAttendance],
+    () => buildDailyHubState(todayAttendance, games, preferredMode, globalDailySalt),
+    [games, globalDailySalt, preferredMode, todayAttendance],
   )
 
   return <>

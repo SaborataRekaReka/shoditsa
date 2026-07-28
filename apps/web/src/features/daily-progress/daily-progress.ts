@@ -45,7 +45,6 @@ export const buildDailyHubState = (
   games: SavedGame[],
   preferredMode: TitleMode,
   globalDailySalt = 0,
-  _connections: { enabled: boolean; completed: boolean } = { enabled: false, completed: false },
 ): DailyHubState => {
   const dailyModes = DAILY_MODE_ORDER
   const completedSet = new Set<FullHouseModeId>([
