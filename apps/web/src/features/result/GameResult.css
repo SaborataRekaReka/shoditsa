@@ -20,15 +20,17 @@
 .result-route { margin-top: 10px; padding: 8px 10px; border: 1px solid var(--color-paper-line); border-radius: 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .result-route strong { font: 500 15px Oswald, sans-serif; text-transform: uppercase; }
 .result-route span { color: var(--color-paper-muted); font-size: 12px; text-align: right; }
-.reward-breakdown { border-top: 1px solid var(--color-paper-line); border-bottom: 1px solid var(--color-paper-line); }
-.reward-breakdown summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; list-style: none; font-size: 12px; font-weight: 800; }
+.reward-breakdown { margin-inline: -12px; border: 0; }
+.reward-breakdown summary { min-height: 44px; padding-inline: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; list-style: none; font-size: 12px; font-weight: 800; transition: background .18s ease; }
+.reward-breakdown summary:hover,
+.reward-breakdown[open] summary { background: color-mix(in srgb, var(--color-ink) 9%, transparent); }
 .reward-breakdown summary::-webkit-details-marker { display: none; }
 .reward-breakdown summary span { display: inline-flex; align-items: center; gap: 7px; }
 .reward-breakdown summary svg { width: 17px; }
 .reward-breakdown summary .result-dx-icon { width: 17px; height: 17px; object-fit: contain; }
 .reward-breakdown summary > svg { transition: transform .2s ease; }
 .reward-breakdown[open] summary > svg { transform: rotate(180deg); }
-.reward-breakdown ul { margin: 0 0 12px; padding: 0; list-style: none; }
+.reward-breakdown ul { margin: 0; padding: 4px 12px 12px; background: color-mix(in srgb, var(--color-ink) 9%, transparent); list-style: none; }
 .reward-breakdown li { padding: 4px 0; display: flex; justify-content: space-between; color: var(--color-paper-muted); font-size: 12px; }
 .reward-breakdown li strong { color: var(--color-ink); }
 .challenge-score { margin-top: 7px; padding: 8px 10px; background: var(--color-paper-2); border-radius: 11px; display: flex; justify-content: space-between; gap: 10px; font-size: 12px; }

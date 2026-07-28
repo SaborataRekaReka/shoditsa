@@ -513,6 +513,11 @@ function ConnectionsResult({
 }) {
   const state = session.connections
   const won = state.status === 'won'
+  const resultRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
   const nextDestination = nextMode ? MODE_CONFIG[nextMode].title : 'Другие игры дня'
   const nextArtworkUrl = nextMode
     ? MODE_PRESENTATION[nextMode].watermarkUrl
@@ -520,7 +525,7 @@ function ConnectionsResult({
   const solvedLabel = `${state.solvedGroups.length} ${state.solvedGroups.length === 1 ? 'связь найдена' : state.solvedGroups.length >= 2 && state.solvedGroups.length <= 4 ? 'связи найдены' : 'связей найдено'}`
   const mistakesLabel = `${state.mistakesUsed} ${state.mistakesUsed === 1 ? 'ошибка' : state.mistakesUsed >= 2 && state.mistakesUsed <= 4 ? 'ошибки' : 'ошибок'}`
   const hintsLabel = `${state.hints.length} ${state.hints.length === 1 ? 'подсказка' : state.hints.length >= 2 && state.hints.length <= 4 ? 'подсказки' : 'подсказок'}`
-  return <section className={`connections-result connections-result--${state.status}`} aria-labelledby="connections-result-title">
+  return <section ref={resultRef} className={`connections-result connections-result--${state.status}`} aria-labelledby="connections-result-title">
     <div className="connections-result__summary">
       <p>{won ? 'Все 4 связи найдены' : `Найдено ${state.solvedGroups.length} из 4 связей`}</p>
       <h2 id="connections-result-title">{won ? 'Всё сошлось!' : 'Сегодня не сошлось'}</h2>
@@ -545,6 +550,7 @@ function ConnectionsResult({
       onChallenge={onChallenge}
       onCopy={onCopy}
       showTip={false}
+      showReplayGate
       compactNext
       afterMeta={<strong>{solvedLabel}</strong>}
     />

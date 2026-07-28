@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { CURRENT_OFFER_VERSION, type CommerceProduct } from '@shoditsa/contracts'
 import { ApiClientError, api } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
@@ -9,6 +9,7 @@ import { checkoutDestination } from './checkout-flow'
 
 export function CheckoutButton({ product, authenticated, hasClub = false, label, placement = 'club_screen', returnUrl = '/club' }: { product: CommerceProduct; authenticated: boolean; hasClub?: boolean; label?: string; placement?: string; returnUrl?: string }) {
   const keyRef = useRef<string | null>(null)
+  const autoStartedRef = useRef(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const [accepted, setAccepted] = useState(true)
@@ -46,6 +47,13 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
       setPending(false)
     }
   }
+
+  useEffect(() => {
+    if (!authenticated || autoStartedRef.current || typeof window === 'undefined') return
+    if (new URLSearchParams(window.location.search).get('product') !== product.id) return
+    autoStartedRef.current = true
+    void start()
+  }, [authenticated, product.id])
 
   return <>
     <label className="checkout-acceptance" htmlFor={acceptanceId}>

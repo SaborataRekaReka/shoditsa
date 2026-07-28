@@ -515,7 +515,59 @@
     border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
   }
 }@media (min-width: 768px) {
-  .danetki-page--session .danetki-suggestions {
+.danetki-page--session .danetki-suggestions {
     border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
   }
+}
+
+/* Session chat follows the dark multiplayer-room surface. */
+.danetki-page--session .danetki-investigation {
+  border-color: #38463b;
+  color: #e9dfc7;
+  background: linear-gradient(180deg, #111b15, #0c1510);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .34);
+}
+.danetki-page--session .danetki-room-toolbar {
+  border-color: #344139;
+  color: #e9dfc7;
+  background: #142019;
+}
+.danetki-page--session .danetki-room-toolbar button {
+  border-color: #465247;
+  color: #e9dfc7;
+  background: #1b2820;
+}
+.danetki-page--session .danetki-messages {
+  color: #e9dfc7;
+  background: linear-gradient(180deg, #0b130f, #101914);
+}
+.danetki-page--session .danetki-empty,
+.danetki-page--session .danetki-system { color: #a99f88; }
+.danetki-page--session .danetki-message__author { color: #9dc796; }
+.danetki-page--session .danetki-message__bubble {
+  border-color: #445047;
+  color: #e9dfc7;
+  background: #19231d;
+}
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble {
+  border-color: #52745b;
+  background: #203025;
+}
+.danetki-page--session .danetki-message.is-ai .danetki-message__bubble {
+  border-color: #5c865f;
+  background: #15261a;
+}
+.danetki-page--session .danetki-composer {
+  border-color: #344139;
+  background: #142019;
+}
+.danetki-page--session .danetki-composer textarea {
+  border-color: #445047;
+  color: #f0e7d2;
+  background: #0e1712;
+}
+.danetki-page--session .danetki-composer textarea::placeholder { color: #8f978d; }
+.danetki-page--session .danetki-composer textarea:focus {
+  outline: 2px solid #6fa87a;
+  outline-offset: 1px;
 }

@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
   ChevronDown,
@@ -64,6 +64,11 @@ type Props = {
 
 export function GameResult(props: Props) {
   const [rewardOpen, setRewardOpen] = useState(false)
+  const resultRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
   const nextLabelSeparator = props.nextLabel.indexOf(':')
   const hasNextDestination = nextLabelSeparator >= 0
@@ -94,6 +99,7 @@ export function GameResult(props: Props) {
       ? `${props.attempts}/${props.maxAttempts ?? 10} — верный ответ`
       : 'Правильный ответ открыт'
   return <section
+    ref={resultRef}
     className={`result-card ${props.won ? 'won' : 'lost'}`}
     style={{ '--result-next-color': nextPresentation.color } as CSSProperties}
   >
@@ -104,7 +110,6 @@ export function GameResult(props: Props) {
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
       <strong>{resultLine}</strong>
-      {props.mode === 'diagnosis' && <p className="result-disclaimer">Это игровая загадка, а не медицинская рекомендация. Не используйте её для самодиагностики.</p>}
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
         <span>{props.nextRewardText}</span>
@@ -127,6 +132,7 @@ export function GameResult(props: Props) {
       onChallenge={props.onChallenge}
       onCopy={props.onCopy}
       showTip={props.won}
+      showReplayGate={props.completedToday !== undefined}
     />
     {props.award && <details className="reward-breakdown result-card__wide" open={rewardOpen} onToggle={(event) => setRewardOpen(event.currentTarget.open)}>
       <summary role="button" aria-expanded={rewardOpen} aria-controls="result-reward-details"><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} ${countWord(props.award.total, ['билет', 'билета', 'билетов'])}`}</span><ChevronDown /></summary>

@@ -56,7 +56,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
   const launchLabel = busy
     ? 'Запускаем…'
     : roomMode === 'group'
-      ? groupStartCost > 0 ? `Создать комнату · ${groupStartCost} при старте` : 'Создать комнату · запуск бесплатный'
+      ? 'Создать комнату'
     : launchShortage > 0
       ? `Не хватает ${launchShortage} билетов`
       : launchCost > 0

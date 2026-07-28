@@ -255,10 +255,6 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
   const signInWithYandex = async () => {
     if (pending) return
-    if (register && !personalDataAccepted) {
-      setFieldErrors((current) => ({ ...current, consent: 'Подтвердите согласие на обработку персональных данных.' }))
-      return
-    }
     clearMessages()
     setPending(true)
     let redirected = false

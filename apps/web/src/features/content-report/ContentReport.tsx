@@ -38,7 +38,7 @@ export const contentReportReasonsForMode = (mode?: TitleMode | 'connections') =>
 export function ContentReport({
   onSubmit,
   mode,
-  prompt = 'Нашли ошибку в подсказке?',
+  prompt = 'Нашли ошибку?',
   thanks = 'Спасибо, проверим подсказку.',
 }: {
   onSubmit: (reason: ContentReportReason, comment: string) => void | Promise<void>

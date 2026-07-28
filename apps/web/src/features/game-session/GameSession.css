@@ -1048,9 +1048,13 @@
 }
 
 .game-screen-shell.game-shell.game-screen-shell--session {
+  position: relative;
+  z-index: 2;
   width: min(100%, 1440px);
+  min-height: calc(100dvh - 52px);
   margin-inline: auto;
   padding: 24px 14px 64px;
+  box-sizing: border-box;
   align-items: stretch;
 }
 

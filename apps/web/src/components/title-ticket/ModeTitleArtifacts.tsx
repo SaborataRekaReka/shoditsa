@@ -37,7 +37,7 @@ export function DiagnosisTitleCard({
       <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
       {hasAnamnesis && <ControlButton className="med-chart__anamnesis" onClick={onReadAnamnesis}>
         <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
-        <span className="med-chart__anamnesis-copy"><strong>Прочитать анамнез</strong><small>С чем пациент пришёл на приём</small></span>
+        <span className="med-chart__anamnesis-copy"><strong>Анамнез пациента</strong><small>С чем пациент пришёл на приём</small></span>
         <ChevronRight aria-hidden="true" />
       </ControlButton>}
       {launchControls}

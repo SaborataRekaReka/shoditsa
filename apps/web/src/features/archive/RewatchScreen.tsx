@@ -17,14 +17,27 @@ import { archiveItemToSavedGame, isCatalogArchiveItem, publicItemToTitle } from 
 import './RewatchScreen.css'
 
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
+type ArchiveSection = TitleMode | 'connections'
 
-function ArchiveModePicker({ mode, setMode }: Pick<RewatchScreenProps, 'mode' | 'setMode'>) {
+function ArchiveModePicker({
+  mode,
+  setMode,
+  connectionsEnabled = false,
+}: {
+  mode: ArchiveSection
+  setMode: (mode: ArchiveSection) => void
+  connectionsEnabled?: boolean
+}) {
+  const sections: { id: ArchiveSection; label: string }[] = [
+    ...MODE_TABS.map((tabMode) => ({ id: tabMode, label: modeMeta(tabMode).plural })),
+    ...(connectionsEnabled ? [{ id: 'connections' as const, label: 'Связи' }] : []),
+  ]
   return <div className="rewatch-toolbar">
     <Tabs
       className="mode-tabs"
       activeClassName="active"
       label="Режим архива"
-      items={MODE_TABS.map((tabMode) => ({ id: tabMode, label: modeMeta(tabMode).plural }))}
+      items={sections}
       value={mode}
       onChange={setMode}
     />
@@ -34,9 +47,9 @@ function ArchiveModePicker({ mode, setMode }: Pick<RewatchScreenProps, 'mode' | 
         surface="dark"
         aria-label="Раздел архива"
         value={mode}
-        onChange={(event) => setMode(event.currentTarget.value as TitleMode)}
+        onChange={(event) => setMode(event.currentTarget.value as ArchiveSection)}
       >
-        {MODE_TABS.map((tabMode) => <option key={tabMode} value={tabMode}>{modeMeta(tabMode).plural}</option>)}
+        {sections.map((section) => <option key={section.id} value={section.id}>{section.label}</option>)}
       </SelectControl>
     </label>
   </div>
@@ -65,6 +78,15 @@ export function RewatchScreen(props: RewatchScreenProps) {
 function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConnections, onHome, onStats, onRules, onReview, onClub }: RewatchScreenProps) {
   const serverRuntime = useServerRuntime()
   const [lockedDate, setLockedDate] = useState<string | null>(null)
+  const [archiveSection, setArchiveSection] = useState<ArchiveSection>(mode)
+  const connectionsEnabled = serverRuntime.meta?.features.connectionsEnabled !== false
+  const selectArchiveSection = (section: ArchiveSection) => {
+    setArchiveSection(section)
+    if (section !== 'connections') setMode(section)
+  }
+  useEffect(() => {
+    setArchiveSection((current) => current === 'connections' ? current : mode)
+  }, [mode])
   const archive = useQuery({
     queryKey: queryKeys.archiveCalendar({ mode, period, from: dates.at(-1), to: dates[0] }),
     queryFn: () => api.archiveCalendar({ mode, period, from: dates.at(-1)!, to: dates[0]! }),
@@ -128,8 +150,8 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>Последние семь дат доступны всем. Полный архив с даты запуска открыт клубу.</p></div>
-      <ArchiveModePicker mode={mode} setMode={setMode} />
-      {serverRuntime.meta?.features.connectionsEnabled !== false && <section className="rewatch-connections" aria-labelledby="rewatch-connections-title">
+      <ArchiveModePicker mode={archiveSection} setMode={selectArchiveSection} connectionsEnabled={connectionsEnabled} />
+      {connectionsEnabled && archiveSection === 'connections' && <section className="rewatch-connections rewatch-connections--tab" aria-labelledby="rewatch-connections-title">
         <header>
           <div><span>Ежедневная головоломка</span><h2 id="rewatch-connections-title">Связи</h2></div>
           <p>Вернитесь к точной версии раунда, опубликованной в выбранный день.</p>
@@ -173,8 +195,8 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
           </ControlButton>
         })}</div>
       </section>}
-      {archive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert>}
-      <section className="rewatch-grid">{dates.map((itemDate, index) => {
+      {archiveSection !== 'connections' && archive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert>}
+      {archiveSection !== 'connections' && <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const played = latestByDate.get(itemDate) ?? null
         const access = accessByDate.get(itemDate) ?? 'locked'
         const sessionId = played?.key.startsWith('server:') ? played.key.slice('server:'.length) : null
@@ -192,7 +214,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
           <strong>{index === 0 ? 'Сегодня' : index === 1 ? 'Вчера' : prettyDate(itemDate)}</strong>
           <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : access === 'locked' ? 'Полный архив клуба' : 'Не сыгран'}</small>
         </ControlButton>
-      })}</section>
+      })}</section>}
       <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
     </main>
     {lockedDate && <Modal title="Полный архив клуба" onClose={() => setLockedDate(null)}><p className="modal-lead">Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем.</p><ActionButton onClick={() => { setLockedDate(null); onClub() }}>Узнать о клубе</ActionButton></Modal>}
@@ -214,7 +236,7 @@ function LocalRewatchScreen({ mode, setMode, period, dates, games, titles, onOpe
     <AppHeader onHome={onHome} onArchive={() => undefined} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="rewatch-screen">
       <div className="rewatch-heading"><RotateCcw /><h1>Архив</h1><p>История по всем режимам: сегодня и шесть предыдущих дней.</p></div>
-      <ArchiveModePicker mode={mode} setMode={setMode} />
+      <ArchiveModePicker mode={mode} setMode={(section) => section !== 'connections' && setMode(section)} />
       <section className="rewatch-grid">{dates.map((itemDate, index) => {
         const dayGames = games.filter((game) => game.date === itemDate && game.mode === mode)
         const playedInCurrentPeriod = dayGames.find((game) => game.period === period)

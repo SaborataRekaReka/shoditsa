@@ -268,7 +268,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
 
         <div className="danetki-messages" ref={listRef} role="log" aria-live="polite" onScroll={(event) => { const node = event.currentTarget; wasNearBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 80; if (wasNearBottom.current) setNewMessages(0) }}>
           {state.roomMode === 'group' && activeMembers.length === 1 && <div className="danetki-system danetki-waiting"><Users /><span>Комната готова. Отправьте ссылку друзьям — расследование синхронизируется для всех.</span></div>}
-          {!state.messages.length && <div className="danetki-empty"><Sparkles /><p>Расследование начинается. Выберите стартовый вопрос или задайте свой.</p><div>{state.puzzle.starterQuestions.slice(0, 3).map((question) => <ControlButton type="button" key={question} onClick={() => setDraft(question)} disabled={!isMyTurn || !hostReady}>{question}</ControlButton>)}</div></div>}
+          {!state.messages.length && <div className="danetki-empty"><Sparkles /><p>Расследование начинается. Задайте свой вопрос ведущему.</p></div>}
           {state.messages.map((message) => {
             if (message.senderKind === 'system') return <div key={message.id} className={`danetki-system ${message.messageType === 'solution' ? 'is-solution' : ''}`}><span>{message.text}</span><time>{localTime(message.createdAt)}</time></div>
             const mine = message.senderUserId === state.currentUserId

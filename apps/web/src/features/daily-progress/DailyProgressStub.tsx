@@ -9,7 +9,6 @@ export function DailyProgressStub({ state }: { state: DailyHubState }) {
     <div className="daily-progress-summary">
       <span className="daily-progress-summary__label">{reward.fullHouse ? 'Полный зал' : 'Прогресс за сегодня'}</span>
       <strong className="daily-progress-summary__value">{dailyCompletedCopy(completedCount, dailyModes.length)}</strong>
-      <small>{dailyModes.length} зачётных игр; «Данетки» — отдельное расследование.</small>
     </div>
     <ProgressPunches completedModes={completedModes} dailyModes={dailyModes} caption={punchesCaption} />
     <div className={`next-reward ${reward.fullHouse ? 'is-full-house' : ''}`}>

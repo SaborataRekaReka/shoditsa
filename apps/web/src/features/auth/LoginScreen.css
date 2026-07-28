@@ -388,7 +388,8 @@
 .login-error,
 .login-notice { margin: 0 0 13px; padding: 9px 11px; border-radius: 9px; font-size: 11px; line-height: 1.4; }
 .login-error { border: 1px solid rgba(169, 79, 59, .28); color: #8e3d2c; background: rgba(196, 99, 75, .1); }
-.login-notice { margin-top: 12px; margin-bottom: 0; border: 1px solid rgba(57, 122, 71, .26); color: #276235; background: rgba(89, 157, 102, .1); }
+.login-notice .ui-alert__icon { color: #2f6b45; }
+.login-notice { margin-top: 12px; margin-bottom: 0; border: 1px solid rgba(47, 107, 69, .34); color: #245b35; background: #e5f2e8; }
 
 .login-session-loading { min-height: 150px; color: var(--login-muted); font-size: 13px; display: flex; align-items: center; gap: 9px; }
 

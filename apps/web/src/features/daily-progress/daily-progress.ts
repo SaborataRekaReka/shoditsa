@@ -1,8 +1,8 @@
 import type { DailyAttendance, SavedGame, TitleMode } from '../../types'
 import type { DailyHubState, DailyRewardState } from './daily-progress.types'
-import { CATALOG_GUESS_DAILY_MODE_IDS, ECONOMY_RULE_SET, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, type FullHouseModeId } from '@shoditsa/contracts'
+import { CATALOG_GUESS_DAILY_MODE_IDS, ECONOMY_RULE_SET, GAME_MODE_MANIFEST, type FullHouseModeId } from '@shoditsa/contracts'
 
-export const DAILY_MODE_ORDER: FullHouseModeId[] = [...FULL_HOUSE_MODE_IDS]
+export const DAILY_MODE_ORDER: FullHouseModeId[] = [...CATALOG_GUESS_DAILY_MODE_IDS]
 
 export const DAILY_MODE_LABELS = Object.fromEntries(
   DAILY_MODE_ORDER.map((mode) => [mode, GAME_MODE_MANIFEST[mode].label]),
@@ -45,12 +45,11 @@ export const buildDailyHubState = (
   games: SavedGame[],
   preferredMode: TitleMode,
   globalDailySalt = 0,
-  connections: { enabled: boolean; completed: boolean } = { enabled: false, completed: false },
+  _connections: { enabled: boolean; completed: boolean } = { enabled: false, completed: false },
 ): DailyHubState => {
-  const dailyModes = connections.enabled ? DAILY_MODE_ORDER : [...CATALOG_GUESS_DAILY_MODE_IDS]
+  const dailyModes = DAILY_MODE_ORDER
   const completedSet = new Set<FullHouseModeId>([
     ...attendance.completedModes,
-    ...(connections.completed ? ['connections' as const] : []),
   ])
   const completedModes = dailyModes.filter((mode) => completedSet.has(mode))
   const activeGames = games.filter((game) => (game.status === 'playing' || game.status === 'final_choice') && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)

@@ -75,7 +75,7 @@ export const GAME_MODE_MANIFEST = {
   },
   connections: {
     engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 8,
-    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
+    countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>
 

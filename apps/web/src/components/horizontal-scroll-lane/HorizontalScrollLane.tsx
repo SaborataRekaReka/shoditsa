@@ -46,9 +46,6 @@ export function HorizontalScrollLane({ className, children }: { className: strin
     }}
     onPointerUp={(event) => stopDrag(event.pointerId)}
     onPointerCancel={(event) => stopDrag(event.pointerId)}
-    onPointerLeave={(event) => {
-      if (event.pointerType === 'mouse' && dragRef.current.pointerId === event.pointerId) stopDrag(event.pointerId)
-    }}
     onClickCapture={(event) => {
       if (!dragRef.current.moved) return
       event.preventDefault()

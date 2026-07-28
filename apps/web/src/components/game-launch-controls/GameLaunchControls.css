@@ -154,3 +154,16 @@
   .game-option-trigger__value > svg:last-child,
   .game-option-menu { animation: none; transition: none; }
 }
+
+.game-launch-controls--music .game-option-trigger.difficulty-trigger {
+  border-color: var(--color-paper-line);
+  color: var(--color-ink);
+  background: var(--color-paper-2);
+}
+.game-launch-controls--music .game-option-trigger.difficulty-trigger:hover,
+.game-launch-controls--music .ui-anchored-menu.is-open .game-option-trigger.difficulty-trigger {
+  border-color: var(--mode-music-brand);
+  background: color-mix(in srgb, var(--mode-music-brand) 12%, var(--color-paper-2));
+}
+.game-launch-controls--music .difficulty-trigger__label { color: var(--color-paper-muted); }
+.game-launch-controls--music .difficulty-trigger__value { color: var(--color-ink); }

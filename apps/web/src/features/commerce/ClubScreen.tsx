@@ -266,7 +266,6 @@ export function ClubScreen({
         onStats={onStats}
         onRules={onRules}
         onReview={onReview}
-        minimal
       />
       <main className={`club-lobby-screen${hasClub ? ' club-lobby-screen--active' : ''}`}>
         <section className="club-entry" id="club-hero">
