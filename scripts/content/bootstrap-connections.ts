@@ -11,6 +11,7 @@ import {
 import { activateContentRevision } from '../../apps/api/src/modules/admin/content-service.js'
 import { loadReleaseLibraries } from '../../apps/api/src/modules/admin/release-content-loader.js'
 import { buildReleaseContentRevision } from '../../apps/api/src/modules/admin/release-content-service.js'
+import { resolveConnectionsStartDate } from '../../apps/api/src/modules/connections/bootstrap-schedule.js'
 
 const config = loadConfig()
 const { db, client } = createDatabase(config)
@@ -86,39 +87,51 @@ try {
   }
 
   const versionByItemId = new Map(versions.map((version) => [version.itemId, version]))
-  const startDate = arg('--start') ?? config.connectionsLaunchDate ?? moscowDate()
+  const storedLaunchSetting = (await db.select({ value: appSettings.value }).from(appSettings)
+    .where(eq(appSettings.key, 'connections_launch_date')).limit(1))[0]
+  const storedLaunchDate = typeof storedLaunchSetting?.value === 'string'
+    ? storedLaunchSetting.value
+    : undefined
+  const startDate = resolveConnectionsStartDate({
+    argument: arg('--start'),
+    configured: config.connectionsLaunchDate,
+    stored: storedLaunchDate,
+    today: moscowDate(),
+  })
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) throw new Error(`Invalid connections start date: ${startDate}`)
-  for (const [index, itemId] of bundledIds.entries()) {
-    const puzzleDate = addDays(startDate, index)
-    const itemVersionId = versionByItemId.get(itemId)!.id
-    await db.insert(connectionsSchedule).values({
-      puzzleDate,
-      itemVersionId,
-      scheduledBy: actorId,
-    }).onConflictDoNothing()
-    const scheduled = (await db.select({
-      itemVersionId: connectionsSchedule.itemVersionId,
-      itemId: contentItemVersions.itemId,
-      cancelledAt: connectionsSchedule.cancelledAt,
-    }).from(connectionsSchedule)
-      .innerJoin(contentItemVersions, eq(contentItemVersions.id, connectionsSchedule.itemVersionId))
-      .where(eq(connectionsSchedule.puzzleDate, puzzleDate)).limit(1))[0]
-    if (!scheduled || scheduled.itemId !== itemId || scheduled.cancelledAt) {
-      throw new Error(`Connections schedule conflict on ${puzzleDate}`)
+  await db.transaction(async (tx) => {
+    for (const [index, itemId] of bundledIds.entries()) {
+      const puzzleDate = addDays(startDate, index)
+      const itemVersionId = versionByItemId.get(itemId)!.id
+      await tx.insert(connectionsSchedule).values({
+        puzzleDate,
+        itemVersionId,
+        scheduledBy: actorId,
+      }).onConflictDoNothing()
+      const scheduled = (await tx.select({
+        itemVersionId: connectionsSchedule.itemVersionId,
+        itemId: contentItemVersions.itemId,
+        cancelledAt: connectionsSchedule.cancelledAt,
+      }).from(connectionsSchedule)
+        .innerJoin(contentItemVersions, eq(contentItemVersions.id, connectionsSchedule.itemVersionId))
+        .where(eq(connectionsSchedule.puzzleDate, puzzleDate)).limit(1))[0]
+      if (!scheduled || scheduled.itemId !== itemId || scheduled.cancelledAt) {
+        throw new Error(`Connections schedule conflict on ${puzzleDate}`)
+      }
     }
-  }
-  await db.insert(appSettings).values({
-    key: 'connections_launch_date',
-    value: startDate,
-    updatedBy: actorId,
-  }).onConflictDoUpdate({
-    target: appSettings.key,
-    set: {
+    await tx.insert(appSettings).values({
+      key: 'connections_launch_date',
       value: startDate,
-      version: 2,
       updatedBy: actorId,
-      updatedAt: new Date(),
-    },
+    }).onConflictDoUpdate({
+      target: appSettings.key,
+      set: {
+        value: startDate,
+        version: 2,
+        updatedBy: actorId,
+        updatedAt: new Date(),
+      },
+    })
   })
   console.log(JSON.stringify({
     activeRevisionId: active.id,

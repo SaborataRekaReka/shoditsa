@@ -9,7 +9,6 @@ import {
   contentRevisions,
   createDatabase,
 } from '@shoditsa/database'
-import { ApiError } from '../../apps/api/src/lib/errors.js'
 import { getPack } from '../../apps/api/src/modules/packs/service.js'
 import { loadPackSessionPrompt } from '../../apps/api/src/modules/packs/prompt-runtime.js'
 import { DTF_COMMENTS_PACK_ID } from '../../apps/api/src/modules/packs/policy.js'
@@ -22,10 +21,9 @@ try {
   assert.equal(adminPack.entries.length, 20)
   assert.ok(adminPack.entries.every((entry) => entry.accessible))
 
-  await assert.rejects(
-    () => getPack(db, DTF_COMMENTS_PACK_ID, null, 'player'),
-    (error: unknown) => error instanceof ApiError && error.statusCode === 404,
-  )
+  const publicPack = await getPack(db, DTF_COMMENTS_PACK_ID, null, 'player')
+  assert.equal(publicPack.access, 'locked')
+  assert.equal(publicPack.entries.length, 0)
 
   const revision = await db.select({ id: contentRevisions.id })
     .from(contentRevisions)
@@ -85,7 +83,8 @@ try {
     canonicalAnswers: answers.length,
     canonicalComments: answers.reduce((total, answer) => total + ((answer.payload as TitleItem).comments?.length ?? 0), 0),
     adminAccessible: true,
-    playerHidden: true,
+    publicStorefrontVisible: true,
+    anonymousAccess: publicPack.access,
     maxAttempts: initial.maxAttempts,
     initialHints: initial.progressiveHints.length,
     rescueHints: rescue.progressiveHints.length,
