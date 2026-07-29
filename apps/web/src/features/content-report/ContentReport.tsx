@@ -47,7 +47,7 @@ export function ContentReport({
   thanks?: string
 }) {
   const [open, setOpen] = useState(false)
-  const [reason, setReason] = useState<ContentReportReason>('wrong_fact')
+  const [reason, setReason] = useState<ContentReportReason | null>(null)
   const [comment, setComment] = useState('')
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
@@ -58,7 +58,7 @@ export function ContentReport({
     <ControlButton type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>{prompt}</ControlButton>
     {open && <form onSubmit={async (event) => {
       event.preventDefault()
-      if (sending) return
+      if (sending || !reason) return
       setSending(true)
       setError('')
       try {
@@ -80,7 +80,7 @@ export function ContentReport({
       </fieldset>
       <TextArea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Комментарий — необязательно" maxLength={500} />
       {error && <InlineAlert tone="danger" className="server-error">{error}</InlineAlert>}
-      <ControlButton type="submit" disabled={sending}>{sending ? 'Отправляем…' : 'Отправить'}</ControlButton>
+      <ControlButton type="submit" disabled={sending || !reason}>{sending ? 'Отправляем…' : 'Отправить'}</ControlButton>
     </form>}
   </div>
 }

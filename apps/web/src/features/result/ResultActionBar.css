@@ -230,13 +230,14 @@
 }
 .result-primary-actions .result-next small { color: color-mix(in srgb, var(--color-paper) 76%, transparent); }
 .result-primary-actions .result-next strong {
-  overflow: hidden;
+  overflow: visible;
   color: var(--color-paper);
-  font: 500 22px/1.05 Oswald, sans-serif;
-  text-overflow: ellipsis;
+  font: 500 clamp(18px, 2.2vw, 22px)/1.05 Oswald, sans-serif;
+  text-overflow: clip;
   text-shadow: 0 1px 8px color-mix(in srgb, var(--color-shadow) 42%, transparent);
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .result-next__arrow {
   position: absolute;
@@ -349,7 +350,7 @@
     grid-template-rows: minmax(0, 1fr) auto;
   }
   .result-primary-actions .result-next { min-height: 112px; padding: 14px 15px; align-items: flex-end; }
-  .result-primary-actions .result-next strong { font-size: 25px; }
+  .result-primary-actions .result-next strong { font-size: clamp(19px, 1.45vw, 23px); }
   .result-primary-actions .result-config { min-height: 58px; }
   .result-after-actions {
     min-height: 55px;

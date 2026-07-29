@@ -6465,16 +6465,6 @@
             "matchedValues": []
           },
           {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "2 игроков, Мультиплеер",
-            "status": "partial",
-            "direction": null,
-            "matchedValues": [
-              "Мультиплеер"
-            ]
-          },
-          {
             "key": "platforms",
             "label": "Платформы",
             "value": "Nintendo 64",
@@ -6534,7 +6524,7 @@
             "direction": null
           }
         ],
-        "digest": "25aabd76073a15eba922c765f16dd6e25bf945f423b2322c1044519706c9ad15"
+        "digest": "0a0ca0e31a21148db1c68aed96574cde89c0f8e95cda87d1a7826930bfa8c911"
       },
       {
         "guessId": "steam_1966900",
@@ -6577,14 +6567,6 @@
             "matchedValues": [
               "Strategy"
             ]
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
-            "direction": null,
-            "matchedValues": []
           },
           {
             "key": "platforms",
@@ -6646,7 +6628,7 @@
             "direction": null
           }
         ],
-        "digest": "869b3e67f86e3f464f4bb8fa94b1bdc98f57969af60301f36c81f5b6228e8452"
+        "digest": "ffdbdfe262dbd860181c66472a5989c24359f253399939fa64c633a9fcf10c9a"
       },
       {
         "guessId": "steam_1012880",
@@ -6689,14 +6671,6 @@
             "matchedValues": [
               "Strategy"
             ]
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
-            "direction": null,
-            "matchedValues": []
           },
           {
             "key": "platforms",
@@ -6758,7 +6732,7 @@
             "direction": null
           }
         ],
-        "digest": "8d239952651b0cb91d4851e5693a77c2d697df4ab6665507e65af57ef031de79"
+        "digest": "3070ba1b99db3b25bc4d9399569ef7a3815a7755f0d64bc845347a7c77646177"
       },
       {
         "guessId": "steam_251570",
@@ -6796,14 +6770,6 @@
             "key": "genres",
             "label": "Жанры",
             "value": "Экшены, Приключенческие игры, Инди, Ролевые игры, Симуляторы, Стратегии",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Для одного игрока, Для нескольких игроков, Игрок против игрока, Игрок против игрока (по сети), Игрок против игрока (локальная сеть), Кооператив, Кооператив (по сети), Кооператив (локальная сеть), Кросс-платформенный мультиплеер, Достижения Steam, Полная поддержка контроллеров, Коллекционные карточки Steam, Поддержка контроллера DualShock, Поддержка контроллера DualSense, С редактором уровней, Remote Play на планшете, Remote Play на телевизоре, Семейный доступ",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -6868,7 +6834,7 @@
             "direction": null
           }
         ],
-        "digest": "9b67fccf1a30d47351de352b01d19989b9248a5d618188ceb189023860e182e5"
+        "digest": "ff8e1dd4048c744eb6ca86c8961699ed4f2e663dfe0129b0b1d4ba3ace6dbb95"
       },
       {
         "guessId": "tgdb_30049",
@@ -6906,14 +6872,6 @@
             "key": "genres",
             "label": "Жанры",
             "value": "Unknown",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Для одного игрока, Достижения Steam, Steam Cloud, Семейный доступ",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -6978,7 +6936,7 @@
             "direction": null
           }
         ],
-        "digest": "88191d387b291a05b162e049fe70f1ffdce26527f881f738f631d8d7bf599907"
+        "digest": "639841032657ab97057f3c285ad0a418bf0c9c3abdd4b111f0d9972d28987207"
       },
       {
         "guessId": "steam_292030",
@@ -7000,8 +6958,8 @@
           {
             "key": "players",
             "label": "Игроки",
-            "value": "2 игрока",
-            "status": "close",
+            "value": "1 игрок",
+            "status": "miss",
             "direction": "up"
           },
           {
@@ -7016,14 +6974,6 @@
             "key": "genres",
             "label": "Жанры",
             "value": "RPG",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Single-player, Steam Achievements, Steam Trading Cards, Steam Workshop, Adjustable Text Size, Camera Comfort, Color Alternatives, Custom Volume Controls, Adjustable Difficulty, Playable without Timed Input, Save Anytime, Stereo Sound, Surround Sound, Partial Controller Support, Steam Cloud, Remote Play on Tablet, Remote Play on TV, HDR available, Family Sharing",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -7088,7 +7038,7 @@
             "direction": null
           }
         ],
-        "digest": "51d21827af373b32470358f67d2f36c731e96dbb1f6ba77167edcd8fdbbc4cdb"
+        "digest": "31e4327c68de46ff3a1bfdc50de8d7cbe039c339cb6b16c757af403b1d52be47"
       },
       {
         "guessId": "steam_977950",
@@ -7127,14 +7077,6 @@
             "label": "Жанры",
             "value": "Indie",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7198,7 +7140,7 @@
             "direction": null
           }
         ],
-        "digest": "2d767f270d9c48be1d939f520dc48a22645051f7b331ca808de701beb004d618"
+        "digest": "4b0e87c7b87c6ac408337f1f8a559d3d6b057db7c5a6cd60ae764f35eedd966e"
       },
       {
         "guessId": "steam_2415010",
@@ -7237,14 +7179,6 @@
             "label": "Жанры",
             "value": "Indie, Simulation, Free To Play",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7308,7 +7242,7 @@
             "direction": null
           }
         ],
-        "digest": "e1c67c2ecc1f8c5a15f57c84d9cddd00f80ff8360093e83f76805bab0839d23b"
+        "digest": "0b235b1cf7bc0f8fa4317ec4a4c871d09a305eaec5e8a6d8eac297abe8119d1a"
       },
       {
         "guessId": "steam_3244220",
@@ -7347,14 +7281,6 @@
             "label": "Жанры",
             "value": "Adventure, Indie",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7418,7 +7344,7 @@
             "direction": null
           }
         ],
-        "digest": "ab4a4f17d8877fe241e501011f951cbb31df5e6ff8c4936f5d9b313f8af2fc77"
+        "digest": "6321d9ffd4904b77643adf9b12ab5e0353e5a3ba867e783e2c8f2ae47ff6c607"
       },
       {
         "guessId": "steam_253230",
@@ -7457,14 +7383,6 @@
             "label": "Жанры",
             "value": "Adventure, Indie",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7528,7 +7446,7 @@
             "direction": null
           }
         ],
-        "digest": "3742b4db157ecf1b68aff02bf945b16f09b780b250f2711a8e722853421f2897"
+        "digest": "4d4a98fa7645a037d05d231c91f8bcef1734660ece5647f0baeee0f721015b53"
       },
       {
         "guessId": "steam_752590",
@@ -7567,14 +7485,6 @@
             "label": "Жанры",
             "value": "Action, Adventure",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7638,7 +7548,7 @@
             "direction": null
           }
         ],
-        "digest": "35de9be3eb8e55c498379bdcc825998d44ed35f7f9f6a6dda07d07f607497e21"
+        "digest": "8c3ffc58ce4622e958a39fdd12bb237d5a880de79dbbc4ef6d04ecd4df73646a"
       },
       {
         "guessId": "steam_1182900",
@@ -7677,14 +7587,6 @@
             "label": "Жанры",
             "value": "Action, Adventure",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7748,7 +7650,7 @@
             "direction": null
           }
         ],
-        "digest": "ba0037e5c83e6ee81d95ee7fa9919163489c2ad09861c6ad79009824be4730e7"
+        "digest": "27f526de86f49d0bdb0c2b266156f6e204d2cebacfafa9cd76ee88f6bd1d93fb"
       },
       {
         "guessId": "steam_278360",
@@ -7787,14 +7689,6 @@
             "label": "Жанры",
             "value": "Adventure, Casual, Indie",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -7858,7 +7752,7 @@
             "direction": null
           }
         ],
-        "digest": "524bc2bb9b934b102f0c099f46a74bc0b098050367698e3edcbf690d7fe5104a"
+        "digest": "a3ef4100d74d8e5c7adbc8701d1bb058f232349d7f1329adfc2e3d03a3cd32fa"
       },
       {
         "guessId": "steam_712100",
@@ -7901,14 +7795,6 @@
             "matchedValues": [
               "Strategy"
             ]
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
-            "direction": null,
-            "matchedValues": []
           },
           {
             "key": "platforms",
@@ -7970,7 +7856,7 @@
             "direction": null
           }
         ],
-        "digest": "062af98f3cb0f77874c99e49261678cb2036b5286a88ccc5094fdaa8a7dc026f"
+        "digest": "5e0017f3950a917efd08e7160e1ba8e4e78a2ed0f6149f6785c5c27881dba5b2"
       },
       {
         "guessId": "steam_1473480",
@@ -8009,14 +7895,6 @@
             "label": "Жанры",
             "value": "Action, Massively Multiplayer, Free To Play",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -8080,7 +7958,7 @@
             "direction": null
           }
         ],
-        "digest": "ca91094f782ec3c5cfc93b656685dbe1e41f9771838e4d8d95b1c42827d106c8"
+        "digest": "9d5403cc9882a994821938e3b55ac3605f9523b5d0e2de96165f8e722396c3b8"
       },
       {
         "guessId": "steam_427410",
@@ -8119,14 +7997,6 @@
             "label": "Жанры",
             "value": "Action, Adventure, RPG, Simulation",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -8190,7 +8060,7 @@
             "direction": null
           }
         ],
-        "digest": "6c69aa68a45a78851379f56ff5a09adc1af28075e51929bbc0cdaeeb1c2e6265"
+        "digest": "6d0c2d0ce18ec97fe95898da1eeaf1f452716f3df63befab1aa1420ac8708162"
       },
       {
         "guessId": "steam_806140",
@@ -8229,14 +8099,6 @@
             "label": "Жанры",
             "value": "Action, Casual, Indie, Sports",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -8300,7 +8162,7 @@
             "direction": null
           }
         ],
-        "digest": "089cb6d6c3cb14a63e72cded529c76a69ae66e85677915eeb39f662176811b92"
+        "digest": "18b572ee5326cad85388738035a3721299c8bd67d18047657f5d4ba81d8e9933"
       },
       {
         "guessId": "steam_1385380",
@@ -8343,14 +8205,6 @@
             "matchedValues": [
               "Strategy"
             ]
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
-            "direction": null,
-            "matchedValues": []
           },
           {
             "key": "platforms",
@@ -8412,7 +8266,7 @@
             "direction": null
           }
         ],
-        "digest": "46cf6ba33fe12085cbcb960d2c22c913ff97a48a850e0ec831230f6f2669bd12"
+        "digest": "5b229b98f35b6e4d1e67c69eeabb799bc44a7cdb557bd70034823fb5f96ef076"
       },
       {
         "guessId": "steam_1335200",
@@ -8451,14 +8305,6 @@
             "label": "Жанры",
             "value": "Action, Adventure, RPG, Free To Play",
             "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "Нет данных",
-            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -8522,7 +8368,7 @@
             "direction": null
           }
         ],
-        "digest": "a599ef47ca13324bd71a61f6bef0ad4ab519d1344b68d1b9829b34ebf5b72636"
+        "digest": "56f57d7e55e70cf1851e83fde9922a22216dcdde63b32353ff48b8011dd5ee91"
       },
       {
         "guessId": "tgdb_105602",
@@ -8562,14 +8408,6 @@
             "key": "genres",
             "label": "Жанры",
             "value": "Action, Adventure, Construction and Management Simulation",
-            "status": "miss",
-            "direction": null,
-            "matchedValues": []
-          },
-          {
-            "key": "steam_categories",
-            "label": "Категории",
-            "value": "1 игрок, Одиночная игра",
             "status": "miss",
             "direction": null,
             "matchedValues": []
@@ -8634,7 +8472,7 @@
             "direction": null
           }
         ],
-        "digest": "f4b124d30c755df6aa65d913baa1d162ebd639b852ae2af2f310c43b7c44d70a"
+        "digest": "0a4fcf36bb7ed9ea9237857a99ea1c66a55559a0f0de938f4459aa3da3638680"
       }
     ]
   },

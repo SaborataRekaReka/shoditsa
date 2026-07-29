@@ -850,7 +850,7 @@ const playersNumber = (categories: string[]) => {
     }
 
     const text = normalize(category)
-    if (text.includes('одиноч')) {
+    if (text.includes('одиноч') || text.includes('single-player') || text.includes('single player') || text === 'singleplayer') {
       max = max == null ? 1 : Math.max(max, 1)
       continue
     }
@@ -1228,7 +1228,6 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
     : { status: scalar(guess.ageRating, answer.ageRating), direction: null }
   const hasGenres = answerGenres.length > 0
   const hasCountries = answerCountries.length > 0
-  const hasSteamCategories = answerCategories.length > 0
   const hasPlatforms = answerPlatforms.length > 0
   const hasDevelopers = answerDevelopers.length > 0
   const hasPublishers = answerPublishers.length > 0
@@ -1245,7 +1244,6 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ...(hasPlayers ? [{ key: 'players', label: 'Игроки', value: guessPlayers != null ? playerCountLabel(guessPlayers) : guessPlayerLabel, ...players } satisfies Hint] : []),
     ...(hasCountries ? [{ key: 'country', label: 'Страна разработки', value: list(guessCountries), status: setStatus(guessCountries, answerCountries), direction: null, matchedValues: overlaps(guessCountries, answerCountries) } satisfies Hint] : []),
     ...(hasGenres ? [{ key: 'genres', label: 'Жанры', value: list(guessGenres), status: setStatus(guessGenres, answerGenres), direction: null, matchedValues: overlaps(guessGenres, answerGenres) } satisfies Hint] : []),
-    ...(hasSteamCategories ? [{ key: 'steam_categories', label: 'Категории', value: list(guessCategories), status: setStatus(guessCategories, answerCategories), direction: null, matchedValues: overlaps(guessCategories, answerCategories) } satisfies Hint] : []),
     ...(hasPlatforms ? [{ key: 'platforms', label: 'Платформы', value: list(guessPlatforms), status: setStatus(guessPlatforms, answerPlatforms), direction: null, matchedValues: overlaps(guessPlatforms, answerPlatforms) } satisfies Hint] : []),
     ...(hasDevelopers ? [{ key: 'developer', label: 'Разработчик', value: list(guessDevelopers), status: setStatus(guessDevelopers, answerDevelopers), direction: null, matchedValues: overlaps(guessDevelopers, answerDevelopers) } satisfies Hint] : []),
     ...(hasPublishers ? [{ key: 'publisher', label: 'Издатель', value: list(guessPublishers), status: setStatus(guessPublishers, answerPublishers), direction: null, matchedValues: overlaps(guessPublishers, answerPublishers) } satisfies Hint] : []),

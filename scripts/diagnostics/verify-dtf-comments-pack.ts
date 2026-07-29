@@ -73,7 +73,7 @@ try {
     attemptsCount: 5,
   })
   assert.equal(initial?.maxAttempts, 6)
-  assert.equal(initial?.progressiveHints.length, 2)
+  assert.equal(initial?.progressiveHints.length, 1)
   assert.equal(rescue?.progressiveHints.length, 6)
   assert.equal(initial?.promoPrompt.packId, DTF_COMMENTS_PACK_ID)
 

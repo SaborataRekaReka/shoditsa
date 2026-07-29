@@ -20,6 +20,12 @@
 .result-route { margin-top: 10px; padding: 8px 10px; border: 1px solid var(--color-paper-line); border-radius: 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .result-route strong { font: 500 15px Oswald, sans-serif; text-transform: uppercase; }
 .result-route span { color: var(--color-paper-muted); font-size: 12px; text-align: right; }
+.result-pack-progress { display: grid; grid-template-columns: 1fr auto auto; }
+.result-pack-progress b {
+  color: #30734a;
+  font-size: 12px;
+  white-space: nowrap;
+}
 .reward-breakdown { margin-inline: -12px; border: 0; }
 .reward-breakdown summary { min-height: 44px; padding-inline: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; list-style: none; font-size: 12px; font-weight: 800; transition: background .18s ease; }
 .reward-breakdown summary:hover,
@@ -41,21 +47,6 @@
 .result-streak { margin: 0 !important; color: var(--color-ink) !important; font-size: 12px !important; font-weight: 800; }
 .result-utility .content-report { border: 0; padding: 0; }
 .result-utility .content-report:has(form) { flex-basis: 100%; order: 5; }
-.result-copy-bottom {
-  min-height: 40px;
-  margin-left: auto;
-  padding: 0 12px;
-  border: 1px solid var(--color-paper-line);
-  border-radius: 10px;
-  color: var(--color-paper-muted);
-  background: rgba(255, 255, 255, .16);
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 11px;
-}
-.result-copy-bottom:hover { color: var(--color-ink); background: var(--color-paper-2); }
-.result-copy-bottom svg { width: 15px; height: 15px; }
 @media (min-width: 720px) {
   .result-card { grid-template-columns: 120px minmax(0, 2fr) minmax(0, 1fr); align-items: center; }
   .result-card > .result-primary-actions { align-self: center; }
@@ -66,9 +57,6 @@
 .result-card > .poster-fallback { width: 120px; height: 172px; }
 }
 @media (max-width: 719px) {
-  .result-copy-bottom {
-    width: 100%;
-    margin-left: 0;
-    justify-content: center;
-  }
+  .result-pack-progress { grid-template-columns: 1fr auto; }
+  .result-pack-progress span { grid-column: 1 / -1; text-align: left; }
 }

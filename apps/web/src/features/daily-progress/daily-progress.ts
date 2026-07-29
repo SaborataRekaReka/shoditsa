@@ -1,6 +1,12 @@
 import type { DailyAttendance, SavedGame, TitleMode } from '../../types'
 import type { DailyHubState, DailyRewardState } from './daily-progress.types'
-import { CATALOG_GUESS_DAILY_MODE_IDS, ECONOMY_RULE_SET, GAME_MODE_MANIFEST, type FullHouseModeId } from '@shoditsa/contracts'
+import {
+  CATALOG_GUESS_DAILY_MODE_IDS,
+  ECONOMY_RULE_SET,
+  GAME_MODE_MANIFEST,
+  KPOP_ARTISTS_PACK_ID,
+  type FullHouseModeId,
+} from '@shoditsa/contracts'
 
 export const DAILY_MODE_ORDER: FullHouseModeId[] = [...CATALOG_GUESS_DAILY_MODE_IDS]
 
@@ -23,6 +29,10 @@ const isDailySession = (game: SavedGame, date: string, globalDailySalt: number) 
   if (globalDailySalt === 0) return !saltMatch
   return Number(saltMatch?.[1]) === globalDailySalt
 }
+
+export const isMainRouteGame = (game: Pick<SavedGame, 'mode' | 'variantKey'>) => !(
+  game.mode === 'music' && game.variantKey === KPOP_ARTISTS_PACK_ID
+)
 
 export const savedGameAttemptCount = (game: SavedGame | null | undefined) => {
   const storedIds = Array.isArray(game?.attemptTitleIds) ? game.attemptTitleIds.length : 0
@@ -51,9 +61,9 @@ export const buildDailyHubState = (
     ...attendance.completedModes,
   ])
   const completedModes = dailyModes.filter((mode) => completedSet.has(mode))
-  const activeGames = games.filter((game) => (game.status === 'playing' || game.status === 'final_choice') && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)
+  const activeGames = games.filter((game) => isMainRouteGame(game) && (game.status === 'playing' || game.status === 'final_choice') && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)
   const finishedGames = games
-    .filter((game) => isDailySession(game, attendance.date, globalDailySalt) && (game.status === 'won' || game.status === 'lost'))
+    .filter((game) => isMainRouteGame(game) && isDailySession(game, attendance.date, globalDailySalt) && (game.status === 'won' || game.status === 'lost'))
     .sort(newestFirst)
   const activeGame = activeGames[0] ?? null
   const unfinishedModes = CATALOG_GUESS_DAILY_MODE_IDS.filter((mode) => !completedSet.has(mode))

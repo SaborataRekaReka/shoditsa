@@ -30,12 +30,8 @@ const originalTitle = (item: SearchItem) => {
 }
 
 export const searchResultMeta = (item: SearchItem) => {
-  if (item.mode === 'city') {
-    return meaningful([originalTitle(item), item.country, item.continent]).join(' · ')
-  }
-  if (item.mode === 'diagnosis') {
-    return meaningful([originalTitle(item), ...(item.icd10 ?? []), item.icdGroup]).join(' · ')
-  }
+  if (item.mode === 'city') return meaningful([originalTitle(item), item.country, item.continent]).join(' · ')
+  if (item.mode === 'diagnosis') return meaningful([originalTitle(item), ...(item.icd10 ?? []), item.icdGroup]).join(' · ')
   if (item.mode === 'game') {
     const edition = item.editionType && item.editionType !== 'original' ? item.editionType : null
     const release = item.releaseScope === 'release' ? item.releaseLabel : null
@@ -61,15 +57,19 @@ export const searchMediaAlt = (item: Pick<SearchItem, 'mode' | 'titleRu'>) => {
   return `Постер «${item.titleRu}»`
 }
 
-const MODE_EMPTY_SUBJECT: Record<TitleMode, string> = {
-  movie: 'фильм',
-  series: 'сериал',
-  anime: 'аниме',
-  game: 'игра',
-  city: 'город',
-  music: 'артист',
-  diagnosis: 'диагноз',
+const MODE_EMPTY_COPY: Record<TitleMode, { subject: string; missing: string }> = {
+  movie: { subject: 'фильм', missing: 'не найден' },
+  series: { subject: 'сериал', missing: 'не найден' },
+  anime: { subject: 'аниме', missing: 'не найдено' },
+  game: { subject: 'игра', missing: 'не найдена' },
+  city: { subject: 'город', missing: 'не найден' },
+  music: { subject: 'артист', missing: 'не найден' },
+  diagnosis: { subject: 'диагноз', missing: 'не найден' },
 }
 
-export const searchEmptyMessage = (mode: TitleMode) =>
-  `В текущем пуле ${MODE_EMPTY_SUBJECT[mode]} не найден. Проверьте написание или выберите другой режим игры.`
+export const searchEmptyMessage = (mode: TitleMode, fixedMode = false) => {
+  const copy = MODE_EMPTY_COPY[mode]
+  return `В текущем пуле ${copy.subject} ${copy.missing}. ${fixedMode
+    ? 'Проверьте написание или попробуйте другой вариант.'
+    : 'Проверьте написание или выберите другой режим игры.'}`
+}

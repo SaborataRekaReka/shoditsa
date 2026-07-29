@@ -41,6 +41,7 @@ export const collectMatchSummaryTags = (attempts: Attempt[], mode: TitleMode): M
   for (const attempt of attempts) {
     const hasDedicatedPlayerHint = mode === 'game' && attempt.hints.some((hint) => hint.key === 'players')
     for (const hint of attempt.hints) {
+      if (mode === 'game' && hint.key === 'steam_categories') continue
       const matchedValues = (hint.matchedValues ?? []).map((value) => value.trim()).filter(Boolean)
       for (const value of matchedValues) {
         if (hasDedicatedPlayerHint && hint.key === 'steam_categories' && isPlayerCategory(value)) continue

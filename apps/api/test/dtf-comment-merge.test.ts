@@ -179,6 +179,9 @@ describe('DTF comment merge', () => {
     expect(resolutions.every((resolution) => resolution.status === 'resolved')).toBe(true)
     expect(new Set(resolutions.map((resolution) => resolution.catalog?.itemId)).size).toBe(20)
     expect(document.items.reduce((total, item) => total + item.progressiveHints.length, 0)).toBe(120)
+    expect(document.items.every((item) => (
+      item.progressiveHints.map((comment) => comment.unlockAfterAttempts).join(',') === '0,1,2,3,4,5'
+    ))).toBe(true)
     expect(document.items.every((item) => item.progressiveHints.every((comment) => (
       Boolean(comment.sourceId && comment.sourceUrl && comment.sourceVerifiedAt && comment.authorName)
     )))).toBe(true)

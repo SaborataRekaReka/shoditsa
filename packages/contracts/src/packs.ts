@@ -25,6 +25,8 @@ export const ContentPackSchema = Type.Object({
   access: Type.Union([Type.Literal('admin'), Type.Literal('personal'), Type.Literal('club'), Type.Literal('locked')]),
   owned: Type.Boolean(),
   completedItems: Type.Integer(),
+  wonItems: Type.Optional(Type.Integer()),
+  lostItems: Type.Optional(Type.Integer()),
 }, { additionalProperties: false })
 
 export const ContentPackDetailSchema = Type.Intersect([

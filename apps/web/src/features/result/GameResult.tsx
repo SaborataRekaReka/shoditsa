@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
-  Check,
   ChevronDown,
-  Copy,
   Send,
   Ticket,
 } from 'lucide-react'
@@ -14,7 +12,6 @@ import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { publicAssetUrl } from '../../app/public-asset'
 import { formatDays } from '../../game'
-import { ControlButton } from '../../components/ui'
 import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
 import './GameResult.css'
@@ -62,6 +59,13 @@ type Props = {
   onCopy: () => void
   onReport?: (reason: ContentReportReason, comment: string) => void
   autoScroll?: boolean
+  packProgress?: {
+    played: number
+    won: number
+    lost: number
+    total: number
+    roundScore: number
+  }
 }
 
 export function GameResult(props: Props) {
@@ -69,8 +73,14 @@ export function GameResult(props: Props) {
   const resultRef = useRef<HTMLElement>(null)
   useEffect(() => {
     if (props.autoScroll === false) return
-    const frame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
-    return () => window.cancelAnimationFrame(frame)
+    let innerFrame = 0
+    const frame = window.requestAnimationFrame(() => {
+      innerFrame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+    })
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.cancelAnimationFrame(innerFrame)
+    }
   }, [props.autoScroll])
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
   const nextLabelSeparator = props.nextLabel.indexOf(':')
@@ -113,6 +123,11 @@ export function GameResult(props: Props) {
       <p>{props.meta}</p>
       {!!props.tags.length && <div className="result-tags">{props.tags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
       <strong>{resultLine}</strong>
+      {props.packProgress && <div className="result-route result-pack-progress">
+        <strong>{props.packProgress.played} из {props.packProgress.total} сыграно</strong>
+        <span>{props.packProgress.won} угадано · {props.packProgress.lost} не угадано</span>
+        <b>+{props.packProgress.roundScore} баллов</b>
+      </div>}
       {props.completedToday !== undefined && props.nextRewardText && <div className="result-route">
         <strong>Сегодня: {props.completedToday} из {FULL_HOUSE_MODE_IDS.length}</strong>
         <span>{props.nextRewardText}</span>
@@ -135,7 +150,7 @@ export function GameResult(props: Props) {
       onChallenge={props.onChallenge}
       onCopy={props.onCopy}
       showTip={props.won}
-      showCopy={false}
+      showCopy
       showReplayGate={props.completedToday !== undefined}
     />
     {props.award && <details className="reward-breakdown result-card__wide" open={rewardOpen} onToggle={(event) => setRewardOpen(event.currentTarget.open)}>
@@ -155,10 +170,6 @@ export function GameResult(props: Props) {
       {props.streak !== undefined && <span className="result-streak">Серия: {formatDays(props.streak)}</span>}
       {props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Telegram</a>}
       {props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}
-      <ControlButton className="result-copy-bottom" onClick={props.onCopy}>
-        {props.copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-        <span>{props.copied ? 'Скопировано' : 'Скопировать результат'}</span>
-      </ControlButton>
     </div>
   </section>
 }

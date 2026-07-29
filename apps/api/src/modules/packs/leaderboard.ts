@@ -130,7 +130,7 @@ export const getPackLeaderboard = async (
     const stats = statsByUser.get(participant.userId) ?? { score: 0, wins: 0, totalAttempts: 0 }
     return {
       userId: participant.userId,
-      displayName: (participant.displayName?.trim() || participant.accountName.trim() || 'Игрок DTF').slice(0, 60),
+      displayName: (participant.displayName?.trim() || participant.accountName?.trim() || 'Игрок DTF').slice(0, 60),
       avatarUrl: participant.avatarUrl?.trim() || null,
       completedItems: participant.completedPositions?.length ?? 0,
       score: stats.score,

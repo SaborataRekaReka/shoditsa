@@ -145,6 +145,26 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'age')?.value).toBe('Нет данных')
   })
 
+  it('treats English single-player categories as one player and omits technical Steam categories', () => {
+    const base = {
+      mode: 'game',
+      titleRu: 'Single Game',
+      titleOriginal: 'Single Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2023,
+      genres: ['RPG'],
+      platforms: ['PC'],
+      developers: ['Studio'],
+      publishers: ['Publisher'],
+      steamCategories: ['Single-player', 'Full controller support', 'Stereo Sound'],
+    } as TitleItem
+    const hints = compareTitles({ ...base, id: 'guess' }, { ...base, id: 'answer' })
+
+    expect(hints.find((hint) => hint.key === 'players')?.value).toBe('1 игрок')
+    expect(hints.find((hint) => hint.key === 'steam_categories')).toBeUndefined()
+  })
+
   it('compares game development countries as a visible hint', () => {
     const base = {
       mode: 'game',

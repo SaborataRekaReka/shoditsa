@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { DailyAttendance, SavedGame } from '../../types'
-import { buildDailyHubState } from './daily-progress'
+import { KPOP_ARTISTS_PACK_ID } from '@shoditsa/contracts'
+import { buildDailyHubState, isMainRouteGame } from './daily-progress'
 
 const attendance: DailyAttendance = {
   date: '2026-07-12', completedModes: [], wonModes: [], completedSessions: [], firstCompletedAt: 0, fullHouse: false,
@@ -33,6 +34,36 @@ describe('daily hub ticket states', () => {
       game({ key: 'movie|all|2026-07-12|salt:4', status: 'won', attempts: [{ titleId: 'free', hints: [] }], updatedAt: 4 }),
     ], 'series', 3)
     expect(state.finishedGamesByMode.movie?.attempts[0]?.titleId).toBe('answer')
+  })
+
+  it('keeps the K-pop special separate from the main music route', () => {
+    const kpop = game({
+      key: 'server:kpop-session',
+      mode: 'music',
+      variantKey: KPOP_ARTISTS_PACK_ID,
+      status: 'won',
+      attempts: [{ titleId: 'kpop-answer', hints: [] }],
+      updatedAt: 10,
+    })
+    const state = buildDailyHubState(attendance, [kpop], 'music')
+
+    expect(isMainRouteGame(kpop)).toBe(false)
+    expect(state.finishedGamesByMode.music).toBeUndefined()
+    expect(state.recommendedMode).toBe('music')
+  })
+
+  it('does not offer an active K-pop special as the main music session', () => {
+    const state = buildDailyHubState(attendance, [
+      game({
+        key: 'server:kpop-session',
+        mode: 'music',
+        variantKey: KPOP_ARTISTS_PACK_ID,
+        attempts: [{ titleId: 'kpop-guess', hints: [] }],
+      }),
+    ], 'music')
+
+    expect(state.activeGame).toBeNull()
+    expect(state.activeGamesByMode.music).toBeUndefined()
   })
 
   it('keeps Connections outside the seven-game main route', () => {

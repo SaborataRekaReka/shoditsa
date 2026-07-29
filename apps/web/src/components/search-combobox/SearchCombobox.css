@@ -25,6 +25,12 @@
 .search-box > button:disabled:hover { background: var(--color-paper-2); }
 
 .search-box > button svg { width: 21px; stroke-width: 2.4; }
+.search-submit-spinner { animation: searchSubmitSpin .72s linear infinite; }
+.ui-search-combobox.is-submitting .search-box {
+  border-color: var(--color-primary-border);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent), var(--shadow-paper);
+}
+@keyframes searchSubmitSpin { to { transform: rotate(360deg); } }
 
 .selected-check { color: var(--color-success-ink); }
 
@@ -41,7 +47,10 @@
 .suggestions button:last-child { border-bottom: 0; }
 
 .suggestions button:hover,
-.suggestions button.is-active { background: var(--color-paper-2); }
+.suggestions button.is-active {
+  background: var(--color-paper-2);
+  box-shadow: inset 4px 0 0 var(--color-primary-border);
+}
 
 .suggestions img,
 .suggestions .poster-fallback { width: 42px; height: 56px; border-radius: 7px; object-fit: cover; }

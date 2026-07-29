@@ -23,6 +23,15 @@
   border-radius: inherit;
   background: var(--mode-game-brand, var(--color-primary));
 }
+.special-title-progress__stats {
+  margin: 8px 0 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--color-paper-muted) !important;
+  font-size: 11px !important;
+}
+.special-title-progress__stats strong { color: var(--color-ink); }
 .special-title-ticket .specials-error { margin: 10px 0 0; color: #8f332e; font-size: 11px; }
 
 .specials-screen,

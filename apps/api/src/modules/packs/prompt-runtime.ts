@@ -121,6 +121,11 @@ export const buildDtfCommentPrompt = ({
     .map(normalizeGameComment)
     .filter((hint): hint is GameComment => Boolean(hint))
     .sort((left, right) => left.unlockAfterAttempts - right.unlockAfterAttempts)
+    .map((hint, index) => ({
+      ...hint,
+      // Six comments and six attempts: reveal one new clue per failed answer.
+      unlockAfterAttempts: index,
+    }))
 
   if (!allHints.length) return null
   const visibleHints = allHints.filter((hint) => hint.unlockAfterAttempts <= attemptsCount)

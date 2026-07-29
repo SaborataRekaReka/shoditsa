@@ -23,7 +23,7 @@ export type GameControllerSnapshot = {
 /** Shared visual shell for local and server-authoritative game controllers. */
 export function GamePageFrame({ controller, navigation, onBack, children }: { controller: GameControllerSnapshot; navigation: GamePageNavigation; onBack: () => void; children: ReactNode }) {
   return <>
-    <AppHeader {...navigation} />
+    <AppHeader {...navigation} hideMobileNav />
     <GameScreenShell
       variant="session"
       onBack={onBack}

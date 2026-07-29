@@ -35,6 +35,12 @@ const answer = {
       sourcePackId: DTF_COMMENTS_PACK_ID,
     },
     {
+      key: 'middle',
+      text: 'Средний комментарий',
+      unlockAfterAttempts: 2,
+      sourcePackId: DTF_COMMENTS_PACK_ID,
+    },
+    {
       key: 'other',
       text: 'Комментарий другого пака',
       unlockAfterAttempts: 0,
@@ -67,8 +73,10 @@ describe('DTF comment runtime', () => {
   it('uses canonical comments progressively and only for the DTF pack', () => {
     expect(buildDtfCommentPrompt(input(0))?.progressiveHints.map((hint) => hint.key))
       .toEqual(['start'])
+    expect(buildDtfCommentPrompt(input(1))?.progressiveHints.map((hint) => hint.key))
+      .toEqual(['start', 'middle'])
     expect(buildDtfCommentPrompt(input(5))?.progressiveHints.map((hint) => hint.key))
-      .toEqual(['start', 'rescue'])
+      .toEqual(['start', 'middle', 'rescue'])
     expect(buildDtfCommentPrompt({ ...input(5), packId: 'regular-pack' })).toBeNull()
   })
 

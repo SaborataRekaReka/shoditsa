@@ -21,9 +21,15 @@ const packCard = async (
   role: ApiRole,
 ): Promise<ContentPack> => {
   if (!isPlayableModeId(pack.mode)) throw new ApiError(404, 'PACK_MODE_NOT_PLAYABLE', 'Этот спецпоказ пока недоступен')
-  const [counts, progressRows, fullAccess] = await Promise.all([
+  const [counts, progressRows, sessionRows, fullAccess] = await Promise.all([
     db.select({ count: sql<number>`count(*)::int` }).from(contentPackEntries).where(and(eq(contentPackEntries.packId, pack.id), eq(contentPackEntries.enabled, true))),
     userId ? db.select().from(userPackProgress).where(and(eq(userPackProgress.userId, userId), eq(userPackProgress.packId, pack.id))).limit(1) : Promise.resolve([]),
+    userId ? db.select({
+      status: gameSessions.status,
+    }).from(gameSessions).where(and(
+      eq(gameSessions.userId, userId),
+      eq(gameSessions.packId, pack.id),
+    )) : Promise.resolve([]),
     canAccessPack(db, userId, pack.id, 1, role),
   ])
   const progress = progressRows[0]
@@ -46,6 +52,8 @@ const packCard = async (
     access: publicAccess(source),
     owned: source === 'personal',
     completedItems: userId ? progress?.completedPositions.length ?? 0 : 0,
+    wonItems: sessionRows.filter((session) => session.status === 'won').length,
+    lostItems: sessionRows.filter((session) => session.status === 'lost' || session.status === 'expired').length,
   }
 }
 

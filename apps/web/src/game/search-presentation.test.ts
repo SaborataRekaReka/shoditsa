@@ -46,5 +46,7 @@ describe('search presentation contract', () => {
 
   it('explains that an empty result belongs to the current pool', () => {
     expect(searchEmptyMessage('series')).toContain('В текущем пуле сериал не найден')
+    expect(searchEmptyMessage('game')).toContain('игра не найдена')
+    expect(searchEmptyMessage('game', true)).not.toContain('другой режим')
   })
 })

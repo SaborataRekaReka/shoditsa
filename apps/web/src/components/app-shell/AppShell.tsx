@@ -80,9 +80,10 @@ export type AppHeaderProps = {
   onCreateRoom?: () => void
   profileActive?: boolean
   minimal?: boolean
+  hideMobileNav?: boolean
 }
 
-export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileActive = false, minimal = false }: AppHeaderProps) {
+export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileActive = false, minimal = false, hideMobileNav = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -241,7 +242,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         </nav>
       </div>
     </header>
-    <nav className={`mobile-app-nav${showRoomEntry ? '' : ' mobile-app-nav--without-room'}`} aria-label="Основная навигация">
+    {!hideMobileNav && <nav className={`mobile-app-nav${showRoomEntry ? '' : ' mobile-app-nav--without-room'}`} aria-label="Основная навигация">
       <button
         className={`mobile-app-nav__item ${mobileSection === 'games' ? 'is-active' : ''}`}
         type="button"
@@ -282,7 +283,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
       >
         <UserRound /><span>Профиль</span>
       </button>
-    </nav>
+    </nav>}
     {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
   </>
 }

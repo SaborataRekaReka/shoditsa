@@ -53,6 +53,8 @@ const legacyGameReference = (prefix: string, suffix: string, sequel: boolean) =>
 }
 
 export const dtfCommentDisplayText = (value: string) => value
+  .replace(/^\s*>\s*/gmu, '')
+  .replace(/А поч нет/giu, 'А почему нет')
   .replace(/\[\s*название игры\s*\](\s+2)?/giu, (match, sequelNumber, offset, source) => legacyGameReference(
     source.slice(0, offset),
     source.slice(offset + match.length),

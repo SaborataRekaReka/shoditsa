@@ -52,4 +52,9 @@ describe('DTF comment feed', () => {
     expect(dtfCommentDisplayText('[название игры] 2 сегодня анонсируют'))
       .toBe('Продолжение этой игры сегодня анонсируют')
   })
+
+  it('removes raw blockquote markers and fixes the known truncated phrase', () => {
+    expect(dtfCommentDisplayText('> «Цитата»\n> А поч нет, обсудим.'))
+      .toBe('«Цитата»\nА почему нет, обсудим.')
+  })
 })

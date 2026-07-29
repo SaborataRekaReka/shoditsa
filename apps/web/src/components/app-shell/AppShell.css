@@ -951,6 +951,20 @@
     white-space: normal;
   }
   .app-footer__copy { text-align: left; }
+
+  .app--game .app-footer__inner {
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .app--game .app-footer__primary,
+  .app--game .app-footer__games,
+  .app--game .app-footer__legal {
+    display: none;
+  }
+
+  .app--game .app-footer__bottom {
+    gap: 3px;
+  }
 }
 
 @media (max-width: 359px) {

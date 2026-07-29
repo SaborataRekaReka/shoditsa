@@ -22,7 +22,7 @@ describe('match summary', () => {
     ])
   })
 
-  it('derives the summary from every exact field, including platforms and categories', () => {
+  it('keeps gameplay matches and drops technical Steam categories', () => {
     const attempts = [{
       titleId: 'game:guess',
       hints: [
@@ -36,8 +36,6 @@ describe('match summary', () => {
     expect(collectMatchSummaryTags(attempts, 'game').map(({ value }) => value)).toEqual([
       '15 ₽',
       'Racing',
-      'Stereo Sound',
-      'Steam Cloud',
       'windows',
     ])
   })

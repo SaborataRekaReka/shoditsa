@@ -1,5 +1,5 @@
 import type { ComponentPropsWithRef, ReactNode, Ref } from 'react'
-import { Check, ChevronRight, Search } from 'lucide-react'
+import { Check, ChevronRight, LoaderCircle, Search } from 'lucide-react'
 import { ControlButton, TextInput } from '../ui'
 import './SearchCombobox.css'
 
@@ -8,6 +8,7 @@ export function SearchCombobox<T>({
   selected = false,
   open,
   loading = false,
+  submitting = false,
   loadingLabel = 'Ищем…',
   suggestions,
   activeIndex = -1,
@@ -26,6 +27,7 @@ export function SearchCombobox<T>({
   selected?: boolean
   open: boolean
   loading?: boolean
+  submitting?: boolean
   loadingLabel?: ReactNode
   suggestions: readonly T[]
   activeIndex?: number
@@ -40,12 +42,14 @@ export function SearchCombobox<T>({
   containerRef?: Ref<HTMLDivElement>
   className?: string
 }) {
-  return <div ref={containerRef} className={`search-picker ui-search-combobox ${className}`.trim()}>
+  return <div ref={containerRef} className={`search-picker ui-search-combobox${submitting ? ' is-submitting' : ''} ${className}`.trim()} aria-busy={submitting}>
     <div className={`search-box ${selected ? 'selected' : ''}`}>
       <Search aria-hidden="true" />
       <TextInput {...inputProps} />
       {selected && <Check className="selected-check" aria-hidden="true" />}
-      <ControlButton onClick={onSubmit} aria-label={submitLabel} disabled={submitDisabled}><ChevronRight /></ControlButton>
+      <ControlButton onClick={onSubmit} aria-label={submitting ? 'Проверяем ответ' : submitLabel} disabled={submitDisabled}>
+        {submitting ? <LoaderCircle className="search-submit-spinner" aria-hidden="true" /> : <ChevronRight />}
+      </ControlButton>
     </div>
     {open && <div className="suggestions" role="listbox" aria-label="Результаты поиска">
       {loading

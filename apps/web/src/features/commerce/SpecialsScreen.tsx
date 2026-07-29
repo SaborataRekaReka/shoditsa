@@ -110,7 +110,7 @@ export function SpecialsScreen({
               <div className="special-card__copy">
                 <span>
                   <Clapperboard /> {packSubject(pack.id, pack.totalItems)}
-                  {pack.id !== KPOP_ARTISTS_PACK_ID && pack.access !== 'locked' && <> · {pack.completedItems} пройдено</>}
+                  {pack.id !== KPOP_ARTISTS_PACK_ID && pack.access !== 'locked' && <> · {pack.completedItems} сыграно</>}
                 </span>
                 <h2>{pack.title}</h2>
                 <p>{pack.subtitle || pack.description}</p>
@@ -262,7 +262,7 @@ export function SpecialDetailScreen({
             stubEnd={isKpopPack ? `${pack.totalItems} АРТИСТОВ` : `${pack.totalItems} ИГР`}
             className={`special-title-ticket ${isKpopPack ? 'special-title-ticket--kpop' : ''}`}
           >
-              <TicketKicker title={isKpopPack ? 'Досье K-pop артиста' : 'Игра «Игры»'} detail={pack.access === 'locked' ? 'только в Клубе' : pack.access === 'admin' ? 'доступно' : pack.access === 'personal' ? 'персональный доступ' : 'доступно в Клубе'} />
+              <TicketKicker title={isKpopPack ? 'Досье K-pop артиста' : 'Игра по комментариям'} detail={pack.access === 'locked' ? 'только в Клубе' : pack.access === 'admin' ? 'доступно' : pack.access === 'personal' ? 'персональный доступ' : 'доступно в Клубе'} />
               <h2 id={isKpopPack ? 'ticket-kpop-artists' : 'ticket-dtf-comments'}>
                 {isKpopPack ? 'Угадайте K-pop артиста' : 'Угадайте игру по комментариям'}
               </h2>
@@ -274,7 +274,7 @@ export function SpecialDetailScreen({
                     <ol>{KPOP_GENERATION_RANGES.map((entry) => <li key={entry.generation}><strong>{entry.label}</strong><span>{entry.years}</span></li>)}</ol>
                   </details>
                 </>
-                : <p>Всё работает как в обычной игре «Игры»: выбирайте ответ из общего каталога и сверяйте подсказки. В этом показе — <strong>6 попыток</strong> на каждую игру.</p>}
+                : <p>Правила знакомы по режиму «Игры»: выбирайте ответ из общего каталога и сверяйте признаки. Здесь комментарии открываются по одному — всего <strong>6 попыток</strong> на каждую игру.</p>}
               {isKpopPack
                 ? <div className="kpop-daily-cadence">
                   <CalendarDays />
@@ -284,9 +284,14 @@ export function SpecialDetailScreen({
                   value={pack.completedItems}
                   max={pack.totalItems}
                   valueLabel={<><strong>{pack.completedItems}</strong> / {pack.totalItems}</>}
-                  label="пройдено"
+                  label="сыграно"
                   className="special-title-progress"
                 />}
+              {!isKpopPack && pack.completedItems > 0 && <p className="special-title-progress__stats">
+                <strong>{pack.completedItems} сыграно</strong>
+                <span>{pack.wonItems ?? 0} угадано</span>
+                <span>{pack.lostItems ?? 0} не угадано</span>
+              </p>}
               {pack.access === 'locked'
                 ? <ClubAccessPanel
                   title="Спецпоказы доступны участникам Клуба"
@@ -305,7 +310,7 @@ export function SpecialDetailScreen({
                   <Play /> {starting ? 'Запускаем…' : isKpopPack ? 'Играть сегодня' : pack.completedItems > 0 ? 'Продолжить' : 'Начать игру'}
                   {canStart && !starting && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
                 </ActionButton>}
-                option={isDtfPack
+                option={isDtfPack && leaderboardQuery.data && !leaderboardQuery.isError
                   ? <GameOptionAction
                     label="Общий зачёт"
                     labelIcon={<Trophy />}

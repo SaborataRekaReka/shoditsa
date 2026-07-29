@@ -44,7 +44,7 @@ import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
 import { apiErrorMessage } from './api/error-message'
 import { DailyProgressStub } from './features/daily-progress/DailyProgressStub'
-import { buildDailyHubState, savedGameAttemptCount } from './features/daily-progress/daily-progress'
+import { buildDailyHubState, isMainRouteGame, savedGameAttemptCount } from './features/daily-progress/daily-progress'
 import { useAuthSession } from './features/auth/use-auth-session'
 import { resetPasswordTokenFromLocation } from './features/auth/auth-helpers'
 import { ChallengeInvite } from './features/challenge/ChallengeInvite'
@@ -101,7 +101,7 @@ import { collectMatchSummaryTags } from './game/match-summary'
 import { attemptProgressStats } from './game/attempt-progress'
 import { searchEmptyMessage, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
-import { commitSuggestionAttempt } from './game/suggestion-attempt'
+import { selectSuggestionForAttempt } from './game/suggestion-attempt'
 import { copyText, shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
@@ -606,7 +606,7 @@ const steamCategoryIcon = (value: string): 'single' | 'multi' | null => {
     const count = Number(countMatch[1])
     return count === 1 ? 'single' : 'multi'
   }
-  if (text.includes('одиноч')) return 'single'
+  if (text.includes('одиноч') || text.includes('single-player') || text.includes('single player') || text === 'singleplayer') return 'single'
   if (text.includes('мульти') || text.includes('кооп') || text.includes('онлайн') || text.includes('игрок')) return 'multi'
   return null
 }
@@ -2172,7 +2172,6 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const attrs = ['country', 'players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
-  const steamCategories = dedupeGameCategories(item.steamCategories ?? [], Boolean(byKey.get('players')))
   const platforms = dedupeGameCategories(item.platforms ?? [], false)
   const developers = dedupeOrganizationNames(item.developers ?? [])
   const publishers = dedupeOrganizationNames(item.publishers ?? [])
@@ -2222,7 +2221,6 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
 
     <div className="dx-clouds">
-      <DxChipCloud label="Категории" hint={byKey.get('steam_categories')} items={steamCategories} limit={6} iconKind="steam-categories" />
       <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={platforms} limit={6} />
     </div>
   </article>
@@ -3061,13 +3059,12 @@ function Game({
           emptyMessage={mode === 'music'
             ? <span>Артист не входит в выбранную сложность. <ControlButton type="button" onClick={onBack}>Сменить сложность</ControlButton></span>
             : searchEmptyMessage(mode)}
-          submitDisabled={!selected && !suggestions.length}
+          submitDisabled={!selected}
           onSubmit={() => {
             if (selected) submit()
-            else if (suggestions.length) commitSuggestionAttempt(suggestions[activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0], selectSuggestion, submit)
           }}
           onSuggestionHover={(_, index) => dispatchSession({ type: 'set_active_index', index })}
-          onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
+          onSuggestionSelect={(item) => selectSuggestionForAttempt(item, selectSuggestion)}
           getSuggestionKey={(item) => item.id}
           renderSuggestion={(item) => <>
             <Poster item={item} />
@@ -3176,6 +3173,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const client = useQueryClient()
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<PublicContentItem | null>(null)
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0)
   const debouncedQuery = useDebouncedValue(query.trim(), 120)
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
@@ -3219,6 +3217,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       attemptKeyRef.current = null
       setQuery('')
       setSelected(null)
+      setActiveSuggestionIndex(0)
       setMessage('')
       if (response.reward) {
         setLastAward(response.reward)
@@ -3335,6 +3334,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setLeaderboardOpen(false)
     setQuery('')
     setSelected(null)
+    setActiveSuggestionIndex(0)
     setSelectedFinalCandidateId(null)
     finalChoiceKeyRef.current = null
     finalChoiceShownRef.current = null
@@ -3658,7 +3658,13 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         onRevealDialogCancel={() => trackClientEvent('final_choice_reveal_cancelled', { sessionId, mode: session.mode, kind: session.kind, packId: session.packId, attemptsCount: session.attemptsCount }, { gameSessionId: sessionId })}
       />}
       {session.status === 'final_choice' && <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => setGameMatchStripOpen((current) => !current)} />}
-      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
+      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} packProgress={isDtfCommentSession && packDetail.data?.pack ? {
+        played: packDetail.data.pack.completedItems,
+        won: packDetail.data.pack.wonItems ?? 0,
+        lost: packDetail.data.pack.lostItems ?? 0,
+        total: packDetail.data.pack.totalItems,
+        roundScore: 100 + (session.status === 'won' ? 50 + Math.max(0, maxAttempts - attempts.length) * 10 : 0),
+      } : undefined} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
         ? onBack
         : isPackSession
         ? () => {
@@ -3669,41 +3675,58 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => routeCompleted ? onHome() : onPlayNext(nextMode)} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
-      {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && <div className="dtf-result-leaderboard-action">
+      {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && packLeaderboard.data && !packLeaderboard.isError && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
       {['won', 'lost', 'expired'].includes(session.status) && message && <InlineAlert tone="danger" className="specials-error">{message}</InlineAlert>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
-        <div className="sticky-composer__status"><span>Попытка {Math.min(session.attemptsCount + 1, maxAttempts)} из {maxAttempts}</span></div>
+        <div className="sticky-composer__status" role="status" aria-live="polite">
+          <span>{attempt.isPending ? 'Проверяем ответ…' : `Попытка ${Math.min(session.attemptsCount + 1, maxAttempts)} из ${maxAttempts}`}</span>
+        </div>
         <SearchCombobox
           inputProps={{
             id: 'movie-search',
             value: query,
             autoComplete: 'off',
             placeholder: modeMeta(session.mode).searchPlaceholder,
-            onChange: (event) => { setQuery(event.target.value); setSelected(null); attemptKeyRef.current = null; setMessage('') },
+            onChange: (event) => { setQuery(event.target.value); setSelected(null); setActiveSuggestionIndex(0); attemptKeyRef.current = null; setMessage('') },
             onKeyDown: (event) => {
-              if (event.key !== 'Enter') return
-              event.preventDefault()
-              if (selected) submit(selected)
-              else if (suggestions[0]) selectSuggestion(suggestions[0])
+              if (event.key === 'ArrowDown') {
+                if (!suggestions.length || selected) return
+                event.preventDefault()
+                setActiveSuggestionIndex((current) => Math.min(current + 1, suggestions.length - 1))
+                return
+              }
+              if (event.key === 'ArrowUp') {
+                if (!suggestions.length || selected) return
+                event.preventDefault()
+                setActiveSuggestionIndex((current) => Math.max(0, current - 1))
+                return
+              }
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                if (selected) submit(selected)
+                else if (suggestions.length) selectSuggestion(suggestions[activeSuggestionIndex] ?? suggestions[0])
+              }
             },
             disabled: attempt.isPending,
           }}
           selected={Boolean(selected)}
           open={isSuggestionsOpen}
           loading={searchPending}
+          submitting={attempt.isPending}
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
+          activeIndex={activeSuggestionIndex}
           emptyMessage={session.mode === 'music'
             ? <span>Артист не входит в выбранную сложность. <ControlButton type="button" onClick={onBack}>Сменить сложность</ControlButton></span>
-            : searchEmptyMessage(session.mode)}
-          submitDisabled={attempt.isPending || (!selected && !suggestions.length)}
+            : searchEmptyMessage(session.mode, isDtfCommentSession)}
+          submitDisabled={attempt.isPending || !selected}
           onSubmit={() => {
-            const candidate = selected ?? suggestions[0]
-            if (candidate) submit(candidate)
+            if (selected) submit(selected)
           }}
-          onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
+          onSuggestionHover={(_, index) => setActiveSuggestionIndex(index)}
+          onSuggestionSelect={(item) => selectSuggestionForAttempt(item, selectSuggestion)}
           getSuggestionKey={(item) => item.id}
           renderSuggestion={(item) => {
             const title = publicItemToTitle(item)
@@ -4333,6 +4356,8 @@ function GameApp() {
   const completedDifficulties = useMemo(() => {
     const today = getMoscowDate()
     return DIFFICULTY_ORDER.filter((difficultyKey) => games.some((game) => (
+      isMainRouteGame(game)
+      &&
       game.mode === 'music'
       && game.date === today
       && game.difficulty === difficultyKey
@@ -4343,6 +4368,8 @@ function GameApp() {
     const today = getMoscowDate()
     return games
       .filter((game) => (
+        isMainRouteGame(game)
+        &&
         game.mode === mode
         && game.date === today
         && (game.status === 'won' || game.status === 'lost' || game.status === 'expired')
