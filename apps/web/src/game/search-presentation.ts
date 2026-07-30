@@ -68,6 +68,7 @@ const MODE_EMPTY_COPY: Record<TitleMode, { subject: string; missing: string }> =
 }
 
 export const searchEmptyMessage = (mode: TitleMode, fixedMode = false) => {
+  if (mode === 'music') return 'Ничего не найдено.'
   const copy = MODE_EMPTY_COPY[mode]
   return `В текущем пуле ${copy.subject} ${copy.missing}. ${fixedMode
     ? 'Проверьте написание или попробуйте другой вариант.'

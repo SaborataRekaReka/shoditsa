@@ -48,5 +48,6 @@ describe('search presentation contract', () => {
     expect(searchEmptyMessage('series')).toContain('В текущем пуле сериал не найден')
     expect(searchEmptyMessage('game')).toContain('игра не найдена')
     expect(searchEmptyMessage('game', true)).not.toContain('другой режим')
+    expect(searchEmptyMessage('music')).toBe('Ничего не найдено.')
   })
 })

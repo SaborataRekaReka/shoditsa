@@ -101,7 +101,7 @@ import { collectMatchSummaryTags } from './game/match-summary'
 import { attemptProgressStats } from './game/attempt-progress'
 import { searchEmptyMessage, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
-import { selectSuggestionForAttempt } from './game/suggestion-attempt'
+import { commitSuggestionAttempt } from './game/suggestion-attempt'
 import { copyText, shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
@@ -3056,15 +3056,13 @@ function Game({
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
           activeIndex={activeSuggestionIndex}
-          emptyMessage={mode === 'music'
-            ? <span>Артист не входит в выбранную сложность. <ControlButton type="button" onClick={onBack}>Сменить сложность</ControlButton></span>
-            : searchEmptyMessage(mode)}
+          emptyMessage={searchEmptyMessage(mode)}
           submitDisabled={!selected}
           onSubmit={() => {
             if (selected) submit()
           }}
           onSuggestionHover={(_, index) => dispatchSession({ type: 'set_active_index', index })}
-          onSuggestionSelect={(item) => selectSuggestionForAttempt(item, selectSuggestion)}
+          onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
           getSuggestionKey={(item) => item.id}
           renderSuggestion={(item) => <>
             <Poster item={item} />
@@ -3718,15 +3716,13 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
           activeIndex={activeSuggestionIndex}
-          emptyMessage={session.mode === 'music'
-            ? <span>Артист не входит в выбранную сложность. <ControlButton type="button" onClick={onBack}>Сменить сложность</ControlButton></span>
-            : searchEmptyMessage(session.mode, isDtfCommentSession)}
+          emptyMessage={searchEmptyMessage(session.mode, isDtfCommentSession)}
           submitDisabled={attempt.isPending || !selected}
           onSubmit={() => {
             if (selected) submit(selected)
           }}
           onSuggestionHover={(_, index) => setActiveSuggestionIndex(index)}
-          onSuggestionSelect={(item) => selectSuggestionForAttempt(item, selectSuggestion)}
+          onSuggestionSelect={(item) => commitSuggestionAttempt(item, selectSuggestion, submit)}
           getSuggestionKey={(item) => item.id}
           renderSuggestion={(item) => {
             const title = publicItemToTitle(item)

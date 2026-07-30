@@ -1,13 +1,17 @@
 import { describe, expect, it, vi } from 'vitest'
-import { selectSuggestionForAttempt } from './suggestion-attempt'
+import { commitSuggestionAttempt } from './suggestion-attempt'
 
-describe('selectSuggestionForAttempt', () => {
-  it('selects a suggestion without spending an attempt', () => {
+describe('commitSuggestionAttempt', () => {
+  it('selects and immediately submits the clicked suggestion', () => {
     const suggestion = { id: 'movie:1' }
-    const select = vi.fn()
+    const calls: string[] = []
+    const select = vi.fn((item: typeof suggestion) => calls.push(`select:${item.id}`))
+    const submit = vi.fn((item: typeof suggestion) => calls.push(`submit:${item.id}`))
 
-    selectSuggestionForAttempt(suggestion, select)
+    commitSuggestionAttempt(suggestion, select, submit)
 
+    expect(calls).toEqual(['select:movie:1', 'submit:movie:1'])
     expect(select).toHaveBeenCalledWith(suggestion)
+    expect(submit).toHaveBeenCalledWith(suggestion)
   })
 })
