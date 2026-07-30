@@ -39,6 +39,7 @@ import {
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
+import { trackDiagnosisGoal } from './app/diagnosis-analytics'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -2861,11 +2862,26 @@ function Game({
       attempt: nextAttempts.length,
       status: nextStatus,
     })
+    if (mode === 'diagnosis') {
+      trackDiagnosisGoal('attempt', {
+        period: effectivePeriod,
+        attempt: nextAttempts.length,
+        status: nextStatus,
+      })
+    }
     if (nextStatus === 'won') {
       trackMetrikaGoal('game_won', { mode, period: effectivePeriod, attempts: nextAttempts.length })
+      if (mode === 'diagnosis') trackDiagnosisGoal('win', { period: effectivePeriod, attempts: nextAttempts.length })
     }
     if (nextStatus === 'lost') {
       trackMetrikaGoal('game_lost', { mode, period: effectivePeriod, attempts: nextAttempts.length })
+    }
+    if (mode === 'diagnosis' && nextStatus !== 'playing') {
+      trackDiagnosisGoal('complete', {
+        period: effectivePeriod,
+        attempts: nextAttempts.length,
+        outcome: nextStatus,
+      })
     }
     if (nextStatus !== 'playing' && challenge) {
       const outcome = challengeOutcome(nextAttempts.length, challenge.opponentAttempts)
@@ -2915,6 +2931,7 @@ function Game({
   const copyResult = async () => {
     const ok = await copyText(`${resultShareText}\n${challengeLink}`)
     trackMetrikaGoal(ok ? 'share_copy' : 'share_copy_error', { mode, period: effectivePeriod, status })
+    if (ok && mode === 'diagnosis') trackDiagnosisGoal('share', { period: effectivePeriod, status })
     if (!ok) dispatchSession({ type: 'set_message', message: 'Не удалось скопировать результат' })
     setCopied(ok)
     if (ok) setTimeout(() => setCopied(false), 1800)
@@ -3006,7 +3023,11 @@ function Game({
         telegramUrl={telegramUrl}
         challengeOutcome={challenge ? challengeOutcome(attempts.length, challenge.opponentAttempts) : undefined}
         opponentAttempts={challenge?.opponentAttempts}
-        onNext={() => routeCompleted ? onHome() : onPlayNext(nextMode)}
+        onNext={() => {
+          if (mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: effectivePeriod, outcome: status })
+          if (routeCompleted) onHome()
+          else onPlayNext(nextMode)
+        }}
         configureLabel={configureLabel}
         onConfigure={onConfigureMode}
         onChallenge={shareChallenge}
@@ -3229,6 +3250,36 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       setSelected(null)
       setActiveSuggestionIndex(0)
       setMessage('')
+      const attemptAnalytics = {
+        mode: session?.mode ?? 'unknown',
+        period: session?.period ?? 'unknown',
+        attempt: response.session.attemptsCount,
+        status: response.session.status,
+      }
+      trackMetrikaGoal('submit_attempt', attemptAnalytics)
+      if (session?.mode === 'diagnosis') {
+        trackDiagnosisGoal('attempt', {
+          period: session.period,
+          attempt: response.session.attemptsCount,
+          status: response.session.status,
+        })
+      }
+      if (response.session.status === 'won') {
+        trackMetrikaGoal('game_won', { ...attemptAnalytics, attempts: response.session.attemptsCount })
+        if (session?.mode === 'diagnosis') {
+          trackDiagnosisGoal('win', { period: session.period, attempts: response.session.attemptsCount })
+        }
+      }
+      if (response.session.status === 'lost' || response.session.status === 'expired') {
+        trackMetrikaGoal('game_lost', { ...attemptAnalytics, attempts: response.session.attemptsCount })
+      }
+      if (session?.mode === 'diagnosis' && ['won', 'lost', 'expired'].includes(response.session.status)) {
+        trackDiagnosisGoal('complete', {
+          period: session.period,
+          attempts: response.session.attemptsCount,
+          outcome: response.session.status,
+        })
+      }
       if (response.reward) {
         setLastAward(response.reward)
         trackClientEvent('ticket_earned', {
@@ -3288,6 +3339,25 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       finalChoiceKeyRef.current = null
       setSelectedFinalCandidateId(response.selectedItemId)
       setMessage('')
+      const finalChoiceAnalytics = {
+        mode: session?.mode ?? 'unknown',
+        period: session?.period ?? 'unknown',
+        attempts: response.session.attemptsCount,
+        status: response.session.status,
+        completionType: response.session.completionType ?? 'standard',
+      }
+      if (response.session.status === 'won') {
+        trackMetrikaGoal('game_won', finalChoiceAnalytics)
+        if (session?.mode === 'diagnosis') trackDiagnosisGoal('win', finalChoiceAnalytics)
+      } else {
+        trackMetrikaGoal('game_lost', finalChoiceAnalytics)
+      }
+      if (session?.mode === 'diagnosis') {
+        trackDiagnosisGoal('complete', {
+          ...finalChoiceAnalytics,
+          outcome: response.session.status,
+        })
+      }
       if (response.reward) {
         setLastAward(response.reward)
         trackClientEvent('ticket_earned', {
@@ -3617,6 +3687,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
   const copyResult = async () => {
     const ok = await copyText(`${shareText}\n${challengeLink}`)
+    trackMetrikaGoal(ok ? 'share_copy' : 'share_copy_error', { mode: session.mode, period: session.period, status: session.status })
+    if (ok && session.mode === 'diagnosis') trackDiagnosisGoal('share', { period: session.period, status: session.status })
     setCopied(ok)
     if (ok) window.setTimeout(() => setCopied(false), 1800)
   }
@@ -3684,7 +3756,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             }
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
-        : () => routeCompleted ? onHome() : onPlayNext(nextMode)} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+        : () => {
+            if (session.mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: session.period, outcome: session.status })
+            if (routeCompleted) onHome()
+            else onPlayNext(nextMode)
+          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && packLeaderboard.data && !packLeaderboard.isError && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
@@ -4869,6 +4945,7 @@ function GameApp() {
     }
     if (transition === 'title-to-game') return
     trackMetrikaGoal('start_session', { mode, period })
+    if (mode === 'diagnosis') trackDiagnosisGoal('start', { period })
     if (SERVER_RUNTIME) {
       setServerActionError('')
       setFreePlayArmed(false)

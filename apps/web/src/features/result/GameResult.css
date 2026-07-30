@@ -17,6 +17,36 @@
 .ticket-award--claimed svg { width: 14px; height: 14px; color: var(--color-success-ink); }
 .result-disclaimer { margin-top: 12px !important; padding: 9px 11px; border-left: 3px solid var(--color-accent); color: var(--color-muted) !important; background: color-mix(in srgb, var(--color-accent-soft) 22%, transparent); font-size: 11px !important; line-height: 1.5; }
 .result-card__wide { grid-column: 1/-1; }
+.diagnosis-result-funnel {
+  padding: 11px 12px;
+  border: 1px solid color-mix(in srgb, var(--palette-brand-green) 35%, var(--color-paper-line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--palette-brand-green) 8%, var(--color-paper));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.diagnosis-result-funnel__copy { display: grid; gap: 2px; }
+.diagnosis-result-funnel__copy strong { font: 500 16px/1.1 Oswald, sans-serif; text-transform: uppercase; }
+.diagnosis-result-funnel__copy span { color: var(--color-paper-muted); font-size: 12px; }
+.diagnosis-result-funnel__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.diagnosis-result-funnel__actions a {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: 10px;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.diagnosis-result-funnel__actions a:hover { border-color: var(--palette-brand-green); }
+.diagnosis-result-funnel__actions svg { width: 15px; height: 15px; color: var(--palette-brand-green); }
 .result-route { margin-top: 10px; padding: 8px 10px; border: 1px solid var(--color-paper-line); border-radius: 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .result-route strong { font: 500 15px Oswald, sans-serif; text-transform: uppercase; }
 .result-route span { color: var(--color-paper-muted); font-size: 12px; text-align: right; }
@@ -57,6 +87,9 @@
 .result-card > .poster-fallback { width: 120px; height: 172px; }
 }
 @media (max-width: 719px) {
+  .diagnosis-result-funnel { align-items: stretch; flex-direction: column; }
+  .diagnosis-result-funnel__actions { justify-content: stretch; }
+  .diagnosis-result-funnel__actions a { flex: 1 1 150px; justify-content: center; }
   .result-pack-progress { grid-template-columns: 1fr auto; }
   .result-pack-progress span { grid-column: 1 / -1; text-align: left; }
 }

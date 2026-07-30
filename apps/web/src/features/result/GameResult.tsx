@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
+  CalendarDays,
   ChevronDown,
+  Save,
   Send,
   Ticket,
 } from 'lucide-react'
@@ -10,7 +12,9 @@ import { ContentReport, type ContentReportReason } from '../content-report/Conte
 import type { TitleMode } from '../../types'
 import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
+import { trackDiagnosisGoal } from '../../app/diagnosis-analytics'
 import { publicAssetUrl } from '../../app/public-asset'
+import { useAuthSession } from '../auth/use-auth-session'
 import { formatDays } from '../../game'
 import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
@@ -71,6 +75,9 @@ type Props = {
 export function GameResult(props: Props) {
   const [rewardOpen, setRewardOpen] = useState(false)
   const resultRef = useRef<HTMLElement>(null)
+  const diagnosisResultKeyRef = useRef('')
+  const { session: authSession, loading: authLoading } = useAuthSession()
+  const isGuest = !authSession || authSession.isAnonymous
   useEffect(() => {
     if (props.autoScroll === false) return
     let innerFrame = 0
@@ -82,6 +89,17 @@ export function GameResult(props: Props) {
       window.cancelAnimationFrame(innerFrame)
     }
   }, [props.autoScroll])
+  useEffect(() => {
+    if (props.mode !== 'diagnosis') return
+    const resultKey = [props.title, props.won, props.attempts, props.completionType ?? 'standard'].join(':')
+    if (diagnosisResultKeyRef.current === resultKey) return
+    diagnosisResultKeyRef.current = resultKey
+    trackDiagnosisGoal('result', {
+      outcome: props.won ? 'won' : 'lost',
+      attempts: props.attempts,
+      completionType: props.completionType ?? 'standard',
+    })
+  }, [props.attempts, props.completionType, props.mode, props.title, props.won])
   const outcomeText = props.challengeOutcome === 'won' ? 'Вы победили!' : props.challengeOutcome === 'lost' ? 'Друг оказался быстрее' : 'Ничья!'
   const nextLabelSeparator = props.nextLabel.indexOf(':')
   const hasNextDestination = nextLabelSeparator >= 0
@@ -153,6 +171,20 @@ export function GameResult(props: Props) {
       showCopy
       showReplayGate={props.completedToday !== undefined}
     />
+    {props.mode === 'diagnosis' && <section className="diagnosis-result-funnel result-card__wide" aria-label="Что дальше">
+      <div className="diagnosis-result-funnel__copy">
+        <strong>Новый пациент — завтра</strong>
+        <span>Вернитесь завтра или сыграйте в архиве.</span>
+      </div>
+      <div className="diagnosis-result-funnel__actions">
+        {!authLoading && isGuest && <a href="/register" onClick={() => trackDiagnosisGoal('save', { placement: 'result' })}>
+          <Save aria-hidden="true" /> Сохранить прогресс
+        </a>}
+        <a href="/club" onClick={() => trackDiagnosisGoal('archive', { placement: 'result' })}>
+          <CalendarDays aria-hidden="true" /> Архив диагнозов
+        </a>
+      </div>
+    </section>}
     {props.award && <details className="reward-breakdown result-card__wide" open={rewardOpen} onToggle={(event) => setRewardOpen(event.currentTarget.open)}>
       <summary role="button" aria-expanded={rewardOpen} aria-controls="result-reward-details"><span>{rewardIcon} {props.award.alreadyClaimed ? 'Награда уже получена' : `Получено +${props.award.total} ${countWord(props.award.total, ['билет', 'билета', 'билетов'])}`}</span><ChevronDown /></summary>
       {!props.award.alreadyClaimed && <ul id="result-reward-details">

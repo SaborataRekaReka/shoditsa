@@ -80,4 +80,11 @@ describe('search index contract', () => {
     expect(route.canonicalPath).toBe('/club')
     expect(route.title).toContain('Клуб')
   })
+
+  it('targets the diagnosis game intent without presenting medical advice', () => {
+    expect(GAME_SEO.diagnosis.title).toContain('Игра «Угадай диагноз»')
+    expect(GAME_SEO.diagnosis.description).toContain('Угадайте болезнь')
+    expect(GAME_SEO.diagnosis.description).toContain('игровой диагноз')
+    expect(GAME_SEO.diagnosis.description).not.toContain('лечение')
+  })
 })

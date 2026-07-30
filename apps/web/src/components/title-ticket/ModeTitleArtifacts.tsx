@@ -33,8 +33,8 @@ export function DiagnosisTitleCard({
     </div>
     <div className="med-chart__body">
       <div className="med-chart__kicker"><span>Амбулаторная карта</span><i /> <small>анонимный пациент</small></div>
-      <h2 id={id}>Ежедневная игра: диагнозы</h2>
-      <p>Каждый день — новый пациент с набором симптомов. У вас есть <strong>10 попыток</strong>, чтобы поставить верный диагноз по признакам.</p>
+      <h2 id={id}>Игра «Угадай диагноз»</h2>
+      <p>Угадайте болезнь по симптомам и поставьте игровой диагноз за <strong>10 попыток</strong>. Новый пациент каждый день.</p>
       {hasAnamnesis && <ControlButton className="med-chart__anamnesis" onClick={onReadAnamnesis}>
         <span className="med-chart__anamnesis-portrait" aria-hidden="true"><UserRound /></span>
         <span className="med-chart__anamnesis-copy"><strong>Анамнез пациента</strong><small>С чем пациент пришёл на приём</small></span>
