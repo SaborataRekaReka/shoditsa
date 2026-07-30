@@ -1,0 +1,363 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:glaucus-atlanticus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "голубой дракон",
+    "commonNameEn": "Glacos gaculos",
+    "scientificName": "Glaucus atlanticus",
+    "acceptedScientificName": "Glaucus atlanticus",
+    "aliasesRu": [
+      "Glaucus atlanticus"
+    ],
+    "wikidataId": "Q131757",
+    "gbifKey": 5190072,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Mollusca",
+    "taxonomicClass": "Gastropoda",
+    "order": "Nudibranchia",
+    "family": "Glaucidae",
+    "genus": "Glaucus",
+    "species": "Glaucus atlanticus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Gastropoda",
+    "bodyCoverings": [
+      "soft-body",
+      "shell"
+    ],
+    "habitats": [
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "oceania",
+      "africa",
+      "north-america",
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "crawl"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Blue dragon-glaucus atlanticus (8599051974).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/Blue_dragon-glaucus_atlanticus_%288599051974%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Blue dragon-glaucus atlanticus (8599051974).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Blue_dragon-glaucus_atlanticus_(8599051974).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/Blue_dragon-glaucus_atlanticus_%288599051974%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Sylke Rohrlach from Sydney",
+      "credit": "Blue dragon-glaucus atlanticus",
+      "description": "Also known as Sea Swallow, Blue Glaucus, Blue Sea Slug, Blue Ocean Slug and Lizard Nudibranch. Washed ashore at Bronte Beach, Sydney, NSW. Diet: Bluebottle (physalia physalis) Speciality: Stores stinging nematocysts from the bluebottle within its own tissues, which is additional protection from predation Discovered: 1777, Forster.",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:21.921Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Glaucus atlanticus 1 cropped.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Glaucus_atlanticus_1_cropped.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/Glaucus_atlanticus_1_cropped.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Taro Taylor from Sydney, Australia",
+        "credit": "Glaucus_atlanticus_1.jpg",
+        "description": "This Glaucus atlanticus was washed up on Surfers Paradise Beach in Queensland Australia. It is about 35 mm in length. The species swims upside-down and is accordingly countershaded for that position.",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:21.921Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 44,
+    "ruWikipediaTitle": "Glaucus atlanticus",
+    "ruWikipediaPageviews365d": 21176,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 68.04,
+    "playabilityScore": 65.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 53.95,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Glaucus atlanticus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q131757",
+      "url": "https://www.wikidata.org/wiki/Q131757",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Glaucus atlanticus",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/Glaucus_atlanticus/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5190072",
+      "url": "https://www.gbif.org/species/5190072",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Glaucus atlanticus Forster, 1777",
+        "gbifSourceClass": "Gastropoda",
+        "normalizedGameClass": "Gastropoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5190072",
+      "url": "https://www.gbif.org/species/5190072",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5190072",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5190072&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 734,
+          "AFRICA": 139,
+          "NORTH_AMERICA": 136,
+          "LATIN_AMERICA": 119,
+          "EUROPE": 51,
+          "ASIA": 48
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Blue dragon-glaucus atlanticus (8599051974).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Blue_dragon-glaucus_atlanticus_(8599051974).jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Glaucus atlanticus 1 cropped.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Glaucus_atlanticus_1_cropped.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Blue dragon-glaucus atlanticus (8599051974).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Blue_dragon-glaucus_atlanticus_(8599051974).jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:40:21.921Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats",
+        "criteria.lifestyles"
+      ],
+      "source": "Existing sourced taxonomy/habitat + project normalization rules",
+      "sourceId": "5190072",
+      "url": "https://www.gbif.org/species/5190072",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:47:45.488Z",
+      "method": "deterministic class/order/family and habitat-to-lifestyle rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.aliasesRu"
+      ],
+      "source": "Project editorial Russian terminology",
+      "sourceId": "Q131757",
+      "url": "https://www.wikidata.org/wiki/Q131757",
+      "license": "factual vernacular terminology",
+      "retrievedAt": "2026-07-30T19:50:01.479Z",
+      "method": "human-reviewed Russian display name for a taxon whose Wikidata Russian label is scientific-only",
+      "confidence": 0.9,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:21.921Z"
+}

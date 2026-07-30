@@ -1,0 +1,842 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:psittacula-krameri",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Индийский кольчатый попугай",
+    "commonNameEn": "Rose-ringed Parakeet",
+    "scientificName": "Psittacula krameri",
+    "acceptedScientificName": "Psittacula krameri",
+    "aliasesRu": [
+      "Ожереловый попугай Крамера",
+      "Psittacula krameri",
+      "Индийский кольчатый попугай",
+      "Попугай Крамера"
+    ],
+    "wikidataId": "Q208060",
+    "gbifKey": 2479226,
+    "hagrid": "01641"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Psittaciformes",
+    "family": "Psittacidae",
+    "genus": "Psittacula",
+    "species": "Psittacula krameri",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [
+      "freshwater",
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "asia",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore",
+      "frugivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.11611,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 34,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 909,
+      "male": 0
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 50,
+      "nectar": 10,
+      "seeds": 20,
+      "otherPlants": 20
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:African Rose-ringed Parakeet, Tamanrasset, Algeria 1.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/African_Rose-ringed_Parakeet%2C_Tamanrasset%2C_Algeria_1.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Rose ringed parakeet range.PNG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rose_ringed_parakeet_range.PNG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Rose_ringed_parakeet_range.PNG",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "DSWebb at English Wikipedia",
+        "credit": "Originally from en.wikipedia ; description page is/was here , update from IUCN map. Original uploader was DSWebb at English Wikipedia , update by MPF .",
+        "description": "Rose-ringed Parakeet range with national borders added",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:06.060Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:African Rose-ringed Parakeet, Tamanrasset, Algeria 1.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:African_Rose-ringed_Parakeet,_Tamanrasset,_Algeria_1.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/African_Rose-ringed_Parakeet%2C_Tamanrasset%2C_Algeria_1.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "mourad-harzallah",
+      "credit": "https://www.inaturalist.org/photos/177346192",
+      "description": "African Rose-ringed Parakeet Psittacula krameri krameri , Tamanrasset, Algeria.",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:37:06.060Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Rose-ringed parakeet (Psittacula krameri borealis) male Jaipur.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rose-ringed_parakeet_(Psittacula_krameri_borealis)_male_Jaipur.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/Rose-ringed_parakeet_%28Psittacula_krameri_borealis%29_male_Jaipur.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Charles J. Sharp",
+        "credit": "Own work , from Sharp Photography, sharpphotography.co.uk",
+        "description": "Rose-ringed parakeet ( Psittacula krameri borealis ) male, Jahalana, Jaipur, Rajasthan",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:06.060Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Rose ringed parakeet ( Psittacula krameri) മോതിര തത്ത , നാട്ടു തത്ത 4.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rose_ringed_parakeet_(_Psittacula_krameri)_%E0%B4%AE%E0%B5%8B%E0%B4%A4%E0%B4%BF%E0%B4%B0_%E0%B4%A4%E0%B4%A4%E0%B5%8D%E0%B4%A4_,_%E0%B4%A8%E0%B4%BE%E0%B4%9F%E0%B5%8D%E0%B4%9F%E0%B5%81_%E0%B4%A4%E0%B4%A4%E0%B5%8D%E0%B4%A4_4.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Rose_ringed_parakeet_%28_Psittacula_krameri%29_%E0%B4%AE%E0%B5%8B%E0%B4%A4%E0%B4%BF%E0%B4%B0_%E0%B4%A4%E0%B4%A4%E0%B5%8D%E0%B4%A4_%2C_%E0%B4%A8%E0%B4%BE%E0%B4%9F%E0%B5%8D%E0%B4%9F%E0%B5%81_%E0%B4%A4%E0%B4%A4%E0%B5%8D%E0%B4%A4_4.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Afsarnayakkan",
+        "credit": "Own work",
+        "description": "കണ്ണൂർ കാട്ടാമ്പള്ളി",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:06.060Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 67,
+    "ruWikipediaTitle": "Индийский кольчатый попугай",
+    "ruWikipediaPageviews365d": 29625,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 71.89,
+    "playabilityScore": 88.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 67.02,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q208060",
+      "url": "https://www.wikidata.org/wiki/Q208060",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Индийский кольчатый попугай",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%98%D0%BD%D0%B4%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9_%D0%BA%D0%BE%D0%BB%D1%8C%D1%87%D0%B0%D1%82%D1%8B%D0%B9_%D0%BF%D0%BE%D0%BF%D1%83%D0%B3%D0%B0%D0%B9/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2479226",
+      "url": "https://www.gbif.org/species/2479226",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Psittacula krameri (Scopoli, 1769)",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2479226",
+      "url": "https://www.gbif.org/species/2479226",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2479226",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2479226&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 1159024,
+          "EUROPE": 701627,
+          "AFRICA": 43111,
+          "NORTH_AMERICA": 25220,
+          "LATIN_AMERICA": 3845,
+          "OCEANIA": 969
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2479226",
+      "url": "https://api.gbif.org/v1/species/2479226/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2479226",
+      "url": "https://api.gbif.org/v1/species/2479226/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - South Africa"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Ireland"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Saudi Arabia"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species- Egypt"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - United Arab Emirates"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cuba"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bangladesh"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Italy"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Portugal"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - State of Palestine"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Iraq"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Cayman Islands"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Grand Cayman, Cayman Islands"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bhutan"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Austria"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Israel"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cabo Verde"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Belgium"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Barbados"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Qatar"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Maldives"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Slovenia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Poland"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Turkey"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Turkey"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - China"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Germany"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Spain"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Kenya"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Silhouette National Park, Seychelles"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Oman"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Georgia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - France"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Japan"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Forest; Artificial - Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Hawaii, United States (ver.2.0, 2022)"
+          },
+          {
+            "habitat": "Forest; Artificial - Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - United States (Contiguous) (ver.2.0, 2022)"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Iran"
+          },
+          {
+            "habitat": "ARBOREO;TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2479226",
+      "url": "https://api.gbif.org/v1/species/2479226/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Psittacula krameri",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01641",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "575",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:African Rose-ringed Parakeet, Tamanrasset, Algeria 1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:African_Rose-ringed_Parakeet,_Tamanrasset,_Algeria_1.jpg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Rose-ringed parakeet (Psittacula krameri borealis) male Jaipur.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rose-ringed_parakeet_(Psittacula_krameri_borealis)_male_Jaipur.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Rose ringed parakeet ( Psittacula krameri) മോതിര തത്ത , നാട്ടു തത്ത 4.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rose_ringed_parakeet_(_Psittacula_krameri)_%E0%B4%AE%E0%B5%8B%E0%B4%A4%E0%B4%BF%E0%B4%B0_%E0%B4%A4%E0%B4%A4%E0%B5%8D%E0%B4%A4_,_%E0%B4%A8%E0%B4%BE%E0%B4%9F%E0%B5%8D%E0%B4%9F%E0%B5%81_%E0%B4%A4%E0%B4%A4%E0%B5%8D%E0%B4%A4_4.jpg",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Rose ringed parakeet range.PNG",
+      "url": "https://commons.wikimedia.org/wiki/File:Rose_ringed_parakeet_range.PNG",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:African Rose-ringed Parakeet, Tamanrasset, Algeria 1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:African_Rose-ringed_Parakeet,_Tamanrasset,_Algeria_1.jpg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:06.060Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:37:06.060Z"
+}

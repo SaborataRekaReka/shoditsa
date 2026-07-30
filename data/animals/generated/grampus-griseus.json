@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:grampus-griseus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "серый дельфин",
+    "commonNameEn": "Risso's Dolphin",
+    "scientificName": "Grampus griseus",
+    "acceptedScientificName": "Grampus griseus",
+    "aliasesRu": [
+      "Grampus griseus",
+      "серые дельфины",
+      "дельфин Риссо"
+    ],
+    "wikidataId": "Q203897",
+    "gbifKey": 5220027,
+    "hagrid": "02290"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Cetacea",
+    "family": "Delphinidae",
+    "genus": "Grampus",
+    "species": "Grampus griseus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "smooth-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe",
+      "north-america",
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore",
+      "insectivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular"
+    ],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 387.5,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 42.5,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 3652,
+      "male": 3652
+    },
+    "gestationOrIncubationDays": 365,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 50,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 50,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "marine",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Leachia dislocata",
+          "externalId": "COL:3SNZX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Enoploteuthis chunii",
+          "externalId": "COL:39WSQ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopoteuthis deletron",
+          "externalId": "WD:Q1223166",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus macropus",
+          "externalId": "WD:Q2235326",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus salutii",
+          "externalId": "WD:Q2496043",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Salpa fusiformis",
+          "externalId": "COL:79F95",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Abraliopsis morisii",
+          "externalId": "COL:8LMR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ocythoe tuberculata",
+          "externalId": "WD:Q2467252",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Soestia zonaria",
+          "externalId": "COL:4XYWZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mastigopsis hjorti",
+          "externalId": "COL:3YD4Q",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sthenoteuthis oualaniensis",
+          "externalId": "WD:Q2700655",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tremoctopus violaceus",
+          "externalId": "WD:Q3201248",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Brachioteuthis riisei",
+          "externalId": "FBC:SLB:SpecCode:58120",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eucleoteuthis luminosa",
+          "externalId": "WD:Q2537161",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Onychoteuthis banksii",
+          "externalId": "WD:Q2519387",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chiroteuthis veranyi",
+          "externalId": "WD:Q2963967",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ancistroteuthis lichtensteini",
+          "externalId": "FBC:SLB:SpecCode:58113",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Heteroteuthis dispar",
+          "externalId": "WD:Q2105518",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pholidoteuthis boschmai",
+          "externalId": "WD:Q2428902",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ancistrocheirus lesueurii",
+          "externalId": "COL:KZQJ6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Taonius pavo",
+          "externalId": "WD:Q1056197",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Histioteuthis reversa",
+          "externalId": "WD:Q2471939",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ommastrephes bartramii",
+          "externalId": "WD:Q2812306",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Illex coindetii",
+          "externalId": "WD:Q929591",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Todaropsis eblanae",
+          "externalId": "WD:Q1863218",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Histioteuthis bonnellii",
+          "externalId": "WD:Q744574",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eledone cirrhosa",
+          "externalId": "WD:Q3201483",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Todarodes sagittatus",
+          "externalId": "WD:Q1151502",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Argonauta argo",
+          "externalId": "FBC:SLB:SpecCode:58226",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pyrosoma atlanticum",
+          "externalId": "COL:4QVDK",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Carcharodon carcharias",
+          "externalId": "NCBI:13397",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Urocyon littoralis clementae",
+          "externalId": "COL:5LPQV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Orcinus orca",
+          "externalId": "PBDB:64541",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Rundkopfdelfin.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Rundkopfdelfin.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Grampus griseus distribution.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Grampus_griseus_distribution.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Grampus_griseus_distribution.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "",
+        "credit": "",
+        "description": "",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:35:08.864Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Rundkopfdelfin.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rundkopfdelfin.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Rundkopfdelfin.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "National Marine Mammal Laboratory, no individual author credit given",
+      "credit": "US gov photo",
+      "description": "Grampus griseus",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:35:08.864Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 57,
+    "ruWikipediaTitle": "Серый дельфин",
+    "ruWikipediaPageviews365d": 3576,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 61.01,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 59.38,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q203897",
+      "url": "https://www.wikidata.org/wiki/Q203897",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Серый дельфин",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B5%D1%80%D1%8B%D0%B9_%D0%B4%D0%B5%D0%BB%D1%8C%D1%84%D0%B8%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5220027",
+      "url": "https://www.gbif.org/species/5220027",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Grampus griseus (G.Cuvier, 1812)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5220027",
+      "url": "https://www.gbif.org/species/5220027",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5220027",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5220027&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 22854,
+          "NORTH_AMERICA": 13194,
+          "ASIA": 3989,
+          "LATIN_AMERICA": 1095,
+          "AFRICA": 607,
+          "OCEANIA": 527,
+          "ANTARCTICA": 69
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5220027",
+      "url": "https://api.gbif.org/v1/species/5220027/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Grampus griseus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02290",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "tiny",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Grampus griseus",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Grampus%20griseus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Grampus griseus",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Grampus%20griseus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Rundkopfdelfin.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rundkopfdelfin.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Grampus griseus distribution.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Grampus_griseus_distribution.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Rundkopfdelfin.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rundkopfdelfin.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:35:08.864Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:35:08.864Z"
+}

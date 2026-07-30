@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:panthera-onca",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "ягуар",
+    "commonNameEn": "jaguar",
+    "scientificName": "Panthera onca",
+    "acceptedScientificName": "Panthera onca",
+    "aliasesRu": [
+      "Panthera onca",
+      "американский тигр",
+      "ягуары"
+    ],
+    "wikidataId": "Q35694",
+    "gbifKey": 5219426,
+    "hagrid": "02128"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Felidae",
+    "genus": "Panthera",
+    "species": "Panthera onca",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 100,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 28,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 730,
+      "male": 730
+    },
+    "gestationOrIncubationDays": 99,
+    "litterOrClutchSize": 2
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 80,
+      "ectothermicVertebrates": 10,
+      "fish": 10,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Mazama temama",
+          "externalId": "EOL:4446125",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dolichotis salinicola",
+          "externalId": "EOL:1038701",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bradypus variegatus",
+          "externalId": "COL:N5F8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tamandua mexicana",
+          "externalId": "COL:54M4Y",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Leontopithecus caissara",
+          "externalId": "PBDB:390512",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sciurus aestuans",
+          "externalId": "COL:4VNCS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chaetomys subspinosus",
+          "externalId": "COL:TD52",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dasyprocta azarae",
+          "externalId": "COL:349QV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Galea musteloides",
+          "externalId": "COL:3F38C",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cuniculus paca",
+          "externalId": "COL:6BPX8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sylvilagus brasiliensis",
+          "externalId": "COL:53N8R",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sylvilagus cunicularius",
+          "externalId": "COL:53N8V",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Leopardus wiedii",
+          "externalId": "COL:3T78F",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Galictis vittata",
+          "externalId": "COL:3F53J",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Conepatus leuconotus",
+          "externalId": "COL:XLCD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Nasua narica",
+          "externalId": "COL:6S6BF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Potos flavus",
+          "externalId": "COL:4M6YV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Conepatus semistriatus",
+          "externalId": "COL:XLCF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mephitis macroura",
+          "externalId": "COL:3ZT5H",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tapirus terrestris",
+          "externalId": "COL:54TGS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mazama americana",
+          "externalId": "COL:3YJ7P",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mazama gouazoupira",
+          "externalId": "NCBI:52407",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Brachyteles arachnoides",
+          "externalId": "NCBI:30594",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dasyprocta punctata",
+          "externalId": "COL:349R6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bassaricyon gabbii",
+          "externalId": "EOL:328060",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pecari tajacu",
+          "externalId": "EOL:1037712",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tayassu pecari",
+          "externalId": "EOL:357663",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mazama gouazoubira",
+          "externalId": "EOL:129579",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bos taurus",
+          "externalId": "EOL:328699",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Odocoileus virginianus",
+          "externalId": "EOL:328652",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Leopardus pardalis",
+          "externalId": "NCBI:32538",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Jaguar saw.flac",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Jaguar_saw.flac",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Jaguar_saw.flac",
+        "mimeType": "audio/x-flac",
+        "mediaType": "AUDIO",
+        "author": "About Zoos",
+        "credit": "YouTube : https://www.youtube.com/watch?v=VJ0RCZXu0v4 – View/save archived versions on archive.org",
+        "description": "The \"saw\" sound made by a jaguar. The audio was extracted from a CC BY licensed video recorded by About Zoos at Attica Zoological Park, Greece.",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:24.821Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Junior-Jaguar-Belize-Zoo.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/Junior-Jaguar-Belize-Zoo.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Panthera onca distribution.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Panthera_onca_distribution.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/92/Panthera_onca_distribution.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Milenioscuro",
+        "credit": "Own work . Base map derived from File:BlankMap-Equirectangular.svg . Distribution data from Panthera onca (IUCN Red List) and File:Cypron-Range Panthera onca.svg .",
+        "description": "Jaguar (Panthera onca) range Extant. Former extant.",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:24.821Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Cypron-Range Panthera onca ca.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cypron-Range_Panthera_onca_ca.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/69/Cypron-Range_Panthera_onca_ca.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Cypron-Range Panthera onca.svg : The Emirr/MapLab ( talk ). The original uploader was The Emirr/MapLab at English Wikipedia . translator: Manlleus (ca)",
+        "credit": "This file was derived from: Cypron-Range Panthera onca.svg :",
+        "description": "Range of jaguar ( Panthera onca ).",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:24.821Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Junior-Jaguar-Belize-Zoo.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Junior-Jaguar-Belize-Zoo.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/Junior-Jaguar-Belize-Zoo.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Bjørn Christian Tørrissen",
+      "credit": "Own work by uploader, http://bjornfree.com/galleries.html",
+      "description": "A three-year-old jaguar kept at the Belize Zoo, west of Belize City, Belize.",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:33:24.821Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Panthera onca ,Yaguareté macho , 27.09.2023 , Bioparque de Fundacion Temaiken , Escobar , Buenos aires , Argentina.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Panthera_onca_,Yaguaret%C3%A9_macho_,_27.09.2023_,_Bioparque_de_Fundacion_Temaiken_,_Escobar_,_Buenos_aires_,_Argentina.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/Panthera_onca_%2CYaguaret%C3%A9_macho_%2C_27.09.2023_%2C_Bioparque_de_Fundacion_Temaiken_%2C_Escobar_%2C_Buenos_aires_%2C_Argentina.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Naturaleza en.foco",
+        "credit": "Own work",
+        "description": "Panthera onca ,Yaguareté macho",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:24.821Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 131,
+    "ruWikipediaTitle": "Ягуар",
+    "ruWikipediaPageviews365d": 134227,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 82.69,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 74.74,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q35694",
+      "url": "https://www.wikidata.org/wiki/Q35694",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Ягуар",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%AF%D0%B3%D1%83%D0%B0%D1%80/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219426",
+      "url": "https://www.gbif.org/species/5219426",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Panthera onca (Linnaeus, 1758)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5219426",
+      "url": "https://www.gbif.org/species/5219426",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5219426",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5219426&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 143981,
+          "NORTH_AMERICA": 631,
+          "EUROPE": 90,
+          "ASIA": 1,
+          "AFRICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219426",
+      "url": "https://api.gbif.org/v1/species/5219426/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Panthera onca",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02128",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "high"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Panthera onca",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Panthera%20onca&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Panthera onca",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Panthera%20onca&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Junior-Jaguar-Belize-Zoo.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Junior-Jaguar-Belize-Zoo.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Panthera onca ,Yaguareté macho , 27.09.2023 , Bioparque de Fundacion Temaiken , Escobar , Buenos aires , Argentina.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Panthera_onca_,Yaguaret%C3%A9_macho_,_27.09.2023_,_Bioparque_de_Fundacion_Temaiken_,_Escobar_,_Buenos_aires_,_Argentina.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Jaguar saw.flac",
+      "url": "https://commons.wikimedia.org/wiki/File:Jaguar_saw.flac",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Panthera onca distribution.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Panthera_onca_distribution.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Cypron-Range Panthera onca ca.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Cypron-Range_Panthera_onca_ca.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Junior-Jaguar-Belize-Zoo.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Junior-Jaguar-Belize-Zoo.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:24.821Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:33:24.821Z"
+}

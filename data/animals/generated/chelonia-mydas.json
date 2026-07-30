@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:chelonia-mydas",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Зелёная черепаха",
+    "commonNameEn": "Chelonia mydas",
+    "scientificName": "Chelonia mydas",
+    "acceptedScientificName": "Chelonia mydas",
+    "aliasesRu": [
+      "Зеленая черепаха",
+      "Суповая морская черепаха",
+      "Суповые черепахи",
+      "Черепаха зелёная",
+      "Chelonia mydas",
+      "Зелёная морская черепаха",
+      "Зелёные черепахи",
+      "Суповая черепаха"
+    ],
+    "wikidataId": "Q199458",
+    "gbifKey": 2442225,
+    "hagrid": "03684"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Testudines",
+    "family": "Cheloniidae",
+    "genus": "Chelonia",
+    "species": "Chelonia mydas",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales",
+      "shell"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "oceania",
+      "africa",
+      "europe",
+      "north-america",
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 160,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 75,
+      "maximumObservedContext": "unknown"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 3650,
+      "male": 3650
+    },
+    "gestationOrIncubationDays": 59,
+    "litterOrClutchSize": 150
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q96377276",
+      "statusLabelRu": "вымирающие виды",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Green sea turtle (Chelonia mydas) Moorea.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Green_sea_turtle_%28Chelonia_mydas%29_Moorea.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Lieux pontes tortue verte.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lieux_pontes_tortue_verte.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Lieux_pontes_tortue_verte.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Pinpin",
+        "credit": "own work from Inscape, with [1]",
+        "description": "Nesting location of Green sea Turtle : red dot = major nesting locations, yellow dot=minor nesting locations",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:47.942Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Green sea turtle (Chelonia mydas) Moorea.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Green_sea_turtle_(Chelonia_mydas)_Moorea.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Green_sea_turtle_%28Chelonia_mydas%29_Moorea.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Charles J. Sharp",
+      "credit": "Own work , from Sharp Photography, sharpphotography.co.uk",
+      "description": "Green sea turtle ( Chelonia mydas ), Moorea, French Polynesia",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:38:47.942Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Hawaii turtle 2.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hawaii_turtle_2.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Hawaii_turtle_2.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Brocken Inaglory",
+        "credit": "Photograph by Brocken Inaglory , edited by Keta",
+        "description": "Green turtle ( Chelonia mydas ), Hawai'i, USA.",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:47.942Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202304 Green turtle.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202304_Green_turtle.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/202304_Green_turtle.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2023.111",
+        "description": "Green turtle",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:47.942Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 73,
+    "ruWikipediaTitle": "Зелёная черепаха",
+    "ruWikipediaPageviews365d": 21192,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 70.77,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 60.42,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q199458",
+      "url": "https://www.wikidata.org/wiki/Q199458",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Зелёная черепаха",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%97%D0%B5%D0%BB%D1%91%D0%BD%D0%B0%D1%8F_%D1%87%D0%B5%D1%80%D0%B5%D0%BF%D0%B0%D1%85%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q96377276",
+      "url": "https://www.wikidata.org/wiki/Q96377276",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2442225",
+      "url": "https://www.gbif.org/species/2442225",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "species/match (EXACT, confidence 97)",
+      "confidence": 0.97,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Chelonia mydas (Linnaeus, 1758)",
+        "gbifSourceClass": "Testudines",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2442225",
+      "url": "https://www.gbif.org/species/2442225",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2442225",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2442225&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 137883,
+          "AFRICA": 32929,
+          "EUROPE": 23135,
+          "NORTH_AMERICA": 20861,
+          "LATIN_AMERICA": 20337,
+          "ASIA": 17676
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2442225",
+      "url": "https://api.gbif.org/v1/species/2442225/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03684",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "",
+        "specimenOrigin": "unknown",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Green sea turtle (Chelonia mydas) Moorea.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Green_sea_turtle_(Chelonia_mydas)_Moorea.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Hawaii turtle 2.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Hawaii_turtle_2.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202304 Green turtle.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202304_Green_turtle.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lieux pontes tortue verte.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Lieux_pontes_tortue_verte.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Green sea turtle (Chelonia mydas) Moorea.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Green_sea_turtle_(Chelonia_mydas)_Moorea.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:38:47.942Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:38:47.942Z"
+}

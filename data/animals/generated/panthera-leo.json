@@ -1,0 +1,897 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:panthera-leo",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "лев",
+    "commonNameEn": "lion",
+    "scientificName": "Panthera leo",
+    "acceptedScientificName": "Panthera leo",
+    "aliasesRu": [
+      "азиатский лев",
+      "большая кошка",
+      "царь зверей",
+      "африканский лев"
+    ],
+    "wikidataId": "Q140",
+    "gbifKey": 5219404,
+    "hagrid": "02127"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Felidae",
+    "genus": "Panthera",
+    "species": "Panthera leo",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 161.49906,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 28,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 1095,
+      "male": 1095
+    },
+    "gestationOrIncubationDays": 109,
+    "litterOrClutchSize": 3
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 90,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 10,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Crocodylus niloticus cowiei",
+          "externalId": "COL:5DXLW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Giraffa giraffa giraffa",
+          "externalId": "COL:5HGSZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Giraffa tippelskirchi tippelskirchi",
+          "externalId": "COL:KPK7C",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Alopochen aegyptiaca",
+          "externalId": "EOL:45511473",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cephalophus niger",
+          "externalId": "EOL:328709",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Colobus vellerosus",
+          "externalId": "COL:X6S9",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Connochaetes gnou",
+          "externalId": "EOL:308530",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Axis axis",
+          "externalId": "EOL:313989",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chlorocebus pygerythrus",
+          "externalId": "COL:69VWT",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Parahyaena brunnea",
+          "externalId": "COL:4CX4N",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tragelaphus strepsiceros",
+          "externalId": "EOL:1038792",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Kobus vardonii",
+          "externalId": "EOL:328726",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Kobus leche",
+          "externalId": "EOL:328712",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tetracerus quadricornis",
+          "externalId": "EOL:1038785",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cephalophus rufilatus",
+          "externalId": "EOL:328721",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Orycteropus afer",
+          "externalId": "COL:74ZNF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chlorocebus sabaeus",
+          "externalId": "COL:5XW96",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Papio cynocephalus",
+          "externalId": "COL:4CKYY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Papio anubis",
+          "externalId": "COL:6TM9B",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Semnopithecus entellus",
+          "externalId": "COL:4WHHG",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Colobus guereza",
+          "externalId": "COL:5ZN3P",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Papio ursinus",
+          "externalId": "COL:4CKZP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hystrix indica",
+          "externalId": "COL:3P6S4",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hystrix cristata",
+          "externalId": "COL:3P6RV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hystrix africaeaustralis",
+          "externalId": "COL:7VHZY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Caracal caracal",
+          "externalId": "COL:QZRR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Civettictis civetta",
+          "externalId": "COL:VMQL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Leptailurus serval",
+          "externalId": "COL:3THH7",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Genetta genetta",
+          "externalId": "COL:3FKP4",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mellivora capensis",
+          "externalId": "COL:3ZLBF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Parahyaena brunnea",
+          "externalId": "COL:4CX4N",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hyaena brunnea",
+          "externalId": "GBIF:5218780",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "COL:4CGXR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Polemaetus bellicosus",
+          "externalId": "COL:4KXD4",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Orcinus orca",
+          "externalId": "NCBI:9733",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Desmodus rotundus",
+          "externalId": "NCBI:9430",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "NCBI:9612",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis aureus",
+          "externalId": "NCBI:68724",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Carcharodon carcharias",
+          "externalId": "NCBI:13397",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q278113",
+      "statusLabelRu": "находятся в уязвимом положении",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Lion raring-sound1TamilNadu178.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "த*உழவன்",
+        "credit": "Own work",
+        "description": "the roaring of a lion in captivity தமிழ்: விலங்கியல் பூங்காவிலுள்ள, ஆண் சிங்கத்தின் குரல்.ஒலி சீரமைப்புச் செய்யப்பட்டது.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.835Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Lion in masai mara.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Lion_in_masai_mara.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Lion distribution.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_distribution.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_distribution.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Tommyknocker ( talk )",
+        "credit": "Own work using: The present distribution in Africa is based upon a map created by 'The African Lion Environmental Research Trust (ALERT) which can be viewed here. http://www.wildlifeextra.com/go/news/lion-reintroduction.html#cr . While I consider this a reliable source, I researched two countries in depth to verify this, Uganda and Namibia. The map is indeed correctly shaded in the National Parks where lions are present. However I did not include the 'Occasional' shaded areas as these are obviously much more ambiguous. For the historic distribution, which will never be completely accurate, I used information here on Wikipedia with its own sources.",
+        "description": "Geographical distribution of lions. Red (and blue) shows areas historically inhabited, blue shows areas currently inhabited.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.835Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Lion (Panthera leo) IUCN range 2023.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_(Panthera_leo)_IUCN_range_2023.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/Lion_%28Panthera_leo%29_IUCN_range_2023.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Maqdisi",
+        "credit": "Own work",
+        "description": "Lion (Panthera leo) IUCN range 2023",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.835Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Lion distribution-ca.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_distribution-ca.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/98/Lion_distribution-ca.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Lion_distribution.png : Tommyknocker ( talk ). The original uploader was Tommyknocker at English Wikipedia . translator: Manlleus (ca) - For translations of this file, you can contact user Manlleus for the XCF project file (for GIMP editing software)",
+        "credit": "This file was derived from: Lion distribution.png :",
+        "description": "Geographical distribution of lions. Red (and blue) shows areas historically inhabited, blue shows areas currently inhabited.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.835Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Lion in masai mara.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_in_masai_mara.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Lion_in_masai_mara.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Sumit.pamnani at English Wikipedia",
+      "credit": "Transferred from en.wikipedia to Commons by Leptictidium using CommonsHelper .",
+      "description": "Male East African lion at Masai Mara, Kenya",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:32:58.835Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Okonjima Lioness.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Okonjima_Lioness.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Okonjima_Lioness.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Falense",
+        "credit": "Own work",
+        "description": "Lioness at Okonjima Lodge, Namibia",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.835Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:PZ lion pride.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:PZ_lion_pride.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7e/PZ_lion_pride.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "GinaFranchi",
+        "credit": "Own work",
+        "description": "Paignton Zoo's lion pride",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.835Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 274,
+    "ruWikipediaTitle": "Лев",
+    "ruWikipediaPageviews365d": 186244,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 88.26,
+    "playabilityScore": 94.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 80.14,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q140",
+      "url": "https://www.wikidata.org/wiki/Q140",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Лев",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9B%D0%B5%D0%B2/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q278113",
+      "url": "https://www.wikidata.org/wiki/Q278113",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219404",
+      "url": "https://www.gbif.org/species/5219404",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Panthera leo (Linnaeus, 1758)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5219404",
+      "url": "https://www.gbif.org/species/5219404",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5219404",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5219404&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 16067,
+          "EUROPE": 784,
+          "ASIA": 240,
+          "NORTH_AMERICA": 207,
+          "LATIN_AMERICA": 11
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219404",
+      "url": "https://api.gbif.org/v1/species/5219404/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219404",
+      "url": "https://api.gbif.org/v1/species/5219404/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Panthera leo",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02127",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1306",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Panthera leo",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Panthera%20leo&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Panthera leo",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Panthera%20leo&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lion in masai mara.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lion_in_masai_mara.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Okonjima Lioness.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Okonjima_Lioness.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:PZ lion pride.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:PZ_lion_pride.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lion raring-sound1TamilNadu178.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lion distribution.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Lion_distribution.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lion (Panthera leo) IUCN range 2023.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lion_(Panthera_leo)_IUCN_range_2023.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lion distribution-ca.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Lion_distribution-ca.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Lion in masai mara.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lion_in_masai_mara.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:32:58.835Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:32:58.835Z"
+}

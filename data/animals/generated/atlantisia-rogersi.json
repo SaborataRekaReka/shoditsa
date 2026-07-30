@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:atlantisia-rogersi",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Тристанский пастушок",
+    "commonNameEn": "Laterallus rogersi",
+    "scientificName": "Atlantisia rogersi",
+    "acceptedScientificName": "Atlantisia rogersi",
+    "aliasesRu": [
+      "Пастушок острова Неприступного",
+      "Atlantisia rogersi",
+      "Атлантизии",
+      "Атлантисия",
+      "Атлантизия",
+      "Тристанские пастушки"
+    ],
+    "wikidataId": "Q757000",
+    "gbifKey": 5228134,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Gruiformes",
+    "family": "Rallidae",
+    "genus": "Atlantisia",
+    "species": "Atlantisia rogersi",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "africa",
+      "antarctica",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.039270000000000006,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 60,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 20,
+      "nectar": 0,
+      "seeds": 20,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Atlantisia rogersi scematic.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Atlantisia_rogersi_scematic.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Tristan Map.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Tristan_Map.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Tristan_Map.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "No machine-readable author provided. Varp~commonswiki assumed (based on copyright claims).",
+        "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+        "description": "Map of Tristan da Cunha Group, Southern Atlantic Ocean drawn by varp",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:44.870Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Atlantisia rogersi scematic.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Atlantisia_rogersi_scematic.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Atlantisia_rogersi_scematic.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "No machine-readable author provided. HubertHauser~commonswiki assumed (based on copyright claims).",
+      "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+      "description": "Atlantisia rogersi",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:37:44.870Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 36,
+    "ruWikipediaTitle": "Тристанский пастушок",
+    "ruWikipediaPageviews365d": 4831,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 59.97,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 28.57,
+    "totalScore": 57.8,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 90,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Atlantisia rogersi"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q757000",
+      "url": "https://www.wikidata.org/wiki/Q757000",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Тристанский пастушок",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A2%D1%80%D0%B8%D1%81%D1%82%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D0%BF%D0%B0%D1%81%D1%82%D1%83%D1%88%D0%BE%D0%BA/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5228134",
+      "url": "https://www.gbif.org/species/5228134",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Atlantisia rogersi Lowe, 1923",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5228134",
+      "url": "https://www.gbif.org/species/5228134",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5228134",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5228134&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 69,
+          "ANTARCTICA": 8,
+          "EUROPE": 8
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5228134",
+      "url": "https://api.gbif.org/v1/species/5228134/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Atlantisia rogersi",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Atlantisia rogersi scematic.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Atlantisia_rogersi_scematic.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Tristan Map.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Tristan_Map.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Atlantisia rogersi scematic.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Atlantisia_rogersi_scematic.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:37:44.870Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:37:44.870Z"
+}

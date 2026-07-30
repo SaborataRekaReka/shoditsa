@@ -8,6 +8,7 @@ const modeLabels: Record<CatalogGuessModeId, string> = {
   city: 'Города',
   music: 'Музыка',
   diagnosis: 'Диагнозы',
+  animal: 'Животные',
 }
 
 export const friendsRoomSummaryTitle = (room: FriendsRoomSummary) => {

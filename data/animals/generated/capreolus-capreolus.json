@@ -1,0 +1,895 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:capreolus-capreolus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "европейская косуля",
+    "commonNameEn": "roe deer",
+    "scientificName": "Capreolus capreolus",
+    "acceptedScientificName": "Capreolus capreolus",
+    "aliasesRu": [
+      "Capreolus capreolus",
+      "Capreolinae",
+      "косуля европейская"
+    ],
+    "wikidataId": "Q122069",
+    "gbifKey": 5220126,
+    "hagrid": "02018"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Artiodactyla",
+    "family": "Cervidae",
+    "genus": "Capreolus",
+    "species": "Capreolus capreolus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "medium",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 22.5,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 17.5,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 413,
+      "male": 655
+    },
+    "gestationOrIncubationDays": 153,
+    "litterOrClutchSize": 1.6
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 100
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Hedera helix",
+          "externalId": "ITIS:29393",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Picea glauca",
+          "externalId": "COL:4HQ2V",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Picea abies",
+          "externalId": "COL:4HPZF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cytisus scoparius",
+          "externalId": "COL:33S3C",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pseudotsuga menziesii",
+          "externalId": "COL:6WHCL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vaccinium myrtillus",
+          "externalId": "COL:7F76T",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Calluna vulgaris",
+          "externalId": "COL:PWBL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lonicera confusa",
+          "externalId": "COL:3VZ66",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pinus halepensis",
+          "externalId": "COL:4J27Y",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Picea sitchensis",
+          "externalId": "EOL:1033696",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cistus salviifolius",
+          "externalId": "NCBI:335170",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubia peregrina",
+          "externalId": "NCBI:29801",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Crataegus monogyna",
+          "externalId": "NCBI:140997",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prunus spinosa",
+          "externalId": "NCBI:114937",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Quercus suber",
+          "externalId": "NCBI:58331",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus albiflorus",
+          "externalId": "WD:Q17246049",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus bregutiensis",
+          "externalId": "WD:Q12901864",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus baruthicus",
+          "externalId": "WD:Q17248694",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus canaliculatus",
+          "externalId": "WD:Q17247356",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus clusii",
+          "externalId": "WD:Q17245375",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus conspicuus",
+          "externalId": "WD:Q17247081",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus condensatus",
+          "externalId": "WD:Q17245492",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus devitatus",
+          "externalId": "WD:Q17247520",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus doerrii",
+          "externalId": "WD:Q17246978",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus distractus",
+          "externalId": "WD:Q17246123",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus divaricatus",
+          "externalId": "WD:Q10505242",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus festii",
+          "externalId": "WD:Q17248162",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus foliosus",
+          "externalId": "WD:Q17249704",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus grossus",
+          "externalId": "WD:Q17250562",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus flexuosus",
+          "externalId": "WD:Q17246256",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Ursus arctos",
+          "externalId": "FBC:SLB:SpecCode:69193",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gulo gulo",
+          "externalId": "FBC:SLB:SpecCode:69197",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mustela putorius",
+          "externalId": "FBC:SLB:SpecCode:71105",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Martes martes",
+          "externalId": "FBC:SLB:SpecCode:71094",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mustela nivalis",
+          "externalId": "FBC:SLB:SpecCode:69199",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Martes foina",
+          "externalId": "FBC:SLB:SpecCode:71092",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera tigris",
+          "externalId": "COL:4CGXS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "COL:QLXL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Felis silvestris",
+          "externalId": "COL:3DXW2",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lynx lynx",
+          "externalId": "COL:6QR9T",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "COL:4CGXR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vulpes vulpes",
+          "externalId": "COL:5BSG3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis aureus",
+          "externalId": "COL:QLX7",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Leistotrophus murinus",
+          "externalId": "https://www.inaturalist.org/taxa/1640788",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Milvus milvus",
+          "externalId": "COL:43DZJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ursus arctos arctos",
+          "externalId": "COL:5LPWN",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bubo bubo",
+          "externalId": "COL:NKSD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Haliaeetus albicilla",
+          "externalId": "COL:3JBJV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Herpestes ichneumon",
+          "externalId": "COL:3L2WF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Aquila chrysaetos",
+          "externalId": "COL:FZLP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Corvus corax",
+          "externalId": "COL:YNHG",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Buteo buteo",
+          "externalId": "COL:NYV7",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hyaena hyaena",
+          "externalId": "COL:6MGT8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Felis chaus",
+          "externalId": "COL:3DXV4",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sus scrofa majori",
+          "externalId": "NCBI:1611880",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vespula germanica",
+          "externalId": "COL:7G2VS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lynx lynx lynx",
+          "externalId": "COL:5JGKQ",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus italicus",
+          "externalId": "COL:V5FJ4",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus lupus",
+          "externalId": "COL:5G6ZW",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Capreolus (js)11.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Capreolus_%28js%2911.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Capreolus (js)11.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Capreolus_(js)11.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Capreolus_%28js%2911.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Jerzystrzelecki",
+      "credit": "Own work",
+      "description": "اليحمور الأوروبي في لودز في بولندا",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:20.988Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Reh EO5P1624-2.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Reh_EO5P1624-2.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Reh_EO5P1624-2.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Frank Liebig",
+        "credit": "Archiv Frank Liebig",
+        "description": "Reh in Mecklenburg",
+        "license": "CC BY-SA 3.0 de",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:20.988Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 107,
+    "ruWikipediaTitle": "Европейская косуля",
+    "ruWikipediaPageviews365d": 36301,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 75.39,
+    "playabilityScore": 83.2,
+    "distinctivenessScore": 20,
+    "delightScore": 28.57,
+    "totalScore": 65.44,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue.",
+      "Commons file rejected by license policy: File:Areale Capreolus capreolus.jpg (GPL)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q122069",
+      "url": "https://www.wikidata.org/wiki/Q122069",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Европейская косуля",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%95%D0%B2%D1%80%D0%BE%D0%BF%D0%B5%D0%B9%D1%81%D0%BA%D0%B0%D1%8F_%D0%BA%D0%BE%D1%81%D1%83%D0%BB%D1%8F/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5220126",
+      "url": "https://www.gbif.org/species/5220126",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Capreolus capreolus (Linnaeus, 1758)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5220126",
+      "url": "https://www.gbif.org/species/5220126",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5220126",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5220126&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 2748062,
+          "ASIA": 383,
+          "NORTH_AMERICA": 9
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5220126",
+      "url": "https://api.gbif.org/v1/species/5220126/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5220126",
+      "url": "https://api.gbif.org/v1/species/5220126/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Ireland"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Jordan"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Capreolus capreolus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02018",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Capreolus capreolus",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Capreolus%20capreolus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Capreolus capreolus",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Capreolus%20capreolus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Capreolus (js)11.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Capreolus_(js)11.jpg",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Reh EO5P1624-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Reh_EO5P1624-2.jpg",
+      "license": "CC BY-SA 3.0 de",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Capreolus (js)11.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Capreolus_(js)11.jpg",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:20.988Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:20.988Z"
+}

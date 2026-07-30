@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:tursiops-australis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Tursiops australis",
+    "commonNameEn": "Burrunan dolphin",
+    "scientificName": "Tursiops australis",
+    "acceptedScientificName": "Tursiops australis",
+    "aliasesRu": [],
+    "wikidataId": "Q1016955",
+    "gbifKey": 5846985,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Cetacea",
+    "family": "Delphinidae",
+    "genus": "Tursiops",
+    "species": "Tursiops australis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "smooth-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Dauphin australie.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Dauphin_australie.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.0 fr",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Dauphin australie.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dauphin_australie.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Dauphin_australie.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "",
+      "credit": "",
+      "description": "",
+      "license": "CC BY-SA 2.0 fr",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:35:49.849Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 25,
+    "ruWikipediaTitle": "Tursiops australis",
+    "ruWikipediaPageviews365d": 570,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 47.92,
+    "playabilityScore": 56.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 42.43,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "EltonTraits has no exact row for Tursiops australis",
+      "AnAge has no exact row for Tursiops australis"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q1016955",
+      "url": "https://www.wikidata.org/wiki/Q1016955",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Tursiops australis",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/Tursiops_australis/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5846985",
+      "url": "https://www.gbif.org/species/5846985",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Tursiops australis Charlton-Robb, Gershwin, Thompson, Austin, Owen & McKechnie, 2011",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5846985",
+      "url": "https://www.gbif.org/species/5846985",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5846985",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5846985&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 465
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5846985",
+      "url": "https://api.gbif.org/v1/species/5846985/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dauphin australie.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dauphin_australie.jpg",
+      "license": "CC BY-SA 2.0 fr",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Dauphin australie.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dauphin_australie.jpg",
+      "license": "CC BY-SA 2.0 fr",
+      "retrievedAt": "2026-07-30T19:35:49.849Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:35:49.849Z"
+}

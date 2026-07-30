@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:strigops-habroptila",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "какапо",
+    "commonNameEn": "Kakapo",
+    "scientificName": "Strigops habroptila",
+    "acceptedScientificName": "Strigops habroptila",
+    "aliasesRu": [
+      "Совиный попугай",
+      "Совиные попугаи",
+      "Strigops habroptilus",
+      "Strigops habroptila"
+    ],
+    "wikidataId": "Q179959",
+    "gbifKey": 2479236,
+    "hagrid": "01654"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Psittaciformes",
+    "family": "Psittacidae",
+    "genus": "Strigops",
+    "species": "Strigops habroptila",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 1.7320499999999999,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 60,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 3650,
+      "male": 1825
+    },
+    "gestationOrIncubationDays": 30,
+    "litterOrClutchSize": 2.5
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 30,
+      "nectar": 0,
+      "seeds": 20,
+      "otherPlants": 50
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q219127",
+      "statusLabelRu": "виды на грани исчезновения",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:051226-kakapo-billbooming.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:051226-kakapo-billbooming.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ee/051226-kakapo-billbooming.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Mnolf",
+        "credit": "Own work, Recorded on Codfish Island, New Zealand If you don't hear anything, try this file instead.",
+        "description": "The sound of a Kakapo 's \"booming\".",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.585Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Sirocco full length portrait.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Sirocco_full_length_portrait.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Kakapohist.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Kakapohist.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Kakapohist.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Msikma",
+        "credit": "Own work based on: ✦ Kakapohist.png by James Dignan ✦ NZ Locator Blank.svg by Ozhiker Miller, Hilary C. (2003). \" Minisatellite DNA profiling detects lineages and parentage in the endangered Kakapo (Strigops habroptilus) despite low microsatellite DNA variation \". Conservation Genetics 4 : 265–274. DOI : https://doi.org/10.1023/A:1024037601708 .",
+        "description": "Map of historic en:Kākāpō distribution. Maximum distribution since 1840 Fossil evidence",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.585Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Sirocco full length portrait.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sirocco_full_length_portrait.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Sirocco_full_length_portrait.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Department of Conservation",
+      "credit": "https://www.flickr.com/photos/docnz/4015891720/",
+      "description": "A full length parrot portrait. Sirocco the kakapo poses for the camera. Photo: Mike Bodie.",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:27.585Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Buller Kakapo.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Buller_Kakapo.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/Buller_Kakapo.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "John Gerrard Keulemans",
+        "credit": "http://www.nzbirds.com/Buller2ndKakapoLg.html",
+        "description": "By J. G. Keulemans, in W.L. Buller's A History of the Birds of New Zealand , 2nd edition. Published 1888.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.585Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 85,
+    "ruWikipediaTitle": "Какапо",
+    "ruWikipediaPageviews365d": 75490,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 77.61,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 72.6,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q179959",
+      "url": "https://www.wikidata.org/wiki/Q179959",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Какапо",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9A%D0%B0%D0%BA%D0%B0%D0%BF%D0%BE/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q219127",
+      "url": "https://www.wikidata.org/wiki/Q219127",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2479236",
+      "url": "https://www.gbif.org/species/2479236",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Strigops habroptila G.R.Gray, 1845",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2479236",
+      "url": "https://www.gbif.org/species/2479236",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2479236",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2479236&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 503,
+          "EUROPE": 1,
+          "NORTH_AMERICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2479236",
+      "url": "https://api.gbif.org/v1/species/2479236/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Strigops habroptila",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01654",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "493",
+        "specimenOrigin": "captivity",
+        "sampleSize": "small",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sirocco full length portrait.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sirocco_full_length_portrait.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Buller Kakapo.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Buller_Kakapo.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:051226-kakapo-billbooming.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:051226-kakapo-billbooming.ogg",
+      "license": "CC BY 2.5",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Kakapohist.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Kakapohist.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Sirocco full length portrait.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sirocco_full_length_portrait.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.585Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:27.585Z"
+}

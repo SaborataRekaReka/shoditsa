@@ -1,0 +1,926 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:sciurus-vulgaris",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "обыкновенная белка",
+    "commonNameEn": "Eurasian Red Squirrel",
+    "scientificName": "Sciurus vulgaris",
+    "acceptedScientificName": "Sciurus vulgaris",
+    "aliasesRu": [
+      "белка",
+      "Sciurus vulgaris",
+      "Белка обыкновенная",
+      "векша"
+    ],
+    "wikidataId": "Q4388",
+    "gbifKey": 8211070,
+    "hagrid": "03171"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Rodentia",
+    "family": "Sciuridae",
+    "genus": "Sciurus",
+    "species": "Sciurus vulgaris",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore",
+      "granivore"
+    ],
+    "activity": [
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.333,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 14.8,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 296,
+      "male": 320
+    },
+    "gestationOrIncubationDays": 38,
+    "litterOrClutchSize": 5
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 20,
+      "nectar": 0,
+      "seeds": 50,
+      "otherPlants": 30
+    },
+    "foragingStratum": "arboreal",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Hippolais icterina",
+          "externalId": "COL:3M26B",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Turdus merula",
+          "externalId": "COL:7CYVX",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Fringilla coelebs",
+          "externalId": "COL:6JPSJ",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sylvia atricapilla",
+          "externalId": "COL:53N3J",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Taxus baccata",
+          "externalId": "GBIF:5284517",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hippolais languida",
+          "externalId": "COL:3M26C",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hippolais polyglotta",
+          "externalId": "COL:3M26F",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hippolais olivetorum",
+          "externalId": "COL:3M26D",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prunella ocularis",
+          "externalId": "COL:4N8CG",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prunella collaris",
+          "externalId": "COL:4N8B4",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Phylloscopus sindianus lorenzii",
+          "externalId": "COL:7KL5V",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cyanistes cyanus",
+          "externalId": "COL:32NH3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sturnus unicolor",
+          "externalId": "COL:6ZZX8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Phylloscopus inornatus",
+          "externalId": "COL:77FMP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Poecile cinctus",
+          "externalId": "COL:4KSBX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Irania gutturalis",
+          "externalId": "COL:3PXSP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Poecile lugubris",
+          "externalId": "COL:4KSC6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Luscinia luscinia",
+          "externalId": "COL:3WFW5",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Erythropygia galactotes",
+          "externalId": "COL:3BFLY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Serinus pusillus",
+          "externalId": "COL:4WV7K",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pyrrhula murina",
+          "externalId": "COL:4QW2F",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bucanetes githagineus",
+          "externalId": "COL:NKWJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Carpodacus rubicilla",
+          "externalId": "COL:69DR7",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Petronia petronia",
+          "externalId": "COL:6V6D5",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus epimelas",
+          "externalId": "WD:Q1770207",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Acanthis hornemanni",
+          "externalId": "COL:8TTQ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus ponticus",
+          "externalId": "COL:FRJD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus uralensis",
+          "externalId": "COL:FRJK",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Carduelis citrinella",
+          "externalId": "COL:R6J9",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Loxia pytyopsittacus",
+          "externalId": "COL:3W8WV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Chtoicocephalus ridibundus",
+          "externalId": "B217",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Martes zibellina",
+          "externalId": "WD:Q26423",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Aquila adalberti",
+          "externalId": "COL:FZLL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Milvus milvus",
+          "externalId": "COL:43DZJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Nucifraga caryocatactes",
+          "externalId": "COL:482M4",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Coronella girondica",
+          "externalId": "WD:Q1290250",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zamenis lineatus",
+          "externalId": "WD:Q1422955",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zamenis hohenackeri",
+          "externalId": "WD:Q2442048",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Elaphe quatuorlineata",
+          "externalId": "WD:Q854499",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eryx jaculus",
+          "externalId": "WD:Q918120",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zamenis situla",
+          "externalId": "NCBI:201442",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Elaphe dione",
+          "externalId": "COL:38YKZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Platyceps collaris",
+          "externalId": "WD:Q2381179",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hierophis gemonensis",
+          "externalId": "WD:Q546483",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lacerta bilineata",
+          "externalId": "WD:Q739025",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Macroprotodon brevis",
+          "externalId": "COL:3X8PL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gloydius intermedius",
+          "externalId": "WD:Q2705186",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lacerta trilineata",
+          "externalId": "WD:Q1498900",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hemorrhois hippocrepis",
+          "externalId": "COL:3KTY6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Timon lepidus",
+          "externalId": "WD:Q843236",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vipera berus",
+          "externalId": "WD:Q192056",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera albizona",
+          "externalId": "WD:Q138438",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Telescopus fallax",
+          "externalId": "WD:Q1377407",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera raddei",
+          "externalId": "WD:Q683693",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Macrovipera schweizeri",
+          "externalId": "WD:Q536300",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Macroprotodon cucullatus",
+          "externalId": "WD:Q1728800",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Platyceps najadum",
+          "externalId": "WD:Q901168",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera wagneri",
+          "externalId": "WD:Q280972",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vipera aspis aspis",
+          "externalId": "NCBI:194601",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera xanthina",
+          "externalId": "WD:Q641092",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Squirrel posing.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Squirrel_posing.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Sciurus vulgaris habitat.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sciurus_vulgaris_habitat.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/Sciurus_vulgaris_habitat.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "NordNordWest",
+        "credit": "BlankMap-World6, compact.svg by Canuckgay et al. IUCN red list",
+        "description": "Habitat map of the Red Squirrel",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:56.562Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Squirrel posing.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Squirrel_posing.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Squirrel_posing.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Peter Trimming",
+      "credit": "https://www.flickr.com/photos/peter-trimming/6583159839/",
+      "description": "A red squirrel in the forest ( Sciurus vulgaris ).",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:33:56.562Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Red squirrel (21808).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Red_squirrel_(21808).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Red_squirrel_%2821808%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Rhododendrites",
+        "credit": "Own work",
+        "description": "Red squirrel in Royal Lazienki Park , Warsaw , Poland.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:56.562Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 109,
+    "ruWikipediaTitle": "Обыкновенная белка",
+    "ruWikipediaPageviews365d": 96720,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 80.13,
+    "playabilityScore": 88.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 70.48,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q4388",
+      "url": "https://www.wikidata.org/wiki/Q4388",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенная белка",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B1%D0%B5%D0%BB%D0%BA%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "8211070",
+      "url": "https://www.gbif.org/species/8211070",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Sciurus vulgaris Linnaeus, 1758",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "8211070",
+      "url": "https://www.gbif.org/species/8211070",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "8211070",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=8211070&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 991246,
+          "ASIA": 14660
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "8211070",
+      "url": "https://api.gbif.org/v1/species/8211070/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "8211070",
+      "url": "https://api.gbif.org/v1/species/8211070/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Georgia"
+          },
+          {
+            "habitat": "Terrestrial"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Sciurus vulgaris",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03171",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Sciurus vulgaris",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Sciurus%20vulgaris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Sciurus vulgaris",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Sciurus%20vulgaris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Squirrel posing.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Squirrel_posing.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Red squirrel (21808).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Red_squirrel_(21808).jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sciurus vulgaris habitat.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Sciurus_vulgaris_habitat.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Squirrel posing.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Squirrel_posing.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:33:56.562Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:33:56.562Z"
+}

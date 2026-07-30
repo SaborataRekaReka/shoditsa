@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:cygnus-olor",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "лебедь-шипун",
+    "commonNameEn": "Mute Swan",
+    "scientificName": "Cygnus olor",
+    "acceptedScientificName": "Cygnus olor",
+    "aliasesRu": [
+      "Cygnus olor",
+      "шипун"
+    ],
+    "wikidataId": "Q25402",
+    "gbifKey": 2498343,
+    "hagrid": "00340"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Anseriformes",
+    "family": "Anatidae",
+    "genus": "Cygnus",
+    "species": "Cygnus olor",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [
+      "freshwater",
+      "terrestrial",
+      "marine",
+      "brackish"
+    ],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "medium",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 10.68204,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 40,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 1095,
+      "male": 1095
+    },
+    "gestationOrIncubationDays": 36,
+    "litterOrClutchSize": 5.3
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 10,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 10,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 80
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Cygnus olor - Mute Swan XC434964.mp3",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cygnus_olor_-_Mute_Swan_XC434964.mp3",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Cygnus_olor_-_Mute_Swan_XC434964.mp3",
+        "mimeType": "audio/mpeg",
+        "mediaType": "AUDIO",
+        "author": "Joost van Bruggen",
+        "credit": "Metadata: https://www.xeno-canto.org/434964 Audio file: https://www.xeno-canto.org/434964/download",
+        "description": ":Only wingbeats of 2-3 birds at night bird-seen:no playback-used:no Common name: Mute Swan Type: wingbeats Genus: Cygnus Species: olor Location: Arnhem, Arnhem, Gelderland Country: Netherlands Elevation: 10 m",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:39.051Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Mute Swan Emsworth2.JPG",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Mute_Swan_Emsworth2.JPG",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:CygnusOlorIUCN2019 2.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:CygnusOlorIUCN2019_2.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/27/CygnusOlorIUCN2019_2.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "SanoAK : Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vetor and raster map data @ naturalearthdata.com. Range map from BirdLife International 2016. Cygnus olor. The IUCN Red List of Threatened Species 2016: e.T22679839A85946855. https://dx.doi.org/10.2305/IUCN.UK.2016-3.RLTS.T22679839A85946855.en . Downloaded on 16 August 2019 as visual indicator of distribution.",
+        "description": "Distribution map of Mute Swan Cygnus olor according to IUCN version 2019-2; key: Legend: Breeding summer visitor (#00FF00) , Breeding resident (#008000) , Non-breeding winter visitor (#007FFF) , Introduced resident (#FFFF00)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:39.051Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Mute Swan Emsworth2.JPG",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mute_Swan_Emsworth2.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Mute_Swan_Emsworth2.JPG",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Geni",
+      "credit": "Photo by user:geni",
+      "description": "A photo of a Mute swan (Cygnus olor) swimming on Emsworth Millpond",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:39.051Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 98,
+    "ruWikipediaTitle": "Лебедь-шипун",
+    "ruWikipediaPageviews365d": 29343,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 73.91,
+    "playabilityScore": 94.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 74.11,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q25402",
+      "url": "https://www.wikidata.org/wiki/Q25402",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Лебедь-шипун",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9B%D0%B5%D0%B1%D0%B5%D0%B4%D1%8C-%D1%88%D0%B8%D0%BF%D1%83%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2498343",
+      "url": "https://www.gbif.org/species/2498343",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Cygnus olor (J.F.Gmelin, 1789)",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2498343",
+      "url": "https://www.gbif.org/species/2498343",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2498343",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2498343&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 4845134,
+          "NORTH_AMERICA": 1854728,
+          "ASIA": 7156,
+          "OCEANIA": 5771
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2498343",
+      "url": "https://api.gbif.org/v1/species/2498343/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2498343",
+      "url": "https://api.gbif.org/v1/species/2498343/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - South Africa"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - United Arab Emirates"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Italy"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Austria"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Belarus"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Liechtenstein"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Estonia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Slovenia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Switzerland"
+          },
+          {
+            "habitat": "freshwater|brackish|marine",
+            "source": "Global Register of Introduced and Invasive Species - New Zealand"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Japan"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine"
+          },
+          {
+            "habitat": "TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-terrestrial; Freshwater-terrestrial-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Cygnus olor",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "00340",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1304",
+        "specimenOrigin": "wild",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Mute Swan Emsworth2.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Mute_Swan_Emsworth2.JPG",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Cygnus olor - Mute Swan XC434964.mp3",
+      "url": "https://commons.wikimedia.org/wiki/File:Cygnus_olor_-_Mute_Swan_XC434964.mp3",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:CygnusOlorIUCN2019 2.png",
+      "url": "https://commons.wikimedia.org/wiki/File:CygnusOlorIUCN2019_2.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Mute Swan Emsworth2.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Mute_Swan_Emsworth2.JPG",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:39.051Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:39.051Z"
+}

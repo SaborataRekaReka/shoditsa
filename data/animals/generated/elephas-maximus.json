@@ -1,0 +1,815 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:elephas-maximus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "азиатский слон",
+    "commonNameEn": "Asian elephant",
+    "scientificName": "Elephas maximus",
+    "acceptedScientificName": "Elephas maximus",
+    "aliasesRu": [
+      "Elephas maximus",
+      "индийский слон",
+      "слон азиатский",
+      "Азиатский слон",
+      "Индийский слон"
+    ],
+    "wikidataId": "Q133006",
+    "gbifKey": 5219461,
+    "hagrid": "02838"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Proboscidea",
+    "family": "Elephantidae",
+    "genus": "Elephas",
+    "species": "Elephas maximus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "asia",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 2915.04,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 79.6,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 3287,
+      "male": 3287
+    },
+    "gestationOrIncubationDays": 644,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 100
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Ternstroemia wallichiana",
+          "externalId": "WD:Q5466082",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Diplectria divaricata",
+          "externalId": "WD:Q110012566",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hedychium speciosum",
+          "externalId": "COL:3JZRZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Palaquium garrettii",
+          "externalId": "WD:Q15345696",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chrysophyllum roxburghii",
+          "externalId": "WD:Q9191467",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Beilschmiedia maingayi",
+          "externalId": "COL:L98F",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Casearia grewiifolia",
+          "externalId": "WD:Q18119727",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dysoxylum densiflorum",
+          "externalId": "WD:Q10953452",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cissus convolvulacea",
+          "externalId": "COL:5Z8TT",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cryptocarya impressa",
+          "externalId": "COL:ZVDV",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Glycosmis puberula",
+          "externalId": "COL:9KD3J",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hypserpa nitida",
+          "externalId": "WD:Q10933265",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Uvaria rufa",
+          "externalId": "COL:7F6LW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Beilschmiedia balansae",
+          "externalId": "COL:L93D",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Knema elegans",
+          "externalId": "WD:Q15597060",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dasymaschalon sootepense",
+          "externalId": "WD:Q11178337",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sterculia balanghas",
+          "externalId": "WD:Q17579180",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cryptocarya kurzii",
+          "externalId": "WD:Q15607488",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Casearia calva",
+          "externalId": "WD:Q18119688",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ilex goshiensis",
+          "externalId": "WD:Q11150638",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus rufus",
+          "externalId": "COL:4TLK8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Turpinia cochinchinensis",
+          "externalId": "WD:Q15056421",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Syzygium albiflorum",
+          "externalId": "WD:Q15381915",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Decaspermum parviflorum",
+          "externalId": "WD:Q15396889",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lasianthus verticillatus",
+          "externalId": "WD:Q15470399",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lasianthus chrysoneurus",
+          "externalId": "WD:Q15468702",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Elaeocarpus griffithii",
+          "externalId": "WD:Q15316970",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Claoxylon indicum",
+          "externalId": "WD:Q5125839",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Alphonsea cylindrica",
+          "externalId": "COL:C69R",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mussaenda sanderiana",
+          "externalId": "WD:Q15474249",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Panthera tigris",
+          "externalId": "COL:4CGXS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gyps bengalensis",
+          "externalId": "COL:6KVCJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "COL:4CGXR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Calyptra eustrigata",
+          "externalId": "COL:Q754",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Calyptra fasciata",
+          "externalId": "COL:Q755",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Calyptra minuticornis",
+          "externalId": "COL:Q75B",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Calyptra orthographa",
+          "externalId": "COL:966JT",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q96377276",
+      "statusLabelRu": "вымирающие виды",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Elephant voice - trumpeting.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "தகவலுழவன்",
+        "credit": "Own work",
+        "description": "Elephant_voice_-_trumpeting. தமிழ்: யானையின் பிளிறல்",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:11.042Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Elephas maximus (Bandipur).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/98/Elephas_maximus_%28Bandipur%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Asian Elephant area.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Asian_Elephant_area.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Asian_Elephant_area.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Chermundy",
+        "credit": "Base map derived from File:BlankMap-World.png . Distribution data from IUCN Red List of Threatened Species (English) . iucnredlist.org . Retrieved on 2025-09-01 .",
+        "description": "Asian Elephant ( Elephas maximus ) range brown — native dark gray — origin uncertain with the addition of national borders",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:11.042Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Elephas maximus (Bandipur).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Elephas_maximus_(Bandipur).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/98/Elephas_maximus_%28Bandipur%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Yathin S Krishnappa",
+      "credit": "Own work",
+      "description": "Indian elephant bull in musth in Bandipur National Park",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:11.042Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Female elephas maximus at hamburg.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Female_elephas_maximus_at_hamburg.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Female_elephas_maximus_at_hamburg.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "LadyofHats",
+        "credit": "Own work",
+        "description": "asian elephant at the zoo in hamburg, germany",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:11.042Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:ZOO Praha, Elephas maximus, 08.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:ZOO_Praha,_Elephas_maximus,_08.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/ZOO_Praha%2C_Elephas_maximus%2C_08.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Honza Groh ( Jagro )",
+        "credit": "Own work",
+        "description": "Asian elephant, Prague ZOO, Czech Republic",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:11.042Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 94,
+    "ruWikipediaTitle": "Азиатский слон",
+    "ruWikipediaPageviews365d": 39748,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 75.12,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 71.56,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue.",
+      "Commons file rejected by license policy: File:Asian elephant - melbourne zoo.jpg (GFDL 1.2)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q133006",
+      "url": "https://www.wikidata.org/wiki/Q133006",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Азиатский слон",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%90%D0%B7%D0%B8%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%BB%D0%BE%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q96377276",
+      "url": "https://www.wikidata.org/wiki/Q96377276",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219461",
+      "url": "https://www.gbif.org/species/5219461",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Elephas maximus Linnaeus, 1758",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5219461",
+      "url": "https://www.gbif.org/species/5219461",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5219461",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5219461&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 7632,
+          "NORTH_AMERICA": 4479,
+          "EUROPE": 79,
+          "AFRICA": 6
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219461",
+      "url": "https://api.gbif.org/v1/species/5219461/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219461",
+      "url": "https://api.gbif.org/v1/species/5219461/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Elephas maximus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02838",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1192",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Elephas maximus",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Elephas%20maximus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Elephas maximus",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Elephas%20maximus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Elephas maximus (Bandipur).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Elephas_maximus_(Bandipur).jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Female elephas maximus at hamburg.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Female_elephas_maximus_at_hamburg.JPG",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:ZOO Praha, Elephas maximus, 08.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:ZOO_Praha,_Elephas_maximus,_08.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Elephant voice - trumpeting.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg",
+      "license": "CC0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Asian Elephant area.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Asian_Elephant_area.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Elephas maximus (Bandipur).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Elephas_maximus_(Bandipur).jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:11.042Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:11.042Z"
+}

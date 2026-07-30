@@ -27,6 +27,13 @@ type ResultItem = Pick<
   | 'timezone'
   | 'musicType'
   | 'countries'
+  | 'scientificName'
+  | 'taxonomicClass'
+  | 'animalOrder'
+  | 'animalFamily'
+  | 'habitats'
+  | 'animalContinents'
+  | 'diets'
 >
 
 const values = (items: Array<string | number | null | undefined>) =>
@@ -35,6 +42,9 @@ const values = (items: Array<string | number | null | undefined>) =>
 export const resultCardMeta = (item: ResultItem) => {
   if (item.mode === 'diagnosis') {
     return values([item.titleOriginal, ...(item.icd10 ?? []), item.icdGroup]).join(' · ')
+  }
+  if (item.mode === 'animal') {
+    return values([item.scientificName || item.titleOriginal, item.taxonomicClass, item.animalOrder]).join(' · ')
   }
   if (item.mode === 'game') {
     return values([
@@ -64,6 +74,9 @@ export const resultCardMeta = (item: ResultItem) => {
 export const resultCardTags = (item: ResultItem) => {
   if (item.mode === 'diagnosis') {
     return [...(item.bodySystems ?? []).slice(0, 2), ...(item.icd10 ?? []).slice(0, 1)]
+  }
+  if (item.mode === 'animal') {
+    return [...(item.habitats ?? []).slice(0, 2), ...(item.animalContinents ?? []).slice(0, 2), ...(item.diets ?? []).slice(0, 1)]
   }
   if (item.mode === 'game') {
     return [...(item.genres ?? []).slice(0, 2), ...(item.platforms ?? []).slice(0, 2)]

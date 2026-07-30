@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:sepia-apama",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Гигантская австралийская каракатица",
+    "commonNameEn": "Giant cuttlefish",
+    "scientificName": "Sepia apama",
+    "acceptedScientificName": "Sepia apama",
+    "aliasesRu": [
+      "Австралийская гигантская каракатица",
+      "Sepia apama"
+    ],
+    "wikidataId": "Q1632342",
+    "gbifKey": 2290770,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Mollusca",
+    "taxonomicClass": "Cephalopoda",
+    "order": "Sepiida",
+    "family": "Sepiidae",
+    "genus": "Ascarosepion",
+    "species": "Ascarosepion apama",
+    "rank": "SPECIES",
+    "status": "SYNONYM",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Cephalopoda",
+    "bodyCoverings": [
+      "soft-body"
+    ],
+    "habitats": [
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Sepia apama 2.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Sepia_apama_2.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Sepia apama distribution.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sepia_apama_distribution.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Sepia_apama_distribution.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Vojtech.dostal",
+        "credit": "Vlastní dílo (own work), based on Image: Australia_location_map.png",
+        "description": "Distribution of Sepia apama, based on eol.org , which was originally based on Mark Norman & Amanda Reid, 2000",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:09.149Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Sepia apama 2.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sepia_apama_2.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Sepia_apama_2.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Yvonne",
+      "credit": "cuttlefish11 Uploaded by berichard",
+      "description": "Giant cuttlefish annual breeding cycle in the shallow waters off Whyalla,South Australia. (One of only two places in the world where this occurs.) It is a major tourist attraction for divers from around the globe. This spectacular event occurs in June each year. The site is under threat from a proposed desalination plant for an outback mining venture and new wharf facilities for another new mining proposal.",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:09.149Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 22,
+    "ruWikipediaTitle": "Ascarosepion apama",
+    "ruWikipediaPageviews365d": 788,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 48.78,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 20,
+    "delightScore": 14.29,
+    "totalScore": 48.9,
+    "difficulty": "hard",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Sepia apama"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q1632342",
+      "url": "https://www.wikidata.org/wiki/Q1632342",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Ascarosepion apama",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/Ascarosepion_apama/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2290770",
+      "url": "https://www.gbif.org/species/2290770",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "species/match (EXACT, confidence 98)",
+      "confidence": 0.98,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Sepia apama Gray, 1849",
+        "gbifSourceClass": "Cephalopoda",
+        "normalizedGameClass": "Cephalopoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2290770",
+      "url": "https://www.gbif.org/species/2290770",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2290770",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2290770&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 223,
+          "LATIN_AMERICA": 1,
+          "NORTH_AMERICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sepia apama 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sepia_apama_2.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sepia apama distribution.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Sepia_apama_distribution.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Sepia apama 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sepia_apama_2.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:40:09.149Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2290770",
+      "url": "https://www.gbif.org/species/2290770",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:45:37.079Z",
+      "method": "deterministic class/order/family rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:09.149Z"
+}

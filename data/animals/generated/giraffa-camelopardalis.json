@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:giraffa-camelopardalis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "жираф",
+    "commonNameEn": "northern giraffe",
+    "scientificName": "Giraffa camelopardalis",
+    "acceptedScientificName": "Giraffa camelopardalis",
+    "aliasesRu": [
+      "Giraffa camelopardalis",
+      "степной жираф",
+      "северный жираф"
+    ],
+    "wikidataId": "Q15083",
+    "gbifKey": 2441205,
+    "hagrid": "02046"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Artiodactyla",
+    "family": "Giraffidae",
+    "genus": "Giraffa",
+    "species": "Giraffa camelopardalis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 899.9948,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 39.5,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 1278,
+      "male": 1644
+    },
+    "gestationOrIncubationDays": 457,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 100
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Senegalia caffra",
+          "externalId": "COL:4WNX9",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Senegalia nigrescens",
+          "externalId": "COL:4WP2J",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia hebeclada",
+          "externalId": "COL:7F96L",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia tortilis",
+          "externalId": "COL:7F995",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prunus armeniaca",
+          "externalId": "COL:4N8NW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia robusta",
+          "externalId": "COL:7F8XX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia nilotica",
+          "externalId": "COL:7F8VF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia karroo",
+          "externalId": "COL:7F977",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia xanthophloea",
+          "externalId": "NCBI:875661",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Croton macrostachyus",
+          "externalId": "EOL:1146945",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Balanites aegyptiaca",
+          "externalId": "EOL:483578",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Commiphora schimperi",
+          "externalId": "EOL:5616414",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Indigofera hochstetteri",
+          "externalId": "EOL:669099",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Grewia baillonii",
+          "externalId": "EOL:5423883",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Grewia arborea",
+          "externalId": "COL:3HD4G",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Maerua triphylla",
+          "externalId": "EOL:5163428",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Grewia trichocarpa",
+          "externalId": "EOL:5424384",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pavetta gardeniifolia",
+          "externalId": "COL:75V4Z",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hibiscus lunariifolius",
+          "externalId": "EOL:483661",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Phyllanthus sepialis",
+          "externalId": "EOL:1152579",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Solanum incanum",
+          "externalId": "EOL:484223",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Senegalia senegal",
+          "externalId": "COL:4WP43",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vachellia seyal",
+          "externalId": "EOL:690615",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Panthera leo",
+          "externalId": "COL:4CGXP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rhipicephalus evertsi",
+          "externalId": "NCBI:60190",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rhipicephalus appendiculatus",
+          "externalId": "NCBI:34631",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "NCBI:9691",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rhipicephalus evertsi evertsi",
+          "externalId": "NCBI:72864",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Acinonyx jubatus",
+          "externalId": "NCBI:32536",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Simulium damnosum",
+          "externalId": "NCBI:37338",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lycaon pictus",
+          "externalId": "NCBI:9622",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Parahyaena brunnea",
+          "externalId": "NCBI:172271",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Crocuta crocuta",
+          "externalId": "NCBI:9678",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hyaena hyaena",
+          "externalId": "NCBI:95912",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis mesomelas",
+          "externalId": "NCBI:68725",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q278113",
+      "statusLabelRu": "находятся в уязвимом положении",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Giraffe Hum.oga",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Giraffe_Hum.oga",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Anton Baotic, Florian Sicks and Angela S. Stoeger",
+        "credit": "Nocturnal “humming” vocalizations (2015) Original file name: \" Additional file 5 / 13104_2015_1394_MOESM5_ESM.mov \"",
+        "description": "Giraffe humming. It was recorded at the Berlin Tierpark or Copenhagen Zoo or Vienna Zoo; the source (see external links below) does not specify at which of the three zoos this recording was made. Nor does it mention if it was made by a male or female giraffe. Its spectrogram & waveform (top left, labelled \"a\").",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:32.313Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Rothschild's giraffe (Giraffa camelopardalis rothschildi) - Murchison Falls National Park.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Rothschild%27s_giraffe_%28Giraffa_camelopardalis_rothschildi%29_-_Murchison_Falls_National_Park.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Giraffa camelopardalis distribution.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Giraffa_camelopardalis_distribution.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Giraffa_camelopardalis_distribution.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Mysid & IUCN (International Union for Conservation of Nature); see above",
+        "credit": "Put together by Mysid using Geo::ShapeFile . Base map derived from Worldmap location NED 50m.svg (Natural Earth Data) Distribution data from IUCN Red List of Threatened Species (English) . iucnredlist.org . Retrieved on 2025-09-01 . ( Spatial Data Download (English) . iucnredlist.org . Archived from the original on 2010-06-21 . Retrieved on 2010-06-21 ., downloaded on 2010-11-04) Assessed in 2010 by Fennessy, J. & Brown, D. ( http://www.iucnredlist.org/apps/redlist/details/9194/0 ) Subspecies labels can still be found here at the Giraffe Conservation Center. ( http://www.giraffeconservation.org/giraffe_facts.php?pgid=40 )",
+        "description": "Modern geographic distribution of the giraffe ( Giraffa camelopardalis ).",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:32.313Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Rothschild's giraffe (Giraffa camelopardalis rothschildi) - Murchison Falls National Park.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rothschild%27s_giraffe_(Giraffa_camelopardalis_rothschildi)_-_Murchison_Falls_National_Park.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Rothschild%27s_giraffe_%28Giraffa_camelopardalis_rothschildi%29_-_Murchison_Falls_National_Park.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Thomas Fuhrmann",
+      "credit": "Own work",
+      "description": "The image was taken during 5 weeks of traveling on an overlander camping tour through east and south Africa in 2015.",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:33:32.313Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 138,
+    "ruWikipediaTitle": "Жираф",
+    "ruWikipediaPageviews365d": 94312,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 81.3,
+    "playabilityScore": 94.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 77.21,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q15083",
+      "url": "https://www.wikidata.org/wiki/Q15083",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Жираф",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%96%D0%B8%D1%80%D0%B0%D1%84/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q278113",
+      "url": "https://www.wikidata.org/wiki/Q278113",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441205",
+      "url": "https://www.gbif.org/species/2441205",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Giraffa camelopardalis (Linnaeus, 1758)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2441205",
+      "url": "https://www.gbif.org/species/2441205",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2441205",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2441205&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 6065,
+          "EUROPE": 62,
+          "NORTH_AMERICA": 35,
+          "ASIA": 23,
+          "LATIN_AMERICA": 21
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441205",
+      "url": "https://api.gbif.org/v1/species/2441205/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441205",
+      "url": "https://api.gbif.org/v1/species/2441205/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Terrestrial",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          },
+          {
+            "habitat": "TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Giraffa camelopardalis",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02046",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "high"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Giraffa camelopardalis",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Giraffa%20camelopardalis&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Giraffa camelopardalis",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Giraffa%20camelopardalis&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Rothschild's giraffe (Giraffa camelopardalis rothschildi) - Murchison Falls National Park.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rothschild%27s_giraffe_(Giraffa_camelopardalis_rothschildi)_-_Murchison_Falls_National_Park.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Giraffe Hum.oga",
+      "url": "https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Giraffa camelopardalis distribution.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Giraffa_camelopardalis_distribution.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Rothschild's giraffe (Giraffa camelopardalis rothschildi) - Murchison Falls National Park.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rothschild%27s_giraffe_(Giraffa_camelopardalis_rothschildi)_-_Murchison_Falls_National_Park.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:32.313Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:33:32.313Z"
+}

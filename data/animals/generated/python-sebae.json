@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:python-sebae",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Иероглифовый питон",
+    "commonNameEn": "Python sebae",
+    "scientificName": "Python sebae",
+    "acceptedScientificName": "Python sebae",
+    "aliasesRu": [
+      "Coluber sebae",
+      "Python sebae",
+      "Иероглифовый питон",
+      "Скальный питон"
+    ],
+    "wikidataId": "Q764797",
+    "gbifKey": 2465346,
+    "hagrid": "03550"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Squamata",
+    "family": "Pythonidae",
+    "genus": "Python",
+    "species": "Python sebae",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk",
+      "crawl"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 73,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 27.3,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 1461,
+      "male": 1461
+    },
+    "gestationOrIncubationDays": 72,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Adult Female Python sebae 1.33aspect.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Adult_Female_Python_sebae_1.33aspect.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Natural Range of Python sebae.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Natural_Range_of_Python_sebae.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Natural_Range_of_Python_sebae.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Fallschirmjäger",
+        "credit": "Own work",
+        "description": "Habitat of Python sebae sebae Habitat of Python sebae natalensis Hybrid zone of the two races Based on: G. J. Alexander: Thermal Biology of the Southern African Python (Python natalensis): Does temperature limit its distribution? In: R. W. Henderson and R. Powell (Eds.): Biology of the Boas and Pythons . Eagle Mountain Publishing Company, Eagle Mountain., 2007, ISBN 978-0-9720154-3-1 : S. 51-75 D. G. Broadley: A review of geographical variation in the African Python, Python sebae (Gemelin) . British Journal of Herpetology 6:359-367; 1984 D. G. Broadley: The Southern African Python, Python natalensis A. Smith 1840, is a valid species . African Herpetological News 29:31-32; 1999 J. M. Padial: On the presence of Python sebae Gemelin, 1788 (Ophidia: Pythonidae) in Mauritania. Herpetological Bulletin 84: 30-31, 2003. B. Lanza, A. Nistri: Somali Boidae (genus Eryx Daudin 1803) and Pythonidae (genus Python Daudin 1803) (Reptilia Serpentes). Tropical Zoology 18, 2005, p. 115. W. R. Branch, M. Griffin: Pythons in Namibia: Distribution, Conservation, and Captive Breeding Programs. Advances in Herpetoculture – Special Publications of the International Herpetological Symposium, Inc., 1996, p. 93-102. In consideration of mountain ranges, rivers and vegetation",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:05.595Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Adult Female Python sebae 1.33aspect.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Adult_Female_Python_sebae_1.33aspect.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Adult_Female_Python_sebae_1.33aspect.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Adult_Female_Python_sebae.jpg : Tigerpython derivative work: Materialscientist ( talk )",
+      "credit": "Adult_Female_Python_sebae.jpg",
+      "description": "Adult female Northern African Rock Python (Python sebae). This animal lives in captivity. Donated by: www.bigsnake.ch",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:05.595Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Albertus Seba Python sebae.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Albertus_Seba_Python_sebae.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Albertus_Seba_Python_sebae.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Albertus_Seba_Schlangen.jpg : anonymous derivative work: Tigerpython ( talk )",
+        "credit": "Albertus_Seba_Schlangen.jpg",
+        "description": "Northern African Rock Python (Python sebae). Illustration from a famous 18th-century work of reference, edited by Albertus Seba, a Dutch pharmacist and collector of zoological and other natural subjects.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:05.595Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 44,
+    "ruWikipediaTitle": "Иероглифовый питон",
+    "ruWikipediaPageviews365d": 3230,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 59.13,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 58.6,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q764797",
+      "url": "https://www.wikidata.org/wiki/Q764797",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Иероглифовый питон",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%98%D0%B5%D1%80%D0%BE%D0%B3%D0%BB%D0%B8%D1%84%D0%BE%D0%B2%D1%8B%D0%B9_%D0%BF%D0%B8%D1%82%D0%BE%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2465346",
+      "url": "https://www.gbif.org/species/2465346",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Python sebae (Gmelin, 1789)",
+        "gbifSourceClass": "Squamata",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2465346",
+      "url": "https://www.gbif.org/species/2465346",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2465346",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2465346&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 1365,
+          "NORTH_AMERICA": 51,
+          "EUROPE": 4,
+          "OCEANIA": 2
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2465346",
+      "url": "https://api.gbif.org/v1/species/2465346/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2465346",
+      "url": "https://api.gbif.org/v1/species/2465346/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Forest; Artificial - Terrestrial; Introduced Vegetation",
+            "source": "Global Register of Introduced and Invasive Species - United States (Contiguous) (ver.2.0, 2022)"
+          },
+          {
+            "habitat": "TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2465346",
+      "url": "https://api.gbif.org/v1/species/2465346/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03550",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "485",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Adult Female Python sebae 1.33aspect.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Adult_Female_Python_sebae_1.33aspect.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Albertus Seba Python sebae.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Albertus_Seba_Python_sebae.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Natural Range of Python sebae.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Natural_Range_of_Python_sebae.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Adult Female Python sebae 1.33aspect.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Adult_Female_Python_sebae_1.33aspect.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:05.595Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:05.595Z"
+}

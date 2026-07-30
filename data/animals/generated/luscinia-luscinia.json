@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:luscinia-luscinia",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "обыкновенный соловей",
+    "commonNameEn": "Thrush Nightingale",
+    "scientificName": "Luscinia luscinia",
+    "acceptedScientificName": "Luscinia luscinia",
+    "aliasesRu": [
+      "Luscinia luscinia",
+      "восточный соловей",
+      "Восточный соловей",
+      "Соловей",
+      "обыкновенный соловей"
+    ],
+    "wikidataId": "Q206130",
+    "gbifKey": 2492542,
+    "hagrid": "01067"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Passeriformes",
+    "family": "Muscicapidae",
+    "genus": "Luscinia",
+    "species": "Luscinia luscinia",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.0238,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 8.9,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 365,
+      "male": 365
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 70,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 10,
+      "nectar": 0,
+      "seeds": 20,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:LusciniaLusciniaIUCN.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:LusciniaLusciniaIUCN.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d7/LusciniaLusciniaIUCN.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "SanoAK : Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com. Range map from BirdLife International. 2016. Luscinia luscinia. The IUCN Red List of Threatened Species 2016: e.T22709691A87882842. https://dx.doi.org/10.2305/IUCN.UK.2016-3.RLTS.T22709691A87882842.en . Downloaded on 23 November 2021 as visual indicator of distribution.",
+        "description": "Distribution map of Thrush Nightingale Luscinia luscinia according to IUCN version 2021.2 (Compiled by: BirdLife International and Handbook of the Birds of the World (2016) 2009.); key: Legend: Extant, breeding (#00FF00) , Extant, non-breeding (#007FFF)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:03.867Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": null,
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Nightingale of ancient Uglich.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Nightingale_of_ancient_Uglich.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Nightingale_of_ancient_Uglich.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "chelo Vechek / talk",
+        "credit": "Own work",
+        "description": "Thrush nightingale (Luscinia luscinia)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:03.867Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 65,
+    "ruWikipediaTitle": "Обыкновенный соловей",
+    "ruWikipediaPageviews365d": 34344,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 72.43,
+    "playabilityScore": 68.6,
+    "distinctivenessScore": 0,
+    "delightScore": 42.86,
+    "totalScore": 57.17,
+    "difficulty": "easy",
+    "eligible": false,
+    "rejectionReasons": [
+      "missing-licensed-image"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 90,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "Commons file rejected by license policy: File:Luscinia luscinia vogelartinfo chris romeiks CHR3635.jpg (GFDL 1.2)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q206130",
+      "url": "https://www.wikidata.org/wiki/Q206130",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенный соловей",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D1%81%D0%BE%D0%BB%D0%BE%D0%B2%D0%B5%D0%B9/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2492542",
+      "url": "https://www.gbif.org/species/2492542",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Luscinia luscinia (Linnaeus, 1758)",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2492542",
+      "url": "https://www.gbif.org/species/2492542",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2492542",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2492542&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 537820,
+          "AFRICA": 3871,
+          "ASIA": 1165
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2492542",
+      "url": "https://api.gbif.org/v1/species/2492542/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2492542",
+      "url": "https://api.gbif.org/v1/species/2492542/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Luscinia luscinia",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01067",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "729",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Nightingale of ancient Uglich.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Nightingale_of_ancient_Uglich.JPG",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:LusciniaLusciniaIUCN.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:LusciniaLusciniaIUCN.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:37:03.867Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:37:03.867Z"
+}

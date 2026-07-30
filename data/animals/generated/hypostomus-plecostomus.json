@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:hypostomus-plecostomus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Hypostomus plecostomus",
+    "commonNameEn": "Hypostomus plecostomus",
+    "scientificName": "Hypostomus plecostomus",
+    "acceptedScientificName": "Hypostomus plecostomus",
+    "aliasesRu": [],
+    "wikidataId": "Q1768403",
+    "gbifKey": 5202178,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Actinopterygii",
+    "order": "Siluriformes",
+    "family": "Loricariidae",
+    "genus": "Hypostomus",
+    "species": "Hypostomus plecostomus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Actinopterygii",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "freshwater"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "latin-america",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Hypostomus plecostomus - Raphaël Covain.png",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Hypostomus_plecostomus_-_Rapha%C3%ABl_Covain.png",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Hypostomus plecostomus - Raphaël Covain.png",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hypostomus_plecostomus_-_Rapha%C3%ABl_Covain.png",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Hypostomus_plecostomus_-_Rapha%C3%ABl_Covain.png",
+      "mimeType": "image/png",
+      "mediaType": "BITMAP",
+      "author": "Raphaël Covain, Natural History Museum of Geneva",
+      "credit": "Claude Weber, Raphaël Covain & Sonia Fisch-Muller (2012). Identity of Hypostomus plecostomus (Linnaeus, 1758), with an overview of Hypostomus species from the Guianas (Teleostei: Siluriformes: Loricariidae) , Cybium 36 (1): 195-227",
+      "description": "Hypostomus plecostomus (Mapana Creek, Commewijne River Basin)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:34.475Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 29,
+    "ruWikipediaTitle": "Обыкновенный сомик-нижнерот",
+    "ruWikipediaPageviews365d": 11981,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 63.12,
+    "playabilityScore": 65.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 51.88,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Hypostomus plecostomus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q1768403",
+      "url": "https://www.wikidata.org/wiki/Q1768403",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенный сомик-нижнерот",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D1%81%D0%BE%D0%BC%D0%B8%D0%BA-%D0%BD%D0%B8%D0%B6%D0%BD%D0%B5%D1%80%D0%BE%D1%82/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5202178",
+      "url": "https://www.gbif.org/species/5202178",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Hypostomus plecostomus (Linnaeus, 1758)",
+        "gbifSourceClass": "",
+        "normalizedGameClass": "Actinopterygii"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5202178",
+      "url": "https://www.gbif.org/species/5202178",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5202178",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5202178&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 902,
+          "NORTH_AMERICA": 89,
+          "EUROPE": 40,
+          "ASIA": 7
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5202178",
+      "url": "https://api.gbif.org/v1/species/5202178/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5202178",
+      "url": "https://api.gbif.org/v1/species/5202178/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Sri Lanka"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bangladesh"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Malaysia"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - China"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Philippines"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Vietnam"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Hypostomus plecostomus - Raphaël Covain.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Hypostomus_plecostomus_-_Rapha%C3%ABl_Covain.png",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Hypostomus plecostomus - Raphaël Covain.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Hypostomus_plecostomus_-_Rapha%C3%ABl_Covain.png",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:40:34.475Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:34.475Z"
+}

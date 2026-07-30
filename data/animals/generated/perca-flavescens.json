@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:perca-flavescens",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Жёлтый окунь",
+    "commonNameEn": "Perca flavescens",
+    "scientificName": "Perca flavescens",
+    "acceptedScientificName": "Perca flavescens",
+    "aliasesRu": [
+      "Perca flavescens",
+      "Окунь жёлтый",
+      "Желтый окунь",
+      "американский окунь",
+      "Жёлтый окунь"
+    ],
+    "wikidataId": "Q469754",
+    "gbifKey": 2382004,
+    "hagrid": "04298"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Actinopterygii",
+    "order": "Perciformes",
+    "family": "Percidae",
+    "genus": "Perca",
+    "species": "Perca flavescens",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Actinopterygii",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "freshwater",
+      "brackish",
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 1.05525,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 12,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 0,
+      "male": 0
+    },
+    "gestationOrIncubationDays": 16,
+    "litterOrClutchSize": 100000
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:D3149-1. yellow perch (Perca flavescens).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/D3149-1._yellow_perch_%28Perca_flavescens%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Perca flavescens map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Perca_flavescens_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/06/Perca_flavescens_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Cephas",
+        "credit": "Peterson Field Guide to Freshwater Fishes, 2011. Second Edition, by Lawrence M. Page (Author), Brooks M. Burr (Author), Eugene C. Beckham (Illustrator) ISBN 9780547242064",
+        "description": "Range map of Yellow perch ( Perca flavescens ).",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:39.939Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:D3149-1. yellow perch (Perca flavescens).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:D3149-1._yellow_perch_(Perca_flavescens).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/D3149-1._yellow_perch_%28Perca_flavescens%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Robert Colletta",
+      "credit": "https://www.ars.usda.gov/oc/images/photos/may14/d3149-1/",
+      "description": "This is a photograph of a living, fully-matured Perca flavescens - (Mitchill, 1814) - yellow perch - taken by Robert Colletta during a study conducted by the Agricultural Research Service (ARS) of the United States Department of Agriculture (USDA).",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:39.939Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 31,
+    "ruWikipediaTitle": "Жёлтый окунь",
+    "ruWikipediaPageviews365d": 6055,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 60.24,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 59.06,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q469754",
+      "url": "https://www.wikidata.org/wiki/Q469754",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Жёлтый окунь",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%96%D1%91%D0%BB%D1%82%D1%8B%D0%B9_%D0%BE%D0%BA%D1%83%D0%BD%D1%8C/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2382004",
+      "url": "https://www.gbif.org/species/2382004",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Perca flavescens (Mitchill, 1814)",
+        "gbifSourceClass": "",
+        "normalizedGameClass": "Actinopterygii"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2382004",
+      "url": "https://www.gbif.org/species/2382004",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2382004",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2382004&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 88464,
+          "ASIA": 5,
+          "EUROPE": 4,
+          "LATIN_AMERICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2382004",
+      "url": "https://api.gbif.org/v1/species/2382004/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2382004",
+      "url": "https://api.gbif.org/v1/species/2382004/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "04298",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "454",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:D3149-1. yellow perch (Perca flavescens).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:D3149-1._yellow_perch_(Perca_flavescens).jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Perca flavescens map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Perca_flavescens_map.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:D3149-1. yellow perch (Perca flavescens).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:D3149-1._yellow_perch_(Perca_flavescens).jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:39.939Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:39.939Z"
+}

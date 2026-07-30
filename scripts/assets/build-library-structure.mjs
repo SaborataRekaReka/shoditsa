@@ -43,6 +43,11 @@ const LIBRARIES = [
       },
     ],
   },
+  {
+    key: 'animals',
+    sourceFile: 'animals.generated.json',
+    idKey: 'id',
+  },
 ]
 
 const normalize = (value) => String(value ?? '')

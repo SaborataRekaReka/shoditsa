@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:bufo-viridis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "зелёная жаба",
+    "commonNameEn": "Bufo viridis",
+    "scientificName": "Bufo viridis",
+    "acceptedScientificName": "Bufo viridis",
+    "aliasesRu": [
+      "Bufo viridis",
+      "жаба зелёная",
+      "зеленая жаба"
+    ],
+    "wikidataId": "Q243242",
+    "gbifKey": 5216588,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Amphibia",
+    "order": "Anura",
+    "family": "Bufonidae",
+    "genus": "Bufotes",
+    "species": "Bufotes viridis",
+    "rank": "SPECIES",
+    "status": "SYNONYM",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Amphibia",
+    "bodyCoverings": [
+      "moist-skin"
+    ],
+    "habitats": [
+      "freshwater",
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk",
+      "jump"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Bufo-viridis-mating-call.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bufo-viridis-mating-call.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Bufo-viridis-mating-call.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Mnolf",
+        "credit": "Own work Location: Thaur, Austria Equipment: iRiver iFP-390T Post-processing: Converted to .ogg using Audacity",
+        "description": "Mating call of a European Green Toad ( Bufo viridis )",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:11.083Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Bufo viridis 2511.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Bufo_viridis_2511.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Bufo viridis 2511.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bufo_viridis_2511.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Bufo_viridis_2511.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "NobbiP",
+      "credit": "Own work",
+      "description": "Wechselkröte Bufo viridis , vermutlich ein junges Weibchen, Körperlänge ca. 5 cm",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:11.083Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Bufo viridis in Afantou.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bufo_viridis_in_Afantou.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Bufo_viridis_in_Afantou.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Arbol01",
+        "credit": "Own work",
+        "description": "Bufo viridis , male specimen, found in Afantou, Rhodos (Greece).",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:11.083Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 55,
+    "ruWikipediaTitle": "Зелёная жаба",
+    "ruWikipediaPageviews365d": 10541,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 65.94,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 40,
+    "delightScore": 14.29,
+    "totalScore": 59.31,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Bufo viridis"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q243242",
+      "url": "https://www.wikidata.org/wiki/Q243242",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Зелёная жаба",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%97%D0%B5%D0%BB%D1%91%D0%BD%D0%B0%D1%8F_%D0%B6%D0%B0%D0%B1%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5216588",
+      "url": "https://www.gbif.org/species/5216588",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "species/match (EXACT, confidence 98)",
+      "confidence": 0.98,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Bufo viridis Laurenti, 1768",
+        "gbifSourceClass": "Amphibia",
+        "normalizedGameClass": "Amphibia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5216588",
+      "url": "https://www.gbif.org/species/5216588",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5216588",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5216588&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 11097,
+          "ASIA": 1056,
+          "AFRICA": 661
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5216588",
+      "url": "https://api.gbif.org/v1/species/5216588/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5216588",
+      "url": "https://api.gbif.org/v1/species/5216588/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bufo viridis 2511.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bufo_viridis_2511.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bufo viridis in Afantou.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bufo_viridis_in_Afantou.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bufo-viridis-mating-call.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bufo-viridis-mating-call.ogg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Bufo viridis 2511.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bufo_viridis_2511.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:11.083Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:11.083Z"
+}

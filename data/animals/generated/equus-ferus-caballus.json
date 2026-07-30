@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:equus-ferus-caballus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "домашняя лошадь",
+    "commonNameEn": "horse",
+    "scientificName": "Equus ferus caballus",
+    "acceptedScientificName": "Equus ferus caballus",
+    "aliasesRu": [
+      "Equus caballus",
+      "лошадь домашняя",
+      "конь",
+      "кобыла"
+    ],
+    "wikidataId": "Q726",
+    "gbifKey": 9117798,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Perissodactyla",
+    "family": "Equidae",
+    "genus": "Equus",
+    "species": "Equus caballus",
+    "rank": "SUBSPECIES",
+    "status": "SYNONYM",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "latin-america",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s001.oga",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s001.oga",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s001.oga",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Lemasson A, Remeuf K, Trabalon M, Cuir F, Hausberger M",
+        "credit": "S1 Sound from Lemasson A, Remeuf K, Trabalon M, Cuir F, Hausberger M (2015). \" Mares Prefer the Voices of Highly Fertile Stallions \". PLOS ONE . DOI : 10.1371/journal.pone.0118468 . PMID 25714814 . PMC : 4340864 .",
+        "description": "Example of high-pitched acoustic stimulus.",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.821Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Biandintz eta zaldiak - modified2.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Biandintz_eta_zaldiak_-_modified2.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Biandintz eta zaldiak - modified2.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Biandintz_eta_zaldiak_-_modified2.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Biandintz_eta_zaldiak_-_modified2.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Mikel Ortega from Errenteria, Basque Country, Spain, with a retouche by Richard Bartz . See the original file here.",
+      "credit": "bianditz This is a retouched picture , which means that it has been digitally altered from its original version. Modifications: improved in many ways . The original can be viewed here: Biandintz eta zaldiak.jpg : . Modifications made by Richard Bartz .",
+      "description": "Horses on Bianditz mountain, in Navarre , Spain . Behind them Aiako mountains can be seen.",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:32:58.821Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Nokota Horses cropped.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Nokota_Horses_cropped.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/de/Nokota_Horses_cropped.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Nokota_Horses.jpg : François Marchal derivative work: Dana boomer ( talk )",
+        "credit": "Nokota_Horses.jpg",
+        "description": "Two young Nokota mares",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.821Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 282,
+    "ruWikipediaTitle": "Домашняя лошадь",
+    "ruWikipediaPageviews365d": 61949,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 83.2,
+    "playabilityScore": 61.8,
+    "distinctivenessScore": 40,
+    "delightScore": 14.29,
+    "totalScore": 63.5,
+    "difficulty": "easy",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "EltonTraits has no exact row for Equus ferus caballus",
+      "AnAge has no exact row for Equus ferus caballus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q726",
+      "url": "https://www.wikidata.org/wiki/Q726",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Домашняя лошадь",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%94%D0%BE%D0%BC%D0%B0%D1%88%D0%BD%D1%8F%D1%8F_%D0%BB%D0%BE%D1%88%D0%B0%D0%B4%D1%8C/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9117798",
+      "url": "https://www.gbif.org/species/9117798",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "species/match (EXACT, confidence 98)",
+      "confidence": 0.98,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Equus ferus caballus Linnaeus, 1758",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9117798",
+      "url": "https://www.gbif.org/species/9117798",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9117798",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9117798&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 269,
+          "EUROPE": 247,
+          "ASIA": 23,
+          "NORTH_AMERICA": 6,
+          "OCEANIA": 2
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Biandintz eta zaldiak - modified2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Biandintz_eta_zaldiak_-_modified2.jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Nokota Horses cropped.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Nokota_Horses_cropped.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s001.oga",
+      "url": "https://commons.wikimedia.org/wiki/File:Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s001.oga",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Biandintz eta zaldiak - modified2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Biandintz_eta_zaldiak_-_modified2.jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:32:58.821Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:32:58.821Z"
+}

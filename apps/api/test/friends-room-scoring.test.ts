@@ -10,6 +10,7 @@ const sharedByMode: Record<CatalogGuessModeId, Partial<TitleItem>> = {
   city: { country: 'Россия', continent: 'Европа', languages: ['русский'], population: 1_000_000, timezone: 'UTC+3' },
   music: { activityStartYear: 2014, countries: ['RU'], genres: ['рок'], musicType: 'Group', musicIsActive: true },
   diagnosis: { bodySystems: ['Дыхательная система'], keySymptoms: ['Кашель'], icdGroup: 'J00–J99', diseaseTypes: ['Инфекционное'] },
+  animal: { taxonomicClass: 'Млекопитающие', animalOrder: 'Хищные', animalFamily: 'Кошачьи', habitats: ['Саванна'], animalContinents: ['Африка'], bodyMassKg: 100 },
 }
 
 const title = (mode: CatalogGuessModeId, id: string): TitleItem => ({

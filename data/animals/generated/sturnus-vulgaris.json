@@ -1,0 +1,1086 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:sturnus-vulgaris",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "обыкновенный скворец",
+    "commonNameEn": "Common Starling",
+    "scientificName": "Sturnus vulgaris",
+    "acceptedScientificName": "Sturnus vulgaris",
+    "aliasesRu": [
+      "Sturnus vulgaris",
+      "скворец обыкновенный"
+    ],
+    "wikidataId": "Q25469",
+    "gbifKey": 9809229,
+    "hagrid": "01264"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Passeriformes",
+    "family": "Sturnidae",
+    "genus": "Sturnus",
+    "species": "Sturnus vulgaris",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "north-america",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.07714,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 22.9,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 365,
+      "male": 365
+    },
+    "gestationOrIncubationDays": 12,
+    "litterOrClutchSize": 5
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 20,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 10,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 10,
+      "fruit": 30,
+      "nectar": 10,
+      "seeds": 20,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Kikihia longula",
+          "externalId": "COL:6NKL3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Agama picticauda",
+          "externalId": "COL:87NP8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cydalima perspectalis",
+          "externalId": "GBIF:4532122",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Anthus petrosus",
+          "externalId": "COL:5VKF6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Anthus berthelotii",
+          "externalId": "COL:5VKDY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cisticola juncidis",
+          "externalId": "COL:5Z8F6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prinia gracilis",
+          "externalId": "COL:4MDWL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Curruca mystacea",
+          "externalId": "COL:DDBNB",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sturnus unicolor",
+          "externalId": "COL:6ZZX8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Curruca cantillans",
+          "externalId": "COL:DDBNP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Curruca conspicillata",
+          "externalId": "COL:DDBNY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Curruca ruppeli",
+          "externalId": "COL:DDBNF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Curruca nisoria",
+          "externalId": "COL:DDBLT",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus epimelas",
+          "externalId": "WD:Q1770207",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Petronia petronia",
+          "externalId": "COL:6V6D5",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus uralensis",
+          "externalId": "COL:FRJK",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus ponticus",
+          "externalId": "COL:FRJD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Acomys nesiotes",
+          "externalId": "WD:Q305732",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Passer italiae",
+          "externalId": "COL:4DXXX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus hyrcanicus",
+          "externalId": "WD:Q1761708",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Apodemus witherbyi",
+          "externalId": "COL:FRJM",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Acomys cilicicus",
+          "externalId": "WD:Q1769237",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Acomys minous",
+          "externalId": "WD:Q304975",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Meriones persicus",
+          "externalId": "COL:72Z9V",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Meriones tristrami",
+          "externalId": "COL:6QYXS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Meriones vinogradovi",
+          "externalId": "COL:72YXS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dipodillus dasyurus",
+          "externalId": "COL:36PKX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mus cypriacus",
+          "externalId": "WD:Q245798",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Meriones dahli",
+          "externalId": "WD:Q1766135",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chalcides simonyi",
+          "externalId": "WD:Q1293725",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Pantherophis alleghaniensis",
+          "externalId": "WD:Q3362474",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vormela peregusna",
+          "externalId": "WD:Q70529",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Martes zibellina",
+          "externalId": "WD:Q26423",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Falco eleonorae",
+          "externalId": "COL:3DTG5",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Buteo rufinus",
+          "externalId": "COL:NYVP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Otus brucei",
+          "externalId": "WD:Q1267714",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Glaucidium passerinum",
+          "externalId": "GBIF:5232162",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Circus macrourus",
+          "externalId": "COL:VG83",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Stercorarius pomarinus",
+          "externalId": "COL:52D8P",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Milvus milvus",
+          "externalId": "COL:43DZJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lanius meridionalis",
+          "externalId": "COL:3S7BX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dryomys laniger",
+          "externalId": "WD:Q1766281",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eliomys melanurus",
+          "externalId": "WD:Q1751843",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zamenis lineatus",
+          "externalId": "WD:Q1422955",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Elaphe quatuorlineata",
+          "externalId": "WD:Q854499",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zamenis situla",
+          "externalId": "NCBI:201442",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Elaphe dione",
+          "externalId": "COL:38YKZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Platyceps collaris",
+          "externalId": "WD:Q2381179",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hierophis gemonensis",
+          "externalId": "WD:Q546483",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lacerta bilineata",
+          "externalId": "WD:Q739025",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hemorrhois hippocrepis",
+          "externalId": "COL:3KTY6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Timon lepidus",
+          "externalId": "WD:Q843236",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vipera berus",
+          "externalId": "WD:Q192056",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera albizona",
+          "externalId": "WD:Q138438",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Telescopus fallax",
+          "externalId": "WD:Q1377407",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera raddei",
+          "externalId": "WD:Q683693",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Macrovipera schweizeri",
+          "externalId": "WD:Q536300",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Platyceps najadum",
+          "externalId": "WD:Q901168",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera wagneri",
+          "externalId": "WD:Q280972",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Montivipera xanthina",
+          "externalId": "WD:Q641092",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Sturnus vulgaris juveniles sound recording.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sturnus_vulgaris_juveniles_sound_recording.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Sturnus_vulgaris_juveniles_sound_recording.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Kfrommolt",
+        "credit": "Own work",
+        "description": "Sturnus vulgaris juveniles sound recording",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:02.985Z",
+        "soundType": "animal-vocalization"
+      },
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Common Starling (Sturnus vulgaris) (W1CDR0001431 BD8).ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Common_Starling_(Sturnus_vulgaris)_(W1CDR0001431_BD8).ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Common_Starling_%28Sturnus_vulgaris%29_%28W1CDR0001431_BD8%29.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+        "description": "The chattering calls of a group of Common Starlings, recorded in the UK",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:02.985Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Toulouse - Sturnus vulgaris - 2012-02-26 - 2.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/06/Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_2.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Sturnus vulgaris map.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sturnus_vulgaris_map.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Sturnus_vulgaris_map.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "MPF",
+        "credit": "Own work using: Native range: Snow & Perrins BWP Concise del Hoyo et al. Handbook of the Birds of the World 14: 724 Harrison, Atlas of the Birds of the Western Palaearctic Introduced range: Sibley North American Bird Guide Australia South Africa",
+        "description": "Sturnus vulgaris distribution map. Key: Dark colours: native; yellow, breeding summer visitor; green, resident breeding; blue, winter visitor Light colours: introduced; light yellow breeding summer visitor; light green, resident breeding Native, breeding summer visitor Native, resident breeding Native, winter visitor Introduced, breeding summer visitor Introduced, resident breeding",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:02.985Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Toulouse - Sturnus vulgaris - 2012-02-26 - 2.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_2.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/06/Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_2.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "PierreSelim",
+      "credit": "Own work",
+      "description": "Common starling (Sturnus vulgaris) in Toulouse",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:02.985Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Common Starling, Blyth (12598795653).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Common_Starling,_Blyth_(12598795653).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Common_Starling%2C_Blyth_%2812598795653%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "marsupium photography",
+        "credit": "https://www.flickr.com/photos/hagdorned/12598795653/",
+        "description": "Common Starling, Blyth, Northumberland",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:02.985Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 112,
+    "ruWikipediaTitle": "Обыкновенный скворец",
+    "ruWikipediaPageviews365d": 90319,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 79.96,
+    "playabilityScore": 94.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 76.65,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q25469",
+      "url": "https://www.wikidata.org/wiki/Q25469",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенный скворец",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D1%81%D0%BA%D0%B2%D0%BE%D1%80%D0%B5%D1%86/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9809229",
+      "url": "https://www.gbif.org/species/9809229",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Sturnus vulgaris Linnaeus, 1758",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9809229",
+      "url": "https://www.gbif.org/species/9809229",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9809229",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9809229&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 20067738,
+          "EUROPE": 6692045,
+          "OCEANIA": 1206383,
+          "AFRICA": 139443,
+          "LATIN_AMERICA": 137027,
+          "ASIA": 21046
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9809229",
+      "url": "https://api.gbif.org/v1/species/9809229/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9809229",
+      "url": "https://api.gbif.org/v1/species/9809229/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Botswana"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Barbados"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Bermuda"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Lesotho"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - New Zealand"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Addo-Elephant National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Bontebok National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Garden Route National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Golden Gate Highlands National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Karoo National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Mountain Zebra National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Richtersveld National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Table Mountain National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Tankwa-Karoo National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - West Coast National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Lord Howe Island, Australia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Namibia"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Tonga"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Australia"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Jamaica"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Sturnus vulgaris",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01264",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "450",
+        "specimenOrigin": "wild",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Sturnus vulgaris",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Sturnus%20vulgaris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Sturnus vulgaris",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Sturnus%20vulgaris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Toulouse - Sturnus vulgaris - 2012-02-26 - 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_2.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Common Starling, Blyth (12598795653).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Common_Starling,_Blyth_(12598795653).jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sturnus vulgaris juveniles sound recording.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sturnus_vulgaris_juveniles_sound_recording.ogg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Common Starling (Sturnus vulgaris) (W1CDR0001431 BD8).ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Common_Starling_(Sturnus_vulgaris)_(W1CDR0001431_BD8).ogg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sturnus vulgaris map.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Sturnus_vulgaris_map.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Toulouse - Sturnus vulgaris - 2012-02-26 - 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_2.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:02.985Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:02.985Z"
+}

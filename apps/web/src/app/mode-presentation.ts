@@ -1,4 +1,4 @@
-import { Film, Gamepad2, MapPin, Music2, Sparkles, SquarePlus, Tv, type LucideIcon } from 'lucide-react'
+import { Film, Gamepad2, MapPin, Music2, PawPrint, Sparkles, SquarePlus, Tv, type LucideIcon } from 'lucide-react'
 import type { TitleMode } from '../types'
 import { publicAssetUrl } from './public-asset'
 
@@ -19,4 +19,5 @@ export const MODE_PRESENTATION: Record<TitleMode, ModePresentation> = {
   city: { icon: MapPin, color: 'var(--mode-city-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/city-stub-v1.webp'), description: 'Найдите город по стране, населению, часовому поясу и рейтингам.', emptyHint: 'После ответа появятся сравнения по стране, континенту, языкам, населению, часовому поясу и рейтингам.' },
   music: { icon: Music2, color: 'var(--mode-music-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/music-stub.webp'), description: 'Найдите артиста по стране, эпохе и жанрам.', emptyHint: 'После ответа появятся сравнения по стране, старту карьеры, десятилетию, типу артиста, сцене и жанрам.' },
   diagnosis: { icon: SquarePlus, color: 'var(--mode-diagnosis-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/diagnosis-stub.webp'), description: 'Определите диагноз по симптомам и системе органов.', emptyHint: 'После ответа появятся сравнения по системе, симптомам, диагностике и коду МКБ.' },
+  animal: { icon: PawPrint, color: 'var(--mode-animal-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/animal-stub.webp'), description: 'Угадайте животное по классу, среде обитания, ареалу и строению.', emptyHint: 'После ответа появятся сравнения по классификации, покрову тела, среде, ареалу, питанию, движению и размеру.' },
 }

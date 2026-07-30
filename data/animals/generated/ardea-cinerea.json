@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:ardea-cinerea",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "серая цапля",
+    "commonNameEn": "Grey Heron",
+    "scientificName": "Ardea cinerea",
+    "acceptedScientificName": "Ardea cinerea",
+    "aliasesRu": [
+      "Ardea cinerea",
+      "цапля серая",
+      "серые цапли"
+    ],
+    "wikidataId": "Q25273",
+    "gbifKey": 9797180,
+    "hagrid": "01350"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Pelecaniformes",
+    "family": "Ardeidae",
+    "genus": "Ardea",
+    "species": "Ardea cinerea",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 1.443,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 37.5,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 730,
+      "male": 730
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 20,
+      "endothermicVertebrates": 10,
+      "ectothermicVertebrates": 10,
+      "fish": 60,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Grey Heron (Ardea cinerea) (W ARDEA CINEREA R1 C19).ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Grey_Heron_(Ardea_cinerea)_(W_ARDEA_CINEREA_R1_C19).ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Grey_Heron_%28Ardea_cinerea%29_%28W_ARDEA_CINEREA_R1_C19%29.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+        "description": "Cracking sounds, retching notes and bill-snapping from a family of Grey Herons at a nest on a lake edge at Shearwater, near Warminster, Wiltshire, England",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.686Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Ardea cinerea EM1A2714 (27349354381).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Ardea_cinerea_EM1A2714_%2827349354381%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:ArdeaCinereaIUCN2019 2.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:ArdeaCinereaIUCN2019_2.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d9/ArdeaCinereaIUCN2019_2.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "SanoAK : Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vetor and raster map data @ naturalearthdata.com. Range map from BirdLife International 2016. Ardea cinerea. The IUCN Red List of Threatened Species 2016: e.T22696993A86464489. https://dx.doi.org/10.2305/IUCN.UK.2016-3.RLTS.T22696993A86464489.en . Downloaded on 16 August 2019 as visual indicator of distribution.",
+        "description": "Distribution map of grey heron (Ardea cinerea) according to IUCN version 2019-2 ; key: Legend: Extant, breeding (#00FF00) , Extant, resident (#008000) , Extant, non-breeding (#007FFF) , Extant & Vagrant (seasonality uncertain) (#FF00FF) , Extant & Introduced (resident) (#FFFF00)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.686Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Ardea cinerea EM1A2714 (27349354381).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Ardea_cinerea_EM1A2714_(27349354381).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Ardea_cinerea_EM1A2714_%2827349354381%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Bengt Nyman from Vaxholm, Sweden",
+      "credit": "EM1A2714",
+      "description": "Gråhäger, Grey heron, Ardea cinerea Vaxholm, Sweden, June 2016",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:27.686Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Baden-Baden 10-2015 img14 Hector Berlioz Park Grey heron.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Baden-Baden_10-2015_img14_Hector_Berlioz_Park_Grey_heron.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Baden-Baden_10-2015_img14_Hector_Berlioz_Park_Grey_heron.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "A.Savin",
+        "credit": "Own work",
+        "description": "A Grey heron in the Hector Berlioz Park in Baden-Baden (BW, Germany).",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.686Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Kerkini lake in May 01.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Kerkini_lake_in_May_01.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Kerkini_lake_in_May_01.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Vassilios Vescoukis",
+        "credit": "Own work",
+        "description": "This is a photograph of a Natura 2000 protected area with ID",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.686Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 113,
+    "ruWikipediaTitle": "Серая цапля",
+    "ruWikipediaPageviews365d": 47261,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 76.94,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 72.32,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q25273",
+      "url": "https://www.wikidata.org/wiki/Q25273",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Серая цапля",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B5%D1%80%D0%B0%D1%8F_%D1%86%D0%B0%D0%BF%D0%BB%D1%8F/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9797180",
+      "url": "https://www.gbif.org/species/9797180",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Ardea cinerea Linnaeus, 1758",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9797180",
+      "url": "https://www.gbif.org/species/9797180",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9797180",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9797180&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 6456221,
+          "ASIA": 916763,
+          "AFRICA": 298128
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9797180",
+      "url": "https://api.gbif.org/v1/species/9797180/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Ardea cinerea",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01350",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "450",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Ardea cinerea EM1A2714 (27349354381).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Ardea_cinerea_EM1A2714_(27349354381).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Baden-Baden 10-2015 img14 Hector Berlioz Park Grey heron.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Baden-Baden_10-2015_img14_Hector_Berlioz_Park_Grey_heron.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Kerkini lake in May 01.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Kerkini_lake_in_May_01.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Grey Heron (Ardea cinerea) (W ARDEA CINEREA R1 C19).ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Grey_Heron_(Ardea_cinerea)_(W_ARDEA_CINEREA_R1_C19).ogg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:ArdeaCinereaIUCN2019 2.png",
+      "url": "https://commons.wikimedia.org/wiki/File:ArdeaCinereaIUCN2019_2.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Ardea cinerea EM1A2714 (27349354381).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Ardea_cinerea_EM1A2714_(27349354381).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.686Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:27.686Z"
+}

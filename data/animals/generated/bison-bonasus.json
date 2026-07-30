@@ -1,0 +1,686 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:bison-bonasus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Зубp",
+    "commonNameEn": "Bison bonasus",
+    "scientificName": "Bison bonasus",
+    "acceptedScientificName": "Bison bonasus",
+    "aliasesRu": [
+      "Зубры",
+      "Бизон европейский",
+      "Европейский бизон",
+      "Аурокс"
+    ],
+    "wikidataId": "Q81091",
+    "gbifKey": 2441184,
+    "hagrid": "01905"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Artiodactyla",
+    "family": "Bovidae",
+    "genus": "Bison",
+    "species": "Bison bonasus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 500,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 26.4,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 730,
+      "male": 730
+    },
+    "gestationOrIncubationDays": 270,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 100
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Bouteloua gracilis",
+          "externalId": "NCBI:48732",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Urochloa mutica",
+          "externalId": "NCBI:158174",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zea mays",
+          "externalId": "NCBI:4577",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cruciata glabra",
+          "externalId": "WD:Q160023",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Galium palustre",
+          "externalId": "ITIS:34903",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Frangula alnus",
+          "externalId": "GBIF:3039454",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Galium aparine",
+          "externalId": "ITIS:34797",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lythrum salicaria",
+          "externalId": "ITIS:27079",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Calluna vulgaris",
+          "externalId": "ITIS:23634",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Fragaria vesca",
+          "externalId": "ITIS:24634",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rubus idaeus",
+          "externalId": "ITIS:24947",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Symphoricarpos albus",
+          "externalId": "ITIS:35332",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sambucus nigra",
+          "externalId": "ITIS:35324",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prunella vulgaris",
+          "externalId": "ITIS:32381",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Galium mollugo",
+          "externalId": "EOL:1108055",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lysimachia vulgaris",
+          "externalId": "EOL:583467",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Malus domestica",
+          "externalId": "COL:7NHJZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hypericum perforatum",
+          "externalId": "EOL:584888",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "COL:QLXL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ursus arctos",
+          "externalId": "COL:7F2KB",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lynx lynx",
+          "externalId": "COL:6QR9T",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:European bison (Bison bonasus) male Białowieza.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/European_bison_%28Bison_bonasus%29_male_Bia%C5%82owieza.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Bison bonasus historic.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bison_bonasus_historic.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Bison_bonasus_historic.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Leonid 2",
+        "credit": "Own work",
+        "description": "Historic range map of the European bison ( Bison bonasus ): Historic range in green, relict populations in the 20th century in red Historic range relict populations in the 20th century References: M. Tokarska, C. Pertoldi, R. Kowalczuk, K. Perzanowski. Genetic status of the European bison Bison bonasus after extinction in the wild and subsequent recovery. Mammal Reviev, January 2011.",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:47.414Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:European bison (Bison bonasus) male Białowieza.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:European_bison_(Bison_bonasus)_male_Bia%C5%82owieza.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/European_bison_%28Bison_bonasus%29_male_Bia%C5%82owieza.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Charles J. Sharp",
+      "credit": "Own work , from Sharp Photography, sharpphotography.co.uk",
+      "description": "European bison ( Bison bonasus ) male, Białowieża Forest, Poland",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:33:47.414Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Зубри- Язовир Студен кладенец.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:%D0%97%D1%83%D0%B1%D1%80%D0%B8-_%D0%AF%D0%B7%D0%BE%D0%B2%D0%B8%D1%80_%D0%A1%D1%82%D1%83%D0%B4%D0%B5%D0%BD_%D0%BA%D0%BB%D0%B0%D0%B4%D0%B5%D0%BD%D0%B5%D1%86.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d7/%D0%97%D1%83%D0%B1%D1%80%D0%B8-_%D0%AF%D0%B7%D0%BE%D0%B2%D0%B8%D1%80_%D0%A1%D1%82%D1%83%D0%B4%D0%B5%D0%BD_%D0%BA%D0%BB%D0%B0%D0%B4%D0%B5%D0%BD%D0%B5%D1%86.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Анна Василева",
+        "credit": "Own work",
+        "description": "This is a photo of a natural heritage site in Bulgaria, id:",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:47.414Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Зубри.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:%D0%97%D1%83%D0%B1%D1%80%D0%B8.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/%D0%97%D1%83%D0%B1%D1%80%D0%B8.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Pryndak Vasyl",
+        "credit": "Own work",
+        "description": "Субпопуляція зубра європейського",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:47.414Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 94,
+    "ruWikipediaTitle": "Зубр",
+    "ruWikipediaPageviews365d": 146174,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 81.29,
+    "playabilityScore": 88.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 70.96,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q81091",
+      "url": "https://www.wikidata.org/wiki/Q81091",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Зубр",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%97%D1%83%D0%B1%D1%80/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441184",
+      "url": "https://www.gbif.org/species/2441184",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Bison bonasus (Linnaeus, 1758)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2441184",
+      "url": "https://www.gbif.org/species/2441184",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2441184",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2441184&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 4644,
+          "NORTH_AMERICA": 4,
+          "AFRICA": 2,
+          "ASIA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441184",
+      "url": "https://api.gbif.org/v1/species/2441184/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441184",
+      "url": "https://api.gbif.org/v1/species/2441184/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Invasive and Introduced Species - Norway"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Invasive and Introduced Species - Norway"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Bison bonasus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01905",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Bison bonasus",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Bison%20bonasus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Bison bonasus",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Bison%20bonasus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:European bison (Bison bonasus) male Białowieza.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:European_bison_(Bison_bonasus)_male_Bia%C5%82owieza.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Зубри- Язовир Студен кладенец.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:%D0%97%D1%83%D0%B1%D1%80%D0%B8-_%D0%AF%D0%B7%D0%BE%D0%B2%D0%B8%D1%80_%D0%A1%D1%82%D1%83%D0%B4%D0%B5%D0%BD_%D0%BA%D0%BB%D0%B0%D0%B4%D0%B5%D0%BD%D0%B5%D1%86.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Зубри.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:%D0%97%D1%83%D0%B1%D1%80%D0%B8.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bison bonasus historic.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bison_bonasus_historic.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:European bison (Bison bonasus) male Białowieza.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:European_bison_(Bison_bonasus)_male_Bia%C5%82owieza.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:47.414Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:33:47.414Z"
+}

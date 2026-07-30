@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:hirudo-medicinalis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Медицинская пиявка",
+    "commonNameEn": "Hirudo medicinalis",
+    "scientificName": "Hirudo medicinalis",
+    "acceptedScientificName": "Hirudo medicinalis",
+    "aliasesRu": [
+      "Hirudo medicinalis",
+      "Медицинская пиявка"
+    ],
+    "wikidataId": "Q30041",
+    "gbifKey": 2308887,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Annelida",
+    "taxonomicClass": "Clitellata",
+    "order": "Arhynchobdellida",
+    "family": "Hirudinidae",
+    "genus": "Hirudo",
+    "species": "Hirudo medicinalis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Clitellata",
+    "bodyCoverings": [],
+    "habitats": [
+      "freshwater"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [],
+    "sizeCategory": "",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Svømmende blodigle.JPG",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Sv%C3%B8mmende_blodigle.JPG",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.5",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Svømmende blodigle.JPG",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sv%C3%B8mmende_blodigle.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Sv%C3%B8mmende_blodigle.JPG",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Karl Ragnar Gjertsen Please credit Karl Ragnar Gjertsen This photo was taken by Karl Ragnar Gjertsen . Please credit this photo Karl Ragnar Gjertsen in the immediate vicinity of the image.",
+      "credit": "Own work",
+      "description": "European medical leech ( Hirudo medicinalis L., 1758)",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:18.325Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 56,
+    "ruWikipediaTitle": "Медицинская пиявка",
+    "ruWikipediaPageviews365d": 37753,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 72.08,
+    "playabilityScore": 47.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 49.52,
+    "difficulty": "easy",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 50,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Hirudo medicinalis"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q30041",
+      "url": "https://www.wikidata.org/wiki/Q30041",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Медицинская пиявка",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9C%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D1%81%D0%BA%D0%B0%D1%8F_%D0%BF%D0%B8%D1%8F%D0%B2%D0%BA%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2308887",
+      "url": "https://www.gbif.org/species/2308887",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Hirudo medicinalis Linnaeus, 1758",
+        "gbifSourceClass": "Clitellata",
+        "normalizedGameClass": "Clitellata"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2308887",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2308887&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 3028,
+          "ASIA": 10,
+          "NORTH_AMERICA": 9,
+          "AFRICA": 5
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2308887",
+      "url": "https://api.gbif.org/v1/species/2308887/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2308887",
+      "url": "https://api.gbif.org/v1/species/2308887/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Host",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2308887",
+      "url": "https://api.gbif.org/v1/species/2308887/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Svømmende blodigle.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Sv%C3%B8mmende_blodigle.JPG",
+      "license": "CC BY 2.5",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Svømmende blodigle.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Sv%C3%B8mmende_blodigle.JPG",
+      "license": "CC BY 2.5",
+      "retrievedAt": "2026-07-30T19:40:18.325Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.lifestyles"
+      ],
+      "source": "Existing sourced taxonomy/habitat + project normalization rules",
+      "sourceId": "2308887",
+      "url": "https://www.gbif.org/species/2308887",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:47:45.496Z",
+      "method": "deterministic class/order/family and habitat-to-lifestyle rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:18.325Z"
+}

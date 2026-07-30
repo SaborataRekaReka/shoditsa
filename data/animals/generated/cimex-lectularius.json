@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:cimex-lectularius",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "постельный клоп",
+    "commonNameEn": "Cimex lectularius",
+    "scientificName": "Cimex lectularius",
+    "acceptedScientificName": "Cimex lectularius",
+    "aliasesRu": [
+      "Cimex lectularius",
+      "Клоп постельный",
+      "Постельный клоп"
+    ],
+    "wikidataId": "Q940337",
+    "gbifKey": 2021062,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Arthropoda",
+    "taxonomicClass": "Insecta",
+    "order": "Hemiptera",
+    "family": "Cimicidae",
+    "genus": "Cimex",
+    "species": "Cimex lectularius",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Insecta",
+    "bodyCoverings": [
+      "exoskeleton"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "north-america",
+      "europe",
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 6,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Bed bug, Cimex lectularius.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Bed_bug%2C_Cimex_lectularius.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Bed bug, Cimex lectularius.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bed_bug,_Cimex_lectularius.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Bed_bug%2C_Cimex_lectularius.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Content Providers(s): CDC/ Harvard University, Dr. Gary Alpert; Dr. Harold Harlan; Richard Pollack. Photo Credit: Piotr Naskrecki",
+      "credit": "http://phil.cdc.gov/phil/details.asp?pid=9822",
+      "description": "This 2006 photograph depicted an oblique-dorsal view of a bed bug nymph ( Cimex lectularius ) as it was in the process of ingesting a blood meal from the arm of a “voluntary” human host. Bed bugs are not vectors in nature of any known human disease. Although some disease organisms have been recovered from bed bugs under laboratory conditions, none have been shown to be transmitted by bed bugs outside of the laboratory. The common bed bug is found worldwide. Infestations are common in the developing world, occurring in settings of unsanitary living conditions and severe crowding. In North America and Western Europe, bed bug infestations became rare during the second half of the 20th century and have been viewed as a condition that occurs in travelers returning from developing countries. However, anecdotal reports suggest that bed bugs are increasingly common in the United States, Canada, and the United Kingdom. C. lectularius inject saliva into the blood stream of their host to thin the blood, and to prevent coagulation. It is this saliva that causes the intense itching and welts. The delay in the onset of itching gives the feeding bed bug time to escape into cracks and crevices. In some cases, the itchy bites can develop into painful welts that last several days. Bed bug bites are difficult to diagnose due to the variability in bite response between people, and due to the change in skin reaction for the same person over time. It is best to collect and identify bed bugs to confirm bites. Bed bugs are responsible for loss of sleep, discomfort, disfiguring from numerous bites and occasionally bites may become infected.",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:23.339Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202404 Bed bug.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202404_Bed_bug.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5c/202404_Bed_bug.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2024.088",
+        "description": "Bed bug",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:23.339Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 88,
+    "ruWikipediaTitle": "Постельный клоп",
+    "ruWikipediaPageviews365d": 202192,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 82.47,
+    "playabilityScore": 65.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 60,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Cimex lectularius"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q940337",
+      "url": "https://www.wikidata.org/wiki/Q940337",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Постельный клоп",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9F%D0%BE%D1%81%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%BA%D0%BB%D0%BE%D0%BF/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2021062",
+      "url": "https://www.gbif.org/species/2021062",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Cimex lectularius Linnaeus, 1758",
+        "gbifSourceClass": "Insecta",
+        "normalizedGameClass": "Insecta"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2021062",
+      "url": "https://www.gbif.org/species/2021062",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2021062",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2021062&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 1354,
+          "EUROPE": 1057,
+          "OCEANIA": 295,
+          "LATIN_AMERICA": 155,
+          "ASIA": 77,
+          "AFRICA": 35
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2021062",
+      "url": "https://api.gbif.org/v1/species/2021062/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2021062",
+      "url": "https://api.gbif.org/v1/species/2021062/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bed bug, Cimex lectularius.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bed_bug,_Cimex_lectularius.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202404 Bed bug.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202404_Bed_bug.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Bed bug, Cimex lectularius.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bed_bug,_Cimex_lectularius.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:23.339Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2021062",
+      "url": "https://www.gbif.org/species/2021062",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:45:36.957Z",
+      "method": "deterministic class/order/family rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:23.339Z"
+}

@@ -1,0 +1,822 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:crocuta-crocuta",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "пятнистая гиена",
+    "commonNameEn": "Crocuta crocuta",
+    "scientificName": "Crocuta crocuta",
+    "acceptedScientificName": "Crocuta crocuta",
+    "aliasesRu": [
+      "Crocuta crocuta",
+      "Пятнистая гиена"
+    ],
+    "wikidataId": "Q178089",
+    "gbifKey": 5218781,
+    "hagrid": "02158"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Hyaenidae",
+    "genus": "Crocuta",
+    "species": "Crocuta crocuta",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 66.49206,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 41.1,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 1095,
+      "male": 639
+    },
+    "gestationOrIncubationDays": 110,
+    "litterOrClutchSize": 2
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 100,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Ammodorcas clarkei",
+          "externalId": "COL:66BLJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Papio papio",
+          "externalId": "EOL:2925217",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Raphicerus sharpei",
+          "externalId": "EOL:1038781",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hippotragus equinus",
+          "externalId": "COL:3M3CY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Madoqua kirkii",
+          "externalId": "EOL:311498",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Connochaetes taurinus",
+          "externalId": "EOL:308531",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eudorcas thomsonii",
+          "externalId": "EOL:129521",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Alcelaphus buselaphus",
+          "externalId": "EOL:308529",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Phacochoerus africanus",
+          "externalId": "EOL:328332",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Equus quagga",
+          "externalId": "EOL:311502",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Aepyceros melampus",
+          "externalId": "EOL:308540",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Damaliscus korrigum",
+          "externalId": "EOL:4447088",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ourebia ourebi",
+          "externalId": "EOL:344589",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Redunca redunca",
+          "externalId": "EOL:331084",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Kobus ellipsiprymnus",
+          "externalId": "EOL:328724",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Nanger granti",
+          "externalId": "EOL:129513",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Kobus thomasi",
+          "externalId": "COL:PLPVP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tragelaphus oryx",
+          "externalId": "PBDB:149709",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Giraffa tippelskirchi",
+          "externalId": "COL:3G3KR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Giraffa giraffa giraffa",
+          "externalId": "COL:5HGSZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tragelaphus strepsiceros strepsiceros",
+          "externalId": "GBIF:7261401",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Giraffa reticulata",
+          "externalId": "COL:3G3KQ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Equus quagga boehmi",
+          "externalId": "COL:5H5HM",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Giraffa giraffa",
+          "externalId": "COL:3G3KP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chlorocebus tantalus",
+          "externalId": "COL:5Y7X6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Litocranius walleri",
+          "externalId": "EOL:129522",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Equus africanus",
+          "externalId": "COL:6FYB7",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Tragelaphus strepsiceros",
+          "externalId": "EOL:1038792",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Kobus vardonii",
+          "externalId": "EOL:328726",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cephalophus rufilatus",
+          "externalId": "EOL:328721",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Panthera leo",
+          "externalId": "EOL:328672",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Corvus crassirostris",
+          "externalId": "COL:YNHL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gyps africanus",
+          "externalId": "COL:3HXN9",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lupulella mesomelas mesomelas",
+          "externalId": "COL:V5M4W",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Terathopius ecaudatus",
+          "externalId": "COL:7BQF6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "COL:4CGXR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gyps rueppelli",
+          "externalId": "COL:3HXNF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hyaena hyaena",
+          "externalId": "COL:6MGT8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Corvus albus",
+          "externalId": "COL:6B5CD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Aquila rapax",
+          "externalId": "COL:FZLX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Homo sapiens",
+          "externalId": "COL:6MB3T",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Parahyaena brunnea",
+          "externalId": "NCBI:172271",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis aureus",
+          "externalId": "NCBI:68724",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Giggling call of a spotted hyena (Crocuta crocuta) - 1472-6785-10-9-S3.oga",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Giggling_call_of_a_spotted_hyena_(Crocuta_crocuta)_-_1472-6785-10-9-S3.oga",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Giggling_call_of_a_spotted_hyena_%28Crocuta_crocuta%29_-_1472-6785-10-9-S3.oga",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Mathevon N, Koralek A, Weldele M, Glickman S, Theunissen F",
+        "credit": "Mathevon N, Koralek A, Weldele M, Glickman S, Theunissen F (2010). \" What the hyena's laugh tells: Sex, age, dominance and individual signature in the giggling call of Crocuta crocuta \". BMC Ecology . DOI : 10.1186/1472-6785-10-9 . PMID 20353550 . PMC : 2859383 . YouTube : صوت الضبع – View/save archived versions on archive.org",
+        "description": "Example #1 of a giggle bout from Kombo. Wave file of an example giggle bout from Kombo. The spectrogram of this call is shown on the top right panel of figure 1A.",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:13.726Z",
+        "soundType": "animal-vocalization"
+      },
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Spotted Hyaena (Crocuta crocuta) (W1CDR0000381 BD12).ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Spotted_Hyaena_(Crocuta_crocuta)_(W1CDR0000381_BD12).ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/Spotted_Hyaena_%28Crocuta_crocuta%29_%28W1CDR0000381_BD12%29.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+        "description": "Spotted Hyaena whoop, recorded in Hluhluwe–Imfolozi Park , South Africa",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:13.726Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Hiena manchada (Crocuta crocuta), parque nacional Kruger, Sudáfrica, 2018-07-26, DD 22.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Hiena_manchada_%28Crocuta_crocuta%29%2C_parque_nacional_Kruger%2C_Sud%C3%A1frica%2C_2018-07-26%2C_DD_22.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Crocuta crocuta map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Crocuta_crocuta_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Crocuta_crocuta_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Cephas",
+        "credit": "Adapted from: Bohm, T. & Höner, O.R. 2015. Crocuta crocuta. The IUCN Red List of Threatened Species 2015: e.T5674A45194782. https://dx.doi.org/10.2305/IUCN.UK.2015-2.RLTS.T5674A45194782.en . Accessed on 19 June 2026. File:Africa map political-fr.svg",
+        "description": "Range map of Spotted hyena ( Crocuta crocuta )",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:13.726Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Hiena manchada (Crocuta crocuta), parque nacional Kruger, Sudáfrica, 2018-07-26, DD 22.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hiena_manchada_(Crocuta_crocuta),_parque_nacional_Kruger,_Sud%C3%A1frica,_2018-07-26,_DD_22.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Hiena_manchada_%28Crocuta_crocuta%29%2C_parque_nacional_Kruger%2C_Sud%C3%A1frica%2C_2018-07-26%2C_DD_22.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Diego Delso",
+      "credit": "Own work",
+      "description": "Spotted hyena ( Crocuta crocuta ), Kruger National Park, South Africa",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:13.726Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 77,
+    "ruWikipediaTitle": "Пятнистая гиена",
+    "ruWikipediaPageviews365d": 41232,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 74.21,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 71.18,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q178089",
+      "url": "https://www.wikidata.org/wiki/Q178089",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Пятнистая гиена",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9F%D1%8F%D1%82%D0%BD%D0%B8%D1%81%D1%82%D0%B0%D1%8F_%D0%B3%D0%B8%D0%B5%D0%BD%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5218781",
+      "url": "https://www.gbif.org/species/5218781",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Crocuta crocuta (Erxleben, 1777)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5218781",
+      "url": "https://www.gbif.org/species/5218781",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5218781",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5218781&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 9801,
+          "EUROPE": 605,
+          "NORTH_AMERICA": 47,
+          "ASIA": 23
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5218781",
+      "url": "https://api.gbif.org/v1/species/5218781/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5218781",
+      "url": "https://api.gbif.org/v1/species/5218781/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Crocuta crocuta",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02158",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Crocuta crocuta",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Crocuta%20crocuta&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Crocuta crocuta",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Crocuta%20crocuta&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Hiena manchada (Crocuta crocuta), parque nacional Kruger, Sudáfrica, 2018-07-26, DD 22.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Hiena_manchada_(Crocuta_crocuta),_parque_nacional_Kruger,_Sud%C3%A1frica,_2018-07-26,_DD_22.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Giggling call of a spotted hyena (Crocuta crocuta) - 1472-6785-10-9-S3.oga",
+      "url": "https://commons.wikimedia.org/wiki/File:Giggling_call_of_a_spotted_hyena_(Crocuta_crocuta)_-_1472-6785-10-9-S3.oga",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Spotted Hyaena (Crocuta crocuta) (W1CDR0000381 BD12).ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Spotted_Hyaena_(Crocuta_crocuta)_(W1CDR0000381_BD12).ogg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Crocuta crocuta map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Crocuta_crocuta_map.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Hiena manchada (Crocuta crocuta), parque nacional Kruger, Sudáfrica, 2018-07-26, DD 22.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Hiena_manchada_(Crocuta_crocuta),_parque_nacional_Kruger,_Sud%C3%A1frica,_2018-07-26,_DD_22.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:34:13.726Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:13.726Z"
+}

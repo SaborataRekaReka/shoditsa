@@ -1,0 +1,957 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:canis-lupus-familiaris",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "собака",
+    "commonNameEn": "dog",
+    "scientificName": "Canis lupus familiaris",
+    "acceptedScientificName": "Canis lupus familiaris",
+    "aliasesRu": [
+      "собака обыкновенная",
+      "пёс",
+      "пес"
+    ],
+    "wikidataId": "Q144",
+    "gbifKey": 6164210,
+    "hagrid": "02075"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Canidae",
+    "genus": "Canis",
+    "species": "Canis lupus",
+    "rank": "SUBSPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "oceania",
+      "europe",
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "medium",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 26.625,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 20.6,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 669,
+      "male": 669
+    },
+    "gestationOrIncubationDays": 62,
+    "litterOrClutchSize": 6
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Gazella bennettii",
+          "externalId": "COL:3FG38",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cuniculus paca",
+          "externalId": "COL:6BPX8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pelecanus thagus",
+          "externalId": "COL:6TZ8H",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Odocoileus virginianus",
+          "externalId": "COL:48NBQ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Iguana iguana",
+          "externalId": "COL:6MV3G",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bos taurus",
+          "externalId": "COL:MLQ5",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sciurus carolinensis",
+          "externalId": "COL:4VNCY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Scapanus occultus",
+          "externalId": "https://www.inaturalist.org/taxa/1370682",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Nestor meridionalis septentrionalis",
+          "externalId": "COL:C4FYM",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Herpestes sanguineus",
+          "externalId": "PBDB:232253",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lacerta bilineata",
+          "externalId": "COL:3RMPF",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Coronella austriaca",
+          "externalId": "COL:YH2R",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Amblysomus hottentotus",
+          "externalId": "COL:CNZS",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Castor fiber",
+          "externalId": "COL:RQPW",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cavia aperea",
+          "externalId": "COL:RY7N",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lepus californicus",
+          "externalId": "COL:6PPZ6",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lepus europaeus",
+          "externalId": "COL:6PPYF",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Odocoileus hemionus",
+          "externalId": "COL:48NBP",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Iguana delicatissima",
+          "externalId": "COL:6N73J",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eudyptula minor",
+          "externalId": "COL:6H8KC",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chelodina oblonga",
+          "externalId": "COL:69R9S",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Columba livia",
+          "externalId": "COL:XBFW",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mustela furo",
+          "externalId": "COL:44QWQ",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Didelphis albiventris",
+          "externalId": "COL:6D4X2",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Elgaria multicarinata",
+          "externalId": "COL:399YC",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ameiva ameiva",
+          "externalId": "COL:CQKP",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Notamacropus agilis",
+          "externalId": "COL:KQB9B",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Recurvirostra americana",
+          "externalId": "COL:4RP57",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cricetomys gambianus",
+          "externalId": "COL:ZFWT",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Phoenicopterus roseus",
+          "externalId": "COL:4GKQ5",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Galeocerdo cuvier",
+          "externalId": "FBC:FB:SpecCode:886",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Urva edwardsii",
+          "externalId": "COL:CGHSR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Coragyps atratus",
+          "externalId": "PBDB:161512",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cathartes aura",
+          "externalId": "PBDB:137176",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cathartes burrovianus",
+          "externalId": "PBDB:137186",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ursus arctos",
+          "externalId": "FBC:SLB:SpecCode:69193",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera uncia",
+          "externalId": "COL:4CGXT",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Martes foina",
+          "externalId": "FBC:SLB:SpecCode:71092",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lisotrigona cacciae",
+          "externalId": "COL:72JV9",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dasyurus maculatus",
+          "externalId": "COL:6CF7K",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera tigris",
+          "externalId": "COL:4CGXS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Crocuta crocuta",
+          "externalId": "COL:ZL56",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "COL:QLXL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Puma concolor",
+          "externalId": "COL:4QHKG",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "COL:4CGXR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Desmodus rotundus",
+          "externalId": "COL:353LY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Corvus albus",
+          "externalId": "COL:6B5CD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Armadillidium vulgare",
+          "externalId": "COL:GRLD",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Eunectes notaeus",
+          "externalId": "COL:6GYDP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hyaena hyaena",
+          "externalId": "COL:6MGT8",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis aureus",
+          "externalId": "COL:QLX7",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera onca",
+          "externalId": "COL:4CGXQ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lynx lynx",
+          "externalId": "COL:6QR9T",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Urocyon cinereoargenteus",
+          "externalId": "COL:7DTJY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vulpes vulpes",
+          "externalId": "COL:5BSG3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis latrans",
+          "externalId": "COL:QLXJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rattus norvegicus",
+          "externalId": "COL:4RM67",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Puma concolor couguar",
+          "externalId": "COL:5KSLV",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Panthera pardus fusca",
+          "externalId": "COL:5K5LS",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis familiaris dingo",
+          "externalId": "https://www.mammaldiversity.org/explore.html#genus=Canis&species=familiaris&id=1005940&subspecies=dingo",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Barking of a dog 2.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Amada44",
+        "credit": "Own work",
+        "description": "Barking of a dog",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:32:58.863Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Greenland 467 (35130903436) (cropped).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Greenland_467_%2835130903436%29_%28cropped%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Greenland 467 (35130903436) (cropped).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Greenland_467_(35130903436)_(cropped).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Greenland_467_%2835130903436%29_%28cropped%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Markus Trienke",
+      "credit": "Greenland_467.jpg",
+      "description": "Huskies sled dogs in Kulusuk, Greenland.",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:32:58.863Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 332,
+    "ruWikipediaTitle": "Собака",
+    "ruWikipediaPageviews365d": 198215,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 89.05,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 40,
+    "delightScore": 42.86,
+    "totalScore": 74.36,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "EltonTraits has no exact row for Canis lupus familiaris",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q144",
+      "url": "https://www.wikidata.org/wiki/Q144",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.scientificName"
+      ],
+      "source": "Editorial candidate seed",
+      "sourceId": "Q144",
+      "url": "file://.tmp\\animal-pipeline\\batch-seeds\\0002-canis-lupus-familiaris.json",
+      "license": "factual taxon identity; verify through GBIF match",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "manual scientific-name bridge for a cultural/common-animal Wikidata item",
+      "confidence": 0.8,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Собака",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "6164210",
+      "url": "https://www.gbif.org/species/6164210",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "species/match (EXACT, confidence 98)",
+      "confidence": 0.98,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Canis lupus familiaris Linnaeus, 1758",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "6164210",
+      "url": "https://www.gbif.org/species/6164210",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "6164210",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=6164210&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 49376,
+          "EUROPE": 26955,
+          "LATIN_AMERICA": 19231,
+          "ASIA": 7006,
+          "NORTH_AMERICA": 4710,
+          "AFRICA": 682
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "6164210",
+      "url": "https://api.gbif.org/v1/species/6164210/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "6164210",
+      "url": "https://api.gbif.org/v1/species/6164210/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Ireland"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - United Arab Emirates"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Niue"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - American Samoa"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Solomon Islands"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Anguilla"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Saint Kitts and Nevis"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species- Indonesia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Dominica"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Madagascar"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Papua New Guinea"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species- Sao Tome and Principe"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - French Guiana"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Golden Gate Highlands National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species – Saint Helena, Saint Helena, Ascension and Tristan da Cunha"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Tonga"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Ha'apai group, Tonga"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Protected areas, Tonga"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Protected areas, Tonga"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Prince Edward Island and Marion Island, South Africa"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Australia"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Saint Barthelemy"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02075",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "high"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Canis lupus familiaris",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Canis%20lupus%20familiaris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Canis lupus familiaris",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Canis%20lupus%20familiaris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Greenland 467 (35130903436) (cropped).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Greenland_467_(35130903436)_(cropped).jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Barking of a dog 2.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Greenland 467 (35130903436) (cropped).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Greenland_467_(35130903436)_(cropped).jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:32:58.863Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:32:58.863Z"
+}

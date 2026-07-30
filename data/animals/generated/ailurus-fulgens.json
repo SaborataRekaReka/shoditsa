@@ -1,0 +1,517 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:ailurus-fulgens",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "малая панда",
+    "commonNameEn": "Red Panda",
+    "scientificName": "Ailurus fulgens",
+    "acceptedScientificName": "Ailurus fulgens",
+    "aliasesRu": [
+      "красная панда",
+      "рыжая панда",
+      "малые панды",
+      "панда",
+      "панды",
+      "кошачий медведь",
+      "Малая панда"
+    ],
+    "wikidataId": "Q41960",
+    "gbifKey": 5219446,
+    "hagrid": "02069"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Ailuridae",
+    "genus": "Ailurus",
+    "species": "Ailurus fulgens",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "asia",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 4.9,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 19,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 550,
+      "male": 550
+    },
+    "gestationOrIncubationDays": 116,
+    "litterOrClutchSize": 2
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 10,
+      "endothermicVertebrates": 10,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 10,
+      "nectar": 0,
+      "seeds": 10,
+      "otherPlants": 60
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Myrsidea birmensis",
+          "externalId": "3740",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Myrsidea borneoensis",
+          "externalId": "3742",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Panthera pardus",
+          "externalId": "COL:4CGXR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q96377276",
+      "statusLabelRu": "вымирающие виды",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:RedPanda SingalilaNationalPark DFrame.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/RedPanda_SingalilaNationalPark_DFrame.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Cypron-Range Ailurus fulgens.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cypron-Range_Ailurus_fulgens.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Cypron-Range_Ailurus_fulgens.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "",
+        "credit": "www.iucnredlist.org",
+        "description": "Range of red panda ( Ailurus fulgens ).",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:39.043Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Ailurus fulgens distribution map 2017.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Ailurus_fulgens_distribution_map_2017.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Ailurus_fulgens_distribution_map_2017.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "NordNordWest Range data: Glatston, A., Wei, F., Than Zaw & Sherpa, A. 2015. Ailurus fulgens (errata version published in 2017). The IUCN Red List of Threatened Species 2015: e.T714A110023718. https://dx.doi.org/10.2305/IUCN.UK.2015-4.RLTS.T714A45195924.en.",
+        "credit": "Own work using: https://www.iucnredlist.org/species/714/110023718#geographic-range World Data Base II data GTOPO30 data",
+        "description": "Distribution map of the Red Panda",
+        "license": "CC BY-SA 3.0 de",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:39.043Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:RedPanda SingalilaNationalPark DFrame.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:RedPanda_SingalilaNationalPark_DFrame.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/RedPanda_SingalilaNationalPark_DFrame.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Ajit Hota",
+      "credit": "Own work",
+      "description": "Red Panda in wild at Singalila National Park",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:33:39.043Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 112,
+    "ruWikipediaTitle": "Малая панда",
+    "ruWikipediaPageviews365d": 156144,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 82.55,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 68.43,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q41960",
+      "url": "https://www.wikidata.org/wiki/Q41960",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Малая панда",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9C%D0%B0%D0%BB%D0%B0%D1%8F_%D0%BF%D0%B0%D0%BD%D0%B4%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q96377276",
+      "url": "https://www.wikidata.org/wiki/Q96377276",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219446",
+      "url": "https://www.gbif.org/species/5219446",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Ailurus fulgens F.G.Cuvier, 1825",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5219446",
+      "url": "https://www.gbif.org/species/5219446",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5219446",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5219446&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 299,
+          "NORTH_AMERICA": 57,
+          "EUROPE": 31,
+          "LATIN_AMERICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219446",
+      "url": "https://api.gbif.org/v1/species/5219446/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219446",
+      "url": "https://api.gbif.org/v1/species/5219446/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Ailurus fulgens",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02069",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "high"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Ailurus fulgens",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Ailurus%20fulgens&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Ailurus fulgens",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Ailurus%20fulgens&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:RedPanda SingalilaNationalPark DFrame.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:RedPanda_SingalilaNationalPark_DFrame.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Cypron-Range Ailurus fulgens.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Cypron-Range_Ailurus_fulgens.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Ailurus fulgens distribution map 2017.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Ailurus_fulgens_distribution_map_2017.png",
+      "license": "CC BY-SA 3.0 de",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:RedPanda SingalilaNationalPark DFrame.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:RedPanda_SingalilaNationalPark_DFrame.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:33:39.043Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:33:39.043Z"
+}

@@ -1,0 +1,648 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:dugong-dugon",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "дюгонь",
+    "commonNameEn": "dugong",
+    "scientificName": "Dugong dugon",
+    "acceptedScientificName": "Dugong dugon",
+    "aliasesRu": [
+      "Dugong dugon",
+      "дюгони",
+      "обыкновенный дюгонь",
+      "Обыкновенный дюгонь"
+    ],
+    "wikidataId": "Q129544",
+    "gbifKey": 9729967,
+    "hagrid": "03206"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Sirenia",
+    "family": "Dugongidae",
+    "genus": "Dugong",
+    "species": "Dugong dugon",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "smooth-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 310,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 73,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 3470,
+      "male": 3470
+    },
+    "gestationOrIncubationDays": 374,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 100
+    },
+    "foragingStratum": "marine",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Halophila decipiens",
+          "externalId": "FBC:SLB:SpecCode:2380934",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Syringodium isoetifolium",
+          "externalId": "COL:542ML",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Halophila spinulosa",
+          "externalId": "COL:3JFLN",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Halodule pinifolia",
+          "externalId": "FBC:SLB:SpecCode:2380991",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cymodocea serrulata",
+          "externalId": "FBC:SLB:SpecCode:2380987",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Thalassia hemprichii",
+          "externalId": "FBC:SLB:SpecCode:2380984",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Enhalus acoroides",
+          "externalId": "FBC:SLB:SpecCode:2380982",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cymodocea rotundata",
+          "externalId": "FBC:SLB:SpecCode:2380988",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Halodule uninervis",
+          "externalId": "FBC:SLB:SpecCode:2380992",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Zostera capricorni",
+          "externalId": "WD:Q15557019",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cannabis sativa",
+          "externalId": "COL:QM84",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Halophila ovalis",
+          "externalId": "EOL:1088916",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Avicennia marina",
+          "externalId": "EOL:483341",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Galeocerdo cuvier",
+          "externalId": "FBC:FB:SpecCode:886",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Crocodylus porosus",
+          "externalId": "COL:ZKNP",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Orcinus orca",
+          "externalId": "COL:74SZC",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "GBIF:5219173",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus dingo",
+          "externalId": "NCBI:286419",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q278113",
+      "statusLabelRu": "находятся в уязвимом положении",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Dugong Marsa Alam.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Dugong_Marsa_Alam.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Dugong-range.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dugong-range.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/Dugong-range.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "",
+        "credit": "",
+        "description": "",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:18.169Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Dugong area.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dugong_area.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/Dugong_area.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Chermundy",
+        "credit": "Base map derived from File:BlankMap-World.png . Distribution data from IUCN Red List of Threatened Species (English) . iucnredlist.org . Retrieved on 2025-09-01 .",
+        "description": "Dugong ( Dugong dugon ) range",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:18.169Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Dugong Marsa Alam.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dugong_Marsa_Alam.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Dugong_Marsa_Alam.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Julien Willem",
+      "credit": "Own work",
+      "description": "A Dugong near Marsa Alam (Egypt).",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:18.169Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Dugong dugon.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dugong_dugon.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Dugong_dugon.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Geoff Spiby / www.geoffspiby.co.za",
+        "credit": "https://www.flickr.com/photos/geoffspiby/3496456401/in/set-72157617637762678",
+        "description": "Dugong dugon",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:18.169Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 81,
+    "ruWikipediaTitle": "Дюгонь",
+    "ruWikipediaPageviews365d": 55717,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 75.91,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 65.64,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q129544",
+      "url": "https://www.wikidata.org/wiki/Q129544",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Дюгонь",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%94%D1%8E%D0%B3%D0%BE%D0%BD%D1%8C/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q278113",
+      "url": "https://www.wikidata.org/wiki/Q278113",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9729967",
+      "url": "https://www.gbif.org/species/9729967",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "species/match (EXACT, confidence 97)",
+      "confidence": 0.97,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Dugong dugon (Müller, 1776)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9729967",
+      "url": "https://www.gbif.org/species/9729967",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9729967",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9729967&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 29737,
+          "ASIA": 296,
+          "AFRICA": 235,
+          "NORTH_AMERICA": 2,
+          "EUROPE": 2
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9729967",
+      "url": "https://api.gbif.org/v1/species/9729967/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9729967",
+      "url": "https://api.gbif.org/v1/species/9729967/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Dugong dugon",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "D2",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03206",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "small",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Dugong dugon",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Dugong%20dugon&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Dugong dugon",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Dugong%20dugon&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dugong Marsa Alam.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dugong_Marsa_Alam.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dugong dugon.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dugong_dugon.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dugong-range.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Dugong-range.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dugong area.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Dugong_area.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Dugong Marsa Alam.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dugong_Marsa_Alam.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:18.169Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:18.169Z"
+}

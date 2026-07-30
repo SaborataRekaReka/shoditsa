@@ -1,0 +1,873 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:mephitis-mephitis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "полосатый скунс",
+    "commonNameEn": "striped skunk",
+    "scientificName": "Mephitis mephitis",
+    "acceptedScientificName": "Mephitis mephitis",
+    "aliasesRu": [
+      "Полосатый скунс"
+    ],
+    "wikidataId": "Q368495",
+    "gbifKey": 5219380,
+    "hagrid": "02165"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Mephitidae",
+    "genus": "Mephitis",
+    "species": "Mephitis mephitis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "nocturnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 2.08502,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 13.9,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 335,
+      "male": 335
+    },
+    "gestationOrIncubationDays": 63,
+    "litterOrClutchSize": 5
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 20,
+      "endothermicVertebrates": 30,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 20,
+      "nectar": 0,
+      "seeds": 10,
+      "otherPlants": 20
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Odocoileus hemionus",
+          "externalId": "COL:48NBP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Thamnophis butleri",
+          "externalId": "ITIS:174139",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Myrsidea borneoensis",
+          "externalId": "3742",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lichanura orcutti",
+          "externalId": "COL:6Q83Y",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Myodes californicus",
+          "externalId": "EOL:1037787",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Peromyscus eremicus",
+          "externalId": "EOL:1037778",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Columba livia",
+          "externalId": "COL:XBFW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lampropeltis triangulum",
+          "externalId": "COL:3S4WF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lepus americanus",
+          "externalId": "COL:6PPXC",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Peromyscus truei",
+          "externalId": "COL:4F7M3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Callospermophilus lateralis",
+          "externalId": "COL:PW74",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dendroica petechia",
+          "externalId": "WORMS:422634",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pseudacris triseriata",
+          "externalId": "WD:Q2276781",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chordeiles acutipennis",
+          "externalId": "WD:Q1274529",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Plethodon cinereus",
+          "externalId": "NCBI:141976",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Plestiodon fasciatus",
+          "externalId": "COL:6W2DX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Fulica americana",
+          "externalId": "COL:6K487",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Microtus pennsylvanicus",
+          "externalId": "COL:439CS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Trachemys scripta",
+          "externalId": "WD:Q142985",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Anas fulvigula",
+          "externalId": "COL:DGNP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sciurus carolinensis",
+          "externalId": "COL:4VNCY",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chelydra serpentina",
+          "externalId": "COL:TWRZ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Peromyscus maniculatus",
+          "externalId": "COL:4F7KP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Haemorhous mexicanus",
+          "externalId": "COL:6L8DR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bos taurus",
+          "externalId": "COL:MLQ5",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Branta canadensis",
+          "externalId": "COL:5WRC3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Diadophis punctatus",
+          "externalId": "COL:3589D",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Odocoileus virginianus",
+          "externalId": "COL:48NBQ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sylvilagus audubonii",
+          "externalId": "COL:53N8P",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Peromyscus gossypinus",
+          "externalId": "COL:4F7JW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Oiceoptoma inaequale",
+          "externalId": "COL:48ZFL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Coragyps atratus",
+          "externalId": "PBDB:161512",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cathartes aura",
+          "externalId": "PBDB:137176",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vespula pensylvanica",
+          "externalId": "COL:7FQVJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Oiceoptoma noveboracense",
+          "externalId": "COL:48ZFR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Martes pennanti",
+          "externalId": "FBC:SLB:SpecCode:69204",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "COL:QLXL",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vulpes velox",
+          "externalId": "COL:5BSG2",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Buteo jamaicensis",
+          "externalId": "COL:69669",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pica hudsonia",
+          "externalId": "COL:4HPXK",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Aquila chrysaetos",
+          "externalId": "COL:FZLP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Corvus corax",
+          "externalId": "COL:YNHG",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Bubo virginianus",
+          "externalId": "COL:NKTR",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lynx rufus",
+          "externalId": "COL:3WSJW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Didelphis virginiana",
+          "externalId": "COL:35WKF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Vulpes vulpes",
+          "externalId": "COL:5BSG3",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Haliaeetus leucocephalus",
+          "externalId": "COL:3JBJW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Buteo jamaicensis calurus",
+          "externalId": "COL:5G3KQ",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Strix varia",
+          "externalId": "COL:532KR",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis latrans",
+          "externalId": "COL:QLXJ",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Striped Skunk (Mephitis mephitis) DSC 0030.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Striped_Skunk_%28Mephitis_mephitis%29_DSC_0030.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Mephitis mephitis map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mephitis_mephitis_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/Mephitis_mephitis_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Cephas",
+        "credit": "Adapted from: Helgen, K. & Reid, F. 2016. Mephitis mephitis. The IUCN Red List of Threatened Species 2016: e.T41635A45211301. https://dx.doi.org/10.2305/IUCN.UK.2016-1.RLTS.T41635A45211301.en . Accessed on 27 December 2024. File:North America map with states and provinces.svg",
+        "description": "Range map of Striped Skunk ( Mephitis mephitis )",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:50.693Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Striped Skunk (Mephitis mephitis) DSC 0030.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Striped_Skunk_(Mephitis_mephitis)_DSC_0030.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Striped_Skunk_%28Mephitis_mephitis%29_DSC_0030.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Dan & Lin Dzurisin",
+      "credit": "originally posted to Flickr as Striped Skunk (Mephitis mephitis) DSC_0030",
+      "description": "Lin spotted this Striped Skunk from our Honda CR-V at highway speed while we were southbound on ID Highway 20 from West Yellowstone MT to Moose WY in mid-April 2010. The more direct route from Yellowstone National Park to Grand Teton National Park via Yellowstone's South Entrance was still closed by snow. Given our avocation as wildlife photographers devoid of species bias, we quickly pulled over and grabbed our cameras. The skunk was foraging in snow along a stream that crossed the highway, where a concrete bridge abutment provided some measure of safety. It seemed to pay us no mind when, after taking a few photos while crouching behind the abutment, we ventured onto the snow in cautious pursuit. We followed at a distance of 50 feet (15 m) until the skunk made a meandering U-turn and began closing the distance between us at an uncomfortable pace. Always the thoughtful one, Lin pointed out that the skunk seemed more agile than I in knee-deep snow, which triggered a tactical retreat on my part. But not before getting this shot and even a little bit of video from about 20 feet (6.1 m). That prompted some concern from Lin over the safety of her Nikon D-90, which I was using at the time, so I bid farewell to the skunk and returned to the car. In hindsight, we must have provided quite a spectacle for passersby as we trailed the skunk across the snow, cameras and tripod in hand. Things might have ended differently if the skunk had objected to our curiosity, but as things turned out the encounter yielded a fun and memorable addition to our species list.",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:50.693Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Striped skunk.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Striped_skunk.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/63/Striped_skunk.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "",
+        "credit": "",
+        "description": "",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:50.693Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 48,
+    "ruWikipediaTitle": "Полосатый скунс",
+    "ruWikipediaPageviews365d": 12800,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 66.12,
+    "playabilityScore": 88.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 64.59,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q368495",
+      "url": "https://www.wikidata.org/wiki/Q368495",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Полосатый скунс",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9F%D0%BE%D0%BB%D0%BE%D1%81%D0%B0%D1%82%D1%8B%D0%B9_%D1%81%D0%BA%D1%83%D0%BD%D1%81/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219380",
+      "url": "https://www.gbif.org/species/5219380",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Mephitis mephitis (Schreber, 1776)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5219380",
+      "url": "https://www.gbif.org/species/5219380",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5219380",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5219380&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 41629,
+          "LATIN_AMERICA": 728,
+          "EUROPE": 28,
+          "ASIA": 1,
+          "AFRICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219380",
+      "url": "https://api.gbif.org/v1/species/5219380/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5219380",
+      "url": "https://api.gbif.org/v1/species/5219380/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Great Britain"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Invasive and Introduced Species - Norway"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Invasive and Introduced Species - Norway"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5219380",
+      "url": "https://api.gbif.org/v1/species/5219380/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Mephitis mephitis",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02165",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Mephitis mephitis",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Mephitis%20mephitis&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Mephitis mephitis",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Mephitis%20mephitis&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Striped Skunk (Mephitis mephitis) DSC 0030.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Striped_Skunk_(Mephitis_mephitis)_DSC_0030.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Striped skunk.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Striped_skunk.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Mephitis mephitis map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Mephitis_mephitis_map.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Striped Skunk (Mephitis mephitis) DSC 0030.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Striped_Skunk_(Mephitis_mephitis)_DSC_0030.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:50.693Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:50.693Z"
+}

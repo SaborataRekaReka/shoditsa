@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:dermochelys-coriacea",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "кожистая черепаха",
+    "commonNameEn": "leatherback sea turtle",
+    "scientificName": "Dermochelys coriacea",
+    "acceptedScientificName": "Dermochelys coriacea",
+    "aliasesRu": [
+      "Dermochelys coriacea",
+      "лут"
+    ],
+    "wikidataId": "Q120043",
+    "gbifKey": 9789983,
+    "hagrid": "03690"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Testudines",
+    "family": "Dermochelyidae",
+    "genus": "Dermochelys",
+    "species": "Dermochelys coriacea",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales",
+      "shell"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "north-america",
+      "africa",
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 420,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 30,
+      "maximumObservedContext": "unknown"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 4748,
+      "male": 0
+    },
+    "gestationOrIncubationDays": 60,
+    "litterOrClutchSize": 105
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q278113",
+      "statusLabelRu": "находятся в уязвимом положении",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Dermochelys coriacea 001.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_001.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Dermochelys_coriacea_001.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Philippe Kurlapski",
+        "credit": "Private works",
+        "description": "Respiration de Tortue luth sur la plage en fin de ponte.",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:45.287Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Dermochelys coriacea - Julien Renoult - 12981952.jpeg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Dermochelys_coriacea_-_Julien_Renoult_-_12981952.jpeg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Lieux pontes tortues luth.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lieux_pontes_tortues_luth.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Lieux_pontes_tortues_luth.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Pïnpin",
+        "credit": "Own work using: Inscape",
+        "description": "Nesting location of Leatherback sea Turtle : red dot = major nesting locations, yellow dot=minor nesting locations",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:45.287Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Dermochelys coriacea - Julien Renoult - 12981952.jpeg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_-_Julien_Renoult_-_12981952.jpeg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Dermochelys_coriacea_-_Julien_Renoult_-_12981952.jpeg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Julien Renoult",
+      "credit": "https://www.inaturalist.org/photos/12981952",
+      "description": "Dermochelys coriacea, 2008-06-15 (iNaturalist).",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:38:45.287Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Dermochelys coriacea - Chris Quirin - 56249762.jpeg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_-_Chris_Quirin_-_56249762.jpeg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Dermochelys_coriacea_-_Chris_Quirin_-_56249762.jpeg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Chris Quirin",
+        "credit": "https://www.inaturalist.org/photos/56249762",
+        "description": "Dermochelys coriacea, Equatorial Guinea, 2018-02-15 (iNaturalist).",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:45.287Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 73,
+    "ruWikipediaTitle": "Кожистая черепаха",
+    "ruWikipediaPageviews365d": 21385,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 70.81,
+    "playabilityScore": 76.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 66.69,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q120043",
+      "url": "https://www.wikidata.org/wiki/Q120043",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Кожистая черепаха",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9A%D0%BE%D0%B6%D0%B8%D1%81%D1%82%D0%B0%D1%8F_%D1%87%D0%B5%D1%80%D0%B5%D0%BF%D0%B0%D1%85%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q278113",
+      "url": "https://www.wikidata.org/wiki/Q278113",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9789983",
+      "url": "https://www.gbif.org/species/9789983",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "species/match (EXACT, confidence 98)",
+      "confidence": 0.98,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Dermochelys coriacea (Vandelli, 1761)",
+        "gbifSourceClass": "Testudines",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9789983",
+      "url": "https://www.gbif.org/species/9789983",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9789983",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9789983&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 28897,
+          "NORTH_AMERICA": 6628,
+          "AFRICA": 5250,
+          "LATIN_AMERICA": 4085,
+          "OCEANIA": 1445,
+          "ASIA": 378
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03690",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "33",
+        "specimenOrigin": "unknown",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dermochelys coriacea - Julien Renoult - 12981952.jpeg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_-_Julien_Renoult_-_12981952.jpeg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dermochelys coriacea - Chris Quirin - 56249762.jpeg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_-_Chris_Quirin_-_56249762.jpeg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dermochelys coriacea 001.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_001.ogg",
+      "license": "CC BY 2.5",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lieux pontes tortues luth.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Lieux_pontes_tortues_luth.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Dermochelys coriacea - Julien Renoult - 12981952.jpeg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_-_Julien_Renoult_-_12981952.jpeg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:38:45.287Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:38:45.287Z"
+}

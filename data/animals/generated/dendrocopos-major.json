@@ -1,0 +1,489 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:dendrocopos-major",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "большой пёстрый дятел",
+    "commonNameEn": "Great Spotted Woodpecker",
+    "scientificName": "Dendrocopos major",
+    "acceptedScientificName": "Dendrocopos major",
+    "aliasesRu": [
+      "Dendrocopos major",
+      "большой пестрый дятел",
+      "пёстрый дятел",
+      "пестрый дятел",
+      "дятел пёстрый большой",
+      "Большой пёстрый дятел"
+    ],
+    "wikidataId": "Q26209",
+    "gbifKey": 2477968,
+    "hagrid": "01409"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Piciformes",
+    "family": "Picidae",
+    "genus": "Dendrocopos",
+    "species": "Dendrocopos major",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.07493999999999999,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 12.7,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 365,
+      "male": 365
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 50,
+      "endothermicVertebrates": 10,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 10,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 30,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Dendrocopos major EM1B2679 (35219263071).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Dendrocopos_major_EM1B2679_%2835219263071%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Dendrocopos major distribution map.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dendrocopos_major_distribution_map.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Dendrocopos_major_distribution_map.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Vicpeters",
+        "credit": "Own work",
+        "description": "Great Spotted Woodpecker ( Dendrocopos major ) distribution map. Data is consistent with IUCN Redlist map and Great Spotted Woodpecker ( Dendrocopos major ) . Handbook of the Birds of the World Alive . Lynx Edicions (2013). Retrieved on 11 February 2017 .",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:56.492Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Dendrocopos major EM1B2679 (35219263071).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dendrocopos_major_EM1B2679_(35219263071).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Dendrocopos_major_EM1B2679_%2835219263071%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Bengt Nyman from Vaxholm, Sweden",
+      "credit": "Dendrocopos major EM1B2679",
+      "description": "Dendrocopos major major male, Isbladskärret, Stockholm, Sweden",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:56.492Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:DendrocoposMajor.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:DendrocoposMajor.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/79/DendrocoposMajor.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Sławomir Staszczuk (info [AT] photoss.net)",
+        "credit": "Own work by uploader, User:FrankDrebin",
+        "description": "Great Spotted Woodpecker ( Dendrocopos major )",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:56.492Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Дятел большой пёстрый KR 01.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:%D0%94%D1%8F%D1%82%D0%B5%D0%BB_%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BF%D1%91%D1%81%D1%82%D1%80%D1%8B%D0%B9_KR_01.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/aa/%D0%94%D1%8F%D1%82%D0%B5%D0%BB_%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BF%D1%91%D1%81%D1%82%D1%80%D1%8B%D0%B9_KR_01.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Плешков Алексей",
+        "credit": "по email",
+        "description": "Дятел большой пестрый. Фото: А. Плешков, компьютерная обработка: В. Лобачев.",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:56.492Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 85,
+    "ruWikipediaTitle": "Большой пёстрый дятел",
+    "ruWikipediaPageviews365d": 44252,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 75.08,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 65.29,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q26209",
+      "url": "https://www.wikidata.org/wiki/Q26209",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Большой пёстрый дятел",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BF%D1%91%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D0%B4%D1%8F%D1%82%D0%B5%D0%BB/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2477968",
+      "url": "https://www.gbif.org/species/2477968",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Dendrocopos major (Linnaeus, 1758)",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2477968",
+      "url": "https://www.gbif.org/species/2477968",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2477968",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2477968&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 5306118,
+          "ASIA": 67006,
+          "AFRICA": 3580
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2477968",
+      "url": "https://api.gbif.org/v1/species/2477968/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2477968",
+      "url": "https://api.gbif.org/v1/species/2477968/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Dendrocopos major",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01409",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "450",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dendrocopos major EM1B2679 (35219263071).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dendrocopos_major_EM1B2679_(35219263071).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:DendrocoposMajor.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:DendrocoposMajor.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Дятел большой пёстрый KR 01.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:%D0%94%D1%8F%D1%82%D0%B5%D0%BB_%D0%B1%D0%BE%D0%BB%D1%8C%D1%88%D0%BE%D0%B9_%D0%BF%D1%91%D1%81%D1%82%D1%80%D1%8B%D0%B9_KR_01.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dendrocopos major distribution map.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Dendrocopos_major_distribution_map.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Dendrocopos major EM1B2679 (35219263071).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Dendrocopos_major_EM1B2679_(35219263071).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:56.492Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:56.492Z"
+}

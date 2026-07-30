@@ -280,6 +280,45 @@ export type TitleItem = {
   severityTypical?: string | null
   urgencyTypical?: string | null
 
+  animalDifficulty?: 'easy' | 'medium' | 'hard' | string
+  animalRank?: number | null
+  scientificName?: string
+  taxonomicClass?: string
+  animalOrder?: string
+  animalFamily?: string
+  animalGenus?: string
+  bodyCoverings?: string[]
+  habitats?: string[]
+  lifestyles?: string[]
+  animalContinents?: string[]
+  climateZones?: string[]
+  diets?: string[]
+  activityPatterns?: string[]
+  locomotion?: string[]
+  sizeCategory?: string | null
+  reproduction?: string | null
+  sociality?: string[]
+  legCount?: number | null
+  thermoregulation?: string | null
+  migration?: string | null
+  relationToHumans?: string[]
+  bodyMassKg?: number | null
+  lifespanCategory?: string | null
+  lifespanMaximumYears?: number | null
+  conservationStatus?: string | null
+  preyNames?: string[]
+  predatorNames?: string[]
+  distinctiveTraits?: string[]
+  defenses?: string[]
+  senses?: string[]
+  soundUrl?: string | null
+  soundType?: string | null
+  silhouetteUrl?: string | null
+  rangeMapUrl?: string | null
+  mediaAttribution?: MediaAttribution | null
+  soundAttribution?: MediaAttribution | null
+  rangeMapAttribution?: MediaAttribution | null
+
   country?: string
   countryFlagUrl?: string | null
   continent?: string
@@ -297,6 +336,15 @@ export type TitleItem = {
   timezone?: string
   popular?: boolean
   capital?: boolean
+}
+
+export type MediaAttribution = {
+  sourcePageUrl: string
+  author: string
+  credit: string
+  license: string
+  licenseUrl: string | null
+  attributionRequired: boolean
 }
 
 export type CaseVignette = { id: string; text: string }

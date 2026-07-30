@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T17:22:48.029Z",
+  "generatedAt": "2026-07-30T20:16:30.170Z",
   "root": "public/data/libraries",
   "libraries": [
     {
@@ -43,6 +43,13 @@
       "itemsFile": "public/data/libraries/cities/items.json",
       "searchIndexFile": "public/data/libraries/cities/search-index.json",
       "count": 980
+    },
+    {
+      "key": "animals",
+      "source": "data/animals/generated/roster.json",
+      "itemsFile": "public/data/libraries/animals/items.json",
+      "searchIndexFile": "public/data/libraries/animals/search-index.json",
+      "count": 300
     }
   ]
 }

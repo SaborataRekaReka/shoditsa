@@ -1,0 +1,735 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:lepomis-gibbosus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "обыкновенная солнечная рыба",
+    "commonNameEn": "pumpkinseed",
+    "scientificName": "Lepomis gibbosus",
+    "acceptedScientificName": "Lepomis gibbosus",
+    "aliasesRu": [
+      "Lepomis gibbosus",
+      "солнечный окунь",
+      "высокотелый солнечный окунь",
+      "царёк",
+      "солнечная рыба"
+    ],
+    "wikidataId": "Q826713",
+    "gbifKey": 2394486,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Actinopterygii",
+    "order": "Perciformes",
+    "family": "Centrarchidae",
+    "genus": "Lepomis",
+    "species": "Lepomis gibbosus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Actinopterygii",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "freshwater",
+      "brackish",
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Lepomis gibbosus PAQ.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Lepomis_gibbosus_PAQ.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Lepomis gibbosus PAQ.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lepomis_gibbosus_PAQ.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Lepomis_gibbosus_PAQ.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Cephas",
+      "credit": "Own work",
+      "description": "Pumpkinseed , Aquarium du Québec",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:31.262Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Lepomis gibbosus 314893214.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lepomis_gibbosus_314893214.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/db/Lepomis_gibbosus_314893214.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Tommy Andriollo",
+        "credit": "https://www.inaturalist.org/photos/314893214",
+        "description": "Pumpkinseed ( Lepomis gibbosus )",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:31.262Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 35,
+    "ruWikipediaTitle": "Обыкновенная солнечная рыба",
+    "ruWikipediaPageviews365d": 14269,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 64.95,
+    "playabilityScore": 65.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 52.65,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Lepomis gibbosus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q826713",
+      "url": "https://www.wikidata.org/wiki/Q826713",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенная солнечная рыба",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F_%D1%81%D0%BE%D0%BB%D0%BD%D0%B5%D1%87%D0%BD%D0%B0%D1%8F_%D1%80%D1%8B%D0%B1%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2394486",
+      "url": "https://www.gbif.org/species/2394486",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Lepomis gibbosus (Linnaeus, 1758)",
+        "gbifSourceClass": "",
+        "normalizedGameClass": "Actinopterygii"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2394486",
+      "url": "https://www.gbif.org/species/2394486",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2394486",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2394486&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 149724,
+          "NORTH_AMERICA": 63107,
+          "AFRICA": 22,
+          "ASIA": 17,
+          "LATIN_AMERICA": 10
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2394486",
+      "url": "https://api.gbif.org/v1/species/2394486/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2394486",
+      "url": "https://api.gbif.org/v1/species/2394486/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Chile"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species- Croatia"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cuba"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Brazil"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Italy"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Portugal"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Austria"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Belarus"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - North Macedonia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - France"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Belgium"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Bosnia and Herzegovina"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Slovenia"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Romania"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Poland"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Turkey"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Serbia"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Switzerland"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Albania"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Morocco"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Germany"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Montenegro"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Spain"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Moldova"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species GRIIS - Luxembourg"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bulgaria"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Georgia"
+          },
+          {
+            "habitat": "Freshwater"
+          },
+          {
+            "habitat": "Freshwater"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater"
+          },
+          {
+            "habitat": "AGUA_DOCE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Wadden Sea"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Algeria"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lepomis gibbosus PAQ.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lepomis_gibbosus_PAQ.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Lepomis gibbosus 314893214.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lepomis_gibbosus_314893214.jpg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Lepomis gibbosus PAQ.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Lepomis_gibbosus_PAQ.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:40:31.262Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:31.262Z"
+}

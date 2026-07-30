@@ -1,0 +1,601 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:aedes-aegypti",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Комар желтолихорадочный",
+    "commonNameEn": "Aedes aegypti",
+    "scientificName": "Aedes aegypti",
+    "acceptedScientificName": "Aedes aegypti",
+    "aliasesRu": [
+      "Aedes aegypti",
+      "кусака жёлтолихорадочный",
+      "кусака желтолихорадочный",
+      "комар жёлтой лихорадки"
+    ],
+    "wikidataId": "Q1148004",
+    "gbifKey": 1651891,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Arthropoda",
+    "taxonomicClass": "Insecta",
+    "order": "Diptera",
+    "family": "Culicidae",
+    "genus": "Aedes",
+    "species": "Aedes aegypti",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Insecta",
+    "bodyCoverings": [
+      "exoskeleton"
+    ],
+    "habitats": [
+      "freshwater",
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "africa",
+      "latin-america",
+      "north-america",
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 6,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Dengue06.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dengue06.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/49/Dengue06.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Unknown author Unknown author",
+        "credit": "Own work using: Slide #8 of a presentation by Gary G. Clark, PhD, entitled \"Dengue: An emerging arboviral disease\". Referencias Celeste: Monday/OClubMorning/TRIServiceDENemergingJAX2007.ppt Áreas infectadas con el mosquito ' Aedes aegyptis Rojo: Áreas que estan infectadas con el mosquito Aedes Aegyptis y que tienen una reciente expansión epidémica.",
+        "description": "Map showing the distribution of dengue fever in the world, as of 2006. Map produced by the Agricultural Research Service of the US Department of Agriculture. Key: Cyan: Areas infested with Aedes aegypti Red: Areas with Aedes aegypti and recent epidemic dengue fever.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:38.675Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": null,
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Aedes aegypti CDC-Gathany.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Aedes_aegypti_CDC-Gathany.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aedes_aegypti_CDC-Gathany.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "James Gathany",
+        "credit": "This media comes from the Centers for Disease Control and Prevention 's Public Health Image Library (PHIL), with identification number #9258 . Note: Not all PHIL images are public domain; be sure to check copyright status and credit authors and content providers. العربية | Deutsch | English | македонски | slovenščina | +/−",
+        "description": "The yellowfever mosquito Aedes aegypti . Note the marking on the thorax in the form of a lyre.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:38.675Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 57,
+    "ruWikipediaTitle": "Комар жёлтолихорадочный",
+    "ruWikipediaPageviews365d": 7744,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 64.67,
+    "playabilityScore": 59.6,
+    "distinctivenessScore": 0,
+    "delightScore": 14.29,
+    "totalScore": 48.57,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "missing-licensed-image"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 50,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Aedes aegypti",
+      "Commons file rejected by license policy: File:Aedes aegypti.jpg (GFDL 1.2)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q1148004",
+      "url": "https://www.wikidata.org/wiki/Q1148004",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Комар жёлтолихорадочный",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9A%D0%BE%D0%BC%D0%B0%D1%80_%D0%B6%D1%91%D0%BB%D1%82%D0%BE%D0%BB%D0%B8%D1%85%D0%BE%D1%80%D0%B0%D0%B4%D0%BE%D1%87%D0%BD%D1%8B%D0%B9/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1651891",
+      "url": "https://www.gbif.org/species/1651891",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Aedes aegypti (Linnaeus, 1762)",
+        "gbifSourceClass": "Insecta",
+        "normalizedGameClass": "Insecta"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "1651891",
+      "url": "https://www.gbif.org/species/1651891",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "1651891",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=1651891&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 65281,
+          "LATIN_AMERICA": 30084,
+          "NORTH_AMERICA": 17392,
+          "ASIA": 15437,
+          "EUROPE": 1482,
+          "OCEANIA": 632
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1651891",
+      "url": "https://api.gbif.org/v1/species/1651891/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1651891",
+      "url": "https://api.gbif.org/v1/species/1651891/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Myanmar"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Vanuatu"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Sri Lanka"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Saint Lucia"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cuba"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Brazil"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Niue"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species -Samoa"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Solomon Islands"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Anguilla"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Madeira, Portugal"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cayman Islands"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Antigua and Barbuda"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Barbados"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Saint Kitts and Nevis"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - India"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Malaysia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Guyana"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bermuda"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Dominica"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - China"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - French Polynesia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species – Turks and Caicos Islands"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species – British Indian Ocean Territory"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Galápagos Islands, Ecuador"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Georgia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Japan"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Majuro Atoll, Marshall Islands"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Marshall Islands"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Tonga"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Tongatapu Island, Tonga"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Tongatapu Island, Tonga"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Tongatapu Island, Tonga"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Tuvalu"
+          },
+          {
+            "habitat": "Acuática",
+            "source": "Lista de macroinvertebrados acuáticos continentales de Colombia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "terrestrial|freshwater"
+          },
+          {
+            "habitat": "Forest; Wetlands (inland)",
+            "source": "Global Register of Introduced and Invasive Species - Hawaii, United States (ver.2.0, 2022)"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cyprus"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Saint Barthelemy"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Saint Vincent and the Grenadines"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Timor-Leste"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Vietnam"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Invasive and Introduced Species - Norway"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Invasive and Introduced Species - Norway"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1651891",
+      "url": "https://api.gbif.org/v1/species/1651891/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Aedes aegypti CDC-Gathany.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Aedes_aegypti_CDC-Gathany.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Dengue06.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Dengue06.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:38.675Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:38.675Z"
+}

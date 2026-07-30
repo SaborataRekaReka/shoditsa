@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:dibothriocephalus-latus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Dibothriocephalus latus",
+    "commonNameEn": "Dibothriocephalus latus",
+    "scientificName": "Dibothriocephalus latus",
+    "acceptedScientificName": "Dibothriocephalus latus",
+    "aliasesRu": [],
+    "wikidataId": "Q61571148",
+    "gbifKey": 9614851,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Platyhelminthes",
+    "taxonomicClass": "Cestoda",
+    "order": "Diphyllobothriidea",
+    "family": "Diphyllobothriidae",
+    "genus": "Dibothriocephalus",
+    "species": "Dibothriocephalus latus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Cestoda",
+    "bodyCoverings": [],
+    "habitats": [],
+    "lifestyles": [],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [],
+    "sizeCategory": "",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Diphyl proglottidE.JPG",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Diphyl_proglottidE.JPG",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Diphyl proglottidE.JPG",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Diphyl_proglottidE.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Diphyl_proglottidE.JPG",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "",
+      "credit": "http://www.dpd.cdc.gov/dpdx/HTML/ImageLibrary/Diphyllobothriasis_il.asp?body=A-F/Diphyllobothriasis/body_Diphyllobothriasis_il2.htm",
+      "description": "proglottids of Diphyllobothrium latum. From the US government (CDC), so not copyrighted.",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:27.029Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 14,
+    "ruWikipediaTitle": "Широкий лентец",
+    "ruWikipediaPageviews365d": 22736,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 62.36,
+    "playabilityScore": 29.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 39.32,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 25,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Dibothriocephalus latus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q61571148",
+      "url": "https://www.wikidata.org/wiki/Q61571148",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:27.029Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Широкий лентец",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A8%D0%B8%D1%80%D0%BE%D0%BA%D0%B8%D0%B9_%D0%BB%D0%B5%D0%BD%D1%82%D0%B5%D1%86/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:27.029Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9614851",
+      "url": "https://www.gbif.org/species/9614851",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:27.029Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Dibothriocephalus latus (Linnaeus, 1758) Lühe, 1899",
+        "gbifSourceClass": "Cestoda",
+        "normalizedGameClass": "Cestoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9614851",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9614851&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:27.029Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 418,
+          "LATIN_AMERICA": 37,
+          "OCEANIA": 17,
+          "NORTH_AMERICA": 17,
+          "ASIA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Diphyl proglottidE.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Diphyl_proglottidE.JPG",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:27.029Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Diphyl proglottidE.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Diphyl_proglottidE.JPG",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:27.029Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:27.029Z"
+}

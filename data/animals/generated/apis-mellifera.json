@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:apis-mellifera",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "медоносная пчела",
+    "commonNameEn": "Apis mellifera",
+    "scientificName": "Apis mellifera",
+    "acceptedScientificName": "Apis mellifera",
+    "aliasesRu": [
+      "Apis mellifera",
+      "медовая пчела",
+      "домашняя пчела"
+    ],
+    "wikidataId": "Q30034",
+    "gbifKey": 1341976,
+    "hagrid": "00015"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Arthropoda",
+    "taxonomicClass": "Insecta",
+    "order": "Hymenoptera",
+    "family": "Apidae",
+    "genus": "Apis",
+    "species": "Apis mellifera",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Insecta",
+    "bodyCoverings": [
+      "exoskeleton"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 6,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 8,
+      "maximumObservedContext": "unknown"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 0,
+      "male": 0
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q3245245",
+      "statusLabelRu": "данных недостаточно",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:BioAcoustica 413-2 Apis mellifera 524 .flac",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:BioAcoustica_413-2_Apis_mellifera_524_.flac",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/BioAcoustica_413-2_Apis_mellifera_524_.flac",
+        "mimeType": "audio/x-flac",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "http://bio.acousti.ca/node/9372",
+        "description": "Sound recording of Apis mellifera",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:23.798Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:(MHNT) Apis mellifera (female) - on viburnum tinus flowers.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/52/%28MHNT%29_Apis_mellifera_%28female%29_-_on_viburnum_tinus_flowers.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Apis mellifera distribution map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Apis_mellifera_distribution_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Apis_mellifera_distribution_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Sémhur ( talk )",
+        "credit": "Own work . Source : World map : File:BlankMap-World6.svg by Canuckguy under licence Public Domain Relief : Natural Earth Data Distribution area data : Discover Life",
+        "description": "World range of Apis mellifera , a species of honey bee",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:23.798Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:(MHNT) Apis mellifera (female) - on viburnum tinus flowers.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:(MHNT)_Apis_mellifera_(female)_-_on_viburnum_tinus_flowers.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/52/%28MHNT%29_Apis_mellifera_%28female%29_-_on_viburnum_tinus_flowers.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Didier Descouens",
+      "credit": "Own work",
+      "description": "Apis mellifera (female) on Viburum tinus flowers",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:23.798Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202203 western honey bee.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202203_western_honey_bee.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/80/202203_western_honey_bee.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2022.048",
+        "description": "Western honey bee",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:23.798Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 106,
+    "ruWikipediaTitle": "Медоносная пчела",
+    "ruWikipediaPageviews365d": 54848,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 77.3,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 72.47,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "Commons file rejected by license policy: File:Apis mellifera flying.jpg (GFDL 1.2)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q30034",
+      "url": "https://www.wikidata.org/wiki/Q30034",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Медоносная пчела",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9C%D0%B5%D0%B4%D0%BE%D0%BD%D0%BE%D1%81%D0%BD%D0%B0%D1%8F_%D0%BF%D1%87%D0%B5%D0%BB%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q3245245",
+      "url": "https://www.wikidata.org/wiki/Q3245245",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1341976",
+      "url": "https://www.gbif.org/species/1341976",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Apis mellifera Linnaeus, 1758",
+        "gbifSourceClass": "Insecta",
+        "normalizedGameClass": "Insecta"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "1341976",
+      "url": "https://www.gbif.org/species/1341976",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "1341976",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=1341976&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 716926,
+          "NORTH_AMERICA": 370508,
+          "LATIN_AMERICA": 74636,
+          "OCEANIA": 39001,
+          "AFRICA": 23031,
+          "ASIA": 12214
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1341976",
+      "url": "https://api.gbif.org/v1/species/1341976/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1341976",
+      "url": "https://api.gbif.org/v1/species/1341976/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Myanmar"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species- Cook Islands"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Nepal"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Brazil"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Bonaire, Bonaire, Sint Eustatius and Saba"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Curacao, Netherlands"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Sint Eustatius, Bonaire, Sint Eustatius and Saba"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Aruba"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Mayotte, France"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Guyana"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Afghanistan"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - New Zealand"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Japan"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "terrestrial"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Australia"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Saint Barthelemy"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "00015",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "812",
+        "specimenOrigin": "unknown",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:(MHNT) Apis mellifera (female) - on viburnum tinus flowers.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:(MHNT)_Apis_mellifera_(female)_-_on_viburnum_tinus_flowers.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202203 western honey bee.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202203_western_honey_bee.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:BioAcoustica 413-2 Apis mellifera 524 .flac",
+      "url": "https://commons.wikimedia.org/wiki/File:BioAcoustica_413-2_Apis_mellifera_524_.flac",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Apis mellifera distribution map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Apis_mellifera_distribution_map.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:(MHNT) Apis mellifera (female) - on viburnum tinus flowers.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:(MHNT)_Apis_mellifera_(female)_-_on_viburnum_tinus_flowers.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:23.798Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:23.798Z"
+}

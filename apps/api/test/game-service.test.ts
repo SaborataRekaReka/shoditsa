@@ -498,6 +498,7 @@ describe('server hint options', () => {
       city: { country: 'Казахстан' },
       music: { countries: ['KZ'] },
       diagnosis: { bodySystems: ['Нервная система'] },
+      animal: { taxonomicClass: 'Млекопитающие' },
     } as const
 
     for (const mode of CATALOG_GUESS_MODE_IDS) {

@@ -1,0 +1,696 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:pygoscelis-papua",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Папуанский пингвин",
+    "commonNameEn": "Gentoo Penguin",
+    "scientificName": "Pygoscelis papua",
+    "acceptedScientificName": "Pygoscelis papua",
+    "aliasesRu": [
+      "Пингвин субантарктический",
+      "Пингвин Папуа",
+      "Пингвин Генту",
+      "Субантарктический пингвин",
+      "Pygoscelis papua",
+      "Ослиный пингвин",
+      "Папуанский пингвин"
+    ],
+    "wikidataId": "Q213021",
+    "gbifKey": 2481666,
+    "hagrid": "01670"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Sphenisciformes",
+    "family": "Spheniscidae",
+    "genus": "Pygoscelis",
+    "species": "Pygoscelis papua",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic"
+    ],
+    "continents": [
+      "antarctica",
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "medium",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 5.93295,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 41,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 730,
+      "male": 730
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 2
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 40,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 60,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Gentoo Penguin at Cooper Bay, South Georgia.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/Gentoo_Penguin_at_Cooper_Bay%2C_South_Georgia.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Gentoo penguin distribution.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Gentoo_penguin_distribution.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Gentoo_penguin_distribution.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "A loose noose",
+        "credit": "Own work",
+        "description": "Information derived from this site: https://neotropical.birds.cornell.edu/Species-Account/nb/species/genpen1/distribution",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Gentoo Penguin at Cooper Bay, South Georgia.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Gentoo_Penguin_at_Cooper_Bay,_South_Georgia.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/Gentoo_Penguin_at_Cooper_Bay%2C_South_Georgia.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Liam Quinn",
+      "credit": "Flickr : Gentoo Penguin at Cooper Bay, South Georgia",
+      "description": "Gentoo Penguin at Cooper Bay, South Georgia, British Overseas Territories, UK.",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:37:16.079Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:00 0304 Gentoo Penguins.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:00_0304_Gentoo_Penguins.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/00_0304_Gentoo_Penguins.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Eselspinguine (Gentoo Penguin): Gesehen auf Port Lockroy, eine Bucht auf der Westseite der Wienckeinsel in der Antarktis.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:00 0395 Gentoo penguins in Antarctica.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:00_0395_Gentoo_penguins_in_Antarctica.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/01/00_0395_Gentoo_penguins_in_Antarctica.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Gento penguin (Pygoscelis papua) breeding. The one or two eggs are hatched in 35 to 39 days. The size of this penguin species is 70 to 80 centimeters with a weight of up to 60 kilograms. Characteristic are the two white spots above the eyes, which are connected to each other via the head. Seen on King George Island (Shetland Islands, Antarctica).",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:00 1986 Eselspinguin - Aitcho Islands.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:00_1986_Eselspinguin_-_Aitcho_Islands.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/00_1986_Eselspinguin_-_Aitcho_Islands.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Eselspinguin: Körpergröße 80 bis 90 Zentimeter, verbreitet auf den antarktischen Inseln: Gesehen auf der Inselgruppe Aitcho Islands, Antarktis.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:00 2114 Antarktis - Cuverville Island.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:00_2114_Antarktis_-_Cuverville_Island.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3e/00_2114_Antarktis_-_Cuverville_Island.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Cuverville Island, eine kleine felsige Insel nahe der Antarktischen Halbinsel (am westlichen Ende der Gerlache Strait): Kolonie von Eselspinguinen und gestrandete Eisberge.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:\"0 0578 Gentoo penguins (Pygoscelis) - Antarctic Peninsula.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:%220_0578_Gentoo_penguins_(Pygoscelis)_-_Antarctic_Peninsula.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/%220_0578_Gentoo_penguins_%28Pygoscelis%29_-_Antarctic_Peninsula.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "A group of Gentoo penguins. They have a weight of approx. 6 kilograms and a size of 70 to 80 centimeters and belong to the genus Pygoscelis (coccyx). Seen on the Antarctic Peninsula.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:.00 3500 Pygoscelis papua - Antarctica.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:.00_3500_Pygoscelis_papua_-_Antarctica.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/.00_3500_Pygoscelis_papua_-_Antarctica.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Penguins nesting in places free of snow and ice. Seen in Antarctica, Paradise Bay.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:.00 1405 Pinguins in der Antarktis.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:.00_1405_Pinguins_in_der_Antarktis.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e6/.00_1405_Pinguins_in_der_Antarktis.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Penguins nesting in places free of snow and ice. Seen in Antarctica, Half Moon Island.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202501 Gentoo penguin.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202501_Gentoo_penguin.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/202501_Gentoo_penguin.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2025.006",
+        "description": "Gentoo penguin",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202501 Gentoo penguin.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202501_Gentoo_penguin.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/202501_Gentoo_penguin.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2025.006",
+        "description": "Gentoo penguin",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:16.079Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 59,
+    "ruWikipediaTitle": "Субантарктический пингвин",
+    "ruWikipediaPageviews365d": 10067,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 66.09,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 61.52,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q213021",
+      "url": "https://www.wikidata.org/wiki/Q213021",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Субантарктический пингвин",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D1%83%D0%B1%D0%B0%D0%BD%D1%82%D0%B0%D1%80%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%BF%D0%B8%D0%BD%D0%B3%D0%B2%D0%B8%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2481666",
+      "url": "https://www.gbif.org/species/2481666",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Pygoscelis papua (J.R.Forster, 1781)",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2481666",
+      "url": "https://www.gbif.org/species/2481666",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2481666",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2481666&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ANTARCTICA": 23653,
+          "LATIN_AMERICA": 6580,
+          "OCEANIA": 757,
+          "EUROPE": 76,
+          "AFRICA": 55,
+          "NORTH_AMERICA": 25
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2481666",
+      "url": "https://api.gbif.org/v1/species/2481666/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2481666",
+      "url": "https://api.gbif.org/v1/species/2481666/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Pygoscelis papua",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01670",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1401",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Gentoo Penguin at Cooper Bay, South Georgia.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gentoo_Penguin_at_Cooper_Bay,_South_Georgia.jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:00 0304 Gentoo Penguins.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:00_0304_Gentoo_Penguins.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:00 0395 Gentoo penguins in Antarctica.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:00_0395_Gentoo_penguins_in_Antarctica.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:00 1986 Eselspinguin - Aitcho Islands.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:00_1986_Eselspinguin_-_Aitcho_Islands.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:00 2114 Antarktis - Cuverville Island.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:00_2114_Antarktis_-_Cuverville_Island.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:\"0 0578 Gentoo penguins (Pygoscelis) - Antarctic Peninsula.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:%220_0578_Gentoo_penguins_(Pygoscelis)_-_Antarctic_Peninsula.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:.00 3500 Pygoscelis papua - Antarctica.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:.00_3500_Pygoscelis_papua_-_Antarctica.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:.00 1405 Pinguins in der Antarktis.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:.00_1405_Pinguins_in_der_Antarktis.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202501 Gentoo penguin.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202501_Gentoo_penguin.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202501 Gentoo penguin.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202501_Gentoo_penguin.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Gentoo penguin distribution.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gentoo_penguin_distribution.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Gentoo Penguin at Cooper Bay, South Georgia.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gentoo_Penguin_at_Cooper_Bay,_South_Georgia.jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:37:16.079Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:37:16.079Z"
+}

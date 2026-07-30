@@ -1,0 +1,623 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:acipenser-ruthenus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "стерлядь",
+    "commonNameEn": "sterlet",
+    "scientificName": "Acipenser ruthenus",
+    "acceptedScientificName": "Acipenser ruthenus",
+    "aliasesRu": [
+      "Acipenser ruthenus",
+      "Осетр стерлядь",
+      "стерлядь"
+    ],
+    "wikidataId": "Q211316",
+    "gbifKey": 2402168,
+    "hagrid": "01869"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Actinopterygii",
+    "order": "Acipenseriformes",
+    "family": "Acipenseridae",
+    "genus": "Acipenser",
+    "species": "Acipenser ruthenus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Actinopterygii",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "freshwater",
+      "marine",
+      "brackish"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "medium",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 8.8,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 46.1,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 2129,
+      "male": 1460
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q96377276",
+      "statusLabelRu": "вымирающие виды",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Acipenser ruthenus Prague Vltava 1.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Acipenser_ruthenus_Prague_Vltava_1.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:AcipenserRuthenusIUCN2020-1.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:AcipenserRuthenusIUCN2020-1.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/AcipenserRuthenusIUCN2020-1.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "SanoAK : Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vetor and raster map data @ naturalearthdata.com. Range map from Gessner, J., Freyhof, J. & Kottelat, M. 2010. Acipenser ruthenus. The IUCN Red List of Threatened Species 2010: e.T227A13039007. https://dx.doi.org/10.2305/IUCN.UK.2010-1.RLTS.T227A13039007.en . Downloaded on 23 March 2020 as visual indicator of distribution.",
+        "description": "Distribution map of sterlet (Acipenser ruthenus) according to IUCN version 2020.1; key: Legend: Extant, resident (#008000) , Extinct (#FF0000)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:42:25.834Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Acipenser ruthenus Prague Vltava 1.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Acipenser_ruthenus_Prague_Vltava_1.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Acipenser_ruthenus_Prague_Vltava_1.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Karelj",
+      "credit": "Own work",
+      "description": "Fish Sterlet on exhibition Subaqueous Vltava , Prague 2011, Czech Republic",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:42:25.834Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Acipenser ruthenus.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Acipenser_ruthenus.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/54/Acipenser_ruthenus.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "",
+        "credit": "",
+        "description": "",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:42:25.834Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 56,
+    "ruWikipediaTitle": "Стерлядь",
+    "ruWikipediaPageviews365d": 72839,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 75.19,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 65.34,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211316",
+      "url": "https://www.wikidata.org/wiki/Q211316",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Стерлядь",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D1%82%D0%B5%D1%80%D0%BB%D1%8F%D0%B4%D1%8C/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q96377276",
+      "url": "https://www.wikidata.org/wiki/Q96377276",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2402168",
+      "url": "https://www.gbif.org/species/2402168",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Acipenser ruthenus Linnaeus, 1758",
+        "gbifSourceClass": "",
+        "normalizedGameClass": "Actinopterygii"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2402168",
+      "url": "https://www.gbif.org/species/2402168",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2402168",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2402168&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 964,
+          "ASIA": 5,
+          "NORTH_AMERICA": 3
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2402168",
+      "url": "https://api.gbif.org/v1/species/2402168/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "freshwater|brackish|marine",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Belarus"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - France"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Belgium"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Estonia"
+          },
+          {
+            "habitat": "Freshwater|Brackish|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Poland"
+          },
+          {
+            "habitat": "Freshwater|Brackish|Marine",
+            "source": "Global Register of Introduced and Invasive Species - China"
+          },
+          {
+            "habitat": "Freshwater|Brackish|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Finland"
+          },
+          {
+            "habitat": "Freshwater|Brackish|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Germany"
+          },
+          {
+            "habitat": "Freshwater|Brackish|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Latvia"
+          },
+          {
+            "habitat": "Freshwater|Brackish|Marine"
+          },
+          {
+            "habitat": "Brackish|Marine"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater; Freshwater-marine",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Dataset of Freshwater Invasive and Alien Species"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - North Sea"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Great Britain"
+          },
+          {
+            "habitat": "freshwater|brackish|marine",
+            "source": "Global Register of Introduced and Invasive Species - Greece"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2402168",
+      "url": "https://api.gbif.org/v1/species/2402168/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "01869",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Acipenser ruthenus Prague Vltava 1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Acipenser_ruthenus_Prague_Vltava_1.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Acipenser ruthenus.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Acipenser_ruthenus.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:AcipenserRuthenusIUCN2020-1.png",
+      "url": "https://commons.wikimedia.org/wiki/File:AcipenserRuthenusIUCN2020-1.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Acipenser ruthenus Prague Vltava 1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Acipenser_ruthenus_Prague_Vltava_1.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:42:25.834Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:42:25.834Z"
+}

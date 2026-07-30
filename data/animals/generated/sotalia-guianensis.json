@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:sotalia-guianensis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Гвианский дельфин",
+    "commonNameEn": "Guiana dolphin",
+    "scientificName": "Sotalia guianensis",
+    "acceptedScientificName": "Sotalia guianensis",
+    "aliasesRu": [
+      "гвианская соталия",
+      "Гвианский дельфин"
+    ],
+    "wikidataId": "Q2649322",
+    "gbifKey": 2440542,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Cetacea",
+    "family": "Delphinidae",
+    "genus": "Sotalia",
+    "species": "Sotalia guianensis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "smooth-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Micropogonias furnieri",
+          "externalId": "NCBI:278729",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Sotalia Clicks.wav",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sotalia_Clicks.wav",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/93/Sotalia_Clicks.wav",
+        "mimeType": "audio/wav",
+        "mediaType": "AUDIO",
+        "author": "Leonardo Flach",
+        "credit": "Instituto Boto Cinza",
+        "description": "clicks boto-cinza",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:35:25.190Z",
+        "soundType": "animal-vocalization"
+      },
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Sons pulsantes.Sotalia.WAV",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sons_pulsantes.Sotalia.WAV",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/49/Sons_pulsantes.Sotalia.WAV",
+        "mimeType": "audio/wav",
+        "mediaType": "AUDIO",
+        "author": "Leonardo Flach",
+        "credit": "Instituto Boto Cinza",
+        "description": "Sons pulsantes boto-cinza",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:35:25.190Z",
+        "soundType": "animal-vocalization"
+      },
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Assobios SEP.WAV",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Assobios_SEP.WAV",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Assobios_SEP.WAV",
+        "mimeType": "audio/wav",
+        "mediaType": "AUDIO",
+        "author": "Leonardo Flach",
+        "credit": "Instituto Boto Cinza",
+        "description": "Assobios boto-cinza",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:35:25.190Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Descrição início ou comportamento.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Descri%C3%A7%C3%A3o_in%C3%ADcio_ou_comportamento.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.5",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Sotalia guianensis - map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sotalia_guianensis_-_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Sotalia_guianensis_-_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Michal Klajban",
+        "credit": "The SVG map is a cropped version of File:BlankMap-World.svg Distribution data taken from: Secchi, E., Santos, M.C. de O. & Reeves, R. 2018. Sotalia guianensis (errata version published in 2019). The IUCN Red List of Threatened Species 2018: e.T181359A144232542. https://dx.doi.org/10.2305/IUCN.UK.2018-2.RLTS.T181359A144232542.en . Accessed on 27 January 2025.",
+        "description": "Native range of Guiana Dolphin( Sotalia guianensis ).",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:35:25.190Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Descrição início ou comportamento.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Descri%C3%A7%C3%A3o_in%C3%ADcio_ou_comportamento.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Descri%C3%A7%C3%A3o_in%C3%ADcio_ou_comportamento.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Instituto Boto Cinza",
+      "credit": "Instituto Boto Cinza",
+      "description": "Boto-cinza",
+      "license": "CC BY-SA 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:35:25.190Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 32,
+    "ruWikipediaTitle": "Гвианский дельфин",
+    "ruWikipediaPageviews365d": 1107,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 52.36,
+    "playabilityScore": 67.4,
+    "distinctivenessScore": 40,
+    "delightScore": 28.57,
+    "totalScore": 53.59,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "EltonTraits has no exact row for Sotalia guianensis",
+      "AnAge has no exact row for Sotalia guianensis",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q2649322",
+      "url": "https://www.wikidata.org/wiki/Q2649322",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Гвианский дельфин",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%93%D0%B2%D0%B8%D0%B0%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_%D0%B4%D0%B5%D0%BB%D1%8C%D1%84%D0%B8%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2440542",
+      "url": "https://www.gbif.org/species/2440542",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Sotalia guianensis (P.-J.van Bénéden, 1864)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2440542",
+      "url": "https://www.gbif.org/species/2440542",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2440542",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2440542&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 2190
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2440542",
+      "url": "https://api.gbif.org/v1/species/2440542/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2440542",
+      "url": "https://api.gbif.org/v1/species/2440542/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Sotalia guianensis",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Sotalia%20guianensis&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Descrição início ou comportamento.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Descri%C3%A7%C3%A3o_in%C3%ADcio_ou_comportamento.jpg",
+      "license": "CC BY-SA 2.5",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sotalia Clicks.wav",
+      "url": "https://commons.wikimedia.org/wiki/File:Sotalia_Clicks.wav",
+      "license": "CC BY-SA 2.5",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sons pulsantes.Sotalia.WAV",
+      "url": "https://commons.wikimedia.org/wiki/File:Sons_pulsantes.Sotalia.WAV",
+      "license": "CC BY-SA 2.5",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Assobios SEP.WAV",
+      "url": "https://commons.wikimedia.org/wiki/File:Assobios_SEP.WAV",
+      "license": "CC BY-SA 2.5",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Sotalia guianensis - map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sotalia_guianensis_-_map.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Descrição início ou comportamento.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Descri%C3%A7%C3%A3o_in%C3%ADcio_ou_comportamento.jpg",
+      "license": "CC BY-SA 2.5",
+      "retrievedAt": "2026-07-30T19:35:25.190Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:35:25.190Z"
+}

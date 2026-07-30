@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:acheta-domesticus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "сверчок домовый",
+    "commonNameEn": "Acheta domestica",
+    "scientificName": "Acheta domesticus",
+    "acceptedScientificName": "Acheta domesticus",
+    "aliasesRu": [
+      "Домовый сверчок",
+      "Домовой сверчок",
+      "Acheta domesticus",
+      "Сверчок домашний",
+      "Домашний сверчок",
+      "Сверчок домовый"
+    ],
+    "wikidataId": "Q27711",
+    "gbifKey": 1718308,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Arthropoda",
+    "taxonomicClass": "Insecta",
+    "order": "Orthoptera",
+    "family": "Gryllidae",
+    "genus": "Acheta",
+    "species": "Acheta domesticus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Insecta",
+    "bodyCoverings": [
+      "exoskeleton"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 6,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:BioAcoustica 393-9 Acheta domesticus 3545 .flac",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:BioAcoustica_393-9_Acheta_domesticus_3545_.flac",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/BioAcoustica_393-9_Acheta_domesticus_3545_.flac",
+        "mimeType": "audio/x-flac",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "http://bio.acousti.ca/sites/bio.acousti.ca/files/393-9_Acheta_domesticus_3545_.wav",
+        "description": "Sound recording of Acheta domesticus",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:34.230Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Acheta domestica femelle.png",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Acheta_domestica_femelle.png",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Acheta domestica femelle.png",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Acheta_domestica_femelle.png",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Acheta_domestica_femelle.png",
+      "mimeType": "image/png",
+      "mediaType": "BITMAP",
+      "author": "Hexasoft",
+      "credit": "Own work",
+      "description": "Female of cricket Acheta domestica",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:34.230Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Acheta domestica male.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Acheta_domestica_male.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/39/Acheta_domestica_male.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Hexasoft",
+        "credit": "Own work",
+        "description": "Male of cricket Gryllus assimilis .",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:34.230Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 43,
+    "ruWikipediaTitle": "Сверчок домовый",
+    "ruWikipediaPageviews365d": 13220,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 65.69,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 40,
+    "delightScore": 14.29,
+    "totalScore": 59.2,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Acheta domesticus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q27711",
+      "url": "https://www.wikidata.org/wiki/Q27711",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Сверчок домовый",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B2%D0%B5%D1%80%D1%87%D0%BE%D0%BA_%D0%B4%D0%BE%D0%BC%D0%BE%D0%B2%D1%8B%D0%B9/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1718308",
+      "url": "https://www.gbif.org/species/1718308",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Acheta domesticus (Linnaeus, 1758)",
+        "gbifSourceClass": "Insecta",
+        "normalizedGameClass": "Insecta"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "1718308",
+      "url": "https://www.gbif.org/species/1718308",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "1718308",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=1718308&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 9622,
+          "NORTH_AMERICA": 929,
+          "ASIA": 98,
+          "AFRICA": 50,
+          "OCEANIA": 36,
+          "LATIN_AMERICA": 32
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1718308",
+      "url": "https://api.gbif.org/v1/species/1718308/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1718308",
+      "url": "https://api.gbif.org/v1/species/1718308/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Ireland"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Austria"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Belgium"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Estonia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Poland"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Latvia"
+          },
+          {
+            "habitat": "Terrestrial"
+          },
+          {
+            "habitat": "Terrestrial"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1718308",
+      "url": "https://api.gbif.org/v1/species/1718308/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Acheta domestica femelle.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Acheta_domestica_femelle.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Acheta domestica male.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Acheta_domestica_male.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:BioAcoustica 393-9 Acheta domesticus 3545 .flac",
+      "url": "https://commons.wikimedia.org/wiki/File:BioAcoustica_393-9_Acheta_domesticus_3545_.flac",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Acheta domestica femelle.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Acheta_domestica_femelle.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:39:34.230Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:34.230Z"
+}

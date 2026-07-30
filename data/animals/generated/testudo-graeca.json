@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:testudo-graeca",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Средиземноморская черепаха",
+    "commonNameEn": "Testudo graeca",
+    "scientificName": "Testudo graeca",
+    "acceptedScientificName": "Testudo graeca",
+    "aliasesRu": [
+      "Греческая черепаха",
+      "Testudo graeca",
+      "Кавказская черепаха",
+      "Средиземноморская черепаха"
+    ],
+    "wikidataId": "Q504549",
+    "gbifKey": 2441461,
+    "hagrid": "03782"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Testudines",
+    "family": "Testudinidae",
+    "genus": "Testudo",
+    "species": "Testudo graeca",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales",
+      "shell"
+    ],
+    "habitats": [
+      "terrestrial",
+      "freshwater"
+    ],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe",
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 1.43,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 127,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 4560,
+      "male": 4560
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q278113",
+      "statusLabelRu": "находятся в уязвимом положении",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Tortoise.spur-thighed.arp.750pix.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/25/Tortoise.spur-thighed.arp.750pix.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Areale Testudo graeca.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Areale_Testudo_graeca.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/66/Areale_Testudo_graeca.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Massimo Lazzari, vettorizzato da Fulvio314",
+        "credit": "File:Areale T. graeca3.jpg",
+        "description": "Area of Testudo graeca",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:55.630Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Tortoise.spur-thighed.arp.750pix.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Tortoise.spur-thighed.arp.750pix.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/25/Tortoise.spur-thighed.arp.750pix.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Adrian Pingstone at en.wikipedia",
+      "credit": "Own work Transferred from en.wikipedia",
+      "description": "Spur-thighed Tortoise ( Testudo graeca ) at Combe Martin Wildlife and Dinosaur Park, North Devon, England. Taken by Adrian Pingstone in July 2004 and released to the public domain.",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:38:55.630Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Nabeulensis sarda.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Nabeulensis_sarda.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/04/Nabeulensis_sarda.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Gisella D.",
+        "credit": "Own work",
+        "description": "Testudo graeca nabeulensis varietà 'Sarda', Sardegna , Italia",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:55.630Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 43,
+    "ruWikipediaTitle": "Средиземноморская черепаха",
+    "ruWikipediaPageviews365d": 10097,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 64.41,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 60.81,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q504549",
+      "url": "https://www.wikidata.org/wiki/Q504549",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Средиземноморская черепаха",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D1%80%D0%B5%D0%B4%D0%B8%D0%B7%D0%B5%D0%BC%D0%BD%D0%BE%D0%BC%D0%BE%D1%80%D1%81%D0%BA%D0%B0%D1%8F_%D1%87%D0%B5%D1%80%D0%B5%D0%BF%D0%B0%D1%85%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q278113",
+      "url": "https://www.wikidata.org/wiki/Q278113",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441461",
+      "url": "https://www.gbif.org/species/2441461",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Testudo graeca Linnaeus, 1758",
+        "gbifSourceClass": "Testudines",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2441461",
+      "url": "https://www.gbif.org/species/2441461",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2441461",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2441461&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 12034,
+          "AFRICA": 1664,
+          "ASIA": 640,
+          "NORTH_AMERICA": 3,
+          "LATIN_AMERICA": 2
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441461",
+      "url": "https://api.gbif.org/v1/species/2441461/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441461",
+      "url": "https://api.gbif.org/v1/species/2441461/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Italy"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Czechia"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Poland"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Sovereign Base Areas of Cyprus, Cyprus"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - France"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Belgium"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441461",
+      "url": "https://api.gbif.org/v1/species/2441461/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03782",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "451",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Tortoise.spur-thighed.arp.750pix.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Tortoise.spur-thighed.arp.750pix.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Nabeulensis sarda.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Nabeulensis_sarda.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Areale Testudo graeca.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Areale_Testudo_graeca.svg",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Tortoise.spur-thighed.arp.750pix.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Tortoise.spur-thighed.arp.750pix.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:38:55.630Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:38:55.630Z"
+}

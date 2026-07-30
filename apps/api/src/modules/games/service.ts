@@ -228,6 +228,18 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
     ])
   }
 
+  if (answer.mode === 'animal') {
+    return presentInfoCandidates([
+      infoScalarCandidate('animal_class', 'Класс', answer.taxonomicClass),
+      infoScalarCandidate('animal_order', 'Отряд', answer.animalOrder),
+      infoScalarCandidate('animal_family', 'Семейство', answer.animalFamily),
+      infoListCandidate('habitats', 'Среда', answer.habitats ?? [], 2),
+      infoListCandidate('animal_continents', 'Ареал', answer.animalContinents ?? [], 3),
+      infoListCandidate('diets', 'Питание', answer.diets ?? [], 2),
+      infoScalarCandidate(null, 'Охранный статус', answer.conservationStatus),
+    ])
+  }
+
   if (answer.mode === 'anime') {
     return presentInfoCandidates([
       answer.animeKind ? infoScalarCandidate('anime_kind', 'Формат', answer.animeKind) : null,

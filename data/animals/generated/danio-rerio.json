@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:danio-rerio",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "данио-рерио",
+    "commonNameEn": "Danio rerio",
+    "scientificName": "Danio rerio",
+    "acceptedScientificName": "Danio rerio",
+    "aliasesRu": [],
+    "wikidataId": "Q169444",
+    "gbifKey": 9797255,
+    "hagrid": "03900"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Actinopterygii",
+    "order": "Cypriniformes",
+    "family": "Cyprinidae",
+    "genus": "Danio",
+    "species": "Danio rerio",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Actinopterygii",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "freshwater"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 5.5,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 0,
+      "male": 0
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": null,
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202101 Zebrafish.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202101_Zebrafish.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/202101_Zebrafish.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2021.004",
+        "description": "Zebrafish",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:31.582Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 52,
+    "ruWikipediaTitle": "Данио-рерио",
+    "ruWikipediaPageviews365d": 8957,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 64.86,
+    "playabilityScore": 63,
+    "distinctivenessScore": 0,
+    "delightScore": 28.57,
+    "totalScore": 50.95,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "missing-licensed-image",
+      "missing-identity-specific-hint"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "Commons file rejected by license policy: File:Zebrafisch.jpg (Copyrighted free use)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q169444",
+      "url": "https://www.wikidata.org/wiki/Q169444",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Данио-рерио",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%94%D0%B0%D0%BD%D0%B8%D0%BE-%D1%80%D0%B5%D1%80%D0%B8%D0%BE/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9797255",
+      "url": "https://www.gbif.org/species/9797255",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "species/match (EXACT, confidence 97)",
+      "confidence": 0.97,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Danio rerio (Hamilton, 1822)",
+        "gbifSourceClass": "",
+        "normalizedGameClass": "Actinopterygii"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9797255",
+      "url": "https://www.gbif.org/species/9797255",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9797255",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9797255&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 375,
+          "NORTH_AMERICA": 24,
+          "LATIN_AMERICA": 20,
+          "EUROPE": 17,
+          "AFRICA": 16,
+          "OCEANIA": 7
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9797255",
+      "url": "https://api.gbif.org/v1/species/9797255/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Sri Lanka"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Philippines"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Japan"
+          },
+          {
+            "habitat": "Freshwater"
+          },
+          {
+            "habitat": "Freshwater"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03900",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "3",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "high"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202101 Zebrafish.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202101_Zebrafish.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:40:31.582Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:31.582Z"
+}

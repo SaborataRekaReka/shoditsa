@@ -1,0 +1,566 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:falco-peregrinus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "сапсан",
+    "commonNameEn": "Peregrine Falcon",
+    "scientificName": "Falco peregrinus",
+    "acceptedScientificName": "Falco peregrinus",
+    "aliasesRu": [
+      "Сокол-сапсан",
+      "Falco peregrinus",
+      "Обыкновенный сокол",
+      "Сокол сапсан",
+      "Falko peregrinus"
+    ],
+    "wikidataId": "Q30535",
+    "gbifKey": 2481047,
+    "hagrid": "00651"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Falconiformes",
+    "family": "Falconidae",
+    "genus": "Falco",
+    "species": "Falco peregrinus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "north-america",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.75995,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 25,
+      "maximumObservedContext": "unknown"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 365,
+      "male": 365
+    },
+    "gestationOrIncubationDays": 30,
+    "litterOrClutchSize": 3
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 10,
+      "endothermicVertebrates": 80,
+      "ectothermicVertebrates": 10,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Faucon pelerin 7 mai.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Faucon_pelerin_7_mai.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:PeregrineRangeMap.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:PeregrineRangeMap.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/00/PeregrineRangeMap.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "MPF (latest version)",
+        "credit": "self-made; compiled from Handbook of the Birds of the World , Birds of the Western Palearctic, Birds of the Western Palearctic Concise Edition, Atlas of European Breeding Birds, Birds of North America, Birds of China, Birds of Japan , BirdLife International Datasheet.",
+        "description": "Range map for Falco peregrinus (including F. (p.) pelegrinoides , the Barbary falcon ) Breeding summer visitor Breeding resident Winter visitor Passage visitor",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.562Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Faucon pelerin 7 mai.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Faucon_pelerin_7_mai.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Faucon_pelerin_7_mai.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Georges Lignier (georges.lignier@wanadoo.fr)",
+      "credit": "Personal photo of Georges Lignier (georges.lignier@wanadoo.fr) / LPO (Ligue de Protection des Oiseaux) of Franche comté",
+      "description": "Adult with young near Montbelliard - France",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:27.562Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:American Peregrine Falcon (Falco peregrinus) (10700651733).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:American_Peregrine_Falcon_(Falco_peregrinus)_(10700651733).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/54/American_Peregrine_Falcon_%28Falco_peregrinus%29_%2810700651733%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Gregory \"Slobirdr\" Smith",
+        "credit": "American Peregrine Falcon (Falco peregrinus)",
+        "description": "Not too often we get to see a Peregrine sitting this close to the ground. And even less often it lets me get this close...",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.562Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Peregrine Falcon Nepal.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Peregrine_Falcon_Nepal.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Peregrine_Falcon_Nepal.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Creepanta",
+        "credit": "Own work",
+        "description": "Peregrine Falcon, Scientific Name: Falco peregrinus, Nepali Name: Shahi Bajh (शाही बाज)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.562Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Peregrine Falcon Kobble Apr07.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Peregrine_Falcon_Kobble_Apr07.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Peregrine_Falcon_Kobble_Apr07.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Aviceda",
+        "credit": "Own work",
+        "description": "Peregrine Falcon ( Falco peregrinus macropus ) Kobble Creek, SE Queensland, Australia",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.562Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Falco peregrinus minor, Cape Town, South Africa 118534019.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Falco_peregrinus_minor,_Cape_Town,_South_Africa_118534019.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Falco_peregrinus_minor%2C_Cape_Town%2C_South_Africa_118534019.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Timothy Whitehead",
+        "credit": "https://www.inaturalist.org/photos/118534019",
+        "description": "African peregrine falcon ( Falco peregrinus minor )",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.562Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 108,
+    "ruWikipediaTitle": "Сапсан",
+    "ruWikipediaPageviews365d": 129030,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 81.45,
+    "playabilityScore": 88.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 71.03,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q30535",
+      "url": "https://www.wikidata.org/wiki/Q30535",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Сапсан",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B0%D0%BF%D1%81%D0%B0%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2481047",
+      "url": "https://www.gbif.org/species/2481047",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Falco peregrinus Tunstall, 1771",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2481047",
+      "url": "https://www.gbif.org/species/2481047",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2481047",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2481047&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 1379144,
+          "EUROPE": 1170174,
+          "LATIN_AMERICA": 125424,
+          "ASIA": 86427,
+          "OCEANIA": 84357,
+          "AFRICA": 19358
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2481047",
+      "url": "https://api.gbif.org/v1/species/2481047/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2481047",
+      "url": "https://api.gbif.org/v1/species/2481047/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Forest | Bosque",
+            "source": "Lista de referencia de especies de aves de Colombia - 2022"
+          },
+          {
+            "habitat": "Vegetación acuática, zonas abiertas",
+            "source": "Lista de Aves observadas durante el monitoreo participativo en la laguna de Fúquene"
+          },
+          {
+            "habitat": "Terrestrial"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Falco peregrinus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "00651",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "",
+        "specimenOrigin": "unknown",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Faucon pelerin 7 mai.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Faucon_pelerin_7_mai.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:American Peregrine Falcon (Falco peregrinus) (10700651733).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:American_Peregrine_Falcon_(Falco_peregrinus)_(10700651733).jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Peregrine Falcon Nepal.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Peregrine_Falcon_Nepal.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Peregrine Falcon Kobble Apr07.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Peregrine_Falcon_Kobble_Apr07.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Falco peregrinus minor, Cape Town, South Africa 118534019.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Falco_peregrinus_minor,_Cape_Town,_South_Africa_118534019.jpg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:PeregrineRangeMap.png",
+      "url": "https://commons.wikimedia.org/wiki/File:PeregrineRangeMap.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Faucon pelerin 7 mai.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Faucon_pelerin_7_mai.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.562Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:27.562Z"
+}

@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:camelus-bactrianus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "двугорбый верблюд",
+    "commonNameEn": "Camelus bactrianus",
+    "scientificName": "Camelus bactrianus",
+    "acceptedScientificName": "Camelus bactrianus",
+    "aliasesRu": [
+      "Camelus bactrianus",
+      "Camelus ferus",
+      "Верблюд двугорбый",
+      "бактриан",
+      "Бактриан",
+      "Двугорбый верблюд"
+    ],
+    "wikidataId": "Q132922",
+    "gbifKey": 2441238,
+    "hagrid": "02005"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Artiodactyla",
+    "family": "Camelidae",
+    "genus": "Camelus",
+    "species": "Camelus bactrianus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "asia",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "herbivore"
+    ],
+    "activity": [
+      "diurnal"
+    ],
+    "locomotion": [
+      "walk",
+      "run"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 690,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 35.4,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 1278,
+      "male": 1278
+    },
+    "gestationOrIncubationDays": 395,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 0,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 100
+    },
+    "foragingStratum": "ground",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": [
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "NCBI:9612",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:2011 Trampeltier 1528.JPG",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/82/2011_Trampeltier_1528.JPG",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Camelus ferus distribution.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Camelus_ferus_distribution.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Camelus_ferus_distribution.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Oona Räisänen & IUCN (International Union for Conservation of Nature); see above",
+        "credit": "Put together by User:Mysid using Geo::ShapeFile . Base map derived from Worldmap location NED 50m.svg (Natural Earth Data) Distribution data from the IUCN Red List of Threatened Species ( Spatial Data Download (English) . iucnredlist.org . Archived from the original on 2010-06-21 . Retrieved on 2010-06-21 ., downloaded on 2010-11-04) Assessed in 2008 by Hare, J. ( http://www.iucnredlist.org/apps/redlist/details/63543/0 )",
+        "description": "Geographic distribution of the Bactrian Camel ( Camelus ferus syn. Camelus bactrianus ).",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:29.659Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:2011 Trampeltier 1528.JPG",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:2011_Trampeltier_1528.JPG",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/82/2011_Trampeltier_1528.JPG",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "J. Patrick Fischer",
+      "credit": "Own work",
+      "description": "Bactrian Camel in Shanghai Zoo",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:29.659Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Bactrian Camel b d.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bactrian_Camel_b_d.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Bactrian_Camel_b_d.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Michael Pereckas from Milwaukee, WI, USA",
+        "credit": "Bactrian Camel",
+        "description": "Bactrian Camel",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:29.659Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Bactrian camel group highland wildlife park scotland.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bactrian_camel_group_highland_wildlife_park_scotland.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/94/Bactrian_camel_group_highland_wildlife_park_scotland.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Aaronsneddon",
+        "credit": "Own work by uploader Aaron Sneddon",
+        "description": "Bactrian camels at Highland Wildlife Park, Scotland.",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:29.659Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202406 Bactrian camel.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202406_Bactrian_camel.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/40/202406_Bactrian_camel.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2024.140",
+        "description": "Bactrian camel",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:29.659Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 97,
+    "ruWikipediaTitle": "Двугорбый верблюд",
+    "ruWikipediaPageviews365d": 31826,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 74.24,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 64.94,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q132922",
+      "url": "https://www.wikidata.org/wiki/Q132922",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Двугорбый верблюд",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%94%D0%B2%D1%83%D0%B3%D0%BE%D1%80%D0%B1%D1%8B%D0%B9_%D0%B2%D0%B5%D1%80%D0%B1%D0%BB%D1%8E%D0%B4/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441238",
+      "url": "https://www.gbif.org/species/2441238",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Camelus bactrianus Linnaeus, 1758",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2441238",
+      "url": "https://www.gbif.org/species/2441238",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2441238",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2441238&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 276,
+          "EUROPE": 109,
+          "NORTH_AMERICA": 31,
+          "AFRICA": 8,
+          "LATIN_AMERICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441238",
+      "url": "https://api.gbif.org/v1/species/2441238/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441238",
+      "url": "https://api.gbif.org/v1/species/2441238/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Camelus bactrianus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02005",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "high"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Camelus bactrianus",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Camelus%20bactrianus&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:2011 Trampeltier 1528.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:2011_Trampeltier_1528.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bactrian Camel b d.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bactrian_Camel_b_d.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bactrian camel group highland wildlife park scotland.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Bactrian_camel_group_highland_wildlife_park_scotland.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202406 Bactrian camel.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202406_Bactrian_camel.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Camelus ferus distribution.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Camelus_ferus_distribution.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:2011 Trampeltier 1528.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:2011_Trampeltier_1528.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:29.659Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:29.659Z"
+}

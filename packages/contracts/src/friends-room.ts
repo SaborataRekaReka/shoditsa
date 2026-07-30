@@ -64,6 +64,9 @@ export const FRIENDS_ROOM_PACK_VARIANTS = {
   diagnosis: [
     { id: 'all', label: 'Весь каталог', description: 'В основной игре нет отдельных режимов' },
   ],
+  animal: [
+    { id: 'all', label: 'Весь каталог', description: '300 животных основного набора' },
+  ],
 } as const satisfies Record<Static<typeof CatalogGuessModeSchema>, readonly FriendsRoomPackVariant[]>
 
 export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
@@ -74,6 +77,7 @@ export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
   city: 'capitals',
   music: 'medium',
   diagnosis: 'all',
+  animal: 'all',
 } as const satisfies Record<Static<typeof CatalogGuessModeSchema>, string>
 
 export type FriendsRoomPackSelection = {

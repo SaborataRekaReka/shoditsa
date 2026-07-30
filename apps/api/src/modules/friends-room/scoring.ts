@@ -39,6 +39,7 @@ const MODE_WEIGHTS: Record<CatalogGuessModeId, Record<string, number>> = {
   city: { economy: 45, humanCapital: 45, qualityOfLife: 45, ecology: 45, governance: 45 },
   music: { activity_start_year: 25, decade: 25, music_type: 45, music_active: 15 },
   diagnosis: { course: 45, contagiousness: 45, typical_age: 40, risk_factors: 60 },
+  animal: { animal_class: 25, animal_order: 55, animal_family: 70, body_coverings: 30, habitats: 35, animal_continents: 25, diets: 35, locomotion: 25, reproduction: 30, body_mass: 35, leg_count: 25 },
 }
 
 const statusFactor = (hint: Hint): { status: ScoreStatus; factor: number } | null => {

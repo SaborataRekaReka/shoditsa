@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:ascarosepion-pfefferi",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Ascarosepion pfefferi",
+    "commonNameEn": "Ascarosepion pfefferi",
+    "scientificName": "Ascarosepion pfefferi",
+    "acceptedScientificName": "Ascarosepion pfefferi",
+    "aliasesRu": [],
+    "wikidataId": "Q133273013",
+    "gbifKey": 12237854,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Mollusca",
+    "taxonomicClass": "Cephalopoda",
+    "order": "Sepiida",
+    "family": "Sepiidae",
+    "genus": "Ascarosepion",
+    "species": "Ascarosepion pfefferi",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Cephalopoda",
+    "bodyCoverings": [
+      "soft-body"
+    ],
+    "habitats": [
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "asia",
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Flamboyant Cuttlefish-2.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flamboyant_Cuttlefish-2.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Flamboyant Cuttlefish-2.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Flamboyant_Cuttlefish-2.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flamboyant_Cuttlefish-2.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Jenny (JennyHuang) from Taipei",
+      "credit": "Flickr",
+      "description": "Flamboyant Cuttlefish are among the world's amazing and fanscinating creatures. Waving upon wave of bright yellow,white,chocolate brown and vermilion flashing neon-like on its stubby body. Hunt small shrimp in the daylight,changing its external appearance to that of a silt-covered stone before striking out. Extremely bright coloration is possible a warning. This species could actually have a poisonous bite like its more famous cousin--The blue ring octopus. Flamboyant Cuttlefish-2",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:09.253Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Ascarosepion pfefferi (13532420473).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Ascarosepion_pfefferi_(13532420473).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Ascarosepion_pfefferi_%2813532420473%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Christian Gloor from Wakatobi Dive Resort, Indonesia",
+        "credit": "Flamboyant Cuttlefish hunting",
+        "description": "Flamboyant Cuttlefish / Ascarosepion pfefferi About 7-8cm",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:09.253Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 4,
+    "ruWikipediaTitle": "Ascarosepion pfefferi",
+    "ruWikipediaPageviews365d": 627,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 39.34,
+    "playabilityScore": 65.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 41.89,
+    "difficulty": "hard",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Ascarosepion pfefferi"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q133273013",
+      "url": "https://www.wikidata.org/wiki/Q133273013",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Ascarosepion pfefferi",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/Ascarosepion_pfefferi/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "12237854",
+      "url": "https://www.gbif.org/species/12237854",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Ascarosepion pfefferi (Hoyle, 1885)",
+        "gbifSourceClass": "Cephalopoda",
+        "normalizedGameClass": "Cephalopoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "12237854",
+      "url": "https://www.gbif.org/species/12237854",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "12237854",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=12237854&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 466,
+          "OCEANIA": 368,
+          "NORTH_AMERICA": 3,
+          "EUROPE": 2
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Flamboyant Cuttlefish-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Flamboyant_Cuttlefish-2.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Ascarosepion pfefferi (13532420473).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Ascarosepion_pfefferi_(13532420473).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Flamboyant Cuttlefish-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Flamboyant_Cuttlefish-2.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:40:09.253Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "12237854",
+      "url": "https://www.gbif.org/species/12237854",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:45:36.934Z",
+      "method": "deterministic class/order/family rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:09.253Z"
+}

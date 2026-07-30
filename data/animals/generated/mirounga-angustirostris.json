@@ -1,0 +1,758 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:mirounga-angustirostris",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Северный морской слон",
+    "commonNameEn": "northern elephant seal",
+    "scientificName": "Mirounga angustirostris",
+    "acceptedScientificName": "Mirounga angustirostris",
+    "aliasesRu": [
+      "Mirounga angustirostris",
+      "Северный морской слон"
+    ],
+    "wikidataId": "Q626023",
+    "gbifKey": 2434813,
+    "hagrid": "02227"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Carnivora",
+    "family": "Phocidae",
+    "genus": "Mirounga",
+    "species": "Mirounga angustirostris",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "fur"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic"
+    ],
+    "continents": [
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 750,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 0,
+      "maximumObservedContext": "unknown"
+    },
+    "lifespanCategory": "under-5",
+    "maturityDays": {
+      "female": 1095,
+      "male": 1826
+    },
+    "gestationOrIncubationDays": 252,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 60,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 40,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "marine",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Doryteuthis opalescens",
+          "externalId": "WD:Q13596607",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Taningia danae",
+          "externalId": "WD:Q747249",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Merluccius productus",
+          "externalId": "COL:3ZV7D",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sebastes eos",
+          "externalId": "PBDB:442292",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus bimaculoides",
+          "externalId": "GBIF:2289644",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Enteroctopus dofleini",
+          "externalId": "GBIF:2289485",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Porichthys notatus",
+          "externalId": "COL:787XL",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sardinops sagax",
+          "externalId": "WORMS:217452",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gonatus onyx",
+          "externalId": "ITIS:82425",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gonatus berryi",
+          "externalId": "ITIS:82424",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gonatus pyros",
+          "externalId": "ITIS:82423",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gonatopsis borealis",
+          "externalId": "ITIS:82417",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chilara taylori",
+          "externalId": "ITIS:165006",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pasiphaea pacifica",
+          "externalId": "ITIS:96163",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Icichthys lockingtoni",
+          "externalId": "ITIS:172510",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus rubescens",
+          "externalId": "ITIS:82606",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Loligo opalescens",
+          "externalId": "ITIS:82371",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Onychoteuthis borealijaponicus",
+          "externalId": "ITIS:82442",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Glyptocephalus zachirus",
+          "externalId": "ITIS:172978",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Engraulis mordax",
+          "externalId": "ITIS:161828",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Citharichthys sordidus",
+          "externalId": "ITIS:172716",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus bimaculatus",
+          "externalId": "EOL:492291",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Rhacochilus vacca",
+          "externalId": "FBC:FB:SpecCode:3640",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Anoplopoma fimbria",
+          "externalId": "ITIS:167123",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Prionace glauca",
+          "externalId": "ITIS:160424",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Squalus acanthias",
+          "externalId": "ITIS:160617",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hydrolagus colliei",
+          "externalId": "WD:Q1262285",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Orcinus orca",
+          "externalId": "PBDB:64541",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Cathartes aura",
+          "externalId": "PBDB:137176",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Larus glaucescens",
+          "externalId": "COL:3SBQB",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Carcharodon carcharias",
+          "externalId": "COL:5WZLF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis latrans",
+          "externalId": "COL:QLXJ",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Larus occidentalis",
+          "externalId": "COL:3SBQT",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Isistius brasiliensis",
+          "externalId": "COL:3Q78H",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Mating scene with elevated Alpha Male. Elephant Seals of Piedras Blancas.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Mating_scene_with_elevated_Alpha_Male._Elephant_Seals_of_Piedras_Blancas.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Mirounga angustirostris distribution.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mirounga_angustirostris_distribution.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Mirounga_angustirostris_distribution.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Mirko Thiessen",
+        "credit": "own image, based on http://commons.wikimedia.org/wiki/Image:BlankMap-World.png",
+        "description": "Distribution of the northern elephant seal (dark blue: breeding colonies; light blue: non-breeding individuals)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:55.854Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Mirounga angustirostris distribution map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mirounga_angustirostris_distribution_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Mirounga_angustirostris_distribution_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "NordNordWest Range data: Hückstädt, L. 2015. Mirounga angustirostris. The IUCN Red List of Threatened Species 2015: e.T13581A45227116.",
+        "credit": "Own work using: http://maps.iucnredlist.org/map.html?id=13581 http://www.elephantseal.org/locations.htm Blank map of the world (Robinson projection) (180E).svg by Milenioscuro",
+        "description": "Distribution map of the northern elephant seal breeding colonies non-breeding individuals",
+        "license": "CC BY-SA 3.0 de",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/de/deed.en",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:55.854Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Mating scene with elevated Alpha Male. Elephant Seals of Piedras Blancas.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mating_scene_with_elevated_Alpha_Male._Elephant_Seals_of_Piedras_Blancas.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Mating_scene_with_elevated_Alpha_Male._Elephant_Seals_of_Piedras_Blancas.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Mike Baird",
+      "credit": "originally posted to Flickr as Mating scene with elevated Alpha Male. Elephant Seals of Piedras Blancas",
+      "description": "Mating scene with elevated Alpha Male. Elephant Seals of Piedras Blancas, San Simeon, CA, 31 Jan 2009.",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:55.854Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Elephant seals fighting.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Elephant_seals_fighting.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/Elephant_seals_fighting.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Mike Baird , bairdphotos.com",
+        "credit": "Northern Elephant Seals Fighting, Piedras Blancas, San Simeon, CA 02feb2008 . Canon 1D Mark III w/ 600mm f/4 IS lens on tripod.",
+        "description": "Male Northern Elephant Seals fighting for territory and mates, Piedras Blancas, San Simeon, California (USA).",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:55.854Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 52,
+    "ruWikipediaTitle": "Северный морской слон",
+    "ruWikipediaPageviews365d": 11072,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 65.87,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 61.42,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q626023",
+      "url": "https://www.wikidata.org/wiki/Q626023",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Северный морской слон",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BD%D1%8B%D0%B9_%D0%BC%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B9_%D1%81%D0%BB%D0%BE%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2434813",
+      "url": "https://www.gbif.org/species/2434813",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Mirounga angustirostris (Gill, 1866)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2434813",
+      "url": "https://www.gbif.org/species/2434813",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2434813",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2434813&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 12129,
+          "LATIN_AMERICA": 377,
+          "EUROPE": 9,
+          "ASIA": 3,
+          "AFRICA": 1
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2434813",
+      "url": "https://api.gbif.org/v1/species/2434813/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2434813",
+      "url": "https://api.gbif.org/v1/species/2434813/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Mirounga angustirostris",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02227",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "",
+        "specimenOrigin": "unknown",
+        "sampleSize": "tiny",
+        "dataQuality": "low"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Mirounga angustirostris",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Mirounga%20angustirostris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Mirounga angustirostris",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Mirounga%20angustirostris&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Mating scene with elevated Alpha Male. Elephant Seals of Piedras Blancas.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Mating_scene_with_elevated_Alpha_Male._Elephant_Seals_of_Piedras_Blancas.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Elephant seals fighting.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Elephant_seals_fighting.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Mirounga angustirostris distribution.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Mirounga_angustirostris_distribution.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Mirounga angustirostris distribution map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Mirounga_angustirostris_distribution_map.svg",
+      "license": "CC BY-SA 3.0 de",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Mating scene with elevated Alpha Male. Elephant Seals of Piedras Blancas.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Mating_scene_with_elevated_Alpha_Male._Elephant_Seals_of_Piedras_Blancas.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:55.854Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:55.854Z"
+}

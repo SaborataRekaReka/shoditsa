@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:taenia-saginata",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Бычий цепень",
+    "commonNameEn": "Taenia saginata",
+    "scientificName": "Taenia saginata",
+    "acceptedScientificName": "Taenia saginata",
+    "aliasesRu": [
+      "бычий солитёр",
+      "Бычий солитёр",
+      "Бычий цепень",
+      "Невооруженный цепень"
+    ],
+    "wikidataId": "Q773607",
+    "gbifKey": 6101574,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Platyhelminthes",
+    "taxonomicClass": "Cestoda",
+    "order": "Cyclophyllidea",
+    "family": "Taeniidae",
+    "genus": "Taenia",
+    "species": "Taenia saginata",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Cestoda",
+    "bodyCoverings": [],
+    "habitats": [],
+    "lifestyles": [],
+    "continents": [
+      "asia",
+      "north-america",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [],
+    "sizeCategory": "",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Taenia saginata adult 5260 lores.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Taenia_saginata_adult_5260_lores.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Taenia saginata adult 5260 lores.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Taenia_saginata_adult_5260_lores.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Taenia_saginata_adult_5260_lores.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "",
+      "credit": "http://phil.cdc.gov/PHIL_Images/20031208/87d4bff74e41427cb278526bd9cbe76a/5260_lores.jpg",
+      "description": "ID#: 5260 Description: This is an adult Taenia saginata tapeworm. Humans become infected by ingesting raw or undercooked infected meat. In the human intestine, the cysticercus develops over 2 mo. into an adult tapeworm, which can survive for years, attaching to, and residing in the small intestine. Content Providers(s): CDC Creation Date: 1986 Copyright Restrictions: None - This image is in the public domain and thus free of any copyright restrictions. As a matter of courtesy we request that the content provider be credited and notified in any public or private usage of this image.",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:14.445Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Gravid proglottid from the cestode Taenia saginata 5259 lores.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Gravid_proglottid_from_the_cestode_Taenia_saginata_5259_lores.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/ba/Gravid_proglottid_from_the_cestode_Taenia_saginata_5259_lores.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "",
+        "credit": "http://phil.cdc.gov/PHIL_Images/20031208/3142a86b40a9426aa823a693d9e5a0cf/5259_lores.jpg",
+        "description": "ID#: 5259 Description: This micrograph reveals the morphology of a gravid proglottid from the cestode Taenia saginata, a tapeworm. The number of primary lateral uterine branches, i.e. the dark India ink stained irregularities, allows differentiation between the two species: T. saginata has 15-20 branches on each side, while Taenia solium has 7-13. Content Providers(s): CDC Creation Date: 1986 Copyright Restrictions: None - This image is in the public domain and thus free of any copyright restrictions. As a matter of courtesy we request that the content provider be credited and notified in any public or private usage of this image.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:14.445Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 37,
+    "ruWikipediaTitle": "Бычий цепень",
+    "ruWikipediaPageviews365d": 79679,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 73.4,
+    "playabilityScore": 29.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 43.95,
+    "difficulty": "easy",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 25,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Taenia saginata"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q773607",
+      "url": "https://www.wikidata.org/wiki/Q773607",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Бычий цепень",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%91%D1%8B%D1%87%D0%B8%D0%B9_%D1%86%D0%B5%D0%BF%D0%B5%D0%BD%D1%8C/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "6101574",
+      "url": "https://www.gbif.org/species/6101574",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Taenia saginata Goeze, 1782",
+        "gbifSourceClass": "Cestoda",
+        "normalizedGameClass": "Cestoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "6101574",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=6101574&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 269,
+          "NORTH_AMERICA": 148,
+          "EUROPE": 98,
+          "LATIN_AMERICA": 47,
+          "AFRICA": 31,
+          "OCEANIA": 17
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "6101574",
+      "url": "https://api.gbif.org/v1/species/6101574/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "6101574",
+      "url": "https://api.gbif.org/v1/species/6101574/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Taenia saginata adult 5260 lores.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Taenia_saginata_adult_5260_lores.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Gravid proglottid from the cestode Taenia saginata 5259 lores.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gravid_proglottid_from_the_cestode_Taenia_saginata_5259_lores.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Taenia saginata adult 5260 lores.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Taenia_saginata_adult_5260_lores.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:14.445Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:14.445Z"
+}

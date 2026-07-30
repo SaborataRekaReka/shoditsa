@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:natrix-natrix",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "обыкновенный уж",
+    "commonNameEn": "Natrix natrix",
+    "scientificName": "Natrix natrix",
+    "acceptedScientificName": "Natrix natrix",
+    "aliasesRu": [
+      "Natrix natrix",
+      "уж обыкновенный",
+      "Obyknovennyi Uzh",
+      "Обыкновенный уж",
+      "Персидский уж"
+    ],
+    "wikidataId": "Q170713",
+    "gbifKey": 6161347,
+    "hagrid": "03372"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Squamata",
+    "family": "Colubridae",
+    "genus": "Natrix",
+    "species": "Natrix natrix",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk",
+      "crawl"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.09625,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 20,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 1460,
+      "male": 1460
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:2017.07.17.-17-Tiefer See oder Grubensee-Storkow (Mark)--Ringelnatter.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f6/2017.07.17.-17-Tiefer_See_oder_Grubensee-Storkow_%28Mark%29--Ringelnatter.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Natrix natrix distribution updated (cropped).png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Natrix_natrix_distribution_updated_(cropped).png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Natrix_natrix_distribution_updated_%28cropped%29.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "File:Mapa Natrix natrix.png : Osado derivative work: Paranaja",
+        "credit": "This file was derived from: Mapa Natrix natrix.png :",
+        "description": "Natrix natrix range map.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:43.730Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:2017.07.17.-17-Tiefer See oder Grubensee-Storkow (Mark)--Ringelnatter.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:2017.07.17.-17-Tiefer_See_oder_Grubensee-Storkow_(Mark)--Ringelnatter.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f6/2017.07.17.-17-Tiefer_See_oder_Grubensee-Storkow_%28Mark%29--Ringelnatter.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Andreas Eichler",
+      "credit": "Own work",
+      "description": "Grass snake - Natrix natrix. Taken by the Tiefen See or Grubensee, Storkow (Mark), Brandenburg, Germany.",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:38:43.730Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 77,
+    "ruWikipediaTitle": "Обыкновенный уж",
+    "ruWikipediaPageviews365d": 71686,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 76.83,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 62.97,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q170713",
+      "url": "https://www.wikidata.org/wiki/Q170713",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенный уж",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D1%83%D0%B6/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "6161347",
+      "url": "https://www.gbif.org/species/6161347",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Natrix natrix (Linnaeus, 1758)",
+        "gbifSourceClass": "Squamata",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "6161347",
+      "url": "https://www.gbif.org/species/6161347",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "6161347",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=6161347&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 149685,
+          "ASIA": 151,
+          "AFRICA": 20,
+          "NORTH_AMERICA": 5
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "6161347",
+      "url": "https://api.gbif.org/v1/species/6161347/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03372",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "451",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:2017.07.17.-17-Tiefer See oder Grubensee-Storkow (Mark)--Ringelnatter.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:2017.07.17.-17-Tiefer_See_oder_Grubensee-Storkow_(Mark)--Ringelnatter.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Natrix natrix distribution updated (cropped).png",
+      "url": "https://commons.wikimedia.org/wiki/File:Natrix_natrix_distribution_updated_(cropped).png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:2017.07.17.-17-Tiefer See oder Grubensee-Storkow (Mark)--Ringelnatter.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:2017.07.17.-17-Tiefer_See_oder_Grubensee-Storkow_(Mark)--Ringelnatter.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:38:43.730Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:38:43.730Z"
+}

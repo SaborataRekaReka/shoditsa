@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:atretochoana-eiselti",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Atretochoana eiselti",
+    "commonNameEn": "Atretochoana eiselti",
+    "scientificName": "Atretochoana eiselti",
+    "acceptedScientificName": "Atretochoana eiselti",
+    "aliasesRu": [
+      "Червяга Айзельта"
+    ],
+    "wikidataId": "Q1916885",
+    "gbifKey": 2430995,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Amphibia",
+    "order": "Gymnophiona",
+    "family": "Typhlonectidae",
+    "genus": "Atretochoana",
+    "species": "Atretochoana eiselti",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Amphibia",
+    "bodyCoverings": [
+      "moist-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk",
+      "jump"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q3245245",
+      "statusLabelRu": "данных недостаточно",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Atretochoana eiselti.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Atretochoana_eiselti.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Atretochoana eiselti.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Atretochoana_eiselti.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Atretochoana_eiselti.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Tobias von Anhalt",
+      "credit": "http://www.blog.illustraciencia.info/2015/05/atretochoana-eiselti-tobias-von-anhalt.html",
+      "description": "Atretochoana eiselti is a species of caecilian known only from two preserved specimens discovered by Sir Graham Hales in the Brazilian rainforest, while on an expedition with Sir Brian Doll in the late 1800's. This being until its 2011 rediscovery in Brazil by engineers working on a Hydroelectric dam project. Until 1998, it was known only from the type specimen in the Naturhistorisches Museum, Vienna. Originally placed in the genus Typhlonectes in 1968, it was reclassified into its own monotypic genus, Atretochoana, in 1996. It was also found to be more closely related to the genus Potomotyphlus than Typholonectes. The species is the largest of the few known tetrapods, and one of two caecilians, to lack lungs, the other being Caecilita iwokramae. A. eiselti is the largest tetrapod to lack lungs, double the size of the next largest. Caecilians such as Atretochoana are limbless amphibians with snake-like bodies, marked with rings like those of earthworms. It has significant morphological differences from other caecilians, even the genera most closely related to it, even though those genera are aquatic. The skull is very different from those of other caecilians, giving the animal a broad, flat head. Its nostrils are sealed, and it has an enlarged mouth with a mobile cheek. Its body has a fleshy dorsal fin. Most caecilians have a well-developed right lung and a vestigial left lung. Some, such as Atretochoana‍ '​s relatives, have two well-developed lungs. Atretochoana, however, entirely lacks lungs, and has a number of other features associated with lunglessness, including sealed choanae, and an absence of pulmonary arteries. Its skin is filled with capillaries that penetrate the epidermis, allowing gas exchange. Its skull shows evidence of muscles not found in any other organism. The Vienna specimen of Atretochoana is a large caecilian at a length of 72.5 cm, while the Brasília specimen is larger still at 80.5 cm. By comparison, caecilians range in length from 11 to 160 cm.",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:15.341Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 26,
+    "ruWikipediaTitle": "Червяга Айзельта",
+    "ruWikipediaPageviews365d": 8529,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 60.94,
+    "playabilityScore": 56.2,
+    "distinctivenessScore": 20,
+    "delightScore": 0,
+    "totalScore": 47.9,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Atretochoana eiselti"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q1916885",
+      "url": "https://www.wikidata.org/wiki/Q1916885",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Червяга Айзельта",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A7%D0%B5%D1%80%D0%B2%D1%8F%D0%B3%D0%B0_%D0%90%D0%B9%D0%B7%D0%B5%D0%BB%D1%8C%D1%82%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q3245245",
+      "url": "https://www.wikidata.org/wiki/Q3245245",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2430995",
+      "url": "https://www.gbif.org/species/2430995",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Atretochoana eiselti (Taylor, 1968)",
+        "gbifSourceClass": "Amphibia",
+        "normalizedGameClass": "Amphibia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2430995",
+      "url": "https://www.gbif.org/species/2430995",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2430995",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2430995&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 14
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2430995",
+      "url": "https://api.gbif.org/v1/species/2430995/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2430995",
+      "url": "https://api.gbif.org/v1/species/2430995/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Atretochoana eiselti.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Atretochoana_eiselti.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Atretochoana eiselti.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Atretochoana_eiselti.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:15.341Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:15.341Z"
+}

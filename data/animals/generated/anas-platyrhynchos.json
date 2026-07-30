@@ -1,0 +1,615 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:anas-platyrhynchos",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "кряква",
+    "commonNameEn": "mallard",
+    "scientificName": "Anas platyrhynchos",
+    "acceptedScientificName": "Anas platyrhynchos",
+    "aliasesRu": [
+      "Anas platyrhynchos",
+      "кряквы"
+    ],
+    "wikidataId": "Q25348",
+    "gbifKey": 9761484,
+    "hagrid": "00301"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Anseriformes",
+    "family": "Anatidae",
+    "genus": "Anas",
+    "species": "Anas platyrhynchos",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [
+      "freshwater",
+      "terrestrial",
+      "marine",
+      "brackish"
+    ],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "north-america",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "omnivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.84342,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 29.1,
+      "maximumObservedContext": "unknown"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 365,
+      "male": 365
+    },
+    "gestationOrIncubationDays": 26,
+    "litterOrClutchSize": 9
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 40,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 10,
+      "fish": 10,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 20,
+      "otherPlants": 20
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Anas platyrhynchos (Male) on the ground.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Anas_platyrhynchos_%28Male%29_on_the_ground.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:AnasPlatyrhynchosIUCN2019 2.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:AnasPlatyrhynchosIUCN2019_2.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8d/AnasPlatyrhynchosIUCN2019_2.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "SanoAK : Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vetor and raster map data @ naturalearthdata.com. Range map from BirdLife International 2017. Anas platyrhynchos (amended version of 2016 assessment). The IUCN Red List of Threatened Species 2017: e.T22680186A119275821. https://dx.doi.org/10.2305/IUCN.UK.2017-3.RLTS.T22680186A119275821.en . Downloaded on 15 August 2019 as visual indicator of distribution.",
+        "description": "Distribution map of Mallard Anas platyrhynchos according to IUCN version 2019-2 ; key: Legend: Extant, breeding (#00FF00) , Extant, resident (#008000) , Extant, passage (#00FFFF) , Extant, non-breeding (#007FFF) , Extant & Vagrant (seasonality uncertain) (#FF00FF) , Probably extinct & Introduced (#FF80FF) , Extant & Introduced (seasonality uncertain) (#a76f3b) , Possibly Extant & Introduced (seasonality uncertain) (#DFDF00)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:32.948Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Anas platyrhynchos (Male) on the ground.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_(Male)_on_the_ground.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Anas_platyrhynchos_%28Male%29_on_the_ground.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Commonists",
+      "credit": "Own work",
+      "description": "Anas platyrhynchos (male) .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:32.948Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Anas platyrhynchos (mixed pair) (32428014687).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_(mixed_pair)_(32428014687).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Anas_platyrhynchos_%28mixed_pair%29_%2832428014687%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Rolf Dietrich Brecher from Germany",
+        "credit": "P1092899",
+        "description": "With Zuiko 2.8/40-150",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:32.948Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Anas platyrhynchos near City Lake, Ivano-Frankivsk.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_near_City_Lake,_Ivano-Frankivsk.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Anas_platyrhynchos_near_City_Lake%2C_Ivano-Frankivsk.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Tetiana.iefimenko",
+        "credit": "Own work",
+        "description": "The photo represents female mallard (Anas platyrhynchos) with ducklings near City Lake, Ivano-Frankivsk, Urkaine. The photo was taken on June 8, 2020",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:32.948Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 134,
+    "ruWikipediaTitle": "Кряква",
+    "ruWikipediaPageviews365d": 70617,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 79.77,
+    "playabilityScore": 88.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 70.32,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 100,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q25348",
+      "url": "https://www.wikidata.org/wiki/Q25348",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Кряква",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9A%D1%80%D1%8F%D0%BA%D0%B2%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "9761484",
+      "url": "https://www.gbif.org/species/9761484",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Anas platyrhynchos Linnaeus, 1758",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "9761484",
+      "url": "https://www.gbif.org/species/9761484",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "9761484",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=9761484&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 23521432,
+          "EUROPE": 9107435,
+          "ASIA": 260239,
+          "OCEANIA": 226058,
+          "LATIN_AMERICA": 31775,
+          "AFRICA": 22321
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9761484",
+      "url": "https://api.gbif.org/v1/species/9761484/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "9761484",
+      "url": "https://api.gbif.org/v1/species/9761484/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - South Africa"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Nepal"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Brazil"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cayman Islands"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Grand Cayman, Cayman Islands"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bhutan"
+          },
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - New Caledonia, France"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Nigeria"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Barbados"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Senegal"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Zambia"
+          },
+          {
+            "habitat": "Freshwater|Marine",
+            "source": "Global Register of Introduced and Invasive Species - Djibouti"
+          },
+          {
+            "habitat": "freshwater|brackish|marine",
+            "source": "Global Register of Introduced and Invasive Species - New Zealand"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Global Register of Introduced and Invasive Species – Falkland Islands (Islas Malvinas)"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Bontebok National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Garden Route National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Golden Gate Highlands National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Table Mountain National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Tankwa-Karoo National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - West Coast National Park, South Africa"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Galápagos Islands, Ecuador"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater|Marine"
+          },
+          {
+            "habitat": "Terrestrial|Freshwater"
+          },
+          {
+            "habitat": "AGUA_DOCE;TERRESTRE",
+            "source": "Catálogo Taxonômico da Fauna do Brasil"
+          },
+          {
+            "habitat": "terrestrial|freshwater|brackish|marine",
+            "source": "Global Register of Introduced and Invasive Species - Australia"
+          },
+          {
+            "habitat": "terrestrial|freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Mauritius"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Anas platyrhynchos",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "00301",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "",
+        "specimenOrigin": "unknown",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Anas platyrhynchos (Male) on the ground.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_(Male)_on_the_ground.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Anas platyrhynchos (mixed pair) (32428014687).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_(mixed_pair)_(32428014687).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Anas platyrhynchos near City Lake, Ivano-Frankivsk.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_near_City_Lake,_Ivano-Frankivsk.jpg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:AnasPlatyrhynchosIUCN2019 2.png",
+      "url": "https://commons.wikimedia.org/wiki/File:AnasPlatyrhynchosIUCN2019_2.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Anas platyrhynchos (Male) on the ground.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_(Male)_on_the_ground.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:32.948Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:32.948Z"
+}

@@ -24,6 +24,6 @@ export const gameExperienceForSession = (
 }
 
 export const catalogActiveSessions = (sessions: ActiveSessionSummary[]) =>
-  sessions.filter((session): session is ActiveSessionSummary & { mode: Extract<ActiveSessionSummary['mode'], 'movie' | 'series' | 'anime' | 'game' | 'city' | 'music' | 'diagnosis'> } => (
+  sessions.filter((session): session is ActiveSessionSummary & { mode: Extract<ActiveSessionSummary['mode'], 'movie' | 'series' | 'anime' | 'game' | 'city' | 'music' | 'diagnosis' | 'animal'> } => (
     session.kind !== 'pack' && isCatalogGuessModeId(session.mode)
   ))

@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:astur-gentilis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Ястреб-тетеревятник",
+    "commonNameEn": "Eurasian Goshawk",
+    "scientificName": "Astur gentilis",
+    "acceptedScientificName": "Astur",
+    "aliasesRu": [],
+    "wikidataId": "Q137474876",
+    "gbifKey": 3242735,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Accipitriformes",
+    "family": "Accipitridae",
+    "genus": "Astur",
+    "species": "",
+    "rank": "GENUS",
+    "status": "DOUBTFUL",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "north-america",
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Accipiter gentilis - Northern Goshawk XC124806.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Accipiter_gentilis_-_Northern_Goshawk_XC124806.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Accipiter_gentilis_-_Northern_Goshawk_XC124806.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Adrienne Eaton",
+        "credit": "Metadata: http://xeno-canto.org/124806 Audio file: http://www.xeno-canto.org/download.php?XC=124806",
+        "description": "This file has been filtered for street noise. The hawk was perched high in an oak tree near a path in the Tiergarten. It was eating another bird that it had caught (perhaps a pigeon?) and occasionally exchanging calls with another hawk nearby. Feathers from its prey were falling to the ground. The day was sunny and very cold, with snow on the ground. bird-seen:yes playback-used:no Common name: Northern Goshawk Type: call Genus: Accipiter Species: gentilis Location: Berlin, Berlin Elevation: 30 m",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:33.987Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Northern Goshawk ad M2.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Northern_Goshawk_ad_M2.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:AccipiterGentilis.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:AccipiterGentilis.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/AccipiterGentilis.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "SanoAK: Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com. Range map from BirdLife International 2016. Accipiter gentilis. The IUCN Red List of Threatened Species 2016: e.T22695683A93522852. https://dx.doi.org/10.2305/IUCN.UK.2016-3.RLTS.T22695683A93522852.en . Downloaded on 29 January 2019 as visual indicator of distribution.",
+        "description": "Distribution map of Eurasian Goshawk Accipiter gentilis according to IUCN version 2018.2 (map 2016.3), updated to IOC 13.2 (2023) to cover split of American Goshawk A. atricapillus Legend: Extant, resident (#008000) , Extant, non-breeding (#007FFF)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:33.987Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Northern Goshawk ad M2.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Northern_Goshawk_ad_M2.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Northern_Goshawk_ad_M2.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Norbert Kenntner, Berlin",
+      "credit": "Own work",
+      "description": "Northern Goshawk Accipiter gentilis gentilis , adult male, Berlin, Bezirk (district) Schöneberg, March 2006",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:33.987Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 103,
+    "ruWikipediaTitle": "Ястреб-тетеревятник",
+    "ruWikipediaPageviews365d": 34022,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 74.88,
+    "playabilityScore": 67.4,
+    "distinctivenessScore": 40,
+    "delightScore": 28.57,
+    "totalScore": 63.05,
+    "difficulty": "easy",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "EltonTraits has no exact row for Astur gentilis",
+      "AnAge has no exact row for Astur gentilis"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q137474876",
+      "url": "https://www.wikidata.org/wiki/Q137474876",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Ястреб-тетеревятник",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%AF%D1%81%D1%82%D1%80%D0%B5%D0%B1-%D1%82%D0%B5%D1%82%D0%B5%D1%80%D0%B5%D0%B2%D1%8F%D1%82%D0%BD%D0%B8%D0%BA/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "3242735",
+      "url": "https://www.gbif.org/species/3242735",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "species/match (HIGHERRANK, confidence 92)",
+      "confidence": 0.92,
+      "raw": {
+        "matchType": "HIGHERRANK",
+        "scientificName": "Astur Lacepède, 1799",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "3242735",
+      "url": "https://www.gbif.org/species/3242735",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "3242735",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=3242735&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 4248677,
+          "EUROPE": 635757,
+          "LATIN_AMERICA": 80225,
+          "AFRICA": 15545,
+          "ASIA": 6929
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "3242735",
+      "url": "https://api.gbif.org/v1/species/3242735/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Northern Goshawk ad M2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Northern_Goshawk_ad_M2.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Accipiter gentilis - Northern Goshawk XC124806.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Accipiter_gentilis_-_Northern_Goshawk_XC124806.ogg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:AccipiterGentilis.png",
+      "url": "https://commons.wikimedia.org/wiki/File:AccipiterGentilis.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Northern Goshawk ad M2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Northern_Goshawk_ad_M2.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:33.987Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:33.987Z"
+}

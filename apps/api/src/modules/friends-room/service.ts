@@ -72,6 +72,7 @@ const modePrompt: Record<CatalogGuessModeId, string> = {
   city: 'Какой город соответствует этим подсказкам?',
   music: 'Какой исполнитель соответствует этим подсказкам?',
   diagnosis: 'Какой диагноз соответствует этим признакам?',
+  animal: 'Какое животное соответствует этим признакам?',
 }
 
 const clean = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
@@ -88,6 +89,8 @@ export const buildFriendsRoomHints = (item: TitleItem): string[] => {
         ? [hint('Начало карьеры', item.activityStartYear), hint('Страны', list(item.countries?.map(localizeMusicCountry))), hint('Жанры', list(item.genres?.map(canonicalMusicGenreLabel), 3)), hint('Известный трек', item.topTracks?.[0]?.title)]
         : item.mode === 'diagnosis'
           ? [hint('Системы организма', list(item.bodySystems, 2)), hint('Симптомы', list(item.keySymptoms, 3)), hint('Диагностика', first(item.diagnostics)), hint('Группа МКБ', item.icdGroup)]
+          : item.mode === 'animal'
+            ? [hint('Класс', item.taxonomicClass), hint('Отряд', item.animalOrder), hint('Среда', list(item.habitats, 2)), hint('Ареал', list(item.animalContinents, 3))]
           : item.mode === 'anime'
             ? [hint('Год', item.year), hint('Формат', item.animeKind), hint('Студия', first(item.studios)), hint('Жанры', list(item.genres, 3))]
             : [hint('Год', item.year), hint('Страны', list(item.countries)), hint('Жанры', list(item.genres, 3)), hint(item.mode === 'series' ? 'Создатели' : 'Режиссёр', first(item.mode === 'series' ? item.showrunners?.map((person) => person.nameRu || person.nameOriginal) : item.directors?.map((person) => person.nameRu || person.nameOriginal)))]

@@ -66,10 +66,10 @@ describe('daily hub ticket states', () => {
     expect(state.activeGamesByMode.music).toBeUndefined()
   })
 
-  it('keeps Connections outside the seven-game main route', () => {
+  it('keeps Connections outside the eight-game main route', () => {
     const state = buildDailyHubState(attendance, [], 'movie')
 
-    expect(state.dailyModes).toHaveLength(7)
+    expect(state.dailyModes).toHaveLength(8)
     expect(state.dailyModes).not.toContain('connections')
     expect(state.completedModes).not.toContain('connections')
     expect(state.completedCount).toBe(0)

@@ -1,0 +1,848 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:orcinus-orca",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "косатка",
+    "commonNameEn": "Orcinus orca",
+    "scientificName": "Orcinus orca",
+    "acceptedScientificName": "Orcinus orca",
+    "aliasesRu": [
+      "Orcinus orca",
+      "Orca orca",
+      "касатка",
+      "косатки",
+      "kasatka",
+      "kosatka"
+    ],
+    "wikidataId": "Q26843",
+    "gbifKey": 2440483,
+    "hagrid": "02295"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Cetacea",
+    "family": "Delphinidae",
+    "genus": "Orcinus",
+    "species": "Orcinus orca",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "smooth-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "north-america",
+      "europe",
+      "antarctica"
+    ],
+    "climateZones": [],
+    "diets": [
+      "carnivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular",
+      "diurnal"
+    ],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 4300,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 90,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 3780,
+      "male": 4930
+    },
+    "gestationOrIncubationDays": 435,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 25,
+      "endothermicVertebrates": 50,
+      "ectothermicVertebrates": 0,
+      "fish": 25,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "marine",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Liparis tunicatus",
+          "externalId": "COL:3V9WF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Monodon monoceros",
+          "externalId": "COL:446SX",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Odobenus rosmarus",
+          "externalId": "FBC:SLB:SpecCode:68962",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Anarhichas lupus",
+          "externalId": "FBC:FB:SpecCode:2501",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Delphinapterus leucas",
+          "externalId": "COL:34HXS",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hippoglossoides platessoides",
+          "externalId": "COL:3M25H",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pholis gunnellus",
+          "externalId": "FBC:FB:SpecCode:3804",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Salvelinus alpinus",
+          "externalId": "EOL:1156463",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mallotus villosus",
+          "externalId": "COL:3XQ45",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sebastes marinus",
+          "externalId": "COL:4W7N6",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gadus morhua",
+          "externalId": "FBC:FB:SpecCode:69",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Megaptera novaeangliae",
+          "externalId": "COL:3YWY2",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gadus macrocephalus",
+          "externalId": "COL:6JV2L",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Oncorhynchus tshawytscha",
+          "externalId": "FBC:FB:SpecCode:244",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sebastes ruberrimus",
+          "externalId": "WD:Q4847126",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Oncorhynchus kisutch",
+          "externalId": "COL:49JF8",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Oncorhynchus keta",
+          "externalId": "ITIS:161976",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Microstomus pacificus",
+          "externalId": "ITIS:172887",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Glyptocephalus zachirus",
+          "externalId": "ITIS:172978",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Clupea pallasii",
+          "externalId": "ITIS:551209",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Parophrys vetulus",
+          "externalId": "ITIS:172921",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Oncorhynchus nerka",
+          "externalId": "ITIS:161979",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Leptocottus armatus",
+          "externalId": "ITIS:167302",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Platichthys stellatus",
+          "externalId": "ITIS:172893",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Oncorhynchus gorbuscha",
+          "externalId": "ITIS:161975",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Hippoglossus stenolepis",
+          "externalId": "ITIS:172932",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ophiodon elongatus",
+          "externalId": "ITIS:167116",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Pleuronichthys decurrens",
+          "externalId": "ITIS:172924",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Dissostichus mawsoni",
+          "externalId": "COL:36W7V",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Myoxocephalus polyacanthocephalus",
+          "externalId": "WD:Q2662737",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Canis lupus",
+          "externalId": "GBIF:5219173",
+          "studyTitle": null,
+          "interactionType": "preysOn",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Canis lupus dingo",
+          "externalId": "NCBI:286419",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Homo sapiens",
+          "externalId": "ITIS:180092",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q3245245",
+      "statusLabelRu": "данных недостаточно",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Killer whale.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Killer_whale.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/79/Killer_whale.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "",
+        "description": "",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:10.686Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Killerwhales jumping.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Killerwhales_jumping.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Orca range.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Orca_range.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/Orca_range.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "M.Bitton",
+        "credit": "Own work based on: data from the IUCN Red List of Threatened Species",
+        "description": "Map showing the range of the orca (Orcinus orca)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:10.686Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Killerwhales jumping.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Killerwhales_jumping.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Killerwhales_jumping.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Robert Pittman",
+      "credit": "NOAA ( http://www.afsc.noaa.gov/Quarterly/amj2005/divrptsNMML3.htm ])",
+      "description": "Kardszárnyú delfin",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:33:10.686Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Killer Whale Types.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Killer_Whale_Types.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/84/Killer_Whale_Types.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Albino.orca",
+        "credit": "Own work",
+        "description": "Known types of Killer Whale",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:10.686Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Anim1133 - Flickr - NOAA Photo Library.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Anim1133_-_Flickr_-_NOAA_Photo_Library.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Anim1133_-_Flickr_-_NOAA_Photo_Library.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Allen Shimada NOAA/NMFS/OST/AMD.",
+        "credit": "NOAA Photo Library : anim1133",
+        "description": "Killer Whale.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:10.686Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Type C Orcas 2.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Type_C_Orcas_2.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Type_C_Orcas_2.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Photo by Robert Pitman.",
+        "credit": "From http://www.usap.gov/scienceSupport/sciencePlanningSummaries/2004_2005/indiv_projs/B289.htm . Taken by a U.S. Federal Government employee. Public domain. The high-resolution version of the file was provided by the photographer, in response to an e-mail request from User:Clayoquot .",
+        "description": "Mother-calf pair of \"Type C\" killer whales in the Ross Sea. Type C killer whales are smaller and occur in larger groups than killer whales found throughout the rest of the world. They prefer fast ice, are known to eat fish, including Antarctic toothfish, and may be a separate species.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:10.686Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:202402 Killer whale.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:202402_Killer_whale.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e9/202402_Killer_whale.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "DataBase Center for Life Science (DBCLS)",
+        "credit": "https://doi.org/10.7875/togopic.2024.019",
+        "description": "killer whale",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:33:10.686Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 115,
+    "ruWikipediaTitle": "Косатка (млекопитающее)",
+    "ruWikipediaPageviews365d": 303216,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 85.84,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 76.06,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q26843",
+      "url": "https://www.wikidata.org/wiki/Q26843",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Косатка (млекопитающее)",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9A%D0%BE%D1%81%D0%B0%D1%82%D0%BA%D0%B0_(%D0%BC%D0%BB%D0%B5%D0%BA%D0%BE%D0%BF%D0%B8%D1%82%D0%B0%D1%8E%D1%89%D0%B5%D0%B5)/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q3245245",
+      "url": "https://www.wikidata.org/wiki/Q3245245",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2440483",
+      "url": "https://www.gbif.org/species/2440483",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Orcinus orca (Linnaeus, 1758)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2440483",
+      "url": "https://www.gbif.org/species/2440483",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2440483",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2440483&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "NORTH_AMERICA": 19726,
+          "EUROPE": 7887,
+          "ANTARCTICA": 5092,
+          "LATIN_AMERICA": 2982,
+          "OCEANIA": 2603,
+          "AFRICA": 475,
+          "ASIA": 182
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2440483",
+      "url": "https://api.gbif.org/v1/species/2440483/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2440483",
+      "url": "https://api.gbif.org/v1/species/2440483/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Orcinus orca",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "D2",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02295",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "784",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Orcinus orca",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Orcinus%20orca&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Orcinus orca",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Orcinus%20orca&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Killerwhales jumping.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Killerwhales_jumping.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Killer Whale Types.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Killer_Whale_Types.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Anim1133 - Flickr - NOAA Photo Library.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Anim1133_-_Flickr_-_NOAA_Photo_Library.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Type C Orcas 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Type_C_Orcas_2.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:202402 Killer whale.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:202402_Killer_whale.svg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Killer whale.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Killer_whale.ogg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Orca range.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Orca_range.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Killerwhales jumping.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Killerwhales_jumping.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:33:10.686Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:33:10.686Z"
+}

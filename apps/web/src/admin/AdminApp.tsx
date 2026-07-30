@@ -45,7 +45,7 @@ const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admi
 
 const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
-  { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' },
+  { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' }, { value: 'animal', label: 'Животные' },
   { value: 'danetki', label: 'Данетки' }, { value: 'connections', label: 'Связи' },
 ]
 const MODE_LABEL = Object.fromEntries(MODES.map((mode) => [mode.value, mode.label])) as Record<ContentMode, string>
@@ -794,6 +794,14 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Население', ['population']],
       ['Часовой пояс', ['timezone']],
       ['Столица', ['capital']],
+    ],
+    animal: [
+      ['Класс', ['taxonomicClass']],
+      ['Отряд', ['animalOrder']],
+      ['Семейство', ['animalFamily']],
+      ['Среда', ['habitats']],
+      ['Ареал', ['animalContinents']],
+      ['Питание', ['diets']],
     ],
     danetki: [
       ['Условие', ['condition']],
@@ -2732,6 +2740,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
+  animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'bodyCoverings', 'habitats', 'animalContinents', 'diets', 'locomotion', 'reproduction', 'legCount', 'bodyMassKg', 'soundUrl', 'silhouetteUrl', 'rangeMapUrl', 'mediaAttribution'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['locale', 'difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'popularityScore'],
 }

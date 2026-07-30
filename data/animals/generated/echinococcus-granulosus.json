@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:echinococcus-granulosus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "эхинококк",
+    "commonNameEn": "Echinococcus granulosus",
+    "scientificName": "Echinococcus granulosus",
+    "acceptedScientificName": "Echinococcus granulosus",
+    "aliasesRu": [
+      "Echinococcus granulosus",
+      "Эхинококк"
+    ],
+    "wikidataId": "Q630200",
+    "gbifKey": 5817851,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Platyhelminthes",
+    "taxonomicClass": "Cestoda",
+    "order": "Cyclophyllidea",
+    "family": "Taeniidae",
+    "genus": "Echinococcus",
+    "species": "Echinococcus granulosus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Cestoda",
+    "bodyCoverings": [],
+    "habitats": [],
+    "lifestyles": [],
+    "continents": [
+      "asia",
+      "europe",
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [],
+    "sizeCategory": "",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Echinococcus granulosus scolex.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Echinococcus_granulosus_scolex.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "Public domain",
+        "attributionRequired": false
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Echinococcus granulosus distribution map.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Echinococcus_granulosus_distribution_map.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Echinococcus_granulosus_distribution_map.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Izvora",
+        "credit": "http://www.isradiology.org/tropical_deseases/tmcr/chapter3/geographic.htm",
+        "description": "Echinococcus granulosus distribution map",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:22.985Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Echinococcus granulosus scolex.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Echinococcus_granulosus_scolex.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Echinococcus_granulosus_scolex.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "CDC/Dr. L.L.A. Moore, Jr",
+      "credit": "CDC's Public Health Image Library (PHIL) Image #583",
+      "description": "Protoscolex of Echinococcus granulosus from hydatid cyst. Parasite.",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:22.985Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 35,
+    "ruWikipediaTitle": "Эхинококк",
+    "ruWikipediaPageviews365d": 13439,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 64.67,
+    "playabilityScore": 34.8,
+    "distinctivenessScore": 20,
+    "delightScore": 14.29,
+    "totalScore": 43.33,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 25,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Echinococcus granulosus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q630200",
+      "url": "https://www.wikidata.org/wiki/Q630200",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Эхинококк",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%AD%D1%85%D0%B8%D0%BD%D0%BE%D0%BA%D0%BE%D0%BA%D0%BA/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5817851",
+      "url": "https://www.gbif.org/species/5817851",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Echinococcus granulosus (Batsch, 1786)",
+        "gbifSourceClass": "Cestoda",
+        "normalizedGameClass": "Cestoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5817851",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5817851&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 3613,
+          "EUROPE": 2218,
+          "AFRICA": 682,
+          "LATIN_AMERICA": 317,
+          "NORTH_AMERICA": 208,
+          "OCEANIA": 11
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5817851",
+      "url": "https://api.gbif.org/v1/species/5817851/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5817851",
+      "url": "https://api.gbif.org/v1/species/5817851/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Echinococcus granulosus scolex.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Echinococcus_granulosus_scolex.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Echinococcus granulosus distribution map.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Echinococcus_granulosus_distribution_map.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Echinococcus granulosus scolex.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Echinococcus_granulosus_scolex.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:22.985Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:22.985Z"
+}

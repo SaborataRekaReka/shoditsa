@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:mytilus-edulis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Мидия съедобная",
+    "commonNameEn": "Mytilus edulis",
+    "scientificName": "Mytilus edulis",
+    "acceptedScientificName": "Mytilus edulis",
+    "aliasesRu": [
+      "Mytilus edulis",
+      "midiya",
+      "Мидия съедобная"
+    ],
+    "wikidataId": "Q27855",
+    "gbifKey": 8288896,
+    "hagrid": "04615"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Mollusca",
+    "taxonomicClass": "Bivalvia",
+    "order": "Mytilida",
+    "family": "Mytilidae",
+    "genus": "Mytilus",
+    "species": "Mytilus edulis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Bivalvia",
+    "bodyCoverings": [
+      "soft-body",
+      "shell"
+    ],
+    "habitats": [
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "limited-movement"
+    ],
+    "sizeCategory": "tiny",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 24,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 0,
+      "male": 0
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Miesmuscheln Mytilus 2.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/82/Miesmuscheln_Mytilus_2.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Miesmuscheln Mytilus 2.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Miesmuscheln_Mytilus_2.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/82/Miesmuscheln_Mytilus_2.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Benutzer:Darkone , 26. Oktober 2003",
+      "credit": "Own work",
+      "description": "Miesmuscheln - empty shell of blue mussel ( Mytilus edulis ) washed up on a beach",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:27.709Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 46,
+    "ruWikipediaTitle": "Съедобная мидия",
+    "ruWikipediaPageviews365d": 7176,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 63.15,
+    "playabilityScore": 74.2,
+    "distinctivenessScore": 20,
+    "delightScore": 28.57,
+    "totalScore": 57.24,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q27855",
+      "url": "https://www.wikidata.org/wiki/Q27855",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Съедобная мидия",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D1%8A%D0%B5%D0%B4%D0%BE%D0%B1%D0%BD%D0%B0%D1%8F_%D0%BC%D0%B8%D0%B4%D0%B8%D1%8F/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "8288896",
+      "url": "https://www.gbif.org/species/8288896",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Mytilus edulis Linnaeus, 1758",
+        "gbifSourceClass": "Bivalvia",
+        "normalizedGameClass": "Bivalvia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "8288896",
+      "url": "https://www.gbif.org/species/8288896",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "8288896",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=8288896&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 212360,
+          "NORTH_AMERICA": 23870,
+          "LATIN_AMERICA": 381,
+          "ASIA": 304,
+          "OCEANIA": 66,
+          "AFRICA": 48
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "8288896",
+      "url": "https://api.gbif.org/v1/species/8288896/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "8288896",
+      "url": "https://api.gbif.org/v1/species/8288896/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "Marine",
+            "source": "Global Register of Introduced and Invasive Species - Portugal"
+          },
+          {
+            "habitat": "Marine",
+            "source": "Global Register of Introduced and Invasive Species - Azores, Portugal"
+          },
+          {
+            "habitat": "Marine",
+            "source": "Global Register of Introduced and Invasive Species - Turkey"
+          },
+          {
+            "habitat": "marine",
+            "source": "Global Register of Introduced and Invasive Species - Ukraine"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "8288896",
+      "url": "https://api.gbif.org/v1/species/8288896/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "04615",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1307",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Miesmuscheln Mytilus 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Miesmuscheln_Mytilus_2.jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Miesmuscheln Mytilus 2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Miesmuscheln_Mytilus_2.jpg",
+      "license": "CC BY-SA 2.0",
+      "retrievedAt": "2026-07-30T19:40:27.709Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.locomotion"
+      ],
+      "source": "Existing sourced taxonomy/habitat + project normalization rules",
+      "sourceId": "8288896",
+      "url": "https://www.gbif.org/species/8288896",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:47:45.535Z",
+      "method": "deterministic class/order/family and habitat-to-lifestyle rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:27.709Z"
+}

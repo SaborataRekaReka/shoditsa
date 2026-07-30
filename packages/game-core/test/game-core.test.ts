@@ -392,6 +392,19 @@ describe('deterministic rules', () => {
     expect(compareTitles({ ...popular, languages: ['Нет данных'] }, capital).find((hint) => hint.key === 'languages'))
       .toMatchObject({ value: 'Нет данных', status: 'unknown', direction: null })
   })
+  it('loads the complete animal roster and compares its criteria through the shared mode registry', () => {
+    const animals = JSON.parse(readFileSync(new URL('../../../public/data/libraries/animals/items.json', import.meta.url), 'utf8')) as TitleItem[]
+    const lion = animals.find((item) => item.id === 'animal:lion')!
+    const wolf = animals.find((item) => item.id === 'animal:canis-lupus')!
+    const hints = compareTitles(wolf, lion)
+
+    expect(animals).toHaveLength(300)
+    expect(titleSearchNames(lion)).toContain('Panthera leo')
+    expect(hints.find((hint) => hint.key === 'animal_class')).toMatchObject({ status: 'match' })
+    expect(hints.find((hint) => hint.key === 'animal_order')).toMatchObject({ status: 'match' })
+    expect(hints.find((hint) => hint.key === 'animal_family')).toMatchObject({ status: 'miss' })
+    expect(hints.find((hint) => hint.key === 'body_mass')).toMatchObject({ direction: 'up' })
+  })
   it('requires an explicit opt-in before including promo cards in the regular games pool', () => {
     const regular = {
       id: 'tgdb_1',

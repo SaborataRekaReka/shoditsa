@@ -1,0 +1,174 @@
+{
+  "id": "animal:lion",
+  "wikidataId": "Q140",
+  "scientificName": "Panthera leo",
+  "wordstatMonthlySearches": null,
+  "editorial": {
+    "soundType": "roar",
+    "criteria": {
+      "bodyCoverings": [
+        "fur"
+      ],
+      "habitats": [
+        "savanna",
+        "grassland",
+        "open-woodland"
+      ],
+      "lifestyles": [
+        "terrestrial"
+      ],
+      "continents": [
+        "africa",
+        "asia"
+      ],
+      "climateZones": [
+        "tropical",
+        "subtropical"
+      ],
+      "locomotion": [
+        "walk",
+        "run"
+      ],
+      "reproduction": "live-birth",
+      "sociality": [
+        "pride"
+      ],
+      "legCount": 4,
+      "thermoregulation": "endothermic",
+      "migration": "non-migratory",
+      "relationToHumans": [
+        "wild"
+      ]
+    },
+    "hints": {
+      "distinctiveTraitsRu": [
+        "Самцы обычно имеют заметную гриву.",
+        "Живёт социальными группами, которые называют прайдами."
+      ],
+      "defensesRu": [
+        "Защищается мощными челюстями и когтями."
+      ],
+      "sensesRu": [
+        "Хорошо видит при слабом освещении."
+      ],
+      "comparisonsRu": [
+        "Взрослое животное обычно тяжелее двух взрослых людей."
+      ],
+      "finalLetterHintRu": "Название начинается на букву «Л»."
+    },
+    "provenance": {
+      "criteria.bodyCoverings": {
+        "source": "Encyclopedia of Life",
+        "url": "https://eol.org/pages/328672/articles",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "editorial verification against morphology descriptions",
+        "confidence": 0.95
+      },
+      "criteria.habitats": {
+        "source": "Encyclopedia of Life TraitBank",
+        "url": "https://eol.org/pages/328672/data",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "multiple source values collapsed into the game vocabulary",
+        "confidence": 0.9
+      },
+      "criteria.lifestyles": {
+        "source": "EltonTraits 1.0 and editorial normalization",
+        "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+        "license": "CC BY 4.0",
+        "method": "ground foraging stratum mapped to terrestrial lifestyle",
+        "confidence": 0.9
+      },
+      "criteria.continents": {
+        "source": "Encyclopedia of Life",
+        "url": "https://eol.org/pages/328672",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "native range reviewed manually; captive and introduced occurrences excluded",
+        "confidence": 0.9
+      },
+      "criteria.climateZones": {
+        "source": "Encyclopedia of Life",
+        "url": "https://eol.org/pages/328672/articles",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "habitat regions normalized into broad game categories",
+        "confidence": 0.8
+      },
+      "criteria.locomotion": {
+        "source": "Encyclopedia of Life TraitBank",
+        "url": "https://eol.org/pages/328672/data",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "locomotion values normalized into game verbs",
+        "confidence": 0.9
+      },
+      "criteria.reproduction": {
+        "source": "AnAge Build 15",
+        "url": "https://genomics.senescence.info/species/",
+        "license": "CC BY 3.0",
+        "method": "life-history row plus mammalian reproductive biology",
+        "confidence": 0.95
+      },
+      "criteria.sociality": {
+        "source": "Encyclopedia of Life TraitBank",
+        "url": "https://eol.org/pages/328672/data",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "social system normalized into the game vocabulary",
+        "confidence": 0.95
+      },
+      "criteria.legCount": {
+        "source": "editorial taxonomy rule",
+        "url": "https://www.gbif.org/species/5219404",
+        "license": "factual value",
+        "method": "reviewed species morphology",
+        "confidence": 1
+      },
+      "criteria.thermoregulation": {
+        "source": "editorial taxonomy rule",
+        "url": "https://www.gbif.org/species/5219404",
+        "license": "factual value",
+        "method": "Mammalia mapped to endothermic",
+        "confidence": 1
+      },
+      "criteria.migration": {
+        "source": "Encyclopedia of Life TraitBank",
+        "url": "https://eol.org/pages/328672/data",
+        "license": "source-record-specific; factual value normalized editorially",
+        "method": "migration trait normalized into the game vocabulary",
+        "confidence": 0.75
+      },
+      "criteria.relationToHumans": {
+        "source": "editorial classification",
+        "url": "https://www.gbif.org/species/5219404",
+        "license": "factual value",
+        "method": "wild/domestic game classification",
+        "confidence": 1
+      },
+      "hints.distinctiveTraitsRu": {
+        "source": "original editorial copy based on verified facts",
+        "url": "https://eol.org/pages/328672/articles",
+        "license": "project-authored text; underlying facts source-record-specific",
+        "method": "original Russian wording, no source text copied",
+        "confidence": 0.95
+      },
+      "hints.defensesRu": {
+        "source": "original editorial copy based on verified facts",
+        "url": "https://eol.org/pages/328672/articles",
+        "license": "project-authored text; underlying facts source-record-specific",
+        "method": "original Russian wording, no source text copied",
+        "confidence": 0.9
+      },
+      "hints.sensesRu": {
+        "source": "original editorial copy based on verified facts",
+        "url": "https://eol.org/pages/328672/articles",
+        "license": "project-authored text; underlying facts source-record-specific",
+        "method": "original Russian wording, no source text copied",
+        "confidence": 0.85
+      },
+      "hints.comparisonsRu": {
+        "source": "derived from EltonTraits body mass",
+        "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+        "license": "CC BY 4.0; comparison text is project-authored",
+        "method": "editorial comparison derived from normalized mass",
+        "confidence": 0.85
+      }
+    }
+  }
+}

@@ -1,0 +1,775 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:cyprinus-carpio",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "сазан",
+    "commonNameEn": "Cyprinus carpio",
+    "scientificName": "Cyprinus carpio",
+    "acceptedScientificName": "Cyprinus carpio",
+    "aliasesRu": [
+      "сазаны",
+      "карп"
+    ],
+    "wikidataId": "Q81110",
+    "gbifKey": 4286975,
+    "hagrid": "03899"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Actinopterygii",
+    "order": "Cypriniformes",
+    "family": "Cyprinidae",
+    "genus": "Cyprinus",
+    "species": "Cyprinus carpio",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Actinopterygii",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [
+      "freshwater",
+      "brackish",
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe",
+      "north-america",
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "medium",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 10.6,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 47,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 1095,
+      "male": 1095
+    },
+    "gestationOrIncubationDays": 4,
+    "litterOrClutchSize": 300000
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Cyprinus carpio.jpeg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Cyprinus_carpio.jpeg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Cyprinus carpio.jpeg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cyprinus_carpio.jpeg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Cyprinus_carpio.jpeg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Dezidor",
+      "credit": "Own work",
+      "description": "Kapr obecný",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:42:20.947Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Six koi.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Six_koi.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/90/Six_koi.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "User:Stan Shebs",
+        "credit": "Own work",
+        "description": "Photo of six different types of Koi . This photograph depicts six koi ( plus one goldfish ) of a collection of ten living in a private outdoor ornamental freshwater pond in San Jose, California. The pond is about 45 cm (18 in) deep, which is shallower than ideal - it was not originally designed for koi. The largest fish seen is the yellow ogon at about 50 cm (20 in) long; it was four years old at the time of the photo. Fish types in this picture, from top to bottom shusui (blue with red streaks) a goldfish (the small red and white fish) diamond platinum ogon (white) ogon (yellow) kohaku (red on white) bekko (black on white) gin matsuba (silver matsuba)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:42:20.947Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Bettelnder Karpfen.JPG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bettelnder_Karpfen.JPG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/73/Bettelnder_Karpfen.JPG",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "3268zauber",
+        "credit": "Own work",
+        "description": "Nach Futter schnappender Karpfen",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:42:20.947Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 102,
+    "ruWikipediaTitle": "Сазан",
+    "ruWikipediaPageviews365d": 66567,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 78,
+    "playabilityScore": 74.2,
+    "distinctivenessScore": 20,
+    "delightScore": 28.57,
+    "totalScore": 63.48,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q81110",
+      "url": "https://www.wikidata.org/wiki/Q81110",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Сазан",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B0%D0%B7%D0%B0%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "4286975",
+      "url": "https://www.gbif.org/species/4286975",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Cyprinus carpio Linnaeus, 1758",
+        "gbifSourceClass": "",
+        "normalizedGameClass": "Actinopterygii"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "4286975",
+      "url": "https://www.gbif.org/species/4286975",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "4286975",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=4286975&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 129403,
+          "NORTH_AMERICA": 112682,
+          "OCEANIA": 51376,
+          "ASIA": 10517,
+          "LATIN_AMERICA": 2865,
+          "AFRICA": 906
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "4286975",
+      "url": "https://api.gbif.org/v1/species/4286975/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "4286975",
+      "url": "https://api.gbif.org/v1/species/4286975/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Mongolia"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Myanmar"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Russian Federation"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - Tunisia"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - South Africa"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Ireland"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Saudi Arabia"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species- Egypt"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - United Arab Emirates"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - Cuba"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - Brunei Darussalam"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - Nepal"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Brazil"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bangladesh"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Italy"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Portugal"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Azores, Portugal"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Colombia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Mexico"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Iraq"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cambodia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Democratic Republic of Congo"
+          },
+          {
+            "habitat": "Terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Botswana"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Denmark"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Bhutan"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Belarus"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ethiopia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - North Macedonia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - France"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Israel"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Belgium"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Argentina"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Nigeria"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Malawi"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Bosnia and Herzegovina"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Tanzania"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Rwanda"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Czechia"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Cameroon"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Estonia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Poland"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species- Indonesia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - India"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Uganda"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Syrian Arab Republic"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Malaysia"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Turkey"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Angola"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Madagascar"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Finland"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Togo"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Lesotho"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Zambia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Côte d'Ivoire"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Morocco"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Namibia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Ghana"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Spain"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Philippines"
+          },
+          {
+            "habitat": "freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Afghanistan"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Kenya"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Kazakhstan"
+          },
+          {
+            "habitat": "freshwater|brackish",
+            "source": "Global Register of Introduced and Invasive Species - New Zealand"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Latvia"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Turkmenistan"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Global Register of Introduced and Invasive Species - Lebanon"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Panama"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Addo-Elephant National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Agulhas National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Augrabies Falls National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Bontebok National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Camdeboo National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Garden Route National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Golden Gate Highlands National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Kruger National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Mapungupwe National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Marakele National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Mountain Zebra National Park, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Wilderness Lakes, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "Protected Areas - Global Register of Introduced and Invasive Species - Verloren Valei Nature Reserve, South Africa"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater|Brackish",
+            "source": "GRIIS Checklist of Introduced and Invasive Species - Ecuador"
+          },
+          {
+            "habitat": "Freshwater",
+            "source": "Global Register of Introduced and Invasive Species - Japan"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          },
+          {
+            "habitat": "Freshwater|Brackish"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03899",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "1",
+        "specimenOrigin": "captivity",
+        "sampleSize": "large",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Cyprinus carpio.jpeg",
+      "url": "https://commons.wikimedia.org/wiki/File:Cyprinus_carpio.jpeg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Six koi.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Six_koi.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Bettelnder Karpfen.JPG",
+      "url": "https://commons.wikimedia.org/wiki/File:Bettelnder_Karpfen.JPG",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Cyprinus carpio.jpeg",
+      "url": "https://commons.wikimedia.org/wiki/File:Cyprinus_carpio.jpeg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:42:20.947Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:42:20.947Z"
+}

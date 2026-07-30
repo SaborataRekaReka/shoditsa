@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:nasikabatrachus-sahyadrensis",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Пурпурная лягушка",
+    "commonNameEn": "Purple Frog",
+    "scientificName": "Nasikabatrachus sahyadrensis",
+    "acceptedScientificName": "Nasikabatrachus sahyadrensis",
+    "aliasesRu": [
+      "Лиловая лягушка",
+      "Пурпурные лягушки",
+      "Nasikabatrachus sahyadrensis",
+      "Nasikabatrachus sahayadrensis",
+      "Фиолетовая жаба"
+    ],
+    "wikidataId": "Q311152",
+    "gbifKey": 2421431,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Amphibia",
+    "order": "Anura",
+    "family": "Nasikabatrachidae",
+    "genus": "Nasikabatrachus",
+    "species": "Nasikabatrachus sahyadrensis",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Amphibia",
+    "bodyCoverings": [
+      "moist-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk",
+      "jump"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q719675",
+      "statusLabelRu": "близки к уязвимому положению",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Vocal-Behavior-of-the-Elusive-Purple-Frog-of-India-(Nasikabatrachus-sahyadrensis)-a-Fossorial-pone.0084809.s003.oga",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Vocal-Behavior-of-the-Elusive-Purple-Frog-of-India-(Nasikabatrachus-sahyadrensis)-a-Fossorial-pone.0084809.s003.oga",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Vocal-Behavior-of-the-Elusive-Purple-Frog-of-India-%28Nasikabatrachus-sahyadrensis%29-a-Fossorial-pone.0084809.s003.oga",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Thomas A, Suyesh R, Biju S, Bee M",
+        "credit": "Audio S3 from Thomas A, Suyesh R, Biju S, Bee M (2014). \" Vocal Behavior of the Elusive Purple Frog of India (Nasikabatrachus sahyadrensis), a Fossorial Species Endemic to the Western Ghats \". PLOS ONE . DOI : 10.1371/journal.pone.0084809 . PMID 24516517 . PMC : 3917828 .",
+        "description": "Acoustic recording of the second 23-s segment of two males interacting while calling in captivity and depicted in the middle plot of Figure 3 .",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:14.882Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Nasikabatrachus sahyadrensis.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/08/Nasikabatrachus_sahyadrensis.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Distribution Map of Nasikabatrachus.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Distribution_Map_of_Nasikabatrachus.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Distribution_Map_of_Nasikabatrachus.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Amphibian2012",
+        "credit": "Own work",
+        "description": "Distribution Map of Nasikabatrachus sahyadrensis",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:14.882Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Nasikabatrachus sahyadrensis.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Nasikabatrachus_sahyadrensis.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/08/Nasikabatrachus_sahyadrensis.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Original uploader was Karthickbala at ta.wikipedia",
+      "credit": "Transferred from ta.wikipedia",
+      "description": "Nasikabatrachus sahyadrensis (purple frog), found in Kerala",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:14.882Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 35,
+    "ruWikipediaTitle": "Nasikabatrachus sahyadrensis",
+    "ruWikipediaPageviews365d": 4260,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 59.22,
+    "playabilityScore": 67.4,
+    "distinctivenessScore": 40,
+    "delightScore": 28.57,
+    "totalScore": 56.48,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Nasikabatrachus sahyadrensis"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q311152",
+      "url": "https://www.wikidata.org/wiki/Q311152",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Nasikabatrachus sahyadrensis",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/Nasikabatrachus_sahyadrensis/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q719675",
+      "url": "https://www.wikidata.org/wiki/Q719675",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2421431",
+      "url": "https://www.gbif.org/species/2421431",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Nasikabatrachus sahyadrensis Biju & Bossuyt, 2003",
+        "gbifSourceClass": "Amphibia",
+        "normalizedGameClass": "Amphibia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2421431",
+      "url": "https://www.gbif.org/species/2421431",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2421431",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2421431&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ASIA": 48
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2421431",
+      "url": "https://api.gbif.org/v1/species/2421431/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2421431",
+      "url": "https://api.gbif.org/v1/species/2421431/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Nasikabatrachus sahyadrensis.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Nasikabatrachus_sahyadrensis.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Vocal-Behavior-of-the-Elusive-Purple-Frog-of-India-(Nasikabatrachus-sahyadrensis)-a-Fossorial-pone.0084809.s003.oga",
+      "url": "https://commons.wikimedia.org/wiki/File:Vocal-Behavior-of-the-Elusive-Purple-Frog-of-India-(Nasikabatrachus-sahyadrensis)-a-Fossorial-pone.0084809.s003.oga",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Distribution Map of Nasikabatrachus.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Distribution_Map_of_Nasikabatrachus.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Nasikabatrachus sahyadrensis.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Nasikabatrachus_sahyadrensis.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:39:14.882Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:14.882Z"
+}

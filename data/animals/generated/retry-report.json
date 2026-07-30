@@ -1,0 +1,212 @@
+{
+  "generatedAt": "2026-07-30T19:42:30.240Z",
+  "seedsSource": "data\\animals\\candidates\\shortlist-seeds.json",
+  "requestedSeedCount": 500,
+  "skippedExisting": 475,
+  "seedCount": 25,
+  "succeeded": 25,
+  "failed": 0,
+  "includeInteractions": false,
+  "results": [
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0224-bolborhynchus-lineola.json",
+      "output": "data\\animals\\generated\\bolborhynchus-lineola.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\bolborhynchus-lineola.json\",\n  \"animal\": \"Толстоклювый попугай Катерины\",\n  \"scientificName\": \"Bolborhynchus lineola\",\n  \"gbifKey\": 5229121,\n  \"criteriaCoverage\": 100,\n  \"provenanceCoverage\": 90,\n  \"soundClues\": 1,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 52.61,\n    \"playabilityScore\": 94.4,\n    \"distinctivenessScore\": 40,\n    \"delightScore\": 42.86,\n    \"totalScore\": 64.02,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\",\n    \"AnAge has no exact row for Bolborhynchus lineola\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0227-anous-stolidus.json",
+      "output": "data\\animals\\generated\\anous-stolidus.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\anous-stolidus.json\",\n  \"animal\": \"Обыкновенная глупая крачка\",\n  \"scientificName\": \"Anous stolidus\",\n  \"gbifKey\": 9512459,\n  \"criteriaCoverage\": 100,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.9,\n    \"playabilityScore\": 88.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 60.3,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0228-macronectes-halli.json",
+      "output": "data\\animals\\generated\\macronectes-halli.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\macronectes-halli.json\",\n  \"animal\": \"Северный гигантский буревестник\",\n  \"scientificName\": \"Macronectes halli\",\n  \"gbifKey\": 2481516,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.54,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 57.09,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0229-anthropoides-paradiseus.json",
+      "output": "data\\animals\\generated\\anthropoides-paradiseus.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\anthropoides-paradiseus.json\",\n  \"animal\": \"Райский журавль\",\n  \"scientificName\": \"Anthropoides paradiseus\",\n  \"gbifKey\": 2474937,\n  \"criteriaCoverage\": 75,\n  \"provenanceCoverage\": 60,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.77,\n    \"playabilityScore\": 70.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 14.29,\n    \"totalScore\": 51.84,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\",\n    \"EltonTraits has no exact row for Anthropoides paradiseus\",\n    \"AnAge has no exact row for Anthropoides paradiseus\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0230-cacatua-sanguinea.json",
+      "output": "data\\animals\\generated\\cacatua-sanguinea.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\cacatua-sanguinea.json\",\n  \"animal\": \"Гологлазый какаду\",\n  \"scientificName\": \"Cacatua sanguinea\",\n  \"gbifKey\": 2479871,\n  \"criteriaCoverage\": 100,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.64,\n    \"playabilityScore\": 88.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 60.19,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0231-cinnyricinclus-leucogaster.json",
+      "output": "data\\animals\\generated\\cinnyricinclus-leucogaster.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\cinnyricinclus-leucogaster.json\",\n  \"animal\": \"Аметистовый короткохвостый скворец\",\n  \"scientificName\": \"Cinnyricinclus leucogaster\",\n  \"gbifKey\": 2489057,\n  \"criteriaCoverage\": 100,\n  \"provenanceCoverage\": 90,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 57.5,\n    \"playabilityScore\": 83.2,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 14.29,\n    \"totalScore\": 56.78,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\",\n    \"AnAge has no exact row for Cinnyricinclus leucogaster\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0232-corvus-orru.json",
+      "output": "data\\animals\\generated\\corvus-orru.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\corvus-orru.json\",\n  \"animal\": \"Австралийский ворон\",\n  \"scientificName\": \"Corvus orru\",\n  \"gbifKey\": 2482491,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.14,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 56.92,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0233-daption-capense.json",
+      "output": "data\\animals\\generated\\daption-capense.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\daption-capense.json\",\n  \"animal\": \"Капский голубок\",\n  \"scientificName\": \"Daption capense\",\n  \"gbifKey\": 2481545,\n  \"criteriaCoverage\": 100,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.33,\n    \"playabilityScore\": 88.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 60.06,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0234-stercorarius-maccormicki.json",
+      "output": "data\\animals\\generated\\stercorarius-maccormicki.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\stercorarius-maccormicki.json\",\n  \"animal\": \"Южнополярный поморник\",\n  \"scientificName\": \"Stercorarius maccormicki\",\n  \"gbifKey\": 2481616,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.35,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 57.01,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\",\n    \"EltonTraits has no exact row for Stercorarius maccormicki\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0235-thalassoica-antarctica.json",
+      "output": "data\\animals\\generated\\thalassoica-antarctica.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\thalassoica-antarctica.json\",\n  \"animal\": \"Антарктический буревестник\",\n  \"scientificName\": \"Thalassoica antarctica\",\n  \"gbifKey\": 2481513,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.17,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 56.93,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0236-amazona-leucocephala.json",
+      "output": "data\\animals\\generated\\amazona-leucocephala.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\amazona-leucocephala.json\",\n  \"animal\": \"Кубинский амазон\",\n  \"scientificName\": \"Amazona leucocephala\",\n  \"gbifKey\": 2479655,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.06,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 56.88,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0237-diopsittaca-nobilis.json",
+      "output": "data\\animals\\generated\\diopsittaca-nobilis.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\diopsittaca-nobilis.json\",\n  \"animal\": \"Синелобый малый ара\",\n  \"scientificName\": \"Diopsittaca nobilis\",\n  \"gbifKey\": 2479365,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 55.03,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 56.87,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0238-pagodroma-nivea.json",
+      "output": "data\\animals\\generated\\pagodroma-nivea.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\pagodroma-nivea.json\",\n  \"animal\": \"Снежный буревестник\",\n  \"scientificName\": \"Pagodroma nivea\",\n  \"gbifKey\": 2481600,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 54.92,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 56.83,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0239-cyanistes-teneriffae.json",
+      "output": "data\\animals\\generated\\cyanistes-teneriffae.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\cyanistes-teneriffae.json\",\n  \"animal\": \"африканская лазоревка\",\n  \"scientificName\": \"Cyanistes teneriffae\",\n  \"gbifKey\": 7341849,\n  \"criteriaCoverage\": 62.5,\n  \"provenanceCoverage\": 60,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 54.16,\n    \"playabilityScore\": 61.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 14.29,\n    \"totalScore\": 48.1,\n    \"difficulty\": \"medium\",\n    \"eligible\": false,\n    \"rejectionReasons\": [\n      \"core-criteria-below-70-percent\"\n    ]\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\",\n    \"EltonTraits has no exact row for Cyanistes teneriffae\",\n    \"AnAge has no exact row for Cyanistes teneriffae\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0240-cacatua-moluccensis.json",
+      "output": "data\\animals\\generated\\cacatua-moluccensis.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\cacatua-moluccensis.json\",\n  \"animal\": \"Молуккский какаду\",\n  \"scientificName\": \"Cacatua moluccensis\",\n  \"gbifKey\": 2479898,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 56.58,\n    \"playabilityScore\": 74.2,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 28.57,\n    \"totalScore\": 54.48,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0241-amazona-aestiva.json",
+      "output": "data\\animals\\generated\\amazona-aestiva.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\amazona-aestiva.json\",\n  \"animal\": \"Синелобый амазон\",\n  \"scientificName\": \"Amazona aestiva\",\n  \"gbifKey\": 2479662,\n  \"criteriaCoverage\": 100,\n  \"provenanceCoverage\": 100,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 54.1,\n    \"playabilityScore\": 88.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 59.54,\n    \"difficulty\": \"medium\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0242-esox-lucius.json",
+      "output": "data\\animals\\generated\\esox-lucius.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\esox-lucius.json\",\n  \"animal\": \"щука\",\n  \"scientificName\": \"Esox lucius\",\n  \"gbifKey\": 2346633,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 79.6,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 67.19,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0243-silurus-glanis.json",
+      "output": "data\\animals\\generated\\silurus-glanis.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\silurus-glanis.json\",\n  \"animal\": \"обыкновенный сом\",\n  \"scientificName\": \"Silurus glanis\",\n  \"gbifKey\": 2337607,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 79.23,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 67.04,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0244-anguilla-anguilla.json",
+      "output": "data\\animals\\generated\\anguilla-anguilla.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\anguilla-anguilla.json\",\n  \"animal\": \"речной угорь\",\n  \"scientificName\": \"Anguilla anguilla\",\n  \"gbifKey\": 5212973,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 77.26,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 66.21,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0245-salmo-salar.json",
+      "output": "data\\animals\\generated\\salmo-salar.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\salmo-salar.json\",\n  \"animal\": \"сёмга\",\n  \"scientificName\": \"Salmo salar\",\n  \"gbifKey\": 7595433,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 77.04,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 66.12,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0246-perca-fluviatilis.json",
+      "output": "data\\animals\\generated\\perca-fluviatilis.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\perca-fluviatilis.json\",\n  \"animal\": \"речной окунь\",\n  \"scientificName\": \"Perca fluviatilis\",\n  \"gbifKey\": 8140485,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 76.49,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 65.89,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0247-lota-lota.json",
+      "output": "data\\animals\\generated\\lota-lota.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\lota-lota.json\",\n  \"animal\": \"налим\",\n  \"scientificName\": \"Lota lota\",\n  \"gbifKey\": 2415460,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 76.2,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 65.77,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0248-huso-huso.json",
+      "output": "data\\animals\\generated\\huso-huso.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\huso-huso.json\",\n  \"animal\": \"белуга\",\n  \"scientificName\": \"Huso huso\",\n  \"gbifKey\": 2402105,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 77.76,\n    \"playabilityScore\": 74.2,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 28.57,\n    \"totalScore\": 63.37,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0249-cyprinus-carpio.json",
+      "output": "data\\animals\\generated\\cyprinus-carpio.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\cyprinus-carpio.json\",\n  \"animal\": \"сазан\",\n  \"scientificName\": \"Cyprinus carpio\",\n  \"gbifKey\": 4286975,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 78,\n    \"playabilityScore\": 74.2,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 28.57,\n    \"totalScore\": 63.48,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "seed": ".tmp\\animal-pipeline\\batch-seeds\\0250-acipenser-ruthenus.json",
+      "output": "data\\animals\\generated\\acipenser-ruthenus.json",
+      "ok": true,
+      "code": 0,
+      "stdout": "{\n  \"outputPath\": \"data\\\\animals\\\\generated\\\\acipenser-ruthenus.json\",\n  \"animal\": \"стерлядь\",\n  \"scientificName\": \"Acipenser ruthenus\",\n  \"gbifKey\": 2402168,\n  \"criteriaCoverage\": 87.5,\n  \"provenanceCoverage\": 70,\n  \"soundClues\": 0,\n  \"preyCandidates\": 0,\n  \"predatorCandidates\": 0,\n  \"selection\": {\n    \"familiarityScore\": 75.19,\n    \"playabilityScore\": 79.8,\n    \"distinctivenessScore\": 20,\n    \"delightScore\": 42.86,\n    \"totalScore\": 65.34,\n    \"difficulty\": \"easy\",\n    \"eligible\": true,\n    \"rejectionReasons\": []\n  },\n  \"warnings\": [\n    \"Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.\"\n  ]\n}",
+      "stderr": ""
+    }
+  ]
+}

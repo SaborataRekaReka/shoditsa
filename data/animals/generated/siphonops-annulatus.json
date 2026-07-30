@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:siphonops-annulatus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Кольчатая червяга",
+    "commonNameEn": "Siphonops annulatus",
+    "scientificName": "Siphonops annulatus",
+    "acceptedScientificName": "Siphonops annulatus",
+    "aliasesRu": [
+      "Siphonops annulatus"
+    ],
+    "wikidataId": "Q608757",
+    "gbifKey": 2430946,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Amphibia",
+    "order": "Gymnophiona",
+    "family": "Siphonopidae",
+    "genus": "Siphonops",
+    "species": "Siphonops annulatus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Amphibia",
+    "bodyCoverings": [
+      "moist-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "latin-america"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk",
+      "jump"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Siphonops annulatus IRDias 2014.png",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/54/Siphonops_annulatus_IRDias_2014.png",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:S.annulatus dmap.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:S.annulatus_dmap.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/S.annulatus_dmap.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "OJJ",
+        "credit": "Own work",
+        "description": "Siphonops annulatus distribution map",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:19.375Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Siphonops annulatus IRDias 2014.png",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Siphonops_annulatus_IRDias_2014.png",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/54/Siphonops_annulatus_IRDias_2014.png",
+      "mimeType": "image/png",
+      "mediaType": "BITMAP",
+      "author": "Dias, I",
+      "credit": "Dias I, Medeiros T, Vila Nova M, Solé M (2014) Amphibians of Serra Bonita, southern Bahia: a new hotpoint within Brazil’s Atlantic Forest hotspot. ZooKeys 449: 105-130. doi: 10.3897/zookeys.449.7494",
+      "description": "Anurans from the RPPN Serra Bonita, Bahia State, Northeastern Brazil. a Physalaemus camacan b P. erikae c Chiasmocleis crucis d Stereocyclops histrio e Stereocyclops incrassatus f Odontophrynus carvalhoi g Proceratophrys renalis h P. schirchi and i Siphonops annulatus.",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:19.375Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 24,
+    "ruWikipediaTitle": "Кольчатая червяга",
+    "ruWikipediaPageviews365d": 2712,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 55.09,
+    "playabilityScore": 61.8,
+    "distinctivenessScore": 20,
+    "delightScore": 14.29,
+    "totalScore": 48.49,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Siphonops annulatus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q608757",
+      "url": "https://www.wikidata.org/wiki/Q608757",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Кольчатая червяга",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9A%D0%BE%D0%BB%D1%8C%D1%87%D0%B0%D1%82%D0%B0%D1%8F_%D1%87%D0%B5%D1%80%D0%B2%D1%8F%D0%B3%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2430946",
+      "url": "https://www.gbif.org/species/2430946",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Siphonops annulatus (Mikan, 1822)",
+        "gbifSourceClass": "Amphibia",
+        "normalizedGameClass": "Amphibia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2430946",
+      "url": "https://www.gbif.org/species/2430946",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2430946",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2430946&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 474
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2430946",
+      "url": "https://api.gbif.org/v1/species/2430946/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Siphonops annulatus IRDias 2014.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Siphonops_annulatus_IRDias_2014.png",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:S.annulatus dmap.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:S.annulatus_dmap.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Siphonops annulatus IRDias 2014.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Siphonops_annulatus_IRDias_2014.png",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:39:19.375Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:19.375Z"
+}

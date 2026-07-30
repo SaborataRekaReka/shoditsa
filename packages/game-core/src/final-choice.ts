@@ -165,6 +165,30 @@ export const FINAL_CHOICE_MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     ],
     weights: { body_systems: 1.2, symptoms: 1.3, course_age: 0.9, diagnostics: 0.9 },
   },
+  animal: {
+    primaryMeta: (item) => item.scientificName || item.titleOriginal || 'Научное название не указано',
+    facts: [
+      fact('taxonomy', ['animal_class', 'animal_order', 'animal_family'], 'categorical', 'Классификация', (item) => compact([
+        item.taxonomicClass,
+        item.animalOrder,
+        item.animalFamily,
+      ], 3) || null),
+      fact('habitat', ['habitats', 'animal_continents'], 'categorical', 'Среда и ареал', (item) => compact([
+        compact(item.habitats ?? []),
+        compact(item.animalContinents ?? []),
+      ]) || null),
+      fact('biology', ['body_coverings', 'diets', 'reproduction'], 'categorical', 'Биология', (item) => compact([
+        compact(item.bodyCoverings ?? []),
+        compact(item.diets ?? []),
+        item.reproduction,
+      ], 3) || null),
+      fact('size', ['body_mass', 'leg_count'], 'numeric', 'Размер', (item) => compact([
+        item.bodyMassKg != null ? `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(item.bodyMassKg)} кг` : null,
+        item.legCount != null ? `${item.legCount} ног` : null,
+      ]) || null),
+    ],
+    weights: { taxonomy: 1.2, habitat: 1.15, biology: 1.05, size: 1 },
+  },
 }
 
 const hashValue = (input: string) => {

@@ -1,8 +1,8 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal'] as const
 // Every listed runtime is available in the player application. Full-house
 // participation remains a separate capability below.
-export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'connections', 'danetki'] as const
+export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'animal', 'connections', 'danetki'] as const
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
 export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]
@@ -13,7 +13,7 @@ export type GameModeCapabilities = {
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'danetki' | 'connections'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'danetki' | 'connections'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
@@ -69,12 +69,16 @@ export const GAME_MODE_MANIFEST = {
     engine: 'catalog_guess', label: 'Диагнозы', dailyLabel: 'Диагноз', shareIcon: '🩺', dataDir: 'diagnoses', dailyOrder: 7,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
+  animal: {
+    engine: 'catalog_guess', label: 'Животные', dailyLabel: 'Животное', shareIcon: '🐾', dataDir: 'animals', dailyOrder: 8,
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
+  },
   danetki: {
-    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 9,
+    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 10,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted'],
   },
   connections: {
-    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 8,
+    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 9,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>

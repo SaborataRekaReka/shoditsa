@@ -1,0 +1,487 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:corvus-cornix",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "серая ворона",
+    "commonNameEn": "Hooded Crow",
+    "scientificName": "Corvus cornix",
+    "acceptedScientificName": "Corvus cornix",
+    "aliasesRu": [
+      "Corvus cornix",
+      "ворона серая"
+    ],
+    "wikidataId": "Q25405",
+    "gbifKey": 2482515,
+    "hagrid": "00820"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Passeriformes",
+    "family": "Corvidae",
+    "genus": "Corvus",
+    "species": "Corvus cornix",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.5445,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 16.8,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "15-30",
+    "maturityDays": {
+      "female": 911,
+      "male": 1095
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Каркання.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%B0%D1%80%D0%BA%D0%B0%D0%BD%D0%BD%D1%8F.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/%D0%9A%D0%B0%D1%80%D0%BA%D0%B0%D0%BD%D0%BD%D1%8F.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Qypchak",
+        "credit": "Own work",
+        "description": "Croaking of hooded crow (Corvus cornix)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.508Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Corvus cornix (33515567265).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Corvus_cornix_%2833515567265%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Corvus cornix map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/Corvus_cornix_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "File:Corvus cornix map.jpg : Steve nova File:BlankMap-World.svg : Canuckguy derivative work: Arrow303",
+        "credit": "Own work based on: Corvus cornix map.jpg : and BlankMap-World.svg :",
+        "description": "Steve nova 's hand coloured distribution map of Hooded Crow ( Corvus cornix , sometimes referred to as Corvus corone cornix )",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.508Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Corvus cornix (33515567265).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_(33515567265).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Corvus_cornix_%2833515567265%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Donald Hobern from Copenhagen, Denmark",
+      "credit": "Corvus cornix",
+      "description": "Corvus cornix (Linnaeus, 1758), Hooded Crow, Søborg, Denmark, 18 March 2017",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:36:27.508Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Corvus cornix in Locarno.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_in_Locarno.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/71/Corvus_cornix_in_Locarno.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Commonists",
+        "credit": "Own work",
+        "description": "Corvus cornix in Locarno, Switzerland",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.508Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Rockefeller Archeological Museum Rockefeller Museum P1120430 (6992763642).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rockefeller_Archeological_Museum_Rockefeller_Museum_P1120430_(6992763642).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/77/Rockefeller_Archeological_Museum_Rockefeller_Museum_P1120430_%286992763642%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Ricardo Tulio Gandelman from Rio de Janeiro, Brazil",
+        "credit": "P1120430",
+        "description": "P1120430 Rockefeller Archeological Museum, Grey Crow (Corvus cornix)",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.508Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Flying Crow.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Flying_Crow.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/65/Flying_Crow.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Self",
+        "credit": "Own work",
+        "description": "Hooded Crow (subspecies Corvus cornix sharpii ) in flight at Isfahan, Iran",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.508Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 100,
+    "ruWikipediaTitle": "Серая ворона",
+    "ruWikipediaPageviews365d": 79186,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 78.72,
+    "playabilityScore": 76.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 70.01,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "EltonTraits has no exact row for Corvus cornix"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q25405",
+      "url": "https://www.wikidata.org/wiki/Q25405",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Серая ворона",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%A1%D0%B5%D1%80%D0%B0%D1%8F_%D0%B2%D0%BE%D1%80%D0%BE%D0%BD%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2482515",
+      "url": "https://www.gbif.org/species/2482515",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Corvus cornix Linnaeus, 1758",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2482515",
+      "url": "https://www.gbif.org/species/2482515",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2482515",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2482515&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 4243038,
+          "ASIA": 32885,
+          "AFRICA": 10669
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2482515",
+      "url": "https://api.gbif.org/v1/species/2482515/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "00820",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "575",
+        "specimenOrigin": "captivity",
+        "sampleSize": "small",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Corvus cornix (33515567265).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_(33515567265).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Corvus cornix in Locarno.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_in_Locarno.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Rockefeller Archeological Museum Rockefeller Museum P1120430 (6992763642).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Rockefeller_Archeological_Museum_Rockefeller_Museum_P1120430_(6992763642).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Flying Crow.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Flying_Crow.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Каркання.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%B0%D1%80%D0%BA%D0%B0%D0%BD%D0%BD%D1%8F.ogg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Corvus cornix map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_map.svg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Corvus cornix (33515567265).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Corvus_cornix_(33515567265).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:36:27.508Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:27.508Z"
+}

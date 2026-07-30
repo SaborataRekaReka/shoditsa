@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:hydrophis-platurus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Двухцветная пеламида",
+    "commonNameEn": "Hydrophis platurus",
+    "scientificName": "Hydrophis platurus",
+    "acceptedScientificName": "Hydrophis platurus",
+    "aliasesRu": [
+      "Желтобрюхая пеламида",
+      "Pelamis platurus",
+      "Pelamis",
+      "Двуцветная пеламида",
+      "Pelamis platura",
+      "Hydrus platurus",
+      "Пеламиды",
+      "Pelamydrus platurus",
+      "Двухцветная пеламида",
+      "Двухцветный гидрофис"
+    ],
+    "wikidataId": "Q1247379",
+    "gbifKey": 7674056,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Squamata",
+    "family": "Elapidae",
+    "genus": "Hydrophis",
+    "species": "Hydrophis platurus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": null
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "latin-america",
+      "oceania",
+      "asia"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk",
+      "crawl"
+    ],
+    "sizeCategory": "",
+    "reproduction": "",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Pelamis platura, Costa Rica.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/Pelamis_platura%2C_Costa_Rica.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Yellow-bellied Sea Snake Pelamis platura distribution map.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Yellow-bellied_Sea_Snake_Pelamis_platura_distribution_map.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/Yellow-bellied_Sea_Snake_Pelamis_platura_distribution_map.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Darekk2 using the IUCN Red List spatial data",
+        "credit": "Own work using: the IUCN Red List spatial data to draw the borders of the Pelamis platura range: http://maps.iucnredlist.org/map.html?id=176738 Credit for the spatial data: International Union for Conservation of Nature (IUCN) 2010. Pelamis platura. In: IUCN 2015. The IUCN Red List of Threatened Species. Version 2015.2. http://www.iucnredlist.org . Downloaded on 19 July 2015. Species account: http://www.iucnredlist.org/details/176738/0 Guinea, M., Lukoschek, V., Cogger, H., Rasmussen, A., Murphy, J., Lane, A., Sanders, K. Lobo, A., Gatus, J., Limpus, C., Milton, D., Courtney, T., Read, M., Fletcher, E., Marsh, D., White, M.-D., Heatwole, H., Alcala, A., Voris, H. & Karns, D. 2010. Pelamis platura . The IUCN Red List of Threatened Species. Version 2015.2. &lt; www.iucnredlist.org &gt;. Downloaded on 19 July 2015. This map was created with Generic Mapping Tools .",
+        "description": "Geographical distribution of the Yellow-bellied Sea Snake Pelamis platura . The map was created using the Generic Mapping Tools , GMT, version 5.1.2.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:00.872Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Pelamis platura, Costa Rica.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Pelamis_platura,_Costa_Rica.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/Pelamis_platura%2C_Costa_Rica.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Aloaiza",
+      "credit": "Own work",
+      "description": "Pelamis platura",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:00.872Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 38,
+    "ruWikipediaTitle": "Двухцветная пеламида",
+    "ruWikipediaPageviews365d": 5291,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 60.69,
+    "playabilityScore": 61.8,
+    "distinctivenessScore": 20,
+    "delightScore": 14.29,
+    "totalScore": 50.84,
+    "difficulty": "medium",
+    "eligible": false,
+    "rejectionReasons": [
+      "core-criteria-below-70-percent"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 62.5,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Hydrophis platurus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q1247379",
+      "url": "https://www.wikidata.org/wiki/Q1247379",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Двухцветная пеламида",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%94%D0%B2%D1%83%D1%85%D1%86%D0%B2%D0%B5%D1%82%D0%BD%D0%B0%D1%8F_%D0%BF%D0%B5%D0%BB%D0%B0%D0%BC%D0%B8%D0%B4%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "7674056",
+      "url": "https://www.gbif.org/species/7674056",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Hydrophis platurus (Linnaeus, 1766)",
+        "gbifSourceClass": "Squamata",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "7674056",
+      "url": "https://www.gbif.org/species/7674056",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "7674056",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=7674056&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "LATIN_AMERICA": 2462,
+          "OCEANIA": 1811,
+          "ASIA": 631,
+          "AFRICA": 121,
+          "NORTH_AMERICA": 22,
+          "EUROPE": 3
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "7674056",
+      "url": "https://api.gbif.org/v1/species/7674056/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Pelamis platura, Costa Rica.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Pelamis_platura,_Costa_Rica.jpg",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Yellow-bellied Sea Snake Pelamis platura distribution map.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Yellow-bellied_Sea_Snake_Pelamis_platura_distribution_map.png",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Pelamis platura, Costa Rica.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Pelamis_platura,_Costa_Rica.jpg",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:00.872Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:00.872Z"
+}

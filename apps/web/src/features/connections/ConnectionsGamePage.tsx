@@ -55,7 +55,7 @@ type Props = {
 
 type ConnectionsReward = NonNullable<ConnectionsGuessResponse['reward']>
 
-const NEXT_MODE_ORDER: TitleMode[] = ['diagnosis', 'movie', 'series', 'anime', 'game', 'city', 'music']
+const NEXT_MODE_ORDER: TitleMode[] = ['diagnosis', 'animal', 'movie', 'series', 'anime', 'game', 'city', 'music']
 
 const dateLabel = (date: string) => new Intl.DateTimeFormat('ru-RU', {
   day: 'numeric',

@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:globicephala-melas",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Обыкновенная гринда",
+    "commonNameEn": "long-finned pilot whale",
+    "scientificName": "Globicephala melas",
+    "acceptedScientificName": "Globicephala melas",
+    "aliasesRu": [
+      "Globicephala melas",
+      "Круглоголовый дельфин"
+    ],
+    "wikidataId": "Q207744",
+    "gbifKey": 2440596,
+    "hagrid": "02289"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Mammalia",
+    "order": "Cetacea",
+    "family": "Delphinidae",
+    "genus": "Globicephala",
+    "species": "Globicephala melas",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Mammalia",
+    "bodyCoverings": [
+      "smooth-skin"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "europe",
+      "north-america"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [
+      "nocturnal",
+      "crepuscular"
+    ],
+    "locomotion": [
+      "swim"
+    ],
+    "sizeCategory": "giant",
+    "reproduction": "live-birth",
+    "sociality": [],
+    "legCount": 0,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 800,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 60,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "over-60",
+    "maturityDays": {
+      "female": 2470,
+      "male": 4380
+    },
+    "gestationOrIncubationDays": 450,
+    "litterOrClutchSize": 1
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 90,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 10,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "marine",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [
+        {
+          "scientificName": "Diaphus dumerilii",
+          "externalId": "COL:35CGP",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Selenoteuthis scintillans",
+          "externalId": "WD:Q2027187",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Doryteuthis pealeii",
+          "externalId": "WD:Q13596610",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Illex argentinus",
+          "externalId": "WD:Q2262870",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus cordiformis",
+          "externalId": "WD:Q3791023",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Brachioteuthis riisei",
+          "externalId": "FBC:SLB:SpecCode:58120",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Alluroteuthis antarcticus",
+          "externalId": "FBC:SLB:SpecCode:94144",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Doryteuthis gahi",
+          "externalId": "WD:Q13596602",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Octopus cyanea",
+          "externalId": "WD:Q3791011",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Enoploteuthis galaxias",
+          "externalId": "WD:Q2310791",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Macroctopus maorum",
+          "externalId": "COL:3X4GF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sepioteuthis australis",
+          "externalId": "WD:Q2683313",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Sepia apama",
+          "externalId": "WD:Q1632342",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Nototodarus gouldi",
+          "externalId": "WD:Q2674467",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chiroteuthis veranyi",
+          "externalId": "WD:Q2963967",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ancistrocheirus lesueurii",
+          "externalId": "FBC:SLB:SpecCode:57292",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Histioteuthis eltaninae",
+          "externalId": "WD:Q3197304",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Mesonychoteuthis hamiltoni",
+          "externalId": "WD:Q378330",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gonatus antarcticus",
+          "externalId": "WD:Q2036144",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Histioteuthis reversa",
+          "externalId": "WD:Q2471939",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Lycoteuthis lorigera",
+          "externalId": "WD:Q279362",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Todarodes sagittatus",
+          "externalId": "WD:Q1151502",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Teuthowenia megalops",
+          "externalId": "WD:Q2518054",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Scomber scombrus",
+          "externalId": "COL:79XKF",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Chiroteuthis veranii",
+          "externalId": "WORMS:139125",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Squalus acanthias",
+          "externalId": "COL:6ZDWC",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Galiteuthis armata",
+          "externalId": "WD:Q3816322",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Ceratoscopelus maderensis",
+          "externalId": "COL:SPPW",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Loligo vulgaris",
+          "externalId": "WD:Q1232698",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        },
+        {
+          "scientificName": "Gonatus fabricii",
+          "externalId": "WD:Q3198461",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ],
+      "predators": [
+        {
+          "scientificName": "Larus marinus",
+          "externalId": "COL:3SBQM",
+          "studyTitle": null,
+          "interactionType": "eats",
+          "reviewStatus": "needs-editorial-review"
+        }
+      ]
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Long finned Pilot Whales orig.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Long_finned_Pilot_Whales_orig.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Long_finned_Pilot_Whales_orig.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "L. Ginzkey",
+        "credit": "CD \"Schall im Meer\" of de:Forschungsanstalt der Bundeswehr für Wasserschall und Geophysik",
+        "description": "Whale songs of Long finned pilot whales",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:41.284Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Long-finned Pilot Whale (6002011771).jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/68/Long-finned_Pilot_Whale_%286002011771%29.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Globicephala melas map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Globicephala_melas_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Globicephala_melas_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Cephas",
+        "credit": "Adapted from: Minton, G., Reeves, R. & Braulik, G. 2018. Globicephala melas. The IUCN Red List of Threatened Species 2018: e.T9250A50356171. https://dx.doi.org/10.2305/IUCN.UK.2018-2.RLTS.T9250A50356171.en . Accessed on 30 December 2024. File:World-10E.svg",
+        "description": "Range map of Long-finned Pilot Whale ( Globicephala melas )",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:41.284Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Long-finned Pilot Whale (6002011771).jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Long-finned_Pilot_Whale_(6002011771).jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/68/Long-finned_Pilot_Whale_%286002011771%29.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Biodiversity Heritage Library",
+      "credit": "n336_w1150",
+      "description": "A book of whales London,J. Murray;1900. biodiversitylibrary.org/page/1398420",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:34:41.284Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:PilotWhale.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:PilotWhale.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fa/PilotWhale.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "",
+        "credit": "",
+        "description": "",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:41.284Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Photo of the Week - Long-finned Pilot Whales (RI) (6892801246).jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Photo_of_the_Week_-_Long-finned_Pilot_Whales_(RI)_(6892801246).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Photo_of_the_Week_-_Long-finned_Pilot_Whales_%28RI%29_%286892801246%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "U. S. Fish and Wildlife Service - Northeast Region",
+        "credit": "https://www.flickr.com/photos/usfwsnortheast/6892801246/",
+        "description": "Long-finned Pilot Whales photographed southeast of Block Island, RI. Credit: Bill Thompson/USFWS",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:34:41.284Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 48,
+    "ruWikipediaTitle": "Обыкновенная гринда",
+    "ruWikipediaPageviews365d": 10890,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 65.36,
+    "playabilityScore": 85.4,
+    "distinctivenessScore": 40,
+    "delightScore": 57.14,
+    "totalScore": 67.46,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 100,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "GloBI interactions are candidate facts only; every predator/prey relation requires editorial review before becoming a clue."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q207744",
+      "url": "https://www.wikidata.org/wiki/Q207744",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенная гринда",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F_%D0%B3%D1%80%D0%B8%D0%BD%D0%B4%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2440596",
+      "url": "https://www.gbif.org/species/2440596",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Globicephala melas (Traill, 1809)",
+        "gbifSourceClass": "Mammalia",
+        "normalizedGameClass": "Mammalia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2440596",
+      "url": "https://www.gbif.org/species/2440596",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2440596",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2440596&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 17394,
+          "NORTH_AMERICA": 7889,
+          "OCEANIA": 1287,
+          "AFRICA": 722,
+          "ANTARCTICA": 645,
+          "LATIN_AMERICA": 423,
+          "ASIA": 3
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2440596",
+      "url": "https://api.gbif.org/v1/species/2440596/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Globicephala melas",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "exact scientific-name join to Figshare file 5631084",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "ABC",
+        "activityCertainty": "ABC",
+        "foragingCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "02289",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "671",
+        "specimenOrigin": "captivity",
+        "sampleSize": "tiny",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.prey"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Globicephala melas",
+      "url": "https://api.globalbioticinteractions.org/interaction?sourceTaxon=Globicephala%20melas&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.interactionCandidates.predators"
+      ],
+      "source": "Global Biotic Interactions",
+      "sourceId": "Globicephala melas",
+      "url": "https://api.globalbioticinteractions.org/interaction?targetTaxon=Globicephala%20melas&interactionType=eats&limit=200",
+      "license": "underlying-dataset-specific; preserve study attribution",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "GloBI interaction API, exact taxon query, deduplicated",
+      "confidence": 0.6,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Long-finned Pilot Whale (6002011771).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Long-finned_Pilot_Whale_(6002011771).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:PilotWhale.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:PilotWhale.jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Photo of the Week - Long-finned Pilot Whales (RI) (6892801246).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Photo_of_the_Week_-_Long-finned_Pilot_Whales_(RI)_(6892801246).jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Long finned Pilot Whales orig.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Long_finned_Pilot_Whales_orig.ogg",
+      "license": "CC BY-SA 2.5",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Globicephala melas map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Globicephala_melas_map.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Long-finned Pilot Whale (6002011771).jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Long-finned_Pilot_Whale_(6002011771).jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:34:41.284Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:34:41.284Z"
+}

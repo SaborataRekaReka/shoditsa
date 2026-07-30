@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city']
+const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city', 'animal']
 const CITY_RANK_KEYS = ['economy', 'humanCapital', 'qualityOfLife', 'ecology', 'governance']
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -79,7 +79,7 @@ const validateVignetteMap = (json, file) => {
 
 const validateSource = (json, file) => {
   if (!isObject(json)) return [`${file}: root must be object`]
-  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount']
+  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount', 'animalCount']
   return numericKeys
     .filter((key) => json[key] != null && typeof json[key] !== 'number')
     .map((key) => `${file}: ${key} must be number when present`)
@@ -94,6 +94,7 @@ export const validateGeneratedData = async (rootDir) => {
     games: 'games.generated.json',
     diagnoses: 'diagnoses.generated.json',
     cities: 'cities.generated.json',
+    animals: 'animals.generated.json',
     vignettes: 'diagnosis-case-vignettes.by-id.json',
     source: 'source.json',
   }
@@ -107,6 +108,7 @@ export const validateGeneratedData = async (rootDir) => {
     games: [path.join(dataDir, files.games), path.join(dataDir, 'libraries', 'games', 'items.json')],
     diagnoses: [path.join(dataDir, files.diagnoses), path.join(dataDir, 'libraries', 'diagnoses', 'items.json')],
     cities: [path.join(dataDir, 'libraries', 'cities', 'items.json'), path.join(dataDir, files.cities)],
+    animals: [path.join(dataDir, 'libraries', 'animals', 'items.json'), path.join(dataDir, files.animals)],
   }
 
   for (const [datasetName, locations] of Object.entries(datasetLocations)) {

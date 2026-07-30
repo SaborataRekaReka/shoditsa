@@ -1,0 +1,488 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:cuculus-canorus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "обыкновенная кукушка",
+    "commonNameEn": "Common Cuckoo",
+    "scientificName": "Cuculus canorus",
+    "acceptedScientificName": "Cuculus canorus",
+    "aliasesRu": [
+      "Cuculus canorus",
+      "кукушка",
+      "кукушка обыкновенная"
+    ],
+    "wikidataId": "Q18845",
+    "gbifKey": 5231918,
+    "hagrid": "00635"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Cuculiformes",
+    "family": "Cuculidae",
+    "genus": "Cuculus",
+    "species": "Cuculus canorus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "aerial",
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "fly",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 0.11136,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 12.9,
+      "maximumObservedContext": "wild"
+    },
+    "lifespanCategory": "5-15",
+    "maturityDays": {
+      "female": 365,
+      "male": 365
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 90,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 0,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 10,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Common Cuckoo (Cuculus canorus) (W1CDR0001463 BD1).ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Common_Cuckoo_(Cuculus_canorus)_(W1CDR0001463_BD1).ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Common_Cuckoo_%28Cuculus_canorus%29_%28W1CDR0001463_BD1%29.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+        "description": "The song of a Common Cuckoo, recorded at Frensham Great Pond, Surrey, England",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.448Z",
+        "soundType": "animal-vocalization"
+      },
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Cuculus canorus.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cuculus_canorus.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/01/Cuculus_canorus.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Vladimir Yu. Arkhipov, Arkhivov",
+        "credit": "Own work",
+        "description": "Cuculus canorus, Kaluga region, Russia",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.448Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Distribution of Cuculus canorus.PNG",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Distribution_of_Cuculus_canorus.PNG",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Distribution_of_Cuculus_canorus.PNG",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Buteo",
+        "credit": "Own work",
+        "description": "A map showing the distribution of the Common Cuckoo Cuculus canorus Deep purple = summer Light purple = winter Reference: Cramp, Stanley and Simmons, K. E. L. (editors): Handbook or the Birds of Europe, the Middle East and North Africa: the Birds of the Western Palearctic. Vol. 4: Terns to Woodpeckers. Oxford University Press, 1985",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.448Z"
+      },
+      {
+        "role": "range-map",
+        "commonsTitle": "File:CuculusCanorusIUCNver2019 3.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:CuculusCanorusIUCNver2019_3.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/CuculusCanorusIUCNver2019_3.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "SanoAK : Alexander Kürthy",
+        "credit": "Made with Natural Earth. Free vector and raster map data @ naturalearthdata.com. Range map from BirdLife International 2019. Cuculus canorus (amended version of 2016 assessment). The IUCN Red List of Threatened Species 2019: e.T22683873A155496731. Downloaded on 20 December 2019 as visual indicator of distribution.",
+        "description": "Distribution map of common cuckoo (Cuculus canorus) according to IUCN version 2019-3; key: Legend: Extant, breeding (#00FF00) , Extant, passage (#00FFFF) , Extant, non-breeding (#007FFF) , Possibly Extant (breeding) (#AAFFAA) ,",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.448Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": null,
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:Cuculus canorus2.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cuculus_canorus2.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Cuculus_canorus2.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "GabrielBuissart",
+        "credit": "self-made, Romelaere, Clairmarais FR.",
+        "description": "Kukolo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:36:27.448Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 117,
+    "ruWikipediaTitle": "Обыкновенная кукушка",
+    "ruWikipediaPageviews365d": 77454,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 79.47,
+    "playabilityScore": 74.2,
+    "distinctivenessScore": 20,
+    "delightScore": 57.14,
+    "totalScore": 66.38,
+    "difficulty": "easy",
+    "eligible": false,
+    "rejectionReasons": [
+      "missing-licensed-image"
+    ]
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 90,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "Commons file rejected by license policy: File:Cuculus canorus vogelartinfo chris romeiks CHR0791 cropped.jpg (GFDL 1.2)"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q18845",
+      "url": "https://www.wikidata.org/wiki/Q18845",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Обыкновенная кукушка",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%9E%D0%B1%D1%8B%D0%BA%D0%BD%D0%BE%D0%B2%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F_%D0%BA%D1%83%D0%BA%D1%83%D1%88%D0%BA%D0%B0/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "5231918",
+      "url": "https://www.gbif.org/species/5231918",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Cuculus canorus Linnaeus, 1758",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "5231918",
+      "url": "https://www.gbif.org/species/5231918",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "5231918",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=5231918&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 1983724,
+          "ASIA": 72827,
+          "AFRICA": 2790,
+          "NORTH_AMERICA": 1407
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "5231918",
+      "url": "https://api.gbif.org/v1/species/5231918/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Cuculus canorus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "00635",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.85,
+      "raw": {
+        "source": "450",
+        "specimenOrigin": "wild",
+        "sampleSize": "medium",
+        "dataQuality": "acceptable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Cuculus canorus2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Cuculus_canorus2.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Common Cuckoo (Cuculus canorus) (W1CDR0001463 BD1).ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Common_Cuckoo_(Cuculus_canorus)_(W1CDR0001463_BD1).ogg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Cuculus canorus.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Cuculus_canorus.ogg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Distribution of Cuculus canorus.PNG",
+      "url": "https://commons.wikimedia.org/wiki/File:Distribution_of_Cuculus_canorus.PNG",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:CuculusCanorusIUCNver2019 3.png",
+      "url": "https://commons.wikimedia.org/wiki/File:CuculusCanorusIUCNver2019_3.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:36:27.448Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:36:27.448Z"
+}

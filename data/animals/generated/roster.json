@@ -1,0 +1,5501 @@
+{
+  "generatedAt": "2026-07-30T19:51:46.781Z",
+  "policy": {
+    "target": 300,
+    "reserveTarget": 100,
+    "classQuotas": {
+      "Mammalia": {
+        "min": 90,
+        "max": 115
+      },
+      "Aves": {
+        "min": 50,
+        "max": 65
+      },
+      "Actinopterygii": {
+        "min": 25,
+        "max": 40
+      },
+      "Reptilia": {
+        "min": 20,
+        "max": 32
+      },
+      "Amphibia": {
+        "min": 10,
+        "max": 20
+      },
+      "Insecta": {
+        "min": 25,
+        "max": 40
+      },
+      "Arachnida": {
+        "min": 8,
+        "max": 15
+      },
+      "Cephalopoda": {
+        "min": 5,
+        "max": 12
+      },
+      "Other": {
+        "min": 15,
+        "max": 30
+      }
+    },
+    "difficultyQuotas": {
+      "easy": {
+        "min": 150,
+        "max": 180
+      },
+      "medium": {
+        "min": 90,
+        "max": 120
+      },
+      "hard": {
+        "min": 20,
+        "max": 40
+      }
+    },
+    "maxPerGenus": 3,
+    "maxPerFamily": 12,
+    "minimumTotalScore": 45
+  },
+  "candidateCount": 500,
+  "eligiblePoolCount": 404,
+  "rejectedCount": 96,
+  "selectedCount": 300,
+  "reserveCount": 100,
+  "complete": true,
+  "meanScore": 62.79,
+  "classCounts": {
+    "Mammalia": 103,
+    "Aves": 64,
+    "Actinopterygii": 38,
+    "Reptilia": 30,
+    "Amphibia": 11,
+    "Insecta": 25,
+    "Arachnida": 9,
+    "Cephalopoda": 5,
+    "Other": 15
+  },
+  "difficultyCounts": {
+    "easy": 160,
+    "medium": 120,
+    "hard": 20
+  },
+  "continentCoverage": {
+    "africa": 50,
+    "asia": 51,
+    "europe": 173,
+    "oceania": 49,
+    "north-america": 104,
+    "latin-america": 55,
+    "antarctica": 16
+  },
+  "habitatCoverage": {
+    "savanna": 1,
+    "grassland": 1,
+    "open-woodland": 1,
+    "terrestrial": 145,
+    "freshwater": 68,
+    "cave": 2,
+    "marine": 47,
+    "brackish": 30,
+    "aquatic": 2
+  },
+  "warnings": [],
+  "rejected": [
+    {
+      "id": "animal:acinonyx-jubatus-soemmeringii",
+      "score": 49.92,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:aedes-aegypti",
+      "score": 48.57,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:aedes-albopictus",
+      "score": 57.59,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:agrilus-planipennis",
+      "score": 51.21,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:amblyomma-cajennense",
+      "score": 41.94,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:amblyomma-hebraeum",
+      "score": 41.94,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:amblyomma-sphenodonti",
+      "score": 44.57,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:amblyomma-variegatum",
+      "score": 43.45,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:anoplolepis-gracilipes",
+      "score": 50.54,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:arion-lusitanicus",
+      "score": 51.52,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:ascarosepion-pfefferi",
+      "score": 41.89,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:astur-gentilis",
+      "score": 63.05,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:atretochoana-eiselti",
+      "score": 47.9,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:aviceda-subcristata",
+      "score": 46.16,
+      "reasons": [
+        "missing-russian-display-name",
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:birgus-latro",
+      "score": 52.29,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:bos-primigenius-namadicus",
+      "score": 41.94,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:breviceps-adspersus",
+      "score": 48.39,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:bucorvus-abyssinicus",
+      "score": 60.9,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:bufo-verrucosissimus",
+      "score": 44.76,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:chrysomallon-squamiferum",
+      "score": 53.57,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:coloeus-monedula",
+      "score": 69.62,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:ctenocephalides-canis",
+      "score": 42.04,
+      "reasons": [
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:cuculus-canorus",
+      "score": 66.38,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:cyanistes-teneriffae",
+      "score": 48.1,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:cymothoa-exigua",
+      "score": 52.41,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:danio-rerio",
+      "score": 50.95,
+      "reasons": [
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:dibothriocephalus-latus",
+      "score": 39.32,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:echinococcus-granulosus",
+      "score": 43.33,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:emys-orbicularitosa",
+      "score": 55.31,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:equus-africanus-asinus",
+      "score": 62.54,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:equus-ferus-caballus",
+      "score": 63.5,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:equus-quagga",
+      "score": 55.68,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:euphausia-superba",
+      "score": 46.59,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:euprymna-berryi",
+      "score": 41.25,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:eurygaster-integriceps",
+      "score": 41.79,
+      "reasons": [
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:fasciola-hepatica",
+      "score": 43.59,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:gorilla-beringei-graueri",
+      "score": 49.78,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:gymnothorax-javanicus",
+      "score": 48.49,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:halyomorpha-halys",
+      "score": 55.27,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:hirudo-medicinalis",
+      "score": 49.52,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:hyalomma-aegyptium",
+      "score": 44.32,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:hyalomma-marginatum",
+      "score": 47.8,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:hydrophis-platurus",
+      "score": 50.84,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:hypostomus-plecostomus",
+      "score": 51.88,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:idiosepius-pygmaeus",
+      "score": 39.86,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:ixodes-holocyclus",
+      "score": 47.31,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:lagenodelphis-hosei",
+      "score": 54.94,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:lama-glama",
+      "score": 61.34,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:lampetra-fluviatilis",
+      "score": 47.78,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:leptoteuthis-gigas",
+      "score": 37.64,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:lissodelphis-peronii",
+      "score": 54.29,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:luscinia-luscinia",
+      "score": 57.17,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:lutra-lutra",
+      "score": 64.06,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:macrocheira-kaempferi",
+      "score": 48.35,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:macropinna-microstoma",
+      "score": 48.62,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:macropus-rufus",
+      "score": 54.77,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:melopsittacus-undulatus",
+      "score": 62.26,
+      "reasons": [
+        "missing-licensed-image"
+      ]
+    },
+    {
+      "id": "animal:mobula-birostris",
+      "score": 55.59,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:musca-domestica",
+      "score": 50.2,
+      "reasons": [
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:nannopterum-harrisi",
+      "score": 49,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:nasikabatrachus-sahyadrensis",
+      "score": 56.48,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:nezara-viridula",
+      "score": 49.26,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:ommatotriton-ophryticus",
+      "score": 44.38,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:ophionyssus-natricis",
+      "score": 41.33,
+      "reasons": [
+        "score-below-45"
+      ]
+    },
+    {
+      "id": "animal:orcaella-heinsohni",
+      "score": 44.82,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:otodectes-cynotis",
+      "score": 45.67,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:pangasianodon-hypophthalmus",
+      "score": 56.37,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:petromyzon-marinus",
+      "score": 51.14,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:plodia-interpunctella",
+      "score": 49.61,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:psoroptes-ovis",
+      "score": 43.75,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:rana-dalmatina",
+      "score": 47.47,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:ranoidea-caerulea",
+      "score": 48.9,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:rhinoderma-darwinii",
+      "score": 46.9,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:rhinophrynus-dorsalis",
+      "score": 47.53,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:rhynchophorus-ferrugineus",
+      "score": 49.82,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:rutilus-caspicus",
+      "score": 50.65,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:schismaderma-carens",
+      "score": 46.78,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:scophthalmus-maeoticus",
+      "score": 48.53,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:siphonops-annulatus",
+      "score": 48.49,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:sotalia-guianensis",
+      "score": 53.59,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:sphyrna-mokarran",
+      "score": 52.72,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:squalius-cephalus",
+      "score": 55.78,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:stenella-attenuata",
+      "score": 56.47,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:stenella-clymene",
+      "score": 52.61,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:sternula-albifrons",
+      "score": 55.81,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:sula-dactylatra",
+      "score": 50.33,
+      "reasons": [
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:taenia-saginata",
+      "score": 43.95,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:taenia-solium",
+      "score": 42.73,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:trichobatrachus-robustus",
+      "score": 47.06,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:trioceros-jacksonii",
+      "score": 55.73,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:tursiops-australis",
+      "score": 42.43,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:tursiops-truncatus-ponticus",
+      "score": 50.66,
+      "reasons": [
+        "missing-russian-display-name"
+      ]
+    },
+    {
+      "id": "animal:tyto-tenebricosa",
+      "score": 47.02,
+      "reasons": [
+        "missing-licensed-image",
+        "missing-identity-specific-hint"
+      ]
+    },
+    {
+      "id": "animal:vipera-renardi",
+      "score": 47.54,
+      "reasons": [
+        "missing-russian-display-name",
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:xiphias-gladius",
+      "score": 53.23,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    },
+    {
+      "id": "animal:zootoca-vivipara",
+      "score": 54.4,
+      "reasons": [
+        "core-criteria-below-70-percent"
+      ]
+    }
+  ],
+  "animals": [
+    {
+      "rank": 1,
+      "id": "animal:lion",
+      "commonNameRu": "лев",
+      "scientificName": "Panthera leo",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Panthera",
+      "difficulty": "easy",
+      "score": 90.98,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 2,
+      "id": "animal:canis-lupus",
+      "commonNameRu": "волк",
+      "scientificName": "Canis lupus",
+      "taxonomicClass": "Mammalia",
+      "family": "Canidae",
+      "genus": "Canis",
+      "difficulty": "easy",
+      "score": 80.1,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 3,
+      "id": "animal:sus-scrofa",
+      "commonNameRu": "кабан",
+      "scientificName": "Sus scrofa",
+      "taxonomicClass": "Mammalia",
+      "family": "Suidae",
+      "genus": "Sus",
+      "difficulty": "easy",
+      "score": 78.14,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 4,
+      "id": "animal:felis-catus",
+      "commonNameRu": "кошка",
+      "scientificName": "Felis catus",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Felis",
+      "difficulty": "easy",
+      "score": 79.2,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 5,
+      "id": "animal:giraffa-camelopardalis",
+      "commonNameRu": "жираф",
+      "scientificName": "Giraffa camelopardalis",
+      "taxonomicClass": "Mammalia",
+      "family": "Giraffidae",
+      "genus": "Giraffa",
+      "difficulty": "easy",
+      "score": 77.21,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 6,
+      "id": "animal:bos-taurus",
+      "commonNameRu": "домашний бык",
+      "scientificName": "Bos taurus",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Bos",
+      "difficulty": "easy",
+      "score": 76.72,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 7,
+      "id": "animal:orcinus-orca",
+      "commonNameRu": "косатка",
+      "scientificName": "Orcinus orca",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Orcinus",
+      "difficulty": "easy",
+      "score": 76.06,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 8,
+      "id": "animal:ursus-arctos",
+      "commonNameRu": "бурый медведь",
+      "scientificName": "Ursus arctos",
+      "taxonomicClass": "Mammalia",
+      "family": "Ursidae",
+      "genus": "Ursus",
+      "difficulty": "easy",
+      "score": 75.82,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 9,
+      "id": "animal:bison-bison",
+      "commonNameRu": "американский бизон",
+      "scientificName": "Bison bison",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Bison",
+      "difficulty": "easy",
+      "score": 75.87,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 10,
+      "id": "animal:meles-meles",
+      "commonNameRu": "барсук",
+      "scientificName": "Meles meles",
+      "taxonomicClass": "Mammalia",
+      "family": "Mustelidae",
+      "genus": "Meles",
+      "difficulty": "easy",
+      "score": 74.35,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 11,
+      "id": "animal:cavia-porcellus",
+      "commonNameRu": "морская свинка",
+      "scientificName": "Cavia porcellus",
+      "taxonomicClass": "Mammalia",
+      "family": "Caviidae",
+      "genus": "Cavia",
+      "difficulty": "easy",
+      "score": 73.99,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 12,
+      "id": "animal:acinonyx-jubatus",
+      "commonNameRu": "гепард",
+      "scientificName": "Acinonyx jubatus",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Acinonyx",
+      "difficulty": "easy",
+      "score": 75.16,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 13,
+      "id": "animal:ornithorhynchus-anatinus",
+      "commonNameRu": "утконос",
+      "scientificName": "Ornithorhynchus anatinus",
+      "taxonomicClass": "Mammalia",
+      "family": "Ornithorhynchidae",
+      "genus": "Ornithorhynchus",
+      "difficulty": "easy",
+      "score": 71.88,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 14,
+      "id": "animal:vulpes-vulpes",
+      "commonNameRu": "обыкновенная лисица",
+      "scientificName": "Vulpes vulpes",
+      "taxonomicClass": "Mammalia",
+      "family": "Canidae",
+      "genus": "Vulpes",
+      "difficulty": "easy",
+      "score": 78.38,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 15,
+      "id": "animal:megaptera-novaeangliae",
+      "commonNameRu": "Горбатый кит",
+      "scientificName": "Megaptera novaeangliae",
+      "taxonomicClass": "Mammalia",
+      "family": "Balaenopteridae",
+      "genus": "Megaptera",
+      "difficulty": "easy",
+      "score": 71.82,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 16,
+      "id": "animal:hippopotamus-amphibius",
+      "commonNameRu": "обыкновенный бегемот",
+      "scientificName": "Hippopotamus amphibius",
+      "taxonomicClass": "Mammalia",
+      "family": "Hippopotamidae",
+      "genus": "Hippopotamus",
+      "difficulty": "easy",
+      "score": 71.78,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 17,
+      "id": "animal:elephas-maximus",
+      "commonNameRu": "азиатский слон",
+      "scientificName": "Elephas maximus",
+      "taxonomicClass": "Mammalia",
+      "family": "Elephantidae",
+      "genus": "Elephas",
+      "difficulty": "easy",
+      "score": 71.56,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 18,
+      "id": "animal:hydrochoerus-hydrochaeris",
+      "commonNameRu": "капибара",
+      "scientificName": "Hydrochoerus hydrochaeris",
+      "taxonomicClass": "Mammalia",
+      "family": "Caviidae",
+      "genus": "Hydrochoerus",
+      "difficulty": "easy",
+      "score": 72.91,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 19,
+      "id": "animal:pan-troglodytes",
+      "commonNameRu": "обыкновенный шимпанзе",
+      "scientificName": "Pan troglodytes",
+      "taxonomicClass": "Mammalia",
+      "family": "Hominidae",
+      "genus": "Pan",
+      "difficulty": "easy",
+      "score": 71.41,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 20,
+      "id": "animal:phoca-vitulina",
+      "commonNameRu": "Обыкновенный тюлень",
+      "scientificName": "Phoca vitulina",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Phoca",
+      "difficulty": "easy",
+      "score": 71.35,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 21,
+      "id": "animal:ovis-aries",
+      "commonNameRu": "овца",
+      "scientificName": "Ovis aries",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Ovis",
+      "difficulty": "easy",
+      "score": 74.24,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 22,
+      "id": "animal:crocuta-crocuta",
+      "commonNameRu": "пятнистая гиена",
+      "scientificName": "Crocuta crocuta",
+      "taxonomicClass": "Mammalia",
+      "family": "Hyaenidae",
+      "genus": "Crocuta",
+      "difficulty": "easy",
+      "score": 71.18,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 23,
+      "id": "animal:cervus-elaphus",
+      "commonNameRu": "благородный олень",
+      "scientificName": "Cervus elaphus",
+      "taxonomicClass": "Mammalia",
+      "family": "Cervidae",
+      "genus": "Cervus",
+      "difficulty": "easy",
+      "score": 76.07,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 24,
+      "id": "animal:castor-fiber",
+      "commonNameRu": "обыкновенный бобр",
+      "scientificName": "Castor fiber",
+      "taxonomicClass": "Mammalia",
+      "family": "Castoridae",
+      "genus": "Castor",
+      "difficulty": "easy",
+      "score": 70.77,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 25,
+      "id": "animal:procyon-lotor",
+      "commonNameRu": "енот-полоскун",
+      "scientificName": "Procyon lotor",
+      "taxonomicClass": "Mammalia",
+      "family": "Procyonidae",
+      "genus": "Procyon",
+      "difficulty": "easy",
+      "score": 70.58,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 26,
+      "id": "animal:phascolarctos-cinereus",
+      "commonNameRu": "коала",
+      "scientificName": "Phascolarctos cinereus",
+      "taxonomicClass": "Mammalia",
+      "family": "Phascolarctidae",
+      "genus": "Phascolarctos",
+      "difficulty": "easy",
+      "score": 70.53,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 27,
+      "id": "animal:sciurus-vulgaris",
+      "commonNameRu": "обыкновенная белка",
+      "scientificName": "Sciurus vulgaris",
+      "taxonomicClass": "Mammalia",
+      "family": "Sciuridae",
+      "genus": "Sciurus",
+      "difficulty": "easy",
+      "score": 70.48,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 28,
+      "id": "animal:erinaceus-europaeus",
+      "commonNameRu": "обыкновенный ёж",
+      "scientificName": "Erinaceus europaeus",
+      "taxonomicClass": "Mammalia",
+      "family": "Erinaceidae",
+      "genus": "Erinaceus",
+      "difficulty": "easy",
+      "score": 70.47,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 29,
+      "id": "animal:mus-musculus",
+      "commonNameRu": "домовая мышь",
+      "scientificName": "Mus musculus",
+      "taxonomicClass": "Mammalia",
+      "family": "Muridae",
+      "genus": "Mus",
+      "difficulty": "easy",
+      "score": 69.92,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 30,
+      "id": "animal:suricata-suricatta",
+      "commonNameRu": "сурикат",
+      "scientificName": "Suricata suricatta",
+      "taxonomicClass": "Mammalia",
+      "family": "Herpestidae",
+      "genus": "Suricata",
+      "difficulty": "easy",
+      "score": 69.45,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 31,
+      "id": "animal:rangifer-tarandus",
+      "commonNameRu": "северный олень",
+      "scientificName": "Rangifer tarandus",
+      "taxonomicClass": "Mammalia",
+      "family": "Cervidae",
+      "genus": "Rangifer",
+      "difficulty": "easy",
+      "score": 70.57,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 32,
+      "id": "animal:ailurus-fulgens",
+      "commonNameRu": "малая панда",
+      "scientificName": "Ailurus fulgens",
+      "taxonomicClass": "Mammalia",
+      "family": "Ailuridae",
+      "genus": "Ailurus",
+      "difficulty": "easy",
+      "score": 68.43,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 33,
+      "id": "animal:ailuropoda-melanoleuca",
+      "commonNameRu": "большая панда",
+      "scientificName": "Ailuropoda melanoleuca",
+      "taxonomicClass": "Mammalia",
+      "family": "Ursidae",
+      "genus": "Ailuropoda",
+      "difficulty": "easy",
+      "score": 69.64,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 34,
+      "id": "animal:delphinapterus-leucas",
+      "commonNameRu": "белуха",
+      "scientificName": "Delphinapterus leucas",
+      "taxonomicClass": "Mammalia",
+      "family": "Monodontidae",
+      "genus": "Delphinapterus",
+      "difficulty": "easy",
+      "score": 72.91,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 35,
+      "id": "animal:lepus-timidus",
+      "commonNameRu": "заяц-беляк",
+      "scientificName": "Lepus timidus",
+      "taxonomicClass": "Mammalia",
+      "family": "Leporidae",
+      "genus": "Lepus",
+      "difficulty": "easy",
+      "score": 67.52,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 36,
+      "id": "animal:odobenus-rosmarus",
+      "commonNameRu": "морж",
+      "scientificName": "Odobenus rosmarus",
+      "taxonomicClass": "Mammalia",
+      "family": "Odobenidae",
+      "genus": "Odobenus",
+      "difficulty": "easy",
+      "score": 67.22,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 37,
+      "id": "animal:vicugna-pacos",
+      "commonNameRu": "Альпака",
+      "scientificName": "Vicugna pacos",
+      "taxonomicClass": "Mammalia",
+      "family": "Camelidae",
+      "genus": "Vicugna",
+      "difficulty": "easy",
+      "score": 67.21,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 38,
+      "id": "animal:lynx-lynx",
+      "commonNameRu": "обыкновенная рысь",
+      "scientificName": "Lynx lynx",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Lynx",
+      "difficulty": "easy",
+      "score": 70.86,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 39,
+      "id": "animal:globicephala-melas",
+      "commonNameRu": "Обыкновенная гринда",
+      "scientificName": "Globicephala melas",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Globicephala",
+      "difficulty": "medium",
+      "score": 67.46,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 40,
+      "id": "animal:dugong-dugon",
+      "commonNameRu": "дюгонь",
+      "scientificName": "Dugong dugon",
+      "taxonomicClass": "Mammalia",
+      "family": "Dugongidae",
+      "genus": "Dugong",
+      "difficulty": "easy",
+      "score": 65.64,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 41,
+      "id": "animal:physeter-macrocephalus",
+      "commonNameRu": "кашалот",
+      "scientificName": "Physeter macrocephalus",
+      "taxonomicClass": "Mammalia",
+      "family": "Physeteridae",
+      "genus": "Physeter",
+      "difficulty": "easy",
+      "score": 65.23,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 42,
+      "id": "animal:desmodus-rotundus",
+      "commonNameRu": "Обыкновенный вампир",
+      "scientificName": "Desmodus rotundus",
+      "taxonomicClass": "Mammalia",
+      "family": "Phyllostomidae",
+      "genus": "Desmodus",
+      "difficulty": "medium",
+      "score": 64.88,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 43,
+      "id": "animal:enhydra-lutris",
+      "commonNameRu": "Калан",
+      "scientificName": "Enhydra lutris",
+      "taxonomicClass": "Mammalia",
+      "family": "Mustelidae",
+      "genus": "Enhydra",
+      "difficulty": "easy",
+      "score": 66.06,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 44,
+      "id": "animal:talpa-europaea",
+      "commonNameRu": "европейский крот",
+      "scientificName": "Talpa europaea",
+      "taxonomicClass": "Mammalia",
+      "family": "Talpidae",
+      "genus": "Talpa",
+      "difficulty": "easy",
+      "score": 64.52,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 45,
+      "id": "animal:chinchilla-lanigera",
+      "commonNameRu": "Шиншилла",
+      "scientificName": "Chinchilla lanigera",
+      "taxonomicClass": "Mammalia",
+      "family": "Chinchillidae",
+      "genus": "Chinchilla",
+      "difficulty": "medium",
+      "score": 64.15,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 46,
+      "id": "animal:hydrurga-leptonyx",
+      "commonNameRu": "Морской леопард",
+      "scientificName": "Hydrurga leptonyx",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Hydrurga",
+      "difficulty": "easy",
+      "score": 65.01,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 47,
+      "id": "animal:camelus-bactrianus",
+      "commonNameRu": "двугорбый верблюд",
+      "scientificName": "Camelus bactrianus",
+      "taxonomicClass": "Mammalia",
+      "family": "Camelidae",
+      "genus": "Camelus",
+      "difficulty": "easy",
+      "score": 64.94,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 48,
+      "id": "animal:cricetus-cricetus",
+      "commonNameRu": "обыкновенный хомяк",
+      "scientificName": "Cricetus cricetus",
+      "taxonomicClass": "Mammalia",
+      "family": "Cricetidae",
+      "genus": "Cricetus",
+      "difficulty": "easy",
+      "score": 67.76,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 49,
+      "id": "animal:myrmecophaga-tridactyla",
+      "commonNameRu": "Гигантский муравьед",
+      "scientificName": "Myrmecophaga tridactyla",
+      "taxonomicClass": "Mammalia",
+      "family": "Myrmecophagidae",
+      "genus": "Myrmecophaga",
+      "difficulty": "medium",
+      "score": 62.66,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 50,
+      "id": "animal:capreolus-capreolus",
+      "commonNameRu": "европейская косуля",
+      "scientificName": "Capreolus capreolus",
+      "taxonomicClass": "Mammalia",
+      "family": "Cervidae",
+      "genus": "Capreolus",
+      "difficulty": "easy",
+      "score": 65.44,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 51,
+      "id": "animal:puma-concolor",
+      "commonNameRu": "пума",
+      "scientificName": "Puma concolor",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Puma",
+      "difficulty": "easy",
+      "score": 68.41,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 52,
+      "id": "animal:canis-lupus-familiaris",
+      "commonNameRu": "собака",
+      "scientificName": "Canis lupus familiaris",
+      "taxonomicClass": "Mammalia",
+      "family": "Canidae",
+      "genus": "Canis",
+      "difficulty": "easy",
+      "score": 74.36,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 53,
+      "id": "animal:saiga-tatarica",
+      "commonNameRu": "Сайга",
+      "scientificName": "Saiga tatarica",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Saiga",
+      "difficulty": "easy",
+      "score": 66.81,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 54,
+      "id": "animal:balaenoptera-musculus",
+      "commonNameRu": "синий кит",
+      "scientificName": "Balaenoptera musculus",
+      "taxonomicClass": "Mammalia",
+      "family": "Balaenopteridae",
+      "genus": "Balaenoptera",
+      "difficulty": "easy",
+      "score": 68.74,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 55,
+      "id": "animal:tursiops-truncatus",
+      "commonNameRu": "Афалина",
+      "scientificName": "Tursiops truncatus",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Tursiops",
+      "difficulty": "easy",
+      "score": 65.04,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 56,
+      "id": "animal:rattus-norvegicus",
+      "commonNameRu": "серая крыса",
+      "scientificName": "Rattus norvegicus",
+      "taxonomicClass": "Mammalia",
+      "family": "Muridae",
+      "genus": "Rattus",
+      "difficulty": "easy",
+      "score": 68.46,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 57,
+      "id": "animal:diceros-bicornis",
+      "commonNameRu": "чёрный носорог",
+      "scientificName": "Diceros bicornis",
+      "taxonomicClass": "Mammalia",
+      "family": "Rhinocerotidae",
+      "genus": "Diceros",
+      "difficulty": "easy",
+      "score": 66.95,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 58,
+      "id": "animal:callorhinus-ursinus",
+      "commonNameRu": "северный морской котик",
+      "scientificName": "Callorhinus ursinus",
+      "taxonomicClass": "Mammalia",
+      "family": "Otariidae",
+      "genus": "Callorhinus",
+      "difficulty": "medium",
+      "score": 61.41,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 59,
+      "id": "animal:tapirus-terrestris",
+      "commonNameRu": "Равнинный тапир",
+      "scientificName": "Tapirus terrestris",
+      "taxonomicClass": "Mammalia",
+      "family": "Tapiridae",
+      "genus": "Tapirus",
+      "difficulty": "medium",
+      "score": 60.59,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 60,
+      "id": "animal:hystrix-indica",
+      "commonNameRu": "Индийский дикобраз",
+      "scientificName": "Hystrix indica",
+      "taxonomicClass": "Mammalia",
+      "family": "Hystricidae",
+      "genus": "Hystrix",
+      "difficulty": "medium",
+      "score": 64.66,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 61,
+      "id": "animal:mirounga-leonina",
+      "commonNameRu": "Южный морской слон",
+      "scientificName": "Mirounga leonina",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Mirounga",
+      "difficulty": "medium",
+      "score": 62.6,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 62,
+      "id": "animal:ceratotherium-simum",
+      "commonNameRu": "белый носорог",
+      "scientificName": "Ceratotherium simum",
+      "taxonomicClass": "Mammalia",
+      "family": "Rhinocerotidae",
+      "genus": "Ceratotherium",
+      "difficulty": "easy",
+      "score": 65.4,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 63,
+      "id": "animal:petauroides-volans",
+      "commonNameRu": "Гигантский летучий кускус",
+      "scientificName": "Petauroides volans",
+      "taxonomicClass": "Mammalia",
+      "family": "Pseudocheiridae",
+      "genus": "Petauroides",
+      "difficulty": "medium",
+      "score": 58.1,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 64,
+      "id": "animal:sus-scrofa-domesticus",
+      "commonNameRu": "свинья",
+      "scientificName": "Sus scrofa domesticus",
+      "taxonomicClass": "Mammalia",
+      "family": "Suidae",
+      "genus": "Sus",
+      "difficulty": "easy",
+      "score": 68.54,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 65,
+      "id": "animal:lontra-felina",
+      "commonNameRu": "Кошачья выдра",
+      "scientificName": "Lontra felina",
+      "taxonomicClass": "Mammalia",
+      "family": "Mustelidae",
+      "genus": "Lontra",
+      "difficulty": "medium",
+      "score": 60.94,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 66,
+      "id": "animal:lobodon-carcinophaga",
+      "commonNameRu": "Крабоед",
+      "scientificName": "Lobodon carcinophaga",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Lobodon",
+      "difficulty": "medium",
+      "score": 61.97,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 67,
+      "id": "animal:solenodon-cubanus",
+      "commonNameRu": "Кубинский щелезуб",
+      "scientificName": "Solenodon cubanus",
+      "taxonomicClass": "Mammalia",
+      "family": "Solenodontidae",
+      "genus": "Solenodon",
+      "difficulty": "medium",
+      "score": 57.31,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 68,
+      "id": "animal:panthera-tigris",
+      "commonNameRu": "тигр",
+      "scientificName": "Panthera tigris",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Panthera",
+      "difficulty": "easy",
+      "score": 73.71,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 69,
+      "id": "animal:acrobates-pygmaeus",
+      "commonNameRu": "Карликовый летучий кускус",
+      "scientificName": "Acrobates pygmaeus",
+      "taxonomicClass": "Mammalia",
+      "family": "Acrobatidae",
+      "genus": "Acrobates",
+      "difficulty": "hard",
+      "score": 56.42,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 70,
+      "id": "animal:delphinus-delphis",
+      "commonNameRu": "Дельфин-белобочка",
+      "scientificName": "Delphinus delphis",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Delphinus",
+      "difficulty": "medium",
+      "score": 60.71,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 71,
+      "id": "animal:syncerus-caffer",
+      "commonNameRu": "Африканский буйвол",
+      "scientificName": "Syncerus caffer",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Syncerus",
+      "difficulty": "easy",
+      "score": 61.99,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 72,
+      "id": "animal:blarina-brevicauda",
+      "commonNameRu": "Обыкновенная короткохвостая бурозубка",
+      "scientificName": "Blarina brevicauda",
+      "taxonomicClass": "Mammalia",
+      "family": "Soricidae",
+      "genus": "Blarina",
+      "difficulty": "hard",
+      "score": 55.29,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 73,
+      "id": "animal:bradypus-tridactylus",
+      "commonNameRu": "Трёхпалый ленивец",
+      "scientificName": "Bradypus tridactylus",
+      "taxonomicClass": "Mammalia",
+      "family": "Bradypodidae",
+      "genus": "Bradypus",
+      "difficulty": "medium",
+      "score": 59.65,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 74,
+      "id": "animal:monachus-schauinslandi",
+      "commonNameRu": "Гавайский тюлень-монах",
+      "scientificName": "Monachus schauinslandi",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Neomonachus",
+      "difficulty": "medium",
+      "score": 60.62,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 75,
+      "id": "animal:mephitis-mephitis",
+      "commonNameRu": "полосатый скунс",
+      "scientificName": "Mephitis mephitis",
+      "taxonomicClass": "Mammalia",
+      "family": "Mephitidae",
+      "genus": "Mephitis",
+      "difficulty": "medium",
+      "score": 64.59,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 76,
+      "id": "animal:herpestes-smithii",
+      "commonNameRu": "Индийский мангуст",
+      "scientificName": "Herpestes smithii",
+      "taxonomicClass": "Mammalia",
+      "family": "Herpestidae",
+      "genus": "Herpestes",
+      "difficulty": "hard",
+      "score": 55.77,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 77,
+      "id": "animal:pongo-abelii",
+      "commonNameRu": "Суматранский орангутан",
+      "scientificName": "Pongo abelii",
+      "taxonomicClass": "Mammalia",
+      "family": "Hominidae",
+      "genus": "Pongo",
+      "difficulty": "medium",
+      "score": 60.41,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 78,
+      "id": "animal:loxodonta-africana",
+      "commonNameRu": "Саванный слон",
+      "scientificName": "Loxodonta africana",
+      "taxonomicClass": "Mammalia",
+      "family": "Elephantidae",
+      "genus": "Loxodonta",
+      "difficulty": "easy",
+      "score": 65.04,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 79,
+      "id": "animal:zalophus-californianus",
+      "commonNameRu": "калифорнийский морской лев",
+      "scientificName": "Zalophus californianus",
+      "taxonomicClass": "Mammalia",
+      "family": "Otariidae",
+      "genus": "Zalophus",
+      "difficulty": "medium",
+      "score": 60.03,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 80,
+      "id": "animal:grampus-griseus",
+      "commonNameRu": "серый дельфин",
+      "scientificName": "Grampus griseus",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Grampus",
+      "difficulty": "medium",
+      "score": 59.38,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 81,
+      "id": "animal:ursus-maritimus",
+      "commonNameRu": "белый медведь",
+      "scientificName": "Ursus maritimus",
+      "taxonomicClass": "Mammalia",
+      "family": "Ursidae",
+      "genus": "Ursus",
+      "difficulty": "easy",
+      "score": 69.75,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 82,
+      "id": "animal:crocidura-canariensis",
+      "commonNameRu": "канарская белозубка",
+      "scientificName": "Crocidura canariensis",
+      "taxonomicClass": "Mammalia",
+      "family": "Soricidae",
+      "genus": "Crocidura",
+      "difficulty": "hard",
+      "score": 53.56,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 83,
+      "id": "animal:diaemus-youngi",
+      "commonNameRu": "Белокрылый вампир",
+      "scientificName": "Diaemus youngii",
+      "taxonomicClass": "Mammalia",
+      "family": "Phyllostomidae",
+      "genus": "Diaemus",
+      "difficulty": "medium",
+      "score": 53.54,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 84,
+      "id": "animal:erignathus-barbatus",
+      "commonNameRu": "морской заяц",
+      "scientificName": "Erignathus barbatus",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Erignathus",
+      "difficulty": "easy",
+      "score": 63.97,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 85,
+      "id": "animal:lophiomys-imhausi",
+      "commonNameRu": "Косматый хомяк",
+      "scientificName": "Lophiomys imhausi",
+      "taxonomicClass": "Mammalia",
+      "family": "Cricetidae",
+      "genus": "Lophiomys",
+      "difficulty": "medium",
+      "score": 57.7,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 86,
+      "id": "animal:camelus-dromedarius",
+      "commonNameRu": "одногорбый верблюд",
+      "scientificName": "Camelus dromedarius",
+      "taxonomicClass": "Mammalia",
+      "family": "Camelidae",
+      "genus": "Camelus",
+      "difficulty": "easy",
+      "score": 68.1,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 87,
+      "id": "animal:capra-aegagrus-hircus",
+      "commonNameRu": "коза домашняя",
+      "scientificName": "Capra aegagrus",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Capra",
+      "difficulty": "easy",
+      "score": 58.56,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 88,
+      "id": "animal:pseudorca-crassidens",
+      "commonNameRu": "Малая косатка",
+      "scientificName": "Pseudorca crassidens",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Pseudorca",
+      "difficulty": "medium",
+      "score": 62.46,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 89,
+      "id": "animal:diphylla-ecaudata",
+      "commonNameRu": "Мохноногий вампир",
+      "scientificName": "Diphylla ecaudata",
+      "taxonomicClass": "Mammalia",
+      "family": "Phyllostomidae",
+      "genus": "Diphylla",
+      "difficulty": "medium",
+      "score": 57.55,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 90,
+      "id": "animal:bison-bonasus",
+      "commonNameRu": "Зубp",
+      "scientificName": "Bison bonasus",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Bison",
+      "difficulty": "easy",
+      "score": 70.96,
+      "selectionReason": "class-minimum:Mammalia"
+    },
+    {
+      "rank": 91,
+      "id": "animal:passer-domesticus",
+      "commonNameRu": "домовый воробей",
+      "scientificName": "Passer domesticus",
+      "taxonomicClass": "Aves",
+      "family": "Passeridae",
+      "genus": "Passer",
+      "difficulty": "easy",
+      "score": 77.18,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 92,
+      "id": "animal:pica-pica",
+      "commonNameRu": "сорока",
+      "scientificName": "Pica pica",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Pica",
+      "difficulty": "easy",
+      "score": 76.76,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 93,
+      "id": "animal:pyrrhula-pyrrhula",
+      "commonNameRu": "снегирь",
+      "scientificName": "Pyrrhula pyrrhula",
+      "taxonomicClass": "Aves",
+      "family": "Fringillidae",
+      "genus": "Pyrrhula",
+      "difficulty": "easy",
+      "score": 76.66,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 94,
+      "id": "animal:ciconia-ciconia",
+      "commonNameRu": "белый аист",
+      "scientificName": "Ciconia ciconia",
+      "taxonomicClass": "Aves",
+      "family": "Ciconiidae",
+      "genus": "Ciconia",
+      "difficulty": "easy",
+      "score": 75.74,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 95,
+      "id": "animal:corvus-frugilegus",
+      "commonNameRu": "грач",
+      "scientificName": "Corvus frugilegus",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Corvus",
+      "difficulty": "easy",
+      "score": 76.1,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 96,
+      "id": "animal:cygnus-olor",
+      "commonNameRu": "лебедь-шипун",
+      "scientificName": "Cygnus olor",
+      "taxonomicClass": "Aves",
+      "family": "Anatidae",
+      "genus": "Cygnus",
+      "difficulty": "easy",
+      "score": 74.11,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 97,
+      "id": "animal:parus-major",
+      "commonNameRu": "большая синица",
+      "scientificName": "Parus major",
+      "taxonomicClass": "Aves",
+      "family": "Paridae",
+      "genus": "Parus",
+      "difficulty": "easy",
+      "score": 73.79,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 98,
+      "id": "animal:aquila-chrysaetos",
+      "commonNameRu": "беркут",
+      "scientificName": "Aquila chrysaetos",
+      "taxonomicClass": "Aves",
+      "family": "Accipitridae",
+      "genus": "Aquila",
+      "difficulty": "easy",
+      "score": 73.65,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 99,
+      "id": "animal:strigops-habroptila",
+      "commonNameRu": "какапо",
+      "scientificName": "Strigops habroptila",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Strigops",
+      "difficulty": "easy",
+      "score": 72.6,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 100,
+      "id": "animal:anser-anser",
+      "commonNameRu": "серый гусь",
+      "scientificName": "Anser anser",
+      "taxonomicClass": "Aves",
+      "family": "Anatidae",
+      "genus": "Anser",
+      "difficulty": "easy",
+      "score": 73.79,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 101,
+      "id": "animal:gallus-gallus-domesticus",
+      "commonNameRu": "курица",
+      "scientificName": "Gallus gallus domesticus",
+      "taxonomicClass": "Aves",
+      "family": "Phasianidae",
+      "genus": "Gallus",
+      "difficulty": "easy",
+      "score": 72.21,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 102,
+      "id": "animal:sturnus-vulgaris",
+      "commonNameRu": "обыкновенный скворец",
+      "scientificName": "Sturnus vulgaris",
+      "taxonomicClass": "Aves",
+      "family": "Sturnidae",
+      "genus": "Sturnus",
+      "difficulty": "easy",
+      "score": 76.65,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 103,
+      "id": "animal:falco-peregrinus",
+      "commonNameRu": "сапсан",
+      "scientificName": "Falco peregrinus",
+      "taxonomicClass": "Aves",
+      "family": "Falconidae",
+      "genus": "Falco",
+      "difficulty": "easy",
+      "score": 71.03,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 104,
+      "id": "animal:sterna-hirundo",
+      "commonNameRu": "речная крачка",
+      "scientificName": "Sterna hirundo",
+      "taxonomicClass": "Aves",
+      "family": "Laridae",
+      "genus": "Sterna",
+      "difficulty": "medium",
+      "score": 70.25,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 105,
+      "id": "animal:struthio-camelus",
+      "commonNameRu": "страус",
+      "scientificName": "Struthio camelus",
+      "taxonomicClass": "Aves",
+      "family": "Struthionidae",
+      "genus": "Struthio",
+      "difficulty": "easy",
+      "score": 70.22,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 106,
+      "id": "animal:columba-livia",
+      "commonNameRu": "сизый голубь",
+      "scientificName": "Columba livia",
+      "taxonomicClass": "Aves",
+      "family": "Columbidae",
+      "genus": "Columba",
+      "difficulty": "easy",
+      "score": 70.11,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 107,
+      "id": "animal:aptenodytes-patagonicus",
+      "commonNameRu": "королевский пингвин",
+      "scientificName": "Aptenodytes patagonicus",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Aptenodytes",
+      "difficulty": "medium",
+      "score": 69.32,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 108,
+      "id": "animal:tyto-alba",
+      "commonNameRu": "обыкновенная сипуха",
+      "scientificName": "Tyto alba",
+      "taxonomicClass": "Aves",
+      "family": "Tytonidae",
+      "genus": "Tyto",
+      "difficulty": "easy",
+      "score": 74.23,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 109,
+      "id": "animal:dromaius-novaehollandiae",
+      "commonNameRu": "эму",
+      "scientificName": "Dromaius novaehollandiae",
+      "taxonomicClass": "Aves",
+      "family": "Dromaiidae",
+      "genus": "Dromaius",
+      "difficulty": "easy",
+      "score": 69.01,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 110,
+      "id": "animal:anas-platyrhynchos",
+      "commonNameRu": "кряква",
+      "scientificName": "Anas platyrhynchos",
+      "taxonomicClass": "Aves",
+      "family": "Anatidae",
+      "genus": "Anas",
+      "difficulty": "easy",
+      "score": 70.32,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 111,
+      "id": "animal:ardea-cinerea",
+      "commonNameRu": "серая цапля",
+      "scientificName": "Ardea cinerea",
+      "taxonomicClass": "Aves",
+      "family": "Ardeidae",
+      "genus": "Ardea",
+      "difficulty": "easy",
+      "score": 72.32,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 112,
+      "id": "animal:grus-grus",
+      "commonNameRu": "серый журавль",
+      "scientificName": "Grus grus",
+      "taxonomicClass": "Aves",
+      "family": "Gruidae",
+      "genus": "Grus",
+      "difficulty": "easy",
+      "score": 67.24,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 113,
+      "id": "animal:ara-militaris",
+      "commonNameRu": "Малый солдатский ара",
+      "scientificName": "Ara militaris",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Ara",
+      "difficulty": "medium",
+      "score": 68.27,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 114,
+      "id": "animal:acridotheres-tristis",
+      "commonNameRu": "обыкновенная майна",
+      "scientificName": "Acridotheres tristis",
+      "taxonomicClass": "Aves",
+      "family": "Sturnidae",
+      "genus": "Acridotheres",
+      "difficulty": "easy",
+      "score": 73.25,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 115,
+      "id": "animal:pavo-cristatus",
+      "commonNameRu": "Обыкновенный павлин",
+      "scientificName": "Pavo cristatus",
+      "taxonomicClass": "Aves",
+      "family": "Phasianidae",
+      "genus": "Pavo",
+      "difficulty": "easy",
+      "score": 68,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 116,
+      "id": "animal:pelecanus-onocrotalus",
+      "commonNameRu": "розовый пеликан",
+      "scientificName": "Pelecanus onocrotalus",
+      "taxonomicClass": "Aves",
+      "family": "Pelecanidae",
+      "genus": "Pelecanus",
+      "difficulty": "medium",
+      "score": 65.86,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 117,
+      "id": "animal:dendrocopos-major",
+      "commonNameRu": "большой пёстрый дятел",
+      "scientificName": "Dendrocopos major",
+      "taxonomicClass": "Aves",
+      "family": "Picidae",
+      "genus": "Dendrocopos",
+      "difficulty": "easy",
+      "score": 65.29,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 118,
+      "id": "animal:bubo-bubo",
+      "commonNameRu": "филин",
+      "scientificName": "Bubo bubo",
+      "taxonomicClass": "Aves",
+      "family": "Strigidae",
+      "genus": "Bubo",
+      "difficulty": "easy",
+      "score": 70.17,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 119,
+      "id": "animal:psittacus-erithacus",
+      "commonNameRu": "жако",
+      "scientificName": "Psittacus erithacus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Psittacus",
+      "difficulty": "easy",
+      "score": 68,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 120,
+      "id": "animal:casuarius-casuarius",
+      "commonNameRu": "Шлемоносный казуар",
+      "scientificName": "Casuarius casuarius",
+      "taxonomicClass": "Aves",
+      "family": "Casuariidae",
+      "genus": "Casuarius",
+      "difficulty": "medium",
+      "score": 64.27,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 121,
+      "id": "animal:phoenicopterus-roseus",
+      "commonNameRu": "Обыкновенный фламинго",
+      "scientificName": "Phoenicopterus roseus",
+      "taxonomicClass": "Aves",
+      "family": "Phoenicopteridae",
+      "genus": "Phoenicopterus",
+      "difficulty": "easy",
+      "score": 64.17,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 122,
+      "id": "animal:corvus-corax",
+      "commonNameRu": "ворон",
+      "scientificName": "Corvus corax",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Corvus",
+      "difficulty": "easy",
+      "score": 75.2,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 123,
+      "id": "animal:psittacula-krameri",
+      "commonNameRu": "Индийский кольчатый попугай",
+      "scientificName": "Psittacula krameri",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Psittacula",
+      "difficulty": "easy",
+      "score": 67.02,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 124,
+      "id": "animal:diomedea-exulans",
+      "commonNameRu": "Странствующий альбатрос",
+      "scientificName": "Diomedea exulans",
+      "taxonomicClass": "Aves",
+      "family": "Diomedeidae",
+      "genus": "Diomedea",
+      "difficulty": "medium",
+      "score": 61.76,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 125,
+      "id": "animal:burhinus-oedicnemus",
+      "commonNameRu": "Авдотка",
+      "scientificName": "Burhinus oedicnemus",
+      "taxonomicClass": "Aves",
+      "family": "Burhinidae",
+      "genus": "Burhinus",
+      "difficulty": "medium",
+      "score": 61.3,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 126,
+      "id": "animal:daption-capense",
+      "commonNameRu": "Капский голубок",
+      "scientificName": "Daption capense",
+      "taxonomicClass": "Aves",
+      "family": "Procellariidae",
+      "genus": "Daption",
+      "difficulty": "medium",
+      "score": 60.06,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 127,
+      "id": "animal:ramphastos-toco",
+      "commonNameRu": "Большой тукан",
+      "scientificName": "Ramphastos toco",
+      "taxonomicClass": "Aves",
+      "family": "Ramphastidae",
+      "genus": "Ramphastos",
+      "difficulty": "medium",
+      "score": 64.89,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 128,
+      "id": "animal:meleagris-gallopavo",
+      "commonNameRu": "Дикая индейка",
+      "scientificName": "Meleagris gallopavo",
+      "taxonomicClass": "Aves",
+      "family": "Phasianidae",
+      "genus": "Meleagris",
+      "difficulty": "easy",
+      "score": 67.83,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 129,
+      "id": "animal:pyrrhocorax-graculus",
+      "commonNameRu": "Альпийская галка",
+      "scientificName": "Pyrrhocorax graculus",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Pyrrhocorax",
+      "difficulty": "medium",
+      "score": 63.72,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 130,
+      "id": "animal:cyanopsitta-spixii",
+      "commonNameRu": "Голубой ара",
+      "scientificName": "Cyanopsitta spixii",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Cyanopsitta",
+      "difficulty": "easy",
+      "score": 64.11,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 131,
+      "id": "animal:stercorarius-maccormicki",
+      "commonNameRu": "Южнополярный поморник",
+      "scientificName": "Stercorarius maccormicki",
+      "taxonomicClass": "Aves",
+      "family": "Stercorariidae",
+      "genus": "Stercorarius",
+      "difficulty": "medium",
+      "score": 57.01,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 132,
+      "id": "animal:nymphicus-hollandicus",
+      "commonNameRu": "Корелла",
+      "scientificName": "Nymphicus hollandicus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Nymphicus",
+      "difficulty": "easy",
+      "score": 68.89,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 133,
+      "id": "animal:gallirallus-australis",
+      "commonNameRu": "Пастушок-уэка",
+      "scientificName": "Gallirallus australis",
+      "taxonomicClass": "Aves",
+      "family": "Rallidae",
+      "genus": "Gallirallus",
+      "difficulty": "medium",
+      "score": 61.36,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 134,
+      "id": "animal:pygoscelis-adeliae",
+      "commonNameRu": "Пингвин Адели",
+      "scientificName": "Pygoscelis adeliae",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Pygoscelis",
+      "difficulty": "medium",
+      "score": 61.89,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 135,
+      "id": "animal:ardeotis-kori",
+      "commonNameRu": "Африканская большая дрофа",
+      "scientificName": "Ardeotis kori",
+      "taxonomicClass": "Aves",
+      "family": "Otididae",
+      "genus": "Ardeotis",
+      "difficulty": "medium",
+      "score": 54.34,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 136,
+      "id": "animal:anous-stolidus",
+      "commonNameRu": "Обыкновенная глупая крачка",
+      "scientificName": "Anous stolidus",
+      "taxonomicClass": "Aves",
+      "family": "Laridae",
+      "genus": "Anous",
+      "difficulty": "medium",
+      "score": 60.3,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 137,
+      "id": "animal:cinnyricinclus-leucogaster",
+      "commonNameRu": "Аметистовый короткохвостый скворец",
+      "scientificName": "Cinnyricinclus leucogaster",
+      "taxonomicClass": "Aves",
+      "family": "Sturnidae",
+      "genus": "Cinnyricinclus",
+      "difficulty": "medium",
+      "score": 56.78,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 138,
+      "id": "animal:porphyrio-hochstetteri",
+      "commonNameRu": "Такахе",
+      "scientificName": "Porphyrio hochstetteri",
+      "taxonomicClass": "Aves",
+      "family": "Rallidae",
+      "genus": "Porphyrio",
+      "difficulty": "medium",
+      "score": 60.23,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 139,
+      "id": "animal:anodorhynchus-hyacinthinus",
+      "commonNameRu": "гиацинтовый ара",
+      "scientificName": "Anodorhynchus hyacinthinus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Anodorhynchus",
+      "difficulty": "medium",
+      "score": 62.09,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 140,
+      "id": "animal:taeniopygia-guttata",
+      "commonNameRu": "Зебровая амадина",
+      "scientificName": "Taeniopygia guttata",
+      "taxonomicClass": "Aves",
+      "family": "Estrildidae",
+      "genus": "Taeniopygia",
+      "difficulty": "medium",
+      "score": 61.3,
+      "selectionReason": "class-minimum:Aves"
+    },
+    {
+      "rank": 141,
+      "id": "animal:esox-lucius",
+      "commonNameRu": "щука",
+      "scientificName": "Esox lucius",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Esocidae",
+      "genus": "Esox",
+      "difficulty": "easy",
+      "score": 67.19,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 142,
+      "id": "animal:silurus-glanis",
+      "commonNameRu": "обыкновенный сом",
+      "scientificName": "Silurus glanis",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Siluridae",
+      "genus": "Silurus",
+      "difficulty": "easy",
+      "score": 67.04,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 143,
+      "id": "animal:anguilla-anguilla",
+      "commonNameRu": "речной угорь",
+      "scientificName": "Anguilla anguilla",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Anguillidae",
+      "genus": "Anguilla",
+      "difficulty": "easy",
+      "score": 66.21,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 144,
+      "id": "animal:lota-lota",
+      "commonNameRu": "налим",
+      "scientificName": "Lota lota",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Lotidae",
+      "genus": "Lota",
+      "difficulty": "easy",
+      "score": 65.77,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 145,
+      "id": "animal:poecilia-reticulata",
+      "commonNameRu": "гуппи",
+      "scientificName": "Poecilia reticulata",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Poeciliidae",
+      "genus": "Poecilia",
+      "difficulty": "easy",
+      "score": 64.22,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 146,
+      "id": "animal:cyprinus-carpio",
+      "commonNameRu": "сазан",
+      "scientificName": "Cyprinus carpio",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Cyprinus",
+      "difficulty": "easy",
+      "score": 63.48,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 147,
+      "id": "animal:huso-huso",
+      "commonNameRu": "белуга",
+      "scientificName": "Huso huso",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Acipenseridae",
+      "genus": "Huso",
+      "difficulty": "easy",
+      "score": 63.37,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 148,
+      "id": "animal:salmo-trutta",
+      "commonNameRu": "кумжа",
+      "scientificName": "Salmo trutta",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Salmo",
+      "difficulty": "easy",
+      "score": 61.57,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 149,
+      "id": "animal:electrophorus-electricus",
+      "commonNameRu": "Электрический угорь",
+      "scientificName": "Electrophorus electricus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Gymnotidae",
+      "genus": "Electrophorus",
+      "difficulty": "easy",
+      "score": 61.47,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 150,
+      "id": "animal:perca-fluviatilis",
+      "commonNameRu": "речной окунь",
+      "scientificName": "Perca fluviatilis",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Percidae",
+      "genus": "Perca",
+      "difficulty": "easy",
+      "score": 65.89,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 151,
+      "id": "animal:dicentrarchus-labrax",
+      "commonNameRu": "обыкновенный лаврак",
+      "scientificName": "Dicentrarchus labrax",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Moronidae",
+      "genus": "Dicentrarchus",
+      "difficulty": "easy",
+      "score": 64.79,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 152,
+      "id": "animal:oncorhynchus-mykiss",
+      "commonNameRu": "Микижа",
+      "scientificName": "Oncorhynchus mykiss",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Oncorhynchus",
+      "difficulty": "easy",
+      "score": 61.06,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 153,
+      "id": "animal:scardinius-erythrophthalmus",
+      "commonNameRu": "краснопёрка",
+      "scientificName": "Scardinius erythrophthalmus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Scardinius",
+      "difficulty": "easy",
+      "score": 60.32,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 154,
+      "id": "animal:gymnocephalus-cernua",
+      "commonNameRu": "обыкновенный ёрш",
+      "scientificName": "Gymnocephalus cernua",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Percidae",
+      "genus": "Gymnocephalus",
+      "difficulty": "easy",
+      "score": 58.33,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 155,
+      "id": "animal:thunnus-thynnus",
+      "commonNameRu": "обыкновенный тунец",
+      "scientificName": "Thunnus thynnus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Scombridae",
+      "genus": "Thunnus",
+      "difficulty": "medium",
+      "score": 56.83,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 156,
+      "id": "animal:betta-splendens",
+      "commonNameRu": "бойцовая рыбка",
+      "scientificName": "Betta splendens",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Osphronemidae",
+      "genus": "Betta",
+      "difficulty": "easy",
+      "score": 61.41,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 157,
+      "id": "animal:clarias-gariepinus",
+      "commonNameRu": "Африканский клариевый сом",
+      "scientificName": "Clarias gariepinus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Clariidae",
+      "genus": "Clarias",
+      "difficulty": "medium",
+      "score": 55.74,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 158,
+      "id": "animal:hucho-taimen",
+      "commonNameRu": "Обыкновенный таймень",
+      "scientificName": "Hucho taimen",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Hucho",
+      "difficulty": "easy",
+      "score": 58.33,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 159,
+      "id": "animal:ictalurus-punctatus",
+      "commonNameRu": "Канальный сомик",
+      "scientificName": "Ictalurus punctatus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Ictaluridae",
+      "genus": "Ictalurus",
+      "difficulty": "medium",
+      "score": 59.96,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 160,
+      "id": "animal:acipenser-baerii",
+      "commonNameRu": "Сибирский осётр",
+      "scientificName": "Acipenser baerii",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Acipenseridae",
+      "genus": "Acipenser",
+      "difficulty": "medium",
+      "score": 56.43,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 161,
+      "id": "animal:chondrostoma-nasus",
+      "commonNameRu": "Обыкновенный подуст",
+      "scientificName": "Chondrostoma nasus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Chondrostoma",
+      "difficulty": "medium",
+      "score": 57.67,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 162,
+      "id": "animal:pygocentrus-nattereri",
+      "commonNameRu": "Обыкновенная пиранья",
+      "scientificName": "Pygocentrus nattereri",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Serrasalmidae",
+      "genus": "Pygocentrus",
+      "difficulty": "medium",
+      "score": 54.18,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 163,
+      "id": "animal:carassius-auratus",
+      "commonNameRu": "золотая рыбка",
+      "scientificName": "Carassius auratus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Carassius",
+      "difficulty": "easy",
+      "score": 61.89,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 164,
+      "id": "animal:mugil-cephalus",
+      "commonNameRu": "лобан",
+      "scientificName": "Mugil cephalus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Mugilidae",
+      "genus": "Mugil",
+      "difficulty": "easy",
+      "score": 60.24,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 165,
+      "id": "animal:sander-lucioperca",
+      "commonNameRu": "обыкновенный судак",
+      "scientificName": "Sander lucioperca",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Percidae",
+      "genus": "Sander",
+      "difficulty": "easy",
+      "score": 62.53,
+      "selectionReason": "class-minimum:Actinopterygii"
+    },
+    {
+      "rank": 166,
+      "id": "animal:alligator-mississippiensis",
+      "commonNameRu": "миссисипский аллигатор",
+      "scientificName": "Alligator mississippiensis",
+      "taxonomicClass": "Reptilia",
+      "family": "Alligatoridae",
+      "genus": "Alligator",
+      "difficulty": "medium",
+      "score": 69.27,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 167,
+      "id": "animal:dermochelys-coriacea",
+      "commonNameRu": "кожистая черепаха",
+      "scientificName": "Dermochelys coriacea",
+      "taxonomicClass": "Reptilia",
+      "family": "Dermochelyidae",
+      "genus": "Dermochelys",
+      "difficulty": "easy",
+      "score": 66.69,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 168,
+      "id": "animal:crocodylus-niloticus",
+      "commonNameRu": "Нильский крокодил",
+      "scientificName": "Crocodylus niloticus",
+      "taxonomicClass": "Reptilia",
+      "family": "Crocodylidae",
+      "genus": "Crocodylus",
+      "difficulty": "easy",
+      "score": 65.39,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 169,
+      "id": "animal:vipera-berus",
+      "commonNameRu": "обыкновенная гадюка",
+      "scientificName": "Vipera berus",
+      "taxonomicClass": "Reptilia",
+      "family": "Viperidae",
+      "genus": "Vipera",
+      "difficulty": "easy",
+      "score": 64.17,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 170,
+      "id": "animal:iguana-iguana",
+      "commonNameRu": "обыкновенная игуана",
+      "scientificName": "Iguana iguana",
+      "taxonomicClass": "Reptilia",
+      "family": "Iguanidae",
+      "genus": "Iguana",
+      "difficulty": "easy",
+      "score": 63.72,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 171,
+      "id": "animal:natrix-natrix",
+      "commonNameRu": "обыкновенный уж",
+      "scientificName": "Natrix natrix",
+      "taxonomicClass": "Reptilia",
+      "family": "Colubridae",
+      "genus": "Natrix",
+      "difficulty": "easy",
+      "score": 62.97,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 172,
+      "id": "animal:ophiophagus-hannah",
+      "commonNameRu": "королевская кобра",
+      "scientificName": "Ophiophagus hannah",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Ophiophagus",
+      "difficulty": "easy",
+      "score": 62.95,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 173,
+      "id": "animal:python-regius",
+      "commonNameRu": "королевский питон",
+      "scientificName": "Python regius",
+      "taxonomicClass": "Reptilia",
+      "family": "Pythonidae",
+      "genus": "Python",
+      "difficulty": "medium",
+      "score": 62.27,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 174,
+      "id": "animal:testudo-graeca",
+      "commonNameRu": "Средиземноморская черепаха",
+      "scientificName": "Testudo graeca",
+      "taxonomicClass": "Reptilia",
+      "family": "Testudinidae",
+      "genus": "Testudo",
+      "difficulty": "medium",
+      "score": 60.81,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 175,
+      "id": "animal:varanus-komodoensis",
+      "commonNameRu": "комодский варан",
+      "scientificName": "Varanus komodoensis",
+      "taxonomicClass": "Reptilia",
+      "family": "Varanidae",
+      "genus": "Varanus",
+      "difficulty": "easy",
+      "score": 64.55,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 176,
+      "id": "animal:dendroaspis-viridis",
+      "commonNameRu": "Зелёная мамба",
+      "scientificName": "Dendroaspis viridis",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Dendroaspis",
+      "difficulty": "medium",
+      "score": 60.62,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 177,
+      "id": "animal:lacerta-agilis",
+      "commonNameRu": "прыткая ящерица",
+      "scientificName": "Lacerta agilis",
+      "taxonomicClass": "Reptilia",
+      "family": "Lacertidae",
+      "genus": "Lacerta",
+      "difficulty": "easy",
+      "score": 58.55,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 178,
+      "id": "animal:mecistops-cataphractus",
+      "commonNameRu": "Африканский узкорылый крокодил",
+      "scientificName": "Mecistops cataphractus",
+      "taxonomicClass": "Reptilia",
+      "family": "Crocodylidae",
+      "genus": "Mecistops",
+      "difficulty": "medium",
+      "score": 58.66,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 179,
+      "id": "animal:bitis-gabonica",
+      "commonNameRu": "Габонская гадюка",
+      "scientificName": "Bitis gabonica",
+      "taxonomicClass": "Reptilia",
+      "family": "Viperidae",
+      "genus": "Bitis",
+      "difficulty": "medium",
+      "score": 61.66,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 180,
+      "id": "animal:hemidactylus-turcicus",
+      "commonNameRu": "Турецкий полупалый геккон",
+      "scientificName": "Hemidactylus turcicus",
+      "taxonomicClass": "Reptilia",
+      "family": "Gekkonidae",
+      "genus": "Hemidactylus",
+      "difficulty": "medium",
+      "score": 58.97,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 181,
+      "id": "animal:amblyrhynchus-cristatus",
+      "commonNameRu": "морская игуана",
+      "scientificName": "Amblyrhynchus cristatus",
+      "taxonomicClass": "Reptilia",
+      "family": "Iguanidae",
+      "genus": "Amblyrhynchus",
+      "difficulty": "easy",
+      "score": 60.22,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 182,
+      "id": "animal:eunectes-murinus",
+      "commonNameRu": "анаконда",
+      "scientificName": "Eunectes murinus",
+      "taxonomicClass": "Reptilia",
+      "family": "Boidae",
+      "genus": "Eunectes",
+      "difficulty": "easy",
+      "score": 63.57,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 183,
+      "id": "animal:naja-haje",
+      "commonNameRu": "Египетская кобра",
+      "scientificName": "Naja haje",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Naja",
+      "difficulty": "medium",
+      "score": 59.76,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 184,
+      "id": "animal:python-molurus",
+      "commonNameRu": "Тигровый питон",
+      "scientificName": "Python molurus",
+      "taxonomicClass": "Reptilia",
+      "family": "Pythonidae",
+      "genus": "Python",
+      "difficulty": "medium",
+      "score": 61.59,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 185,
+      "id": "animal:chamaeleo-calyptratus",
+      "commonNameRu": "йеменский хамелеон",
+      "scientificName": "Chamaeleo calyptratus",
+      "taxonomicClass": "Reptilia",
+      "family": "Chamaeleonidae",
+      "genus": "Chamaeleo",
+      "difficulty": "medium",
+      "score": 54.52,
+      "selectionReason": "class-minimum:Reptilia"
+    },
+    {
+      "rank": 186,
+      "id": "animal:bufo-bufo",
+      "commonNameRu": "Обыкновенная жаба",
+      "scientificName": "Bufo bufo",
+      "taxonomicClass": "Amphibia",
+      "family": "Bufonidae",
+      "genus": "Bufo",
+      "difficulty": "medium",
+      "score": 69.04,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 187,
+      "id": "animal:rana-arvalis",
+      "commonNameRu": "Остромордая лягушка",
+      "scientificName": "Rana arvalis",
+      "taxonomicClass": "Amphibia",
+      "family": "Ranidae",
+      "genus": "Rana",
+      "difficulty": "medium",
+      "score": 60.42,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 188,
+      "id": "animal:lissotriton-vulgaris",
+      "commonNameRu": "обыкновенный тритон",
+      "scientificName": "Lissotriton vulgaris",
+      "taxonomicClass": "Amphibia",
+      "family": "Salamandridae",
+      "genus": "Lissotriton",
+      "difficulty": "easy",
+      "score": 64.23,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 189,
+      "id": "animal:bufo-viridis",
+      "commonNameRu": "зелёная жаба",
+      "scientificName": "Bufo viridis",
+      "taxonomicClass": "Amphibia",
+      "family": "Bufonidae",
+      "genus": "Bufotes",
+      "difficulty": "medium",
+      "score": 59.31,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 190,
+      "id": "animal:xenopus-laevis",
+      "commonNameRu": "Гладкая шпорцевая лягушка",
+      "scientificName": "Xenopus laevis",
+      "taxonomicClass": "Amphibia",
+      "family": "Pipidae",
+      "genus": "Xenopus",
+      "difficulty": "medium",
+      "score": 57.6,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 191,
+      "id": "animal:conraua-goliath",
+      "commonNameRu": "Лягушка-голиаф",
+      "scientificName": "Conraua goliath",
+      "taxonomicClass": "Amphibia",
+      "family": "Conrauidae",
+      "genus": "Conraua",
+      "difficulty": "medium",
+      "score": 58.73,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 192,
+      "id": "animal:pelophylax-ridibundus",
+      "commonNameRu": "озёрная лягушка",
+      "scientificName": "Pelophylax ridibundus",
+      "taxonomicClass": "Amphibia",
+      "family": "Ranidae",
+      "genus": "Pelophylax",
+      "difficulty": "medium",
+      "score": 64.81,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 193,
+      "id": "animal:salamandra-salamandra",
+      "commonNameRu": "огненная саламандра",
+      "scientificName": "Salamandra salamandra",
+      "taxonomicClass": "Amphibia",
+      "family": "Salamandridae",
+      "genus": "Salamandra",
+      "difficulty": "easy",
+      "score": 63.48,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 194,
+      "id": "animal:salamandrella-keyserlingii",
+      "commonNameRu": "Сибирский углозуб",
+      "scientificName": "Salamandrella keyserlingii",
+      "taxonomicClass": "Amphibia",
+      "family": "Hynobiidae",
+      "genus": "Salamandrella",
+      "difficulty": "medium",
+      "score": 54.26,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 195,
+      "id": "animal:pelophylax-esculentus",
+      "commonNameRu": "съедобная лягушка",
+      "scientificName": "Pelophylax esculentus",
+      "taxonomicClass": "Amphibia",
+      "family": "Ranidae",
+      "genus": "Pelophylax",
+      "difficulty": "medium",
+      "score": 58.93,
+      "selectionReason": "class-minimum:Amphibia"
+    },
+    {
+      "rank": 196,
+      "id": "animal:apis-mellifera",
+      "commonNameRu": "медоносная пчела",
+      "scientificName": "Apis mellifera",
+      "taxonomicClass": "Insecta",
+      "family": "Apidae",
+      "genus": "Apis",
+      "difficulty": "easy",
+      "score": 72.47,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 197,
+      "id": "animal:danaus-plexippus",
+      "commonNameRu": "Данаида монарх",
+      "scientificName": "Danaus plexippus",
+      "taxonomicClass": "Insecta",
+      "family": "Nymphalidae",
+      "genus": "Danaus",
+      "difficulty": "medium",
+      "score": 63.49,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 198,
+      "id": "animal:leptinotarsa-decemlineata",
+      "commonNameRu": "колорадский жук",
+      "scientificName": "Leptinotarsa decemlineata",
+      "taxonomicClass": "Insecta",
+      "family": "Chrysomelidae",
+      "genus": "Leptinotarsa",
+      "difficulty": "easy",
+      "score": 60.34,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 199,
+      "id": "animal:cimex-lectularius",
+      "commonNameRu": "постельный клоп",
+      "scientificName": "Cimex lectularius",
+      "taxonomicClass": "Insecta",
+      "family": "Cimicidae",
+      "genus": "Cimex",
+      "difficulty": "easy",
+      "score": 60,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 200,
+      "id": "animal:bombus-terrestris",
+      "commonNameRu": "Шмель земляной",
+      "scientificName": "Bombus terrestris",
+      "taxonomicClass": "Insecta",
+      "family": "Apidae",
+      "genus": "Bombus",
+      "difficulty": "medium",
+      "score": 55.8,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 201,
+      "id": "animal:lucanus-cervus",
+      "commonNameRu": "жук-олень",
+      "scientificName": "Lucanus cervus",
+      "taxonomicClass": "Insecta",
+      "family": "Lucanidae",
+      "genus": "Lucanus",
+      "difficulty": "easy",
+      "score": 59.84,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 202,
+      "id": "animal:acheta-domesticus",
+      "commonNameRu": "сверчок домовый",
+      "scientificName": "Acheta domesticus",
+      "taxonomicClass": "Insecta",
+      "family": "Gryllidae",
+      "genus": "Acheta",
+      "difficulty": "medium",
+      "score": 59.2,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 203,
+      "id": "animal:tettigonia-viridissima",
+      "commonNameRu": "Зелёный кузнечик",
+      "scientificName": "Tettigonia viridissima",
+      "taxonomicClass": "Insecta",
+      "family": "Tettigoniidae",
+      "genus": "Tettigonia",
+      "difficulty": "medium",
+      "score": 59.17,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 204,
+      "id": "animal:mantis-religiosa",
+      "commonNameRu": "богомол обыкновенный",
+      "scientificName": "Mantis religiosa",
+      "taxonomicClass": "Insecta",
+      "family": "Mantidae",
+      "genus": "Mantis",
+      "difficulty": "easy",
+      "score": 56.9,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 205,
+      "id": "animal:blattella-germanica",
+      "commonNameRu": "Рыжий таракан",
+      "scientificName": "Blattella germanica",
+      "taxonomicClass": "Insecta",
+      "family": "Ectobiidae",
+      "genus": "Blattella",
+      "difficulty": "easy",
+      "score": 56.21,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 206,
+      "id": "animal:papilio-machaon",
+      "commonNameRu": "Махаон",
+      "scientificName": "Papilio machaon",
+      "taxonomicClass": "Insecta",
+      "family": "Papilionidae",
+      "genus": "Papilio",
+      "difficulty": "easy",
+      "score": 56.05,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 207,
+      "id": "animal:solenopsis-invicta",
+      "commonNameRu": "Муравей огненный импортный красный",
+      "scientificName": "Solenopsis invicta",
+      "taxonomicClass": "Insecta",
+      "family": "Formicidae",
+      "genus": "Solenopsis",
+      "difficulty": "medium",
+      "score": 56.05,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 208,
+      "id": "animal:oryctes-nasicornis",
+      "commonNameRu": "Жук-носорог обыкновенный",
+      "scientificName": "Oryctes nasicornis",
+      "taxonomicClass": "Insecta",
+      "family": "Scarabaeidae",
+      "genus": "Oryctes",
+      "difficulty": "easy",
+      "score": 55.92,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 209,
+      "id": "animal:lipoptena-cervi",
+      "commonNameRu": "Оленья кровососка",
+      "scientificName": "Lipoptena cervi",
+      "taxonomicClass": "Insecta",
+      "family": "Hippoboscidae",
+      "genus": "Lipoptena",
+      "difficulty": "easy",
+      "score": 55.25,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 210,
+      "id": "animal:scarabaeus-sacer",
+      "commonNameRu": "Священный скарабей",
+      "scientificName": "Scarabaeus sacer",
+      "taxonomicClass": "Insecta",
+      "family": "Scarabaeidae",
+      "genus": "Scarabaeus",
+      "difficulty": "easy",
+      "score": 55.34,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 211,
+      "id": "animal:lymantria-dispar",
+      "commonNameRu": "непарный шелкопряд",
+      "scientificName": "Lymantria dispar",
+      "taxonomicClass": "Insecta",
+      "family": "Erebidae",
+      "genus": "Lymantria",
+      "difficulty": "medium",
+      "score": 53.42,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 212,
+      "id": "animal:tineola-bisselliella",
+      "commonNameRu": "Моль платяная",
+      "scientificName": "Tineola bisselliella",
+      "taxonomicClass": "Insecta",
+      "family": "Tineidae",
+      "genus": "Tineola",
+      "difficulty": "medium",
+      "score": 53.37,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 213,
+      "id": "animal:aglais-io",
+      "commonNameRu": "Павлиний глаз",
+      "scientificName": "Aglais io",
+      "taxonomicClass": "Insecta",
+      "family": "Nymphalidae",
+      "genus": "Aglais",
+      "difficulty": "easy",
+      "score": 54.86,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 214,
+      "id": "animal:galleria-mellonella",
+      "commonNameRu": "большая восковая моль",
+      "scientificName": "Galleria mellonella",
+      "taxonomicClass": "Insecta",
+      "family": "Pyralidae",
+      "genus": "Galleria",
+      "difficulty": "medium",
+      "score": 53.32,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 215,
+      "id": "animal:coccinella-septempunctata",
+      "commonNameRu": "Семиточечная коровка",
+      "scientificName": "Coccinella septempunctata",
+      "taxonomicClass": "Insecta",
+      "family": "Coccinellidae",
+      "genus": "Coccinella",
+      "difficulty": "medium",
+      "score": 52.96,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 216,
+      "id": "animal:pulex-irritans",
+      "commonNameRu": "Блоха человеческая",
+      "scientificName": "Pulex irritans",
+      "taxonomicClass": "Insecta",
+      "family": "Pulicidae",
+      "genus": "Pulex",
+      "difficulty": "medium",
+      "score": 52.82,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 217,
+      "id": "animal:anax-imperator",
+      "commonNameRu": "Дозорщик-император",
+      "scientificName": "Anax imperator",
+      "taxonomicClass": "Insecta",
+      "family": "Aeshnidae",
+      "genus": "Anax",
+      "difficulty": "medium",
+      "score": 52.71,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 218,
+      "id": "animal:periplaneta-americana",
+      "commonNameRu": "Таракан американский",
+      "scientificName": "Periplaneta americana",
+      "taxonomicClass": "Insecta",
+      "family": "Blattidae",
+      "genus": "Periplaneta",
+      "difficulty": "medium",
+      "score": 52.48,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 219,
+      "id": "animal:daktulosphaira-vitifoliae",
+      "commonNameRu": "Филлоксера виноградная",
+      "scientificName": "Daktulosphaira vitifoliae",
+      "taxonomicClass": "Insecta",
+      "family": "Phylloxeridae",
+      "genus": "Daktulosphaira",
+      "difficulty": "medium",
+      "score": 52.02,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 220,
+      "id": "animal:monomorium-pharaonis",
+      "commonNameRu": "Фараонов муравей",
+      "scientificName": "Monomorium pharaonis",
+      "taxonomicClass": "Insecta",
+      "family": "Formicidae",
+      "genus": "Monomorium",
+      "difficulty": "medium",
+      "score": 53.44,
+      "selectionReason": "class-minimum:Insecta"
+    },
+    {
+      "rank": 221,
+      "id": "animal:latrodectus-tredecimguttatus",
+      "commonNameRu": "каракурт",
+      "scientificName": "Latrodectus tredecimguttatus",
+      "taxonomicClass": "Arachnida",
+      "family": "Theridiidae",
+      "genus": "Latrodectus",
+      "difficulty": "easy",
+      "score": 57.23,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 222,
+      "id": "animal:ixodes-ricinus",
+      "commonNameRu": "собачий клещ",
+      "scientificName": "Ixodes ricinus",
+      "taxonomicClass": "Arachnida",
+      "family": "Ixodidae",
+      "genus": "Ixodes",
+      "difficulty": "medium",
+      "score": 55.82,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 223,
+      "id": "animal:lycosa-singoriensis",
+      "commonNameRu": "Южнорусский тарантул",
+      "scientificName": "Lycosa singoriensis",
+      "taxonomicClass": "Arachnida",
+      "family": "Lycosidae",
+      "genus": "Lycosa",
+      "difficulty": "easy",
+      "score": 54.83,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 224,
+      "id": "animal:pandinus-imperator",
+      "commonNameRu": "императорский скорпион",
+      "scientificName": "Pandinus imperator",
+      "taxonomicClass": "Arachnida",
+      "family": "Scorpionidae",
+      "genus": "Pandinus",
+      "difficulty": "medium",
+      "score": 52.99,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 225,
+      "id": "animal:sarcoptes-scabiei",
+      "commonNameRu": "Чесоточный зудень",
+      "scientificName": "Sarcoptes scabiei",
+      "taxonomicClass": "Arachnida",
+      "family": "Sarcoptidae",
+      "genus": "Sarcoptes",
+      "difficulty": "medium",
+      "score": 52.88,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 226,
+      "id": "animal:dermanyssus-gallinae",
+      "commonNameRu": "Куриный клещ",
+      "scientificName": "Dermanyssus gallinae",
+      "taxonomicClass": "Arachnida",
+      "family": "Dermanyssidae",
+      "genus": "Dermanyssus",
+      "difficulty": "medium",
+      "score": 49.26,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 227,
+      "id": "animal:argas-reflexus",
+      "commonNameRu": "Раковинный клещ",
+      "scientificName": "Argas reflexus",
+      "taxonomicClass": "Arachnida",
+      "family": "Argasidae",
+      "genus": "Argas",
+      "difficulty": "hard",
+      "score": 48.29,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 228,
+      "id": "animal:hyalomma-dromedarii",
+      "commonNameRu": "Верблюжий клещ",
+      "scientificName": "Hyalomma dromedarii",
+      "taxonomicClass": "Arachnida",
+      "family": "Ixodidae",
+      "genus": "Hyalomma",
+      "difficulty": "hard",
+      "score": 46.21,
+      "selectionReason": "class-minimum:Arachnida"
+    },
+    {
+      "rank": 229,
+      "id": "animal:sepia-officinalis",
+      "commonNameRu": "Лекарственная каракатица",
+      "scientificName": "Sepia officinalis",
+      "taxonomicClass": "Cephalopoda",
+      "family": "Sepiidae",
+      "genus": "Sepia",
+      "difficulty": "medium",
+      "score": 56.37,
+      "selectionReason": "class-minimum:Cephalopoda"
+    },
+    {
+      "rank": 230,
+      "id": "animal:octopus-vulgaris",
+      "commonNameRu": "Осьминог обыкновенный",
+      "scientificName": "Octopus vulgaris",
+      "taxonomicClass": "Cephalopoda",
+      "family": "Octopodidae",
+      "genus": "Octopus",
+      "difficulty": "medium",
+      "score": 52.62,
+      "selectionReason": "class-minimum:Cephalopoda"
+    },
+    {
+      "rank": 231,
+      "id": "animal:nautilus-pompilius",
+      "commonNameRu": "Наутилус помпилиус (моллюск)",
+      "scientificName": "Nautilus pompilius",
+      "taxonomicClass": "Cephalopoda",
+      "family": "Nautilidae",
+      "genus": "Nautilus",
+      "difficulty": "medium",
+      "score": 50.29,
+      "selectionReason": "class-minimum:Cephalopoda"
+    },
+    {
+      "rank": 232,
+      "id": "animal:hapalochlaena-lunulata",
+      "commonNameRu": "большой синекольчатый осьминог",
+      "scientificName": "Hapalochlaena lunulata",
+      "taxonomicClass": "Cephalopoda",
+      "family": "Octopodidae",
+      "genus": "Hapalochlaena",
+      "difficulty": "medium",
+      "score": 48.96,
+      "selectionReason": "class-minimum:Cephalopoda"
+    },
+    {
+      "rank": 233,
+      "id": "animal:sepia-apama",
+      "commonNameRu": "Гигантская австралийская каракатица",
+      "scientificName": "Sepia apama",
+      "taxonomicClass": "Cephalopoda",
+      "family": "Sepiidae",
+      "genus": "Ascarosepion",
+      "difficulty": "hard",
+      "score": 48.9,
+      "selectionReason": "class-minimum:Cephalopoda"
+    },
+    {
+      "rank": 234,
+      "id": "animal:carcharodon-carcharias",
+      "commonNameRu": "белая акула",
+      "scientificName": "Carcharodon carcharias",
+      "taxonomicClass": "Chondrichthyes",
+      "family": "Lamnidae",
+      "genus": "Carcharodon",
+      "difficulty": "easy",
+      "score": 64.55,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 235,
+      "id": "animal:homarus-americanus",
+      "commonNameRu": "американский омар",
+      "scientificName": "Homarus americanus",
+      "taxonomicClass": "Malacostraca",
+      "family": "Nephropidae",
+      "genus": "Homarus",
+      "difficulty": "medium",
+      "score": 59.66,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 236,
+      "id": "animal:rhincodon-typus",
+      "commonNameRu": "Китовая акула",
+      "scientificName": "Rhincodon typus",
+      "taxonomicClass": "Chondrichthyes",
+      "family": "Rhincodontidae",
+      "genus": "Rhincodon",
+      "difficulty": "easy",
+      "score": 63.69,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 237,
+      "id": "animal:arion-vulgaris",
+      "commonNameRu": "Испанская лесная улитка",
+      "scientificName": "Arion vulgaris",
+      "taxonomicClass": "Gastropoda",
+      "family": "Arionidae",
+      "genus": "Arion",
+      "difficulty": "easy",
+      "score": 58.16,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 238,
+      "id": "animal:astacus-astacus",
+      "commonNameRu": "Широкопалый речной рак",
+      "scientificName": "Astacus astacus",
+      "taxonomicClass": "Malacostraca",
+      "family": "Astacidae",
+      "genus": "Astacus",
+      "difficulty": "easy",
+      "score": 56.02,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 239,
+      "id": "animal:paralithodes-camtschaticus",
+      "commonNameRu": "Камчатский краб",
+      "scientificName": "Paralithodes camtschaticus",
+      "taxonomicClass": "Malacostraca",
+      "family": "Lithodidae",
+      "genus": "Paralithodes",
+      "difficulty": "easy",
+      "score": 54.94,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 240,
+      "id": "animal:dreissena-polymorpha",
+      "commonNameRu": "Речная дрейссена",
+      "scientificName": "Dreissena polymorpha",
+      "taxonomicClass": "Bivalvia",
+      "family": "Dreissenidae",
+      "genus": "Dreissena",
+      "difficulty": "medium",
+      "score": 54.41,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 241,
+      "id": "animal:margaritifera-margaritifera",
+      "commonNameRu": "Европейская жемчужница",
+      "scientificName": "Margaritifera margaritifera",
+      "taxonomicClass": "Bivalvia",
+      "family": "Margaritiferidae",
+      "genus": "Margaritifera",
+      "difficulty": "medium",
+      "score": 54.08,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 242,
+      "id": "animal:mytilus-edulis",
+      "commonNameRu": "Мидия съедобная",
+      "scientificName": "Mytilus edulis",
+      "taxonomicClass": "Bivalvia",
+      "family": "Mytilidae",
+      "genus": "Mytilus",
+      "difficulty": "medium",
+      "score": 57.24,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 243,
+      "id": "animal:callinectes-sapidus",
+      "commonNameRu": "голубой краб",
+      "scientificName": "Callinectes sapidus",
+      "taxonomicClass": "Malacostraca",
+      "family": "Portunidae",
+      "genus": "Callinectes",
+      "difficulty": "medium",
+      "score": 52.17,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 244,
+      "id": "animal:helix-pomatia",
+      "commonNameRu": "Виноградная улитка",
+      "scientificName": "Helix pomatia",
+      "taxonomicClass": "Gastropoda",
+      "family": "Helicidae",
+      "genus": "Helix",
+      "difficulty": "easy",
+      "score": 56.32,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 245,
+      "id": "animal:glaucus-atlanticus",
+      "commonNameRu": "голубой дракон",
+      "scientificName": "Glaucus atlanticus",
+      "taxonomicClass": "Gastropoda",
+      "family": "Glaucidae",
+      "genus": "Glaucus",
+      "difficulty": "medium",
+      "score": 53.95,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 246,
+      "id": "animal:unio-pictorum",
+      "commonNameRu": "перловица обыкновенная",
+      "scientificName": "Unio pictorum",
+      "taxonomicClass": "Bivalvia",
+      "family": "Unionidae",
+      "genus": "Unio",
+      "difficulty": "medium",
+      "score": 53.73,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 247,
+      "id": "animal:achatina-fulica",
+      "commonNameRu": "Ахатина гигантская",
+      "scientificName": "Achatina fulica",
+      "taxonomicClass": "Gastropoda",
+      "family": "Achatinidae",
+      "genus": "Lissachatina",
+      "difficulty": "medium",
+      "score": 53.77,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 248,
+      "id": "animal:limax-maximus",
+      "commonNameRu": "Большой придорожный слизень",
+      "scientificName": "Limax maximus",
+      "taxonomicClass": "Gastropoda",
+      "family": "Limacidae",
+      "genus": "Limax",
+      "difficulty": "medium",
+      "score": 53,
+      "selectionReason": "class-minimum:Other"
+    },
+    {
+      "rank": 249,
+      "id": "animal:huso-dauricus",
+      "commonNameRu": "Калуга",
+      "scientificName": "Huso dauricus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Acipenseridae",
+      "genus": "Huso",
+      "difficulty": "easy",
+      "score": 60.48,
+      "selectionReason": "difficulty-minimum:easy"
+    },
+    {
+      "rank": 250,
+      "id": "animal:aptenodytes-forsteri",
+      "commonNameRu": "императорский пингвин",
+      "scientificName": "Aptenodytes forsteri",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Aptenodytes",
+      "difficulty": "easy",
+      "score": 65.27,
+      "selectionReason": "difficulty-minimum:easy"
+    },
+    {
+      "rank": 251,
+      "id": "animal:cygnus-atratus",
+      "commonNameRu": "Чёрный лебедь",
+      "scientificName": "Cygnus atratus",
+      "taxonomicClass": "Aves",
+      "family": "Anatidae",
+      "genus": "Cygnus",
+      "difficulty": "easy",
+      "score": 66.43,
+      "selectionReason": "difficulty-minimum:easy"
+    },
+    {
+      "rank": 252,
+      "id": "animal:tinca-tinca",
+      "commonNameRu": "линь",
+      "scientificName": "Tinca tinca",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Tinca",
+      "difficulty": "easy",
+      "score": 57.2,
+      "selectionReason": "difficulty-minimum:easy"
+    },
+    {
+      "rank": 253,
+      "id": "animal:chelonia-mydas",
+      "commonNameRu": "Зелёная черепаха",
+      "scientificName": "Chelonia mydas",
+      "taxonomicClass": "Reptilia",
+      "family": "Cheloniidae",
+      "genus": "Chelonia",
+      "difficulty": "easy",
+      "score": 60.42,
+      "selectionReason": "difficulty-minimum:easy"
+    },
+    {
+      "rank": 254,
+      "id": "animal:corvus-cornix",
+      "commonNameRu": "серая ворона",
+      "scientificName": "Corvus cornix",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Corvus",
+      "difficulty": "easy",
+      "score": 70.01,
+      "selectionReason": "difficulty-minimum:easy"
+    },
+    {
+      "rank": 255,
+      "id": "animal:pagodroma-nivea",
+      "commonNameRu": "Снежный буревестник",
+      "scientificName": "Pagodroma nivea",
+      "taxonomicClass": "Aves",
+      "family": "Procellariidae",
+      "genus": "Pagodroma",
+      "difficulty": "hard",
+      "score": 56.83,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 256,
+      "id": "animal:amazona-aestiva",
+      "commonNameRu": "Синелобый амазон",
+      "scientificName": "Amazona aestiva",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Amazona",
+      "difficulty": "hard",
+      "score": 59.54,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 257,
+      "id": "animal:sousa-chinensis",
+      "commonNameRu": "Китайский дельфин",
+      "scientificName": "Sousa chinensis",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Sousa",
+      "difficulty": "hard",
+      "score": 56.79,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 258,
+      "id": "animal:bolborhynchus-lineola",
+      "commonNameRu": "Толстоклювый попугай Катерины",
+      "scientificName": "Bolborhynchus lineola",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Bolborhynchus",
+      "difficulty": "hard",
+      "score": 64.02,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 259,
+      "id": "animal:stenella-coeruleoalba",
+      "commonNameRu": "Полосатый дельфин",
+      "scientificName": "Stenella coeruleoalba",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Stenella",
+      "difficulty": "hard",
+      "score": 56.56,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 260,
+      "id": "animal:pusa-hispida-botnica",
+      "commonNameRu": "Балтийская кольчатая нерпа",
+      "scientificName": "Pusa hispida botnica",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Pusa",
+      "difficulty": "hard",
+      "score": 50.32,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 261,
+      "id": "animal:blarina-carolinensis",
+      "commonNameRu": "Южная короткохвостая бурозубка",
+      "scientificName": "Blarina carolinensis",
+      "taxonomicClass": "Mammalia",
+      "family": "Soricidae",
+      "genus": "Blarina",
+      "difficulty": "hard",
+      "score": 52.55,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 262,
+      "id": "animal:steno-bredanensis",
+      "commonNameRu": "Крупнозубый дельфин",
+      "scientificName": "Steno bredanensis",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Steno",
+      "difficulty": "hard",
+      "score": 55.93,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 263,
+      "id": "animal:lissodelphis-borealis",
+      "commonNameRu": "Северный китовидный дельфин",
+      "scientificName": "Lissodelphis borealis",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Lissodelphis",
+      "difficulty": "hard",
+      "score": 55.71,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 264,
+      "id": "animal:stenella-frontalis",
+      "commonNameRu": "Большелобый продельфин",
+      "scientificName": "Stenella frontalis",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Stenella",
+      "difficulty": "hard",
+      "score": 54.72,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 265,
+      "id": "animal:phoca-vitulina-stejnegeri",
+      "commonNameRu": "Тюлень Стейнегера",
+      "scientificName": "Phoca vitulina stejnegeri",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Phoca",
+      "difficulty": "hard",
+      "score": 49.78,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 266,
+      "id": "animal:peponocephala-electra",
+      "commonNameRu": "Широкомордый дельфин",
+      "scientificName": "Peponocephala electra",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Peponocephala",
+      "difficulty": "hard",
+      "score": 55.07,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 267,
+      "id": "animal:ixodes-scapularis",
+      "commonNameRu": "Черноногий клещ",
+      "scientificName": "Ixodes scapularis",
+      "taxonomicClass": "Arachnida",
+      "family": "Ixodidae",
+      "genus": "Ixodes",
+      "difficulty": "hard",
+      "score": 47.26,
+      "selectionReason": "difficulty-minimum:hard"
+    },
+    {
+      "rank": 268,
+      "id": "animal:rhynochetos-jubatus",
+      "commonNameRu": "Кагу",
+      "scientificName": "Rhynochetos jubatus",
+      "taxonomicClass": "Aves",
+      "family": "Rhynochetidae",
+      "genus": "Rhynochetos",
+      "difficulty": "medium",
+      "score": 55.42,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 269,
+      "id": "animal:anthropoides-paradiseus",
+      "commonNameRu": "Райский журавль",
+      "scientificName": "Anthropoides paradiseus",
+      "taxonomicClass": "Aves",
+      "family": "Gruidae",
+      "genus": "Anthropoides",
+      "difficulty": "medium",
+      "score": 51.84,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 270,
+      "id": "animal:polyodon-spathula",
+      "commonNameRu": "Веслонос",
+      "scientificName": "Polyodon spathula",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Polyodontidae",
+      "genus": "Polyodon",
+      "difficulty": "medium",
+      "score": 59.04,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 271,
+      "id": "animal:vandellia-cirrhosa",
+      "commonNameRu": "Обычная ванделлия",
+      "scientificName": "Vandellia cirrhosa",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Trichomycteridae",
+      "genus": "Vandellia",
+      "difficulty": "medium",
+      "score": 53.88,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 272,
+      "id": "animal:anoplopoma-fimbria",
+      "commonNameRu": "Угольная рыба",
+      "scientificName": "Anoplopoma fimbria",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Anoplopomatidae",
+      "genus": "Anoplopoma",
+      "difficulty": "medium",
+      "score": 53.8,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 273,
+      "id": "animal:atlantisia-rogersi",
+      "commonNameRu": "Тристанский пастушок",
+      "scientificName": "Atlantisia rogersi",
+      "taxonomicClass": "Aves",
+      "family": "Rallidae",
+      "genus": "Atlantisia",
+      "difficulty": "medium",
+      "score": 57.8,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 274,
+      "id": "animal:natrix-tessellata",
+      "commonNameRu": "водяной уж",
+      "scientificName": "Natrix tessellata",
+      "taxonomicClass": "Reptilia",
+      "family": "Colubridae",
+      "genus": "Natrix",
+      "difficulty": "medium",
+      "score": 57.38,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 275,
+      "id": "animal:pseudopus-apodus",
+      "commonNameRu": "Желтопузик",
+      "scientificName": "Pseudopus apodus",
+      "taxonomicClass": "Reptilia",
+      "family": "Anguidae",
+      "genus": "Pseudopus",
+      "difficulty": "medium",
+      "score": 56.87,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 276,
+      "id": "animal:gracula-religiosa",
+      "commonNameRu": "Священная майна",
+      "scientificName": "Gracula religiosa",
+      "taxonomicClass": "Aves",
+      "family": "Sturnidae",
+      "genus": "Gracula",
+      "difficulty": "medium",
+      "score": 61.4,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 277,
+      "id": "animal:cacatua-sanguinea",
+      "commonNameRu": "Гологлазый какаду",
+      "scientificName": "Cacatua sanguinea",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Cacatua",
+      "difficulty": "medium",
+      "score": 60.19,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 278,
+      "id": "animal:macronectes-giganteus",
+      "commonNameRu": "Южный гигантский буревестник",
+      "scientificName": "Macronectes giganteus",
+      "taxonomicClass": "Aves",
+      "family": "Procellariidae",
+      "genus": "Macronectes",
+      "difficulty": "medium",
+      "score": 59.25,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 279,
+      "id": "animal:oryctolagus-cuniculus-domesticus",
+      "commonNameRu": "домашний кролик",
+      "scientificName": "Oryctolagus cuniculus",
+      "taxonomicClass": "Mammalia",
+      "family": "Leporidae",
+      "genus": "Oryctolagus",
+      "difficulty": "medium",
+      "score": 61.87,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 280,
+      "id": "animal:cerastes-cerastes",
+      "commonNameRu": "Рогатая гадюка",
+      "scientificName": "Cerastes cerastes",
+      "taxonomicClass": "Reptilia",
+      "family": "Viperidae",
+      "genus": "Cerastes",
+      "difficulty": "medium",
+      "score": 57.31,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 281,
+      "id": "animal:dendroaspis-polylepis",
+      "commonNameRu": "Чёрная мамба",
+      "scientificName": "Dendroaspis polylepis",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Dendroaspis",
+      "difficulty": "easy",
+      "score": 62.52,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 282,
+      "id": "animal:canis-latrans",
+      "commonNameRu": "койот",
+      "scientificName": "Canis latrans",
+      "taxonomicClass": "Mammalia",
+      "family": "Canidae",
+      "genus": "Canis",
+      "difficulty": "easy",
+      "score": 66.74,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 283,
+      "id": "animal:varanus-niloticus",
+      "commonNameRu": "Нильский варан",
+      "scientificName": "Varanus niloticus",
+      "taxonomicClass": "Reptilia",
+      "family": "Varanidae",
+      "genus": "Varanus",
+      "difficulty": "medium",
+      "score": 59.07,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 284,
+      "id": "animal:serinus-canaria",
+      "commonNameRu": "Канарский канареечный вьюрок",
+      "scientificName": "Serinus canaria",
+      "taxonomicClass": "Aves",
+      "family": "Fringillidae",
+      "genus": "Serinus",
+      "difficulty": "medium",
+      "score": 60.75,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 285,
+      "id": "animal:gobio-gobio",
+      "commonNameRu": "обыкновенный пескарь",
+      "scientificName": "Gobio gobio",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Gobio",
+      "difficulty": "easy",
+      "score": 60.2,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 286,
+      "id": "animal:gymnocorymbus-ternetzi",
+      "commonNameRu": "тернеция",
+      "scientificName": "Gymnocorymbus ternetzi",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Characidae",
+      "genus": "Gymnocorymbus",
+      "difficulty": "medium",
+      "score": 52.67,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 287,
+      "id": "animal:lepomis-gibbosus",
+      "commonNameRu": "обыкновенная солнечная рыба",
+      "scientificName": "Lepomis gibbosus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Centrarchidae",
+      "genus": "Lepomis",
+      "difficulty": "medium",
+      "score": 52.65,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 288,
+      "id": "animal:zamenis-longissimus",
+      "commonNameRu": "Эскулапов полоз",
+      "scientificName": "Zamenis longissimus",
+      "taxonomicClass": "Reptilia",
+      "family": "Colubridae",
+      "genus": "Zamenis",
+      "difficulty": "medium",
+      "score": 54.82,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 289,
+      "id": "animal:acipenser-gueldenstaedtii",
+      "commonNameRu": "Русский осётр",
+      "scientificName": "Acipenser gueldenstaedtii",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Acipenseridae",
+      "genus": "Acipenser",
+      "difficulty": "medium",
+      "score": 60.01,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 290,
+      "id": "animal:coregonus-muksun",
+      "commonNameRu": "муксун",
+      "scientificName": "Coregonus muksun",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Coregonus",
+      "difficulty": "easy",
+      "score": 60.26,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 291,
+      "id": "animal:lacerta-viridis",
+      "commonNameRu": "зелёная ящерица",
+      "scientificName": "Lacerta viridis",
+      "taxonomicClass": "Reptilia",
+      "family": "Lacertidae",
+      "genus": "Lacerta",
+      "difficulty": "medium",
+      "score": 56.21,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 292,
+      "id": "animal:pagophilus-groenlandicus",
+      "commonNameRu": "Гренландский тюлень",
+      "scientificName": "Pagophilus groenlandicus",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Pagophilus",
+      "difficulty": "medium",
+      "score": 62.29,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 293,
+      "id": "animal:podargus-strigoides",
+      "commonNameRu": "Исполинский белоног",
+      "scientificName": "Podargus strigoides",
+      "taxonomicClass": "Aves",
+      "family": "Podargidae",
+      "genus": "Podargus",
+      "difficulty": "medium",
+      "score": 55.65,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 294,
+      "id": "animal:triturus-cristatus",
+      "commonNameRu": "гребенчатый тритон",
+      "scientificName": "Triturus cristatus",
+      "taxonomicClass": "Amphibia",
+      "family": "Salamandridae",
+      "genus": "Triturus",
+      "difficulty": "medium",
+      "score": 60.69,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 295,
+      "id": "animal:caretta-caretta",
+      "commonNameRu": "логгерхед",
+      "scientificName": "Caretta caretta",
+      "taxonomicClass": "Reptilia",
+      "family": "Cheloniidae",
+      "genus": "Caretta",
+      "difficulty": "easy",
+      "score": 60.39,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 296,
+      "id": "animal:abramis-brama",
+      "commonNameRu": "лещ",
+      "scientificName": "Abramis brama",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Abramis",
+      "difficulty": "easy",
+      "score": 62.14,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 297,
+      "id": "animal:macrovipera-lebetina",
+      "commonNameRu": "Гюрза",
+      "scientificName": "Macrovipera lebetinus",
+      "taxonomicClass": "Reptilia",
+      "family": "Viperidae",
+      "genus": "Macrovipera",
+      "difficulty": "easy",
+      "score": 57.64,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 298,
+      "id": "animal:panthera-pardus",
+      "commonNameRu": "леопард",
+      "scientificName": "Panthera pardus",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Panthera",
+      "difficulty": "easy",
+      "score": 69.46,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 299,
+      "id": "animal:ctenopharyngodon-idella",
+      "commonNameRu": "Белый амур",
+      "scientificName": "Ctenopharyngodon idella",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Ctenopharyngodon",
+      "difficulty": "easy",
+      "score": 62.32,
+      "selectionReason": "best-adjusted-score"
+    },
+    {
+      "rank": 300,
+      "id": "animal:rutilus-rutilus",
+      "commonNameRu": "обыкновенная плотва",
+      "scientificName": "Rutilus rutilus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Rutilus",
+      "difficulty": "easy",
+      "score": 62.04,
+      "selectionReason": "best-adjusted-score"
+    }
+  ],
+  "reserveAnimals": [
+    {
+      "reserveRank": 1,
+      "id": "animal:pyxicephalus-adspersus",
+      "commonNameRu": "Роющая лягушка",
+      "scientificName": "Pyxicephalus adspersus",
+      "taxonomicClass": "Amphibia",
+      "family": "Pyxicephalidae",
+      "genus": "Pyxicephalus",
+      "difficulty": "medium",
+      "score": 52.63
+    },
+    {
+      "reserveRank": 2,
+      "id": "animal:eolophus-roseicapilla",
+      "commonNameRu": "розовый какаду",
+      "scientificName": "Eolophus roseicapilla",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Eolophus",
+      "difficulty": "medium",
+      "score": 60.04
+    },
+    {
+      "reserveRank": 3,
+      "id": "animal:myiopsitta-monachus",
+      "commonNameRu": "Калита",
+      "scientificName": "Myiopsitta monachus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Myiopsitta",
+      "difficulty": "medium",
+      "score": 64.73
+    },
+    {
+      "reserveRank": 4,
+      "id": "animal:stenodus-leucichthys",
+      "commonNameRu": "Белорыбица",
+      "scientificName": "Stenodus leucichthys",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Stenodus",
+      "difficulty": "medium",
+      "score": 59.72
+    },
+    {
+      "reserveRank": 5,
+      "id": "animal:pygoscelis-papua",
+      "commonNameRu": "Папуанский пингвин",
+      "scientificName": "Pygoscelis papua",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Pygoscelis",
+      "difficulty": "medium",
+      "score": 61.52
+    },
+    {
+      "reserveRank": 6,
+      "id": "animal:astronotus-ocellatus",
+      "commonNameRu": "Глазчатый астронотус",
+      "scientificName": "Astronotus ocellatus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cichlidae",
+      "genus": "Astronotus",
+      "difficulty": "medium",
+      "score": 52
+    },
+    {
+      "reserveRank": 7,
+      "id": "animal:calyptorhynchus-banksii",
+      "commonNameRu": "Траурный какаду Бэнкса",
+      "scientificName": "Calyptorhynchus banksii",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Calyptorhynchus",
+      "difficulty": "medium",
+      "score": 62.11
+    },
+    {
+      "reserveRank": 8,
+      "id": "animal:lates-calcarifer",
+      "commonNameRu": "Латес",
+      "scientificName": "Lates calcarifer",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Latidae",
+      "genus": "Lates",
+      "difficulty": "medium",
+      "score": 51.9
+    },
+    {
+      "reserveRank": 9,
+      "id": "animal:liza-haematocheila",
+      "commonNameRu": "Пиленгас",
+      "scientificName": "Liza haematocheilus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Mugilidae",
+      "genus": "Planiliza",
+      "difficulty": "medium",
+      "score": 53.38
+    },
+    {
+      "reserveRank": 10,
+      "id": "animal:histriophoca-fasciata",
+      "commonNameRu": "Полосатый тюлень",
+      "scientificName": "Histriophoca fasciata",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Histriophoca",
+      "difficulty": "medium",
+      "score": 59.89
+    },
+    {
+      "reserveRank": 11,
+      "id": "animal:diopsittaca-nobilis",
+      "commonNameRu": "Синелобый малый ара",
+      "scientificName": "Diopsittaca nobilis",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Diopsittaca",
+      "difficulty": "medium",
+      "score": 56.87
+    },
+    {
+      "reserveRank": 12,
+      "id": "animal:bos-grunniens",
+      "commonNameRu": "як",
+      "scientificName": "Bos grunniens",
+      "taxonomicClass": "Mammalia",
+      "family": "Bovidae",
+      "genus": "Bos",
+      "difficulty": "medium",
+      "score": 60.83
+    },
+    {
+      "reserveRank": 13,
+      "id": "animal:tyto-novaehollandiae",
+      "commonNameRu": "Австралийская сипуха",
+      "scientificName": "Tyto novaehollandiae",
+      "taxonomicClass": "Aves",
+      "family": "Tytonidae",
+      "genus": "Tyto",
+      "difficulty": "medium",
+      "score": 57.17
+    },
+    {
+      "reserveRank": 14,
+      "id": "animal:ommatophoca-rossii",
+      "commonNameRu": "Тюлень Росса",
+      "scientificName": "Ommatophoca rossii",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Ommatophoca",
+      "difficulty": "medium",
+      "score": 59.24
+    },
+    {
+      "reserveRank": 15,
+      "id": "animal:probosciger-aterrimus",
+      "commonNameRu": "Чёрный какаду",
+      "scientificName": "Probosciger aterrimus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Probosciger",
+      "difficulty": "medium",
+      "score": 60.48
+    },
+    {
+      "reserveRank": 16,
+      "id": "animal:campephilus-imperialis",
+      "commonNameRu": "Американский королевский дятел",
+      "scientificName": "Campephilus imperialis",
+      "taxonomicClass": "Aves",
+      "family": "Picidae",
+      "genus": "Campephilus",
+      "difficulty": "medium",
+      "score": 56.69
+    },
+    {
+      "reserveRank": 17,
+      "id": "animal:naja-naja",
+      "commonNameRu": "Очковая змея",
+      "scientificName": "Naja naja",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Naja",
+      "difficulty": "medium",
+      "score": 59.66
+    },
+    {
+      "reserveRank": 18,
+      "id": "animal:eclectus-roratus",
+      "commonNameRu": "Благородный зелёно-красный попугай",
+      "scientificName": "Eclectus roratus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Eclectus",
+      "difficulty": "medium",
+      "score": 59.82
+    },
+    {
+      "reserveRank": 19,
+      "id": "animal:mirounga-angustirostris",
+      "commonNameRu": "Северный морской слон",
+      "scientificName": "Mirounga angustirostris",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Mirounga",
+      "difficulty": "medium",
+      "score": 61.42
+    },
+    {
+      "reserveRank": 20,
+      "id": "animal:eudyptes-chrysolophus",
+      "commonNameRu": "золотоволосый пингвин",
+      "scientificName": "Eudyptes chrysolophus",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Eudyptes",
+      "difficulty": "medium",
+      "score": 58.8
+    },
+    {
+      "reserveRank": 21,
+      "id": "animal:eudyptes-chrysocome",
+      "commonNameRu": "хохлатый пингвин",
+      "scientificName": "Eudyptes chrysocome",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Eudyptes",
+      "difficulty": "medium",
+      "score": 58.71
+    },
+    {
+      "reserveRank": 22,
+      "id": "animal:canis-aureus",
+      "commonNameRu": "обыкновенный шакал",
+      "scientificName": "Canis aureus",
+      "taxonomicClass": "Mammalia",
+      "family": "Canidae",
+      "genus": "Canis",
+      "difficulty": "easy",
+      "score": 76.67
+    },
+    {
+      "reserveRank": 23,
+      "id": "animal:sander-volgensis",
+      "commonNameRu": "Волжский судак",
+      "scientificName": "Sander volgensis",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Percidae",
+      "genus": "Sander",
+      "difficulty": "medium",
+      "score": 52.41
+    },
+    {
+      "reserveRank": 24,
+      "id": "animal:monachus-monachus",
+      "commonNameRu": "Тюлень-монах",
+      "scientificName": "Monachus monachus",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Monachus",
+      "difficulty": "medium",
+      "score": 61.8
+    },
+    {
+      "reserveRank": 25,
+      "id": "animal:halichoerus-grypus",
+      "commonNameRu": "Длинномордый тюлень",
+      "scientificName": "Halichoerus grypus",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Halichoerus",
+      "difficulty": "medium",
+      "score": 61.78
+    },
+    {
+      "reserveRank": 26,
+      "id": "animal:dolichophis-caspius",
+      "commonNameRu": "каспийский полоз",
+      "scientificName": "Dolichophis caspius",
+      "taxonomicClass": "Reptilia",
+      "family": "Colubridae",
+      "genus": "Dolichophis",
+      "difficulty": "medium",
+      "score": 53.02
+    },
+    {
+      "reserveRank": 27,
+      "id": "animal:leptonychotes-weddellii",
+      "commonNameRu": "Тюлень Уэдделла",
+      "scientificName": "Leptonychotes weddellii",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Leptonychotes",
+      "difficulty": "medium",
+      "score": 61.19
+    },
+    {
+      "reserveRank": 28,
+      "id": "animal:python-sebae",
+      "commonNameRu": "Иероглифовый питон",
+      "scientificName": "Python sebae",
+      "taxonomicClass": "Reptilia",
+      "family": "Pythonidae",
+      "genus": "Python",
+      "difficulty": "medium",
+      "score": 58.6
+    },
+    {
+      "reserveRank": 29,
+      "id": "animal:thalassoica-antarctica",
+      "commonNameRu": "Антарктический буревестник",
+      "scientificName": "Thalassoica antarctica",
+      "taxonomicClass": "Aves",
+      "family": "Procellariidae",
+      "genus": "Thalassoica",
+      "difficulty": "medium",
+      "score": 56.93
+    },
+    {
+      "reserveRank": 30,
+      "id": "animal:carassius-carassius",
+      "commonNameRu": "Золотой карась",
+      "scientificName": "Carassius carassius",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Carassius",
+      "difficulty": "medium",
+      "score": 54.06
+    },
+    {
+      "reserveRank": 31,
+      "id": "animal:ara-ararauna",
+      "commonNameRu": "Сине-жёлтый ара",
+      "scientificName": "Ara ararauna",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Ara",
+      "difficulty": "medium",
+      "score": 65.19
+    },
+    {
+      "reserveRank": 32,
+      "id": "animal:ara-macao",
+      "commonNameRu": "Красный ара",
+      "scientificName": "Ara macao",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Ara",
+      "difficulty": "medium",
+      "score": 65.07
+    },
+    {
+      "reserveRank": 33,
+      "id": "animal:cystophora-cristata",
+      "commonNameRu": "Хохлач",
+      "scientificName": "Cystophora cristata",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Cystophora",
+      "difficulty": "medium",
+      "score": 59.03
+    },
+    {
+      "reserveRank": 34,
+      "id": "animal:naja-nigricollis",
+      "commonNameRu": "Черношеяя кобра",
+      "scientificName": "Naja nigricollis",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Naja",
+      "difficulty": "medium",
+      "score": 55.35
+    },
+    {
+      "reserveRank": 35,
+      "id": "animal:dispholidus-typus",
+      "commonNameRu": "бумсланг",
+      "scientificName": "Dispholidus typus",
+      "taxonomicClass": "Reptilia",
+      "family": "Colubridae",
+      "genus": "Dispholidus",
+      "difficulty": "medium",
+      "score": 54.8
+    },
+    {
+      "reserveRank": 36,
+      "id": "animal:aratinga-solstitialis",
+      "commonNameRu": "Солнечная аратинга",
+      "scientificName": "Aratinga solstitialis",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Aratinga",
+      "difficulty": "medium",
+      "score": 60.46
+    },
+    {
+      "reserveRank": 37,
+      "id": "animal:eretmochelys-imbricata",
+      "commonNameRu": "Бисса",
+      "scientificName": "Eretmochelys imbricata",
+      "taxonomicClass": "Reptilia",
+      "family": "Cheloniidae",
+      "genus": "Eretmochelys",
+      "difficulty": "medium",
+      "score": 57.89
+    },
+    {
+      "reserveRank": 38,
+      "id": "animal:ara-glaucogularis",
+      "commonNameRu": "Синегорлый ара",
+      "scientificName": "Ara glaucogularis",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Ara",
+      "difficulty": "medium",
+      "score": 59.16
+    },
+    {
+      "reserveRank": 39,
+      "id": "animal:pleurodeles-waltl",
+      "commonNameRu": "Иглистый тритон",
+      "scientificName": "Pleurodeles waltl",
+      "taxonomicClass": "Amphibia",
+      "family": "Salamandridae",
+      "genus": "Pleurodeles",
+      "difficulty": "medium",
+      "score": 57.03
+    },
+    {
+      "reserveRank": 40,
+      "id": "animal:ara-chloropterus",
+      "commonNameRu": "Зеленокрылый ара",
+      "scientificName": "Ara chloropterus",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Ara",
+      "difficulty": "medium",
+      "score": 63.6
+    },
+    {
+      "reserveRank": 41,
+      "id": "animal:cacatua-galerita",
+      "commonNameRu": "Большой желтохохлый какаду",
+      "scientificName": "Cacatua galerita",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Cacatua",
+      "difficulty": "medium",
+      "score": 63.11
+    },
+    {
+      "reserveRank": 42,
+      "id": "animal:macronectes-halli",
+      "commonNameRu": "Северный гигантский буревестник",
+      "scientificName": "Macronectes halli",
+      "taxonomicClass": "Aves",
+      "family": "Procellariidae",
+      "genus": "Macronectes",
+      "difficulty": "medium",
+      "score": 57.09
+    },
+    {
+      "reserveRank": 43,
+      "id": "animal:globicephala-macrorhynchus",
+      "commonNameRu": "Короткоплавниковая гринда",
+      "scientificName": "Globicephala macrorhynchus",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Globicephala",
+      "difficulty": "medium",
+      "score": 59
+    },
+    {
+      "reserveRank": 44,
+      "id": "animal:crocodylus-porosus",
+      "commonNameRu": "Гребнистый крокодил",
+      "scientificName": "Crocodylus porosus",
+      "taxonomicClass": "Reptilia",
+      "family": "Crocodylidae",
+      "genus": "Crocodylus",
+      "difficulty": "easy",
+      "score": 63.92
+    },
+    {
+      "reserveRank": 45,
+      "id": "animal:coregonus-migratorius",
+      "commonNameRu": "Байкальский омуль",
+      "scientificName": "Coregonus migratorius",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Coregonus",
+      "difficulty": "medium",
+      "score": 56.98
+    },
+    {
+      "reserveRank": 46,
+      "id": "animal:natrix-maura",
+      "commonNameRu": "Гадюковый уж",
+      "scientificName": "Natrix maura",
+      "taxonomicClass": "Reptilia",
+      "family": "Colubridae",
+      "genus": "Natrix",
+      "difficulty": "medium",
+      "score": 54
+    },
+    {
+      "reserveRank": 47,
+      "id": "animal:tursiops-aduncus",
+      "commonNameRu": "Индийская афалина",
+      "scientificName": "Tursiops aduncus",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Tursiops",
+      "difficulty": "medium",
+      "score": 57.8
+    },
+    {
+      "reserveRank": 48,
+      "id": "animal:salmo-salar",
+      "commonNameRu": "сёмга",
+      "scientificName": "Salmo salar",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Salmo",
+      "difficulty": "easy",
+      "score": 66.12
+    },
+    {
+      "reserveRank": 49,
+      "id": "animal:pusa-caspica",
+      "commonNameRu": "Каспийская нерпа",
+      "scientificName": "Pusa caspica",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Pusa",
+      "difficulty": "easy",
+      "score": 63.25
+    },
+    {
+      "reserveRank": 50,
+      "id": "animal:vimba-vimba",
+      "commonNameRu": "рыбец",
+      "scientificName": "Vimba vimba",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Vimba",
+      "difficulty": "medium",
+      "score": 54.37
+    },
+    {
+      "reserveRank": 51,
+      "id": "animal:pygoscelis-antarcticus",
+      "commonNameRu": "Антарктический пингвин",
+      "scientificName": "Pygoscelis antarcticus",
+      "taxonomicClass": "Aves",
+      "family": "Spheniscidae",
+      "genus": "Pygoscelis",
+      "difficulty": "medium",
+      "score": 59.5
+    },
+    {
+      "reserveRank": 52,
+      "id": "animal:blicca-bjoerkna",
+      "commonNameRu": "густера",
+      "scientificName": "Blicca bjoerkna",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Blicca",
+      "difficulty": "medium",
+      "score": 54.18
+    },
+    {
+      "reserveRank": 53,
+      "id": "animal:barbus-barbus",
+      "commonNameRu": "обыкновенный усач",
+      "scientificName": "Barbus barbus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Barbus",
+      "difficulty": "medium",
+      "score": 53.87
+    },
+    {
+      "reserveRank": 54,
+      "id": "animal:cacatua-moluccensis",
+      "commonNameRu": "Молуккский какаду",
+      "scientificName": "Cacatua moluccensis",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Cacatua",
+      "difficulty": "medium",
+      "score": 54.48
+    },
+    {
+      "reserveRank": 55,
+      "id": "animal:coregonus-peled",
+      "commonNameRu": "Пелядь",
+      "scientificName": "Coregonus peled",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Coregonus",
+      "difficulty": "easy",
+      "score": 55.19
+    },
+    {
+      "reserveRank": 56,
+      "id": "animal:oncorhynchus-tshawytscha",
+      "commonNameRu": "чавыча",
+      "scientificName": "Oncorhynchus tshawytscha",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Oncorhynchus",
+      "difficulty": "easy",
+      "score": 64.69
+    },
+    {
+      "reserveRank": 57,
+      "id": "animal:hypophthalmichthys-molitrix",
+      "commonNameRu": "белый толстолобик",
+      "scientificName": "Hypophthalmichthys molitrix",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Hypophthalmichthys",
+      "difficulty": "medium",
+      "score": 53.11
+    },
+    {
+      "reserveRank": 58,
+      "id": "animal:amazona-leucocephala",
+      "commonNameRu": "Кубинский амазон",
+      "scientificName": "Amazona leucocephala",
+      "taxonomicClass": "Aves",
+      "family": "Psittacidae",
+      "genus": "Amazona",
+      "difficulty": "medium",
+      "score": 56.88
+    },
+    {
+      "reserveRank": 59,
+      "id": "animal:bitis-arietans",
+      "commonNameRu": "шумящая гадюка",
+      "scientificName": "Bitis arietans",
+      "taxonomicClass": "Reptilia",
+      "family": "Viperidae",
+      "genus": "Bitis",
+      "difficulty": "medium",
+      "score": 57.1
+    },
+    {
+      "reserveRank": 60,
+      "id": "animal:dendroaspis-angusticeps",
+      "commonNameRu": "Узкоголовая мамба",
+      "scientificName": "Dendroaspis angusticeps",
+      "taxonomicClass": "Reptilia",
+      "family": "Elapidae",
+      "genus": "Dendroaspis",
+      "difficulty": "medium",
+      "score": 55.95
+    },
+    {
+      "reserveRank": 61,
+      "id": "animal:salmo-ischchan",
+      "commonNameRu": "Ишхан",
+      "scientificName": "Salmo ischchan",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Salmo",
+      "difficulty": "medium",
+      "score": 51.53
+    },
+    {
+      "reserveRank": 62,
+      "id": "animal:oncorhynchus-gorbuscha",
+      "commonNameRu": "Горбуша",
+      "scientificName": "Oncorhynchus gorbuscha",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Oncorhynchus",
+      "difficulty": "easy",
+      "score": 61.47
+    },
+    {
+      "reserveRank": 63,
+      "id": "animal:oncorhynchus-keta",
+      "commonNameRu": "Кета",
+      "scientificName": "Oncorhynchus keta",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Oncorhynchus",
+      "difficulty": "easy",
+      "score": 61.4
+    },
+    {
+      "reserveRank": 64,
+      "id": "animal:oncorhynchus-kisutch",
+      "commonNameRu": "Кижучь",
+      "scientificName": "Oncorhynchus kisutch",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Oncorhynchus",
+      "difficulty": "easy",
+      "score": 60.9
+    },
+    {
+      "reserveRank": 65,
+      "id": "animal:leuciscus-leuciscus",
+      "commonNameRu": "елец",
+      "scientificName": "Leuciscus leuciscus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Leuciscus",
+      "difficulty": "medium",
+      "score": 59.33
+    },
+    {
+      "reserveRank": 66,
+      "id": "animal:perca-flavescens",
+      "commonNameRu": "Жёлтый окунь",
+      "scientificName": "Perca flavescens",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Percidae",
+      "genus": "Perca",
+      "difficulty": "medium",
+      "score": 59.06
+    },
+    {
+      "reserveRank": 67,
+      "id": "animal:corvus-albicollis",
+      "commonNameRu": "Белощёкий ворон",
+      "scientificName": "Corvus albicollis",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Corvus",
+      "difficulty": "medium",
+      "score": 59.46
+    },
+    {
+      "reserveRank": 68,
+      "id": "animal:coregonus-albula",
+      "commonNameRu": "европейская ряпушка",
+      "scientificName": "Coregonus albula",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Coregonus",
+      "difficulty": "medium",
+      "score": 59.66
+    },
+    {
+      "reserveRank": 69,
+      "id": "animal:coregonus-nasus",
+      "commonNameRu": "чир",
+      "scientificName": "Coregonus nasus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Salmonidae",
+      "genus": "Coregonus",
+      "difficulty": "medium",
+      "score": 59.54
+    },
+    {
+      "reserveRank": 70,
+      "id": "animal:orcaella-brevirostris",
+      "commonNameRu": "иравадийский дельфин",
+      "scientificName": "Orcaella brevirostris",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Orcaella",
+      "difficulty": "medium",
+      "score": 59.55
+    },
+    {
+      "reserveRank": 71,
+      "id": "animal:acipenser-ruthenus",
+      "commonNameRu": "стерлядь",
+      "scientificName": "Acipenser ruthenus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Acipenseridae",
+      "genus": "Acipenser",
+      "difficulty": "easy",
+      "score": 65.34
+    },
+    {
+      "reserveRank": 72,
+      "id": "animal:carassius-gibelio",
+      "commonNameRu": "серебряный карась",
+      "scientificName": "Carassius gibelio",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Carassius",
+      "difficulty": "medium",
+      "score": 53.32
+    },
+    {
+      "reserveRank": 73,
+      "id": "animal:lagenorhynchus-acutus",
+      "commonNameRu": "Атлантический белобокий дельфин",
+      "scientificName": "Lagenorhynchus acutus",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Lagenorhynchus",
+      "difficulty": "medium",
+      "score": 58.39
+    },
+    {
+      "reserveRank": 74,
+      "id": "animal:lagenorhynchus-albirostris",
+      "commonNameRu": "Беломордый дельфин",
+      "scientificName": "Lagenorhynchus albirostris",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Lagenorhynchus",
+      "difficulty": "medium",
+      "score": 58.01
+    },
+    {
+      "reserveRank": 75,
+      "id": "animal:lagenorhynchus-obliquidens",
+      "commonNameRu": "Тихоокеанский дельфин",
+      "scientificName": "Lagenorhynchus obliquidens",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Lagenorhynchus",
+      "difficulty": "medium",
+      "score": 57.24
+    },
+    {
+      "reserveRank": 76,
+      "id": "animal:feresa-attenuata",
+      "commonNameRu": "Карликовая косатка",
+      "scientificName": "Feresa attenuata",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Feresa",
+      "difficulty": "medium",
+      "score": 56.64
+    },
+    {
+      "reserveRank": 77,
+      "id": "animal:acipenser-stellatus",
+      "commonNameRu": "Севрюга",
+      "scientificName": "Acipenser stellatus",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Acipenseridae",
+      "genus": "Acipenser",
+      "difficulty": "medium",
+      "score": 62.83
+    },
+    {
+      "reserveRank": 78,
+      "id": "animal:lagenorhynchus-obscurus",
+      "commonNameRu": "Тёмный дельфин",
+      "scientificName": "Lagenorhynchus obscurus",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Lagenorhynchus",
+      "difficulty": "medium",
+      "score": 56.07
+    },
+    {
+      "reserveRank": 79,
+      "id": "animal:panthera-onca",
+      "commonNameRu": "ягуар",
+      "scientificName": "Panthera onca",
+      "taxonomicClass": "Mammalia",
+      "family": "Felidae",
+      "genus": "Panthera",
+      "difficulty": "easy",
+      "score": 74.74
+    },
+    {
+      "reserveRank": 80,
+      "id": "animal:corvus-orru",
+      "commonNameRu": "Австралийский ворон",
+      "scientificName": "Corvus orru",
+      "taxonomicClass": "Aves",
+      "family": "Corvidae",
+      "genus": "Corvus",
+      "difficulty": "medium",
+      "score": 56.92
+    },
+    {
+      "reserveRank": 81,
+      "id": "animal:phoca-largha",
+      "commonNameRu": "Ларга",
+      "scientificName": "Phoca largha",
+      "taxonomicClass": "Mammalia",
+      "family": "Phocidae",
+      "genus": "Phoca",
+      "difficulty": "medium",
+      "score": 58.25
+    },
+    {
+      "reserveRank": 82,
+      "id": "animal:rutilus-frisii",
+      "commonNameRu": "Вырезуб",
+      "scientificName": "Rutilus frisii",
+      "taxonomicClass": "Actinopterygii",
+      "family": "Cyprinidae",
+      "genus": "Rutilus",
+      "difficulty": "medium",
+      "score": 57.08
+    },
+    {
+      "reserveRank": 83,
+      "id": "animal:stenella-longirostris",
+      "commonNameRu": "Длиннорылый продельфин",
+      "scientificName": "Stenella longirostris",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Stenella",
+      "difficulty": "medium",
+      "score": 57.1
+    },
+    {
+      "reserveRank": 84,
+      "id": "animal:sousa-teuszii",
+      "commonNameRu": "Западноафриканский дельфин",
+      "scientificName": "Sousa teuszii",
+      "taxonomicClass": "Mammalia",
+      "family": "Delphinidae",
+      "genus": "Sousa",
+      "difficulty": "hard",
+      "score": 53.55
+    },
+    {
+      "reserveRank": 85,
+      "id": "animal:ixodes-persulcatus",
+      "commonNameRu": "таёжный клещ",
+      "scientificName": "Ixodes persulcatus",
+      "taxonomicClass": "Arachnida",
+      "family": "Ixodidae",
+      "genus": "Ixodes",
+      "difficulty": "medium",
+      "score": 51.02
+    },
+    {
+      "reserveRank": 86,
+      "id": "animal:stegobium-paniceum",
+      "commonNameRu": "хлебный точильщик",
+      "scientificName": "Stegobium paniceum",
+      "taxonomicClass": "Insecta",
+      "family": "Anobiidae",
+      "genus": "Stegobium",
+      "difficulty": "medium",
+      "score": 51.93
+    },
+    {
+      "reserveRank": 87,
+      "id": "animal:cydia-pomonella",
+      "commonNameRu": "Яблонная плодожорка",
+      "scientificName": "Cydia pomonella",
+      "taxonomicClass": "Insecta",
+      "family": "Tortricidae",
+      "genus": "Cydia",
+      "difficulty": "medium",
+      "score": 51.4
+    },
+    {
+      "reserveRank": 88,
+      "id": "animal:ips-typographus",
+      "commonNameRu": "короед-типограф",
+      "scientificName": "Ips typographus",
+      "taxonomicClass": "Insecta",
+      "family": "Curculionidae",
+      "genus": "Ips",
+      "difficulty": "medium",
+      "score": 50.78
+    },
+    {
+      "reserveRank": 89,
+      "id": "animal:ctenocephalides-felis",
+      "commonNameRu": "Блоха кошачья",
+      "scientificName": "Ctenocephalides felis",
+      "taxonomicClass": "Insecta",
+      "family": "Pulicidae",
+      "genus": "Ctenocephalides",
+      "difficulty": "medium",
+      "score": 52.15
+    },
+    {
+      "reserveRank": 90,
+      "id": "animal:lampyris-noctiluca",
+      "commonNameRu": "Обыкновенный светляк",
+      "scientificName": "Lampyris noctiluca",
+      "taxonomicClass": "Insecta",
+      "family": "Lampyridae",
+      "genus": "Lampyris",
+      "difficulty": "medium",
+      "score": 50.38
+    },
+    {
+      "reserveRank": 91,
+      "id": "animal:loxostege-sticticalis",
+      "commonNameRu": "Луговой мотылёк",
+      "scientificName": "Loxostege sticticalis",
+      "taxonomicClass": "Insecta",
+      "family": "Crambidae",
+      "genus": "Loxostege",
+      "difficulty": "medium",
+      "score": 49.89
+    },
+    {
+      "reserveRank": 92,
+      "id": "animal:helicoverpa-armigera",
+      "commonNameRu": "Совка хлопковая",
+      "scientificName": "Helicoverpa armigera",
+      "taxonomicClass": "Insecta",
+      "family": "Noctuidae",
+      "genus": "Helicoverpa",
+      "difficulty": "medium",
+      "score": 49.86
+    },
+    {
+      "reserveRank": 93,
+      "id": "animal:pediculus-humanus",
+      "commonNameRu": "человеческая вошь",
+      "scientificName": "Pediculus humanus",
+      "taxonomicClass": "Insecta",
+      "family": "Pediculidae",
+      "genus": "Pediculus",
+      "difficulty": "medium",
+      "score": 49.65
+    },
+    {
+      "reserveRank": 94,
+      "id": "animal:formica-rufa",
+      "commonNameRu": "Рыжий лесной муравей",
+      "scientificName": "Formica rufa",
+      "taxonomicClass": "Insecta",
+      "family": "Formicidae",
+      "genus": "Formica",
+      "difficulty": "medium",
+      "score": 52.64
+    },
+    {
+      "reserveRank": 95,
+      "id": "animal:tunga-penetrans",
+      "commonNameRu": "Блоха проницающая",
+      "scientificName": "Tunga penetrans",
+      "taxonomicClass": "Insecta",
+      "family": "Tungidae",
+      "genus": "Tunga",
+      "difficulty": "medium",
+      "score": 49.54
+    },
+    {
+      "reserveRank": 96,
+      "id": "animal:wohlfahrtia-magnifica",
+      "commonNameRu": "Вольфартова муха",
+      "scientificName": "Wohlfahrtia magnifica",
+      "taxonomicClass": "Insecta",
+      "family": "Sarcophagidae",
+      "genus": "Wohlfahrtia",
+      "difficulty": "medium",
+      "score": 49.41
+    },
+    {
+      "reserveRank": 97,
+      "id": "animal:oryzaephilus-surinamensis",
+      "commonNameRu": "Суринамский мукоед",
+      "scientificName": "Oryzaephilus surinamensis",
+      "taxonomicClass": "Insecta",
+      "family": "Silvanidae",
+      "genus": "Oryzaephilus",
+      "difficulty": "medium",
+      "score": 49.38
+    },
+    {
+      "reserveRank": 98,
+      "id": "animal:frankliniella-occidentalis",
+      "commonNameRu": "Западный цветочный трипс",
+      "scientificName": "Frankliniella occidentalis",
+      "taxonomicClass": "Insecta",
+      "family": "Thripidae",
+      "genus": "Frankliniella",
+      "difficulty": "medium",
+      "score": 49.37
+    },
+    {
+      "reserveRank": 99,
+      "id": "animal:piophila-casei",
+      "commonNameRu": "Сырная муха",
+      "scientificName": "Piophila casei",
+      "taxonomicClass": "Insecta",
+      "family": "Piophilidae",
+      "genus": "Piophila",
+      "difficulty": "medium",
+      "score": 49.35
+    },
+    {
+      "reserveRank": 100,
+      "id": "animal:sitophilus-granarius",
+      "commonNameRu": "Долгоносик амбарный обыкновенный",
+      "scientificName": "Sitophilus granarius",
+      "taxonomicClass": "Insecta",
+      "family": "Dryophthoridae",
+      "genus": "Sitophilus",
+      "difficulty": "medium",
+      "score": 49.24
+    }
+  ]
+}

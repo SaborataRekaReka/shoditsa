@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-07-30T20:11:57.522Z",
+  "pass": true,
+  "mainCount": 300,
+  "reserveCount": 100,
+  "errors": [],
+  "warnings": [],
+  "main": {
+    "classCounts": {
+      "Mammalia": 103,
+      "Aves": 64,
+      "Actinopterygii": 38,
+      "Reptilia": 30,
+      "Amphibia": 11,
+      "Insecta": 25,
+      "Arachnida": 9,
+      "Cephalopoda": 5,
+      "Other": 15
+    },
+    "difficultyCounts": {
+      "easy": 160,
+      "medium": 120,
+      "hard": 20
+    },
+    "maximumPerGenus": 3,
+    "maximumPerFamily": 12,
+    "meanTotalScore": 62.79,
+    "meanCoreCriteriaCoverage": 87.04,
+    "meanProvenanceCoverage": 82.97,
+    "soundClueCount": 56,
+    "silhouetteClueCount": 300,
+    "rangeMapClueCount": 204,
+    "originalDistinctiveCopyCount": 1,
+    "imageLicenseCounts": {
+      "Public domain": 52,
+      "CC BY-SA 4.0": 65,
+      "CC BY-SA 3.0 at": 1,
+      "CC0": 3,
+      "CC BY-SA 2.0": 21,
+      "CC BY-SA 3.0": 91,
+      "CC BY-SA 2.5": 9,
+      "CC BY 2.0": 25,
+      "CC BY 3.0": 10,
+      "CC BY 4.0": 13,
+      "CC BY 2.5": 5,
+      "CC BY-SA 3.0 de": 4,
+      "CC BY-SA 2.0 de": 1
+    }
+  }
+}

@@ -1544,6 +1544,75 @@ export const compareCities = (guess: TitleItem, answer: TitleItem): Hint[] => {
   ]
 }
 
+const animalMassHint = (guess: number | null | undefined, answer: number | null | undefined): Hint => {
+  const guessMass = Number(guess)
+  const answerMass = Number(answer)
+  if (!Number.isFinite(guessMass) || guessMass <= 0 || !Number.isFinite(answerMass) || answerMass <= 0) {
+    return { key: 'body_mass', label: 'Масса', value: 'Нет данных', status: 'unknown', direction: null }
+  }
+  const ratio = Math.max(guessMass, answerMass) / Math.min(guessMass, answerMass)
+  const status: MatchStatus = ratio <= 1.1 ? 'match' : ratio <= 2.5 ? 'close' : 'miss'
+  const formatMass = (value: number) => value >= 1000
+    ? `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value / 1000)} т`
+    : value >= 1
+      ? `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value)} кг`
+      : `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value * 1000)} г`
+  return {
+    key: 'body_mass',
+    label: 'Масса',
+    value: formatMass(guessMass),
+    status,
+    direction: status === 'match' ? null : answerMass > guessMass ? 'up' : 'down',
+  }
+}
+
+export const compareAnimals = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const scalarHint = (key: string, label: string, guessValue: string | null | undefined, answerValue: string | null | undefined): Hint => ({
+    key,
+    label,
+    value: knownComparisonText(guessValue) ?? 'Нет данных',
+    status: scalar(guessValue, answerValue),
+    direction: null,
+  })
+  const listHint = (key: string, label: string, guessValues: string[] | undefined, answerValues: string[] | undefined): Hint => {
+    const comparableGuess = knownComparisonValues(guessValues)
+    const comparableAnswer = knownComparisonValues(answerValues)
+    return {
+      key,
+      label,
+      value: list(comparableGuess),
+      status: setStatus(comparableGuess, comparableAnswer),
+      direction: null,
+      matchedValues: overlaps(comparableGuess, comparableAnswer),
+    }
+  }
+  const answerCoverings = knownComparisonValues(answer.bodyCoverings)
+  const answerHabitats = knownComparisonValues(answer.habitats)
+  const answerContinents = knownComparisonValues(answer.animalContinents)
+  const answerDiets = knownComparisonValues(answer.diets)
+  const answerLocomotion = knownComparisonValues(answer.locomotion)
+
+  return [
+    ...(knownComparisonText(answer.taxonomicClass) ? [scalarHint('animal_class', 'Класс', guess.taxonomicClass, answer.taxonomicClass)] : []),
+    ...(knownComparisonText(answer.animalOrder) ? [scalarHint('animal_order', 'Отряд', guess.animalOrder, answer.animalOrder)] : []),
+    ...(knownComparisonText(answer.animalFamily) ? [scalarHint('animal_family', 'Семейство', guess.animalFamily, answer.animalFamily)] : []),
+    ...(answerCoverings.length ? [listHint('body_coverings', 'Покров тела', guess.bodyCoverings, answer.bodyCoverings)] : []),
+    ...(answerHabitats.length ? [listHint('habitats', 'Среда обитания', guess.habitats, answer.habitats)] : []),
+    ...(answerContinents.length ? [listHint('animal_continents', 'Ареал', guess.animalContinents, answer.animalContinents)] : []),
+    ...(answerDiets.length ? [listHint('diets', 'Питание', guess.diets, answer.diets)] : []),
+    ...(answerLocomotion.length ? [listHint('locomotion', 'Передвижение', guess.locomotion, answer.locomotion)] : []),
+    ...(knownComparisonText(answer.reproduction) ? [scalarHint('reproduction', 'Размножение', guess.reproduction, answer.reproduction)] : []),
+    ...(answer.bodyMassKg != null ? [animalMassHint(guess.bodyMassKg, answer.bodyMassKg)] : []),
+    ...(answer.legCount != null ? [{
+      key: 'leg_count',
+      label: 'Число ног',
+      value: guess.legCount != null ? String(guess.legCount) : 'Нет данных',
+      status: guess.legCount == null ? 'unknown' : guess.legCount === answer.legCount ? 'match' : 'miss',
+      direction: guess.legCount == null || guess.legCount === answer.legCount ? null : answer.legCount > guess.legCount ? 'up' : 'down',
+    } satisfies Hint] : []),
+  ]
+}
+
 export type GameModeRules = {
   pool: (items: TitleItem[], variantKey: string | null) => TitleItem[]
   compare: (guess: TitleItem, answer: TitleItem) => Hint[]
@@ -1559,6 +1628,7 @@ export const GAME_MODE_RULES: Record<TitleMode, GameModeRules> = {
   city: { pool: filterCityPool, compare: compareCities },
   music: { pool: unchangedPool, compare: compareMusic },
   diagnosis: { pool: unchangedPool, compare: compareDiagnoses },
+  animal: { pool: unchangedPool, compare: compareAnimals },
 }
 
 export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {

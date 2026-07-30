@@ -17,6 +17,9 @@ type SearchItem = Pick<
   | 'icd10'
   | 'icdGroup'
   | 'musicType'
+  | 'scientificName'
+  | 'taxonomicClass'
+  | 'animalOrder'
 >
 
 const meaningful = (values: Array<string | number | null | undefined>) =>
@@ -32,6 +35,7 @@ const originalTitle = (item: SearchItem) => {
 export const searchResultMeta = (item: SearchItem) => {
   if (item.mode === 'city') return meaningful([originalTitle(item), item.country, item.continent]).join(' · ')
   if (item.mode === 'diagnosis') return meaningful([originalTitle(item), ...(item.icd10 ?? []), item.icdGroup]).join(' · ')
+  if (item.mode === 'animal') return meaningful([item.scientificName || originalTitle(item), item.taxonomicClass, item.animalOrder]).join(' · ')
   if (item.mode === 'game') {
     const edition = item.editionType && item.editionType !== 'original' ? item.editionType : null
     const release = item.releaseScope === 'release' ? item.releaseLabel : null
@@ -51,6 +55,7 @@ export const searchResultMeta = (item: SearchItem) => {
 export const searchMediaAlt = (item: Pick<SearchItem, 'mode' | 'titleRu'>) => {
   if (item.mode === 'city') return `Символ города «${item.titleRu}»`
   if (item.mode === 'diagnosis') return `Иллюстрация диагноза «${item.titleRu}»`
+  if (item.mode === 'animal') return `Иллюстрация животного «${item.titleRu}»`
   if (item.mode === 'music') return `Фото артиста «${item.titleRu}»`
   if (item.mode === 'game') return `Обложка игры «${item.titleRu}»`
   if (item.mode === 'anime') return `Обложка аниме «${item.titleRu}»`
@@ -65,6 +70,7 @@ const MODE_EMPTY_COPY: Record<TitleMode, { subject: string; missing: string }> =
   city: { subject: 'город', missing: 'не найден' },
   music: { subject: 'артист', missing: 'не найден' },
   diagnosis: { subject: 'диагноз', missing: 'не найден' },
+  animal: { subject: 'животное', missing: 'не найдено' },
 }
 
 export const searchEmptyMessage = (mode: TitleMode, fixedMode = false) => {

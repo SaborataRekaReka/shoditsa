@@ -167,6 +167,7 @@ const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   city: 'images/title-posters/city-ticket-poster.webp',
   music: 'images/title-posters/music-ticket-poster.webp',
   diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
+  animal: 'images/title-posters/animal-ticket-poster.webp',
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId))
@@ -736,6 +737,18 @@ const buildInfoHintCandidates = (item: TitleItem) => {
       compactAssistList('Диагностика', item.diagnostics ?? [], 3),
       compactAssistList('МКБ-10', item.icd10 ?? [], 3),
       item.icdGroup ? `Группа: ${item.icdGroup}` : '',
+    ].filter(Boolean)
+  }
+
+  if (item.mode === 'animal') {
+    return [
+      item.taxonomicClass ? `Класс: ${item.taxonomicClass}` : '',
+      item.animalOrder ? `Отряд: ${item.animalOrder}` : '',
+      item.animalFamily ? `Семейство: ${item.animalFamily}` : '',
+      compactAssistList('Среда', item.habitats ?? [], 2),
+      compactAssistList('Ареал', item.animalContinents ?? [], 3),
+      compactAssistList('Питание', item.diets ?? [], 2),
+      item.conservationStatus ? `Охранный статус: ${item.conservationStatus}` : '',
     ].filter(Boolean)
   }
 
@@ -2509,6 +2522,29 @@ function CityAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   </article>
 }
 
+function AnimalAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+  const score = attemptProgressStats(attempt.hints)
+  return <article className="attempt-card attempt-card--animal">
+    <div className="attempt-card__header">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} />
+      <div className="attempt-card__identity">
+        <span className="attempt-label">Попытка {index + 1}</span>
+        <h2>{item.titleRu}</h2>
+        <p className="gm-head__sub"><span className="gm-head__orig">{item.scientificName || item.titleOriginal}</span></p>
+        <div className="gm-genres">
+          {item.taxonomicClass && <span className="gm-genre">{item.taxonomicClass}</span>}
+          {item.animalOrder && <span className="gm-genre">{item.animalOrder}</span>}
+        </div>
+      </div>
+    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+    <div className="attempt-clue-grid animal-attempt__clues">
+      {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+    </div>
+  </article>
+}
+
 const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
   movie: AttemptCard,
   series: AttemptCard,
@@ -2517,6 +2553,7 @@ const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
   city: CityAttemptCard,
   music: MusicAttemptCard,
   diagnosis: DiagnosisAttemptCard,
+  animal: AnimalAttemptCard,
 }
 
 function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {
@@ -3045,7 +3082,7 @@ function Game({
           inputProps={{
             ref: inputRef,
             id: 'movie-search',
-            'aria-label': mode === 'diagnosis' ? 'Введите диагноз' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название',
+            'aria-label': mode === 'diagnosis' ? 'Введите диагноз' : mode === 'animal' ? 'Введите животное' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название',
             value: query,
             autoComplete: 'off',
             placeholder: modeMeta(mode).searchPlaceholder,

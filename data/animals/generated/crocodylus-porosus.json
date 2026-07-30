@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:crocodylus-porosus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Гребнистый крокодил",
+    "commonNameEn": "Crocodylus porosus",
+    "scientificName": "Crocodylus porosus",
+    "acceptedScientificName": "Crocodylus porosus",
+    "aliasesRu": [
+      "Crocodylus porosus",
+      "Морской крокодил",
+      "Гребнистый крокодил"
+    ],
+    "wikidataId": "Q182599",
+    "gbifKey": 2441333,
+    "hagrid": "03258"
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Reptilia",
+    "order": "Crocodylia",
+    "family": "Crocodylidae",
+    "genus": "Crocodylus",
+    "species": "Crocodylus porosus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Reptilia",
+    "bodyCoverings": [
+      "scales"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic",
+      "terrestrial"
+    ],
+    "continents": [
+      "oceania"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "large",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 4,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 200,
+    "bodyMassSourceKind": "AnAge adult weight",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": 57,
+      "maximumObservedContext": "captivity"
+    },
+    "lifespanCategory": "30-60",
+    "maturityDays": {
+      "female": 3652,
+      "male": 5844
+    },
+    "gestationOrIncubationDays": 0,
+    "litterOrClutchSize": 0
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Laurie's crocodile in the garden.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/78/Laurie%27s_crocodile_in_the_garden.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Crocodylus porosus range.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Crocodylus_porosus_range.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/Crocodylus_porosus_range.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "Froggydarb at English Wikipedia",
+        "credit": "Transferred from en.wikipedia to Commons by BokicaK using CommonsHelper .",
+        "description": "The range of the Esturine Crocodile ( Crocodylus porosus ) Source: http://www.flmnh.ufl.edu/cnhc/cst_cpor_dh_map.htm Taken or Created by User:Froggydarb",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:40.723Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Laurie's crocodile in the garden.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Laurie%27s_crocodile_in_the_garden.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/78/Laurie%27s_crocodile_in_the_garden.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Laubarr",
+      "credit": "Own work",
+      "description": "Crocodile on the bank in the creek close to home, 4-5 metres",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:38:40.723Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:SaltwaterCrocodile('Maximo').jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:SaltwaterCrocodile(%27Maximo%27).jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/43/SaltwaterCrocodile%28%27Maximo%27%29.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Obtained from Molly Ebersold of the St. Augustine Alligator Farm",
+        "credit": "http://www.fhwa.dot.gov/byways/photos/53733",
+        "description": "Saltwater Crocodile ( Crocodylus porosus )This is Maximo, a 15'+ crocodile at the St. Augustine Alligator Farm.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:38:40.723Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 83,
+    "ruWikipediaTitle": "Гребнистый крокодил",
+    "ruWikipediaPageviews365d": 106096,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 79.1,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 20,
+    "delightScore": 42.86,
+    "totalScore": 63.92,
+    "difficulty": "easy",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 70,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation."
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q182599",
+      "url": "https://www.wikidata.org/wiki/Q182599",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Гребнистый крокодил",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%93%D1%80%D0%B5%D0%B1%D0%BD%D0%B8%D1%81%D1%82%D1%8B%D0%B9_%D0%BA%D1%80%D0%BE%D0%BA%D0%BE%D0%B4%D0%B8%D0%BB/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441333",
+      "url": "https://www.gbif.org/species/2441333",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Crocodylus porosus Schneider, 1801",
+        "gbifSourceClass": "Crocodylia",
+        "normalizedGameClass": "Reptilia"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2441333",
+      "url": "https://www.gbif.org/species/2441333",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2441333",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2441333&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "OCEANIA": 104400,
+          "ASIA": 2978,
+          "AFRICA": 16,
+          "NORTH_AMERICA": 6,
+          "EUROPE": 3,
+          "LATIN_AMERICA": 2
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2441333",
+      "url": "https://api.gbif.org/v1/species/2441333/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2441333",
+      "url": "https://api.gbif.org/v1/species/2441333/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.hagrid",
+        "measurements.lifespanYears.maximumObserved",
+        "measurements.lifespanYears.maximumObservedContext",
+        "measurements.lifespanCategory",
+        "measurements.maturityDays",
+        "measurements.gestationOrIncubationDays",
+        "measurements.litterOrClutchSize"
+      ],
+      "source": "AnAge Build 15",
+      "sourceId": "03258",
+      "url": "https://genomics.senescence.info/species/",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "exact genus/species join to stable tab-delimited dataset",
+      "confidence": 0.65,
+      "raw": {
+        "source": "1298",
+        "specimenOrigin": "captivity",
+        "sampleSize": "medium",
+        "dataQuality": "questionable"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Laurie's crocodile in the garden.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Laurie%27s_crocodile_in_the_garden.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:SaltwaterCrocodile('Maximo').jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:SaltwaterCrocodile(%27Maximo%27).jpg",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Crocodylus porosus range.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Crocodylus_porosus_range.png",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Laurie's crocodile in the garden.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Laurie%27s_crocodile_in_the_garden.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:38:40.723Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:38:40.723Z"
+}

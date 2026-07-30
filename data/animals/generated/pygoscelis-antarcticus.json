@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:pygoscelis-antarcticus",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Антарктический пингвин",
+    "commonNameEn": "Chinstrap Penguin",
+    "scientificName": "Pygoscelis antarcticus",
+    "acceptedScientificName": "Pygoscelis antarcticus",
+    "aliasesRu": [
+      "Южный полярный пингвин",
+      "Pygoscelis antarcticus",
+      "Пингвин Антарктический"
+    ],
+    "wikidataId": "Q126643",
+    "gbifKey": 2481664,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Chordata",
+    "taxonomicClass": "Aves",
+    "order": "Sphenisciformes",
+    "family": "Spheniscidae",
+    "genus": "Pygoscelis",
+    "species": "Pygoscelis antarcticus",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Aves",
+    "bodyCoverings": [
+      "feathers"
+    ],
+    "habitats": [],
+    "lifestyles": [
+      "semi-aquatic"
+    ],
+    "continents": [
+      "antarctica"
+    ],
+    "climateZones": [],
+    "diets": [
+      "insectivore"
+    ],
+    "activity": [],
+    "locomotion": [
+      "swim",
+      "walk"
+    ],
+    "sizeCategory": "small",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 2,
+    "thermoregulation": "endothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": 4.1460799999999995,
+    "bodyMassSourceKind": "species-level estimate",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {
+      "invertebrates": 80,
+      "endothermicVertebrates": 0,
+      "ectothermicVertebrates": 0,
+      "fish": 20,
+      "unknownVertebrates": 0,
+      "scavenging": 0,
+      "fruit": 0,
+      "nectar": 0,
+      "seeds": 0,
+      "otherPlants": 0
+    },
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q211005",
+      "statusLabelRu": "находятся под наименьшей угрозой",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Chinstrap Penguin.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Chinstrap_Penguin.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY 2.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Pygoscelis antarcticus map.svg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Pygoscelis_antarcticus_map.svg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Pygoscelis_antarcticus_map.svg",
+        "mimeType": "image/svg+xml",
+        "mediaType": "DRAWING",
+        "author": "Cephas",
+        "credit": "Adapted from: Chinstrap Penguin. Isabel Martínez, David Christie, Francesc Jutglar, and Ernest Garcia. Birds of the World, https://birdsoftheworld.org",
+        "description": "Range map of Chinstrap Penguin ( Pygoscelis antarcticus ) Breeding Nonbreeding",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:20.568Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Chinstrap Penguin.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Chinstrap_Penguin.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Chinstrap_Penguin.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Gilad Rom from Israel",
+      "credit": "Chinstrap Penguin",
+      "description": "Chinstrap Penguin ( Pygoscelis antarctica ) on Livingston Island, South Shetland Islands, Western Antarctica.",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:37:20.568Z"
+    },
+    "gallery": [
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:A chinstrap penguin (Pygoscelis antarcticus) on Deception Island in Antarctica.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:A_chinstrap_penguin_(Pygoscelis_antarcticus)_on_Deception_Island_in_Antarctica.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/09/A_chinstrap_penguin_%28Pygoscelis_antarcticus%29_on_Deception_Island_in_Antarctica.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "Christopher Michel",
+        "credit": "welcome to my island, human!",
+        "description": "A chinstrap penguin ( Pygoscelis antarcticus ) on Deception Island in Antarctica.",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:20.568Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:2019-03-03a Vertical - Chinstrap penguin on Barrientos Island, Antarctica.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:2019-03-03a_Vertical_-_Chinstrap_penguin_on_Barrientos_Island,_Antarctica.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3f/2019-03-03a_Vertical_-_Chinstrap_penguin_on_Barrientos_Island%2C_Antarctica.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "GRDN711",
+        "credit": "Own work",
+        "description": "Chinstrap penguin (Pygoscelis antarcticus) on Barrientos Island, Antarctica who is curious about humans coming to his island.",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:20.568Z"
+      },
+      {
+        "role": "gallery-image",
+        "commonsTitle": "File:2220 Pinguine.jpg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:2220_Pinguine.jpg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d0/2220_Pinguine.jpg",
+        "mimeType": "image/jpeg",
+        "mediaType": "BITMAP",
+        "author": "W. Bulach",
+        "credit": "Own work",
+        "description": "Penguins seen on Port Lockroy, a bay on the Antarctic Peninsula.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:37:20.568Z"
+      }
+    ],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 55,
+    "ruWikipediaTitle": "Антарктический пингвин",
+    "ruWikipediaPageviews365d": 6998,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 63.99,
+    "playabilityScore": 79.8,
+    "distinctivenessScore": 20,
+    "delightScore": 28.57,
+    "totalScore": 59.5,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 87.5,
+    "provenanceCoverage": 90,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Pygoscelis antarcticus"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q126643",
+      "url": "https://www.wikidata.org/wiki/Q126643",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Антарктический пингвин",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%90%D0%BD%D1%82%D0%B0%D1%80%D0%BA%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%BF%D0%B8%D0%BD%D0%B3%D0%B2%D0%B8%D0%BD/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q211005",
+      "url": "https://www.wikidata.org/wiki/Q211005",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "2481664",
+      "url": "https://www.gbif.org/species/2481664",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Pygoscelis antarcticus (J.R.Forster, 1781)",
+        "gbifSourceClass": "Aves",
+        "normalizedGameClass": "Aves"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "2481664",
+      "url": "https://www.gbif.org/species/2481664",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "2481664",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=2481664&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "ANTARCTICA": 16653,
+          "LATIN_AMERICA": 72,
+          "EUROPE": 48,
+          "OCEANIA": 37,
+          "NORTH_AMERICA": 24,
+          "ASIA": 14
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "2481664",
+      "url": "https://api.gbif.org/v1/species/2481664/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.dietCompositionPercent",
+        "criteria.diets",
+        "criteria.activity",
+        "ecology.foragingStratum",
+        "measurements.bodyMassKg",
+        "criteria.sizeCategory"
+      ],
+      "source": "EltonTraits 1.0",
+      "sourceId": "Pygoscelis antarcticus",
+      "url": "https://doi.org/10.6084/m9.figshare.c.3306933.v1",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "exact scientific-name join to Figshare file 5631081",
+      "confidence": 0.85,
+      "raw": {
+        "dietCertainty": "A"
+      }
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Chinstrap Penguin.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Chinstrap_Penguin.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:A chinstrap penguin (Pygoscelis antarcticus) on Deception Island in Antarctica.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:A_chinstrap_penguin_(Pygoscelis_antarcticus)_on_Deception_Island_in_Antarctica.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:2019-03-03a Vertical - Chinstrap penguin on Barrientos Island, Antarctica.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:2019-03-03a_Vertical_-_Chinstrap_penguin_on_Barrientos_Island,_Antarctica.jpg",
+      "license": "CC BY 4.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.gallery"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:2220 Pinguine.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:2220_Pinguine.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Pygoscelis antarcticus map.svg",
+      "url": "https://commons.wikimedia.org/wiki/File:Pygoscelis_antarcticus_map.svg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Chinstrap Penguin.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Chinstrap_Penguin.jpg",
+      "license": "CC BY 2.0",
+      "retrievedAt": "2026-07-30T19:37:20.568Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:37:20.568Z"
+}

@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:tettigonia-viridissima",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Зелёный кузнечик",
+    "commonNameEn": "Tettigonia viridissima",
+    "scientificName": "Tettigonia viridissima",
+    "acceptedScientificName": "Tettigonia viridissima",
+    "aliasesRu": [
+      "Tettigonia viridissima",
+      "Зелёный кузнечик",
+      "Кузнечик зелёный"
+    ],
+    "wikidataId": "Q261181",
+    "gbifKey": 1692898,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Arthropoda",
+    "taxonomicClass": "Insecta",
+    "order": "Orthoptera",
+    "family": "Tettigoniidae",
+    "genus": "Tettigonia",
+    "species": "Tettigonia viridissima",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Insecta",
+    "bodyCoverings": [
+      "exoskeleton"
+    ],
+    "habitats": [
+      "terrestrial"
+    ],
+    "lifestyles": [
+      "terrestrial"
+    ],
+    "continents": [
+      "europe"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "walk"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": 6,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": null,
+      "statusLabelRu": "",
+      "source": ""
+    }
+  },
+  "hints": {
+    "sounds": [
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:BioAcoustica 394-5 Tettigonia viridissima 360r2 .flac",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:BioAcoustica_394-5_Tettigonia_viridissima_360r2_.flac",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b8/BioAcoustica_394-5_Tettigonia_viridissima_360r2_.flac",
+        "mimeType": "audio/x-flac",
+        "mediaType": "AUDIO",
+        "author": "",
+        "credit": "http://bio.acousti.ca/node/9058",
+        "description": "Sound recording of Tettigonia viridissima",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:34.108Z",
+        "soundType": "animal-vocalization"
+      },
+      {
+        "role": "sound-clue",
+        "commonsTitle": "File:Tettigonia viridissima - sound.ogg",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Tettigonia_viridissima_-_sound.ogg",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/Tettigonia_viridissima_-_sound.ogg",
+        "mimeType": "application/ogg",
+        "mediaType": "AUDIO",
+        "author": "Baudewijn Odé",
+        "credit": "CD-ROM accompanying the book by Roy Kleukers and René Krekels: Veldgids Sprinkhanen en Krekels, Zeist (NL), KNNV Uitgeverij, 2014",
+        "description": "Sound of the Great green bush-cricket (Tettigonia viridissima) , a grasshopper from the family Tettigoniidae, subfamily Tettigoniinae.",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "attributionRequired": true,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:39:34.108Z",
+        "soundType": "animal-vocalization"
+      }
+    ],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:(MHNT) Tettigonia viridissima on Avena fatua.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/%28MHNT%29_Tettigonia_viridissima_on_Avena_fatua.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 4.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:(MHNT) Tettigonia viridissima on Avena fatua.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:(MHNT)_Tettigonia_viridissima_on_Avena_fatua.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/%28MHNT%29_Tettigonia_viridissima_on_Avena_fatua.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Didier Descouens",
+      "credit": "Own work",
+      "description": "Tettigonia viridissima Male on Avena fatua",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:39:34.108Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 37,
+    "ruWikipediaTitle": "Зелёный кузнечик",
+    "ruWikipediaPageviews365d": 15381,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 65.6,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 40,
+    "delightScore": 14.29,
+    "totalScore": 59.17,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Tettigonia viridissima"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q261181",
+      "url": "https://www.wikidata.org/wiki/Q261181",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Зелёный кузнечик",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/%D0%97%D0%B5%D0%BB%D1%91%D0%BD%D1%8B%D0%B9_%D0%BA%D1%83%D0%B7%D0%BD%D0%B5%D1%87%D0%B8%D0%BA/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1692898",
+      "url": "https://www.gbif.org/species/1692898",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Tettigonia viridissima (Linnaeus, 1758)",
+        "gbifSourceClass": "Insecta",
+        "normalizedGameClass": "Insecta"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.lifestyles",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.legCount",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "1692898",
+      "url": "https://www.gbif.org/species/1692898",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "1692898",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=1692898&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "EUROPE": 473229,
+          "ASIA": 20
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1692898",
+      "url": "https://api.gbif.org/v1/species/1692898/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "1692898",
+      "url": "https://api.gbif.org/v1/species/1692898/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "speciesProfiles habitat strings normalized to broad game habitat values",
+      "confidence": 0.65,
+      "raw": {
+        "sourceRecords": [
+          {
+            "habitat": "terrestrial",
+            "source": "Global Register of Introduced and Invasive Species - Ireland"
+          }
+        ]
+      }
+    },
+    {
+      "fieldPaths": [
+        "identity.aliasesRu"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "1692898",
+      "url": "https://api.gbif.org/v1/species/1692898/vernacularNames?limit=100",
+      "license": "source-record-specific",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "vernacularNames filtered to Russian",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:(MHNT) Tettigonia viridissima on Avena fatua.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:(MHNT)_Tettigonia_viridissima_on_Avena_fatua.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:BioAcoustica 394-5 Tettigonia viridissima 360r2 .flac",
+      "url": "https://commons.wikimedia.org/wiki/File:BioAcoustica_394-5_Tettigonia_viridissima_360r2_.flac",
+      "license": "CC BY 3.0",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.sounds"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Tettigonia viridissima - sound.ogg",
+      "url": "https://commons.wikimedia.org/wiki/File:Tettigonia_viridissima_-_sound.ogg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:(MHNT) Tettigonia viridissima on Avena fatua.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:(MHNT)_Tettigonia_viridissima_on_Avena_fatua.jpg",
+      "license": "CC BY-SA 4.0",
+      "retrievedAt": "2026-07-30T19:39:34.108Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:39:34.108Z"
+}

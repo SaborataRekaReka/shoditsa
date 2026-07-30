@@ -13,6 +13,7 @@ import {
   Grid2X2,
   MapPinned,
   Music2,
+  PawPrint,
   Route,
   ScanSearch,
   Sparkles,
@@ -30,6 +31,7 @@ const GUIDE_ICONS = {
   city: MapPinned,
   music: Music2,
   diagnosis: Stethoscope,
+  animal: PawPrint,
   connections: Grid2X2,
   danetki: ScanSearch,
 } satisfies Record<PlayableModeId, LucideIcon>

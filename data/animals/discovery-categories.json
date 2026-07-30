@@ -1,0 +1,85 @@
+{
+  "rootCategories": [
+    "Категория:Млекопитающие",
+    "Категория:Птицы",
+    "Категория:Рыбы",
+    "Категория:Пресмыкающиеся",
+    "Категория:Земноводные",
+    "Категория:Насекомые",
+    "Категория:Паукообразные",
+    "Категория:Моллюски",
+    "Категория:Ракообразные"
+  ],
+  "allowedTaxonRankQids": [
+    "Q7432",
+    "Q68947"
+  ],
+  "mustInclude": [
+    {
+      "wikidataId": "Q140",
+      "scientificName": "Panthera leo",
+      "commonNameRu": "лев",
+      "commonNameEn": "lion"
+    },
+    {
+      "wikidataId": "Q144",
+      "scientificName": "Canis lupus familiaris",
+      "commonNameRu": "собака",
+      "commonNameEn": "dog"
+    },
+    {
+      "wikidataId": "Q146",
+      "scientificName": "Felis catus",
+      "commonNameRu": "кошка",
+      "commonNameEn": "cat"
+    },
+    {
+      "wikidataId": "Q726",
+      "scientificName": "Equus ferus caballus",
+      "commonNameRu": "лошадь",
+      "commonNameEn": "horse"
+    },
+    {
+      "wikidataId": "Q830",
+      "scientificName": "Bos taurus",
+      "commonNameRu": "корова",
+      "commonNameEn": "cattle"
+    },
+    {
+      "wikidataId": "Q780",
+      "scientificName": "Gallus gallus domesticus",
+      "commonNameRu": "курица",
+      "commonNameEn": "chicken"
+    },
+    {
+      "wikidataId": "Q787",
+      "scientificName": "Sus scrofa domesticus",
+      "commonNameRu": "свинья",
+      "commonNameEn": "pig"
+    },
+    {
+      "wikidataId": "Q7368",
+      "scientificName": "Ovis aries",
+      "commonNameRu": "овца",
+      "commonNameEn": "sheep"
+    },
+    {
+      "wikidataId": "Q2934",
+      "scientificName": "Capra hircus",
+      "commonNameRu": "коза",
+      "commonNameEn": "goat"
+    },
+    {
+      "wikidataId": "Q19707",
+      "scientificName": "Equus africanus asinus",
+      "commonNameRu": "осёл",
+      "commonNameEn": "donkey"
+    },
+    {
+      "wikidataId": "Q149017",
+      "scientificName": "Oryctolagus cuniculus domesticus",
+      "commonNameRu": "домашний кролик",
+      "commonNameEn": "domestic rabbit"
+    }
+  ]
+}

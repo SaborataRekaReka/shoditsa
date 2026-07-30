@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "id": "animal:chrysomallon-squamiferum",
+  "status": "draft",
+  "identity": {
+    "commonNameRu": "Chrysomallon squamiferum",
+    "commonNameEn": "Chrysomallon squamiferum",
+    "scientificName": "Chrysomallon squamiferum",
+    "acceptedScientificName": "Chrysomallon squamiferum",
+    "aliasesRu": [
+      "Crysomallon squamiferum"
+    ],
+    "wikidataId": "Q5962358",
+    "gbifKey": 7620442,
+    "hagrid": null
+  },
+  "taxonomy": {
+    "kingdom": "Animalia",
+    "phylum": "Mollusca",
+    "taxonomicClass": "Gastropoda",
+    "order": "Neomphalida",
+    "family": "Peltospiridae",
+    "genus": "Chrysomallon",
+    "species": "Chrysomallon squamiferum",
+    "rank": "SPECIES",
+    "status": "ACCEPTED",
+    "extinct": false
+  },
+  "criteria": {
+    "taxonomicClass": "Gastropoda",
+    "bodyCoverings": [
+      "soft-body",
+      "shell"
+    ],
+    "habitats": [
+      "marine"
+    ],
+    "lifestyles": [
+      "aquatic"
+    ],
+    "continents": [
+      "africa"
+    ],
+    "climateZones": [],
+    "diets": [],
+    "activity": [],
+    "locomotion": [
+      "crawl"
+    ],
+    "sizeCategory": "",
+    "reproduction": "egg-laying",
+    "sociality": [],
+    "legCount": null,
+    "thermoregulation": "ectothermic",
+    "migration": "",
+    "relationToHumans": []
+  },
+  "measurements": {
+    "bodyMassKg": null,
+    "bodyMassSourceKind": "",
+    "bodyLengthCm": {
+      "min": null,
+      "max": null
+    },
+    "shoulderHeightCm": {
+      "min": null,
+      "max": null
+    },
+    "lifespanYears": {
+      "typicalMin": null,
+      "typicalMax": null,
+      "maximumObserved": null,
+      "maximumObservedContext": ""
+    },
+    "lifespanCategory": "",
+    "maturityDays": {
+      "female": null,
+      "male": null
+    },
+    "gestationOrIncubationDays": null,
+    "litterOrClutchSize": null
+  },
+  "ecology": {
+    "dietCompositionPercent": {},
+    "foragingStratum": "",
+    "prey": [],
+    "predators": [],
+    "interactionCandidates": {
+      "prey": [],
+      "predators": []
+    },
+    "relatives": [],
+    "conservation": {
+      "statusId": "Q96377276",
+      "statusLabelRu": "вымирающие виды",
+      "source": "Wikidata pointer; verify against the current assessment before publication"
+    }
+  },
+  "hints": {
+    "sounds": [],
+    "silhouettes": [
+      {
+        "kind": "css-image-mask",
+        "sourceCommonsTitle": "File:Three populations of Chrysomallon squamiferum.jpg",
+        "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/00/Three_populations_of_Chrysomallon_squamiferum.jpg",
+        "transform": "brightness(0) saturate(100%)",
+        "inheritsLicense": "CC BY-SA 3.0",
+        "attributionRequired": true
+      }
+    ],
+    "rangeMaps": [
+      {
+        "role": "range-map",
+        "commonsTitle": "File:Chrysomallon squamiferum map 2.png",
+        "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Chrysomallon_squamiferum_map_2.png",
+        "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Chrysomallon_squamiferum_map_2.png",
+        "mimeType": "image/png",
+        "mediaType": "BITMAP",
+        "author": "User:Snek01",
+        "credit": "Own work Created by Michal Maňas in QGIS. This PNG graphic was created with QGIS by n. Range data: -25.3206500 070.0404833 -19.5568833 065.8481333 -37.7837833 049.6493833 Raster map data: Amante C. & Eakins B. W. (2009). \"ETOPO1 1 Arc-Minute Global Relief Model: Procedures, Data Sources and Analysis\". NOAA Technical Memorandum NESDIS NGDC-24. National Geophysical Data Center, NOAA. doi : 10.7289/V5C8276M [accessed 2016-08-19]. Downloaded from http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/image/ Files used: http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/image/color_etopo1_ice_full.tfw and http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/image/color_etopo1_ice_full.tif.zip",
+        "description": "Distribution map of Chrysomallon squamiferum . Coordinates: Kairei -25.3206500,070.0404833 Solitaire -19.5568833,065.8481333 Longqi -37.7837833,049.6493833. Layer: ETOPO1 Global Relief Model.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "attributionRequired": false,
+        "commercialUseAllowed": true,
+        "retrievedAt": "2026-07-30T19:40:38.300Z"
+      }
+    ],
+    "distinctiveTraitsRu": [],
+    "defensesRu": [],
+    "sensesRu": [],
+    "comparisonsRu": [],
+    "finalLetterHintRu": ""
+  },
+  "media": {
+    "primaryImage": {
+      "role": "primary-image",
+      "commonsTitle": "File:Three populations of Chrysomallon squamiferum.jpg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Three_populations_of_Chrysomallon_squamiferum.jpg",
+      "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/00/Three_populations_of_Chrysomallon_squamiferum.jpg",
+      "mimeType": "image/jpeg",
+      "mediaType": "BITMAP",
+      "author": "Chong Chen",
+      "credit": "Own work",
+      "description": "Left to right: -2450m, Kairei vent field (25°19.239S, 70°02.429E), Central Indian Ridge; -2785m, Longqi vent field (37°47.03'S, 49°38.97'E), Southwest Indian Ridge (Type locality); -2606m, Solitaire vent field (19°33.413S, 65°50.888E), Central Indian Ridge, Mauritius.",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "commercialUseAllowed": true,
+      "retrievedAt": "2026-07-30T19:40:38.300Z"
+    },
+    "gallery": [],
+    "videos": []
+  },
+  "popularity": {
+    "wikidataSitelinks": 18,
+    "ruWikipediaTitle": "Chrysomallon squamiferum",
+    "ruWikipediaPageviews365d": 10287,
+    "wordstatMonthlySearches": null
+  },
+  "gameplay": {
+    "impressions": 0,
+    "uniquePlayers": 0,
+    "solveRate": null,
+    "medianHintsToSolve": null,
+    "medianAnswerTimeSeconds": null,
+    "skipRate": null,
+    "abandonmentRate": null,
+    "lastMeasuredAt": null
+  },
+  "selection": {
+    "familiarityScore": 59.9,
+    "playabilityScore": 70.8,
+    "distinctivenessScore": 20,
+    "delightScore": 14.29,
+    "totalScore": 53.57,
+    "difficulty": "medium",
+    "eligible": true,
+    "rejectionReasons": []
+  },
+  "quality": {
+    "coreCriteriaCoverage": 75,
+    "provenanceCoverage": 60,
+    "warnings": [
+      "Continents are an occurrence-derived observed-range proxy; native, introduced and captive records require editorial separation.",
+      "AnAge has no exact row for Chrysomallon squamiferum"
+    ],
+    "reviewedAt": null,
+    "reviewedBy": null
+  },
+  "provenance": [
+    {
+      "fieldPaths": [
+        "identity.commonNameRu",
+        "identity.commonNameEn",
+        "identity.aliasesRu",
+        "identity.scientificName",
+        "popularity.wikidataSitelinks",
+        "popularity.ruWikipediaTitle"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q5962358",
+      "url": "https://www.wikidata.org/wiki/Q5962358",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "Wikidata Special:EntityData JSON",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "popularity.ruWikipediaPageviews365d"
+      ],
+      "source": "Candidate pre-ranking cache",
+      "sourceId": "Chrysomallon squamiferum",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/ru.wikipedia.org/all-access/user/Chrysomallon_squamiferum/monthly/20250701/20260601",
+      "license": "Wikimedia API terms",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "latest 12 complete monthly pageview buckets, collected during candidate ranking",
+      "confidence": 0.9,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "ecology.conservation"
+      ],
+      "source": "Wikidata",
+      "sourceId": "Q96377276",
+      "url": "https://www.wikidata.org/wiki/Q96377276",
+      "license": "CC0 1.0",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "Wikidata P141 label lookup",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "identity.acceptedScientificName",
+        "identity.gbifKey",
+        "taxonomy.kingdom",
+        "taxonomy.phylum",
+        "taxonomy.taxonomicClass",
+        "taxonomy.order",
+        "taxonomy.family",
+        "taxonomy.genus",
+        "taxonomy.species",
+        "taxonomy.rank",
+        "taxonomy.status",
+        "criteria.taxonomicClass"
+      ],
+      "source": "GBIF Species API",
+      "sourceId": "7620442",
+      "url": "https://www.gbif.org/species/7620442",
+      "license": "GBIF data-user agreement; source-dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "species/match (EXACT, confidence 99)",
+      "confidence": 0.99,
+      "raw": {
+        "matchType": "EXACT",
+        "scientificName": "Chrysomallon squamiferum C.Chen, Linse, Copley & A.D.Rogers, 2015",
+        "gbifSourceClass": "Gastropoda",
+        "normalizedGameClass": "Gastropoda"
+      }
+    },
+    {
+      "fieldPaths": [
+        "criteria.bodyCoverings",
+        "criteria.locomotion",
+        "criteria.reproduction",
+        "criteria.thermoregulation"
+      ],
+      "source": "GBIF taxonomy + project normalization rules",
+      "sourceId": "7620442",
+      "url": "https://www.gbif.org/species/7620442",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "deterministic class/order/family rule",
+      "confidence": 0.7,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.continents"
+      ],
+      "source": "GBIF Occurrence API",
+      "sourceId": "7620442",
+      "url": "https://api.gbif.org/v1/occurrence/search?taxon_key=7620442&limit=0&facet=country&facetLimit=50",
+      "license": "GBIF data-user agreement; occurrence dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "countries in the 50 largest occurrence facets mapped to GBIF regions; dominant region plus regions with at least 8% of faceted records",
+      "confidence": 0.55,
+      "raw": {
+        "kind": "observed-range-proxy-not-native-range",
+        "regionCounts": {
+          "AFRICA": 4
+        }
+      }
+    },
+    {
+      "fieldPaths": [
+        "taxonomy.extinct"
+      ],
+      "source": "GBIF Species API profiles",
+      "sourceId": "7620442",
+      "url": "https://api.gbif.org/v1/species/7620442/speciesProfiles?limit=100",
+      "license": "underlying checklist/dataset terms apply",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "speciesProfiles extinct flags; any extant source prevents an extinct classification",
+      "confidence": 0.75,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "media.primaryImage"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Three populations of Chrysomallon squamiferum.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Three_populations_of_Chrysomallon_squamiferum.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.rangeMaps"
+      ],
+      "source": "Wikimedia Commons",
+      "sourceId": "File:Chrysomallon squamiferum map 2.png",
+      "url": "https://commons.wikimedia.org/wiki/File:Chrysomallon_squamiferum_map_2.png",
+      "license": "Public domain",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "Wikidata file pointer + Commons imageinfo/extmetadata",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "hints.silhouettes"
+      ],
+      "source": "Project-derived visual hint",
+      "sourceId": "File:Three populations of Chrysomallon squamiferum.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Three_populations_of_Chrysomallon_squamiferum.jpg",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-07-30T19:40:38.300Z",
+      "method": "reversible CSS black mask derived from the licensed primary image",
+      "confidence": 1,
+      "raw": null
+    },
+    {
+      "fieldPaths": [
+        "criteria.habitats",
+        "criteria.lifestyles"
+      ],
+      "source": "Existing sourced taxonomy/habitat + project normalization rules",
+      "sourceId": "7620442",
+      "url": "https://www.gbif.org/species/7620442",
+      "license": "GBIF data-user agreement; derived factual classification",
+      "retrievedAt": "2026-07-30T19:47:45.447Z",
+      "method": "deterministic class/order/family and habitat-to-lifestyle rule backfill",
+      "confidence": 0.7,
+      "raw": null
+    }
+  ],
+  "generatedAt": "2026-07-30T19:40:38.300Z"
+}
