@@ -481,6 +481,12 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   }
   const answerRows = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1)
   const answer = answerRows[0]?.payload as TitleItem | undefined
+  const normalizedAttempts = attempts.map((entry) => ({
+    ...entry,
+    hints: answer
+      ? normalizeHintPeople(compareTitles(entry.item as TitleItem, answer) as Hint[])
+      : normalizeHintPeople(entry.hints as Hint[]),
+  }))
   const finalChoiceRows = session.status === 'final_choice' || session.completionType?.startsWith('final_choice') || session.completionType === 'answer_revealed'
     ? await tx.select().from(gameFinalChoices).where(eq(gameFinalChoices.sessionId, session.id)).limit(1)
     : []
@@ -513,7 +519,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
   const hintOptions = isPromptSession
     ? []
     : answer
-      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), attempts.map((attempt) => ({ hints: attempt.hints as Hint[] })), session.id)
+      ? buildHintOptions(answer, choices.map((choice) => ({ hintKey: String(choice.hintKey), response: choice.response })), normalizedAttempts.map((attempt) => ({ hints: attempt.hints })), session.id)
       : []
   const result: Record<string, unknown> = {
     engine: 'catalog_guess', rulesVersion: session.rulesVersion,
@@ -521,10 +527,10 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     puzzleDate: session.puzzleDate, status: session.status, completionType: session.completionType, finalChoice, attemptsCount: session.attemptsCount,
     attemptsRemaining: Math.max(0, maxAttempts - session.attemptsCount),
     maxAttempts,
-    attempts: attempts.map((entry) => ({
+    attempts: normalizedAttempts.map((entry) => ({
       position: entry.position,
       item: publicCard(entry.item as TitleItem),
-      hints: normalizeHintPeople(entry.hints as Hint[]),
+      hints: entry.hints,
     })),
     hintCheckpoints: [5, 8].map((round) => ({
       round,

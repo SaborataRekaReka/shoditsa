@@ -52,13 +52,31 @@ const writeAtomic = async (path, value) => {
 }
 
 const text = (value) => typeof value === 'string' ? value.trim() : ''
+const unavailableValues = new Set([
+  'нет данных',
+  'нет в steam',
+  'не применимо',
+  'без оценки',
+  'без рейтинга',
+  'неизвестно',
+  'not available',
+  'not applicable',
+  'not rated',
+  'unrated',
+  'unknown',
+  'n/a',
+])
+const knownText = (value) => {
+  const normalized = text(value).toLocaleLowerCase('ru-RU')
+  return normalized && !unavailableValues.has(normalized) ? text(value) : ''
+}
 const finite = (value) => (
   value == null || value === '' || !Number.isFinite(Number(value)) ? null : Number(value)
 )
 const integer = (value) => (
   value == null || value === '' || !Number.isInteger(Number(value)) ? null : Number(value)
 )
-const uniqueStrings = (values) => [...new Set(values.flat(Infinity).map(text).filter(Boolean))]
+const uniqueStrings = (values) => [...new Set(values.flat(Infinity).map(knownText).filter(Boolean))]
 const object = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 const sleep = (milliseconds) => new Promise((resolveSleep) => setTimeout(resolveSleep, milliseconds))
 const clone = (value) => structuredClone(value)
@@ -590,16 +608,13 @@ if (fetchSources) {
   }
 }
 
-const availabilityLabel = {
-  not_available: 'Нет данных',
-  not_applicable: 'Не применимо',
-  not_on_steam: 'Нет в Steam',
-  not_rated: 'Без оценки',
-  unrated: 'Без рейтинга',
-}
-
 const applyEnrichment = (item, result) => {
   const next = clone(item)
+  next.genres = uniqueStrings(next.genres ?? [])
+  next.platforms = uniqueStrings(next.platforms ?? [])
+  next.steamCategories = uniqueStrings(next.steamCategories ?? [])
+  next.publishers = uniqueStrings(next.publishers ?? [])
+  next.ageRating = knownText(next.ageRating) || null
   const dataQuality = object(next.dataQuality)
   const availability = { ...object(dataQuality.fieldAvailability) }
   const fieldSources = { ...object(dataQuality.fieldSources) }
@@ -615,7 +630,7 @@ const applyEnrichment = (item, result) => {
     next.wikidataId = wiki.qid
     next.wikidataUrl = wiki.sourceUrl
     sources.add('wikidata_displayed_fields_verified')
-    if (!text(next.ageRating) && wiki.ageRating) {
+    if (!knownText(next.ageRating) && wiki.ageRating) {
       next.ageRating = wiki.ageRating
       availability.ageRating = 'available'
       missingFields.delete('ageRating')
@@ -684,22 +699,20 @@ const applyEnrichment = (item, result) => {
   }
 
   if (!next.steamCategories?.length) {
-    next.steamCategories = [availabilityLabel.not_available]
+    next.steamCategories = []
     availability.steamCategories = 'not_available'
   } else {
     availability.steamCategories ??= 'available'
   }
-  if (!text(next.ageRating)) {
-    next.ageRating = availabilityLabel.not_available
+  if (!knownText(next.ageRating)) {
+    next.ageRating = null
     availability.ageRating = 'not_available'
-    sources.add('explicit_age_unavailable_display_value')
   } else {
-    availability.ageRating ??= next.ageRating === availabilityLabel.not_available ? 'not_available' : 'available'
+    availability.ageRating ??= 'available'
   }
   if (!next.publishers?.length) {
-    next.publishers = [availabilityLabel.not_available]
+    next.publishers = []
     availability.publisher = 'not_available'
-    sources.add('explicit_publisher_unavailable_display_value')
   } else {
     availability.publisher ??= 'available'
   }
@@ -735,7 +748,7 @@ const summary = {
   steamReviewsResolved: count((item) => (finite(item.votes?.steamReviews) ?? 0) > 0),
   metacriticResolved: count((item) => finite(item.ratings?.metacritic ?? item.metacritic) != null),
   priceResolved: count((item) => item.dataQuality?.fieldAvailability?.price === 'available'),
-  ageRatingResolved: count((item) => text(item.ageRating) && item.ageRating !== availabilityLabel.not_available),
+  ageRatingResolved: count((item) => Boolean(knownText(item.ageRating))),
   explicitAgeUnavailable: count((item) => item.dataQuality?.fieldAvailability?.ageRating === 'not_available'),
   publishersResolved: count((item) => item.dataQuality?.fieldAvailability?.publisher === 'available'),
   explicitPublisherUnavailable: count((item) => item.dataQuality?.fieldAvailability?.publisher === 'not_available'),

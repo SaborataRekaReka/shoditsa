@@ -141,6 +141,12 @@ describe('final choice', () => {
       id: 'game-categorical-answer',
       titleRu: 'Игра без рейтингов',
       ratings: undefined,
+      dataQuality: {
+        source: ['test'],
+        verified: true,
+        missingFields: ['ratings.steamPositivePercent', 'metacritic'],
+        fieldAvailability: { steamRating: 'not_available', metacritic: 'not_rated' },
+      },
     })
     const result = buildFinalChoice({
       answer: gameAnswer,
@@ -156,6 +162,7 @@ describe('final choice', () => {
 
     expect(result).not.toBeNull()
     expect(result!.snapshot.displayKeys).toEqual(['genres', 'platforms', 'developer'])
+    expect(result!.snapshot.displayKeys).not.toContain('steam_metacritic')
     expect(result!.snapshot.candidates).toHaveLength(4)
   })
 

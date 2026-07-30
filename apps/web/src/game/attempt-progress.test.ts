@@ -31,4 +31,17 @@ describe('attempt progress', () => {
       totalFields: 3,
     })
   })
+
+  it('keeps an unavailable guess neutral without counting it as a match', () => {
+    const hints = [
+      { key: 'price', label: 'Цена', value: 'Нет данных', status: 'unknown', direction: null },
+      { key: 'genres', label: 'Жанры', value: 'RPG', status: 'match', direction: null },
+    ] as Attempt['hints']
+
+    expect(attemptProgressStats(hints)).toEqual({
+      matchedCount: 1,
+      matchedFields: 1,
+      totalFields: 2,
+    })
+  })
 })

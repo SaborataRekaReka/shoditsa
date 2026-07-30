@@ -17,7 +17,18 @@ const appSourceTarget = path.join(root, 'public', 'data', 'source.json')
 const countryCodesTarget = path.join(root, 'scripts', 'cities', 'country-codes.json')
 
 const text = (value) => String(value ?? '').trim()
-const splitList = (value) => [...new Set(text(value).split(',').map((entry) => entry.trim()).filter(Boolean))]
+const unavailableListValues = new Set([
+  'нет данных',
+  'неизвестно',
+  'not available',
+  'not rated',
+  'unknown',
+  'n/a',
+])
+const splitList = (value) => [...new Set(text(value)
+  .split(',')
+  .map((entry) => entry.trim())
+  .filter((entry) => entry && !unavailableListValues.has(entry.toLocaleLowerCase('ru-RU'))))]
 const integer = (value) => {
   const parsed = Number.parseInt(text(value).replace(/\s+/g, ''), 10)
   return Number.isFinite(parsed) ? parsed : null

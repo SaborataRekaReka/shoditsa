@@ -75,6 +75,7 @@ import {
   DIFFICULTY_ORDER,
   getMoscowDate,
   formatDays,
+  isKnownComparisonText,
   isPlayableGamePlotHint,
   isKpopArtistCard,
   KPOP_GENERATION_RANGES,
@@ -652,7 +653,7 @@ const dedupeGameCategories = (categories: string[], removePlayerCategories: bool
 
   for (const rawCategory of categories) {
     const category = rawCategory.trim()
-    if (!category) continue
+    if (!isKnownComparisonText(category)) continue
     if (removePlayerCategories && isPlayerCategory(category)) continue
     if (/(регулируем.*размер.*текст|adjustable.*text|размер.*текст|text.*size|screen reader|экранн.*диктор|цветов.*слеп|color.?blind|high contrast|высок.*контраст|субтитр|caption|narrat.*menu|speech.?to.?text|text.?to.?speech)/i.test(category)) continue
     const key = normalizeGameCategoryKey(category) || normalizeTextMatch(category)
@@ -670,7 +671,7 @@ const dedupeOrganizationNames = (names: string[]) => {
     .map((name) => name.trim())
     .filter((name) => {
       const key = normalizeTextMatch(name)
-      if (!key || seen.has(key)) return false
+      if (!isKnownComparisonText(name) || !key || seen.has(key)) return false
       seen.add(key)
       return true
     })
@@ -2094,13 +2095,14 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
     .filter(Boolean) as Attempt['hints']
   const people = ['creator', 'cast'].map((key) => byKey.get(key)).filter(Boolean) as Attempt['hints']
   const genresHint = byKey.get('genres')
-  const genres = item.genres ?? []
+  const genres = (item.genres ?? []).filter(isKnownComparisonText)
+  const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const score = attemptProgressStats(attempt.hints)
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
   const yearText = item.year != null ? String(item.year) : null
-  const ageText = item.ageRating ?? '—'
+  const ageText = ageHint ? isKnownComparisonText(item.ageRating) ? item.ageRating : 'Нет данных' : null
   const isSeriesAttempt = item.mode === 'series'
   const badge = ratingBadge(item)
   return <article className={`attempt-card attempt-card--screen${isSeriesAttempt ? ' attempt-card--screen-series' : ''}`}>
@@ -2112,14 +2114,14 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
         <h2>{item.titleRu}</h2>
         <p className="gm-head__sub">
           <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
-          {yearText && <>
+          {yearHint && yearText && <>
             <i className="gm-head__dot" aria-hidden="true">·</i>
             <span className={`gm-year ${yearHint?.status ?? ''}`}>
               {yearText}
               {yearHint?.direction === 'up' ? <ArrowUp /> : yearHint?.direction === 'down' ? <ArrowDown /> : yearHint?.status === 'match' ? <Check /> : null}
             </span>
           </>}
-          {ageText !== '—' && <>
+          {ageText && <>
             <i className="gm-head__dot" aria-hidden="true">·</i>
             <span className={`gm-year gm-year--age ${ageHint?.status ?? ''}`}>
               {ageText}
@@ -2127,8 +2129,8 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
             </span>
           </>}
         </p>
-        {!!genres.length && <div className="gm-genres">
-          {visibleMatchedItems(genres, genreMatched, 4).map((genre) => {
+        {!!displayedGenres.length && <div className="gm-genres">
+          {visibleMatchedItems(displayedGenres, genreMatched, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
@@ -2147,15 +2149,18 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
 }
 
 function GameStudioPlate({ label, names, hint }: { label: string; names: string[]; hint: Attempt['hints'][number] | undefined }) {
-  if (!names.length) return null
+  if (!hint) return null
+  const displayedNames = hint.status === 'unknown' ? [hint.value || 'Нет данных'] : names
+  if (!displayedNames.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
-  const isMatch = hint?.status === 'match' || names.some((name) => matched.has(normalizeTextMatch(name)))
-  const monogram = (names[0].match(/[A-Za-zА-Яа-я0-9]+/g) ?? []).slice(0, 2).map((word) => word[0]).join('').toUpperCase() || '?'
-  return <div className={`gm-studio ${isMatch ? 'match' : 'miss'}`}>
+  const isMatch = hint.status === 'match' || displayedNames.some((name) => matched.has(normalizeTextMatch(name)))
+  const tone = isMatch ? 'match' : hint.status
+  const monogram = (displayedNames[0].match(/[A-Za-zА-Яа-я0-9]+/g) ?? []).slice(0, 2).map((word) => word[0]).join('').toUpperCase() || '?'
+  return <div className={`gm-studio ${tone}`}>
     <span className="gm-studio__logo" aria-hidden="true">{monogram}</span>
     <span className="gm-studio__meta">
       <small>{label}</small>
-      <strong title={names.join(', ')}>{names.join(', ')}</strong>
+      <strong title={displayedNames.join(', ')}>{displayedNames.join(', ')}</strong>
     </span>
     <i className="gm-studio__mark" aria-hidden="true">{isMatch ? <Check /> : null}</i>
   </div>
@@ -2167,7 +2172,8 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const rankHint = byKey.get('rank')
   const yearHint = byKey.get('year')
   const score = attemptProgressStats(attempt.hints)
-  const genres = item.genres ?? []
+  const genres = (item.genres ?? []).filter(isKnownComparisonText)
+  const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const attrs = ['country', 'players', 'metacritic', 'steam_positive', 'reviews', 'price', 'age']
     .map((key) => byKey.get(key))
@@ -2186,7 +2192,7 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
         <h2>{item.titleRu}</h2>
         <p className="gm-head__sub">
           <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
-          {item.year != null && <>
+          {yearHint && item.year != null && <>
             <i className="gm-head__dot" aria-hidden="true">·</i>
             <span className={`gm-year ${yearHint?.status ?? ''}`}>
               {item.year}
@@ -2194,8 +2200,8 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
             </span>
           </>}
         </p>
-        {!!genres.length && <div className="gm-genres">
-          {visibleMatchedItems(genres, genreMatched, 4).map((genre) => {
+        {!!displayedGenres.length && <div className="gm-genres">
+          {visibleMatchedItems(displayedGenres, genreMatched, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
@@ -2213,16 +2219,16 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
 
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
-    {(!!developers.length || !!publishers.length) && <div className="gm-studios">
+    {(byKey.has('developer') || byKey.has('publisher')) && <div className="gm-studios">
       <GameStudioPlate label="Разработчик" names={developers} hint={byKey.get('developer')} />
       <GameStudioPlate label="Издатель" names={publishers} hint={byKey.get('publisher')} />
     </div>}
 
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
 
-    <div className="dx-clouds">
-      <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={platforms} limit={6} />
-    </div>
+    {byKey.has('platforms') && <div className="dx-clouds">
+      <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={platforms.length ? platforms : ['Нет данных']} limit={6} />
+    </div>}
   </article>
 }
 
@@ -2230,14 +2236,16 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
   const score = attemptProgressStats(attempt.hints)
   const genresHint = byKey.get('genres')
-  const genres = (item.genres ?? []).map(canonicalMusicGenreLabel)
+  const genres = (item.genres ?? []).filter(isKnownComparisonText).map(canonicalMusicGenreLabel)
+  const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const listenersValue = item.votes?.gamesPlayed ?? null
   const activityStartYear = musicActivityStartYear(item)
+  const activityStartHint = byKey.get('activity_start_year')
   const requestedHints = ['country', 'activity_start_year', 'decade', 'music_type', 'music_active', 'music_origin']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
-  const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
+  const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(isKnownComparisonText)
 
   return <article className="attempt-card attempt-card--music">
     <div className="attempt-card__header">
@@ -2248,16 +2256,16 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
         <h2>{item.titleRu}</h2>
         <p className="gm-head__sub">
           <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
-          {activityStartYear != null && <>
+          {activityStartHint && activityStartYear != null && <>
             <i className="gm-head__dot" aria-hidden="true">·</i>
-            <span className={`gm-year ${byKey.get('activity_start_year')?.status ?? ''}`}>
+            <span className={`gm-year ${activityStartHint.status}`}>
               {activityStartYear}
-              {byKey.get('activity_start_year')?.direction === 'up' ? <ArrowUp /> : byKey.get('activity_start_year')?.direction === 'down' ? <ArrowDown /> : byKey.get('activity_start_year')?.status === 'match' ? <Check /> : null}
+              {activityStartHint.direction === 'up' ? <ArrowUp /> : activityStartHint.direction === 'down' ? <ArrowDown /> : activityStartHint.status === 'match' ? <Check /> : null}
             </span>
           </>}
         </p>
-        {!!genres.length && <div className="gm-genres">
-          {visibleMatchedItems(genres, genreMatched, 6).map((genre) => {
+        {!!displayedGenres.length && <div className="gm-genres">
+          {visibleMatchedItems(displayedGenres, genreMatched, 6).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
@@ -2297,6 +2305,7 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const score = attemptProgressStats(attempt.hints)
   const generation = item.kpopGeneration ?? null
   const generationRange = KPOP_GENERATION_RANGES.find((entry) => entry.generation === generation)?.years ?? 'Годы не указаны'
+  const generationHint = byKey.get('kpop_generation')
   const labelHint = byKey.get('kpop_current_label')
   const detailHints = [
     'kpop_debut_year',
@@ -2326,16 +2335,16 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
           {item.kpopNameHangul && <b lang="ko">{item.kpopNameHangul}</b>}
         </p>
       </div>
-      <div className={`kpop-card__generation ${byKey.get('kpop_generation')?.status ?? 'unknown'}`}>
+      {generationHint && <div className={`kpop-card__generation ${generationHint.status}`}>
         <Crown />
         <strong>{generation ? `${generation} GEN` : '—'}</strong>
         <small>{kpopGenerationLabel(generation)}</small>
-      </div>
+      </div>}
     </div>
 
     <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
 
-    <div className={`kpop-label-plate ${labelHint?.status ?? 'unknown'}`}>
+    {labelHint && <div className={`kpop-label-plate ${labelHint.status}`}>
       <KpopLabelMark label={item.kpopCurrentLabel || 'K-pop'} logoUrl={localLabelLogoUrl} />
       <span>
         <small>Текущий корейский лейбл</small>
@@ -2344,36 +2353,39 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
       <i aria-hidden="true">
         {labelHint?.status === 'match' ? <Check /> : null}
       </i>
-    </div>
+    </div>}
 
     <div className="attempt-clue-grid kpop-card__facts">
       {detailHints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
 
-    <footer className="kpop-card__generation-note">
+    {generationHint && <footer className="kpop-card__generation-note">
       <Sparkles />
       <span><strong>{kpopGenerationLabel(generation)}</strong>{generationRange}</span>
-    </footer>
+    </footer>}
   </article>
 }
 
 function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories'; wrap?: boolean }) {
-  if (!items.length) return null
+  if (!hint || !items.length) return null
   const matched = new Set((hint?.matchedValues ?? []).map(normalizeTextMatch))
   const matchedCount = items.filter((value) => matched.has(normalizeTextMatch(value))).length
   const shouldScroll = !wrap && items.length > limit
-  const countTone = matchedCount === items.length ? 'match' : matchedCount ? 'partial' : 'miss'
+  const countTone = hint.status === 'unknown'
+    ? 'unknown'
+    : matchedCount === items.length ? 'match' : matchedCount ? 'partial' : 'miss'
   const chipsClassName = ['dx-cloud__chips', wrap ? 'is-wrap' : '', shouldScroll ? 'is-scrollable' : ''].filter(Boolean).join(' ')
   return <div className="dx-cloud">
     <div className="dx-cloud__head">
       <span>{label}</span>
-      <small className={countTone}>{matchedCount}/{items.length}</small>
+      <small className={countTone}>{hint.status === 'unknown' ? '—' : `${matchedCount}/${items.length}`}</small>
     </div>
     <HorizontalScrollLane className={chipsClassName}>
       {items.map((value) => {
         const isMatched = matched.has(normalizeTextMatch(value))
         const icon = iconKind === 'steam-categories' ? steamCategoryIcon(value) : null
-        return <span key={value} className={`dx-chip ${isMatched ? 'match' : 'miss'}`}>
+        const chipTone = hint.status === 'unknown' ? 'unknown' : isMatched ? 'match' : 'miss'
+        return <span key={value} className={`dx-chip ${chipTone}`}>
           {icon && <img className="dx-chip__icon" src={publicAssetUrl(icon === 'single' ? 'images/steam-icons/single-player.svg' : 'images/steam-icons/multi-player.svg')} alt="" aria-hidden="true" />}
           {value}
           {isMatched && <Check />}

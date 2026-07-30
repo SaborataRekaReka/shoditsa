@@ -72,6 +72,9 @@ describe('deterministic rules', () => {
       expect.objectContaining({ key: 'kpop_debut_members', status: 'close', direction: 'up' }),
       expect.objectContaining({ key: 'kpop_current_label', status: 'match' }),
     ]))
+    expect(compareTitles(guess, { ...answer, kpopDebutMembers: null }).find((hint) => hint.key === 'kpop_debut_members')).toBeUndefined()
+    expect(compareTitles({ ...guess, kpopDebutMembers: null }, answer).find((hint) => hint.key === 'kpop_debut_members'))
+      .toMatchObject({ value: 'Нет данных', status: 'unknown', direction: null })
   })
 
   it('formats Russian day counts for every declension branch', () => {
@@ -106,7 +109,7 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'kp')).toMatchObject({ status: 'close', direction: 'down' })
   })
 
-  it('uses explicit availability labels instead of empty game comparison values', () => {
+  it('omits game criteria whose answer has no comparable value', () => {
     const base = {
       mode: 'game',
       titleRu: 'Test Game',
@@ -137,12 +140,106 @@ describe('deterministic rules', () => {
     } as TitleItem
     const hints = compareTitles({ ...base, id: 'guess' }, { ...base, id: 'answer' })
 
-    expect(hints.find((hint) => hint.key === 'players')?.value).toBe('Нет данных')
-    expect(hints.find((hint) => hint.key === 'steam_positive')?.value).toBe('Нет данных')
-    expect(hints.find((hint) => hint.key === 'reviews')?.value).toBe('Нет данных')
-    expect(hints.find((hint) => hint.key === 'metacritic')?.value).toBe('Без оценки')
+    expect(hints.map((hint) => hint.key)).not.toEqual(expect.arrayContaining([
+      'players',
+      'steam_positive',
+      'reviews',
+      'metacritic',
+      'price',
+      'age',
+    ]))
+  })
+
+  it('keeps a known answer criterion neutral when only the guess value is unavailable', () => {
+    const base = {
+      mode: 'game',
+      titleRu: 'Test Game',
+      titleOriginal: 'Test Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2000,
+      genres: ['Action'],
+      platforms: ['PC'],
+      developers: ['Studio'],
+      publishers: ['Publisher'],
+    } as TitleItem
+    const answer = {
+      ...base,
+      id: 'answer',
+      steamCategories: ['2 игрока'],
+      ratings: { steamPositivePercent: 90, metacritic: 80 },
+      votes: { steamReviews: 10_000 },
+      price: { isFree: false, currency: 'USD', initial: 5_999, final: 5_999, discountPercent: 0 },
+      ageRating: '18+',
+    } as TitleItem
+    const guess = {
+      ...base,
+      id: 'guess',
+      steamCategories: ['Нет данных'],
+      ageRating: 'Not Rated',
+      dataQuality: {
+        source: ['test'],
+        verified: true,
+        missingFields: [],
+        fieldAvailability: {
+          steamCategories: 'not_available',
+          steamRating: 'not_available',
+          steamReviews: 'not_available',
+          metacritic: 'not_rated',
+          price: 'not_available',
+          ageRating: 'not_rated',
+        },
+      },
+    } as TitleItem
+    const hints = compareTitles(guess, answer)
+
+    for (const key of ['players', 'steam_positive', 'reviews', 'metacritic', 'price', 'age']) {
+      expect(hints.find((hint) => hint.key === key)).toMatchObject({ status: 'unknown', direction: null })
+    }
     expect(hints.find((hint) => hint.key === 'price')?.value).toBe('Нет данных')
-    expect(hints.find((hint) => hint.key === 'age')?.value).toBe('Нет данных')
+    expect(hints.find((hint) => hint.key === 'age')?.value).toBe('Без оценки')
+  })
+
+  it('does not compare paid game prices across different currencies', () => {
+    const base = {
+      mode: 'game',
+      titleRu: 'Test Game',
+      titleOriginal: 'Test Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2000,
+      genres: ['Action'],
+      platforms: ['PC'],
+      developers: ['Studio'],
+      publishers: ['Publisher'],
+    } as TitleItem
+    const price = (currency: string) => ({ isFree: false, currency, initial: 5_999, final: 5_999, discountPercent: 0 })
+    const hints = compareTitles(
+      { ...base, id: 'guess', price: price('USD') },
+      { ...base, id: 'answer', price: price('RUB') },
+    )
+
+    expect(hints.find((hint) => hint.key === 'price')).toMatchObject({ status: 'unknown', direction: null })
+  })
+
+  it('does not treat catalog placeholder lists as game facts', () => {
+    const base = {
+      mode: 'game',
+      titleRu: 'Test Game',
+      titleOriginal: 'Test Game',
+      alternativeTitles: [],
+      popularityScore: 1,
+      year: 2000,
+      developers: ['Studio'],
+    } as TitleItem
+    const hints = compareTitles(
+      { ...base, id: 'guess', genres: ['Action'], platforms: ['PC'], publishers: ['Publisher'] },
+      { ...base, id: 'answer', genres: ['Нет данных'], platforms: ['Unknown'], publishers: ['N/A'] },
+    )
+
+    expect(hints.find((hint) => hint.key === 'genres')).toBeUndefined()
+    expect(hints.find((hint) => hint.key === 'platforms')).toBeUndefined()
+    expect(hints.find((hint) => hint.key === 'publisher')).toBeUndefined()
   })
 
   it('treats English single-player categories as one player and omits technical Steam categories', () => {
@@ -291,6 +388,9 @@ describe('deterministic rules', () => {
     expect(poolFor(items, 'city', 'all', 'capitals').map((item) => item.id)).toEqual(['city:capital'])
     expect(poolFor(items, 'city', 'all', 'capitals-popular').map((item) => item.id)).toEqual(['city:capital', 'city:popular'])
     expect(compareTitles(capital, capital).every((hint) => hint.status === 'match')).toBe(true)
+    expect(compareTitles(popular, { ...capital, languages: ['Нет данных'] }).find((hint) => hint.key === 'languages')).toBeUndefined()
+    expect(compareTitles({ ...popular, languages: ['Нет данных'] }, capital).find((hint) => hint.key === 'languages'))
+      .toMatchObject({ value: 'Нет данных', status: 'unknown', direction: null })
   })
   it('requires an explicit opt-in before including promo cards in the regular games pool', () => {
     const regular = {

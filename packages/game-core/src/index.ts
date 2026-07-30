@@ -646,15 +646,48 @@ export const searchTitles = (pool: TitleItem[], query: string, excluded: Set<str
     .slice(0, 8).map(({ item }) => item)
 }
 
+const UNAVAILABLE_COMPARISON_VALUES = new Set([
+  'Нет данных',
+  'Нет в Steam',
+  'Не применимо',
+  'Без оценки',
+  'Без рейтинга',
+  'Неизвестно',
+  'Not available',
+  'Not applicable',
+  'Not rated',
+  'Unrated',
+  'Unknown',
+  'N/A',
+  'Null',
+].map(normalize))
+
+export const isKnownComparisonText = (value: string | null | undefined): value is string => {
+  const normalized = normalize(String(value ?? ''))
+  return Boolean(normalized) && !UNAVAILABLE_COMPARISON_VALUES.has(normalized)
+}
+
+const knownComparisonValues = (values: string[] | null | undefined) => (
+  (values ?? []).map((value) => String(value ?? '').trim()).filter(isKnownComparisonText)
+)
+
+const knownComparisonText = (value: string | null | undefined) => (
+  isKnownComparisonText(value) ? value.trim() : null
+)
+
 const setStatus = (guess: string[], answer: string[]): MatchStatus => {
-  if (!guess.length || !answer.length) return 'unknown'
-  const g = new Set(guess.map(normalize)); const a = new Set(answer.map(normalize))
+  const comparableGuess = knownComparisonValues(guess)
+  const comparableAnswer = knownComparisonValues(answer)
+  if (!comparableGuess.length || !comparableAnswer.length) return 'unknown'
+  const g = new Set(comparableGuess.map(normalize)); const a = new Set(comparableAnswer.map(normalize))
   const shared = [...g].filter((value) => a.has(value)).length
   return shared === g.size && shared === a.size ? 'match' : shared ? 'partial' : 'miss'
 }
 const scalar = (guess: string | null | undefined, answer: string | null | undefined): MatchStatus => {
-  if (!guess || !answer) return 'unknown'
-  return normalize(guess) === normalize(answer) ? 'match' : 'miss'
+  const comparableGuess = knownComparisonText(guess)
+  const comparableAnswer = knownComparisonText(answer)
+  if (!comparableGuess || !comparableAnswer) return 'unknown'
+  return normalize(comparableGuess) === normalize(comparableAnswer) ? 'match' : 'miss'
 }
 const normalizeContagiousness = (value: string | null | undefined) => {
   if (!value) return value
@@ -691,7 +724,10 @@ const numeric = (
     direction: delta === 0 ? null : compareDirection(guessNumber, answerNumber, options),
   }
 }
-const list = (values: string[]) => values.length ? values.join(', ') : 'Нет данных'
+const list = (values: string[]) => {
+  const comparable = knownComparisonValues(values)
+  return comparable.length ? comparable.join(', ') : 'Нет данных'
+}
 const countryCode = (value: string) => {
   const firstChunk = value.split(',')[0]?.trim().toUpperCase() ?? ''
   if (/^[A-Z]{2}$/.test(firstChunk)) return firstChunk
@@ -761,8 +797,8 @@ const countryCodes = (values: string[]) => {
 }
 const people = (values: TitleItem['cast']) => list((values ?? []).map((person) => person.nameRu || person.nameOriginal).filter(Boolean))
 const overlaps = (guess: string[], answer: string[]) => {
-  const guessSet = new Set(guess.map(normalize))
-  return answer.filter((value) => guessSet.has(normalize(value)))
+  const guessSet = new Set(knownComparisonValues(guess).map(normalize))
+  return knownComparisonValues(answer).filter((value) => guessSet.has(normalize(value)))
 }
 
 export const canonicalMusicGenreLabel = (value: string) => {
@@ -878,14 +914,10 @@ const displayedUnavailableLabel = (item: TitleItem, field: string, fallback = '�
 const compareDisplayedValues = (
   guessValue: number | null,
   answerValue: number | null,
-  guessLabel: string,
-  answerLabel: string,
   numericComparison: { status: MatchStatus; direction: Direction },
-) => (
-  guessValue != null && answerValue != null
-    ? numericComparison
-    : { status: scalar(guessValue == null ? guessLabel : String(guessValue), answerValue == null ? answerLabel : String(answerValue)), direction: null }
-)
+) => guessValue != null && answerValue != null
+  ? numericComparison
+  : { status: 'unknown' as const, direction: null }
 
 const reviewHint = (
   guess: number | null | undefined,
@@ -948,45 +980,56 @@ const gamePriceLabel = (item: TitleItem) => {
   return 'Платно'
 }
 
+type ComparableGamePrice =
+  | { kind: 'free' }
+  | { kind: 'amount'; final: number; currency: string }
+
+const comparableGamePrice = (item: TitleItem): ComparableGamePrice | null => {
+  if (!item.price) return null
+  if (item.price.isFree) return { kind: 'free' }
+  const final = toFiniteNumber(item.price.final)
+  const currency = String(item.price.currency ?? '').trim().toUpperCase()
+  if (final == null || !/^[A-Z]{3}$/.test(currency)) return null
+  return { kind: 'amount', final, currency }
+}
+
 const gamePriceHint = (guess: TitleItem, answer: TitleItem): { status: MatchStatus; direction: Direction } => {
-  if (!guess.price || !answer.price) {
-    const guessLabel = guess.price ? gamePriceLabel(guess) : displayedUnavailableLabel(guess, 'price')
-    const answerLabel = answer.price ? gamePriceLabel(answer) : displayedUnavailableLabel(answer, 'price')
-    return { status: scalar(guessLabel, answerLabel), direction: null }
+  const guessPrice = comparableGamePrice(guess)
+  const answerPrice = comparableGamePrice(answer)
+  if (!guessPrice || !answerPrice) return { status: 'unknown', direction: null }
+  if (guessPrice.kind === 'free' && answerPrice.kind === 'free') return { status: 'match', direction: null }
+  if (guessPrice.kind !== answerPrice.kind) return { status: 'miss', direction: null }
+  if (guessPrice.kind !== 'amount' || answerPrice.kind !== 'amount' || guessPrice.currency !== answerPrice.currency) {
+    return { status: 'unknown', direction: null }
   }
-  if (guess.price.isFree === answer.price.isFree && (guess.price.isFree || guess.price.final == null || answer.price.final == null)) return { status: 'match', direction: null }
-  if (guess.price.isFree !== answer.price.isFree) return { status: 'miss', direction: null }
-  const guessFinal = toFiniteNumber(guess.price.final)
-  const answerFinal = toFiniteNumber(answer.price.final)
-  if (guessFinal == null || answerFinal == null) return { status: 'match', direction: null }
-  const delta = Math.abs(guessFinal - answerFinal)
+  const delta = Math.abs(guessPrice.final - answerPrice.final)
   return {
     status: delta === 0 ? 'match' : delta <= 35_000 ? 'close' : 'miss',
-    direction: delta === 0 ? null : compareDirection(guessFinal, answerFinal),
+    direction: delta === 0 ? null : compareDirection(guessPrice.final, answerPrice.final),
   }
 }
 
 const compareDiagnoses = (guess: TitleItem, answer: TitleItem): Hint[] => {
-  const guessBodySystems = guess.bodySystems ?? []
-  const answerBodySystems = answer.bodySystems ?? []
-  const guessDiseaseTypes = guess.diseaseTypes ?? []
-  const answerDiseaseTypes = answer.diseaseTypes ?? []
-  const guessCourse = guess.course ?? []
-  const answerCourse = answer.course ?? []
-  const guessAgeGroups = guess.typicalAgeGroups ?? []
-  const answerAgeGroups = answer.typicalAgeGroups ?? []
-  const guessLocalization = guess.localization ?? []
-  const answerLocalization = answer.localization ?? []
-  const guessSymptoms = guess.keySymptoms ?? []
-  const answerSymptoms = answer.keySymptoms ?? []
-  const guessDiagnostics = guess.diagnostics ?? []
-  const answerDiagnostics = answer.diagnostics ?? []
-  const guessRiskFactors = guess.riskFactors ?? []
-  const answerRiskFactors = answer.riskFactors ?? []
-  const guessContagiousness = normalizeContagiousness(guess.contagiousness)
-  const answerContagiousness = normalizeContagiousness(answer.contagiousness)
-  const guessIcd = [...(guess.icd10 ?? []), ...(guess.icdGroup ? [guess.icdGroup] : [])]
-  const answerIcd = [...(answer.icd10 ?? []), ...(answer.icdGroup ? [answer.icdGroup] : [])]
+  const guessBodySystems = knownComparisonValues(guess.bodySystems)
+  const answerBodySystems = knownComparisonValues(answer.bodySystems)
+  const guessDiseaseTypes = knownComparisonValues(guess.diseaseTypes)
+  const answerDiseaseTypes = knownComparisonValues(answer.diseaseTypes)
+  const guessCourse = knownComparisonValues(guess.course)
+  const answerCourse = knownComparisonValues(answer.course)
+  const guessAgeGroups = knownComparisonValues(guess.typicalAgeGroups)
+  const answerAgeGroups = knownComparisonValues(answer.typicalAgeGroups)
+  const guessLocalization = knownComparisonValues(guess.localization)
+  const answerLocalization = knownComparisonValues(answer.localization)
+  const guessSymptoms = knownComparisonValues(guess.keySymptoms)
+  const answerSymptoms = knownComparisonValues(answer.keySymptoms)
+  const guessDiagnostics = knownComparisonValues(guess.diagnostics)
+  const answerDiagnostics = knownComparisonValues(answer.diagnostics)
+  const guessRiskFactors = knownComparisonValues(guess.riskFactors)
+  const answerRiskFactors = knownComparisonValues(answer.riskFactors)
+  const guessContagiousness = knownComparisonText(normalizeContagiousness(guess.contagiousness))
+  const answerContagiousness = knownComparisonText(normalizeContagiousness(answer.contagiousness))
+  const guessIcd = knownComparisonValues([...(guess.icd10 ?? []), ...(guess.icdGroup ? [guess.icdGroup] : [])])
+  const answerIcd = knownComparisonValues([...(answer.icd10 ?? []), ...(answer.icdGroup ? [answer.icdGroup] : [])])
 
   return [
     ...(answerBodySystems.length ? [{ key: 'body_systems', label: 'Система', value: list(guessBodySystems), status: setStatus(guessBodySystems, answerBodySystems), direction: null, matchedValues: overlaps(guessBodySystems, answerBodySystems) } satisfies Hint] : []),
@@ -1003,12 +1046,12 @@ const compareDiagnoses = (guess: TitleItem, answer: TitleItem): Hint[] => {
 }
 
 const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
-  const guessCountries = guess.countries ?? []
-  const answerCountries = answer.countries ?? []
-  const guessGenres = guess.genres ?? []
-  const answerGenres = answer.genres ?? []
-  const guessCast = guess.cast ?? []
-  const answerCast = answer.cast ?? []
+  const guessCountries = knownComparisonValues(guess.countries)
+  const answerCountries = knownComparisonValues(answer.countries)
+  const guessGenres = knownComparisonValues(guess.genres)
+  const answerGenres = knownComparisonValues(answer.genres)
+  const guessCast = (guess.cast ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+  const answerCast = (answer.cast ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
 
   const year = numeric(guess.year, answer.year, 0, 2)
   const kp = numeric(guess.ratings?.kinopoisk, answer.ratings?.kinopoisk, 0.1, 0.3)
@@ -1019,18 +1062,20 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const guessSeasons = Number.isFinite(Number(guess.seasonsCount)) ? Number(guess.seasonsCount) : null
   const answerSeasons = Number.isFinite(Number(answer.seasonsCount)) ? Number(answer.seasonsCount) : null
   const seasons = numeric(guessSeasons, answerSeasons, 0, 1)
-  const guessSeriesStatus = guess.seriesStatus ?? null
-  const answerSeriesStatus = answer.seriesStatus ?? null
+  const guessSeriesStatus = knownComparisonText(guess.seriesStatus)
+  const answerSeriesStatus = knownComparisonText(answer.seriesStatus)
+  const guessAgeRating = knownComparisonText(guess.ageRating)
+  const answerAgeRating = knownComparisonText(answer.ageRating)
 
-  const guessShowrunners = guess.showrunners ?? []
-  const answerShowrunners = answer.showrunners ?? []
-  const guessDirectors = guess.directors ?? []
-  const answerDirectors = answer.directors ?? []
+  const guessShowrunners = (guess.showrunners ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+  const answerShowrunners = (answer.showrunners ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+  const guessDirectors = (guess.directors ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+  const answerDirectors = (answer.directors ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
   const guessCreators = guess.mode === 'series' && guessShowrunners.length ? guessShowrunners : guessDirectors
   const answerCreators = answer.mode === 'series' && answerShowrunners.length ? answerShowrunners : answerDirectors
 
-  const creatorsG = guessCreators.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
-  const creatorsA = answerCreators.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
+  const creatorsG = guessCreators.map((person) => person.nameRu || person.nameOriginal).filter(isKnownComparisonText)
+  const creatorsA = answerCreators.map((person) => person.nameRu || person.nameOriginal).filter(isKnownComparisonText)
   const creatorNames = new Set(creatorsA.map(normalize))
   const castNames = new Set(answerCast.map((person) => normalize(person.nameRu || person.nameOriginal)))
   const matchedGenres = overlaps(guessGenres, answerGenres)
@@ -1063,11 +1108,11 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ...(answer.ratings?.kinopoisk != null ? [{ key: 'kp', label: 'Кинопоиск', value: guess.ratings?.kinopoisk?.toFixed(1) ?? '—', ...kp } satisfies Hint] : []),
     ...(answer.ratings?.imdb != null ? [{ key: 'imdb', label: 'IMDb', value: guess.ratings?.imdb?.toFixed(1) ?? '—', ...imdb } satisfies Hint] : []),
     ...(showRuntime && answer.runtimeMinutes != null ? [{ key: 'runtime', label: 'Хронометраж', value: guess.runtimeMinutes ? `${guess.runtimeMinutes} мин` : '—', ...runtime } satisfies Hint] : []),
-    ...(answer.ageRating ? [{
+    ...(answerAgeRating ? [{
       key: 'age',
       label: 'Возраст',
-      value: guess.ageRating ?? '—',
-      status: guess.ageRating && answer.ageRating ? (guess.ageRating === answer.ageRating ? 'match' : 'miss') : 'unknown',
+      value: guessAgeRating ?? 'Нет данных',
+      status: scalar(guessAgeRating, answerAgeRating),
       direction: null,
     } satisfies Hint] : []),
   ]
@@ -1076,28 +1121,34 @@ const compareScreenTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
 }
 
 const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
-  const guessGenres = guess.genres ?? []
-  const answerGenres = answer.genres ?? []
-  const guessStudios = guess.studios ?? []
-  const answerStudios = answer.studios ?? []
-  const guessCast = guess.cast ?? []
-  const answerCast = answer.cast ?? []
-  const guessCreators = mergePeople(guess.directors, guess.showrunners, guess.writers).slice(0, 5)
-  const answerCreators = mergePeople(answer.directors, answer.showrunners, answer.writers).slice(0, 5)
+  const guessGenres = knownComparisonValues(guess.genres)
+  const answerGenres = knownComparisonValues(answer.genres)
+  const guessStudios = knownComparisonValues(guess.studios)
+  const answerStudios = knownComparisonValues(answer.studios)
+  const guessCast = (guess.cast ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+  const answerCast = (answer.cast ?? []).filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+  const guessCreators = mergePeople(guess.directors, guess.showrunners, guess.writers)
+    .filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+    .slice(0, 5)
+  const answerCreators = mergePeople(answer.directors, answer.showrunners, answer.writers)
+    .filter((person) => isKnownComparisonText(person.nameRu || person.nameOriginal))
+    .slice(0, 5)
 
-  const guessCreatorNames = guessCreators.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
-  const answerCreatorNames = answerCreators.map((person) => person.nameRu || person.nameOriginal).filter(Boolean)
+  const guessCreatorNames = guessCreators.map((person) => person.nameRu || person.nameOriginal).filter(isKnownComparisonText)
+  const answerCreatorNames = answerCreators.map((person) => person.nameRu || person.nameOriginal).filter(isKnownComparisonText)
   const creatorSet = new Set(answerCreatorNames.map(normalize))
   const castSet = new Set(answerCast.map((person) => normalize(person.nameRu || person.nameOriginal)))
   const matchedGenres = overlaps(guessGenres, answerGenres)
   const matchedStudios = overlaps(guessStudios, answerStudios)
 
-  const guessKind = guess.animeKindCode ?? guess.animeKind ?? null
-  const answerKind = answer.animeKindCode ?? answer.animeKind ?? null
-  const guessStatus = guess.animeStatusCode ?? guess.animeStatus ?? guess.seriesStatus ?? null
-  const answerStatus = answer.animeStatusCode ?? answer.animeStatus ?? answer.seriesStatus ?? null
-  const guessSource = guess.animeSourceCode ?? guess.animeSource ?? null
-  const answerSource = answer.animeSourceCode ?? answer.animeSource ?? null
+  const guessKind = knownComparisonText(guess.animeKindCode ?? guess.animeKind)
+  const answerKind = knownComparisonText(answer.animeKindCode ?? answer.animeKind)
+  const guessStatus = knownComparisonText(guess.animeStatusCode ?? guess.animeStatus ?? guess.seriesStatus)
+  const answerStatus = knownComparisonText(answer.animeStatusCode ?? answer.animeStatus ?? answer.seriesStatus)
+  const guessSource = knownComparisonText(guess.animeSourceCode ?? guess.animeSource)
+  const answerSource = knownComparisonText(answer.animeSourceCode ?? answer.animeSource)
+  const guessAgeRating = knownComparisonText(guess.ageRating)
+  const answerAgeRating = knownComparisonText(answer.ageRating)
   const guessScore = animeScore(guess)
   const answerScore = animeScore(answer)
 
@@ -1119,7 +1170,7 @@ const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const hasSource = Boolean(answerSource)
   const hasScore = answerScore != null
   const hasRank = answer.topRank != null
-  const hasAge = Boolean(answer.ageRating)
+  const hasAge = Boolean(answerAgeRating)
   const hasCreators = answerCreatorNames.length > 0
   const hasCast = answerCast.length > 0
 
@@ -1154,63 +1205,55 @@ const compareAnimeTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {
     } satisfies Hint] : []),
     ...(hasScore ? [{ key: 'shiki', label: 'Shikimori', value: guessScore != null ? guessScore.toFixed(2) : '—', ...score } satisfies Hint] : []),
     ...(hasRank ? [{ key: 'rank', label: 'Популярность', value: guess.topRank != null ? `#${guess.topRank}` : '—', ...rank } satisfies Hint] : []),
-    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', status: scalar(guess.ageRating, answer.ageRating), direction: null } satisfies Hint] : []),
+    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guessAgeRating ?? 'Нет данных', status: scalar(guessAgeRating, answerAgeRating), direction: null } satisfies Hint] : []),
   ]
 
   return hints
 }
 
 const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
-  const guessCountries = guess.countries ?? []
-  const answerCountries = answer.countries ?? []
-  const guessGenres = guess.genres ?? []
-  const answerGenres = answer.genres ?? []
-  const guessCategories = guess.steamCategories ?? []
-  const answerCategories = answer.steamCategories ?? []
-  const guessPlatforms = guess.platforms ?? []
-  const answerPlatforms = answer.platforms ?? []
-  const guessDevelopers = guess.developers ?? []
-  const answerDevelopers = answer.developers ?? []
-  const guessPublishers = guess.publishers ?? []
-  const answerPublishers = answer.publishers ?? []
+  const guessCountries = knownComparisonValues(guess.countries)
+  const answerCountries = knownComparisonValues(answer.countries)
+  const guessGenres = knownComparisonValues(guess.genres)
+  const answerGenres = knownComparisonValues(answer.genres)
+  const guessCategories = knownComparisonValues(guess.steamCategories)
+  const answerCategories = knownComparisonValues(answer.steamCategories)
+  const guessPlatforms = knownComparisonValues(guess.platforms)
+  const answerPlatforms = knownComparisonValues(answer.platforms)
+  const guessDevelopers = knownComparisonValues(guess.developers)
+  const answerDevelopers = knownComparisonValues(answer.developers)
+  const guessPublishers = knownComparisonValues(guess.publishers)
+  const answerPublishers = knownComparisonValues(answer.publishers)
   const guessSteamPositive = gameScore(guess.ratings?.steamPositivePercent)
   const answerSteamPositive = gameScore(answer.ratings?.steamPositivePercent)
   const guessMeta = gameScore(guess.ratings?.metacritic ?? guess.metacritic)
   const answerMeta = gameScore(answer.ratings?.metacritic ?? answer.metacritic)
   const guessPlayers = playersNumber(guessCategories)
   const answerPlayers = playersNumber(answerCategories)
-  const guessAge = ageNumber(guess.ageRating)
-  const answerAge = ageNumber(answer.ageRating)
+  const guessAgeRating = knownComparisonText(guess.ageRating)
+  const answerAgeRating = knownComparisonText(answer.ageRating)
+  const guessAge = ageNumber(guessAgeRating)
+  const answerAge = ageNumber(answerAgeRating)
   const guessPlayerLabel = displayedUnavailableLabel(guess, 'steamCategories')
-  const answerPlayerLabel = displayedUnavailableLabel(answer, 'steamCategories')
   const guessSteamLabel = displayedUnavailableLabel(guess, 'steamRating')
-  const answerSteamLabel = displayedUnavailableLabel(answer, 'steamRating')
   const guessMetacriticLabel = displayedUnavailableLabel(guess, 'metacritic')
-  const answerMetacriticLabel = displayedUnavailableLabel(answer, 'metacritic')
   const guessReviewsLabel = displayedUnavailableLabel(guess, 'steamReviews')
-  const answerReviewsLabel = displayedUnavailableLabel(answer, 'steamReviews')
 
   const year = numeric(guess.year, answer.year, 0, 2)
   const rank = numeric(guess.topRank, answer.topRank, 0, 15, { lowerIsUp: true })
   const players = compareDisplayedValues(
     guessPlayers,
     answerPlayers,
-    guessPlayerLabel,
-    answerPlayerLabel,
     numeric(guessPlayers, answerPlayers, 0, 2),
   )
   const steamPositive = compareDisplayedValues(
     guessSteamPositive,
     answerSteamPositive,
-    guessSteamLabel,
-    answerSteamLabel,
     numeric(guessSteamPositive, answerSteamPositive, 1, 5),
   )
   const metacritic = compareDisplayedValues(
     guessMeta,
     answerMeta,
-    guessMetacriticLabel,
-    answerMetacriticLabel,
     numeric(guessMeta, answerMeta, 1, 5),
   )
   const guessReviews = positiveNumber(guess.votes?.steamReviews)
@@ -1218,25 +1261,23 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const reviews = compareDisplayedValues(
     guessReviews,
     answerReviews,
-    guessReviewsLabel,
-    answerReviewsLabel,
     reviewHint(guessReviews, answerReviews),
   )
   const price = gamePriceHint(guess, answer)
   const age = guessAge != null || answerAge != null
     ? numeric(guessAge, answerAge, 0, 2)
-    : { status: scalar(guess.ageRating, answer.ageRating), direction: null }
+    : { status: scalar(guessAgeRating, answerAgeRating), direction: null }
   const hasGenres = answerGenres.length > 0
   const hasCountries = answerCountries.length > 0
   const hasPlatforms = answerPlatforms.length > 0
   const hasDevelopers = answerDevelopers.length > 0
   const hasPublishers = answerPublishers.length > 0
-  const hasPlayers = answerPlayers != null || Boolean(displayedFieldAvailability(answer, 'steamCategories'))
-  const hasSteamPositive = answerSteamPositive != null || Boolean(displayedFieldAvailability(answer, 'steamRating'))
-  const hasMetacritic = answerMeta != null || Boolean(displayedFieldAvailability(answer, 'metacritic'))
-  const hasReviews = Boolean(answerReviews) || Boolean(displayedFieldAvailability(answer, 'steamReviews'))
-  const hasPrice = Boolean(answer.price) || Boolean(displayedFieldAvailability(answer, 'price'))
-  const hasAge = Boolean(answer.ageRating)
+  const hasPlayers = answerPlayers != null
+  const hasSteamPositive = answerSteamPositive != null
+  const hasMetacritic = answerMeta != null
+  const hasReviews = answerReviews != null
+  const hasPrice = comparableGamePrice(answer) != null
+  const hasAge = Boolean(answerAgeRating)
 
   const hints: Hint[] = [
     ...(answer.year != null ? [{ key: 'year', label: 'Год', value: guess.year != null ? String(guess.year) : '—', ...year } satisfies Hint] : []),
@@ -1251,7 +1292,7 @@ const compareGames = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ...(hasMetacritic ? [{ key: 'metacritic', label: 'Metacritic', value: guessMeta != null ? formatNumber(guessMeta) : guessMetacriticLabel, ...metacritic } satisfies Hint] : []),
     ...(hasReviews ? [{ key: 'reviews', label: 'Отзывы Steam', value: guessReviews != null ? formatNumber(guessReviews) : guessReviewsLabel, ...reviews } satisfies Hint] : []),
     ...(hasPrice ? [{ key: 'price', label: 'Цена', value: guess.price ? gamePriceLabel(guess) : displayedUnavailableLabel(guess, 'price'), ...price } satisfies Hint] : []),
-    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guess.ageRating ?? '—', ...age } satisfies Hint] : []),
+    ...(hasAge ? [{ key: 'age', label: 'Возраст', value: guessAgeRating ?? displayedUnavailableLabel(guess, 'ageRating'), ...age } satisfies Hint] : []),
   ]
 
   return hints
@@ -1266,74 +1307,84 @@ const compareKpopArtists = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const debutYear = numeric(guess.activityStartYear, answer.activityStartYear, 0, 1)
   const generation = numeric(guess.kpopGeneration, answer.kpopGeneration, 0, 0)
   const debutMembers = numeric(guess.kpopDebutMembers, answer.kpopDebutMembers, 0, 1)
+  const guessPerformerType = knownComparisonText(guess.kpopPerformerType)
+  const answerPerformerType = knownComparisonText(answer.kpopPerformerType)
+  const guessGender = knownComparisonText(guess.kpopGender)
+  const answerGender = knownComparisonText(answer.kpopGender)
+  const guessCurrentLabel = knownComparisonText(guess.kpopCurrentLabel)
+  const answerCurrentLabel = knownComparisonText(answer.kpopCurrentLabel)
+  const guessActivityStatus = knownComparisonText(guess.kpopActivityStatus)
+  const answerActivityStatus = knownComparisonText(answer.kpopActivityStatus)
   const generationValue = guess.kpopGeneration
     ? `${kpopGenerationLabel(guess.kpopGeneration)} · ${KPOP_GENERATION_RANGES[guess.kpopGeneration - 1]?.years ?? ''}`
     : 'Нет данных'
 
   return [
-    {
+    ...(answer.activityStartYear != null ? [{
       key: 'kpop_debut_year',
       label: 'Год дебюта',
       value: guess.activityStartYear != null ? String(guess.activityStartYear) : 'Нет данных',
       ...debutYear,
-    },
-    {
+    } satisfies Hint] : []),
+    ...(answer.kpopGeneration != null ? [{
       key: 'kpop_generation',
       label: 'Поколение K-pop',
       value: generationValue,
       ...generation,
-    },
-    {
+    } satisfies Hint] : []),
+    ...(answerPerformerType ? [{
       key: 'kpop_performer_type',
       label: 'Тип исполнителя',
-      value: guess.kpopPerformerType || 'Нет данных',
-      status: scalar(guess.kpopPerformerType, answer.kpopPerformerType),
+      value: guessPerformerType || 'Нет данных',
+      status: scalar(guessPerformerType, answerPerformerType),
       direction: null,
-    },
-    {
+    } satisfies Hint] : []),
+    ...(answerGender ? [{
       key: 'kpop_gender',
       label: 'Пол',
-      value: guess.kpopGender || 'Нет данных',
-      status: scalar(guess.kpopGender, answer.kpopGender),
+      value: guessGender || 'Нет данных',
+      status: scalar(guessGender, answerGender),
       direction: null,
-    },
-    {
+    } satisfies Hint] : []),
+    ...(answerCurrentLabel ? [{
       key: 'kpop_current_label',
       label: 'Текущий корейский лейбл',
-      value: guess.kpopCurrentLabel || 'Нет данных',
-      status: scalar(guess.kpopCurrentLabel, answer.kpopCurrentLabel),
+      value: guessCurrentLabel || 'Нет данных',
+      status: scalar(guessCurrentLabel, answerCurrentLabel),
       direction: null,
-    },
-    {
+    } satisfies Hint] : []),
+    ...(answer.kpopDebutMembers != null ? [{
       key: 'kpop_debut_members',
       label: 'Участников на дебюте',
       value: guess.kpopDebutMembers != null ? String(guess.kpopDebutMembers) : 'Нет данных',
       ...debutMembers,
-    },
-    {
+    } satisfies Hint] : []),
+    ...(answerActivityStatus ? [{
       key: 'kpop_activity_status',
       label: 'Статус активности',
-      value: guess.kpopActivityStatus || 'Нет данных',
-      status: scalar(guess.kpopActivityStatus, answer.kpopActivityStatus),
+      value: guessActivityStatus || 'Нет данных',
+      status: scalar(guessActivityStatus, answerActivityStatus),
       direction: null,
-    },
+    } satisfies Hint] : []),
   ]
 }
 
 const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   if (isKpopArtistCard(guess) && isKpopArtistCard(answer)) return compareKpopArtists(guess, answer)
 
-  const guessCountryCodes = countryCodes(guess.countries ?? [])
-  const answerCountryCodes = countryCodes(answer.countries ?? [])
+  const guessCountryCodes = countryCodes(knownComparisonValues(guess.countries))
+  const answerCountryCodes = countryCodes(knownComparisonValues(answer.countries))
   const guessCountries = guessCountryCodes.map(localizeMusicCountry)
   const answerCountries = answerCountryCodes.map(localizeMusicCountry)
 
-  const guessGenres = (guess.genres ?? []).map(canonicalMusicGenreLabel)
-  const answerGenres = (answer.genres ?? []).map(canonicalMusicGenreLabel)
-  const guessTypeLabel = musicTypeLabel(guess.musicType)
-  const answerTypeLabel = musicTypeLabel(answer.musicType)
-  const guessOrigin = guess.musicOrigin ?? null
-  const answerOrigin = answer.musicOrigin ?? null
+  const guessGenres = knownComparisonValues(guess.genres).map(canonicalMusicGenreLabel)
+  const answerGenres = knownComparisonValues(answer.genres).map(canonicalMusicGenreLabel)
+  const guessMusicType = knownComparisonText(guess.musicType)
+  const answerMusicType = knownComparisonText(answer.musicType)
+  const guessTypeLabel = musicTypeLabel(guessMusicType)
+  const answerTypeLabel = musicTypeLabel(answerMusicType)
+  const guessOrigin = knownComparisonText(guess.musicOrigin)
+  const answerOrigin = knownComparisonText(answer.musicOrigin)
   const guessScene = musicOriginLabel(guessOrigin)
   const guessActive = guess.musicIsActive
   const answerActive = answer.musicIsActive
@@ -1344,8 +1395,8 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const answerDecade = decadeFromYear(answerActivityStartYear)
   const decadeHint = numeric(guessDecade, answerDecade, 0, 0)
 
-  const guessSimilar = (guess.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
-  const answerSimilar = (answer.similarArtists ?? []).map((artist) => artist.name).filter(Boolean)
+  const guessSimilar = (guess.similarArtists ?? []).map((artist) => artist.name).filter(isKnownComparisonText)
+  const answerSimilar = (answer.similarArtists ?? []).map((artist) => artist.name).filter(isKnownComparisonText)
 
   const activityStartYear = numeric(guessActivityStartYear, answerActivityStartYear, 0, 2)
   const hasActivityStart = answerActivityStartYear != null
@@ -1378,7 +1429,7 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
       direction: null,
       matchedValues: overlaps(guessGenres, answerGenres),
     } satisfies Hint] : []),
-    ...(answer.musicType && answer.musicType !== 'Unknown' ? [{
+    ...(answerMusicType ? [{
       key: 'music_type',
       label: 'Тип артиста',
       value: guessTypeLabel,
@@ -1426,16 +1477,11 @@ const filterCityPool = (items: TitleItem[], variantKey: string | null) => {
 }
 
 const cityScalarStatus = (guess: string, answer: string): MatchStatus => {
-  if (!guess || !answer) return 'unknown'
-  return normalize(guess) === normalize(answer) ? 'match' : 'miss'
+  return scalar(guess, answer)
 }
 
 const cityListStatus = (guess: string[], answer: string[]): MatchStatus => {
-  if (!guess.length || !answer.length) return 'unknown'
-  const guessSet = new Set(guess.map(normalize))
-  const answerSet = new Set(answer.map(normalize))
-  const shared = [...guessSet].filter((value) => answerSet.has(value)).length
-  return shared === guessSet.size && shared === answerSet.size ? 'match' : shared ? 'partial' : 'miss'
+  return setStatus(guess, answer)
 }
 
 const cityNumberHint = (
@@ -1475,13 +1521,19 @@ const cityPopulationHint = (guess: number | null, answer: number | null): Hint =
 export const compareCities = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const guessRanks = guess.ranks
   const answerRanks = answer.ranks
+  const guessCountry = knownComparisonText(guess.country)
+  const answerCountry = knownComparisonText(answer.country)
+  const guessContinent = knownComparisonText(guess.continent)
+  const answerContinent = knownComparisonText(answer.continent)
+  const guessLanguages = knownComparisonValues(guess.languages)
+  const answerLanguages = knownComparisonValues(answer.languages)
   const rank = (key: keyof NonNullable<TitleItem['ranks']>, label: string) => cityNumberHint(
     key, label, guessRanks?.[key] ?? null, answerRanks?.[key] ?? null, (value) => `№ ${value}`, 10, 50, true,
   )
   return [
-    ...(answer.country ? [{ key: 'country', label: 'Страна', value: guess.country || 'Нет данных', status: cityScalarStatus(guess.country ?? '', answer.country), direction: null } satisfies Hint] : []),
-    ...(answer.continent ? [{ key: 'continent', label: 'Континент', value: guess.continent || 'Нет данных', status: cityScalarStatus(guess.continent ?? '', answer.continent), direction: null } satisfies Hint] : []),
-    ...(answer.languages?.length ? [{ key: 'languages', label: 'Языки', value: (guess.languages ?? []).join(', ') || 'Нет данных', status: cityListStatus(guess.languages ?? [], answer.languages), direction: null, matchedValues: overlaps(guess.languages ?? [], answer.languages) } satisfies Hint] : []),
+    ...(answerCountry ? [{ key: 'country', label: 'Страна', value: guessCountry || 'Нет данных', status: cityScalarStatus(guessCountry ?? '', answerCountry), direction: null } satisfies Hint] : []),
+    ...(answerContinent ? [{ key: 'continent', label: 'Континент', value: guessContinent || 'Нет данных', status: cityScalarStatus(guessContinent ?? '', answerContinent), direction: null } satisfies Hint] : []),
+    ...(answerLanguages.length ? [{ key: 'languages', label: 'Языки', value: list(guessLanguages), status: cityListStatus(guessLanguages, answerLanguages), direction: null, matchedValues: overlaps(guessLanguages, answerLanguages) } satisfies Hint] : []),
     ...(answer.population != null ? [cityPopulationHint(guess.population ?? null, answer.population)] : []),
     ...(cityTimezoneHours(answer.timezone ?? '') != null ? [cityNumberHint('timezone', 'Часовой пояс', cityTimezoneHours(guess.timezone ?? ''), cityTimezoneHours(answer.timezone ?? ''), () => guess.timezone || 'Нет данных', 0.25, 2)] : []),
     ...(answerRanks?.economy != null ? [rank('economy', 'Экономика')] : []),

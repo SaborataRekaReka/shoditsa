@@ -52,4 +52,31 @@ describe('friends room weighted scoring', () => {
     const genres = result.breakdown.find((part) => part.key === 'genres')
     expect(creator?.points).toBeGreaterThan(genres?.points ?? 0)
   })
+
+  it('does not award points for matching game-data availability gaps', () => {
+    const unavailable = {
+      source: ['test'],
+      verified: true,
+      missingFields: ['price', 'metacritic', 'ratings.steamPositivePercent', 'votes.steamReviews'],
+      fieldAvailability: {
+        price: 'not_available' as const,
+        metacritic: 'not_rated' as const,
+        steamRating: 'not_available' as const,
+        steamReviews: 'not_available' as const,
+      },
+    }
+    const result = scoreFriendsRoomGuess({
+      answer: { ...title('game', 'answer'), dataQuality: unavailable },
+      guess: { ...title('game', 'guess'), dataQuality: unavailable },
+      elapsedSeconds: 10,
+      answerTimeSeconds: 30,
+    })
+
+    expect(result.breakdown.map((part) => part.key)).not.toEqual(expect.arrayContaining([
+      'price',
+      'metacritic',
+      'steam_positive',
+      'reviews',
+    ]))
+  })
 })

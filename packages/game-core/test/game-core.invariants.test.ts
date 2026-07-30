@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { CATALOG_GUESS_MODE_IDS, GAME_MODE_MANIFEST, type TitleItem, type TitleMode } from '@shoditsa/contracts'
-import { compareTitles, resultText, searchTitles } from '../src/index.js'
+import { compareTitles, isKnownComparisonText, resultText, searchTitles } from '../src/index.js'
 
 const libraryDirs = Object.fromEntries(CATALOG_GUESS_MODE_IDS.map((mode) => [mode, GAME_MODE_MANIFEST[mode].dataDir])) as Record<TitleMode, string>
 
@@ -54,7 +54,7 @@ const firstSearchWithResults = (items: TitleItem[]) => {
 describe('game-core invariants', () => {
   for (const mode of modes) {
     it(`${mode}: self-compare always returns only match statuses`, () => {
-      const items = sampleItems(libraries[mode], 20)
+      const items = libraries[mode]
       expect(items.length).toBeGreaterThan(0)
 
       for (const item of items) {
@@ -63,6 +63,7 @@ describe('game-core invariants', () => {
         for (const hint of hints) {
           expect(hint.status).toBe('match')
           expect(hint.direction).toBeNull()
+          expect(isKnownComparisonText(hint.value)).toBe(true)
         }
       }
     })
@@ -123,4 +124,18 @@ describe('game-core invariants', () => {
       expect(new Set(filtered.map((item) => item.id)).size).toBe(filtered.length)
     })
   }
+
+  it('K-pop pack omits unavailable target facts from self-comparisons', () => {
+    const document = JSON.parse(readFileSync(
+      new URL('../../../data/kpop/kpop-artists-admin-v1.json', import.meta.url),
+      'utf8',
+    )) as { items: TitleItem[] }
+
+    for (const item of document.items) {
+      for (const hint of compareTitles(item, item)) {
+        expect(hint.status).toBe('match')
+        expect(isKnownComparisonText(hint.value)).toBe(true)
+      }
+    }
+  })
 })

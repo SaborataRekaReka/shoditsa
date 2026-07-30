@@ -2650,12 +2650,12 @@
           {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "ae033448e4cc06287e677df8b08589a718e555ec1e50fdb4f66c6770365fe97e"
+        "digest": "f5221a35104b63bd4ebe26d421069ffd4620ba5d737d44c6f7c108bb656d0300"
       },
       {
         "guessId": "kp_700587",
@@ -2902,12 +2902,12 @@
           {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "8c3f64a46ad6146bb525316d8f386f50399093f65b2a951aeb6c02acecb3bf2e"
+        "digest": "0eae9a0f2530bab8f824d131fdeaee3d9dce477bc70b15def1a130298b61cf86"
       },
       {
         "guessId": "kp_4308621",
@@ -3030,12 +3030,12 @@
           {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "a80adb3a5c5be1399b6685664e52de1cc8cfe67b37482f51ef5f06d281dea6ef"
+        "digest": "4218b263a7bbce2356a5a7ee8f7b94691cade0bdd2332cddb8769dc0eddfce4b"
       },
       {
         "guessId": "kp_4919015",
@@ -3923,12 +3923,12 @@
           {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "35e39d841000820dcec4d9449d98909c424552b5c0a5a8329887203ec1bca556"
+        "digest": "8b20741b6434a95ed1fae71a6925c29781402821a2676e7a5fd11108eb2975f8"
       },
       {
         "guessId": "kp_820722",
@@ -6489,34 +6489,6 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Без оценки",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
             "value": "E - Everyone",
@@ -6524,7 +6496,7 @@
             "direction": null
           }
         ],
-        "digest": "0a0ca0e31a21148db1c68aed96574cde89c0f8e95cda87d1a7826930bfa8c911"
+        "digest": "3496b1fc41e75f4a1ba045ab6c3a22bb10485b1bb71942ab5fc24fe788451897"
       },
       {
         "guessId": "steam_1966900",
@@ -6547,7 +6519,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -6593,42 +6565,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "92%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "27 719",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "ffdbdfe262dbd860181c66472a5989c24359f253399939fa64c633a9fcf10c9a"
+        "digest": "130cc0c6875cf33852a7efe3c05749d5bd4730f5e03b398852ec2495a849472c"
       },
       {
         "guessId": "steam_1012880",
@@ -6651,7 +6595,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -6697,42 +6641,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "94%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "16 924",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "3070ba1b99db3b25bc4d9399569ef7a3815a7755f0d64bc845347a7c77646177"
+        "digest": "f62fb28ceccc834545ff70ad47c82f6604804b979e92064997471f22c7d66bcf"
       },
       {
         "guessId": "steam_251570",
@@ -6799,42 +6715,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "89%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "370 046",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "1 500 ₽",
-            "status": "miss",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "ff8e1dd4048c744eb6ca86c8961699ed4f2e663dfe0129b0b1d4ba3ace6dbb95"
+        "digest": "39205fcb21946ae317ca91f7bf0f6c16dbb591d210c0328764d3875f65ffd465"
       },
       {
         "guessId": "tgdb_30049",
@@ -6871,8 +6759,8 @@
           {
             "key": "genres",
             "label": "Жанры",
-            "value": "Unknown",
-            "status": "miss",
+            "value": "Нет данных",
+            "status": "unknown",
             "direction": null,
             "matchedValues": []
           },
@@ -6901,34 +6789,6 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "90%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "84",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "2 030",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "12,99 $",
-            "status": "miss",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
             "value": "10+",
@@ -6936,7 +6796,7 @@
             "direction": null
           }
         ],
-        "digest": "639841032657ab97057f3c285ad0a418bf0c9c3abdd4b111f0d9972d28987207"
+        "digest": "6b18060adcbd34913b8176349e926047bb51802d95f86ddaf0a98d30cea5a46e"
       },
       {
         "guessId": "steam_292030",
@@ -7003,34 +6863,6 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "97%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "93",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "878 317",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "39,99 $",
-            "status": "miss",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
             "value": "17+",
@@ -7038,7 +6870,7 @@
             "direction": null
           }
         ],
-        "digest": "31e4327c68de46ff3a1bfdc50de8d7cbe039c339cb6b16c757af403b1d52be47"
+        "digest": "e9b6f826bc7134ff06535b019d369e766582557db876d0799a2d4ad06bbe6bdd"
       },
       {
         "guessId": "steam_977950",
@@ -7061,7 +6893,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7105,42 +6937,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "94%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "73 471",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "4b0e87c7b87c6ac408337f1f8a559d3d6b057db7c5a6cd60ae764f35eedd966e"
+        "digest": "5b1fa718d23f91b803807e6aadac21c2f5f899c870c4abc6c03c9825fb32a2c3"
       },
       {
         "guessId": "steam_2415010",
@@ -7163,7 +6967,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7207,42 +7011,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "98%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "10 483",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "0b235b1cf7bc0f8fa4317ec4a4c871d09a305eaec5e8a6d8eac297abe8119d1a"
+        "digest": "e843ad9182a7c7c5a6d741f0e7dc70c06acbfe5cc19f8f4f1f61eb2589f4f81f"
       },
       {
         "guessId": "steam_3244220",
@@ -7265,7 +7041,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7309,42 +7085,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "90%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "14 229",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "6321d9ffd4904b77643adf9b12ab5e0353e5a3ba867e783e2c8f2ae47ff6c607"
+        "digest": "b03b96001c7cc28d67c67336b96dd7648bc7a5d5c3f1802629c1a6c7e7118ca8"
       },
       {
         "guessId": "steam_253230",
@@ -7367,7 +7115,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7411,42 +7159,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "98%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "51 687",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "4d4a98fa7645a037d05d231c91f8bcef1734660ece5647f0baeee0f721015b53"
+        "digest": "556c841b45e89c062554b80b2aae28642a063ada6dae5f869745f6876e9ee686"
       },
       {
         "guessId": "steam_752590",
@@ -7469,7 +7189,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7513,42 +7233,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "93%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "63 042",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "8c3ffc58ce4622e958a39fdd12bb237d5a880de79dbbc4ef6d04ecd4df73646a"
+        "digest": "7849fc1259cab3e370c311fb7e3c6943d109fcad28df400cd247eccff3cf2676"
       },
       {
         "guessId": "steam_1182900",
@@ -7571,7 +7263,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7615,42 +7307,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "91%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "20 610",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "27f526de86f49d0bdb0c2b266156f6e204d2cebacfafa9cd76ee88f6bd1d93fb"
+        "digest": "6a87118f9ec207aa1ca50998253b7dbf9b5fcc2f62dd6707d2fcb517eddc02a1"
       },
       {
         "guessId": "steam_278360",
@@ -7673,7 +7337,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7717,42 +7381,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "92%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "28 916",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "a3ef4100d74d8e5c7adbc8701d1bb058f232349d7f1329adfc2e3d03a3cd32fa"
+        "digest": "f1792a072dbabdcfa99aa8d302e7085a0129d520a5622a60beb5468edff6722c"
       },
       {
         "guessId": "steam_712100",
@@ -7775,7 +7411,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7821,42 +7457,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "70%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "14 147",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "5e0017f3950a917efd08e7160e1ba8e4e78a2ed0f6149f6785c5c27881dba5b2"
+        "digest": "43c4f3870286fc9f22f9e90ae21bf8336a60dcdb40e7cc15f680056bf9752e1c"
       },
       {
         "guessId": "steam_1473480",
@@ -7879,7 +7487,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -7923,42 +7531,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "47%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "7 604",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "9d5403cc9882a994821938e3b55ac3605f9523b5d0e2de96165f8e722396c3b8"
+        "digest": "bf6b525192e004264ccb3256820468a8c8777af59278dc45bbe23da8c588aeaa"
       },
       {
         "guessId": "steam_427410",
@@ -7981,7 +7561,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -8025,42 +7605,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "96%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "31 274",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "6d0c2d0ce18ec97fe95898da1eeaf1f452716f3df63befab1aa1420ac8708162"
+        "digest": "ac995f28138af664c61f0be6eb1e9baa5b64af1f5350772237f14131ae2ad454"
       },
       {
         "guessId": "steam_806140",
@@ -8083,7 +7635,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -8127,42 +7679,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "82%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "1 173",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "18b572ee5326cad85388738035a3721299c8bd67d18047657f5d4ba81d8e9933"
+        "digest": "ee1be56ffdb2d4e29ad19d1e037e9ea590b2b01e45e622370040a7f2f57edc8e"
       },
       {
         "guessId": "steam_1385380",
@@ -8185,7 +7709,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -8231,42 +7755,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "82%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "11 866",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "5b229b98f35b6e4d1e67c69eeabb799bc44a7cdb557bd70034823fb5f96ef076"
+        "digest": "43b2e9b5d27ab963209714827565e92d7326e275d7f991837540e0b0bfd7fd66"
       },
       {
         "guessId": "steam_1335200",
@@ -8289,7 +7785,7 @@
             "key": "players",
             "label": "Игроки",
             "value": "Нет данных",
-            "status": "miss",
+            "status": "unknown",
             "direction": null
           },
           {
@@ -8333,42 +7829,14 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "83%",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Нет данных",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "18 644",
-            "status": "miss",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
-            "value": "—",
+            "value": "Нет данных",
             "status": "unknown",
             "direction": null
           }
         ],
-        "digest": "56f57d7e55e70cf1851e83fde9922a22216dcdde63b32353ff48b8011dd5ee91"
+        "digest": "9e806f233aa793287cd2394dd4ffd75267a58369ea65e603828d3afb9f0e854f"
       },
       {
         "guessId": "tgdb_105602",
@@ -8437,34 +7905,6 @@
             "matchedValues": []
           },
           {
-            "key": "steam_positive",
-            "label": "Позитив Steam",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "metacritic",
-            "label": "Metacritic",
-            "value": "Без оценки",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "reviews",
-            "label": "Отзывы Steam",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
-            "key": "price",
-            "label": "Цена",
-            "value": "Нет данных",
-            "status": "match",
-            "direction": null
-          },
-          {
             "key": "age",
             "label": "Возраст",
             "value": "E - Everyone",
@@ -8472,7 +7912,7 @@
             "direction": null
           }
         ],
-        "digest": "0a4fcf36bb7ed9ea9237857a99ea1c66a55559a0f0de938f4459aa3da3638680"
+        "digest": "640a26b27b425817a117d7a33dc9e3b18cc8cbd783994645053e059ad4c8fafb"
       }
     ]
   },
