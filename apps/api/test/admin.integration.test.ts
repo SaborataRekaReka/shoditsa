@@ -421,7 +421,7 @@ describe('admin API guard, workspace and telemetry', () => {
   it('round-trips selected content fields and separates updates from new categorized cards', async () => {
     const source = (await database.db.select({ itemId: contentItemVersions.itemId, mode: contentItemVersions.mode, payload: contentItemVersions.payload })
       .from(contentItemVersions).innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
-      .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'movie'))).limit(1))[0]
+      .where(and(eq(contentRevisions.status, 'active'), eq(contentItemVersions.mode, 'movie'), eq(contentItemVersions.itemId, 'kp_326'))).limit(1))[0]
     expect(source).toBeTruthy()
     const fields = ['titleRu', 'titleOriginal', 'alternativeTitles', 'allowedInGame', 'plotHint']
     const exported = await app.inject({ method: 'POST', url: '/api/v1/admin/content/exchange/export', payload: { itemIds: [source.itemId], fields } })
